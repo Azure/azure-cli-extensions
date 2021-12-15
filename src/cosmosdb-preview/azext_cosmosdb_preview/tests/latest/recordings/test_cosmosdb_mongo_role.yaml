@@ -1,0 +1,1836 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_mongodb_role000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001","name":"cli_test_cosmosdb_mongodb_role000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2021-12-10T00:34:09Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Dec 2021 00:34:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 94832BCE2AB846FB8B186DA9344A6910 Ref B: WSTEDGE1018 Ref C: 2021-12-10T00:34:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "kind": "MongoDB", "properties": {"locations": [{"locationName":
+      "eastus", "failoverPriority": 0, "isZoneRedundant": false}], "databaseAccountOfferType":
+      "Standard", "capabilities": [{"name": "EnableMongoRoleBasedAccessControl"}],
+      "apiProperties": {}, "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '300'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"East
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2021-12-10T00:34:13.6547989Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"94ba5884-16ad-462f-9e24-381c63e30b71","databaseAccountOfferType":"Standard","defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-eastus","locationName":"East
+        US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-eastus","locationName":"East
+        US","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Invalid"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2054'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:34:14 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+      x-msedge-ref:
+      - 'Ref A: 44707BD5BA4742F785ECD0A19DCEE4DC Ref B: STBEDGE0122 Ref C: 2021-12-10T00:34:12Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:34:44 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 9AFFAF2C89BC4872807B5A7C0BEC5017 Ref B: STBEDGE0122 Ref C: 2021-12-10T00:34:45Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:35:14 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 7E6A56F6A25D418AA42CD8A3202AFF39 Ref B: STBEDGE0122 Ref C: 2021-12-10T00:35:15Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:35:44 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 8F81F158D5394A56A411C1ED946C9CC0 Ref B: STBEDGE0122 Ref C: 2021-12-10T00:35:45Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/25be219d-4489-423c-9f78-218ad95690ce?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:15 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 608F56215B29494AA1C58E40A0CDD66B Ref B: STBEDGE0122 Ref C: 2021-12-10T00:36:15Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"East
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2021-12-10T00:35:27.5353227Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents-test.windows-int.net:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.windows-int.net:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"94ba5884-16ad-462f-9e24-381c63e30b71","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-eastus","locationName":"East
+        US","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2518'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:15 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 29E63C4B74024DA09B9729E3E892B913 Ref B: STBEDGE0122 Ref C: 2021-12-10T00:36:15Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --capabilities
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"East
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"MongoDB","tags":{},"systemData":{"createdAt":"2021-12-10T00:35:27.5353227Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents-test.windows-int.net:443/","mongoEndpoint":"https://cli000002.mongo.cosmos.windows-int.net:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"MongoDB","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"FullFidelity"},"instanceId":"94ba5884-16ad-462f-9e24-381c63e30b71","databaseAccountOfferType":"Standard","defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"apiProperties":{"serverVersion":"3.6"},"configurationOverrides":{"EnableBsonSchema":"True"},"writeLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-eastus","locationName":"East
+        US","documentEndpoint":"https://cli000002-eastus.documents-test.windows-int.net:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-eastus","locationName":"East
+        US","failoverPriority":0}],"cors":[],"capabilities":[{"name":"EnableMongo"}],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"}},"identity":{"type":"None"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '2518'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:15 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: FC856B72B61644A28FCEDA15558A26E8 Ref B: STBEDGE0122 Ref C: 2021-12-10T00:36:15Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"resource": {"id": "cli000003"}, "options": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '70'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/89b0422f-d6a9-43fb-9599-60c3c72a62b3?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:16 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003/operationResults/89b0422f-d6a9-43fb-9599-60c3c72a62b3?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1186'
+      x-msedge-ref:
+      - 'Ref A: 55F5F27042A4475E8681B65D91CD1AB1 Ref B: WSTEDGE0911 Ref C: 2021-12-10T00:36:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/89b0422f-d6a9-43fb-9599-60c3c72a62b3?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:46 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 4E5B6990CA494E5C82D23C709347D9FE Ref B: WSTEDGE0911 Ref C: 2021-12-10T00:36:46Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003","_rid":"Gsfx5g==","_etag":"\"00001900-0000-0100-0000-61b2a1080000\"","_ts":1639096584}}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '474'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:47 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 01552EDA6693464E8C2F175B0C0BBF1D Ref B: WSTEDGE0911 Ref C: 2021-12-10T00:36:47Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"roleName": "my_role_def1", "type": "CustomRole", "databaseName":
+      "cli000003", "privileges": [{"resource": {"db": "cli000003", "collection": "test"},
+      "actions": ["insert", "find"]}], "roles": []}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '224'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/271c56cf-3348-4d7e-8b45-363c10ff15db?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:36:49 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/271c56cf-3348-4d7e-8b45-363c10ff15db?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1185'
+      x-msedge-ref:
+      - 'Ref A: 94DCA8270BAB4F5F98597238969BDFC5 Ref B: STBEDGE0107 Ref C: 2021-12-10T00:36:48Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/271c56cf-3348-4d7e-8b45-363c10ff15db?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:19 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 6A9CABA52CC541E29FF04CFC09225A27 Ref B: STBEDGE0107 Ref C: 2021-12-10T00:37:19Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:19 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 22CF3F2CD7B74CEFACD5CCB2CD7C7BB3 Ref B: STBEDGE0107 Ref C: 2021-12-10T00:37:19Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition exists
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:19 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: DBF17913DD414719A2971582FC11086E Ref B: WSTEDGE1004 Ref C: 2021-12-10T00:37:20Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:20 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 96F5370895144C91B2962DE1A5E90A6B Ref B: STBEDGE0115 Ref C: 2021-12-10T00:37:21Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert","find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:22 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: F5994182B9F841608FDE19FBBB3C1F2A Ref B: STBEDGE0210 Ref C: 2021-12-10T00:37:21Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"roleName": "my_role_def1", "type": "CustomRole", "databaseName":
+      "cli000003", "privileges": [{"resource": {"db": "cli000003", "collection": "test"},
+      "actions": ["find"]}], "roles": []}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '214'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/6902cbbd-4589-4efa-be76-c6d5ecc53fd3?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:22 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/6902cbbd-4589-4efa-be76-c6d5ecc53fd3?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1189'
+      x-msedge-ref:
+      - 'Ref A: E821CFBF0A094501A1B03D206BE700F6 Ref B: STBEDGE0210 Ref C: 2021-12-10T00:37:22Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/6902cbbd-4589-4efa-be76-c6d5ecc53fd3?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:53 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 66C0D8189B3F4E49B1B726108FCDBB37 Ref B: STBEDGE0210 Ref C: 2021-12-10T00:37:53Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '545'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:53 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 1D82CB8A050241EF8ECF01335A47252E Ref B: STBEDGE0210 Ref C: 2021-12-10T00:37:53Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"roleName": "my_role_def2", "type": "CustomRole", "databaseName":
+      "cli000003", "privileges": [{"resource": {"db": "cli000003", "collection": "test"},
+      "actions": ["insert"]}], "roles": [{"db": "cli000003", "role": "my_role_def1"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '265'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/9390c797-2404-4910-8290-8216dbc3e2fc?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:37:54 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2/operationResults/9390c797-2404-4910-8290-8216dbc3e2fc?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1188'
+      x-msedge-ref:
+      - 'Ref A: 2DFA2066C0B94E098C22FC2D30B78CE6 Ref B: CO1EDGE2019 Ref C: 2021-12-10T00:37:54Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/9390c797-2404-4910-8290-8216dbc3e2fc?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:24 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 3734651C7A624F34837CA9F72F0483C8 Ref B: CO1EDGE2019 Ref C: 2021-12-10T00:38:25Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:25 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: B47615B6EFEB46EAA79F6F7A969CA6BA Ref B: CO1EDGE2019 Ref C: 2021-12-10T00:38:25Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def2","name":"my_role_def2","properties":{"roleName":"my_role_def2","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["insert"]}],"roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1","name":"my_role_def1","properties":{"roleName":"my_role_def1","type":1,"databaseName":"cli000003","privileges":[{"resource":{"db":"cli000003","collection":"test"},"actions":["find"]}],"roles":[]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbRoleDefinitions"}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '1151'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:26 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 1912562D596F47178AA2A5A93C5B604A Ref B: WSTEDGE0910 Ref C: 2021-12-10T00:38:26Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"userName": "testUser", "password": "MyPass", "databaseName":
+      "cli000003", "customData": "MyCustomData", "roles": [{"db": "cli000003", "role":
+      "my_role_def1"}], "mechanisms": "SCRAM-SHA-256"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '220'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/cb944b50-7514-47f5-ba1d-5c733f2be5de?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:27 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/cb944b50-7514-47f5-ba1d-5c733f2be5de?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1191'
+      x-msedge-ref:
+      - 'Ref A: D9569F643F4F4EF6BAB42DFA4729BDFF Ref B: STBEDGE0118 Ref C: 2021-12-10T00:38:27Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/cb944b50-7514-47f5-ba1d-5c733f2be5de?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:58 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 02E9DD9B80244767A3E6AC26609E6CB2 Ref B: STBEDGE0118 Ref C: 2021-12-10T00:38:58Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:38:58 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: E8AE13798FA14D9A92A130293F272195 Ref B: STBEDGE0118 Ref C: 2021-12-10T00:38:58Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition exists
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:00 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 2F903611237349529F1957A0CCB00D7F Ref B: WSTEDGE0619 Ref C: 2021-12-10T00:38:59Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:00 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 679FC3ACF66D46318E6C5C27256A9AD6 Ref B: WSTEDGE1108 Ref C: 2021-12-10T00:39:00Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def1"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:01 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 0EE7D24D99BF4A81B465C60F031F3A31 Ref B: CO1EDGE1906 Ref C: 2021-12-10T00:39:01Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: '{"properties": {"userName": "testUser", "password": "MyPass", "databaseName":
+      "cli000003", "customData": "MyCustomData", "roles": [{"db": "cli000003", "role":
+      "my_role_def2"}], "mechanisms": "SCRAM-SHA-256"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '220'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/0ddbe46b-f8c6-42d0-84d9-8a112cd1775c?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:01 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/0ddbe46b-f8c6-42d0-84d9-8a112cd1775c?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1190'
+      x-msedge-ref:
+      - 'Ref A: 01F67FBCEE52413299EE7E98E2015F72 Ref B: CO1EDGE1906 Ref C: 2021-12-10T00:39:01Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/0ddbe46b-f8c6-42d0-84d9-8a112cd1775c?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:32 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 0D17AC4C89AE4452B8AAD2F0AA005CC4 Ref B: CO1EDGE1906 Ref C: 2021-12-10T00:39:32Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -b
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def2"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:32 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 00A7BEDBD8994A1A920E5401F74D9378 Ref B: CO1EDGE1906 Ref C: 2021-12-10T00:39:32Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser","name":"testUser","properties":{"userName":"testUser","password":"","databaseName":"cli000003","customData":"","mechanisms":"SCRAM-SHA-256","roles":[{"db":"cli000003","role":"my_role_def2"}]},"type":"Microsoft.DocumentDB/databaseAccounts/mongodbUserDefinitions"}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:33 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: B73FD129D98040269F6B0C84FCCCCB2C Ref B: WSTEDGE0914 Ref C: 2021-12-10T00:39:33Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -a -i --yes
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/20f2b081-8c1e-4570-9559-a8c5c2eb57e0?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:39:35 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions/cli000003.testUser/operationResults/20f2b081-8c1e-4570-9559-a8c5c2eb57e0?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+      x-msedge-ref:
+      - 'Ref A: CA75625C2E0245FCA02CA371A09237A5 Ref B: STBEDGE0222 Ref C: 2021-12-10T00:39:34Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i --yes
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/20f2b081-8c1e-4570-9559-a8c5c2eb57e0?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:40:05 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: CB68245939044A8583AE4E97B7EBE5AA Ref B: STBEDGE0222 Ref C: 2021-12-10T00:40:05Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb user definition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbUserDefinitions?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:40:06 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 22A7BBE76E544220B1BA27D94DD7703F Ref B: STBEDGE0117 Ref C: 2021-12-10T00:40:06Z'
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -a -i --yes
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Enqueued"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/a458f231-5d35-4000-924f-5734187bec2c?api-version=2021-10-15-preview
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:40:06 GMT
+      location:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_mongodb_role000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/mongodbRoleDefinitions/cli000003.my_role_def1/operationResults/a458f231-5d35-4000-924f-5734187bec2c?api-version=2021-10-15-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14996'
+      x-msedge-ref:
+      - 'Ref A: A21C3576AA574A21AD1E91464667203A Ref B: WSTEDGE0910 Ref C: 2021-12-10T00:40:07Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb role definition delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -i --yes
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.8.5 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/operationsStatus/a458f231-5d35-4000-924f-5734187bec2c?api-version=2021-10-15-preview
+  response:
+    body:
+      string: '{"status":"Failed","error":{"code":"InternalServerError","message":"Failed
+        to complete execution of [ReplaceImpactedAuthPolicyElementInMasterPartitionAsync]
+        on Service Identity with name [fabric:/fcf655b1-f9fe-4038-978d-7fe1b9d4f4c2/666274ee-8257-498a-8670-13d8fe02d156]
+        and type [MasterService].\r\nActivityId: b8ccc7df-5951-11ec-a226-a4ae111d1b48,
+        Microsoft.Azure.Documents.Common/2.14.0"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '392'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Dec 2021 00:40:37 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+      x-msedge-ref:
+      - 'Ref A: 45AB7D20333842059E7C90BA68EE58B4 Ref B: WSTEDGE0910 Ref C: 2021-12-10T00:40:37Z'
+    status:
+      code: 200
+      message: Ok
+version: 1

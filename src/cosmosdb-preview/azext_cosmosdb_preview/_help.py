@@ -230,8 +230,8 @@ examples:
   - name: Create a Mongo DB role definition under an Azure Cosmos DB account using a JSON string.
     text: |
       az cosmosdb mongodb role definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
-        "Id": "my_resourceg.MyDB",
-        "RoleName": "My Read Only Role",
+        "Id": "MyDB.My_Read_Only_Role",
+        "RoleName": "My_Read_Only_Role",
         "Type": "CustomRole",
         "DatabaseName": "MyDB",
         "Privileges": [{
@@ -312,7 +312,7 @@ examples:
   - name: Create a Mongo DB user definition under an Azure Cosmos DB account using a JSON string.
     text: |
       az cosmosdb mongodb user definition create --account-name MyAccount --resource-group MyResourceGroup --body '{
-        "Id": "be79875a-2cc4-40d5-8958-566017875b39",
+        "Id": "MyDB.MyUName",
         "UserName": "MyUName",
         "Password": "MyPass",
         "DatabaseName": "MyDB",
