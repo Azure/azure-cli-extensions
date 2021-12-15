@@ -8,6 +8,7 @@ import subprocess
 import stat
 import multiprocessing as mp
 import time
+import datetime
 import oschmod
 
 from knack import log
@@ -15,6 +16,7 @@ from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 
 from . import file_utils
+from . import arc_utils
 from . import constants as const
 
 logger = log.get_logger(__name__)
@@ -34,7 +36,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     env = os.environ.copy()
 
     if is_arc:
-        env['SSHPROXY_RELAY_INFO'] = relay_info
+        env['SSHPROXY_RELAY_INFO'] = arc_utils._arc_format_relay_info_string(relay_info)
         if port:
             pcommand = f"ProxyCommand={proxy_path} -p {port}"
         else:
@@ -84,6 +86,26 @@ def get_ssh_cert_info(cert_file):
     return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
 
 
+def _get_ssh_cert_validity(cert_file):
+    if cert_file:
+        info = get_ssh_cert_info(cert_file)
+        for line in info:
+            if "Valid:" in line:
+                return line.strip()
+    return None
+
+
+def _get_certificate_lifetime(cert_file):
+    validity_str = _get_ssh_cert_validity(cert_file)
+    lifetime = None
+    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
+        times = validity_str.replace("Valid: from ", "").split(" to ")
+        t0 = datetime.datetime.fromisoformat(times[0])
+        t1 = datetime.datetime.fromisoformat(times[1])
+        lifetime = t1 - t0
+    return lifetime
+
+
 def get_ssh_cert_principals(cert_file):
     info = get_ssh_cert_info(cert_file)
     principals = []
@@ -98,15 +120,6 @@ def get_ssh_cert_principals(cert_file):
             principals.append(line.strip())
 
     return principals
-
-
-def get_ssh_cert_validity(cert_file):
-    if cert_file:
-        info = get_ssh_cert_info(cert_file)
-        for line in info:
-            if "Valid:" in line:
-                return line.strip()
-    return None
 
 
 def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
@@ -276,6 +289,7 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
 
 
 def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_group):
+    
     # create the custom folder
     relay_info_dir = credentials_folder
     if not os.path.isdir(relay_info_dir):
@@ -287,14 +301,22 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
     relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
     # Overwrite relay_info if it already exists in that folder.
     file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
-    file_utils.write_to_file(relay_info_path, 'w', relay_info,
+    file_utils.write_to_file(relay_info_path, 'w', arc_utils._arc_format_relay_info_string(relay_info),
                              f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
     oschmod.set_mode(relay_info_path, stat.S_IRUSR)
+
+    #get expiration 
+    expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
+    print(f"Generated file with Relay Information is valid for {expiration - datetime.datetime.now()}\n")
 
     return relay_info_path, relay_info_filename
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
+    if delete_cert:
+        # Find a better way to format the delta time
+        print(f"Generated SSH certificate {cert_file} is valid for {_get_certificate_lifetime(cert_file)}.\n")
+    
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
         # If user provided keys, only ask them to delete the certificate.
@@ -316,15 +338,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = cert_file
                 items_to_delete = ""
 
-        validity_warning = ""
-        if delete_cert:
-            validity = get_ssh_cert_validity(cert_file)
-            if validity:
-                validity_warning = f" {validity.lower()}"
-
-        logger.warning("%s contains sensitive information%s%s\n"
-                       "Please delete it once you no longer need this config file. ",
-                       path_to_delete, items_to_delete, validity_warning)
+        print(f"{path_to_delete} contains sensitive information{items_to_delete}. "
+              "Please delete it once you no longer need this config file.\n")
 
 
 def _get_connection_status(log_file):
@@ -335,3 +350,4 @@ def _get_connection_status(log_file):
     except:
         return False
     return match
+

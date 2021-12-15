@@ -7,6 +7,7 @@ Release History
 * Make --local-user mandatory for Windows target machines.
 * For ssh config, relay information is stored under az_ssh_config folder.
 * New optional parameter --arc-proxy-folder to determine where arc proxy is stored.
+* Relay information lifetime is synced with certificate lifetime for AAD login.
 
 0.2.1
 -----
