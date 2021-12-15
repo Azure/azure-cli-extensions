@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import re
-from azure_devtools.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from .utils import is_text_payload
 try:
     from urllib.parse import urlparse
