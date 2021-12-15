@@ -48,7 +48,7 @@ az account show
 if [[ -z ${BACKWARD_COMPATIBILITY_TEST} || ${BACKWARD_COMPATIBILITY_TEST} != "only" ]]; then
     # prepare running options
     # pytest options
-    pytest_options="--report-path ./reports"
+    pytest_options="-e --report-path ./reports"
     # parallel
     if [[ -n ${PARALLELISM} ]]; then
         pytest_options+=" -j ${PARALLELISM}"
@@ -81,7 +81,7 @@ if [[ -z ${BACKWARD_COMPATIBILITY_TEST} || ${BACKWARD_COMPATIBILITY_TEST} != "on
     fi
 
     # filter options
-    filter_options=" -e"
+    filter_options=""
     # ext matrix
     if [[ -n ${EXT_TEST_MATRIX} ]]; then
         filter_options+=" -em ./configs/${EXT_TEST_MATRIX}"
@@ -179,7 +179,7 @@ fi
 if [[ -n ${BACKWARD_COMPATIBILITY_TEST} ]]; then
     # prepare running options
     # pytest options
-    pytest_options="--report-path ./reports"
+    pytest_options="-c --report-path ./reports"
     # parallel
     if [[ -n ${PARALLELISM} ]]; then
         pytest_options+=" -j ${PARALLELISM}"
@@ -212,7 +212,7 @@ if [[ -n ${BACKWARD_COMPATIBILITY_TEST} ]]; then
     fi
 
     # filter options
-    filter_options=" -c"
+    filter_options=""
     # cli matrix
     if [[ -n ${CLI_TEST_MATRIX} ]]; then
         filter_options+=" -cm ./configs/${CLI_TEST_MATRIX}"

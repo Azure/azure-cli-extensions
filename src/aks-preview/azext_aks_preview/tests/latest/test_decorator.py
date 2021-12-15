@@ -54,6 +54,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
+    UnknownError,
 )
 from msrestazure.azure_exceptions import CloudError
 
@@ -217,15 +218,17 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {'pod_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            {"pod_cidrs": "10.244.0.0/16,2001:abcd::/64"},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_pod_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+        self.assertEqual(
+            ctx_1.get_pod_cidrs(), ["10.244.0.0/16", "2001:abcd::/64"]
+        )
 
         ctx_2 = AKSPreviewContext(
             self.cmd,
-            {'pod_cidrs': ''},
+            {"pod_cidrs": ""},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -233,7 +236,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {'pod_cidrs': None},
+            {"pod_cidrs": None},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -243,15 +246,17 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {'service_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            {"service_cidrs": "10.244.0.0/16,2001:abcd::/64"},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_service_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+        self.assertEqual(
+            ctx_1.get_service_cidrs(), ["10.244.0.0/16", "2001:abcd::/64"]
+        )
 
         ctx_2 = AKSPreviewContext(
             self.cmd,
-            {'service_cidrs': ''},
+            {"service_cidrs": ""},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -259,7 +264,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {'service_cidrs': None},
+            {"service_cidrs": None},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -269,15 +274,15 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {'ip_families': 'IPv4,IPv6'},
+            {"ip_families": "IPv4,IPv6"},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_ip_families(), ['IPv4','IPv6'])
+        self.assertEqual(ctx_1.get_ip_families(), ["IPv4", "IPv6"])
 
         ctx_2 = AKSPreviewContext(
             self.cmd,
-            {'ip_families': ''},
+            {"ip_families": ""},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -285,22 +290,64 @@ class AKSPreviewContextTestCase(unittest.TestCase):
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {'ip_families': None},
+            {"ip_families": None},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_ip_families(), None)
 
-    def test_get_ipv6_count(self):
+    def test_get_load_balancer_managed_outbound_ipv6_count(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {'load_balancer_managed_outbound_ipv6_count': 4},
+            {
+                "load_balancer_managed_outbound_ipv6_count": None,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(
-            ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
+            ctx_1.get_load_balancer_managed_outbound_ipv6_count(), None
+        )
+        load_balancer_profile = self.models.lb_models.get(
+            "ManagedClusterLoadBalancerProfile"
+        )(
+            managed_outbound_i_ps=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+            )(count_ipv6=10)
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            load_balancer_profile=load_balancer_profile
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 10
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"load_balancer_managed_outbound_ipv6_count": 4},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_2.get_load_balancer_managed_outbound_ipv6_count(), 4
+        )
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"load_balancer_managed_outbound_ipv6_count": 0},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 0
+        )
 
     def test_get_enable_fips_image(self):
         # default
@@ -1262,6 +1309,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_7.get_outbound_type(
                 load_balancer_profile=load_balancer_profile,
             )
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -2353,9 +2401,34 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
     def test_update_ipv6_count(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
+            network_profile=network_profile_1,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_load_balancer_profile(mc_1)
+
+        ground_truth_network_profile_1 = (
+            self.models.ContainerServiceNetworkProfile()
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=ground_truth_network_profile_1,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_managed_outbound_ipv6_count": 4,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.lb_models.get(
-                    'ManagedClusterLoadBalancerProfile'
+                    "ManagedClusterLoadBalancerProfile"
                 )(
                     managed_outbound_i_ps=self.models.lb_models.get(
                         "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
@@ -2363,7 +2436,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                         count=3,
                     )
                 )
-            )
+            ),
         )
         self.client.get = Mock(return_value=mc_1)
         dec_1 = AKSPreviewUpdateDecorator(
@@ -2682,3 +2755,93 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             enable_pod_security_policy=False,
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_update_windows_profile(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_ahub": False,
+                "disable_ahub": False,
+                "windows_admin_password": None,
+                "enable_windows_gmsa": False,
+                "gmsa_dns_server": None,
+                "gmsa_root_domain_name": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_windows_profile(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_windows_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_windows_gmsa": True,
+                "gmsa_dns_server": "test_gmsa_dns_server",
+                "gmsa_root_domain_name": "test_gmsa_root_domain_name",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        windows_profile_2 = self.models.ManagedClusterWindowsProfile(
+            # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="fake secrets in unit test")]
+            admin_username="test_win_admin_name",
+            admin_password="test_win_admin_password",
+            license_type="Windows_Server",
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            windows_profile=windows_profile_2,
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_windows_profile(mc_2)
+
+        ground_truth_gmsa_profile_2 = self.models.WindowsGmsaProfile(
+            enabled=True,
+            dns_server="test_gmsa_dns_server",
+            root_domain_name="test_gmsa_root_domain_name",
+        )
+        ground_truth_windows_profile_2 = self.models.ManagedClusterWindowsProfile(
+            # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="fake secrets in unit test")]
+            admin_username="test_win_admin_name",
+            admin_password="test_win_admin_password",
+            license_type="Windows_Server",
+            gmsa_profile=ground_truth_gmsa_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            windows_profile=ground_truth_windows_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_windows_gmsa": True,
+                "gmsa_dns_server": "test_gmsa_dns_server",
+                "gmsa_root_domain_name": "test_gmsa_root_domain_name",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_3.context.attach_mc(mc_3)
+        # fail on incomplete mc object (no windows profile)
+        with self.assertRaises(UnknownError):
+            dec_3.update_windows_profile(mc_3)
