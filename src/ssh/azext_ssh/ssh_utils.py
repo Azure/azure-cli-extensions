@@ -95,14 +95,22 @@ def _get_ssh_cert_validity(cert_file):
     return None
 
 
-def _get_certificate_lifetime(cert_file):
+def _get_certificate_start_and_end_times(cert_file):
     validity_str = _get_ssh_cert_validity(cert_file)
-    lifetime = None
+    times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
         times = validity_str.replace("Valid: from ", "").split(" to ")
         t0 = datetime.datetime.fromisoformat(times[0])
         t1 = datetime.datetime.fromisoformat(times[1])
-        lifetime = t1 - t0
+        times = (t0, t1)
+    return times
+
+
+def _get_certificate_lifetime(cert_file):
+    times = _get_certificate_start_and_end_times(cert_file)
+    lifetime = None
+    if times:
+        lifetime = times[1] - times[0]
     return lifetime
 
 
@@ -307,15 +315,14 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
 
     #get expiration 
     expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
-    print(f"Generated file with Relay Information is valid for {expiration - datetime.datetime.now()}\n")
+    print(f"Generated file with Relay Information is valid until {expiration}.\n")
 
     return relay_info_path, relay_info_filename
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
     if delete_cert:
-        # Find a better way to format the delta time
-        print(f"Generated SSH certificate {cert_file} is valid for {_get_certificate_lifetime(cert_file)}.\n")
+        print(f"Generated SSH certificate {cert_file} is valid until {_get_certificate_start_and_end_times(cert_file)[1]}.\n")
     
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
