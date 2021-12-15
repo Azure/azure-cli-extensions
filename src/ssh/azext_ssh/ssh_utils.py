@@ -100,8 +100,8 @@ def _get_certificate_start_and_end_times(cert_file):
     times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
         times = validity_str.replace("Valid: from ", "").split(" to ")
-        t0 = datetime.datetime.fromisoformat(times[0])
-        t1 = datetime.datetime.fromisoformat(times[1])
+        t0 = datetime.datetime.strptime(times[0], '%Y-%m-%dT%X')
+        t1 = datetime.datetime.strptime(times[1], '%Y-%m-%dT%X')
         times = (t0, t1)
     return times
 
