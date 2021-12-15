@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):

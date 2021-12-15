@@ -55,7 +55,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -681,10 +681,14 @@ def aks_create(cmd,
                network_policy=None,
                pod_cidr=None,
                service_cidr=None,
+               pod_cidrs=None,
+               service_cidrs=None,
+               ip_families=None,
                dns_service_ip=None,
                docker_bridge_address=None,
                load_balancer_sku=None,
                load_balancer_managed_outbound_ip_count=None,
+               load_balancer_managed_outbound_ipv6_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
@@ -768,12 +772,12 @@ def aks_create(cmd,
     )
     try:
         # construct mc profile
-        mc = aks_create_decorator.construct_preview_mc_profile()
+        mc = aks_create_decorator.construct_mc_preview_profile()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
     # send request to create a real managed cluster
-    return aks_create_decorator.create_mc(mc)
+    return aks_create_decorator.create_mc_preview(mc)
 
 
 def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
@@ -786,6 +790,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                cluster_autoscaler_profile=None,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
+               load_balancer_managed_outbound_ipv6_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
@@ -831,6 +836,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
     update_lb_profile = is_load_balancer_profile_provided(load_balancer_managed_outbound_ip_count,
+                                                          load_balancer_managed_outbound_ipv6_count,
                                                           load_balancer_outbound_ips,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
@@ -984,6 +990,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
             load_balancer_managed_outbound_ip_count,
+            load_balancer_managed_outbound_ipv6_count,
             load_balancer_outbound_ips,
             load_balancer_outbound_ip_prefixes,
             load_balancer_outbound_ports,
@@ -3168,7 +3175,7 @@ def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
         if exc.pod_labels is None:
             # in previous version, we accidentally allowed user to specify empty pod labels,
             # which will be converted to `None` in response. This behavior will break the extension
-            # when using 2021-09-01 version. As a workaround, we always back fill the empty dict value
+            # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
             # before sending to the server side.
             exc.pod_labels = dict()
 
@@ -3443,14 +3450,14 @@ def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-state
     )
 
     snapshot = Snapshot(
-        name=_trim_nodepoolname(name),
+        name=name,
         tags=tags,
         location=location,
         creation_data=creationData
     )
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return client.create_or_update(resource_group_name, _trim_nodepoolname(name), snapshot, headers=headers)
+    return client.create_or_update(resource_group_name, name, snapshot, headers=headers)
 
 
 def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
