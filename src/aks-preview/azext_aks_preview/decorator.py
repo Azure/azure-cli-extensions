@@ -25,6 +25,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
+    UnknownError,
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
@@ -1014,15 +1015,16 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         enable_windows_gmsa = self.raw_param.get("enable_windows_gmsa")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.windows_profile and
-            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-            self.mc.windows_profile.gmsa_profile and
-            self.mc.windows_profile.gmsa_profile.enabled is not None
-        ):
-            enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.windows_profile and
+                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                self.mc.windows_profile.gmsa_profile and
+                self.mc.windows_profile.gmsa_profile.enabled is not None
+            ):
+                enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
 
         # this parameter does not need dynamic completion
         # validation
@@ -1064,32 +1066,34 @@ class AKSPreviewContext(AKSContext):
         # gmsa_dns_server
         # read the original value passed by the command
         gmsa_dns_server = self.raw_param.get("gmsa_dns_server")
-        # try to read the property value corresponding to the parameter from the `mc` object
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         gmsa_dns_read_from_mc = False
-        if (
-            self.mc and
-            self.mc.windows_profile and
-            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-            self.mc.windows_profile.gmsa_profile and
-            self.mc.windows_profile.gmsa_profile.dns_server is not None
-        ):
-            gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
-            gmsa_dns_read_from_mc = True
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.windows_profile and
+                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                self.mc.windows_profile.gmsa_profile and
+                self.mc.windows_profile.gmsa_profile.dns_server is not None
+            ):
+                gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
+                gmsa_dns_read_from_mc = True
 
         # gmsa_root_domain_name
         # read the original value passed by the command
         gmsa_root_domain_name = self.raw_param.get("gmsa_root_domain_name")
-        # try to read the property value corresponding to the parameter from the `mc` object
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         gmsa_root_read_from_mc = False
-        if (
-            self.mc and
-            self.mc.windows_profile and
-            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-            self.mc.windows_profile.gmsa_profile and
-            self.mc.windows_profile.gmsa_profile.root_domain_name is not None
-        ):
-            gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
-            gmsa_root_read_from_mc = True
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.windows_profile and
+                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                self.mc.windows_profile.gmsa_profile and
+                self.mc.windows_profile.gmsa_profile.root_domain_name is not None
+            ):
+                gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
+                gmsa_root_read_from_mc = True
 
         # consistent check
         if gmsa_dns_read_from_mc != gmsa_root_read_from_mc:
@@ -1718,6 +1722,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
+        Note: Inherited and extended in aks-preview to set dual stack related properties.
+
         :return: the ManagedCluster object
         """
         mc = super().update_load_balancer_profile(mc)
@@ -1748,6 +1754,30 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         if self.context.get_disable_pod_security_policy():
             mc.enable_pod_security_policy = False
+        return mc
+
+    def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update windows profile for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set gmsa related properties.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().update_windows_profile(mc)
+        windows_profile = mc.windows_profile
+
+        if self.context.get_enable_windows_gmsa():
+            if not windows_profile:
+                raise UnknownError(
+                    "Encounter an unexpected error while getting windows profile "
+                    "from the cluster in the process of update."
+                )
+            gmsa_dns_server, gmsa_root_domain_name = self.context.get_gmsa_dns_server_and_root_domain_name()
+            windows_profile.gmsa_profile = self.models.WindowsGmsaProfile(
+                enabled=True,
+                dns_server=gmsa_dns_server,
+                root_domain_name=gmsa_root_domain_name,
+            )
         return mc
 
     def update_mc_preview_profile(self) -> ManagedCluster:
