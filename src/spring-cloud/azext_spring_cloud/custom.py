@@ -22,12 +22,16 @@ from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
 from .vendored_sdks.appplatform.v2021_09_01_preview import models as models_20210901preview
+from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
 from .vendored_sdks.appplatform.v2021_09_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
+)
+from .vendored_sdks.appplatform.v2022_01_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20220101preview
 )
 from knack.log import get_logger
 from .azure_storage_file import FileService
@@ -66,7 +70,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku='Standard', tags=None, no_wait=False):
+                        sku='Standard', tags=None, no_wait=False, zone_redundant=False):
     """
     If app_insights_key, app_insights and disable_app_insights are all None,
     will still create an application insights and enable application insights.
@@ -79,20 +83,20 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
 
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
-    properties = models.ClusterResourceProperties()
+    properties = models_20220101preview.ClusterResourceProperties()
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
-        properties.network_profile = models.NetworkProfile(
+        properties.network_profile = models_20220101preview.NetworkProfile(
             service_runtime_subnet_id=service_runtime_subnet,
             app_subnet_id=app_subnet,
             service_cidr=reserved_cidr_range,
             app_network_resource_group=app_network_resource_group,
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
+    properties.zone_redundant=zone_redundant
+    full_sku = models_20220101preview.Sku(name=_get_sku_name(sku), tier=sku)
 
-    full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-
-    resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
+    resource = models_20220101preview.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
 
     poller = client.services.begin_create_or_update(
         resource_group, name, resource)
@@ -135,19 +139,19 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     Will be decommissioned in future releases.
     :param app_insights_key: Connection string or Instrumentation key
     """
-    updated_resource = models.ServiceResource()
+    updated_resource = models_20220101preview.ServiceResource()
     update_service_tags = False
     update_service_sku = False
 
     # update service sku
     if sku is not None:
-        full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
+        full_sku = models_20220101preview.Sku(name=_get_sku_name(sku), tier=sku)
         updated_resource.sku = full_sku
         update_service_sku = True
 
     resource = client.services.get(resource_group, name)
     location = resource.location
-    updated_resource_properties = models.ClusterResourceProperties()
+    updated_resource_properties = models_20220101preview.ClusterResourceProperties()
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)

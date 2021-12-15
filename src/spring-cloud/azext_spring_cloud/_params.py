@@ -69,6 +69,11 @@ def load_arguments(self, _):
                         "--app-insights-key or --app-insights, "
                         "will create a new Application Insights instance in the same resource group.",
                    validator=validate_tracing_parameters_asc_create)
+        c.argument('zone_redundant',
+                   arg_type=get_three_state_flag(),
+                   help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
+                        "this could only be supported in several regions at the moment ",
+                   default=False)
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('app_insights_key',

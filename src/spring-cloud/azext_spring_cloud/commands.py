@@ -10,6 +10,7 @@ from ._client_factory import (cf_app_services,
                               cf_spring_cloud,
                               cf_spring_cloud_20201101preview,
                               cf_spring_cloud_20210901preview,
+                              cf_spring_cloud_20220101preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
@@ -22,13 +23,13 @@ from ._transformers import (transform_spring_cloud_table_output,
 def load_command_table(self, _):
     with self.command_group('spring-cloud', client_factory=cf_app_services,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True, client_factory=cf_spring_cloud)
-        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True, client_factory=cf_spring_cloud)
+        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True, client_factory=cf_spring_cloud_20220101preview)
+        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True, client_factory=cf_spring_cloud_20220101preview)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
         g.custom_command('start', 'spring_cloud_start', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
         g.custom_command('stop', 'spring_cloud_stop', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
-        g.custom_command('list', 'spring_cloud_list', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
+        g.custom_command('list', 'spring_cloud_list', client_factory=cf_spring_cloud_20220101preview, table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get', client_factory=cf_spring_cloud_20220101preview, table_transformer=transform_spring_cloud_table_output)
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
