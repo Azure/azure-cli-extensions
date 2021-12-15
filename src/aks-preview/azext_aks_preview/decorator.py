@@ -40,16 +40,22 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
 )
-from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview._loadbalancer import create_load_balancer_profile
+from azext_aks_preview._loadbalancer import (
+    update_load_balancer_profile as _update_load_balancer_profile,
+)
+from azext_aks_preview._natgateway import (
+    create_nat_gateway_profile,
+    is_nat_gateway_profile_provided,
+)
+from azext_aks_preview._natgateway import (
+    update_nat_gateway_profile as _update_nat_gateway_profile,
+)
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
 )
 from azext_aks_preview.custom import _get_snapshot
-from azext_aks_preview._loadbalancer import (
-    update_load_balancer_profile as _update_load_balancer_profile,
-    create_load_balancer_profile,
-)
 
 
 logger = get_logger(__name__)
@@ -403,17 +409,18 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.network_profile and
-            self.mc.network_profile.nat_gateway_profile and
-            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile and
-            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count is not None
-        ):
-            nat_gateway_managed_outbound_ip_count = (
-                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count
-            )
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.nat_gateway_profile and
+                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile and
+                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count is not None
+            ):
+                nat_gateway_managed_outbound_ip_count = (
+                    self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count
+                )
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -426,16 +433,17 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.network_profile and
-            self.mc.network_profile.nat_gateway_profile and
-            self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes is not None
-        ):
-            nat_gateway_idle_timeout = (
-                self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes
-            )
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.nat_gateway_profile and
+                self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes is not None
+            ):
+                nat_gateway_idle_timeout = (
+                    self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes
+                )
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -838,6 +846,51 @@ class AKSPreviewContext(AKSContext):
 
         return None
 
+    def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
+        """Obtain the value of load_balancer_managed_outbound_ip_count.
+
+        Note: Overwritten in aks-preview to preserve value from `mc` in update mode under certain circumstance.
+        Note: SDK performs the following validation {'maximum': 100, 'minimum': 1}.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        load_balancer_managed_outbound_ip_count = self.raw_param.get(
+            "load_balancer_managed_outbound_ip_count"
+        )
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.load_balancer_profile and
+                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
+                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count is not None
+            ):
+                load_balancer_managed_outbound_ip_count = (
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count
+                )
+        elif self.decorator_mode == DecoratorMode.UPDATE:
+            if (
+                not self.get_load_balancer_outbound_ips() and
+                not self.get_load_balancer_outbound_ip_prefixes() and
+                load_balancer_managed_outbound_ip_count is None
+            ):
+                if (
+                    self.mc and
+                    self.mc.network_profile and
+                    self.mc.network_profile.load_balancer_profile and
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count is not None
+                ):
+                    load_balancer_managed_outbound_ip_count = (
+                        self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count
+                    )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_managed_outbound_ip_count
+
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
 
@@ -857,6 +910,22 @@ class AKSPreviewContext(AKSContext):
                 count_ipv6 = (
                     self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
                 )
+        elif self.decorator_mode == DecoratorMode.UPDATE:
+            if (
+                not self.get_load_balancer_outbound_ips() and
+                not self.get_load_balancer_outbound_ip_prefixes() and
+                count_ipv6 is None
+            ):
+                if (
+                    self.mc and
+                    self.mc.network_profile and
+                    self.mc.network_profile.load_balancer_profile and
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6 is not None
+                ):
+                    count_ipv6 = (
+                        self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
+                    )
 
         return count_ipv6
 
@@ -1462,6 +1531,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 self.context.get_load_balancer_outbound_ip_prefixes(),
                 self.context.get_load_balancer_outbound_ports(),
                 self.context.get_load_balancer_idle_timeout(),
+                models=self.models.lb_models,
             )
 
         # build nat gateway profile, which is part of the network profile
@@ -1722,46 +1792,29 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set dual stack related properties.
+        Note: Overwritten in aks-preview to set dual stack related properties.
 
         :return: the ManagedCluster object
         """
-        existing_managed_outbound_ips = None
-        if (
-            mc and
-            mc.network_profile and
-            mc.network_profile.load_balancer_profile and
-            mc.network_profile.load_balancer_profile.managed_outbound_i_ps
-        ):
-            existing_managed_outbound_ips = mc.network_profile.load_balancer_profile.managed_outbound_i_ps
+        self._ensure_mc(mc)
 
-        mc = super().update_load_balancer_profile(mc)
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating load balancer profile."
+            )
 
-        lb_managed_outbound_ipv6_count = self.context.get_load_balancer_managed_outbound_ipv6_count()
-        lb_managed_outbound_ip_count = self.context.get_load_balancer_managed_outbound_ip_count()
-        lb_outbound_ips = self.context.get_load_balancer_outbound_ips()
-        lb_outbound_ip_prefixes = self.context.get_load_balancer_outbound_ip_prefixes()
-        lb_outbound_ports = self.context.get_load_balancer_outbound_ports()
-        lb_idle_timeout = self.context.get_load_balancer_idle_timeout()
-
-        if (
-            not lb_outbound_ips and
-            not lb_outbound_ip_prefixes and
-            existing_managed_outbound_ips
-        ):
-            if not lb_managed_outbound_ip_count:
-                lb_managed_outbound_ip_count = existing_managed_outbound_ips.count
-            if not lb_managed_outbound_ipv6_count:
-                lb_managed_outbound_ipv6_count = existing_managed_outbound_ips.count_ipv6
-
+        # In the internal function "_update_load_balancer_profile", it will check whether the provided parameters
+        # have been assigned, and if there are any, the corresponding profile will be modified; otherwise, it will
+        # remain unchanged.
         mc.network_profile.load_balancer_profile = _update_load_balancer_profile(
-            lb_managed_outbound_ip_count,
-            lb_managed_outbound_ipv6_count,
-            lb_outbound_ips,
-            lb_outbound_ip_prefixes,
-            lb_outbound_ports,
-            lb_idle_timeout,
-            mc.network_profile.load_balancer_profile
+            managed_outbound_ip_count=self.context.get_load_balancer_managed_outbound_ip_count(),
+            managed_outbound_ipv6_count=self.context.get_load_balancer_managed_outbound_ipv6_count(),
+            outbound_ips=self.context.get_load_balancer_outbound_ips(),
+            outbound_ip_prefixes=self.context.get_load_balancer_outbound_ip_prefixes(),
+            outbound_ports=self.context.get_load_balancer_outbound_ports(),
+            idle_timeout=self.context.get_load_balancer_idle_timeout(),
+            profile=mc.network_profile.load_balancer_profile,
+            models=self.models.lb_models,
         )
         return mc
 
@@ -1800,6 +1853,30 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 enabled=True,
                 dns_server=gmsa_dns_server,
                 root_domain_name=gmsa_root_domain_name,
+            )
+        return mc
+
+    # TODO: may combine this with update_load_balancer_profile
+    def update_nat_gateway_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update nat gateway profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().update_windows_profile(mc)
+
+        nat_gateway_managed_outbound_ip_count = self.context.get_nat_gateway_managed_outbound_ip_count()
+        nat_gateway_idle_timeout = self.context.get_nat_gateway_idle_timeout()
+        if is_nat_gateway_profile_provided(nat_gateway_managed_outbound_ip_count, nat_gateway_idle_timeout):
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
+                )
+
+            mc.network_profile.nat_gateway_models = _update_nat_gateway_profile(
+                nat_gateway_managed_outbound_ip_count,
+                nat_gateway_idle_timeout,
+                mc.network_profile.nat_gateway_profile,
+                models=self.models.nat_gateway_models,
             )
         return mc
 
