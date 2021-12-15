@@ -140,7 +140,6 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
         if is_arc:
             try:
                 cert_lifetime = ssh_utils.get_certificate_lifetime(cert_file).total_seconds()
-                print(cert_lifetime)
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
@@ -367,7 +366,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
         os_type = arc.properties.os_name
 
     # Note 2: This is a temporary check while AAD login is not enabled for Windows.
-    if os_type.lower() == 'windows' and not local_user:
+    if os_type and os_type.lower() == 'windows' and not local_user:
         raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
                                                       "Please provide --local-user.")
 
