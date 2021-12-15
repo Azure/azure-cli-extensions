@@ -82,7 +82,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
     try:
-        certificate_lifetime = ssh_utils._get_certificate_lifetime(cert_file)
+        certificate_lifetime = ssh_utils.get_certificate_lifetime(cert_file)
         print(f"Generated SSH certificate {cert_file} is valid for {certificate_lifetime}.")
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
@@ -139,7 +139,7 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
         if is_arc:
             try:
-                cert_lifetime = ssh_utils._get_certificate_lifetime(cert_file).total_seconds()
+                cert_lifetime = ssh_utils.get_certificate_lifetime(cert_file).total_seconds()
                 print(cert_lifetime)
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
@@ -147,8 +147,8 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
     proxy_path = None
     relay_info = None
     if is_arc:
-        proxy_path = arc_utils._arc_get_client_side_proxy(ssh_proxy_folder)
-        relay_info = arc_utils._arc_list_access_details(cmd, resource_group_name, vm_name, cert_lifetime)
+        proxy_path = arc_utils.arc_get_client_side_proxy(ssh_proxy_folder)
+        relay_info = arc_utils.arc_list_access_details(cmd, resource_group_name, vm_name, cert_lifetime)
     else:
         ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
         if not ssh_ip:

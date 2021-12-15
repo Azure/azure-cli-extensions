@@ -20,8 +20,9 @@ from . import constants as consts
 
 logger = log.get_logger(__name__)
 
+
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def _arc_list_access_details(cmd, resource_group, vm_name, certificate_validity):
+def arc_list_access_details(cmd, resource_group, vm_name, certificate_validity):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
 
@@ -39,12 +40,12 @@ def _arc_list_access_details(cmd, resource_group, vm_name, certificate_validity)
                                 fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
                                 summary=f'listCredentials failed with error: {str(e)}.')
         raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
-    
+
     return result
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def _arc_get_client_side_proxy(arc_proxy_folder):
+def arc_get_client_side_proxy(arc_proxy_folder):
 
     request_uri, install_location, older_version_location = _get_proxy_filename_and_url(arc_proxy_folder)
     install_dir = os.path.dirname(install_location)
@@ -133,7 +134,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     return request_uri, install_location, older_location
 
 
-def _arc_format_relay_info_string(relay_info):
+def arc_format_relay_info_string(relay_info):
     relay_info_string = json.dumps(
         {
             "relay": {
@@ -148,5 +149,3 @@ def _arc_format_relay_info_string(relay_info):
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
     return base64_result_string
-
-

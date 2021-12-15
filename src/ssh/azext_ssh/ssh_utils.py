@@ -36,7 +36,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     env = os.environ.copy()
 
     if is_arc:
-        env['SSHPROXY_RELAY_INFO'] = arc_utils._arc_format_relay_info_string(relay_info)
+        env['SSHPROXY_RELAY_INFO'] = arc_utils.arc_format_relay_info_string(relay_info)
         if port:
             pcommand = f"ProxyCommand={proxy_path} -p {port}"
         else:
@@ -106,7 +106,7 @@ def _get_certificate_start_and_end_times(cert_file):
     return times
 
 
-def _get_certificate_lifetime(cert_file):
+def get_certificate_lifetime(cert_file):
     times = _get_certificate_start_and_end_times(cert_file)
     lifetime = None
     if times:
@@ -297,7 +297,6 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
 
 
 def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_group):
-    
     # create the custom folder
     relay_info_dir = credentials_folder
     if not os.path.isdir(relay_info_dir):
@@ -309,21 +308,22 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
     relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
     # Overwrite relay_info if it already exists in that folder.
     file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
-    file_utils.write_to_file(relay_info_path, 'w', arc_utils._arc_format_relay_info_string(relay_info),
+    file_utils.write_to_file(relay_info_path, 'w', arc_utils.arc_format_relay_info_string(relay_info),
                              f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
     oschmod.set_mode(relay_info_path, stat.S_IRUSR)
 
-    #get expiration 
+    # Print the expiration of the relay information f
     expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
-    print(f"Generated file with Relay Information is valid until {expiration}.\n")
+    print(f"Generated file with Relay Information {relay_info_path} is valid until {expiration}.\n")
 
     return relay_info_path, relay_info_filename
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
     if delete_cert:
-        print(f"Generated SSH certificate {cert_file} is valid until {_get_certificate_start_and_end_times(cert_file)[1]}.\n")
-    
+        print(f"Generated SSH certificate {cert_file} is valid until",
+              f"{_get_certificate_start_and_end_times(cert_file)[1]}.\n")
+
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
         # If user provided keys, only ask them to delete the certificate.
@@ -357,4 +357,3 @@ def _get_connection_status(log_file):
     except:
         return False
     return match
-
