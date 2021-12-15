@@ -1728,6 +1728,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         """
         existing_managed_outbound_ips = None
         if (
+            mc and
             mc.network_profile and
             mc.network_profile.load_balancer_profile and
             mc.network_profile.load_balancer_profile.managed_outbound_i_ps
