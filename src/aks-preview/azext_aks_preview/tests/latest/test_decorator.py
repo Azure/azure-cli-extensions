@@ -2326,6 +2326,78 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
 
+    def test_update_load_balancer_profile(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_sku": None,
+                "load_balancer_managed_outbound_ip_count": None,
+                "load_balancer_outbound_ips": None,
+                "load_balancer_outbound_ip_prefixes": None,
+                "load_balancer_outbound_ports": None,
+                "load_balancer_idle_timeout": None,
+                "load_balancer_managed_outbound_ipv6_count": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_load_balancer_profile(None)
+
+        network_profile_1 = self.models.ContainerServiceNetworkProfile()
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile_1,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_load_balancer_profile(mc_1)
+
+        ground_truth_network_profile_1 = (
+            self.models.ContainerServiceNetworkProfile()
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=ground_truth_network_profile_1,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_managed_outbound_ipv6_count": 4,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_profile=self.models.lb_models.get(
+                    "ManagedClusterLoadBalancerProfile"
+                )(
+                    managed_outbound_i_ps=self.models.lb_models.get(
+                        "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+                    )(
+                        count=3,
+                        count_ipv6=7,
+                    )
+                )
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_load_balancer_profile(mc_2)
+        self.assertEqual(
+            dec_mc_2.network_profile.load_balancer_profile.managed_outbound_i_ps.count,
+            3,
+        )
+        self.assertEqual(
+            dec_mc_2.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6,
+            4,
+        )
+
     def test_update_outbound_ip_prefixes(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -2401,34 +2473,9 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
     def test_update_ipv6_count(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
-            network_profile=network_profile_1,
-        )
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_load_balancer_profile(mc_1)
-
-        ground_truth_network_profile_1 = (
-            self.models.ContainerServiceNetworkProfile()
-        )
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            network_profile=ground_truth_network_profile_1,
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        # custom value
-        dec_2 = AKSPreviewUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "load_balancer_managed_outbound_ipv6_count": 4,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.lb_models.get(
-                    "ManagedClusterLoadBalancerProfile"
+                    'ManagedClusterLoadBalancerProfile'
                 )(
                     managed_outbound_i_ps=self.models.lb_models.get(
                         "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
@@ -2436,7 +2483,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                         count=3,
                     )
                 )
-            ),
+            )
         )
         self.client.get = Mock(return_value=mc_1)
         dec_1 = AKSPreviewUpdateDecorator(
