@@ -2908,7 +2908,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.22.1 ' \
+                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.21.2 ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
 
         self.cmd(create_cmd, checks=[
@@ -2949,6 +2949,66 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
             self.check('networkProfile.serviceCidrs', ['172.56.0.0/16']),
             self.check('networkProfile.ipFamilies', ['IPv4'])
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2', preserve_default_location=True)
+    def test_aks_create_and_update_outbound_ips(self, resource_group, resource_group_location):
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        init_pip_name = self.create_random_name('cliakstest', 16)
+        update_pip_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'init_pip_name': init_pip_name,
+            'update_pip_name': update_pip_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        create_init_pip = 'network public-ip create -g {resource_group} -n {init_pip_name} --sku Standard'
+        init_pip = self.cmd(create_init_pip, checks=[
+            self.check('publicIp.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+
+        create_update_pip = 'network public-ip create -g {resource_group} -n {update_pip_name} --sku Standard'
+        update_pip = self.cmd(create_update_pip, checks=[
+            self.check('publicIp.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+
+        init_pip_id = init_pip['publicIp']['id']
+        update_pip_id = update_pip['publicIp']['id']
+
+        assert init_pip_id is not None
+        assert update_pip_id is not None
+        self.kwargs.update({
+            'init_pip_id': init_pip_id,
+            'update_pip_id': update_pip_id,
+        })
+
+        # create cluster
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --load-balancer-outbound-ips {init_pip_id}'
+
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)', 1),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id', init_pip_id)
+        ])
+
+        # update cluster
+        update_cmd = 'aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id}'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)', 1),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id', update_pip_id)
         ])
 
         # delete

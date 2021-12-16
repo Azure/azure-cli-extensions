@@ -57,27 +57,23 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
     outbound_ip_resources = _get_load_balancer_outbound_ips(outbound_ips)
     outbound_ip_prefix_resources = _get_load_balancer_outbound_ip_prefixes(outbound_ip_prefixes)
 
-    if (managed_outbound_ip_count or managed_outbound_ipv6_count or
-            outbound_ip_resources or outbound_ip_prefix_resources):
+    if (
+        managed_outbound_ip_count or
+        managed_outbound_ipv6_count or
+        outbound_ip_resources or
+        outbound_ip_prefix_resources
+    ):
         # ips -> i_ps due to track 2 naming issue
         profile.outbound_i_ps = None
         profile.outbound_ip_prefixes = None
-        if managed_outbound_ip_count:
-            # ips -> i_ps due to track 2 naming issue
-            if profile.managed_outbound_i_ps and isinstance(profile.managed_outbound_i_ps, ManagedClusterLoadBalancerProfileManagedOutboundIPs):
+        profile.managed_outbound_i_ps = None
+
+        if managed_outbound_ip_count or managed_outbound_ipv6_count:
+            profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs()
+            if managed_outbound_ip_count:
                 profile.managed_outbound_i_ps.count = managed_outbound_ip_count
-            else:
-                profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                    count=managed_outbound_ip_count
-                )
-        if managed_outbound_ipv6_count:
-            if profile.managed_outbound_i_ps and isinstance(profile.managed_outbound_i_ps, ManagedClusterLoadBalancerProfileManagedOutboundIPs):
+            if managed_outbound_ipv6_count:
                 profile.managed_outbound_i_ps.count_ipv6 = managed_outbound_ipv6_count
-            else:
-                # ips -> i_ps due to track 2 naming issue
-                profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                    count_ipv6=managed_outbound_ipv6_count
-                )
         if outbound_ip_resources:
             # ips -> i_ps due to track 2 naming issue
             profile.outbound_i_ps = ManagedClusterLoadBalancerProfileOutboundIPs(
