@@ -22,17 +22,17 @@ logger = log.get_logger(__name__)
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def arc_list_access_details(cmd, resource_group, vm_name, certificate_validity):
+def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_seconds):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
 
-    if not certificate_validity or certificate_validity > 3600:
-        certificate_validity = 3600
+    if not certificate_validity_in_seconds or certificate_validity_in_seconds > 3600:
+        certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
 
     try:
         t0 = time.time()
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                         endpoint_name="default", expiresin=certificate_validity)
+                                         endpoint_name="default", expiresin=certificate_validity_in_seconds)
         time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except Exception as e:
@@ -45,7 +45,7 @@ def arc_list_access_details(cmd, resource_group, vm_name, certificate_validity):
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def arc_get_client_side_proxy(arc_proxy_folder):
+def get_client_side_proxy(arc_proxy_folder):
 
     request_uri, install_location, older_version_location = _get_proxy_filename_and_url(arc_proxy_folder)
     install_dir = os.path.dirname(install_location)
@@ -134,7 +134,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     return request_uri, install_location, older_location
 
 
-def arc_format_relay_info_string(relay_info):
+def format_relay_info_string(relay_info):
     relay_info_string = json.dumps(
         {
             "relay": {

@@ -18,7 +18,7 @@ from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from . import ip_utils
 from . import rsa_parser
 from . import ssh_utils
-from . import arc_utils
+from . import connectivity_utils
 
 logger = log.get_logger(__name__)
 
@@ -82,8 +82,8 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
     try:
-        certificate_lifetime = ssh_utils.get_certificate_lifetime(cert_file)
-        print(f"Generated SSH certificate {cert_file} is valid for {certificate_lifetime}.")
+        cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file)[1]
+        print(f"Generated SSH certificate {cert_file} is valid until {cert_expiration}.")
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
         print(cert_file + "\n")
@@ -146,15 +146,14 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
     proxy_path = None
     relay_info = None
     if is_arc:
-        proxy_path = arc_utils.arc_get_client_side_proxy(ssh_proxy_folder)
-        relay_info = arc_utils.arc_list_access_details(cmd, resource_group_name, vm_name, cert_lifetime)
+        proxy_path = connectivity_utils.get_client_side_proxy(ssh_proxy_folder)
+        relay_info = connectivity_utils.get_relay_information(cmd, resource_group_name, vm_name, cert_lifetime)
     else:
         ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
         if not ssh_ip:
             if not use_private_ip:
-                raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to")
-            raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to"
-                                                   "SSH to")
+                raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to.")
+            raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
 
     op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys,
             delete_cert, public_key_file)

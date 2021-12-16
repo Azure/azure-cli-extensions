@@ -16,7 +16,7 @@ from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 
 from . import file_utils
-from . import arc_utils
+from . import connectivity_utils
 from . import constants as const
 
 logger = log.get_logger(__name__)
@@ -36,7 +36,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     env = os.environ.copy()
 
     if is_arc:
-        env['SSHPROXY_RELAY_INFO'] = arc_utils.arc_format_relay_info_string(relay_info)
+        env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(relay_info)
         if port:
             pcommand = f"ProxyCommand={proxy_path} -p {port}"
         else:
@@ -95,7 +95,7 @@ def _get_ssh_cert_validity(cert_file):
     return None
 
 
-def _get_certificate_start_and_end_times(cert_file):
+def get_certificate_start_and_end_times(cert_file):
     validity_str = _get_ssh_cert_validity(cert_file)
     times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
@@ -107,7 +107,7 @@ def _get_certificate_start_and_end_times(cert_file):
 
 
 def get_certificate_lifetime(cert_file):
-    times = _get_certificate_start_and_end_times(cert_file)
+    times = get_certificate_start_and_end_times(cert_file)
     lifetime = None
     if times:
         lifetime = times[1] - times[0]
@@ -308,7 +308,7 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
     relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
     # Overwrite relay_info if it already exists in that folder.
     file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
-    file_utils.write_to_file(relay_info_path, 'w', arc_utils.arc_format_relay_info_string(relay_info),
+    file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(relay_info),
                              f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
     oschmod.set_mode(relay_info_path, stat.S_IRUSR)
 
