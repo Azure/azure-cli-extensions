@@ -44,7 +44,7 @@ def check_version(config, reported_version, today):
         if latest_version_dict is not None:
             latest_version = latest_version_dict['version'].split(' ')[0]
 
-        if reported_version != latest_version:
+        if reported_version != latest_version and reported_version is not None and latest_version is not None:
             return (f"\nVersion {reported_version} of the quantum extension is installed locally,"
                     f" but version {latest_version} is now available.\n"
                     "You can use 'az extension update -n quantum' to upgrade.\n")

@@ -369,7 +369,7 @@ helps['network manager security-user-config create'] = """
         text: |-
                az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --security-type "UserPolicy"
+--delete-existing-ns-gs true
 """
 
 helps['network manager security-user-config update'] = """
@@ -421,7 +421,7 @@ helps['network manager security-admin-config create'] = """
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --security-type "AdminPolicy"
+--delete-existing-ns-gs true
 """
 
 helps['network manager security-admin-config update'] = """
@@ -452,7 +452,7 @@ helps['network manager security-admin-config rule-collection create'] = """
         text: |-
                az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name "myTestCollection" --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id="sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
+--applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
 """
 
 helps['network manager security-admin-config rule-collection list'] = """
@@ -603,7 +603,7 @@ helps['network manager security-user-config rule-collection create'] = """
         text: |-
                az network manager security-user-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
+--applies-to-groups  network-group-id=/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 """
 
 helps['network manager security-user-config rule-collection list'] = """

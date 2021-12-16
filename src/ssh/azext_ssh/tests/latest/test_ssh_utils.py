@@ -12,9 +12,8 @@ import os
 
 from azext_ssh import ssh_utils
 
-
 class SSHUtilsTests(unittest.TestCase):
-    
+   
     @mock.patch.object(ssh_utils, '_start_cleanup')
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
     @mock.patch.object(ssh_utils, '_get_ssh_path')
@@ -63,7 +62,6 @@ class SSHUtilsTests(unittest.TestCase):
         mock_startcleanup.assert_called_with(None, 'private', None, True, False, False, [])
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows', env=expected_env)
         mock_terminatecleanup.assert_called_once_with(False, False, True, 'cleanup process', None, 'private', None, 'log')
-        
 
     @mock.patch.object(ssh_utils, '_start_cleanup')
     @mock.patch.object(ssh_utils, '_terminate_cleanup')

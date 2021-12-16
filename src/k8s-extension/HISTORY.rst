@@ -3,6 +3,17 @@
 Release History
 ===============
 
+1.0.2
+++++++++++++++++++
+* Update api-version for calls to Microsoft.ResourceConnector to 2021-10-31-preview
+* Update api-version for calls to Microsoft.ContainerService to 2021-10-01
+* Update api-version for calls to Microsoft.Kubernetes to 2021-10-01
+* microsoft.azureml.kubernetes: Add one more prompt for amlarc extension update
+
+1.0.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Retrieve relay and service bus connection string when update the configuration protected settings of the extension.
+
 1.0.0
 ++++++++++++++++++
 * Switch to GA api-version of Extensions (2021-09-01)

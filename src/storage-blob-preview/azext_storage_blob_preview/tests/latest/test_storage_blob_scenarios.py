@@ -11,7 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                JMESPathCheck, JMESPathCheckExists, NoneCheck, api_version_constraint)
 from knack.util import CLIError
 from azure.cli.core.profiles import ResourceType
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from ..storage_test_util import StorageScenarioMixin
 
