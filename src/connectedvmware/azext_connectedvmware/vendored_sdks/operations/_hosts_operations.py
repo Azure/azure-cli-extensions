@@ -32,7 +32,7 @@ class HostsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -126,7 +126,7 @@ class HostsOperations(object):
         :param host_name: Name of the host.
         :type host_name: str
         :param body: Request payload.
-        :type body: ~azure.mgmt.connectedvmware.models.Host
+        :type body: ~azure_arc_vmware_management_service_api.models.Host
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -134,7 +134,7 @@ class HostsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either Host or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.Host]
+        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.Host]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -200,7 +200,7 @@ class HostsOperations(object):
         :type host_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Host, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.Host
+        :rtype: ~azure_arc_vmware_management_service_api.models.Host
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
@@ -262,10 +262,10 @@ class HostsOperations(object):
         :param host_name: Name of the host.
         :type host_name: str
         :param body: Resource properties to update.
-        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
+        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Host, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.Host
+        :rtype: ~azure_arc_vmware_management_service_api.models.Host
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
@@ -449,7 +449,7 @@ class HostsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either HostsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.HostsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.HostsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HostsList"]
@@ -522,7 +522,7 @@ class HostsOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either HostsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.HostsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.HostsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.HostsList"]

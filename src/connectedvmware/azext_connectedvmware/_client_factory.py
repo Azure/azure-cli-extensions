@@ -79,8 +79,4 @@ def cf_guest_agent(cli_ctx, *_):
     """
     Client factory for guest agent.
     """
-    return cf_connectedvmware(cli_ctx).guest_agents
-
-
-def cf_machine_extension(cli_ctx, *_):
-    return cf_connectedvmware(cli_ctx).machine_extensions
+    return cf_connectedvmware(cli_ctx).guest_agent

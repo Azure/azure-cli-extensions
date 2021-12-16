@@ -176,16 +176,6 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_vpn_gateway_connection_ipsec_policy', supports_no_wait=True)
         g.custom_command('list', 'list_vpn_conn_ipsec_policies')
         g.custom_command('remove', 'remove_vpn_conn_ipsec_policy', supports_no_wait=True)
-
-    with self.command_group('network vpn-gateway connection vpn-site-link-conn', network_vpn_gateway_connection_sdk) as g:
-        g.custom_command('add', 'add_vpn_gateway_connection_vpn_site_link_conn', supports_no_wait=True)
-        g.custom_command('remove', 'remove_vpn_gateway_connection_vpn_site_link_conn', supports_no_wait=True)
-        g.custom_command('list', 'list_vpn_conn_vpn_site_link_conn')
-
-    with self.command_group('network vpn-gateway connection vpn-site-link-conn ipsec-policy', network_vpn_gateway_connection_sdk) as g:
-        g.custom_command('add', 'add_vpn_gateway_connection_link_ipsec_policy', supports_no_wait=True)
-        g.custom_command('list', 'list_vpn_conn_link_ipsec_policies')
-        g.custom_command('remove', 'remove_vpn_conn_link_ipsec_policy', supports_no_wait=True)
     # endregion
 
     # region VpnSites
@@ -195,11 +185,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_vpn_sites')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_vpn_site', setter_name='begin_create_or_update', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
-
-    with self.command_group('network vpn-site link', network_vpn_site_sdk) as g:
-        g.custom_command('add', 'add_vpn_site_link', supports_no_wait=True)
-        g.custom_command('remove', 'remove_vpn_site_link', supports_no_wait=True)
-        g.custom_command('list', 'list_vpn_site_link')
 
     with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
         g.command('download', 'begin_download')

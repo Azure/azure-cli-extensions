@@ -42,8 +42,7 @@ from azure.cli.command_modules.appservice.custom import (
     _configure_default_logging,
     assign_identity,
     delete_app_settings,
-    update_app_settings,
-    list_hostnames)
+    update_app_settings)
 from azure.cli.command_modules.appservice.utils import retryable_method
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -295,14 +294,24 @@ class WebAppClient:
         send_raw_request(cmd.cli_ctx, "POST", request_url)
 
 
-def _get_kube_client(cmd):
-    client = web_client_factory(cmd.cli_ctx, api_version="2021-01-01")
-    return client.kube_environments
+# rectify the format of the kube env json returned from API to comply with older version of `az appservice kube show`
+def format_kube_environment_json(kube_info_raw):
+    kube_info = kube_info_raw["properties"]
+    if kube_info.get("aksResourceID"):
+        kube_info["aksResourceId"] = kube_info["aksResourceID"]
+        del kube_info["aksResourceID"]
+
+    other_properties = ['id', 'kind', 'kubeEnvironmentType', 'location', 'name',
+                        'resourceGroup', 'tags', 'type', 'extendedLocation']
+    for k in other_properties:
+        kube_info[k] = kube_info_raw.get(k)
+
+    return kube_info
 
 
 def show_kube_environments(cmd, name, resource_group_name):
-    client = _get_kube_client(cmd)
-    return client.get(name=name, resource_group_name=resource_group_name)
+    return format_kube_environment_json(KubeEnvironmentClient.show(cmd=cmd,
+                                                                   name=name, resource_group_name=resource_group_name))
 
 
 def delete_kube_environment(cmd, name, resource_group_name):
@@ -322,7 +331,7 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     if is_valid_resource_id(custom_location):
         parsed_custom_location = parse_resource_id(custom_location)
         if parsed_custom_location['resource_type'].lower() != 'customlocations':
-            raise ValidationError('Invalid custom location')
+            raise CLIError('Invalid custom location')
         custom_location_object = custom_location_client.custom_locations.get(
             parsed_custom_location['resource_group'],
             parsed_custom_location['name'])
@@ -367,10 +376,11 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
 
 
 def list_kube_environments(cmd, resource_group_name=None):
-    client = _get_kube_client(cmd)
     if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
+        return KubeEnvironmentClient.list_by_subscription(cmd, formatter=format_kube_environment_json)
+    return KubeEnvironmentClient.list_by_resource_group(cmd,
+                                                        resource_group_name,
+                                                        formatter=format_kube_environment_json)
 
 
 # TODO should be able to update staticIp and tags -- remove exception once API fixed
@@ -425,8 +435,6 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
                             custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
-    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
-
     if not sku:
         sku = 'B1' if not custom_location else KUBE_DEFAULT_SKU
 
@@ -462,17 +470,20 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         custom_location_name = parsed_custom_location.get("name")
         resource_group = parsed_custom_location.get("resource_group")
 
-    client = _get_kube_client(cmd)
-    kube_envs = client.list_by_subscription()
+    kube_envs = KubeEnvironmentClient.list_by_subscription(cmd=cmd)
 
     for kube in kube_envs:
         parsed_custom_location_2 = None
 
-        if kube.extended_location and kube.extended_location.type == "CustomLocation":
-            parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
+        if kube.get("properties") and kube["properties"].get('extendedLocation'):
+            parsed_custom_location_2 = parse_resource_id(kube["properties"]['extendedLocation']['customLocation'])
+        elif kube.get("extendedLocation") and kube.get("extendedLocation").get("type") == "CustomLocation":
+            parsed_custom_location_2 = parse_resource_id(kube["extendedLocation"]["name"])
 
-        if parsed_custom_location_2["name"].lower() == custom_location_name.lower() and parsed_custom_location_2.get("resource_group").lower() == resource_group.lower():
-            kube_environment_id = kube.id
+        if parsed_custom_location_2 and (
+            parsed_custom_location_2.get("name").lower() == custom_location_name.lower()) and (
+                parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()):
+            kube_environment_id = kube.get("id")
             break
 
     if not kube_environment_id:
@@ -508,7 +519,7 @@ def _get_custom_location_id_from_kube_env(kube):
         return kube["properties"]['extendedLocation'].get('customLocation')
     if kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
         return kube["extendedLocation"]["name"]
-    raise ResourceNotFoundError("Could not get custom location from kube environment")
+    raise CLIError("Could not get custom location from kube environment")
 
 
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
@@ -553,7 +564,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
                 ase_found = True
                 break
         if not ase_found:
-            raise ResourceNotFoundError("App service environment '{}' not found in subscription.".format(ase_id))
+            raise CLIError("App service environment '{}' not found in subscription.".format(ase_id))
     else:  # Non-ASE
         ase_def = None
 
@@ -574,7 +585,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
             if kube_env is not None:
                 location = kube_env["location"]
             else:
-                raise ResourceNotFoundError("Kube Environment '{}' not found in subscription.".format(kube_id))
+                raise CLIError("Kube Environment '{}' not found in subscription.".format(kube_id))
     else:
         kube_def = None
 
@@ -659,22 +670,6 @@ def _is_webapp_kube(custom_location, plan_info, SkuDescription):
         isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU)
 
 
-def _get_custom_location_id(cmd, custom_location, resource_group_name):
-    from msrestazure.tools import resource_id
-
-    if custom_location is None:
-        return None
-    if is_valid_resource_id(custom_location):
-        return custom_location
-
-    return resource_id(
-        subscription=get_subscription_id(cmd.cli_ctx),
-        resource_group=resource_group_name,
-        namespace='microsoft.extendedlocation',
-        type='customlocations',
-        name=custom_location)
-
-
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -685,8 +680,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair', "AppServicePlan")
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
-
-    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
     if not plan and not custom_location:
         raise RequiredArgumentMissingError("Either Plan or Custom Location must be specified")
@@ -952,7 +945,6 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
-    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
     site_config = SiteConfig(app_settings=[])
     functionapp_def = Site(location=None, site_config=site_config, tags=tags)
     client = web_client_factory(cmd.cli_ctx)
@@ -1683,102 +1675,3 @@ def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
         pass
 
     return webapp
-
-
-def _update_host_name_ssl_state(cmd, resource_group_name, webapp_name, webapp,
-                                host_name, ssl_state, thumbprint, slot=None):
-    from azure.mgmt.web.models import HostNameSslState
-
-    webapp.host_name_ssl_states = [HostNameSslState(name=host_name,
-                                                    ssl_state=ssl_state,
-                                                    thumbprint=thumbprint,
-                                                    to_update=True)]
-
-    webapp_dict = webapp.serialize()
-
-    if webapp.extended_location is not None:
-        webapp_dict["extendedLocation"]["type"] = "customLocation"
-
-    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-    api_version = "2020-12-01"
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    if slot is None:
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            webapp_name,
-            api_version)
-    else:
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            webapp_name,
-            slot,
-            api_version)
-
-    return send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(webapp_dict))
-
-
-def _match_host_names_from_cert(hostnames_from_cert, hostnames_in_webapp):
-    # the goal is to match '*.foo.com' with host name like 'admin.foo.com', 'logs.foo.com', etc
-    matched = set()
-    for hostname in hostnames_from_cert:
-        if hostname.startswith('*'):
-            for h in hostnames_in_webapp:
-                if hostname[hostname.find('.'):] == h[h.find('.'):]:
-                    matched.add(h)
-        elif hostname in hostnames_in_webapp:
-            matched.add(hostname)
-    return matched
-
-
-def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, ssl_type, slot=None):
-    client = web_client_factory(cmd.cli_ctx, api_version="2021-01-01")
-    webapp = client.web_apps.get(resource_group_name, name)
-    if not webapp:
-        raise ResourceNotFoundError("'{}' app doesn't exist".format(name))
-
-    cert_resource_group_name = parse_resource_id(webapp.server_farm_id)['resource_group']
-    webapp_certs = client.certificates.list_by_resource_group(cert_resource_group_name)
-
-    found_cert = None
-    for webapp_cert in webapp_certs:
-        if webapp_cert.thumbprint == certificate_thumbprint:
-            found_cert = webapp_cert
-    if not found_cert:
-        webapp_certs = client.certificates.list_by_resource_group(resource_group_name)
-        for webapp_cert in webapp_certs:
-            if webapp_cert.thumbprint == certificate_thumbprint:
-                found_cert = webapp_cert
-    if found_cert:
-        if len(found_cert.host_names) == 1 and not found_cert.host_names[0].startswith('*'):
-            return _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
-                                               found_cert.host_names[0], ssl_type,
-                                               certificate_thumbprint, slot)
-
-        query_result = list_hostnames(cmd, resource_group_name, name, slot)
-        hostnames_in_webapp = [x.name.split('/')[-1] for x in query_result]
-        to_update = _match_host_names_from_cert(found_cert.host_names, hostnames_in_webapp)
-        for h in to_update:
-            _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
-                                        h, ssl_type, certificate_thumbprint, slot)
-
-        return show_webapp(cmd, resource_group_name, name, slot)
-
-    raise ResourceNotFoundError("Certificate for thumbprint '{}' not found.".format(certificate_thumbprint))
-
-
-def bind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, ssl_type, slot=None):
-    SslState = cmd.get_models('SslState')
-    return _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint,
-                               SslState.sni_enabled if ssl_type == 'SNI' else SslState.ip_based_enabled, slot)
-
-
-def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot=None):
-    SslState = cmd.get_models('SslState')
-    return _update_ssl_binding(cmd, resource_group_name, name,
-                               certificate_thumbprint, SslState.disabled, slot)

@@ -909,14 +909,3 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
                  checks=self.check('sku.tier', 'Premium'))
-
-    # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='eastus2euap')
-    def test_azure_firewall_policy_update_premiumonlyproperty_issue(self, resource_group):
-        self.kwargs.update({
-            'policy': 'testpolicy'
-        })
-
-        self.cmd('network firewall policy create -g {rg} -n {policy} --sku Standard --threat-intel-mode Alert')
-
-        self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny')

@@ -26,8 +26,6 @@ from . import file_utils
 
 logger = log.get_logger(__name__)
 
-logger = log.get_logger(__name__)
-
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
@@ -62,6 +60,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         folder_name = ssh_ip
         if resource_group_name and vm_name:
             folder_name = resource_group_name + "-" + vm_name
+
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
 
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,

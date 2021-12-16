@@ -25,7 +25,6 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
-    UnknownError,
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
@@ -43,13 +42,8 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
-    ensure_default_log_analytics_workspace_for_monitoring,
 )
 from azext_aks_preview.custom import _get_snapshot
-from azext_aks_preview._loadbalancer import (
-    update_load_balancer_profile as _update_load_balancer_profile,
-    create_load_balancer_profile,
-)
 
 
 logger = get_logger(__name__)
@@ -441,77 +435,23 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return nat_gateway_idle_timeout
 
-    # pylint: disable=unused-argument
-    def _get_enable_pod_security_policy(self, enable_validation: bool = False, **kwargs) -> bool:
-        """Internal function to obtain the value of enable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
+    def get_enable_pod_security_policy(self) -> bool:
+        """Obtain the value of enable_pod_security_policy.
 
         :return: bool
         """
         # read the original value passed by the command
         enable_pod_security_policy = self.raw_param.get("enable_pod_security_policy")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.enable_pod_security_policy is not None
-            ):
-                enable_pod_security_policy = self.mc.enable_pod_security_policy
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.enable_pod_security_policy is not None
+        ):
+            enable_pod_security_policy = self.mc.enable_pod_security_policy
 
         # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_pod_security_policy and self._get_disable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
+        # this parameter does not need validation
         return enable_pod_security_policy
-
-    def get_enable_pod_security_policy(self) -> bool:
-        """Obtain the value of enable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_pod_security_policy(enable_validation=True)
-
-    # pylint: disable=unused-argument
-    def _get_disable_pod_security_policy(self, enable_validation: bool = False, **kwargs) -> bool:
-        """Internal function to obtain the value of disable_pod_security_policy.
-
-        This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_pod_security_policy = self.raw_param.get("disable_pod_security_policy")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_pod_security_policy and self._get_enable_pod_security_policy(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-pod-security-policy and "
-                    "--disable-pod-security-policy at the same time."
-                )
-        return disable_pod_security_policy
-
-    def get_disable_pod_security_policy(self) -> bool:
-        """Obtain the value of disable_pod_security_policy.
-
-        This function will verify the parameter by default. If both enable_pod_security_policy and
-        disable_pod_security_policy are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_pod_security_policy(enable_validation=True)
 
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
@@ -731,135 +671,6 @@ class AKSPreviewContext(AKSContext):
                 no_wait = False
         return no_wait
 
-    # TOOD: may remove this function after the fix for the internal function get merged and released
-    # pylint: disable=unused-argument
-    def _get_workspace_resource_id(
-        self, enable_validation: bool = False, read_only: bool = False, **kwargs
-    ) -> Union[str, None]:  # pragma: no cover
-        """Internal function to dynamically obtain the value of workspace_resource_id according to the context.
-
-        Note: Overwritten in aks-preview to replace the internal function.
-
-        When workspace_resource_id is not assigned, dynamic completion will be triggerd. Function
-        "ensure_default_log_analytics_workspace_for_monitoring" will be called to create a workspace with
-        subscription_id and resource_group_name, which internally used ResourceManagementClient to send the request.
-
-        This function supports the option of enable_validation. When enabled, it will check if workspace_resource_id is
-        assigned but 'monitoring' is not specified in enable_addons, if so, raise a RequiredArgumentMissingError.
-        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
-
-        :return: string or None
-        """
-        # determine the value of constants
-        addon_consts = self.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
-        )
-
-        # read the original value passed by the command
-        workspace_resource_id = self.raw_param.get("workspace_resource_id")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        read_from_mc = False
-        if (
-            self.mc and
-            self.mc.addon_profiles and
-            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
-            self.mc.addon_profiles.get(
-                CONST_MONITORING_ADDON_NAME
-            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID) is not None
-        ):
-            workspace_resource_id = self.mc.addon_profiles.get(
-                CONST_MONITORING_ADDON_NAME
-            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID)
-            read_from_mc = True
-
-        # skip dynamic completion & validation if option read_only is specified
-        if read_only:
-            return workspace_resource_id
-
-        # dynamic completion
-        if not read_from_mc:
-            if workspace_resource_id is None:
-                # use default workspace if exists else create default workspace
-                workspace_resource_id = (
-                    ensure_default_log_analytics_workspace_for_monitoring(
-                        self.cmd,
-                        self.get_subscription_id(),
-                        self.get_resource_group_name(),
-                    )
-                )
-            # normalize
-            workspace_resource_id = "/" + workspace_resource_id.strip(" /")
-
-        # validation
-        if enable_validation:
-            enable_addons = self._get_enable_addons(enable_validation=False)
-            if workspace_resource_id and "monitoring" not in enable_addons:
-                raise RequiredArgumentMissingError(
-                    '"--workspace-resource-id" requires "--enable-addons monitoring".')
-
-        # this parameter does not need validation
-        return workspace_resource_id
-
-    def get_pod_cidrs_and_service_cidrs_and_ip_families(self) -> Tuple[
-        Union[List[str], None],
-        Union[List[str], None],
-        Union[List[str], None],
-    ]:
-        return self.get_pod_cidrs(), self.get_service_cidrs(), self.get_ip_families()
-
-    def get_ip_families(self) -> Union[List[str], None]:
-        """IPFamilies used for the cluster network.
-
-        :return: List[str] or None
-        """
-        return self._get_list_attr('ip_families')
-
-    def get_pod_cidrs(self) -> Union[List[str], None]:
-        """Obtain the CIDR ranges used for pod subnets.
-
-        :return: List[str] or None
-        """
-        return self._get_list_attr('pod_cidrs')
-
-    def get_service_cidrs(self) -> Union[List[str], None]:
-        """Obtain the CIDR ranges for the service subnet.
-
-        :return: List[str] or None
-        """
-        return self._get_list_attr('service_cidrs')
-
-    def _get_list_attr(self, param_key) -> Union[List[str], None]:
-        param = self.raw_param.get(param_key)
-
-        if param is not None:
-            return param.split(',') if param else []
-
-        return None
-
-    def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
-        """Obtain the expected count of IPv6 managed outbound IPs.
-
-        :return: int or None
-        """
-        count_ipv6 = self.raw_param.get(
-            'load_balancer_managed_outbound_ipv6_count')
-
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.network_profile and
-                self.mc.network_profile.load_balancer_profile and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6 is not None
-            ):
-                count_ipv6 = (
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
-                )
-
-        return count_ipv6
-
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
@@ -870,7 +681,7 @@ class AKSPreviewContext(AKSContext):
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
-        Note: Overwritten in aks-preview to add support for the newly added nat related constants.
+        Note: Inherited and extended in aks-preview to add support for the newly added nat related constants.
 
         Note: All the external parameters involved in the validation are not verified in their own getters.
 
@@ -1015,16 +826,15 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         enable_windows_gmsa = self.raw_param.get("enable_windows_gmsa")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-                self.mc.windows_profile.gmsa_profile and
-                self.mc.windows_profile.gmsa_profile.enabled is not None
-            ):
-                enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.enabled is not None
+        ):
+            enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
 
         # this parameter does not need dynamic completion
         # validation
@@ -1066,34 +876,32 @@ class AKSPreviewContext(AKSContext):
         # gmsa_dns_server
         # read the original value passed by the command
         gmsa_dns_server = self.raw_param.get("gmsa_dns_server")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        # try to read the property value corresponding to the parameter from the `mc` object
         gmsa_dns_read_from_mc = False
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-                self.mc.windows_profile.gmsa_profile and
-                self.mc.windows_profile.gmsa_profile.dns_server is not None
-            ):
-                gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
-                gmsa_dns_read_from_mc = True
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.dns_server is not None
+        ):
+            gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
+            gmsa_dns_read_from_mc = True
 
         # gmsa_root_domain_name
         # read the original value passed by the command
         gmsa_root_domain_name = self.raw_param.get("gmsa_root_domain_name")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        # try to read the property value corresponding to the parameter from the `mc` object
         gmsa_root_read_from_mc = False
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
-                self.mc.windows_profile.gmsa_profile and
-                self.mc.windows_profile.gmsa_profile.root_domain_name is not None
-            ):
-                gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
-                gmsa_root_read_from_mc = True
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.root_domain_name is not None
+        ):
+            gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
+            gmsa_root_read_from_mc = True
 
         # consistent check
         if gmsa_dns_read_from_mc != gmsa_root_read_from_mc:
@@ -1421,49 +1229,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
 
-        (
-            pod_cidr,
-            service_cidr,
-            dns_service_ip,
-            _,
-            _,
-        ) = self.context._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(enable_validation=False)
-
-        (
-            pod_cidrs,
-            service_cidrs,
-            ip_families
-        ) = self.context.get_pod_cidrs_and_service_cidrs_and_ip_families()
-
-        # set dns_service_ip, pod_cidr(s), service(s) with user provided values if
-        # of them are set. Largely follows the base function which will potentially
-        # overwrite default SDK values.
-        if any([
-            dns_service_ip,
-            pod_cidr,
-            pod_cidrs,
-            service_cidr,
-            service_cidrs,
-        ]):
-            network_profile.dns_service_ip = dns_service_ip
-            network_profile.pod_cidr = pod_cidr
-            network_profile.pod_cidrs = pod_cidrs
-            network_profile.service_cidr = service_cidr
-            network_profile.service_cidrs = service_cidrs
-
-        if ip_families:
-            network_profile.ip_families = ip_families
-
-        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
-            network_profile.load_balancer_profile = create_load_balancer_profile(
-                self.context.get_load_balancer_managed_outbound_ip_count(),
-                self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                self.context.get_load_balancer_outbound_ips(),
-                self.context.get_load_balancer_outbound_ip_prefixes(),
-                self.context.get_load_balancer_outbound_ports(),
-                self.context.get_load_balancer_idle_timeout(),
-            )
-
         # build nat gateway profile, which is part of the network profile
         nat_gateway_profile = create_nat_gateway_profile(
             self.context.get_nat_gateway_managed_outbound_ip_count(),
@@ -1628,7 +1393,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
-    def construct_mc_preview_profile(self) -> ManagedCluster:
+    def construct_preview_mc_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
         The completely constructed ManagedCluster object will later be passed as a parameter to the underlying SDK
@@ -1648,7 +1413,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_identity_profile(mc)
         return mc
 
-    def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
+    def create_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Send request to create a real managed cluster.
 
         Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
@@ -1718,105 +1483,3 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-
-    def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update load balancer profile for the ManagedCluster object.
-
-        Note: Inherited and extended in aks-preview to set dual stack related properties.
-
-        :return: the ManagedCluster object
-        """
-        existing_managed_outbound_ips = None
-        if (
-            mc and
-            mc.network_profile and
-            mc.network_profile.load_balancer_profile and
-            mc.network_profile.load_balancer_profile.managed_outbound_i_ps
-        ):
-            existing_managed_outbound_ips = mc.network_profile.load_balancer_profile.managed_outbound_i_ps
-
-        mc = super().update_load_balancer_profile(mc)
-
-        lb_managed_outbound_ipv6_count = self.context.get_load_balancer_managed_outbound_ipv6_count()
-        lb_managed_outbound_ip_count = self.context.get_load_balancer_managed_outbound_ip_count()
-        lb_outbound_ips = self.context.get_load_balancer_outbound_ips()
-        lb_outbound_ip_prefixes = self.context.get_load_balancer_outbound_ip_prefixes()
-        lb_outbound_ports = self.context.get_load_balancer_outbound_ports()
-        lb_idle_timeout = self.context.get_load_balancer_idle_timeout()
-
-        if (
-            not lb_outbound_ips and
-            not lb_outbound_ip_prefixes and
-            existing_managed_outbound_ips
-        ):
-            if not lb_managed_outbound_ip_count:
-                lb_managed_outbound_ip_count = existing_managed_outbound_ips.count
-            if not lb_managed_outbound_ipv6_count:
-                lb_managed_outbound_ipv6_count = existing_managed_outbound_ips.count_ipv6
-
-        mc.network_profile.load_balancer_profile = _update_load_balancer_profile(
-            lb_managed_outbound_ip_count,
-            lb_managed_outbound_ipv6_count,
-            lb_outbound_ips,
-            lb_outbound_ip_prefixes,
-            lb_outbound_ports,
-            lb_idle_timeout,
-            mc.network_profile.load_balancer_profile
-        )
-        return mc
-
-    def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update pod security policy for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_pod_security_policy():
-            mc.enable_pod_security_policy = True
-
-        if self.context.get_disable_pod_security_policy():
-            mc.enable_pod_security_policy = False
-        return mc
-
-    def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update windows profile for the ManagedCluster object.
-
-        Note: Inherited and extended in aks-preview to set gmsa related properties.
-
-        :return: the ManagedCluster object
-        """
-        mc = super().update_windows_profile(mc)
-        windows_profile = mc.windows_profile
-
-        if self.context.get_enable_windows_gmsa():
-            if not windows_profile:
-                raise UnknownError(
-                    "Encounter an unexpected error while getting windows profile "
-                    "from the cluster in the process of update."
-                )
-            gmsa_dns_server, gmsa_root_domain_name = self.context.get_gmsa_dns_server_and_root_domain_name()
-            windows_profile.gmsa_profile = self.models.WindowsGmsaProfile(
-                enabled=True,
-                dns_server=gmsa_dns_server,
-                root_domain_name=gmsa_root_domain_name,
-            )
-        return mc
-
-    def update_mc_preview_profile(self) -> ManagedCluster:
-        """The overall controller used to update the preview ManagedCluster profile.
-
-        Note: To reduce the risk of regression introduced by refactoring, this function is not complete and is being
-        implemented gradually.
-
-        The completely updated ManagedCluster object will later be passed as a parameter to the underlying SDK
-        (mgmt-containerservice) to send the actual request.
-
-        :return: the ManagedCluster object
-        """
-
-    def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
-        """Send request to update the existing managed cluster.
-
-        :return: the ManagedCluster object
-        """

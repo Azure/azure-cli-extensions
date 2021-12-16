@@ -38,9 +38,7 @@ from .operations import MongoDBResourcesOperations
 from .operations import TableResourcesOperations
 from .operations import CassandraResourcesOperations
 from .operations import GremlinResourcesOperations
-from .operations import LocationsOperations
-from .operations import CassandraClustersOperations
-from .operations import CassandraDataCentersOperations
+from .operations import CosmosDBManagementClientOperationsMixin
 from .operations import NotebookWorkspacesOperations
 from .operations import PrivateEndpointConnectionsOperations
 from .operations import PrivateLinkResourcesOperations
@@ -51,12 +49,13 @@ from .operations import RestorableSqlResourcesOperations
 from .operations import RestorableMongodbDatabasesOperations
 from .operations import RestorableMongodbCollectionsOperations
 from .operations import RestorableMongodbResourcesOperations
+from .operations import CassandraClustersOperations
+from .operations import CassandraDataCentersOperations
 from .operations import ServiceOperations
-from .operations import DataTransferJobsOperations
 from . import models
 
 
-class CosmosDBManagementClient(object):
+class CosmosDBManagementClient(CosmosDBManagementClientOperationsMixin):
     """Azure Cosmos DB Database Service Resource Provider REST API.
 
     :ivar database_accounts: DatabaseAccountsOperations operations
@@ -97,12 +96,6 @@ class CosmosDBManagementClient(object):
     :vartype cassandra_resources: azure.mgmt.cosmosdb.operations.CassandraResourcesOperations
     :ivar gremlin_resources: GremlinResourcesOperations operations
     :vartype gremlin_resources: azure.mgmt.cosmosdb.operations.GremlinResourcesOperations
-    :ivar locations: LocationsOperations operations
-    :vartype locations: azure.mgmt.cosmosdb.operations.LocationsOperations
-    :ivar cassandra_clusters: CassandraClustersOperations operations
-    :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
-    :ivar cassandra_data_centers: CassandraDataCentersOperations operations
-    :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.operations.NotebookWorkspacesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -123,10 +116,12 @@ class CosmosDBManagementClient(object):
     :vartype restorable_mongodb_collections: azure.mgmt.cosmosdb.operations.RestorableMongodbCollectionsOperations
     :ivar restorable_mongodb_resources: RestorableMongodbResourcesOperations operations
     :vartype restorable_mongodb_resources: azure.mgmt.cosmosdb.operations.RestorableMongodbResourcesOperations
+    :ivar cassandra_clusters: CassandraClustersOperations operations
+    :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
+    :ivar cassandra_data_centers: CassandraDataCentersOperations operations
+    :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
     :ivar service: ServiceOperations operations
     :vartype service: azure.mgmt.cosmosdb.operations.ServiceOperations
-    :ivar data_transfer_jobs: DataTransferJobsOperations operations
-    :vartype data_transfer_jobs: azure.mgmt.cosmosdb.operations.DataTransferJobsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -191,12 +186,6 @@ class CosmosDBManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.gremlin_resources = GremlinResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.locations = LocationsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_clusters = CassandraClustersOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_data_centers = CassandraDataCentersOperations(
-            self._client, self._config, self._serialize, self._deserialize)
         self.notebook_workspaces = NotebookWorkspacesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
@@ -217,9 +206,11 @@ class CosmosDBManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.service = ServiceOperations(
+        self.cassandra_clusters = CassandraClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_transfer_jobs = DataTransferJobsOperations(
+        self.cassandra_data_centers = CassandraDataCentersOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.service = ServiceOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(self, http_request, **kwargs):

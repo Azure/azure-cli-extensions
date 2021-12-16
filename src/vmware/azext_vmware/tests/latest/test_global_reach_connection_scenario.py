@@ -42,7 +42,7 @@ class VmwareGlobalReachConnectionScenarioTest(ScenarioTest):
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/globalReachConnections')
         self.assertEqual(rsp['name'], self.kwargs.get('global_reach_connection'))
 
-        rsp = self.cmd('vmware global-reach-connection delete -g {rg} -c {privatecloud} -n {global_reach_connection} --yes').output
+        rsp = self.cmd('vmware global-reach-connection delete -g {rg} -c {privatecloud} -n {global_reach_connection}').output
         self.assertEqual(len(rsp), 0)
 
         count = len(self.cmd('az vmware global-reach-connection list -g {rg} -c {privatecloud}').get_output_in_json())

@@ -15,7 +15,8 @@ class AcrtransferCommandsLoader(AzCommandsLoader):
         acrtransfer_custom = CliCommandType(
             operations_tmpl='azext_acrtransfer.custom#{}',
             client_factory=cf_acrtransfer)
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=acrtransfer_custom)
+        super(AcrtransferCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                        custom_command_type=acrtransfer_custom)
 
     def load_command_table(self, args):
         from azext_acrtransfer.commands import load_command_table

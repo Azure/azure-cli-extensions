@@ -65,4 +65,3 @@ def write_to_file(file_path, mode, content, error_message, encoding=None):
                 f.write(content)
     except Exception as e:
         raise azclierror.FileOperationError(error_message + "Error: " + str(e)) from e
-

@@ -43,7 +43,7 @@ def load_arguments(self, _):
                    help='Overwrites the config file if this flag is set')
         c.argument('credentials_folder', options_list=['--keys-destination-folder', '--keys-dest-folder'],
                    help='Folder where new generated keys will be stored.')
-        c.argument('port', options_list=['--port'], help='SSH Port')
+        c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help='Resource type should be either Microsoft.Compute or Microsoft.HybridCompute')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
@@ -70,4 +70,3 @@ def load_arguments(self, _):
                          'SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
-

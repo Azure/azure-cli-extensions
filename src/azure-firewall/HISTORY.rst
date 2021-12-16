@@ -3,10 +3,6 @@
 Release History
 ===============
 
-0.13.0
-++++++
-* `az network firewall policy`: fix a bug that will raise an error due to updating premium only property on standard policy
-
 0.12.0
 ++++++
 * `az network firewall policy rule-collection-group collection add-filter-collection`: Add parameter `--destination-fqdns`

@@ -5,7 +5,7 @@
 
 import re
 
-from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure_devtools.scenario_tests import RecordingProcessor
 
 
 class VpnClientGeneratedURLReplacer(RecordingProcessor):

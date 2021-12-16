@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import ForbiddenError, ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
 from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 

@@ -87,8 +87,7 @@ from .vendored_sdks.operations import (
     VirtualMachineTemplatesOperations,
     VirtualMachinesOperations,
     InventoryItemsOperations,
-    GuestAgentsOperations,
-    MachineExtensionsOperations,
+    GuestAgentOperations,
 )
 
 from ._client_factory import (
@@ -1756,7 +1755,7 @@ def enable_system_identity(
 
 def enable_guest_agent(
     cmd,
-    client: GuestAgentsOperations,
+    client: GuestAgentOperations,
     resource_group_name,
     vm_name,
     username,
@@ -1787,7 +1786,7 @@ def enable_guest_agent(
 
 
 def show_guest_agent(
-    client: GuestAgentsOperations,
+    client: GuestAgentOperations,
     resource_group_name,
     vm_name,
 ):
@@ -1796,141 +1795,6 @@ def show_guest_agent(
     """
 
     return client.get(resource_group_name, vm_name, DEFAULT_GUEST_AGENT_NAME)
-
-
-# endregion
-
-# region Extenstion
-
-
-def connectedvmware_extension_list(
-    client: MachineExtensionsOperations,
-    resource_group_name,
-    vm_name,
-    expand=None
-):
-    """
-    List all the vm extension of a given vm.
-    """
-
-    return client.list(resource_group_name=resource_group_name,
-                       name=vm_name,
-                       expand=expand)
-
-
-def connectedvmware_extension_show(
-    client: MachineExtensionsOperations,
-    resource_group_name,
-    vm_name,
-    name
-):
-    """
-    Get the details of the vm extension of a given vm.
-    """
-
-    return client.get(resource_group_name=resource_group_name,
-                      name=vm_name,
-                      extension_name=name)
-
-
-def connectedvmware_extension_create(
-    client: MachineExtensionsOperations,
-    resource_group_name,
-    vm_name,
-    name,
-    location,
-    tags=None,
-    force_update_tag=None,
-    publisher=None,
-    type_=None,
-    type_handler_version=None,
-    auto_upgrade_minor=None,
-    settings=None,
-    protected_settings=None,
-    instance_view_type=None,
-    inst_handler_version=None,
-    no_wait=False
-):
-    """
-    Create the vm extension of a given vm.
-    """
-
-    extension_parameters = {}
-    extension_parameters['tags'] = tags
-    extension_parameters['location'] = location
-    extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
-    extension_parameters['properties']['instance_view'] = {}
-    extension_parameters['properties']['instance_view']['name'] = name
-    extension_parameters['properties']['instance_view']['type'] = instance_view_type
-    extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       name=vm_name,
-                       extension_name=name,
-                       extension_parameters=extension_parameters)
-
-
-def connectedvmware_extension_update(
-    client: MachineExtensionsOperations,
-    resource_group_name,
-    vm_name,
-    name,
-    tags=None,
-    force_update_tag=None,
-    publisher=None,
-    type_=None,
-    type_handler_version=None,
-    auto_upgrade_minor=None,
-    settings=None,
-    protected_settings=None,
-    no_wait=False
-):
-    """
-    Update the vm extension of a given vm.
-    """
-
-    extension_parameters = {}
-    extension_parameters['tags'] = tags
-    extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       machine_name=vm_name,
-                       extension_name=name,
-                       extension_parameters=extension_parameters)
-
-
-def connectedvmware_extension_delete(
-    client: MachineExtensionsOperations,
-    resource_group_name,
-    vm_name,
-    name,
-    no_wait=False
-):
-    """
-    Delete the vm extension of a given vm.
-    """
-
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       name=vm_name,
-                       extension_name=name)
 
 
 # endregion

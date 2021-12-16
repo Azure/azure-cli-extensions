@@ -154,7 +154,7 @@ def load_arguments(self, _):
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-        c.argument('regions', type=str, nargs='+', help='Location names')
+        c.argument('region', type=str, help='Location name')
 
     with self.argument_context('network manager connect-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -10,7 +10,7 @@ import filecmp
 from pathlib import Path
 import shutil
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, JMESPathCheckExists,
                                NoneCheck)

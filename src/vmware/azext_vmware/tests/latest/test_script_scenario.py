@@ -47,5 +47,5 @@ class VmwareScriptScenarioTest(ScenarioTest):
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/scriptExecutions')
         self.assertEqual(rsp['name'], self.kwargs.get('scriptExecution'))
 
-        rsp = self.cmd('az vmware script-execution delete -g {rg} -c {privatecloud} -n {scriptExecution} --yes').output
+        rsp = self.cmd('az vmware script-execution delete -g {rg} -c {privatecloud} -n {scriptExecution}').output
         self.assertEqual(len(rsp), 0)

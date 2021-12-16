@@ -24,7 +24,6 @@ def get_resource_id(
     _resource_id = None
     if child_type_1 and child_name_1:
         if not is_valid_resource_id(child_name_1):
-            resource = resource.split('/')[-1]
             _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,

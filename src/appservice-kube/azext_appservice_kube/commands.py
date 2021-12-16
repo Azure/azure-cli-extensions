@@ -71,10 +71,6 @@ def load_command_table(self, _):
         g.custom_command('scale', 'scale_webapp')
         g.custom_command('restart', 'restart_webapp')
 
-    with self.command_group('webapp config ssl') as g:
-        g.custom_command('bind', 'bind_ssl_cert')
-        g.custom_command('unbind', 'unbind_ssl_cert')
-
     with self.command_group('webapp deployment source') as g:
         g.custom_command('config-zip', 'enable_zip_deploy_webapp')
 

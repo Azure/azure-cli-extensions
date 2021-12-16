@@ -118,15 +118,6 @@ def load_arguments(self, _):
                    options_list=['--yes', '-y'],
                    help='Do not prompt for confirmation')
 
-    with self.argument_context('k8s-configuration flux deployed-object show') as c:
-        c.argument('object_name',
-                   help='Name of the object deployed by the configuration on the cluster.')
-        c.argument('object_namespace',
-                   help='Namespace of the object deployed by the configuration on the cluster.')
-        c.argument('object_kind',
-                   arg_type=get_enum_type(['GitRepository', 'Bucket', 'HelmRepository', 'HelmChart', 'HelmRelease', 'Kustomization']),
-                   help='Kind of the object deployed by the configuration on the cluster.')
-
     with self.argument_context('k8s-configuration') as c:
         c.argument('name',
                    options_list=['--name', '-n'],

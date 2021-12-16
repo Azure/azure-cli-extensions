@@ -28,7 +28,7 @@ class ClustersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -120,7 +120,7 @@ class ClustersOperations:
         :param cluster_name: Name of the cluster.
         :type cluster_name: str
         :param body: Request payload.
-        :type body: ~azure.mgmt.connectedvmware.models.Cluster
+        :type body: ~azure_arc_vmware_management_service_api.models.Cluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -128,7 +128,7 @@ class ClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Cluster or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.Cluster]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.Cluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -193,7 +193,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Cluster, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.Cluster
+        :rtype: ~azure_arc_vmware_management_service_api.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
@@ -254,10 +254,10 @@ class ClustersOperations:
         :param cluster_name: Name of the cluster.
         :type cluster_name: str
         :param body: Resource properties to update.
-        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
+        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Cluster, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.Cluster
+        :rtype: ~azure_arc_vmware_management_service_api.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
@@ -438,7 +438,7 @@ class ClustersOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ClustersList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ClustersList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ClustersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClustersList"]
@@ -510,7 +510,7 @@ class ClustersOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ClustersList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ClustersList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ClustersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClustersList"]

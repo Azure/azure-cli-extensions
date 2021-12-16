@@ -8,7 +8,7 @@ import json
 import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure_devtools.scenario_tests import RecordingProcessor
 
 
 class RoleAssignmentReplacer(RecordingProcessor):

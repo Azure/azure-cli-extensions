@@ -72,36 +72,16 @@ examples:
       az managed-cassandra cluster list
 """
 
-helps['managed-cassandra cluster backup list'] = """
+helps['managed-cassandra cluster node-status'] = """
 type: command
-short-summary: List the backups of this cluster that are available to restore.
+short-summary: Gets Status of all the nodes in all the datacenters in a given Cluster.
 examples:
-  - name: This command lists the backups of this cluster that are available to restore.
+  - name: This command gets the status of all the nodes in this cluster. By default a json is returned.
     text: |
-      az managed-cassandra cluster backup list --resource-group MyResourceGroup --cluster-name MyCluster
-"""
-
-helps['managed-cassandra cluster backup show'] = """
-type: command
-short-summary: Get a managed cassandra backup resource of this cluster
-examples:
-  - name: Gets a managed cassandra backup resource.
+      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster
+  - name: This command gets the status of all the nodes in this cluster. When a table output is specified only one token is displayed. Use json output to get all the tokens.
     text: |
-      az managed-cassandra cluster backup show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
-"""
-
-helps['managed-cassandra cluster backup'] = """
-type: group
-short-summary: Azure Managed Cassandra cluster Backup.
-"""
-
-helps['managed-cassandra cluster invoke-command'] = """
-type: command
-short-summary: Invoke a command like nodetool for cassandra maintenance.
-examples:
-  - name: This command runs nodetool with these arguments in a host node of the cluster.
-    text: |
-      az managed-cassandra cluster invoke-command --resource-group MyResourceGroup --cluster-name MyCluster --host "10.0.1.12" --command-name "nodetool" --arguments arg1="value1" arg2="value2" arg3="value3"
+      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster --output table
 """
 
 helps['managed-cassandra datacenter'] = """

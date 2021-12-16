@@ -55,13 +55,6 @@ class DiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SESPARSE = "sesparse"
     UNKNOWN = "unknown"
 
-class FirmwareType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Firmware type
-    """
-
-    BIOS = "bios"
-    EFI = "efi"
-
 class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of managed service identity.
     """
@@ -79,7 +72,6 @@ class InventoryType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     VIRTUAL_NETWORK = "VirtualNetwork"
     CLUSTER = "Cluster"
     DATASTORE = "Datastore"
-    HOST = "Host"
 
 class IPAddressAllocationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """IP address allocation method.

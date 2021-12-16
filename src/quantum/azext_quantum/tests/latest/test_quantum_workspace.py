@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
@@ -104,13 +104,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_config = None
 
         message = check_version(test_config, test_current_reported_version, test_old_date)
-        assert message is None
-        # Note: list_versions("quantum") fails during these tests, so latest version number cannot be determined.
-        # No message is generated if either version number is unavailable. 
+        assert test_current_reported_version in message
 
         message = check_version(test_config, test_old_reported_version, test_old_date)
-        assert message is None
+        assert test_old_reported_version in message
 
         message = check_version(test_config, test_none_version, test_today)
-        assert message is None
+        assert message is None  # Note: list_versions("quantum") fails during these tests
      

@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.util import CLIError
 from azext_aem.custom import EnhancedMonitoring  # pylint: disable=unused-import
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse
 import os
 import sys
 # pylint: disable=unused-argument,too-few-public-methods

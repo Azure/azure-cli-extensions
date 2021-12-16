@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.testsdk import (live_only)
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse
 from .. import try_manual
 
 

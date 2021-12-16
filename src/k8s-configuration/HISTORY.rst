@@ -3,11 +3,6 @@
 Release History
 ===============
 
-1.3.0
-++++++++++++++++++
-* Add `deployed-object` command group for showing deployed Flux objects from configuration
-* Show extension error when `microsoft.flux` extension is in a failed state
-
 1.2.0
 ++++++++++++++++++
 * Add Flux v2 support with command subgroups
