@@ -405,7 +405,9 @@ class AKSPreviewContext(AKSContext):
     def get_nat_gateway_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of nat_gateway_managed_outbound_ip_count.
 
-        :return: string or None
+        Note: SDK provides default value 1 and performs the following validation {'maximum': 16, 'minimum': 1}.
+
+        :return: int or None
         """
         # read the original value passed by the command
         nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
@@ -429,7 +431,9 @@ class AKSPreviewContext(AKSContext):
     def get_nat_gateway_idle_timeout(self) -> Union[int, None]:
         """Obtain the value of nat_gateway_idle_timeout.
 
-        :return: string or None
+        Note: SDK provides default value 4 and performs the following validation {'maximum': 120, 'minimum': 4}.
+
+        :return: int or None
         """
         # read the original value passed by the command
         nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
@@ -851,7 +855,7 @@ class AKSPreviewContext(AKSContext):
 
         Note: Overwritten in aks-preview to preserve value from `mc` in update mode under certain circumstance.
 
-        Note: SDK performs the following validation {'maximum': 100, 'minimum': 1}.
+        Note: SDK provides default value 1 and performs the following validation {'maximum': 100, 'minimum': 1}.
 
         :return: int or None
         """
@@ -895,7 +899,7 @@ class AKSPreviewContext(AKSContext):
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
 
-        Note: SDK performs the following validation {'maximum': 100, 'minimum': 0}.
+        Note: SDK provides default value 0 and performs the following validation {'maximum': 100, 'minimum': 0}.
 
         :return: int or None
         """
