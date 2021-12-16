@@ -3,6 +3,23 @@
 Release History
 ===============
 
+0.11.0
+++++++
+* [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
+* Job result histograms will be left-aligned (not centered) in console output.
+
+0.10.0
+++++++
+* [2021-11-22] Version intended to work with QDK version v0.20.2111.177148
+* Fixed issue where the update prompt shows during test automation and should be suppressed.
+
+0.9.0
+++++++
+* [2021-10-25] Version intended to work with QDK version v0.20.2110.171573
+* Aligned the extension tests with the Azure Quantum E2E test infrastructure.
+* Replaced deprecated CLIError class with new error types.
+* Appended 'CLI' to UserAgent to distinguish Azure Quantum calls from different clients.
+
 0.8.0
 ++++++
 * [2021-09-27] Version intended to work with QDK version v0.19.2109.165653
