@@ -2499,9 +2499,9 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
 
         mc = dec_1.fetch_mc()
         mc = dec_1.update_load_balancer_profile(mc)
-        self.assertEquals(
+        self.assertEqual(
             mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count, 7)
-        self.assertEquals(
+        self.assertEqual(
             mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6, 0)
         self.assertIsNone(
             mc.network_profile.load_balancer_profile.outbound_i_ps)
