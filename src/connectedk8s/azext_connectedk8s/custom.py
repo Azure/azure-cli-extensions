@@ -1628,7 +1628,7 @@ def client_side_proxy_wrapper(cmd,
         port_error_string += f"Port {client_proxy_port} is already in use. This is an internal port that proxy uses. Please ensure that this port is open before running 'az connectedk8s proxy'.\n"
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
-    
+
     # Set csp url based on cloud
     CSP_Url = consts.CSP_Storage_Url
     if cloud == consts.Azure_ChinaCloudName:
@@ -1731,7 +1731,7 @@ def client_side_proxy_wrapper(cmd,
 
         if cloud == 'DOGFOOD':
             dict_file['cloud'] = 'AzureDogFood'
-        
+
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
 
