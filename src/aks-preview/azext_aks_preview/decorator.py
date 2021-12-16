@@ -850,6 +850,7 @@ class AKSPreviewContext(AKSContext):
         """Obtain the value of load_balancer_managed_outbound_ip_count.
 
         Note: Overwritten in aks-preview to preserve value from `mc` in update mode under certain circumstance.
+
         Note: SDK performs the following validation {'maximum': 100, 'minimum': 1}.
 
         :return: int or None
@@ -893,6 +894,8 @@ class AKSPreviewContext(AKSContext):
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
+
+        Note: SDK performs the following validation {'maximum': 100, 'minimum': 0}.
 
         :return: int or None
         """
@@ -1862,7 +1865,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         :return: the ManagedCluster object
         """
-        mc = super().update_windows_profile(mc)
+        self._ensure_mc(mc)
 
         nat_gateway_managed_outbound_ip_count = self.context.get_nat_gateway_managed_outbound_ip_count()
         nat_gateway_idle_timeout = self.context.get_nat_gateway_idle_timeout()
@@ -1872,7 +1875,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
                 )
 
-            mc.network_profile.nat_gateway_models = _update_nat_gateway_profile(
+            mc.network_profile.nat_gateway_profile = _update_nat_gateway_profile(
                 nat_gateway_managed_outbound_ip_count,
                 nat_gateway_idle_timeout,
                 mc.network_profile.nat_gateway_profile,
