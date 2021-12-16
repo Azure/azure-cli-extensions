@@ -208,6 +208,7 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, lo
         match = False
         while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
+
             try:
                 with open(log_file, 'r') as ssh_client_log:
                     match = "debug1: Authentication succeeded" in ssh_client_log.read()

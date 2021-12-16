@@ -30,7 +30,7 @@ def transform_app_table_output(result):
         item['Production Deployment'] = item['properties']['activeDeploymentName']
         item['Public Url'] = item['properties']['url']
 
-        if 'activeDeployment' in item['properties']:
+        if item['properties'].get('activeDeployment', None):
             isStarted = item['properties']['activeDeployment']['properties']['status'].upper() == "RUNNING"
             instance_count = item['properties']['activeDeployment']['sku']['capacity']
             instances = item['properties']['activeDeployment']['properties']['instances']

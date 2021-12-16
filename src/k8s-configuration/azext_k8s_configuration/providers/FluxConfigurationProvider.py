@@ -336,6 +336,26 @@ class FluxConfigurationProvider:
             )
         return {kustomization_name: current_config.kustomizations[kustomization_name]}
 
+    def list_deployed_object(self, resource_group_name, cluster_type, cluster_name, name):
+        # Determine ClusterRP
+        cluster_rp = get_cluster_rp(cluster_type)
+        current_config = self.client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        return current_config.statuses
+
+    def show_deployed_object(self, resource_group_name, cluster_type, cluster_name, name,
+                             object_name, object_namespace, object_kind):
+        # Determine ClusterRP
+        cluster_rp = get_cluster_rp(cluster_type)
+        current_config = self.client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+
+        for status in current_config.statuses:
+            if status.name == object_name and status.namespace == object_namespace and status.kind == object_kind:
+                return status
+        raise ValidationError(
+            consts.SHOW_DEPLOYED_OBJECT_NO_EXIST_ERROR.format(object_name, object_namespace, object_kind, name),
+            consts.SHOW_DEPLOYED_OBJECT_NO_EXIST_HELP
+        )
+
     def delete(self, resource_group_name, cluster_type, cluster_name, name, force, no_wait, yes):
         # Confirmation message for deletes
         user_confirmation_factory(self.cmd, yes)
@@ -413,6 +433,9 @@ class FluxConfigurationProvider:
                 consts.FLUX_EXTENSION_CREATING_HELP
             )
         elif flux_extension.provisioning_state != consts.SUCCEEDED:
+            # Print the error detail so the user know how to fix it
+            if flux_extension.error_detail:
+                logger.error('%s %s', flux_extension.error_detail.code, flux_extension.error_detail.message)
             raise DeploymentError(
                 consts.FLUX_EXTENSION_NOT_SUCCEEDED_OR_CREATING_ERROR,
                 consts.FLUX_EXTENSION_NOT_SUCCEEDED_OR_CREATING_HELP

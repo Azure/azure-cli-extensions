@@ -11,7 +11,7 @@ from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterAddonProfile
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import ManagedClusterAddonProfile
 from ._client_factory import cf_resources, cf_resource_groups
 from ._resourcegroup import get_rg_location
 from ._roleassignments import add_role_assignment
@@ -518,7 +518,7 @@ def ensure_container_insights_for_monitoring(cmd,
 
     if aad_route:
         cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
-        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dataCollectionRuleName = f"MSCI-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         from azure.cli.core.util import send_raw_request
         from azure.cli.core.profiles import ResourceType

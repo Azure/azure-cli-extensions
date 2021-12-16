@@ -9,6 +9,7 @@ from unittest import mock
 import unittest
 import functools
 
+
 from azext_ssh import custom
 from azext_ssh import ssh_utils
 #from azext_ssh.custom import _do_ssh_op 
@@ -167,7 +168,6 @@ class SshCustomCommandTest(unittest.TestCase):
         from azure.core.exceptions import ResourceNotFoundError
         mock_check_arc.return_value = ResourceNotFoundError(), False
         mock_check_az_vm.return_value = ResourceNotFoundError(), False
-
         self.assertRaises(
             azclierror.ResourceNotFoundError, custom._decide_op_call, cmd, "rg", "vm", None, None, 'config_path', True, None, None, False, None)
         mock_check_arc.assert_called_once_with(cmd, 'rg', 'vm')

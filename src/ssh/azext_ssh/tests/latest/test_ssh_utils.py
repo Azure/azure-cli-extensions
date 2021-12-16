@@ -12,7 +12,6 @@ import os
 
 from azext_ssh import ssh_utils
 
-
 class SSHUtilsTests(unittest.TestCase):
     
     @mock.patch.object(ssh_utils, '_start_cleanup')
@@ -63,7 +62,6 @@ class SSHUtilsTests(unittest.TestCase):
         mock_startcleanup.assert_called_with(None, 'private', None, True, False, False, [])
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows', env=expected_env)
         mock_terminatecleanup.assert_called_once_with(False, False, True, 'cleanup process', None, 'private', None, 'log')
-        
 
     @mock.patch.object(ssh_utils, '_start_cleanup')
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
@@ -215,7 +213,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_open.assert_called_once_with("path/to/file", "w")
         mock_warning.assert_called_once_with(True, True, False, 'cert', None, None)
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
-    
+
     @mock.patch.object(ssh_utils, '_issue_config_cleanup_warning')
     def test_write_ssh_config_append_azurevm(self, mock_warning):
         expected_lines = [
