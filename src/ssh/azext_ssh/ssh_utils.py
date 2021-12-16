@@ -312,7 +312,7 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
                              f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
     oschmod.set_mode(relay_info_path, stat.S_IRUSR)
 
-    # Print the expiration of the relay information f
+    # Print the expiration of the relay information
     expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
     print(f"Generated file with Relay Information {relay_info_path} is valid until {expiration}.\n")
 
@@ -322,7 +322,7 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
     if delete_cert:
         print(f"Generated SSH certificate {cert_file} is valid until",
-              f"{_get_certificate_start_and_end_times(cert_file)[1]}.\n")
+              f"{get_certificate_start_and_end_times(cert_file)[1]}.\n")
 
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
@@ -332,9 +332,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = os.path.dirname(cert_file)
                 items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
             elif delete_cert:
-                path_to_delete = os.path.dirname(cert_file)
-                relay_partial_path = relay_info_path.replace(path_to_delete, "")
-                items_to_delete = f" (id_rsa.pub-aadcert.pub, {relay_partial_path})"
+                path_to_delete = f"{cert_file} and {relay_info_path}"
+                items_to_delete = ""
             else:
                 path_to_delete = relay_info_path
                 items_to_delete = ""
@@ -345,7 +344,7 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = cert_file
                 items_to_delete = ""
 
-        print(f"{path_to_delete} contains sensitive information{items_to_delete}. "
+        print(f"{path_to_delete} contain sensitive information{items_to_delete}. "
               "Please delete it once you no longer need this config file.\n")
 
 
