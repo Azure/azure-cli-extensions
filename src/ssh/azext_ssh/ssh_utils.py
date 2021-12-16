@@ -119,6 +119,7 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
         common_lines.append("\tCertificateFile " + cert_file)
     if private_key_file:
         common_lines.append("\tIdentityFile " + private_key_file)
+
     lines = [""]
     relay_info_path = None
     relay_info_filename = None

@@ -26,8 +26,6 @@ from . import file_utils
 
 logger = log.get_logger(__name__)
 
-logger = log.get_logger(__name__)
-
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,

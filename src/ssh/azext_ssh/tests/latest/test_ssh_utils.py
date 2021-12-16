@@ -9,11 +9,9 @@ import unittest
 import platform
 import os
 
-
 from azext_ssh import ssh_utils
 
-class SSHUtilsTests(unittest.TestCase):
-   
+class SSHUtilsTests(unittest.TestCase):   
     @mock.patch.object(ssh_utils, '_start_cleanup')
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
     @mock.patch.object(ssh_utils, '_get_ssh_path')
