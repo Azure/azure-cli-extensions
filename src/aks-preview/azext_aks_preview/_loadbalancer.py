@@ -65,7 +65,7 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
 
         if managed_outbound_ip_count or managed_outbound_ipv6_count:
             ManagedClusterLoadBalancerProfileManagedOutboundIPs = models.get(
-               "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
             )
             profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs()
             if managed_outbound_ip_count:
