@@ -314,6 +314,7 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
 
     # Print the expiration of the relay information
     expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
+    expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
     print(f"Generated file with Relay Information {relay_info_path} is valid until {expiration}.\n")
 
     return relay_info_path, relay_info_filename
@@ -321,8 +322,10 @@ def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_g
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
     if delete_cert:
+        expiration = get_certificate_start_and_end_times(cert_file)[1]
+        expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
         print(f"Generated SSH certificate {cert_file} is valid until",
-              f"{get_certificate_start_and_end_times(cert_file)[1]}.\n")
+              f"{expiration}.\n")
 
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
