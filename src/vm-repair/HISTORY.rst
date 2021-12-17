@@ -1,6 +1,9 @@
 
 Release History
 ===============
+0.4.0
+++++++
+Bug fix for disk copy name
 
 0.3.9
 ++++++
