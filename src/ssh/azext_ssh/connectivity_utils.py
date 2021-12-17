@@ -26,7 +26,8 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
 
-    if not certificate_validity_in_seconds or certificate_validity_in_seconds > 3600:
+    if not certificate_validity_in_seconds or \
+       certificate_validity_in_seconds > consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
         certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
 
     try:
