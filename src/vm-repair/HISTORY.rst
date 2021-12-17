@@ -3,7 +3,7 @@ Release History
 ===============
 0.4.0
 ++++++
-Bug fix for disk copy name
+Fixing issue in disk copy, removing floating point in disk name.
 
 0.3.9
 ++++++
