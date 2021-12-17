@@ -351,8 +351,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
         if not is_azure_vm and not is_arc_server:
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
-                                                       f"{resource_group_name} was not found. Errors:\n"
-                                                       f"{str(arc_error)}\n{str(vm_error)}")
+                                                       f"{resource_group_name} was not found.")
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
                                              f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
 
