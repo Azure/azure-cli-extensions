@@ -19,7 +19,9 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_build_args')
     @mock.patch('subprocess.call')
     @mock.patch('os.environ.copy')
+    #@mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
     def test_start_ssh_connection_cert_azurevm(self, mock_copy_env, mock_call, mock_build, mock_host, mock_path, mock_terminatecleanup, mock_startcleanup):
+        #mock_relay_string.return_value = 'relay string'
         mock_path.return_value = 'ssh'
         mock_host.return_value = 'user@ip'
         mock_build.return_value = ['-i', 'file', '-o', 'option', '-p', 'port']
@@ -118,17 +120,20 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_build_args')
     @mock.patch('subprocess.call')
     @mock.patch.object(ssh_utils, '_get_host')
-    def test_start_ssh_connection_cert_arc(self, mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+    @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
+    def test_start_ssh_connection_cert_arc(self, mock_relay_str,mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+        mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
         mock_path.return_value = 'ssh'
         mock_build.return_value = ['-i', 'private', '-o', 'option']
         mock_host.return_value = 'user@vm'
         mock_startcleanup.return_value = None, ['arg1'], None
         expected_command = ['ssh', 'user@vm', '-o', 'ProxyCommand=/path/to/proxy -p port', '-i', 'private', '-o', 'option', 'arg1']
-        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay'}
+        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
 
         ssh_utils.start_ssh_connection('relay', '/path/to/proxy', 'vm', None, 'user', 'cert', 'private', 'port', True, False, False, None, None, ['arg1'], False)
 
+        mock_relay_str.assert_called_once_with('relay')
         mock_path.assert_called_once_with()
         mock_build.assert_called_once_with('cert', 'private', None)
         mock_host.assert_called_once_with('user', 'vm')
@@ -143,17 +148,20 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_build_args')
     @mock.patch('subprocess.call')
     @mock.patch.object(ssh_utils, '_get_host')
-    def test_start_ssh_connection_private_key_arc(self, mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+    @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
+    def test_start_ssh_connection_private_key_arc(self, mock_relay_str, mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+        mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
         mock_build.return_value = ['-i', 'private']
         expected_command = ['path', 'user@vm', '-o', 'ProxyCommand=/path/to/proxy', '-i', 'private', 'arg1', 'arg2', 'arg3']
-        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay'}
+        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
         mock_host.return_value = 'user@vm'
         mock_startcleanup.return_value = None, ['arg1', 'arg2', 'arg3'], None
 
         ssh_utils.start_ssh_connection('relay', '/path/to/proxy', 'vm', None, 'user', None, 'private', None, True, False, False, None, 'path', ['arg1', 'arg2', 'arg3'], False)
 
         mock_path.assert_not_called()
+        mock_relay_str.assert_called_once_with('relay')
         mock_host.assert_called_once_with('user', 'vm')
         mock_build.assert_called_once_with(None, 'private', None)
         mock_startcleanup.assert_called_once_with(None, 'private', None, False, False, False, ['arg1', 'arg2', 'arg3'])
@@ -167,17 +175,20 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_build_args')
     @mock.patch('subprocess.call')
     @mock.patch.object(ssh_utils, '_get_host')
-    def test_start_ssh_connection_cert_no_private_key_arc(self, mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+    @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
+    def test_start_ssh_connection_cert_no_private_key_arc(self, mock_relay_str, mock_host, mock_call, mock_build, mock_path, mock_copy_env, mock_terminatecleanup, mock_startcleanup):
+        mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
         mock_path.return_value = 'ssh'
         mock_build.return_value = ['-o', 'option']
         mock_startcleanup.return_value = 'log', ['arg1', 'arg2', '-E', 'log', '-v'], 'cleanup process'
         expected_command = ['ssh', 'user@vm', '-o', 'ProxyCommand=/path/to/proxy -p port', '-o', 'option', 'arg1', 'arg2', '-E', 'log', '-v']
-        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay'}
+        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
         mock_host.return_value = 'user@vm'
 
         ssh_utils.start_ssh_connection('relay', '/path/to/proxy', 'vm', None, 'user', 'cert', None, 'port', True, False, True, 'public', None, ['arg1', 'arg2'], False)
 
+        mock_relay_str.assert_called_once_with('relay')
         mock_path.assert_called_once_with()
         mock_build.assert_called_once_with('cert', None, None)
         mock_host.assert_called_once_with('user', 'vm')
@@ -192,13 +203,13 @@ class SSHUtilsTests(unittest.TestCase):
             "Host rg-vm",
             "\tHostName 1.2.3.4",
             "\tUser username",
-            "\tCertificateFile cert",
-            "\tIdentityFile privatekey",
+            "\tCertificateFile \"cert\"",
+            "\tIdentityFile \"privatekey\"",
             "\tPort port",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tCertificateFile cert",
-            "\tIdentityFile privatekey",
+            "\tCertificateFile \"cert\"",
+            "\tIdentityFile \"privatekey\"",
             "\tPort port"
         ]
 
@@ -219,11 +230,11 @@ class SSHUtilsTests(unittest.TestCase):
             "Host rg-vm",
             "\tHostName 1.2.3.4",
             "\tUser username",
-            "\tCertificateFile cert",
+            "\tCertificateFile \"cert\"",
             "\tPort port",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tCertificateFile cert",
+            "\tCertificateFile \"cert\"",
             "\tPort port"
         ]
 
@@ -243,8 +254,8 @@ class SSHUtilsTests(unittest.TestCase):
             "",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tCertificateFile cert",
-            "\tIdentityFile privatekey",
+            "\tCertificateFile \"cert\"",
+            "\tIdentityFile \"privatekey\"",
             "\tPort port"
         ]
 
@@ -266,9 +277,9 @@ class SSHUtilsTests(unittest.TestCase):
             "Host rg-vm",
             "\tHostName vm",
             "\tUser username",
-            "\tCertificateFile cert",
-            "\tIdentityFile privatekey",
-            "\tProxyCommand /path/to/proxy -r /path/to/relay_info -p port"
+            "\tCertificateFile \"cert\"",
+            "\tIdentityFile \"privatekey\"",
+            "\tProxyCommand \"/path/to/proxy\" -r \"/path/to/relay_info\" -p port"
         ]
 
         with mock.patch('builtins.open') as mock_open:
@@ -281,7 +292,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_open.assert_called_once_with("path/to/file", "a")
         mock_file.write.assert_called_with('\n'.join(expected_lines))
-        mock_relay.assert_called_once_with('relay_info', 'cert', 'privatekey', 'cred folder', 'vm', 'rg')
+        mock_relay.assert_called_once_with('relay_info', 'cred folder', 'vm', 'rg')
         mock_warning.assert_called_once_with(True, True, True, 'cert', 'relay name', '/path/to/relay_info')
     
     @mock.patch.object(ssh_utils, '_prepare_relay_info_file')
@@ -292,9 +303,9 @@ class SSHUtilsTests(unittest.TestCase):
             "Host rg-vm",
             "\tHostName vm",
             "\tUser username",
-            "\tCertificateFile cert",
-            "\tIdentityFile privatekey",
-            "\tProxyCommand /path/to/proxy -r /path/to/relay_info -p port"
+            "\tCertificateFile \"cert\"",
+            "\tIdentityFile \"privatekey\"",
+            "\tProxyCommand \"/path/to/proxy\" -r \"/path/to/relay_info\" -p port"
         ]
 
         with mock.patch('builtins.open') as mock_open:
@@ -307,7 +318,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_open.assert_any_call("path/to/file", "w")
         mock_file.write.assert_called_with('\n'.join(expected_lines))
-        mock_relay.assert_called_once_with('relay_info', 'cert', 'privatekey', 'cred folder', 'vm', 'rg')
+        mock_relay.assert_called_once_with('relay_info', 'cred folder', 'vm', 'rg')
         mock_warning.assert_called_once_with(False, False, True, 'cert', 'relay name', '/path/to/relay_info')
         
    

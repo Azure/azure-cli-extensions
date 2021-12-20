@@ -108,10 +108,11 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
                                                    f"{str(arc_error)}")
         raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
                                          f"Error:\n{str(arc_error)}")
+    os_type = None
     if arc and arc.properties and arc.properties and arc.properties.os_name:
         os_type = arc.properties.os_name
     # Note: This is a temporary check while AAD login is not enabled for Windows.
-    if os_type.lower() == 'windows' and not local_user:
+    if os_type and os_type.lower() == 'windows' and not local_user:
         raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
                                                       "Please provide --local-user.")
 
