@@ -102,6 +102,7 @@ def _update_addon_pod_identity(
     instance.pod_identity_profile.user_assigned_identities = pod_identities or []
     instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
+
 def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     cluster_identity_object_id = None
     if instance.identity.type.lower() == 'userassigned':
