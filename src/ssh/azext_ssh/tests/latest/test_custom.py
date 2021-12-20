@@ -25,10 +25,10 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd = mock.Mock()
         #op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path='path/to/ssh', ssh_args='ssh_args', delete_privkey=False)
         mock_decide_op.return_value = functools.partial(mock_do_op, is_arc=True, op_call=mock.ANY)
-        custom.ssh_vm(cmd, 'rg', 'vm', 'ip', 'public', 'private', False, 'user', 'cert', 'port', 'path/to/ssh', False, 'type' ,'ssh_args')
-        mock_decide_op.assert_called_once_with(cmd, 'rg', 'vm', 'ip', 'type', None, None, 'path/to/ssh', 'ssh_args', False, None)
+        custom.ssh_vm(cmd, 'rg', 'vm', 'ip', 'public', 'private', False, 'user', 'cert', 'port', 'path/to/ssh', False, 'type', 'proxy', 'ssh_args')
+        mock_decide_op.assert_called_once_with(cmd, 'rg', 'vm', 'ip', 'type', None, None, 'path/to/ssh', 'ssh_args', False, None, 'user')
         mock_assert_args.assert_called_once_with('rg', 'vm', 'ip', 'type', 'cert', 'user')
-        mock_do_op.assert_called_once_with(cmd, 'vm', 'rg', 'ip', 'public', 'private', 'user', 'cert', 'port', False, None, is_arc=True, op_call=mock.ANY)
+        mock_do_op.assert_called_once_with(cmd, 'vm', 'rg', 'ip', 'public', 'private', 'user', 'cert', 'port', False, None, 'proxy', is_arc=True, op_call=mock.ANY)
 
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.custom._do_ssh_op')
