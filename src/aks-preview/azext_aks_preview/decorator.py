@@ -153,6 +153,11 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        pod_identity_models["ManagedClusterPodIdentityException"] = self.__cmd.get_models(
+            "ManagedClusterPodIdentityException",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
         self.pod_identity_models = pod_identity_models
         # Note: Uncomment the followings to add these models as class attributes.
         # for model_name, model_type in pod_identity_models.items():
@@ -1629,7 +1634,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         enable_pod_identity = self.context.get_enable_pod_identity()
         enable_pod_identity_with_kubenet = self.context.get_enable_pod_identity_with_kubenet()
         if enable_pod_identity:
-            pod_identity_profile = self.models.ManagedClusterPodIdentityProfile(
+            pod_identity_profile = self.models.pod_identity_models.get("ManagedClusterPodIdentityProfile")(
                 enabled=True,
                 allow_network_plugin_kubenet=enable_pod_identity_with_kubenet,
             )
@@ -1947,10 +1952,11 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     mc,
                     enable=True,
                     allow_kubenet_consent=self.context.get_enable_pod_identity_with_kubenet(),
+                    models=self.models.pod_identity_models
                 )
 
         if self.context.get_disable_pod_identity():
-            _update_addon_pod_identity(mc, enable=False)
+            _update_addon_pod_identity(mc, enable=False, models=self.models.pod_identity_models)
         return mc
 
     def update_mc_preview_profile(self) -> ManagedCluster:

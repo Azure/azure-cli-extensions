@@ -4,17 +4,29 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 
-from azext_aks_preview.custom import (
-    _fill_defaults_for_pod_identity_profile,
+from azext_aks_preview.__init__ import register_aks_preview_resource_type
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview._podidentity import (
     _fill_defaults_for_pod_identity_exceptions,
-    # we pin to the same version as custom.py
-    ManagedClusterPodIdentityException,
-    ManagedClusterPodIdentityProfile,
+    _fill_defaults_for_pod_identity_profile,
 )
+from azext_aks_preview.decorator import AKSPreviewModels
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 
 
 class TestPodIdentityHelpers(unittest.TestCase):
+    def setUp(self):
+        # manually register CUSTOM_MGMT_AKS_PREVIEW
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        # store all the models used by nat gateway
+        self.pod_identity_models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+
     def test_fill_defaults_for_pod_identity_exceptions(self):
+        # get models
+        ManagedClusterPodIdentityException = self.pod_identity_models.get("ManagedClusterPodIdentityException")
+
         # None value should not throw error
         _fill_defaults_for_pod_identity_exceptions(None)
 
@@ -52,6 +64,10 @@ class TestPodIdentityHelpers(unittest.TestCase):
         self.assertEqual(excs[1].name, "test-exc-2")
 
     def test_fill_defaults_for_pod_identity_profile(self):
+        # get models
+        ManagedClusterPodIdentityProfile = self.pod_identity_models.get("ManagedClusterPodIdentityProfile")
+        ManagedClusterPodIdentityException = self.pod_identity_models.get("ManagedClusterPodIdentityException")
+
         # None value should not throw error
         _fill_defaults_for_pod_identity_profile(None)
 
