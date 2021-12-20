@@ -8,28 +8,24 @@ import os
 import hashlib
 import json
 import tempfile
-import urllib.request
-import base64
-import stat
 import time
-from glob import glob
 
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 
 from . import ip_utils
 from . import rsa_parser
 from . import ssh_utils
-from . import constants as consts
-from . import file_utils
+from . import connectivity_utils
 
 logger = log.get_logger(__name__)
 
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_path=None, delete_credentials=False, resource_type=None, ssh_args=None):
+           ssh_client_path=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None, ssh_args=None):
 
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -37,19 +33,22 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
     credentials_folder = None
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, None, None,
-                                ssh_client_path, ssh_args, delete_credentials, credentials_folder)
+                                ssh_client_path, ssh_args, delete_credentials, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
-              cert_file, port, use_private_ip, credentials_folder)
+              cert_file, port, use_private_ip, credentials_folder, ssh_proxy_folder)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
-               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None):
+               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None,
+               ssh_proxy_folder=None):
 
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
+
+    config_path = os.path.abspath(config_path)
 
     # Default credential location
     if not credentials_folder:
@@ -64,9 +63,9 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
 
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
-                                None, None, False, credentials_folder)
+                                None, None, False, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
-              cert_file, port, use_private_ip, credentials_folder)
+              cert_file, port, use_private_ip, credentials_folder, ssh_proxy_folder)
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
@@ -82,11 +81,17 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
                        "is no longer being used.", keys_folder)
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
-    print(cert_file + "\n")
+    try:
+        cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file)[1]
+        print(f"Generated SSH certificate {cert_file} is valid until {cert_expiration}.")
+    except Exception as e:
+        logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
+        print(cert_file + "\n")
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
-            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, ssh_args=None):
+            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False,
+            ssh_proxy_folder=None, ssh_args=None):
 
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -95,37 +100,60 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
 
     credentials_folder = None
 
+    arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+    if not is_arc_server:
+        if isinstance(arc_error, ResourceNotFoundError):
+            raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                   f"{resource_group_name} was not found. Error:\n"
+                                                   f"{str(arc_error)}")
+        raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
+                                         f"Error:\n{str(arc_error)}")
+    if arc and arc.properties and arc.properties and arc.properties.os_name:
+        os_type = arc.properties.os_name
+    # Note: This is a temporary check while AAD login is not enabled for Windows.
+    if os_type.lower() == 'windows' and not local_user:
+        raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
+                                                      "Please provide --local-user.")
+
     op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                 delete_credentials=delete_credentials)
     _do_ssh_op(cmd, vm_name, resource_group_name, None, public_key_file, private_key_file, local_user, cert_file, port,
-               False, credentials_folder, op_call, True)
+               False, credentials_folder, ssh_proxy_folder, op_call, True)
 
 
 def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, username,
-               cert_file, port, use_private_ip, credentials_folder, op_call, is_arc):
+               cert_file, port, use_private_ip, credentials_folder, ssh_proxy_folder, op_call, is_arc):
 
-    proxy_path = None
-    relay_info = None
-    if is_arc:
-        proxy_path = _arc_get_client_side_proxy()
-        relay_info = _arc_list_access_details(cmd, resource_group_name, vm_name)
-    else:
-        ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
-        if not ssh_ip:
-            if not use_private_ip:
-                raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to")
-            raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to"
-                                                   "SSH to")
+    if not is_arc and ssh_proxy_folder:
+        logger.warning("Target machine is not an Arc Server, --ssh-proxy-folder value will be ignored.")
 
     # If user provides local user, no credentials should be deleted.
     delete_keys = False
     delete_cert = False
+    cert_lifetime = None
     if not username:
         delete_cert = True
         public_key_file, private_key_file, delete_keys = _check_or_create_public_private_files(public_key_file,
                                                                                                private_key_file,
                                                                                                credentials_folder)
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
+        if is_arc:
+            try:
+                cert_lifetime = ssh_utils.get_certificate_lifetime(cert_file).total_seconds()
+            except Exception as e:
+                logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
+
+    proxy_path = None
+    relay_info = None
+    if is_arc:
+        proxy_path = connectivity_utils.get_client_side_proxy(ssh_proxy_folder)
+        relay_info = connectivity_utils.get_relay_information(cmd, resource_group_name, vm_name, cert_lifetime)
+    else:
+        ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
+        if not ssh_ip:
+            if not use_private_ip:
+                raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to.")
+            raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
 
     op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys,
             delete_cert, public_key_file)
@@ -192,7 +220,8 @@ def _prepare_jwk_data(public_key_file):
 
 
 def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, username):
-    if resource_type and resource_type != "Microsoft.Compute" and resource_type != "Microsoft.HybridCompute":
+    if resource_type and resource_type.lower() != "microsoft.compute" \
+       and resource_type.lower() != "microsoft.hybridcompute":
         raise azclierror.InvalidArgumentValueError("--resource-type must be either \"Microsoft.Compute\" "
                                                    "for Azure VMs or \"Microsoft.HybridCompute\" for Arc Servers.")
 
@@ -279,146 +308,65 @@ def _get_modulus_exponent(public_key_file):
     return modulus, exponent
 
 
-# Downloads client side proxy to connect to Arc Connectivity Platform
-def _arc_get_client_side_proxy():
-    import platform
-    operating_system = platform.system()
-    machine = platform.machine()
-
-    logger.debug("Platform OS: %s", operating_system)
-    logger.debug("Platform architecture: %s", machine)
-
-    if machine.endswith('64'):
-        architecture = 'amd64'
-    elif machine.endswith('86'):
-        architecture = '386'
-    elif machine == '':
-        raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
-    else:
-        telemetry.set_exception(exception='Unsuported architecture for installing proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_ARCH_FAULT_TYPE,
-                                summary=f'{machine} is not supported for installing client proxy')
-        raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
-
-    # define the request url and install location based on the os and architecture
-    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
-    request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
-                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
-    install_location = os.path.join(".clientsshproxy", proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_'))
-    older_version_location = os.path.join(".clientsshproxy", proxy_name + "*")
-
-    if operating_system == 'Windows':
-        request_uri = request_uri + ".exe"
-        install_location = install_location + ".exe"
-        older_version_location = older_version_location + ".exe"
-    elif operating_system not in ('Linux', 'Darwin'):
-        telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
-                                summary=f'{operating_system} is not supported for installing client proxy')
-        raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
-
-    install_location = os.path.expanduser(os.path.join('~', install_location))
-    older_version_location = os.path.expanduser(os.path.join('~', older_version_location))
-    install_dir = os.path.dirname(install_location)
-
-    # Only download new proxy if it doesn't exist already
-    if not os.path.isfile(install_location):
-        t0 = time.time()
-        # download the executable
-        try:
-            with urllib.request.urlopen(request_uri) as response:
-                response_content = response.read()
-                response.close()
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.PROXY_DOWNLOAD_FAILED_FAULT_TYPE,
-                                    summary=f'Failed to download proxy from {request_uri}')
-            raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
-                                                "Error: " + str(e)) from e
-        time_elapsed = time.time() - t0
-
-        proxy_data = {
-            'Context.Default.AzureCLI.SSHProxyDownloadTime': time_elapsed,
-            'Context.Default.AzureCLI.SSHProxyVersion': consts.CLIENT_PROXY_VERSION
-        }
-        telemetry.add_extension_event('ssh', proxy_data)
-
-        # if directory doesn't exist, create it
-        if not os.path.exists(install_dir):
-            file_utils.create_directory(install_dir, f"Failed to create client proxy directory '{install_dir}'. ")
-        # if directory exists, delete any older versions of the proxy
-        else:
-            older_version_files = glob(older_version_location)
-            for f in older_version_files:
-                file_utils.delete_file(f, f"failed to delete older version file {f}", warning=True)
-
-        # write executable in the install location
-        file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
-        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
-
-    return install_location
-
-
-# Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def _arc_list_access_details(cmd, resource_group, vm_name):
-    from azext_ssh._client_factory import cf_endpoint
-    client = cf_endpoint(cmd.cli_ctx)
-    try:
-        t0 = time.time()
-        result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                         endpoint_name="default")
-        time_elapsed = time.time() - t0
-        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
-    except Exception as e:
-        telemetry.set_exception(exception='Call to listCredentials failed',
-                                fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
-                                summary=f'listCredentials failed with error: {str(e)}.')
-        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
-
-    result_string = json.dumps(
-        {
-            "relay": {
-                "namespaceName": result.namespace_name,
-                "namespaceNameSuffix": result.namespace_name_suffix,
-                "hybridConnectionName": result.hybrid_connection_name,
-                "accessKey": result.access_key,
-                "expiresOn": result.expires_on
-            }
-        })
-    result_bytes = result_string.encode("ascii")
-    enc = base64.b64encode(result_bytes)
-    base64_result_string = enc.decode("ascii")
-    return base64_result_string
-
-
 def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
-                    ssh_client_path, ssh_args, delete_credentials, credentials_folder):
+                    ssh_client_path, ssh_args, delete_credentials, credentials_folder, local_user):
 
     # If the user provides an IP address the target will be treated as an Azure VM even if it is an
     # Arc Server. Which just means that the Connectivity Proxy won't be used to establish connection.
     is_arc_server = False
+    is_azure_vm = False
 
     if ssh_ip:
-        is_arc_server = False
+        is_azure_vm = True
+        vm = None
 
     elif resource_type:
-        if resource_type == "Microsoft.HybridCompute":
-            is_arc_server = True
+        if resource_type.lower() == "microsoft.hybridcompute":
+            arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+            if not is_arc_server:
+                if isinstance(arc_error, ResourceNotFoundError):
+                    raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                           f"{resource_group_name} was not found. Error:\n"
+                                                           f"{str(arc_error)}")
+                raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
+                                                 f"Error:\n{str(arc_error)}")
+
+        elif resource_type.lower() == "microsoft.compute":
+            vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
+            if not is_azure_vm:
+                if isinstance(vm_error, ResourceNotFoundError):
+                    raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                           f"{resource_group_name} was not found. Error:\n"
+                                                           f"{str(vm_error)}")
+                raise azclierror.BadRequestError("Unable to determine that the target machine is an Azure VM. "
+                                                 f"Error:\n{str(vm_error)}")
 
     else:
-        vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
-        arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+        vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
+        arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
 
         if is_azure_vm and is_arc_server:
             raise azclierror.BadRequestError(f"{resource_group_name} has Azure VM and Arc Server with the "
                                              f"same name: {vm_name}. Please provide a --resource-type.")
         if not is_azure_vm and not is_arc_server:
-            from azure.core.exceptions import ResourceNotFoundError
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
-                                                       f"{resource_group_name} was not found. Erros:\n"
-                                                       f"{str(arc_error)}\n{str(vm_error)}")
+                                                       f"{resource_group_name} was not found.")
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
                                              f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
+
+    # Note: We are not able to determine the os of the target if the user only provides an IP address.
+    os_type = None
+    if is_azure_vm and vm and vm.storage_profile and vm.storage_profile.os_disk and vm.storage_profile.os_disk.os_type:
+        os_type = vm.storage_profile.os_disk.os_type
+
+    if is_arc_server and arc and arc.properties and arc.properties and arc.properties.os_name:
+        os_type = arc.properties.os_name
+
+    # Note 2: This is a temporary check while AAD login is not enabled for Windows.
+    if os_type and os_type.lower() == 'windows' and not local_user:
+        raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
+                                                      "Please provide --local-user.")
 
     if config_path:
         op_call = functools.partial(ssh_utils.write_ssh_config, config_path=config_path, overwrite=overwrite,
@@ -433,27 +381,29 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory
     from azure.cli.core import profiles
-    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+    vm = None
     try:
         compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        compute_client.virtual_machines.get(resource_group_name, vm_name)
+        vm = compute_client.virtual_machines.get(resource_group_name, vm_name)
     except ResourceNotFoundError as e:
-        return e, False
+        return None, e, False
     # If user is not authorized to get the VM, it will throw a HttpResponseError
     except HttpResponseError as e:
-        return e, False
-    return None, True
+        return None, e, False
+
+    return vm, None, True
 
 
 def _check_if_arc_server(cmd, resource_group_name, vm_name):
-    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)
+    arc = None
     try:
-        client.get(resource_group_name=resource_group_name, machine_name=vm_name)
+        arc = client.get(resource_group_name=resource_group_name, machine_name=vm_name)
     except ResourceNotFoundError as e:
-        return e, False
+        return None, e, False
     # If user is not authorized to get the arc server, it will throw a HttpResponseError
     except HttpResponseError as e:
-        return e, False
-    return None, True
+        return None, e, False
+
+    return arc, None, True

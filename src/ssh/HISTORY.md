@@ -1,5 +1,22 @@
 Release History
 ===============
+0.2.2
+-----
+* Validate that target machine exists before attempting to connect.
+* ssh config accepts relative path for --file.
+* Make --local-user mandatory for Windows target machines.
+* For ssh config, relay information is stored under az_ssh_config folder.
+* New optional parameter --arc-proxy-folder to determine where arc proxy is stored.
+* Relay information lifetime is synced with certificate lifetime for AAD login.
+
+0.2.1
+-----
+* SSHArc Private Preview 2
+
+0.2.0
+-----
+* SSHArc Private Preview 1
+
 0.1.9
 -----
 * Add support for connecting to Arc Servers using AAD issued certificates.

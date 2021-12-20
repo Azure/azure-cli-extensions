@@ -8,6 +8,7 @@ import subprocess
 import stat
 import multiprocessing as mp
 import time
+import datetime
 import oschmod
 
 from knack import log
@@ -15,6 +16,7 @@ from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 
 from . import file_utils
+from . import connectivity_utils
 from . import constants as const
 
 logger = log.get_logger(__name__)
@@ -34,7 +36,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     env = os.environ.copy()
 
     if is_arc:
-        env['SSHPROXY_RELAY_INFO'] = relay_info
+        env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(relay_info)
         if port:
             pcommand = f"ProxyCommand={proxy_path} -p {port}"
         else:
@@ -84,6 +86,34 @@ def get_ssh_cert_info(cert_file):
     return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
 
 
+def _get_ssh_cert_validity(cert_file):
+    if cert_file:
+        info = get_ssh_cert_info(cert_file)
+        for line in info:
+            if "Valid:" in line:
+                return line.strip()
+    return None
+
+
+def get_certificate_start_and_end_times(cert_file):
+    validity_str = _get_ssh_cert_validity(cert_file)
+    times = None
+    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
+        times = validity_str.replace("Valid: from ", "").split(" to ")
+        t0 = datetime.datetime.strptime(times[0], '%Y-%m-%dT%X')
+        t1 = datetime.datetime.strptime(times[1], '%Y-%m-%dT%X')
+        times = (t0, t1)
+    return times
+
+
+def get_certificate_lifetime(cert_file):
+    times = get_certificate_start_and_end_times(cert_file)
+    lifetime = None
+    if times:
+        lifetime = times[1] - times[0]
+    return lifetime
+
+
 def get_ssh_cert_principals(cert_file):
     info = get_ssh_cert_info(cert_file)
     principals = []
@@ -100,15 +130,6 @@ def get_ssh_cert_principals(cert_file):
     return principals
 
 
-def get_ssh_cert_validity(cert_file):
-    if cert_file:
-        info = get_ssh_cert_info(cert_file)
-        for line in info:
-            if "Valid:" in line:
-                return line.strip()
-    return None
-
-
 def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
                      cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, _,
                      config_path, overwrite, resource_group, credentials_folder):
@@ -116,25 +137,24 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
     common_lines = []
     common_lines.append("\tUser " + username)
     if cert_file:
-        common_lines.append("\tCertificateFile " + cert_file)
+        common_lines.append("\tCertificateFile \"" + cert_file + "\"")
     if private_key_file:
-        common_lines.append("\tIdentityFile " + private_key_file)
+        common_lines.append("\tIdentityFile \"" + private_key_file + "\"")
 
     lines = [""]
     relay_info_path = None
     relay_info_filename = None
     if is_arc:
-        relay_info_path, relay_info_filename = _prepare_relay_info_file(relay_info, cert_file,
-                                                                        private_key_file, credentials_folder,
+        relay_info_path, relay_info_filename = _prepare_relay_info_file(relay_info, credentials_folder,
                                                                         vm_name, resource_group)
 
         lines.append("Host " + resource_group + "-" + vm_name)
         lines.append("\tHostName " + vm_name)
         lines = lines + common_lines
         if port:
-            lines.append("\tProxyCommand " + proxy_path + " " + "-r " + relay_info_path + " " + "-p " + port)
+            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\" " + "-p " + port)
         else:
-            lines.append("\tProxyCommand " + proxy_path + " " + "-r " + relay_info_path)
+            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\"")
     else:
         if resource_group and vm_name:
             lines.append("Host " + resource_group + "-" + vm_name)
@@ -276,16 +296,11 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def _prepare_relay_info_file(relay_info, cert_file, private_key_file, credentials_folder, vm_name, resource_group):
-    if cert_file:
-        relay_info_dir = os.path.dirname(cert_file)
-    elif private_key_file:
-        relay_info_dir = os.path.dirname(private_key_file)
-    else:
-        # create the custom folder
-        relay_info_dir = credentials_folder
-        if not os.path.isdir(relay_info_dir):
-            os.makedirs(relay_info_dir)
+def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_group):
+    # create the custom folder
+    relay_info_dir = credentials_folder
+    if not os.path.isdir(relay_info_dir):
+        os.makedirs(relay_info_dir)
 
     if vm_name and resource_group:
         relay_info_filename = resource_group + "-" + vm_name + "-relay_info"
@@ -293,14 +308,25 @@ def _prepare_relay_info_file(relay_info, cert_file, private_key_file, credential
     relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
     # Overwrite relay_info if it already exists in that folder.
     file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
-    file_utils.write_to_file(relay_info_path, 'w', relay_info,
+    file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(relay_info),
                              f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
     oschmod.set_mode(relay_info_path, stat.S_IRUSR)
+
+    # Print the expiration of the relay information
+    expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
+    expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
+    print(f"Generated file with Relay Information {relay_info_path} is valid until {expiration}.\n")
 
     return relay_info_path, relay_info_filename
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
+    if delete_cert:
+        expiration = get_certificate_start_and_end_times(cert_file)[1]
+        expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
+        print(f"Generated SSH certificate {cert_file} is valid until",
+              f"{expiration}.\n")
+
     if delete_keys or delete_cert or is_arc:
         # Warn users to delete credentials once config file is no longer being used.
         # If user provided keys, only ask them to delete the certificate.
@@ -309,8 +335,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = os.path.dirname(cert_file)
                 items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
             elif delete_cert:
-                path_to_delete = os.path.dirname(cert_file)
-                items_to_delete = f" (id_rsa.pub-aadcert.pub, {relay_info_filename})"
+                path_to_delete = f"{cert_file} and {relay_info_path}"
+                items_to_delete = ""
             else:
                 path_to_delete = relay_info_path
                 items_to_delete = ""
@@ -321,15 +347,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = cert_file
                 items_to_delete = ""
 
-        validity_warning = ""
-        if delete_cert:
-            validity = get_ssh_cert_validity(cert_file)
-            if validity:
-                validity_warning = f" {validity.lower()}"
-
-        logger.warning("%s contains sensitive information%s%s\n"
-                       "Please delete it once you no longer need this config file. ",
-                       path_to_delete, items_to_delete, validity_warning)
+        print(f"{path_to_delete} contain sensitive information{items_to_delete}. "
+              "Please delete it once you no longer need this config file.\n")
 
 
 def _get_connection_status(log_file):
