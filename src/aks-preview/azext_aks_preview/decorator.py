@@ -51,12 +51,15 @@ from azext_aks_preview._natgateway import (
 from azext_aks_preview._natgateway import (
     update_nat_gateway_profile as _update_nat_gateway_profile,
 )
+from azext_aks_preview._podidentity import (
+    _is_pod_identity_addon_enabled,
+    _update_addon_pod_identity,
+)
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
 )
 from azext_aks_preview.custom import _get_snapshot
-
 
 logger = get_logger(__name__)
 
@@ -111,6 +114,8 @@ class AKSPreviewModels(AKSModels):
         )
         # init nat gateway models
         self.init_nat_gateway_models()
+        # init pod identity models
+        self.init_pod_identity_models()
 
     def init_nat_gateway_models(self) -> None:
         """Initialize models used by nat gateway.
@@ -133,6 +138,24 @@ class AKSPreviewModels(AKSModels):
         self.nat_gateway_models = nat_gateway_models
         # Note: Uncomment the followings to add these models as class attributes.
         # for model_name, model_type in nat_gateway_models.items():
+        #     setattr(self, model_name, model_type)
+
+    def init_pod_identity_models(self) -> None:
+        """Initialize models used by nat gateway.
+
+        The models are stored in a dictionary, the key is the model name and the value is the model type.
+
+        :return: None
+        """
+        pod_identity_models = {}
+        pod_identity_models["ManagedClusterPodIdentityProfile"] = self.__cmd.get_models(
+            "ManagedClusterPodIdentityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.pod_identity_models = pod_identity_models
+        # Note: Uncomment the followings to add these models as class attributes.
+        # for model_name, model_type in pod_identity_models.items():
         #     setattr(self, model_name, model_type)
 
 
@@ -529,7 +552,7 @@ class AKSPreviewContext(AKSContext):
     def _get_enable_managed_identity(
         self, enable_validation: bool = False, read_only: bool = False, **kwargs
     ) -> bool:
-        """Internal function to obtain the value of enable_pod_identity.
+        """Internal function to obtain the value of enable_managed_identity.
 
         Note: Inherited and extended in aks-preview to perform additional validation.
 
@@ -549,7 +572,7 @@ class AKSPreviewContext(AKSContext):
 
     # pylint: disable=unused-argument
     def _get_enable_pod_identity(self, enable_validation: bool = False, **kwargs) -> bool:
-        """Internal function to obtain the value of enable_pod_identity.
+        """Internal function to obtain the value of enable_managed_identity.
 
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError. If network_profile has been set
@@ -560,27 +583,33 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         enable_pod_identity = self.raw_param.get("enable_pod_identity")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.pod_identity_profile and
-            self.mc.pod_identity_profile.enabled is not None
-        ):
-            enable_pod_identity = self.mc.pod_identity_profile.enabled
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.pod_identity_profile and
+                self.mc.pod_identity_profile.enabled is not None
+            ):
+                enable_pod_identity = self.mc.pod_identity_profile.enabled
 
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            if enable_pod_identity and not self._get_enable_managed_identity(enable_validation=False):
-                raise RequiredArgumentMissingError(
-                    "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
-                )
-            if self.mc and self.mc.network_profile and safe_lower(self.mc.network_profile.network_plugin) == "kubenet":
-                if enable_pod_identity and not self._get_enable_pod_identity_with_kubenet(enable_validation=False):
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if enable_pod_identity and not self._get_enable_managed_identity(enable_validation=False):
                     raise RequiredArgumentMissingError(
-                        "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
-                        "when using Kubenet network plugin"
+                        "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
                     )
+                if (
+                    self.mc and
+                    self.mc.network_profile and
+                    safe_lower(self.mc.network_profile.network_plugin) == "kubenet"
+                ):
+                    if enable_pod_identity and not self._get_enable_pod_identity_with_kubenet(enable_validation=False):
+                        raise RequiredArgumentMissingError(
+                            "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
+                            "when using Kubenet network plugin"
+                        )
         return enable_pod_identity
 
     def get_enable_pod_identity(self) -> bool:
@@ -596,6 +625,19 @@ class AKSPreviewContext(AKSContext):
 
         return self._get_enable_pod_identity(enable_validation=True)
 
+    def get_disable_pod_identity(self) -> bool:
+        """Obtain the value of disable_pod_identity.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_pod_identity = self.raw_param.get("disable_pod_identity")
+        # We do not support this option in create mode, therefore we do not read the value from `mc`.
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return disable_pod_identity
+
     # pylint: disable=unused-argument
     def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:
         """Internal function to obtain the value of enable_pod_identity_with_kubenet.
@@ -608,23 +650,29 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         enable_pod_identity_with_kubenet = self.raw_param.get("enable_pod_identity_with_kubenet")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.pod_identity_profile and
-            self.mc.pod_identity_profile.allow_network_plugin_kubenet is not None
-        ):
-            enable_pod_identity_with_kubenet = self.mc.pod_identity_profile.allow_network_plugin_kubenet
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.pod_identity_profile and
+                self.mc.pod_identity_profile.allow_network_plugin_kubenet is not None
+            ):
+                enable_pod_identity_with_kubenet = self.mc.pod_identity_profile.allow_network_plugin_kubenet
 
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            if self.mc and self.mc.network_profile and safe_lower(self.mc.network_profile.network_plugin) == "kubenet":
-                if not enable_pod_identity_with_kubenet and self._get_enable_pod_identity(enable_validation=False):
-                    raise RequiredArgumentMissingError(
-                        "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
-                        "when using Kubenet network plugin"
-                    )
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if (
+                    self.mc and
+                    self.mc.network_profile and
+                    safe_lower(self.mc.network_profile.network_plugin) == "kubenet"
+                ):
+                    if not enable_pod_identity_with_kubenet and self._get_enable_pod_identity(enable_validation=False):
+                        raise RequiredArgumentMissingError(
+                            "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
+                            "when using Kubenet network plugin"
+                        )
         return enable_pod_identity_with_kubenet
 
     def get_enable_pod_identity_with_kubenet(self) -> bool:
@@ -648,10 +696,8 @@ class AKSPreviewContext(AKSContext):
         :return: dict
         """
         from azext_aks_preview._consts import (
-            ADDONS,
-            CONST_GITOPS_ADDON_NAME,
-            CONST_MONITORING_USING_AAD_MSI_AUTH,
-        )
+            ADDONS, CONST_GITOPS_ADDON_NAME,
+            CONST_MONITORING_USING_AAD_MSI_AUTH)
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
@@ -1885,6 +1931,26 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 mc.network_profile.nat_gateway_profile,
                 models=self.models.nat_gateway_models,
             )
+        return mc
+
+    def update_pod_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update pod identity profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_pod_identity():
+            if not _is_pod_identity_addon_enabled(mc):
+                # we only rebuild the pod identity profile if it's disabled before
+                _update_addon_pod_identity(
+                    mc,
+                    enable=True,
+                    allow_kubenet_consent=self.context.get_enable_pod_identity_with_kubenet(),
+                )
+
+        if self.context.get_disable_pod_identity():
+            _update_addon_pod_identity(mc, enable=False)
         return mc
 
     def update_mc_preview_profile(self) -> ManagedCluster:
