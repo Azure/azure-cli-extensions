@@ -188,6 +188,20 @@ aks update:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+arcdata dc create:
+  parameters:
+    logs_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    logs_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:

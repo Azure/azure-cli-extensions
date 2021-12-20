@@ -988,6 +988,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.disable_local_accounts = False
 
     if update_lb_profile:
+        from azext_aks_preview.decorator import AKSPreviewModels
+        # store all the models used by load balancer
+        lb_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).lb_models
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
             load_balancer_managed_outbound_ip_count,
             load_balancer_managed_outbound_ipv6_count,
@@ -995,7 +998,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             load_balancer_outbound_ip_prefixes,
             load_balancer_outbound_ports,
             load_balancer_idle_timeout,
-            instance.network_profile.load_balancer_profile)
+            instance.network_profile.load_balancer_profile,
+            models=lb_models
+        )
 
     if update_natgw_profile:
         from azext_aks_preview.decorator import AKSPreviewModels
