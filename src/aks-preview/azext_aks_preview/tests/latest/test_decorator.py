@@ -122,7 +122,26 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
-    def test__get_vm_set_type(self):
+    def test_validate_pod_identity_with_kubenet(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet"
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile_1,
+        )
+        # fail on enable_pod_identity_with_kubenet not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_1.validate_pod_identity_with_kubenet(mc_1, True, False)
+
+    def test_get_vm_set_type(self):
         # default & dynamic completion
         ctx_1 = AKSPreviewContext(
             self.cmd,
