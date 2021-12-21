@@ -7,7 +7,6 @@ import os
 import unittest
 
 from knack.util import CLIError
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long
@@ -197,3 +196,31 @@ class SslTests(ScenarioTest):
         self.assertTrue(len(app_result) > 0)
 
         self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
+
+
+class CustomImageTest(ScenarioTest):
+
+    @ResourceGroupPreparer()
+    def test_app_deploy_container(self, resource_group):
+        self.kwargs.update({
+            'app': 'test-container',
+            'serviceName': 'cli-unittest',
+            'location': 'centralus',
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
+        })
+
+        self.cmd('spring-cloud create -n {serviceName} -g {resourceGroup} -l {location}')
+        self.cmd('spring-cloud app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
+            self.check('name', 'default'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+        ])
+        
+        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green' 
+                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
+            self.check('name', 'green'),
+        ])
+        self.cmd('spring-cloud delete -n {serviceName} -g {resourceGroup}')

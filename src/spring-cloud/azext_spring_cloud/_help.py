@@ -218,6 +218,10 @@ helps['spring-cloud app deploy'] = """
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment
+    - name: Deploy a container image on Docker Hub to an app.
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
+    - name: Deploy a container image on a private registry to an app.
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
 """
 
 helps['spring-cloud app scale'] = """
@@ -325,6 +329,10 @@ helps['spring-cloud app deployment create'] = """
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+    - name: Deploy a container image on Docker Hub to an app.
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
+    - name: Deploy a container image on a private registry to an app.
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
 """
 
 helps['spring-cloud app deployment generate-heap-dump'] = """

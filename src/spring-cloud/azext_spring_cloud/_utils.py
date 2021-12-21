@@ -21,7 +21,7 @@ from ._client_factory import cf_resource_groups
 logger = get_logger(__name__)
 
 
-def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None):
+def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None, container_image=None):
     file_type = None
     file_path = None
     if artifact_path is not None:
@@ -32,6 +32,8 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
         ), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
         _pack_source_code(os.path.abspath(source_path), file_path)
         file_type = "Source"
+    elif container_image is not None:
+        file_type = 'Container'
     return file_type, file_path
 
 

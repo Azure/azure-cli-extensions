@@ -7,6 +7,7 @@
 import requests
 import re
 import os
+import shlex
 
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -647,29 +648,69 @@ def app_deploy(cmd, client, resource_group, service, name,
                main_entry=None,
                env=None,
                disable_probe=None,
+               container_image=None,
+               container_registry=None,
+               registry_username=None,
+               registry_password=None,
+               container_command=None,
+               container_args=None,
                no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path)
 
-    return _app_deploy(client,
-                       resource_group,
-                       service,
-                       name,
-                       deployment.name,
-                       version,
-                       file_path,
-                       runtime_version,
-                       jvm_options,
-                       None,
-                       None,
-                       None,
-                       env,
-                       disable_probe,
-                       main_entry,
-                       target_module,
-                       no_wait,
-                       file_type,
-                       True)
+    old_deployment = client.deployments.get(resource_group, service, name, deployment.name)
+
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path, container_image)
+    if file_type == 'Container':
+        if old_deployment.properties.source and old_deployment.properties.source.type == 'Container':
+            return _app_deploy_container(client, resource_group, service, name, deployment.name,
+                                         None,
+                                         None,
+                                         None,
+                                         env,
+                                         disable_probe,
+                                         container_image,
+                                         container_registry,
+                                         registry_username,
+                                         registry_password,
+                                         container_command,
+                                         container_args,
+                                         no_wait,
+                                         True)
+        else:
+            return _app_deploy_container(client, resource_group, service, name, deployment.name,
+                                         old_deployment.properties.deployment_settings.resource_requests.cpu,
+                                         old_deployment.properties.deployment_settings.resource_requests.memory,
+                                         old_deployment.sku.capacity,
+                                         env,
+                                         disable_probe,
+                                         container_image,
+                                         container_registry,
+                                         registry_username,
+                                         registry_password,
+                                         container_command,
+                                         container_args,
+                                         no_wait,
+                                         False)
+    else:
+        return _app_deploy(client,
+                           resource_group,
+                           service,
+                           name,
+                           deployment,
+                           version,
+                           file_path,
+                           runtime_version,
+                           jvm_options,
+                           None,
+                           None,
+                           None,
+                           env,
+                           disable_probe,
+                           main_entry,
+                           target_module,
+                           no_wait,
+                           file_type,
+                           True)
 
 
 def app_scale(cmd, client, resource_group, service, name,
@@ -777,7 +818,7 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
         logger.info("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
         retry_times = 36
         assignment_name = _arm._gen_guid()
-        for l in range(0, retry_times):
+        for i in range(0, retry_times):
             try:
                 assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                           parameters=parameters)
@@ -786,9 +827,9 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
                 if 'role assignment already exists' in ex.message:
                     logger.info('Role assignment already exists')
                     break
-                elif l < retry_times and ' does not exist in the directory ' in ex.message:
+                elif i < retry_times and ' does not exist in the directory ' in ex.message:
                     sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-                    logger.warning('Retrying role assignment creation: %s/%s', l + 1,
+                    logger.warning('Retrying role assignment creation: %s/%s', i + 1,
                                    retry_times)
                     continue
                 else:
@@ -896,6 +937,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       disable_probe=None,
+                      container_image=None,
+                      container_registry=None,
+                      registry_username=None,
+                      registry_password=None,
+                      container_command=None,
+                      container_args=None,
                       no_wait=False):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -929,19 +976,34 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         memory = memory or "1Gi"
         instance_count = instance_count or 1
 
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path)
-    return _app_deploy(client, resource_group, service, app, name, version, file_path,
-                       runtime_version,
-                       jvm_options,
-                       cpu,
-                       memory,
-                       instance_count,
-                       env,
-                       disable_probe,
-                       main_entry,
-                       target_module,
-                       no_wait,
-                       file_type)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path, container_image)
+    if file_type == 'Container':
+        return _app_deploy_container(client, resource_group, service, app, name,
+                                     cpu,
+                                     memory,
+                                     instance_count,
+                                     env,
+                                     disable_probe,
+                                     container_image,
+                                     container_registry,
+                                     registry_username,
+                                     registry_password,
+                                     container_command,
+                                     container_args,
+                                     no_wait)
+    else:
+        return _app_deploy(client, resource_group, service, app, name, version, file_path,
+                           runtime_version,
+                           jvm_options,
+                           cpu,
+                           memory,
+                           instance_count,
+                           env,
+                           disable_probe,
+                           main_entry,
+                           target_module,
+                           no_wait,
+                           file_type)
 
 
 def _validate_instance_count(sku, instance_count=None):
@@ -1558,6 +1620,69 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     # create deployment
     logger.warning(
         "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
+    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
+    if update:
+        return sdk_no_wait(no_wait, client.deployments.begin_update,
+                           resource_group, service, app, name, deployment_resource)
+
+    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
+                       resource_group, service, app, name, deployment_resource)
+
+
+# pylint: disable=too-many-locals, no-member
+def _app_deploy_container(client, resource_group, service, app, name, cpu, memory,
+                          instance_count,
+                          env,
+                          disable_probe,
+                          container_image,
+                          container_registry,
+                          registry_username,
+                          registry_password,
+                          container_command,
+                          container_args,
+                          no_wait=False,
+                          update=False):
+
+    resource_requests = None
+    if cpu is not None or memory is not None:
+        resource_requests = models_20210901preview.ResourceRequests(cpu=cpu, memory=memory)
+    if container_command is not None:
+        container_command = shlex.split(container_command)
+    if container_args is not None:
+        container_args = shlex.split(container_args)
+
+    container_probe_settings = None
+    if disable_probe is not None:
+        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
+
+    deployment_settings = models_20210901preview.DeploymentSettings(
+        resource_requests=resource_requests,
+        environment_variables=env,
+        container_probe_settings=container_probe_settings)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
+    sku = models_20210901preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    image_registry_credential = models_20210901preview.ImageRegistryCredential(
+        username=registry_username,
+        password=registry_password    # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]
+    ) if registry_username is not None and registry_password is not None else None
+    custom_container = models_20210901preview.CustomContainer(
+        server=container_registry,
+        container_image=container_image,
+        command=container_command,
+        args=container_args,
+        image_registry_credential=image_registry_credential,
+    )
+    user_source_info = models_20210901preview.UserSourceInfo(
+        type='Container',
+        custom_container=custom_container)
+    properties = models_20210901preview.DeploymentResourceProperties(
+        deployment_settings=deployment_settings,
+        source=user_source_info)
+
+    # create deployment
+    logger.warning(
+        "Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
     deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     if update:
         return sdk_no_wait(no_wait, client.deployments.begin_update,
