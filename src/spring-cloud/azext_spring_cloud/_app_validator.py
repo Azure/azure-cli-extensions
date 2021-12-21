@@ -44,6 +44,18 @@ def active_deployment_exist_under_app(cmd, namespace):
         raise InvalidArgumentValueError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
 
+def ensure_not_active_deployment(cmd, namespace):
+    """
+    Validate namespace.deployment is not active
+    """
+    if not namespace.deployment or not namespace.resource_group or not namespace.service or not namespace.name:
+        return
+    client = cf_spring_cloud(cmd.cli_ctx)
+    deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
+    if deployment.properties.active:
+        raise InvalidArgumentValueError('Deployment {} is already the production deployment'.format(deployment.name))
+
+
 def _ensure_deployment_exist(client, resource_group, service, app, deployment):
     try:
         return client.deployments.get(resource_group, service, app, deployment)
