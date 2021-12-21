@@ -25,7 +25,7 @@ class TestPodIdentityHelpers(unittest.TestCase):
 
     def test_fill_defaults_for_pod_identity_exceptions(self):
         # get models
-        ManagedClusterPodIdentityException = self.pod_identity_models.get("ManagedClusterPodIdentityException")
+        ManagedClusterPodIdentityException = self.pod_identity_models.ManagedClusterPodIdentityException
 
         # None value should not throw error
         _fill_defaults_for_pod_identity_exceptions(None)
@@ -65,8 +65,8 @@ class TestPodIdentityHelpers(unittest.TestCase):
 
     def test_fill_defaults_for_pod_identity_profile(self):
         # get models
-        ManagedClusterPodIdentityProfile = self.pod_identity_models.get("ManagedClusterPodIdentityProfile")
-        ManagedClusterPodIdentityException = self.pod_identity_models.get("ManagedClusterPodIdentityException")
+        ManagedClusterPodIdentityProfile = self.pod_identity_models.ManagedClusterPodIdentityProfile
+        ManagedClusterPodIdentityException = self.pod_identity_models.ManagedClusterPodIdentityException
 
         # None value should not throw error
         _fill_defaults_for_pod_identity_profile(None)

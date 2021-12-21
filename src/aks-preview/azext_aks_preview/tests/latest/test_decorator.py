@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import importlib
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
@@ -103,15 +104,28 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         )
         # pod identity models
         self.assertEqual(
-            models.pod_identity_models.get("ManagedClusterPodIdentityProfile"),
+            models.pod_identity_models.ManagedClusterPodIdentityProfile,
             getattr(module, "ManagedClusterPodIdentityProfile"),
         )
         self.assertEqual(
-            models.pod_identity_models.get(
-                "ManagedClusterPodIdentityException"
-            ),
+            models.pod_identity_models.ManagedClusterPodIdentityException,
             getattr(module, "ManagedClusterPodIdentityException"),
         )
+
+    def test_flattern_to_class_attributes(self):
+        models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+        # invalid parameter
+        models.flattern_to_class_attributes(None)
+
+        # dict
+        model_dict = {"abc": "test_abc"}
+        models.flattern_to_class_attributes(model_dict)
+        self.assertEqual(getattr(models, "abc"), "test_abc")
+
+        # namespace
+        model_namespace = SimpleNamespace(**{"xyz": "test_xyz"})
+        models.flattern_to_class_attributes(model_namespace)
+        self.assertEqual(getattr(models, "xyz"), "test_xyz")
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -834,9 +848,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_enable_pod_identity(), False)
-        pod_identity_profile = self.models.pod_identity_models.get(
-            "ManagedClusterPodIdentityProfile"
-        )(enabled=True)
+        pod_identity_profile = self.models.pod_identity_models.ManagedClusterPodIdentityProfile(enabled=True)
         mc = self.models.ManagedCluster(
             location="test_location",
             pod_identity_profile=pod_identity_profile,
@@ -916,9 +928,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_enable_pod_identity_with_kubenet(), False)
-        pod_identity_profile = self.models.pod_identity_models.get(
-            "ManagedClusterPodIdentityProfile"
-        )(
+        pod_identity_profile = self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
             enabled=True,
             allow_network_plugin_kubenet=True,
         )
@@ -1976,9 +1986,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         network_profile_2 = self.models.ContainerServiceNetworkProfile(
             network_plugin="kubenet"
         )
-        pod_identity_profile_2 = self.models.pod_identity_models.get(
-            "ManagedClusterPodIdentityProfile"
-        )(
+        pod_identity_profile_2 = self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
             enabled=True,
             allow_network_plugin_kubenet=True,
         )
@@ -3242,9 +3250,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
             ),
-            pod_identity_profile=self.models.pod_identity_models.get(
-                "ManagedClusterPodIdentityProfile"
-            )(
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
                 enabled=True,
                 allow_network_plugin_kubenet=True,
                 user_assigned_identities=[],
@@ -3267,9 +3273,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
 
         mc_4 = self.models.ManagedCluster(
             location="test_location",
-            pod_identity_profile=self.models.pod_identity_models.get(
-                "ManagedClusterPodIdentityProfile"
-            )(
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
                 enabled=True,
                 user_assigned_identities=[],
                 user_assigned_identity_exceptions=[],
@@ -3279,9 +3283,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_4 = dec_4.update_pod_identity_profile(mc_4)
         ground_truth_mc_4 = self.models.ManagedCluster(
             location="test_location",
-            pod_identity_profile=self.models.pod_identity_models.get(
-                "ManagedClusterPodIdentityProfile"
-            )(
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
                 enabled=False,
             ),
         )

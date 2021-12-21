@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import time
+from types import SimpleNamespace
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -75,10 +76,10 @@ def _update_addon_pod_identity(
     pod_identities=None,
     pod_identity_exceptions=None,
     allow_kubenet_consent=None,
-    models=None,
+    models: SimpleNamespace = None,
 ):
     if not enable:
-        ManagedClusterPodIdentityProfile = models.get("ManagedClusterPodIdentityProfile")
+        ManagedClusterPodIdentityProfile = models.ManagedClusterPodIdentityProfile
         # when disable, remove previous saved value
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
             enabled=False)
@@ -87,7 +88,7 @@ def _update_addon_pod_identity(
     _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions)
 
     if not instance.pod_identity_profile:
-        ManagedClusterPodIdentityProfile = models.get("ManagedClusterPodIdentityProfile")
+        ManagedClusterPodIdentityProfile = models.ManagedClusterPodIdentityProfile
         # not set before
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
             enabled=enable,

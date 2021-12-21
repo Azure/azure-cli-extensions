@@ -5,6 +5,7 @@
 
 import os
 import time
+from types import SimpleNamespace
 from typing import Dict, List, Tuple, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import (
@@ -114,8 +115,8 @@ class AKSPreviewModels(AKSModels):
         )
         # init nat gateway models
         self.init_nat_gateway_models()
-        # init pod identity models
-        self.init_pod_identity_models()
+        # holder for pod identity related models
+        self.__pod_identity_models = None
 
     def init_nat_gateway_models(self) -> None:
         """Initialize models used by nat gateway.
@@ -140,12 +141,12 @@ class AKSPreviewModels(AKSModels):
         # for model_name, model_type in nat_gateway_models.items():
         #     setattr(self, model_name, model_type)
 
-    def init_pod_identity_models(self) -> None:
-        """Initialize models used by nat gateway.
+    def _get_pod_identity_models(self) -> Dict:
+        """Get a dictionary of pod identity related models.
 
         The models are stored in a dictionary, the key is the model name and the value is the model type.
 
-        :return: None
+        :return: Dict
         """
         pod_identity_models = {}
         pod_identity_models["ManagedClusterPodIdentityProfile"] = self.__cmd.get_models(
@@ -158,10 +159,40 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
-        self.pod_identity_models = pod_identity_models
-        # Note: Uncomment the followings to add these models as class attributes.
-        # for model_name, model_type in pod_identity_models.items():
-        #     setattr(self, model_name, model_type)
+        return pod_identity_models
+
+    @property
+    def pod_identity_models(self) -> SimpleNamespace:
+        """Get pod identity related models.
+
+        The models are stored in a SimpleNamespace object, could be accessed by the dot operator like
+        `pod_identity_models.ManagedClusterPodIdentityProfile`.
+
+        :return: SimpleNamespace
+        """
+        if self.__pod_identity_models is None:
+            self.__pod_identity_models = SimpleNamespace(**self._get_pod_identity_models())
+        return self.__pod_identity_models
+
+    def flattern_to_class_attributes(self, models: Union[Dict, SimpleNamespace]) -> None:
+        """Helper function to set models as class attributes.
+
+        :return: None
+        """
+        model_dict = dict()
+        if isinstance(models, SimpleNamespace):
+            model_dict = vars(models)
+        elif isinstance(models, dict):
+            model_dict = models
+        else:
+            logger.warning(
+                "Unsupported object type '{}', skip setting models as class attributes.".format(
+                    type(models)
+                )
+            )
+
+        for model_name, model_definition in model_dict.items():
+            setattr(self, model_name, model_definition)
 
 
 # pylint: disable=too-many-public-methods
@@ -1671,7 +1702,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         enable_pod_identity = self.context.get_enable_pod_identity()
         enable_pod_identity_with_kubenet = self.context.get_enable_pod_identity_with_kubenet()
         if enable_pod_identity:
-            pod_identity_profile = self.models.pod_identity_models.get("ManagedClusterPodIdentityProfile")(
+            pod_identity_profile = self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
                 enabled=True,
                 allow_network_plugin_kubenet=enable_pod_identity_with_kubenet,
             )
