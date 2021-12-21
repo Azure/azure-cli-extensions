@@ -582,7 +582,8 @@ class AKSPreviewContext(AKSContext):
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError. If network_profile has been set
         up in `mc`, network_plugin equals to "kubenet" and enable_pod_identity is specified but
-        enable_pod_identity_with_kubenet is not, raise a RequiredArgumentMissingError.
+        enable_pod_identity_with_kubenet is not, raise a RequiredArgumentMissingError. In update mode, if both
+        enable_pod_identity and disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
         """
@@ -615,6 +616,12 @@ class AKSPreviewContext(AKSContext):
                             "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
                             "when using Kubenet network plugin"
                         )
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                if enable_pod_identity and self._get_disable_pod_identity(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --enable-pod-identity and "
+                        "--disable-pod-identity at the same time."
+                    )
         return enable_pod_identity
 
     def get_enable_pod_identity(self) -> bool:
@@ -623,15 +630,20 @@ class AKSPreviewContext(AKSContext):
         This function will verify the parameter by default. If enable_managed_identity is not specified but
         enable_pod_identity is, raise a RequiredArgumentMissingError. If network_profile has been set up in `mc`,
         network_plugin equals to "kubenet" and enable_pod_identity is specified but enable_pod_identity_with_kubenet
-        is not, raise a RequiredArgumentMissingError.
+        is not, raise a RequiredArgumentMissingError. In update mode, if both enable_pod_identity and
+        disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
         """
 
         return self._get_enable_pod_identity(enable_validation=True)
 
-    def get_disable_pod_identity(self) -> bool:
-        """Obtain the value of disable_pod_identity.
+    # pylint: disable=unused-argument
+    def _get_disable_pod_identity(self, enable_validation: bool = False, **kwargs) -> bool:
+        """Internal function to obtain the value of disable_pod_identity.
+
+        This function supports the option of enable_validation. When enabled, in update mode, if both
+        enable_pod_identity and disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
         """
@@ -640,8 +652,26 @@ class AKSPreviewContext(AKSContext):
         # We do not support this option in create mode, therefore we do not read the value from `mc`.
 
         # this parameter does not need dynamic completion
-        # this parameter does not need validation
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_pod_identity and self._get_enable_pod_identity(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --enable-pod-identity and "
+                        "--disable-pod-identity at the same time."
+                    )
         return disable_pod_identity
+
+    def get_disable_pod_identity(self) -> bool:
+        """Obtain the value of disable_pod_identity.
+
+        This function will verify the parameter by default. When enabled, in update mode, if both
+        enable_pod_identity and disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+
+        return self._get_disable_pod_identity(enable_validation=True)
 
     # pylint: disable=unused-argument
     def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:

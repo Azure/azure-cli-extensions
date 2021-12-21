@@ -850,6 +850,20 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             self.assertEqual(ctx_2.get_enable_pod_identity(), True)
 
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_identity and disable_pod_identity
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_enable_pod_identity()
+
     def test_get_disable_pod_identity(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -859,6 +873,20 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_disable_pod_identity(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_identity and disable_pod_identity
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disable_pod_identity()
 
     def test_get_enable_pod_identity_with_kubenet(self):
         # default
