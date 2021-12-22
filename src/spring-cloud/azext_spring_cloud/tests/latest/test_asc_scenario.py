@@ -133,9 +133,9 @@ class SslTests(ScenarioTest):
 
     def test_load_public_cert_to_app(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem')
-        digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem')
-        loadCertPath = os.path.join(py_path, 'files/load_certificate.json')
+        baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem').replace("\\","/")
+        digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem').replace("\\","/")
+        loadCertPath = os.path.join(py_path, 'files/load_certificate.json').replace("\\","/")
 
         self.kwargs.update({
             'cert': 'test-cert',
@@ -148,12 +148,8 @@ class SslTests(ScenarioTest):
             'loadCertPath': loadCertPath,
             'app': 'test-app',
             'serviceName': 'cli-unittest',
-            'rg': 'cli',
-            'location': 'westus'
+            'rg': 'cli'
         })
-
-        self.cmd('group create -n {rg} -l {location}')
-        self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location}')
 
         self.cmd(
             'spring-cloud certificate add --name {digiCert} -f {digiCertPath} -g {rg} -s {serviceName}',
@@ -200,17 +196,14 @@ class SslTests(ScenarioTest):
 
 class CustomImageTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
-    def test_app_deploy_container(self, resource_group):
+    def test_app_deploy_container(self):
         self.kwargs.update({
             'app': 'test-container',
             'serviceName': 'cli-unittest',
-            'location': 'centralus',
             'containerImage': 'springio/gs-spring-boot-docker',
-            'resourceGroup': resource_group,
+            'resourceGroup': 'cli',
         })
 
-        self.cmd('spring-cloud create -n {serviceName} -g {resourceGroup} -l {location}')
         self.cmd('spring-cloud app create -s {serviceName} -g {resourceGroup} -n {app}')
 
         self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
@@ -223,4 +216,3 @@ class CustomImageTest(ScenarioTest):
                  + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
         ])
-        self.cmd('spring-cloud delete -n {serviceName} -g {resourceGroup}')

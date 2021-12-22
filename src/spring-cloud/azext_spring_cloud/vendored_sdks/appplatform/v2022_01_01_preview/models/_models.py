@@ -3730,6 +3730,8 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
     :type relative_path: str
     :param runtime_version: Runtime version of the Jar file.
     :type runtime_version: str
+    :param jvm_opions: Jvm Parameters.
+    :type jvm_options: str
     """
 
     _validation = {
@@ -3741,6 +3743,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         'version': {'key': 'version', 'type': 'str'},
         'relative_path': {'key': 'relativePath', 'type': 'str'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
+        'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
     }
 
     def __init__(
@@ -3750,6 +3753,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         super(JarUploadedUserSourceInfo, self).__init__(**kwargs)
         self.type = 'Jar'  # type: str
         self.runtime_version = kwargs.get('runtime_version', None)
+        self.jvm_opions = kwargs.get('jvm_options', None)
 
 
 class KeyVaultCertificateProperties(CertificateProperties):
