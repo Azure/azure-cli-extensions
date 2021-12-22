@@ -154,39 +154,8 @@ def get_alertsmanagement_processing_rule(cmd, client,
     return client.get_by_name(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name)
 
 
-def list_alertsmanagement_action_rule(cmd, client,
-                                      resource_group_name=None,
-                                      target_resource_group=None,
-                                      target_resource_type=None,
-                                      target_resource=None,
-                                      severity=None,
-                                      monitor_service=None,
-                                      impacted_scope=None,
-                                      description=None,
-                                      alert_rule_id=None,
-                                      action_group=None,
-                                      name=None):
+def list_alertsmanagement_processing_rule(cmd, client,
+                                      resource_group_name=None):
     if resource_group_name is not None:
-        return client.list_by_resource_group(
-            resource_group_name=resource_group_name,
-            target_resource_group=target_resource_group,
-            target_resource_type=target_resource_type,
-            target_resource=target_resource,
-            severity=severity,
-            monitor_service=monitor_service,
-            impacted_scope=impacted_scope,
-            description=description,
-            alert_rule_id=alert_rule_id,
-            action_group=action_group,
-            name=name)
-    return client.list_by_subscription(
-        target_resource_group=target_resource_group,
-        target_resource_type=target_resource_type,
-        target_resource=target_resource,
-        severity=severity,
-        monitor_service=monitor_service,
-        impacted_scope=impacted_scope,
-        description=description,
-        alert_rule_id=alert_rule_id,
-        action_group=action_group,
-        name=name)
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()

@@ -25,4 +25,4 @@ def load_command_table(self, _):
         #                         setter_name='create_update')
         #g.custom_command('delete', 'delete_alertsmanagement_action_rule')
         g.custom_show_command('show', 'get_alertsmanagement_processing_rule')
-        g.custom_command('list', 'list_alertsmanagement_action_rule')
+        g.custom_command('list', 'list_alertsmanagement_processing_rule')

@@ -63,15 +63,3 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor action-rule show') as c:
         c.argument('processing_rule_name', processing_rule_name)
-
-    with self.argument_context('monitor action-rule list') as c:
-        c.argument('target_resource_group', id_part=None, help='Filter by target resource group name. Default value is select all.')
-        c.argument('target_resource_type', id_part=None, help='Filter by target resource type. Default value is select all.')
-        c.argument('target_resource', id_part=None, help='Filter by target resource (which is full ARM ID). Default value is select all.')
-        c.argument('severity', id_part=None, help='Filter by severity. Default value is select all.')
-        c.argument('monitor_service', id_part=None, help='Filter by monitor service which generates the alert instance. Default value is select all.')
-        c.argument('impacted_scope', id_part=None, help='Filter by impacted/target scope (provide comma separated list for multiple scopes). The value should be an well constructed ARM id of the scope.')
-        c.argument('description', id_part=None, help='Filter by alert rule description')
-        c.argument('alert_rule_id', id_part=None, help='Filter by alert rule ID')
-        c.argument('action_group', id_part=None, help='Filter by action group configured as part of action rule')
-        c.argument('name', id_part=None, help='Filter by action rule name')
