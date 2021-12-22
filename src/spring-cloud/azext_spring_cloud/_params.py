@@ -40,6 +40,7 @@ def load_arguments(self, _):
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, default='Standard', help='Name of SKU. Enterprise is still in Preview.')
         c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
         c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
         c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
@@ -72,6 +73,7 @@ def load_arguments(self, _):
                    validator=validate_tracing_parameters_asc_create)
 
     with self.argument_context('spring-cloud update') as c:
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, help='Name of SKU. Enterprise is still in Preview.')
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,
@@ -98,7 +100,6 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
-            c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
