@@ -17,7 +17,7 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_alertsmanagement.generated._client_factory import cf_alertsmanagement_cl
+        from azext_alertsmanagement._client_factory import cf_alertsmanagement_cl
         alertsmanagement_custom = CliCommandType(
             operations_tmpl='azext_alertsmanagement.custom#{}',
             client_factory=cf_alertsmanagement_cl)
@@ -25,7 +25,7 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=alertsmanagement_custom)
 
     def load_command_table(self, args):
-        from azext_alertsmanagement.generated.commands import load_command_table
+        from azext_alertsmanagement.commands import load_command_table
         load_command_table(self, args)
         try:
             from azext_alertsmanagement.manual.commands import load_command_table as load_command_table_manual
@@ -38,7 +38,7 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_alertsmanagement.generated._params import load_arguments
+        from azext_alertsmanagement._params import load_arguments
         load_arguments(self, command)
         try:
             from azext_alertsmanagement.manual._params import load_arguments as load_arguments_manual
