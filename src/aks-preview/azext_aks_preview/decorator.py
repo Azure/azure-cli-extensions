@@ -141,26 +141,6 @@ class AKSPreviewModels(AKSModels):
         # for model_name, model_type in nat_gateway_models.items():
         #     setattr(self, model_name, model_type)
 
-    def _get_pod_identity_models(self) -> Dict:
-        """Get a dictionary of pod identity related models.
-
-        The models are stored in a dictionary, the key is the model name and the value is the model type.
-
-        :return: Dict
-        """
-        pod_identity_models = {}
-        pod_identity_models["ManagedClusterPodIdentityProfile"] = self.__cmd.get_models(
-            "ManagedClusterPodIdentityProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        pod_identity_models["ManagedClusterPodIdentityException"] = self.__cmd.get_models(
-            "ManagedClusterPodIdentityException",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        return pod_identity_models
-
     @property
     def pod_identity_models(self) -> SimpleNamespace:
         """Get pod identity related models.
@@ -171,28 +151,19 @@ class AKSPreviewModels(AKSModels):
         :return: SimpleNamespace
         """
         if self.__pod_identity_models is None:
-            self.__pod_identity_models = SimpleNamespace(**self._get_pod_identity_models())
-        return self.__pod_identity_models
-
-    def flattern_to_class_attributes(self, models: Union[Dict, SimpleNamespace]) -> None:
-        """Helper function to set models as class attributes.
-
-        :return: None
-        """
-        model_dict = dict()
-        if isinstance(models, SimpleNamespace):
-            model_dict = vars(models)
-        elif isinstance(models, dict):
-            model_dict = models
-        else:
-            logger.warning(
-                "Unsupported object type '{}', skip setting models as class attributes.".format(
-                    type(models)
-                )
+            pod_identity_models = {}
+            pod_identity_models["ManagedClusterPodIdentityProfile"] = self.__cmd.get_models(
+                "ManagedClusterPodIdentityProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
             )
-
-        for model_name, model_definition in model_dict.items():
-            setattr(self, model_name, model_definition)
+            pod_identity_models["ManagedClusterPodIdentityException"] = self.__cmd.get_models(
+                "ManagedClusterPodIdentityException",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            self.__pod_identity_models = SimpleNamespace(**pod_identity_models)
+        return self.__pod_identity_models
 
 
 # pylint: disable=too-many-public-methods
@@ -206,7 +177,8 @@ class AKSPreviewContext(AKSContext):
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode)
 
-    def validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
+    # pylint: disable=no-self-use
+    def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
         """Helper function to check the validity of serveral pod identity related parameters.
 
         If network_profile has been set up in `mc`, network_plugin equals to "kubenet" and enable_pod_identity is
@@ -225,6 +197,47 @@ class AKSPreviewContext(AKSContext):
                     "when using Kubenet network plugin"
                 )
 
+    # pylint: disable=no-self-use
+    def __validate_gmsa_options(
+        self,
+        enable_windows_gmsa,
+        gmsa_dns_server,
+        gmsa_root_domain_name,
+        yes,
+    ) -> None:
+        """Helper function to validate gmsa related options.
+
+        When enable_windows_gmsa is specified, if both gmsa_dns_server and gmsa_root_domain_name are not assigned and
+        user does not confirm the operation, a DecoratorEarlyExitException will be raised; if only one of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError. When
+        enable_windows_gmsa is not specified, if any of gmsa_dns_server or gmsa_root_domain_name is assigned, raise
+        a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        gmsa_dns_server_is_none = gmsa_dns_server is None
+        gmsa_root_domain_name_is_none = gmsa_root_domain_name is None
+        if enable_windows_gmsa:
+            if gmsa_dns_server_is_none == gmsa_root_domain_name_is_none:
+                if gmsa_dns_server_is_none:
+                    msg = (
+                        "Please assure that you have set the DNS server in the vnet used by the cluster "
+                        "when not specifying --gmsa-dns-server and --gmsa-root-domain-name"
+                    )
+                    if not yes and not prompt_y_n(msg, default="n"):
+                        raise DecoratorEarlyExitException()
+            else:
+                raise RequiredArgumentMissingError(
+                    "You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time."
+                )
+        else:
+            if gmsa_dns_server_is_none != gmsa_root_domain_name_is_none:
+                raise RequiredArgumentMissingError(
+                    "You only can set --gmsa-dns-server and --gmsa-root-domain-name "
+                    "when setting --enable-windows-gmsa."
+                )
+
+    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
         """Internal function to dynamically obtain the value of vm_set_type according to the context.
@@ -531,8 +544,7 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return nat_gateway_idle_timeout
 
-    # pylint: disable=unused-argument
-    def _get_enable_pod_security_policy(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
 
         This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
@@ -570,8 +582,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_security_policy(enable_validation=True)
 
-    # pylint: disable=unused-argument
-    def _get_disable_pod_security_policy(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_disable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_pod_security_policy.
 
         This function supports the option of enable_validation. When enabled, if both enable_pod_security_policy and
@@ -603,6 +614,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_disable_pod_security_policy(enable_validation=True)
 
+    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
         self, enable_validation: bool = False, read_only: bool = False, **kwargs
@@ -625,13 +637,12 @@ class AKSPreviewContext(AKSContext):
                 )
         return enable_managed_identity
 
-    # pylint: disable=unused-argument
-    def _get_enable_pod_identity(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_enable_pod_identity(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_managed_identity.
 
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError. Will also call function
-        "validate_pod_identity_with_kubenet" for verification. In update mode, if both
+        "__validate_pod_identity_with_kubenet" for verification. In update mode, if both
         enable_pod_identity and disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
@@ -655,7 +666,7 @@ class AKSPreviewContext(AKSContext):
                     raise RequiredArgumentMissingError(
                         "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
                     )
-                self.validate_pod_identity_with_kubenet(
+                self.__validate_pod_identity_with_kubenet(
                     self.mc,
                     enable_pod_identity,
                     self._get_enable_pod_identity_with_kubenet(
@@ -675,7 +686,7 @@ class AKSPreviewContext(AKSContext):
 
         This function will verify the parameter by default. If enable_managed_identity is not specified but
         enable_pod_identity is, raise a RequiredArgumentMissingError. Will also call function
-        "validate_pod_identity_with_kubenet" for verification. In update mode, if both enable_pod_identity and
+        "__validate_pod_identity_with_kubenet" for verification. In update mode, if both enable_pod_identity and
         disable_pod_identity are specified, raise a MutuallyExclusiveArgumentError.
 
         :return: bool
@@ -683,8 +694,7 @@ class AKSPreviewContext(AKSContext):
 
         return self._get_enable_pod_identity(enable_validation=True)
 
-    # pylint: disable=unused-argument
-    def _get_disable_pod_identity(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_disable_pod_identity(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_pod_identity.
 
         This function supports the option of enable_validation. When enabled, in update mode, if both
@@ -718,12 +728,11 @@ class AKSPreviewContext(AKSContext):
 
         return self._get_disable_pod_identity(enable_validation=True)
 
-    # pylint: disable=unused-argument
-    def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_identity_with_kubenet.
 
         This function supports the option of enable_validation. When enabled, will call function
-        "validate_pod_identity_with_kubenet" for verification.
+        "__validate_pod_identity_with_kubenet" for verification.
 
         :return: bool
         """
@@ -742,7 +751,7 @@ class AKSPreviewContext(AKSContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
-                self.validate_pod_identity_with_kubenet(
+                self.__validate_pod_identity_with_kubenet(
                     self.mc,
                     self._get_enable_pod_identity(enable_validation=False),
                     enable_pod_identity_with_kubenet,
@@ -752,7 +761,7 @@ class AKSPreviewContext(AKSContext):
     def get_enable_pod_identity_with_kubenet(self) -> bool:
         """Obtain the value of enable_pod_identity_with_kubenet.
 
-        This function will verify the parameter by default. Will call function "validate_pod_identity_with_kubenet"
+        This function will verify the parameter by default. Will call function "__validate_pod_identity_with_kubenet"
         for verification.
 
         :return: bool
@@ -863,6 +872,7 @@ class AKSPreviewContext(AKSContext):
         return no_wait
 
     # TOOD: may remove this function after the fix for the internal function get merged and released
+    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_workspace_resource_id(
         self, enable_validation: bool = False, read_only: bool = False, **kwargs
@@ -1055,13 +1065,14 @@ class AKSPreviewContext(AKSContext):
 
         return count_ipv6
 
+    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
         read_only: bool = False,
         load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
-        **kwargs
+        **kwargs,
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
@@ -1158,49 +1169,7 @@ class AKSPreviewContext(AKSContext):
                             )
         return outbound_type
 
-    # pylint: disable=unused-argument,no-self-use
-    def __validate_gmsa_options(
-        self,
-        enable_windows_gmsa,
-        gmsa_dns_server,
-        gmsa_root_domain_name,
-        yes,
-        **kwargs
-    ) -> None:
-        """Helper function to validate gmsa related options.
-
-        When enable_windows_gmsa is specified, if both gmsa_dns_server and gmsa_root_domain_name are not assigned and
-        user does not confirm the operation, a DecoratorEarlyExitException will be raised; if only one of
-        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError. When
-        enable_windows_gmsa is not specified, if any of gmsa_dns_server or gmsa_root_domain_name is assigned, raise
-        a RequiredArgumentMissingError.
-
-        :return: bool
-        """
-        gmsa_dns_server_is_none = gmsa_dns_server is None
-        gmsa_root_domain_name_is_none = gmsa_root_domain_name is None
-        if enable_windows_gmsa:
-            if gmsa_dns_server_is_none == gmsa_root_domain_name_is_none:
-                if gmsa_dns_server_is_none:
-                    msg = (
-                        "Please assure that you have set the DNS server in the vnet used by the cluster "
-                        "when not specifying --gmsa-dns-server and --gmsa-root-domain-name"
-                    )
-                    if not yes and not prompt_y_n(msg, default="n"):
-                        raise DecoratorEarlyExitException()
-            else:
-                raise RequiredArgumentMissingError(
-                    "You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time."
-                )
-        else:
-            if gmsa_dns_server_is_none != gmsa_root_domain_name_is_none:
-                raise RequiredArgumentMissingError(
-                    "You only can set --gmsa-dns-server and --gmsa-root-domain-name "
-                    "when setting --enable-windows-gmsa."
-                )
-
-    # pylint: disable=unused-argument
-    def _get_enable_windows_gmsa(self, enable_validation: bool = False, **kwargs) -> bool:
+    def _get_enable_windows_gmsa(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_windows_gmsa.
 
         This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
@@ -1248,8 +1217,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_windows_gmsa(enable_validation=True)
 
-    # pylint: disable=unused-argument
-    def _get_gmsa_dns_server_and_root_domain_name(self, enable_validation: bool = False, **kwargs):
+    def _get_gmsa_dns_server_and_root_domain_name(self, enable_validation: bool = False):
         """Internal function to obtain the values of gmsa_dns_server and gmsa_root_domain_name.
 
         This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
@@ -1369,8 +1337,7 @@ class AKSPreviewContext(AKSContext):
             self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
         return snapshot
 
-    # pylint: disable=unused-argument
-    def _get_kubernetes_version(self, read_only: bool = False, **kwargs) -> str:
+    def _get_kubernetes_version(self, read_only: bool = False) -> str:
         """Internal function to dynamically obtain the value of kubernetes_version according to the context.
 
         If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
@@ -1416,8 +1383,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_kubernetes_version()
 
-    # pylint: disable=unused-argument
-    def _get_os_sku(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+    def _get_os_sku(self, read_only: bool = False) -> Union[str, None]:
         """Internal function to dynamically obtain the value of os_sku according to the context.
 
         If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
@@ -1466,8 +1432,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_os_sku()
 
-    # pylint: disable=unused-argument
-    def _get_node_vm_size(self, read_only: bool = False, **kwargs) -> str:
+    def _get_node_vm_size(self, read_only: bool = False) -> str:
         """Internal function to dynamically obtain the value of node_vm_size according to the context.
 
         If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
@@ -1622,7 +1587,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             dns_service_ip,
             _,
             _,
-        ) = self.context._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(enable_validation=False)
+        ) = self.context.get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy()
 
         (
             pod_cidrs,
