@@ -5,7 +5,7 @@
 
 
 # pylint: disable=line-too-long
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 
 def transform_spring_cloud_table_output(result):

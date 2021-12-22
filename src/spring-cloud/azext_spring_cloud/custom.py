@@ -16,7 +16,7 @@ from requests.auth import HTTPBasicAuth
 import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
