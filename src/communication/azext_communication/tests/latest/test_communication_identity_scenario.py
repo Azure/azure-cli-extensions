@@ -8,10 +8,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import get_test_identity_id
 import os
 from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
+from .preparers import CommunicationResourcePreparer
 
 
 class CommunicationIdentityScenarios(ScenarioTest):

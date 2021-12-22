@@ -8,10 +8,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import get_new_phonenumber, get_test_recipient_phonenumber, get_test_source_phonenumber
 import os
 from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
+from .preparers import CommunicationResourcePreparer
 
 class CommunicationSmsScenarios(ScenarioTest):
 
