@@ -14,7 +14,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app)
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+                             ensure_not_active_deployment)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -182,7 +183,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app set-deployment') as c:
         c.argument('deployment', options_list=[
-            '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=validate_deployment_name)
+            '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=ensure_not_active_deployment)
 
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
@@ -223,6 +224,18 @@ def load_arguments(self, _):
                 'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
+            c.argument(
+                'container_image', help='The container image tag.')
+            c.argument(
+                'container_registry', default='docker.io', help='The registry of the container image.')
+            c.argument(
+                'registry_username', help='The username of the container registry.')
+            c.argument(
+                'registry_password', help='The password of the container registry.')
+            c.argument(
+                'container_command', help='The command of the container image.')
+            c.argument(
+                'container_args', help='The arguments of the container image.')
 
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',

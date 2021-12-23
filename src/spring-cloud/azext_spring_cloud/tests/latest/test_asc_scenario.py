@@ -7,7 +7,6 @@ import os
 import unittest
 
 from knack.util import CLIError
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long
@@ -134,9 +133,9 @@ class SslTests(ScenarioTest):
 
     def test_load_public_cert_to_app(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem')
-        digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem')
-        loadCertPath = os.path.join(py_path, 'files/load_certificate.json')
+        baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem').replace("\\","/")
+        digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem').replace("\\","/")
+        loadCertPath = os.path.join(py_path, 'files/load_certificate.json').replace("\\","/")
 
         self.kwargs.update({
             'cert': 'test-cert',
@@ -149,12 +148,8 @@ class SslTests(ScenarioTest):
             'loadCertPath': loadCertPath,
             'app': 'test-app',
             'serviceName': 'cli-unittest',
-            'rg': 'cli',
-            'location': 'westus'
+            'rg': 'cli'
         })
-
-        self.cmd('group create -n {rg} -l {location}')
-        self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location}')
 
         self.cmd(
             'spring-cloud certificate add --name {digiCert} -f {digiCertPath} -g {rg} -s {serviceName}',
@@ -197,3 +192,27 @@ class SslTests(ScenarioTest):
         self.assertTrue(len(app_result) > 0)
 
         self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
+
+
+class CustomImageTest(ScenarioTest):
+
+    def test_app_deploy_container(self):
+        self.kwargs.update({
+            'app': 'test-container',
+            'serviceName': 'cli-unittest',
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': 'cli',
+        })
+
+        self.cmd('spring-cloud app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
+            self.check('name', 'default'),
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+        ])
+        
+        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green' 
+                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
+            self.check('name', 'green'),
+        ])

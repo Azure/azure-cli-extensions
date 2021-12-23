@@ -14,9 +14,9 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._utils import _get_file_type
-from msrestazure.tools import is_valid_resource_id
-from msrestazure.tools import parse_resource_id
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id
+from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
 from ._utils import ApiType
 from ._utils import _get_rg_location
