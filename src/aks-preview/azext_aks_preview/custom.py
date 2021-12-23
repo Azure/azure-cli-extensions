@@ -793,17 +793,18 @@ def aks_create(cmd,
                gmsa_root_domain_name=None,
                snapshot_id=None,
                yes=False):
-    # get all the original parameters and save them as a dictionary
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    # decorator pattern
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
-
+    from azure.cli.command_modules.acs.decorator import AKSParamDict
     from .decorator import AKSPreviewCreateDecorator
+
+    # decorator pattern
     aks_create_decorator = AKSPreviewCreateDecorator(
         cmd=cmd,
         client=client,
-        raw_parameters=raw_parameters,
+        raw_parameters=AKSParamDict(raw_parameters),
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
     try:
@@ -868,6 +869,29 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None):
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azure.cli.command_modules.acs.decorator import AKSParamDict
+    from .decorator import AKSPreviewUpdateDecorator
+
+    # decorator pattern
+    aks_update_decorator = AKSPreviewUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=AKSParamDict(raw_parameters),
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+    try:
+        # update mc profile
+        mc = aks_update_decorator.update_mc_preview_profile()
+    except DecoratorEarlyExitException:
+        # exit gracefully
+        return None
+    # send request to update the real managed cluster
+    return aks_update_decorator.update_mc_preview(mc)
+
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
