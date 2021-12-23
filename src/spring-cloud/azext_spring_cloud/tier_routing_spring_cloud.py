@@ -27,6 +27,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
                         enable_java_agent=None,
                         sku=None,
                         tags=None,
+                        zone_redundant=False,
                         no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -48,6 +49,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
                                  enable_java_agent=enable_java_agent,
                                  sku=sku,
                                  tags=tags,
+                                 zone_redundant=zone_redundant,
                                  no_wait=no_wait)
     else:
         return create_standard(cmd, client, resource_group, name,
@@ -65,4 +67,5 @@ def spring_cloud_create(cmd, client, resource_group, name,
                                enable_java_agent=enable_java_agent,
                                sku=sku,
                                tags=tags,
+                               zone_redundant=zone_redundant,
                                no_wait=no_wait)

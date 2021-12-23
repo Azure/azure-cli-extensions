@@ -85,6 +85,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                              reserved_cidr_range=reserved_cidr_range,
                              service_runtime_network_resource_group=service_runtime_network_resource_group,
                              app_network_resource_group=app_network_resource_group,
+                             zone_redundant=zone_redundant,
                              sku=sku,
                              tags=tags)
     _update_application_insights_asc_create(cmd, resource_group, name, location,
@@ -96,6 +97,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
 def _create_service(cmd, client, resource_group, name, location=None,
                     service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                     service_runtime_network_resource_group=None, app_network_resource_group=None,
+                    zone_redundant=False,
                     sku=None, tags=None):
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
@@ -110,7 +112,7 @@ def _create_service(cmd, client, resource_group, name, location=None,
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
-    properties.zone_redundant=zone_redundant
+    properties.zone_redundant = zone_redundant
     resource = models_20220101preview.ServiceResource(location=location, sku=sku, properties=properties, tags=tags)
 
     poller = client.services.begin_create_or_update(
