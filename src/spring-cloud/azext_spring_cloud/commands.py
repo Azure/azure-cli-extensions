@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
 from ._client_factory import (cf_spring_cloud_20220101preview,
@@ -18,9 +19,17 @@ from ._transformers import (transform_spring_cloud_table_output,
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
-    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+    spring_cloud_routing_util = CliCommandType(
+        operations_tmpl='azext_spring_cloud.tier_routing_spring_cloud#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    with self.command_group('spring-cloud', custom_command_type=spring_cloud_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
+
+    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
         g.custom_command('start', 'spring_cloud_start', supports_no_wait=True)

@@ -56,6 +56,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 
 
@@ -86,10 +87,6 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
             getattr(module, "ManagedClusterHTTPProxyConfig"),
         )
         self.assertEqual(
-            models.ManagedClusterPodIdentityProfile,
-            getattr(module, "ManagedClusterPodIdentityProfile"),
-        )
-        self.assertEqual(
             models.WindowsGmsaProfile, getattr(module, "WindowsGmsaProfile")
         )
         self.assertEqual(models.CreationData, getattr(module, "CreationData"))
@@ -104,6 +101,15 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
             ),
             getattr(module, "ManagedClusterManagedOutboundIPProfile"),
         )
+        # pod identity models
+        self.assertEqual(
+            models.pod_identity_models.ManagedClusterPodIdentityProfile,
+            getattr(module, "ManagedClusterPodIdentityProfile"),
+        )
+        self.assertEqual(
+            models.pod_identity_models.ManagedClusterPodIdentityException,
+            getattr(module, "ManagedClusterPodIdentityException"),
+        )
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -114,7 +120,28 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
-    def test__get_vm_set_type(self):
+    def test_validate_pod_identity_with_kubenet(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet"
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile_1,
+        )
+        # fail on enable_pod_identity_with_kubenet not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_1._AKSPreviewContext__validate_pod_identity_with_kubenet(
+                mc_1, True, False
+            )
+
+    def test_get_vm_set_type(self):
         # default & dynamic completion
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -807,8 +834,10 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_enable_pod_identity(), False)
-        pod_identity_profile = self.models.ManagedClusterPodIdentityProfile(
-            enabled=True
+        pod_identity_profile = (
+            self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=True
+            )
         )
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -842,6 +871,44 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             self.assertEqual(ctx_2.get_enable_pod_identity(), True)
 
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_identity and disable_pod_identity
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_enable_pod_identity()
+
+    def test_get_disable_pod_identity(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"disable_pod_identity": False},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_disable_pod_identity(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_identity and disable_pod_identity
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disable_pod_identity()
+
     def test_get_enable_pod_identity_with_kubenet(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -851,9 +918,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_enable_pod_identity_with_kubenet(), False)
-        pod_identity_profile = self.models.ManagedClusterPodIdentityProfile(
-            enabled=True,
-            allow_network_plugin_kubenet=True,
+        pod_identity_profile = (
+            self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=True,
+                allow_network_plugin_kubenet=True,
+            )
         )
         mc = self.models.ManagedCluster(
             location="test_location",
@@ -1909,9 +1978,11 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         network_profile_2 = self.models.ContainerServiceNetworkProfile(
             network_plugin="kubenet"
         )
-        pod_identity_profile_2 = self.models.ManagedClusterPodIdentityProfile(
-            enabled=True,
-            allow_network_plugin_kubenet=True,
+        pod_identity_profile_2 = (
+            self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=True,
+                allow_network_plugin_kubenet=True,
+            )
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
@@ -2988,7 +3059,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                     ),
                     idle_timeout_in_minutes=20,
                 )
-            )
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_nat_gateway_profile(mc_3)
@@ -3006,7 +3077,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                     ),
                     idle_timeout_in_minutes=30,
                 )
-            )
+            ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
@@ -3099,3 +3170,115 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         # fail on incomplete mc object (no windows profile)
         with self.assertRaises(UnknownError):
             dec_3.update_windows_profile(mc_3)
+
+    def test_update_pod_identity_profile(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_identity": False,
+                "disable_pod_identity": False,
+                "enable_pod_identity_with_kubenet": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_pod_identity_profile(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_pod_identity_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": False,
+                "enable_pod_identity_with_kubenet": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        with self.assertRaises(CLIError):
+            dec_2.update_pod_identity_profile(mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_identity": True,
+                "disable_pod_identity": False,
+                "enable_pod_identity_with_kubenet": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_pod_identity_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=True,
+                allow_network_plugin_kubenet=True,
+                user_assigned_identities=[],
+                user_assigned_identity_exceptions=[],
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # custom value
+        dec_4 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_identity": False,
+                "disable_pod_identity": True,
+                "enable_pod_identity_with_kubenet": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=True,
+                user_assigned_identities=[],
+                user_assigned_identity_exceptions=[],
+            ),
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_pod_identity_profile(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                enabled=False,
+            ),
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)

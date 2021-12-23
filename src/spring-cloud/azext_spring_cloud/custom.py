@@ -16,8 +16,10 @@ from requests.auth import HTTPBasicAuth
 import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
-from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
-from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
+from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
+from ._utils import (_get_upload_local_file, _get_persistent_disk_size,
+                     get_portal_uri, get_azure_files_info,
+                     wait_till_end)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
@@ -36,7 +38,6 @@ from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
-from ._utils import _get_sku_name
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -63,8 +64,11 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku='Standard', tags=None, zone_redundant=False, no_wait=False):
+                        sku=None, tags=None, zone_redundant=False, no_wait=False):
     """
+    Note: This is the command for create Spring-Cloud Standard and Basic tier. Refer tier_routing_spring_cloud.py for
+    the command definition. And _enteprise.py for Spring-Cloud Enterprise tier creation.
+
     If app_insights_key, app_insights and disable_app_insights are all None,
     will still create an application insights and enable application insights.
     :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
@@ -74,6 +78,25 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
     # TODO (jiec) Deco this method when we deco parameter "--enable-java-agent"
     _warn_enable_java_agent(enable_java_agent)
 
+    poller = _create_service(cmd, client, resource_group, name,
+                             location=location,
+                             service_runtime_subnet=service_runtime_subnet,
+                             app_subnet=app_subnet,
+                             reserved_cidr_range=reserved_cidr_range,
+                             service_runtime_network_resource_group=service_runtime_network_resource_group,
+                             app_network_resource_group=app_network_resource_group,
+                             sku=sku,
+                             tags=tags)
+    _update_application_insights_asc_create(cmd, resource_group, name, location,
+                                            app_insights_key, app_insights, sampling_rate,
+                                            disable_app_insights, no_wait)
+    return poller
+
+
+def _create_service(cmd, client, resource_group, name, location=None,
+                    service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
+                    service_runtime_network_resource_group=None, app_network_resource_group=None,
+                    sku=None, tags=None):
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
     properties = models_20220101preview.ClusterResourceProperties()
@@ -86,20 +109,14 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
             app_network_resource_group=app_network_resource_group,
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
-    properties.zone_redundant=zone_redundant
-    full_sku = models_20220101preview.Sku(name=_get_sku_name(sku), tier=sku)
 
-    resource = models_20220101preview.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
+    properties.zone_redundant=zone_redundant
+    resource = models_20220101preview.ServiceResource(location=location, sku=sku, properties=properties, tags=tags)
 
     poller = client.services.begin_create_or_update(
         resource_group, name, resource)
     logger.warning(" - Creating Service ..")
-    while poller.done() is False:
-        sleep(5)
-
-    _update_application_insights_asc_create(cmd, resource_group, name, location,
-                                            app_insights_key, app_insights, sampling_rate,
-                                            disable_app_insights, no_wait)
+    wait_till_end(cmd, poller)
     return poller
 
 
@@ -138,8 +155,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
     # update service sku
     if sku is not None:
-        full_sku = models_20220101preview.Sku(name=_get_sku_name(sku), tier=sku)
-        updated_resource.sku = full_sku
+        updated_resource.sku = sku
         update_service_sku = True
 
     resource = client.services.get(resource_group, name)
