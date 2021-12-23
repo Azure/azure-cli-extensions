@@ -8,8 +8,6 @@ from azext_spring_cloud._utils import handle_asc_exception
 
 from ._client_factory import (cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
-                              cf_spring_cloud_20210901preview,
-                              cf_spring_cloud_20220101preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,

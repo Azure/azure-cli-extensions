@@ -21,20 +21,11 @@ from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_porta
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
-from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
-from .vendored_sdks.appplatform.v2021_09_01_preview import models as models_20210901preview
 from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
-from .vendored_sdks.appplatform.v2021_09_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
-)
-from .vendored_sdks.appplatform.v2022_01_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20220101preview
-)
-
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, RequiredArgumentMissingError
