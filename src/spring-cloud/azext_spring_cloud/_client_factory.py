@@ -39,7 +39,6 @@ def cf_spring_cloud_20210901preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20210901preview)
 
 
-
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups
