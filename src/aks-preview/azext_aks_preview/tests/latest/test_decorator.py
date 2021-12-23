@@ -2548,6 +2548,30 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
 
+    def test_check_raw_parameters(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on no updated parameter provided
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_1.check_raw_parameters()
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "cluster_autoscaler_profile": {},
+                "api_server_authorized_ip_ranges": "",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_2.check_raw_parameters()
+
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
         dec_1 = AKSPreviewUpdateDecorator(
@@ -3433,7 +3457,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             "azure.cli.command_modules.acs.decorator.Profile",
             return_value=mock_profile,
         ), patch(
-            "azure.cli.command_modules.acs.decorator.AKSUpdateDecorator.check_raw_parameters",
+            "azext_aks_preview.decorator.AKSPreviewUpdateDecorator.check_raw_parameters",
             return_value=True,
         ), patch.object(
             self.client, "get", return_value=mock_existing_mc
