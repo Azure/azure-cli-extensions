@@ -63,7 +63,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku='Standard', tags=None, no_wait=False, zone_redundant=False):
+                        sku='Standard', tags=None, zone_redundant=False, no_wait=False):
     """
     If app_insights_key, app_insights and disable_app_insights are all None,
     will still create an application insights and enable application insights.
