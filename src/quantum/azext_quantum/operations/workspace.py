@@ -19,6 +19,7 @@ from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_fro
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 POLLING_TIME_DURATION = 3  # Seconds
+WORKSPACE_CREATION_TIMEOUT = 10 * 60  # 10 Minutes
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 
 
@@ -160,10 +161,11 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
-    poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-    while not poller.done():
-        time.sleep(POLLING_TIME_DURATION)
-    quantum_workspace = poller.result()
+    poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=True)
+    # Method azure.core.polling.LROPoller.result() is blocking, so it will wait for completion.
+    quantum_workspace = poller.result(timeout=WORKSPACE_CREATION_TIMEOUT)
+    if not poller.done():
+        raise AzureInternalError(f"Creation of workspace {workspace_name} timed out after {WORKSPACE_CREATION_TIMEOUT} seconds.")
     if not skip_role_assignment:
         quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
     return quantum_workspace
