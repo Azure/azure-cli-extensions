@@ -4,12 +4,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from __future__ import print_function
-
+import base64
 import binascii
 import datetime
 import errno
-import io
 import json
 import os
 import os.path
@@ -23,114 +21,151 @@ import tempfile
 import threading
 import time
 import uuid
-import base64
 import webbrowser
-import zipfile
-from distutils.version import StrictVersion
 from math import isnan
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from six.moves.urllib.error import URLError  # pylint: disable=import-error
-import requests
-from knack.log import get_logger
-from knack.util import CLIError
-from knack.prompting import prompt_pass, NoTTYException
-
-import yaml  # pylint: disable=import-error
-from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
-from dateutil.parser import parse  # pylint: disable=import-error
-from msrestazure.azure_exceptions import CloudError
 
 import colorama  # pylint: disable=import-error
-from tabulate import tabulate  # pylint: disable=import-error
+import yaml  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
-from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+)
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core._profile import Profile
-from azure.graphrbac.models import (ApplicationCreateParameters,
-                                    PasswordCredential,
-                                    KeyCredential,
-                                    ServicePrincipalCreateParameters,
-                                    GetObjectsParameters)
+from azure.cli.core.commands.client_factory import (
+    get_mgmt_service_client,
+    get_subscription_id,
+)
+from azure.cli.core.util import (
+    get_file_json,
+    in_cloud_console,
+    sdk_no_wait,
+    shell_safe_json_parse,
+)
+from azure.graphrbac.models import (
+    ApplicationCreateParameters,
+    GetObjectsParameters,
+    KeyCredential,
+    PasswordCredential,
+    ServicePrincipalCreateParameters,
+)
+from dateutil.parser import parse  # pylint: disable=import-error
+from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
+from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_pass
+from knack.util import CLIError
+from msrestazure.azure_exceptions import CloudError
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from tabulate import tabulate  # pylint: disable=import-error
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import (ContainerServiceLinuxProfile,
-                                                                      ManagedClusterWindowsProfile,
-                                                                      ContainerServiceNetworkProfile,
-                                                                      ManagedClusterServicePrincipalProfile,
-                                                                      ContainerServiceSshConfiguration,
-                                                                      ContainerServiceSshPublicKey,
-                                                                      ManagedCluster,
-                                                                      ManagedClusterAADProfile,
-                                                                      ManagedClusterAddonProfile,
-                                                                      ManagedClusterAgentPoolProfile,
-                                                                      AgentPool,
-                                                                      AgentPoolUpgradeSettings,
-                                                                      ContainerServiceStorageProfileTypes,
-                                                                      ManagedClusterIdentity,
-                                                                      ManagedClusterAPIServerAccessProfile,
-                                                                      ManagedClusterSKU,
-                                                                      ManagedServiceIdentityUserAssignedIdentitiesValue,
-                                                                      ManagedClusterAutoUpgradeProfile,
-                                                                      KubeletConfig,
-                                                                      LinuxOSConfig,
-                                                                      ManagedClusterHTTPProxyConfig,
-                                                                      SysctlConfig,
-                                                                      ManagedClusterPodIdentityProfile,
-                                                                      ManagedClusterPodIdentity,
-                                                                      ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity,
-                                                                      WindowsGmsaProfile,
-                                                                      PowerState,
-                                                                      Snapshot,
-                                                                      CreationData)
-from ._client_factory import cf_resource_groups
-from ._client_factory import get_auth_management_client
-from ._client_factory import get_graph_rbac_management_client
-from ._client_factory import get_msi_client
-from ._client_factory import cf_resources
-from ._client_factory import get_resource_by_name
-from ._client_factory import cf_container_registry_service
-from ._client_factory import cf_storage
-from ._client_factory import cf_agent_pools
-from ._client_factory import cf_snapshots
-from ._client_factory import cf_snapshots_client
+
+from ._client_factory import (
+    cf_agent_pools,
+    cf_container_registry_service,
+    cf_snapshots_client,
+    cf_storage,
+    get_auth_management_client,
+    get_graph_rbac_management_client,
+    get_msi_client,
+    get_resource_by_name,
+)
+from ._consts import (
+    ADDONS,
+    ADDONS_DESCRIPTIONS,
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_POLICY_ADDON_NAME,
+    CONST_CONFCOM_ADDON_NAME,
+    CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_INGRESS_APPGW_SUBNET_ID,
+    CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+    CONST_KUBE_DASHBOARD_ADDON_NAME,
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE,
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_PRIVATE_DNS_ZONE_NONE,
+    CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_SCALE_DOWN_MODE_DELETE,
+    CONST_SCALE_SET_PRIORITY_REGULAR,
+    CONST_SCALE_SET_PRIORITY_SPOT,
+    CONST_SECRET_ROTATION_ENABLED,
+    CONST_SPOT_EVICTION_POLICY_DELETE,
+    CONST_VIRTUAL_NODE_ADDON_NAME,
+    CONST_VIRTUAL_NODE_SUBNET_NAME,
+)
+from ._helpers import (
+    _parse_comma_separated_list,
+    _populate_api_server_access_profile,
+    _trim_fqdn_name_containing_hcp,
+)
+from ._loadbalancer import (
+    is_load_balancer_profile_provided,
+    update_load_balancer_profile,
+)
+from ._natgateway import (
+    is_nat_gateway_profile_provided,
+    update_nat_gateway_profile,
+)
+from ._podidentity import (
+    _ensure_managed_identity_operator_permission,
+    _ensure_pod_identity_addon_is_enabled,
+    _fill_defaults_for_pod_identity_profile,
+    _is_pod_identity_addon_enabled,
+    _update_addon_pod_identity,
+)
 from ._resourcegroup import get_rg_location
-
-from ._roleassignments import add_role_assignment, create_role_assignment, build_role_scope, resolve_role_id, \
-    resolve_object_id
-
-from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
-                       _set_outbound_type, _parse_comma_separated_list,
-                       _trim_fqdn_name_containing_hcp)
-from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
-                            update_load_balancer_profile, create_load_balancer_profile)
-from ._natgateway import (create_nat_gateway_profile, update_nat_gateway_profile, is_nat_gateway_profile_provided)
-from ._consts import CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME
-from ._consts import CONST_MONITORING_ADDON_NAME
-from ._consts import CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
-from ._consts import CONST_MONITORING_USING_AAD_MSI_AUTH
-from ._consts import CONST_VIRTUAL_NODE_ADDON_NAME
-from ._consts import CONST_VIRTUAL_NODE_SUBNET_NAME
-from ._consts import CONST_AZURE_POLICY_ADDON_NAME
-from ._consts import CONST_KUBE_DASHBOARD_ADDON_NAME
-from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
-from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
-from ._consts import CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_SUBNET_ID
-from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
-from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
-from ._consts import CONST_SCALE_DOWN_MODE_DELETE
-from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
-from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL
-from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
-from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
-from ._consts import ADDONS, ADDONS_DESCRIPTIONS
-from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
-from .addonconfiguration import update_addons, enable_addons, ensure_default_log_analytics_workspace_for_monitoring, \
-    sanitize_loganalytics_ws_resource_id, ensure_container_insights_for_monitoring, add_monitoring_role_assignment, \
-    add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
+from ._roleassignments import (
+    add_role_assignment,
+    build_role_scope,
+    create_role_assignment,
+    resolve_object_id,
+    resolve_role_id,
+)
+from .addonconfiguration import (
+    add_ingress_appgw_addon_role_assignment,
+    add_monitoring_role_assignment,
+    add_virtual_node_role_assignment,
+    enable_addons,
+    ensure_container_insights_for_monitoring,
+    ensure_default_log_analytics_workspace_for_monitoring,
+    sanitize_loganalytics_ws_resource_id,
+)
+from .maintenanceconfiguration import (
+    aks_maintenanceconfiguration_update_internal,
+)
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import (
+    AgentPool,
+    AgentPoolUpgradeSettings,
+    ContainerServiceStorageProfileTypes,
+    CreationData,
+    KubeletConfig,
+    LinuxOSConfig,
+    ManagedClusterAADProfile,
+    ManagedClusterAddonProfile,
+    ManagedClusterAutoUpgradeProfile,
+    ManagedClusterHTTPProxyConfig,
+    ManagedClusterIdentity,
+    ManagedClusterPodIdentity,
+    ManagedClusterPodIdentityException,
+    ManagedClusterSKU,
+    ManagedServiceIdentityUserAssignedIdentitiesValue,
+    PowerState,
+    Snapshot,
+    SysctlConfig,
+    UserAssignedIdentity,
+    WindowsGmsaProfile,
+)
 
 logger = get_logger(__name__)
 
@@ -762,8 +797,9 @@ def aks_create(cmd,
     raw_parameters = locals()
 
     # decorator pattern
-    from .decorator import AKSPreviewCreateDecorator
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+
+    from .decorator import AKSPreviewCreateDecorator
     aks_create_decorator = AKSPreviewCreateDecorator(
         cmd=cmd,
         client=client,
@@ -989,6 +1025,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if update_lb_profile:
         from azext_aks_preview.decorator import AKSPreviewModels
+
         # store all the models used by load balancer
         lb_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).lb_models
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
@@ -1004,6 +1041,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if update_natgw_profile:
         from azext_aks_preview.decorator import AKSPreviewModels
+
         # store all the models used by nat gateway
         nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
@@ -1163,14 +1201,23 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if enable_pod_identity:
         if not _is_pod_identity_addon_enabled(instance):
+            from azext_aks_preview.decorator import AKSPreviewModels
+
+            # store all the models used by pod identity
+            pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
             # we only rebuild the pod identity profile if it's disabled before
             _update_addon_pod_identity(
                 instance, enable=True,
                 allow_kubenet_consent=enable_pod_identity_with_kubenet,
+                models=pod_identity_models
             )
 
     if disable_pod_identity:
-        _update_addon_pod_identity(instance, enable=False)
+        from azext_aks_preview.decorator import AKSPreviewModels
+
+        # store all the models used by pod identity
+        pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+        _update_addon_pod_identity(instance, enable=False, models=pod_identity_models)
 
     azure_keyvault_secrets_provider_addon_profile = None
     monitoring_addon_enabled = False
@@ -1349,7 +1396,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
             raise CLIError(
                 "A storage account must be specified, since there isn't one in the diagnostic settings.")
 
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    from msrestazure.tools import (is_valid_resource_id, parse_resource_id,
+                                   resource_id)
     if storage_account_id is None:
         if not is_valid_resource_id(storage_account):
             storage_account_id = resource_id(
@@ -1858,6 +1906,7 @@ def _ensure_aks_acr(cli_ctx,
                     subscription_id,    # pylint: disable=unused-argument
                     detach=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
     # Check if the ACR exists by resource ID.
     if is_valid_resource_id(acr_name_or_id):
         try:
@@ -3139,132 +3188,6 @@ def _get_http_proxy_config(file_path):
     return config_object
 
 
-def _is_pod_identity_addon_enabled(instance):
-    if not instance:
-        return False
-    if not instance.pod_identity_profile:
-        return False
-    return bool(instance.pod_identity_profile.enabled)
-
-
-def _ensure_pod_identity_addon_is_enabled(instance):
-    if not _is_pod_identity_addon_enabled(instance):
-        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
-                       'To enable, run "az aks update --enable-pod-identity')
-
-
-def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, customer_consent):
-    if not network_profile or not network_profile.network_plugin:
-        # invalid data
-        return
-    if network_profile.network_plugin.lower() != 'kubenet':
-        # not kubenet, no need to check
-        return
-
-    if customer_consent is None:
-        # no set this time, read from previous value
-        customer_consent = bool(
-            pod_identity_profile.allow_network_plugin_kubenet)
-
-    if not customer_consent:
-        raise CLIError(
-            '--enable-pod-identity-with-kubenet is required for enabling pod identity addon when using Kubenet network plugin')
-    pod_identity_profile.allow_network_plugin_kubenet = True
-
-
-def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
-    if not pod_identity_exceptions:
-        return
-
-    for exc in pod_identity_exceptions:
-        if exc.pod_labels is None:
-            # in previous version, we accidentally allowed user to specify empty pod labels,
-            # which will be converted to `None` in response. This behavior will break the extension
-            # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
-            # before sending to the server side.
-            exc.pod_labels = dict()
-
-
-def _fill_defaults_for_pod_identity_profile(pod_identity_profile):
-    if not pod_identity_profile:
-        return
-
-    _fill_defaults_for_pod_identity_exceptions(pod_identity_profile.user_assigned_identity_exceptions)
-
-
-def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
-    if not enable:
-        # when disable, remove previous saved value
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=False)
-        return
-
-    _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions)
-
-    if not instance.pod_identity_profile:
-        # not set before
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=enable,
-            user_assigned_identities=pod_identities,
-            user_assigned_identity_exceptions=pod_identity_exceptions,
-        )
-
-    _ensure_pod_identity_kubenet_consent(
-        instance.network_profile, instance.pod_identity_profile, allow_kubenet_consent)
-
-    instance.pod_identity_profile.enabled = enable
-    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
-    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
-
-
-def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
-    cluster_identity_object_id = None
-    if instance.identity.type.lower() == 'userassigned':
-        for identity in instance.identity.user_assigned_identities.values():
-            cluster_identity_object_id = identity.principal_id
-            break
-    elif instance.identity.type.lower() == 'systemassigned':
-        cluster_identity_object_id = instance.identity.principal_id
-    else:
-        raise CLIError('unsupported identity type: {}'.format(
-            instance.identity.type))
-    if cluster_identity_object_id is None:
-        raise CLIError('unable to resolve cluster identity')
-
-    factory = get_auth_management_client(cli_ctx, scope)
-    assignments_client = factory.role_assignments
-    cluster_identity_object_id = cluster_identity_object_id.lower()
-    scope = scope.lower()
-
-    # list all assignments of the target identity (scope) that assigned to the cluster identity
-    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
-    for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
-        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
-            continue
-
-        # sanity checks to make sure we see the correct assignments
-        if i.principal_id.lower() != cluster_identity_object_id:
-            # assignedTo() should return the assignment to cluster identity
-            continue
-        if not scope.startswith(i.scope.lower()):
-            # atScope() should return the assignments in subscription / resource group / resource level
-            continue
-
-        # already assigned
-        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
-        return
-
-    if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
-                               is_service_principal=False, scope=scope):
-        raise CLIError(
-            'Could not grant Managed Identity Operator permission for cluster')
-
-    # need more time to propogate this assignment...
-    print()
-    print('Wait 30 seconds for identity role assignment propagation.')
-    time.sleep(30)
-
-
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
                          binding_selector=None,
@@ -3293,10 +3216,15 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
         pod_identity.binding_selector = binding_selector
     pod_identities.append(pod_identity)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3317,10 +3245,15 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
                 continue
             pod_identities.append(pod_identity)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3344,10 +3277,15 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
         name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
     pod_identity_exceptions.append(exc)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3367,10 +3305,15 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
                 continue
             pod_identity_exceptions.append(exc)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3398,10 +3341,15 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
         raise CLIError(
             'pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
