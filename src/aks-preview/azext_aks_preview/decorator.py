@@ -1889,6 +1889,82 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             decorator_mode=DecoratorMode.UPDATE,
         )
 
+    def check_raw_parameters(self):
+        """Helper function to check whether any parameters are set.
+
+        Note: Overwritten in aks-preview to use different hard-coded error message.
+
+        If the values of all the parameters are the default values, the command execution will be terminated early and
+        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
+        sent.
+
+        :return: None
+        """
+        # exclude some irrelevant or mandatory parameters
+        excluded_keys = ("cmd", "client", "resource_group_name", "name")
+        # check whether the remaining parameters are set
+        # the default value None or False (and other empty values, like empty string) will be considered as not set
+        is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
+
+        # special cases
+        # some parameters support the use of empty string or dictionary to update/remove previously set values
+        is_default = (
+            self.context.get_cluster_autoscaler_profile() is None and
+            self.context.get_api_server_authorized_ip_ranges() is None
+        )
+
+        if not is_changed and is_default:
+            # Note: Uncomment the followings to automatically generate the error message.
+            # option_names = [
+            #     '"{}"'.format(format_parameter_name_to_option_name(x))
+            #     for x in self.context.raw_param.keys()
+            #     if x not in excluded_keys
+            # ]
+            # error_msg = "Please specify one or more of {}.".format(
+            #     " or ".join(option_names)
+            # )
+            # raise RequiredArgumentMissingError(error_msg)
+            raise RequiredArgumentMissingError(
+                'Please specify "--enable-cluster-autoscaler" or '
+                '"--disable-cluster-autoscaler" or '
+                '"--update-cluster-autoscaler" or '
+                '"--cluster-autoscaler-profile" or '
+                '"--enable-pod-security-policy" or '
+                '"--disable-pod-security-policy" or '
+                '"--api-server-authorized-ip-ranges" or '
+                '"--attach-acr" or '
+                '"--detach-acr" or '
+                '"--uptime-sla" or '
+                '"--no-uptime-sla" or '
+                '"--load-balancer-managed-outbound-ip-count" or '
+                '"--load-balancer-outbound-ips" or '
+                '"--load-balancer-outbound-ip-prefixes" or '
+                '"--nat-gateway-managed-outbound-ip-count" or '
+                '"--nat-gateway-idle-timeout" or '
+                '"--enable-aad" or '
+                '"--aad-tenant-id" or '
+                '"--aad-admin-group-object-ids" or '
+                '"--enable-ahub" or '
+                '"--disable-ahub" or '
+                '"--enable-managed-identity" or '
+                '"--enable-pod-identity" or '
+                '"--disable-pod-identity" or '
+                '"--auto-upgrade-channel" or '
+                '"--enable-secret-rotation" or '
+                '"--disable-secret-rotation" or '
+                '"--rotation-poll-interval" or '
+                '"--tags" or '
+                '"--windows-admin-password" or '
+                '"--enable-azure-rbac" or '
+                '"--disable-azure-rbac" or '
+                '"--enable-local-accounts" or '
+                '"--disable-local-accounts" or '
+                '"--enable-public-fqdn" or '
+                '"--disable-public-fqdn"'
+                '"--enble-windows-gmsa" or '
+                '"--nodepool-labels".'
+            )
+
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
