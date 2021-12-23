@@ -44,7 +44,7 @@ az account show
 
 # prepare running options
 # pytest options
-pytest_options="--report-path ./reports"
+pytest_options="-c --report-path ./reports"
 # parallel
 if [[ -n ${PARALLELISM} ]]; then
     pytest_options+=" -j ${PARALLELISM}"
@@ -77,7 +77,7 @@ if [[ -n ${LAST_FAILED} ]]; then
 fi
 
 # filter options
-filter_options=" -c"
+filter_options=""
 # cli matrix
 if [[ -n ${CLI_TEST_MATRIX} ]]; then
     filter_options+=" -cm ./configs/${CLI_TEST_MATRIX}"

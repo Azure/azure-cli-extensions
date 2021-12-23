@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.11.0
+++++++
+* Add Ldap support for Managed Instance for Apache Cassandra.
+
 0.10.0
 ++++++
 * Adding support for Services APIs and Graph Resources.
