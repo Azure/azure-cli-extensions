@@ -66,6 +66,9 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         disable_app_insights=None, enable_java_agent=None,
                         sku=None, tags=None, no_wait=False):
     """
+    Note: This is the command for create Spring-Cloud Standard and Basic tier. Refer tier_routing_spring_cloud.py for
+    the command definition. And _enteprise.py for Spring-Cloud Enterprise tier creation.
+
     If app_insights_key, app_insights and disable_app_insights are all None,
     will still create an application insights and enable application insights.
     :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.

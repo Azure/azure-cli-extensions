@@ -18,6 +18,10 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
                         sku=None, tags=None, no_wait=False):
+    """
+    This method creates Azure Spring Cloud enterprise tier instance, it also creates sub-component under the instance if
+    user enable these component.
+    """
     poller = _create_service(cmd, client, resource_group, name,
                              location=location,
                              service_runtime_subnet=service_runtime_subnet,

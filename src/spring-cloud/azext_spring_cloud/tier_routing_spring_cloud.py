@@ -28,6 +28,10 @@ def spring_cloud_create(cmd, client, resource_group, name,
                         sku=None,
                         tags=None,
                         no_wait=False):
+    """
+    Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
+    implementation according to --sku parameters.
+    """
     if _parse_sku_name(sku) == 'enterprise':
         return create_enterprise(cmd, client, resource_group, name,
                                  location=location,
