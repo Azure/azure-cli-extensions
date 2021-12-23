@@ -5,6 +5,7 @@
 import json
 from enum import Enum
 import os
+from time import sleep
 import codecs
 import tarfile
 import tempfile
@@ -222,6 +223,8 @@ def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'B0'
     if tier == 'STANDARD':
         return 'S0'
+    if tier == 'ENTERPRISE':
+        return 'E0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
@@ -230,6 +233,8 @@ def _get_persistent_disk_size(tier):  # pylint: disable=too-many-return-statemen
     if tier == 'BASIC':
         return 1
     if tier == 'STANDARD':
+        return 50
+    if tier == 'ENTERPRISE':
         return 50
     return 50
 
@@ -243,11 +248,22 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def wait_till_end(cmd, *pollers):
+    if not pollers:
+        return
+    progress_bar = cmd.cli_ctx.get_progress_controller()
+    progress_bar.add(message='Running')
+    progress_bar.begin()
+    while any(x and not x.done() for x in pollers):
+        progress_bar.add(message='Running')
+        sleep(5)
+
+
 def handle_asc_exception(ex):
     try:
         raise CLIError(ex.inner_exception.error.message)
     except AttributeError:
-        if hasattr(ex, 'response'):
+        if hasattr(ex, 'response') and ex.response.internal_response.text:
             response_dict = json.loads(ex.response.internal_response.text)
             raise CLIError(response_dict["error"]["message"])
         else:

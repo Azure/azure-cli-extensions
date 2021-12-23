@@ -29,6 +29,11 @@ helps['spring-cloud create'] = """
       text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
     - name: Create a new Azure Spring Cloud with VNet-injected via giving subnets resource ID
       text: az spring-cloud create -n MyService -g MyResourceGroup --app-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app --service-runtime-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc --reserved-cidr-range 10.0.0.0/16,10.1.0.0/16,10.2.0.1/16
+    - name: Create a Azure Spring Cloud Enterprise instance if the Azure Subscription never hosts Azure Spring Cloud Enterprise instance
+      text: |
+        az provider register -n Microsoft.SaaS
+        az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
+        az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise
 """
 
 helps['spring-cloud update'] = """
@@ -352,7 +357,7 @@ helps['spring-cloud app deployment start-jfr'] = """
 
 helps['spring-cloud config-server'] = """
     type: group
-    short-summary: Commands to manage Config Server in Azure Spring Cloud.
+    short-summary: (Support Standard Tier and Basic Tier) Commands to manage Config Server in Azure Spring Cloud.
 """
 
 helps['spring-cloud config-server show'] = """
