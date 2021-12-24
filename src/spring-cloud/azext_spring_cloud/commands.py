@@ -168,7 +168,7 @@ def load_command_table(self, _):
                             custom_command_type=service_registry_cmd_group,
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
-        g.custom_command('show', 'service_registry_show',
+        g.custom_show_command('show', 'service_registry_show',
                          table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
