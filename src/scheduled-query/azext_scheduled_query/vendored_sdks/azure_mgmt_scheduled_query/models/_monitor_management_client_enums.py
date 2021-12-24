@@ -11,7 +11,7 @@ from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class AlertSeverity(with_metaclass(CaseInsensitiveEnumMeta, float, Enum)):
+class AlertSeverity(with_metaclass(CaseInsensitiveEnumMeta, int, Enum)):
     """Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and
     required only for rules of the kind LogAlert.
     """

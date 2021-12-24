@@ -497,7 +497,7 @@ class ScheduledQueryRuleResource(TrackedResource):
     :ivar severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
      severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
      0, 1, 2, 3, 4.
-    :vartype severity: float or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+    :vartype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
     :ivar enabled: The flag which indicates whether this scheduled query rule is enabled. Value
      should be true or false.
     :vartype enabled: bool
@@ -565,7 +565,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'is_legacy_log_analytics_rule': {'key': 'properties.isLegacyLogAnalyticsRule', 'type': 'bool'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -589,7 +589,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         kind: Optional[Union[str, "Kind"]] = None,
         description: Optional[str] = None,
         display_name: Optional[str] = None,
-        severity: Optional[Union[float, "AlertSeverity"]] = None,
+        severity: Optional[Union[int, "AlertSeverity"]] = None,
         enabled: Optional[bool] = None,
         scopes: Optional[List[str]] = None,
         evaluation_frequency: Optional[datetime.timedelta] = None,
@@ -619,7 +619,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         :keyword severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
          severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
          0, 1, 2, 3, 4.
-        :paramtype severity: float or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+        :paramtype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
         :keyword enabled: The flag which indicates whether this scheduled query rule is enabled. Value
          should be true or false.
         :paramtype enabled: bool
@@ -735,7 +735,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
     :ivar severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
      severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
      0, 1, 2, 3, 4.
-    :vartype severity: float or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+    :vartype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
     :ivar enabled: The flag which indicates whether this scheduled query rule is enabled. Value
      should be true or false.
     :vartype enabled: bool
@@ -790,7 +790,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         'is_legacy_log_analytics_rule': {'key': 'properties.isLegacyLogAnalyticsRule', 'type': 'bool'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -812,7 +812,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         tags: Optional[Dict[str, str]] = None,
         description: Optional[str] = None,
         display_name: Optional[str] = None,
-        severity: Optional[Union[float, "AlertSeverity"]] = None,
+        severity: Optional[Union[int, "AlertSeverity"]] = None,
         enabled: Optional[bool] = None,
         scopes: Optional[List[str]] = None,
         evaluation_frequency: Optional[datetime.timedelta] = None,
@@ -837,7 +837,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         :keyword severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
          severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
          0, 1, 2, 3, 4.
-        :paramtype severity: float or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+        :paramtype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
         :keyword enabled: The flag which indicates whether this scheduled query rule is enabled. Value
          should be true or false.
         :paramtype enabled: bool
