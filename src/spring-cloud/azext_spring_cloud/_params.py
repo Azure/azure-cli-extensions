@@ -76,7 +76,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment ",
-                   default=False)
+                   default=False, is_preview=True)
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
