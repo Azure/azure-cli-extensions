@@ -16,6 +16,7 @@ DEFAULT_NAME = "default"
 
 logger = get_logger(__name__)
 
+
 def service_registry_show(cmd, client, service, resource_group):
     return client.service_registries.get(resource_group, service, DEFAULT_NAME)
 
