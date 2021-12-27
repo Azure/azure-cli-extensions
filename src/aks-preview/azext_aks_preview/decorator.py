@@ -115,6 +115,7 @@ class AKSPreviewModels(AKSModels):
         # holder for pod identity related models
         self.__pod_identity_models = None
 
+    # TODO: convert this to @property
     def init_nat_gateway_models(self) -> None:
         """Initialize models used by nat gateway.
 
