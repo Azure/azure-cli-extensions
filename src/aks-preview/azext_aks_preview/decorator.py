@@ -17,6 +17,7 @@ from azure.cli.command_modules.acs.decorator import (
     AKSCreateDecorator,
     AKSModels,
     AKSUpdateDecorator,
+    check_is_msi_cluster,
     safe_list_get,
     safe_lower,
 )
@@ -53,6 +54,7 @@ from azext_aks_preview._natgateway import (
     update_nat_gateway_profile as _update_nat_gateway_profile,
 )
 from azext_aks_preview._podidentity import (
+    _fill_defaults_for_pod_identity_profile,
     _is_pod_identity_addon_enabled,
     _update_addon_pod_identity,
 )
@@ -95,11 +97,6 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterHTTPProxyConfig = self.__cmd.get_models(
             "ManagedClusterHTTPProxyConfig",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        self.ManagedClusterPodIdentityProfile = self.__cmd.get_models(
-            "ManagedClusterPodIdentityProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -631,10 +628,16 @@ class AKSPreviewContext(AKSContext):
         enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only, **kwargs)
         # additional validation
         if enable_validation:
-            if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
-                raise RequiredArgumentMissingError(
-                    "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
-                )
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
+                    raise RequiredArgumentMissingError(
+                        "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
+                    )
+            elif self.decorator_mode == DecoratorMode.UPDATE:
+                if not check_is_msi_cluster(self.mc) and self._get_enable_pod_identity(enable_validation=False):
+                    raise RequiredArgumentMissingError(
+                        "--enable-pod-identity can only be specified for cluster enabled managed identity"
+                    )
         return enable_managed_identity
 
     def _get_enable_pod_identity(self, enable_validation: bool = False) -> bool:
@@ -666,6 +669,7 @@ class AKSPreviewContext(AKSContext):
                     raise RequiredArgumentMissingError(
                         "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
                     )
+                # validate pod identity with kubenet plugin
                 self.__validate_pod_identity_with_kubenet(
                     self.mc,
                     enable_pod_identity,
@@ -674,11 +678,16 @@ class AKSPreviewContext(AKSContext):
                     ),
                 )
             elif self.decorator_mode == DecoratorMode.UPDATE:
-                if enable_pod_identity and self._get_disable_pod_identity(enable_validation=False):
-                    raise MutuallyExclusiveArgumentError(
-                        "Cannot specify --enable-pod-identity and "
-                        "--disable-pod-identity at the same time."
-                    )
+                if enable_pod_identity:
+                    if not check_is_msi_cluster(self.mc):
+                        raise RequiredArgumentMissingError(
+                            "--enable-pod-identity can only be specified for cluster enabled managed identity"
+                        )
+                    if self._get_disable_pod_identity(enable_validation=False):
+                        raise MutuallyExclusiveArgumentError(
+                            "Cannot specify --enable-pod-identity and "
+                            "--disable-pod-identity at the same time."
+                        )
         return enable_pod_identity
 
     def get_enable_pod_identity(self) -> bool:
@@ -1880,6 +1889,82 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             decorator_mode=DecoratorMode.UPDATE,
         )
 
+    def check_raw_parameters(self):
+        """Helper function to check whether any parameters are set.
+
+        Note: Overwritten in aks-preview to use different hard-coded error message.
+
+        If the values of all the parameters are the default values, the command execution will be terminated early and
+        raise a RequiredArgumentMissingError. Neither the request to fetch or update the ManagedCluster object will be
+        sent.
+
+        :return: None
+        """
+        # exclude some irrelevant or mandatory parameters
+        excluded_keys = ("cmd", "client", "resource_group_name", "name")
+        # check whether the remaining parameters are set
+        # the default value None or False (and other empty values, like empty string) will be considered as not set
+        is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
+
+        # special cases
+        # some parameters support the use of empty string or dictionary to update/remove previously set values
+        is_default = (
+            self.context.get_cluster_autoscaler_profile() is None and
+            self.context.get_api_server_authorized_ip_ranges() is None
+        )
+
+        if not is_changed and is_default:
+            # Note: Uncomment the followings to automatically generate the error message.
+            # option_names = [
+            #     '"{}"'.format(format_parameter_name_to_option_name(x))
+            #     for x in self.context.raw_param.keys()
+            #     if x not in excluded_keys
+            # ]
+            # error_msg = "Please specify one or more of {}.".format(
+            #     " or ".join(option_names)
+            # )
+            # raise RequiredArgumentMissingError(error_msg)
+            raise RequiredArgumentMissingError(
+                'Please specify "--enable-cluster-autoscaler" or '
+                '"--disable-cluster-autoscaler" or '
+                '"--update-cluster-autoscaler" or '
+                '"--cluster-autoscaler-profile" or '
+                '"--enable-pod-security-policy" or '
+                '"--disable-pod-security-policy" or '
+                '"--api-server-authorized-ip-ranges" or '
+                '"--attach-acr" or '
+                '"--detach-acr" or '
+                '"--uptime-sla" or '
+                '"--no-uptime-sla" or '
+                '"--load-balancer-managed-outbound-ip-count" or '
+                '"--load-balancer-outbound-ips" or '
+                '"--load-balancer-outbound-ip-prefixes" or '
+                '"--nat-gateway-managed-outbound-ip-count" or '
+                '"--nat-gateway-idle-timeout" or '
+                '"--enable-aad" or '
+                '"--aad-tenant-id" or '
+                '"--aad-admin-group-object-ids" or '
+                '"--enable-ahub" or '
+                '"--disable-ahub" or '
+                '"--enable-managed-identity" or '
+                '"--enable-pod-identity" or '
+                '"--disable-pod-identity" or '
+                '"--auto-upgrade-channel" or '
+                '"--enable-secret-rotation" or '
+                '"--disable-secret-rotation" or '
+                '"--rotation-poll-interval" or '
+                '"--tags" or '
+                '"--windows-admin-password" or '
+                '"--enable-azure-rbac" or '
+                '"--disable-azure-rbac" or '
+                '"--enable-local-accounts" or '
+                '"--disable-local-accounts" or '
+                '"--enable-public-fqdn" or '
+                '"--disable-public-fqdn"'
+                '"--enble-windows-gmsa" or '
+                '"--nodepool-labels".'
+            )
+
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
@@ -1992,20 +2077,42 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             _update_addon_pod_identity(mc, enable=False, models=self.models.pod_identity_models)
         return mc
 
+    def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        """Helper function to patch the ManagedCluster object.
+
+        This is a collection of workarounds on the cli side before fixing the problems on the rp side.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # fill default values for pod labels in pod identity exceptions
+        _fill_defaults_for_pod_identity_profile(mc.pod_identity_profile)
+        return mc
+
     def update_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
-
-        Note: To reduce the risk of regression introduced by refactoring, this function is not complete and is being
-        implemented gradually.
 
         The completely updated ManagedCluster object will later be passed as a parameter to the underlying SDK
         (mgmt-containerservice) to send the actual request.
 
         :return: the ManagedCluster object
         """
+        # update the default ManagedCluster profile
+        mc = self.update_default_mc_profile()
+        # patch mc
+        mc = self.patch_mc(mc)
+        # update pod security policy
+        mc = self.update_pod_security_policy(mc)
+        # update nat gateway profile
+        mc = self.update_nat_gateway_profile(mc)
+        # update pod identity profile
+        mc = self.update_pod_identity_profile(mc)
+        return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
         """Send request to update the existing managed cluster.
 
         :return: the ManagedCluster object
         """
+        return super().update_mc(mc)

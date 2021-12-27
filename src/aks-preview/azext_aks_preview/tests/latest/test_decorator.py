@@ -822,8 +822,24 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
+        # fail on enable_managed_identity not specified
         with self.assertRaises(RequiredArgumentMissingError):
             self.assertEqual(ctx_1.get_enable_managed_identity(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"enable_pod_identity": True},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_2.attach_mc(mc_2)
+        # fail on managed identity not enabled
+        with self.assertRaises(RequiredArgumentMissingError):
+            self.assertEqual(ctx_2.get_enable_managed_identity(), False)
 
     def test_get_enable_pod_identity(self):
         # default
@@ -881,9 +897,31 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        ctx_3.attach_mc(mc_3)
         # fail on mutually exclusive enable_pod_identity and disable_pod_identity
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_enable_pod_identity()
+
+        # custom value
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_identity": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location"
+        )
+        ctx_4.attach_mc(mc_4)
+        # fail on managed identity not enabled
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_enable_pod_identity()
 
     def test_get_disable_pod_identity(self):
         # default
@@ -2352,6 +2390,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
 
         import paramiko
         from azext_aks_preview.custom import aks_create
+        from azure.cli.command_modules.acs.decorator import AKSParamDict
 
         optional_params = {}
         positional_params = []
@@ -2380,8 +2419,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "ssh_key_value": public_key,
         }
         raw_param_dict.update(optional_params)
-        from azure.cli.command_modules.acs.decorator import AKSParamDict
-
         raw_param_dict = AKSParamDict(raw_param_dict)
 
         # default value in `aks_create`
@@ -2510,6 +2547,30 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
+
+    def test_check_raw_parameters(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on no updated parameter provided
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_1.check_raw_parameters()
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "cluster_autoscaler_profile": {},
+                "api_server_authorized_ip_ranges": "",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_2.check_raw_parameters()
 
     def test_update_load_balancer_profile(self):
         # default value in `aks_update`
@@ -3236,6 +3297,9 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
             ),
+            identity=self.models.ManagedClusterIdentity(
+                type="SystemAssigned",
+            ),
         )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_pod_identity_profile(mc_3)
@@ -3249,6 +3313,9 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                 allow_network_plugin_kubenet=True,
                 user_assigned_identities=[],
                 user_assigned_identity_exceptions=[],
+            ),
+            identity=self.models.ManagedClusterIdentity(
+                type="SystemAssigned",
             ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
@@ -3282,3 +3349,209 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+    def test_patch_mc(self):
+        # custom value
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.patch_mc(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                user_assigned_identity_exceptions=[
+                    self.models.pod_identity_models.ManagedClusterPodIdentityException(
+                        name="test_name",
+                        namespace="test_namespace",
+                        pod_labels=None,
+                    )
+                ]
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.patch_mc(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            pod_identity_profile=self.models.pod_identity_models.ManagedClusterPodIdentityProfile(
+                user_assigned_identity_exceptions=[
+                    self.models.pod_identity_models.ManagedClusterPodIdentityException(
+                        name="test_name",
+                        namespace="test_namespace",
+                        pod_labels={},
+                    )
+                ]
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_mc_preview_profile(self):
+        import inspect
+
+        from azext_aks_preview.custom import aks_update
+        from azure.cli.command_modules.acs.decorator import AKSParamDict
+
+        optional_params = {}
+        positional_params = []
+        for _, v in inspect.signature(aks_update).parameters.items():
+            if v.default != v.empty:
+                optional_params[v.name] = v.default
+            else:
+                positional_params.append(v.name)
+        ground_truth_positional_params = [
+            "cmd",
+            "client",
+            "resource_group_name",
+            "name",
+        ]
+        self.assertEqual(positional_params, ground_truth_positional_params)
+
+        # prepare a dictionary of default parameters
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "name": "test_name",
+        }
+        raw_param_dict.update(optional_params)
+        raw_param_dict = AKSParamDict(raw_param_dict)
+
+        # default value in `update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mock_profile = Mock(
+            get_subscription_id=Mock(return_value="1234-5678-9012")
+        )
+        mock_existing_mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[
+                self.models.ManagedClusterAgentPoolProfile(
+                    name="nodepool1",
+                )
+            ],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            identity_profile={
+                "kubeletidentity": self.models.UserAssignedIdentity(
+                    resource_id="test_resource_id",
+                    client_id="test_client_id",
+                    object_id="test_object_id",
+                )
+            },
+        )
+        with patch(
+            "azure.cli.command_modules.acs.decorator.get_rg_location",
+            return_value="test_location",
+        ), patch(
+            "azure.cli.command_modules.acs.decorator.Profile",
+            return_value=mock_profile,
+        ), patch(
+            "azext_aks_preview.decorator.AKSPreviewUpdateDecorator.check_raw_parameters",
+            return_value=True,
+        ), patch.object(
+            self.client, "get", return_value=mock_existing_mc
+        ):
+            dec_mc_1 = dec_1.update_mc_preview_profile()
+
+        ground_truth_agent_pool_profile_1 = (
+            self.models.ManagedClusterAgentPoolProfile(
+                name="nodepool1",
+            )
+        )
+        ground_truth_network_profile_1 = (
+            self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            )
+        )
+        ground_truth_identity_1 = self.models.ManagedClusterIdentity(
+            type="SystemAssigned"
+        )
+        ground_truth_identity_profile_1 = {
+            "kubeletidentity": self.models.UserAssignedIdentity(
+                resource_id="test_resource_id",
+                client_id="test_client_id",
+                object_id="test_object_id",
+            )
+        }
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agent_pool_profile_1],
+            network_profile=ground_truth_network_profile_1,
+            identity=ground_truth_identity_1,
+            identity_profile=ground_truth_identity_profile_1,
+        )
+        raw_param_dict.print_usage_statistics()
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_mc_preview(self):
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "resource_group_name": "test_rg_name",
+                "name": "test_name",
+                "no_wait": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[
+                self.models.ManagedClusterAgentPoolProfile(
+                    name="nodepool1",
+                )
+            ],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            identity_profile={
+                "kubeletidentity": self.models.UserAssignedIdentity(
+                    resource_id="test_resource_id",
+                    client_id="test_client_id",
+                    object_id="test_object_id",
+                )
+            },
+        )
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_mc_preview(None)
+        mock_profile = Mock(
+            get_subscription_id=Mock(return_value="test_subscription_id")
+        )
+        with patch(
+            "azure.cli.command_modules.acs.decorator.Profile",
+            return_value=mock_profile,
+        ), patch(
+            "azure.cli.command_modules.acs.decorator._put_managed_cluster_ensuring_permission"
+        ) as put_mc:
+            dec_1.update_mc_preview(mc_1)
+        put_mc.assert_called_with(
+            self.cmd,
+            self.client,
+            "test_subscription_id",
+            "test_rg_name",
+            "test_name",
+            mc_1,
+            False,
+            False,
+            False,
+            False,
+            None,
+            True,
+            None,
+            {},
+            False,
+        )
