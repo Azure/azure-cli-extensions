@@ -1,0 +1,1061 @@
+interactions:
+- request:
+    body: '{"tags": {"additionalProps1": "additional properties"}, "location": "EastUS",
+      "properties": {"ledgerType": "Public", "aadBasedSecurityPrincipals": [{"principalId":
+      "34621747-6fc8-4771-a2eb-72f31c461f2e", "tenantId": "bce123b9-2b7b-4975-8360-5ca0b9b1cd08",
+      "ledgerRoleName": "Administrator"}], "certBasedSecurityPrincipals": [{"cert":
+      "-----BEGIN CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+      CERTIFICATE-----", "ledgerRoleName": "Reader"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1004'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","name":"DummyLedgerName","type":"microsoft.confidentialledger/ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"systemData":{"createdBy":"lyshi@microsoft.com","createdByType":"User","createdAt":"2021-12-27T18:10:00.6109228Z","lastModifiedBy":"lyshi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-12-27T18:10:00.6109228Z"},"properties":{"ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:10:12 GMT
+      etag:
+      - '"6d00e247-0000-0100-0000-61ca01840000"'
+      expires:
+      - '-1'
+      location:
+      - ledgers
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT10M
+      x-ms-image-digest:
+      - sha256:eb52264e04c28a15db5cc165ad1af3d641dca8487e84f5db6421737d38396193
+      x-ms-image-tag:
+      - 1.0.01796.263-737d1ad8305f306575229813108842c9bd601f8f
+      x-ms-machinename:
+      - controlplane-5c55c6df8c-x2bh5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:10:42 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:11:13 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:11:43 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:12:13 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:12:43 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:13:13 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:13:43 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:14:13 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:14:43 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:15:13 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:15:44 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:16:14 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:16:44 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:17:14 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:17:45 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:18:15 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:18:45 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:19:15 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:19:46 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2021-12-27T18:10:07.8339315Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:20:16 GMT
+      etag:
+      - '"ba006726-0000-0100-0000-61ca017f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","name":"d194ccae-72ee-42b6-ba2d-32c5ccfcf052*5B9A558103B608D2AE1A519AC0EE815F7E5B31E08C5410408D22E66272D3BEB5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Failed","startTime":"2021-12-27T18:10:07.8339315Z","endTime":"2021-12-27T18:20:43.8248153Z","error":{"code":"InternalServerError","message":"Operation
+        Failed"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '625'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 Dec 2021 18:20:46 GMT
+      etag:
+      - '"ba002d36-0000-0100-0000-61ca03fb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
