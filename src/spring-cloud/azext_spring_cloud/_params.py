@@ -29,11 +29,11 @@ service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
-            help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
-            arg_group='Source Code deploy')
+                                   help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
+                                   arg_group='Source Code deploy')
 # app cpu and memory
-cpu_type= CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
-memort_type= CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
+cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
+memort_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 
 
 # pylint: disable=too-many-statements
@@ -243,7 +243,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
-    
+
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloyment_create_path)
 
