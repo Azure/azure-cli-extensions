@@ -17,7 +17,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku=None, tags=None, no_wait=False):
+                        sku=None, tags=None, zone_redundant=False, no_wait=False):
     """
     This method creates Azure Spring Cloud enterprise tier instance, it also creates sub-component under the instance if
     user enable these component.
@@ -29,6 +29,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                              reserved_cidr_range=reserved_cidr_range,
                              service_runtime_network_resource_group=service_runtime_network_resource_group,
                              app_network_resource_group=app_network_resource_group,
+                             zone_redundant=zone_redundant,
                              sku=sku,
                              tags=tags)
     return poller

@@ -64,7 +64,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku=None, tags=None, no_wait=False):
+                        sku=None, tags=None, zone_redundant=False, no_wait=False):
     """
     Note: This is the command for create Spring-Cloud Standard and Basic tier. Refer tier_routing_spring_cloud.py for
     the command definition. And _enteprise.py for Spring-Cloud Enterprise tier creation.
@@ -85,6 +85,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                              reserved_cidr_range=reserved_cidr_range,
                              service_runtime_network_resource_group=service_runtime_network_resource_group,
                              app_network_resource_group=app_network_resource_group,
+                             zone_redundant=zone_redundant,
                              sku=sku,
                              tags=tags)
     _update_application_insights_asc_create(cmd, resource_group, name, location,
@@ -96,13 +97,14 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
 def _create_service(cmd, client, resource_group, name, location=None,
                     service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                     service_runtime_network_resource_group=None, app_network_resource_group=None,
+                    zone_redundant=False,
                     sku=None, tags=None):
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
-    properties = models.ClusterResourceProperties()
+    properties = models_20220101preview.ClusterResourceProperties()
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
-        properties.network_profile = models.NetworkProfile(
+        properties.network_profile = models_20220101preview.NetworkProfile(
             service_runtime_subnet_id=service_runtime_subnet,
             app_subnet_id=app_subnet,
             service_cidr=reserved_cidr_range,
@@ -110,7 +112,8 @@ def _create_service(cmd, client, resource_group, name, location=None,
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
-    resource = models.ServiceResource(location=location, sku=sku, properties=properties, tags=tags)
+    properties.zone_redundant = zone_redundant
+    resource = models_20220101preview.ServiceResource(location=location, sku=sku, properties=properties, tags=tags)
 
     poller = client.services.begin_create_or_update(
         resource_group, name, resource)
@@ -148,7 +151,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     Will be decommissioned in future releases.
     :param app_insights_key: Connection string or Instrumentation key
     """
-    updated_resource = models.ServiceResource()
+    updated_resource = models_20220101preview.ServiceResource()
     update_service_tags = False
     update_service_sku = False
 
@@ -159,7 +162,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
     resource = client.services.get(resource_group, name)
     location = resource.location
-    updated_resource_properties = models.ClusterResourceProperties()
+    updated_resource_properties = models_20220101preview.ClusterResourceProperties()
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
