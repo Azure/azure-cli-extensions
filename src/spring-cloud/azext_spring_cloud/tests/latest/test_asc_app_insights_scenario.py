@@ -175,6 +175,17 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self._test_asc_update_with_suffix(
             rg, service_name, True, '--app-insights-key "{}"'.format(ai_c_string))
 
+    def test_az_asc_create(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-az1',
+            'location': 'eastus2euap',
+            'rg': 'cli'
+        })
+        self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --disable-app-insights=true --zone-redundant=true', checks=[
+            self.check('properties.zoneRedundant', True)
+        ])
+        self._clean_service(self.kwargs['rg'], self.kwargs['serviceName'])
+
     def test_negative_asc_update(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
