@@ -2,10 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from os import cpu_count
-from typing import Container
 import unittest
-import copy
 from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError

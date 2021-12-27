@@ -5,7 +5,6 @@
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
-from os import name
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
 from azure.core.exceptions import (ResourceNotFoundError)
@@ -95,7 +94,7 @@ def validate_deloyment_create_path(namespace):
 def _deploy_path_mutual_exclusive(args):
     valued_args = [x for x in args if x]
     if len(valued_args) > 1:
-        raise InvalidArgumentValueError('One and only one of --artifact-path, --source-path, --container-image must be provided.')
+        raise InvalidArgumentValueError('At most one of --artifact-path, --source-path, --container-image must be provided.')
 
 
 def validate_cpu(namespace):
