@@ -53,6 +53,7 @@ class BasicTest(unittest.TestCase):
         deployment.properties.source.relative_path = 'my-path'
         deployment.properties.source.runtime_version = 'Java_11'
         deployment.properties.source.version = '123'
+        deployment.properties.source.jvm_options = None
 
         deployment.properties.deployment_settings.environment_variables = {'foo': 'bar'}
         deployment.properties.deployment_settings.resource_requests.cpu = '2'
@@ -331,4 +332,88 @@ class TestAppCreate(BasicTest):
 
 
 class TestDeploymentCreate(BasicTest):
-    pass
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.put_deployment_resource = None
+
+    def _get_basic_mock_client(self, sku='Standard', *deployments):
+        client = super()._get_basic_mock_client(sku=sku)
+        client.deployments.list.return_value = deployments
+        return client
+
+    def _execute(self, *args, **kwargs):
+        client = kwargs.pop('client', None) or self._get_basic_mock_client()
+        deployment_create(_get_test_cmd(), client, *args, **kwargs)
+
+        call_args = client.deployments.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(5, len(call_args[0][0]))
+        self.assertEqual(args[0:4], call_args[0][0][0:4])
+        self.put_deployment_resource = call_args[0][0][4]
+
+    def test_create_deployment_without_active(self):
+        client = self._get_basic_mock_client()
+        self._execute('rg', 'asc', 'app', 'green', cpu='2', memory='2Gi', instance_count=3, client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual(3, resource.sku.capacity)
+        self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+
+    def test_create_deployment_with_active(self):
+        deployment = self._get_deployment()
+        deployment.properties.active = True
+        deployment.properties.source.jvm_options = 'test-options'
+        client = self._get_basic_mock_client('Standard', deployment)
+        self._execute('rg', 'asc', 'app', 'green', cpu=None, memory=None, instance_count=None, client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual(2, resource.sku.capacity)
+        self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+        self.assertEqual('test-options', resource.properties.source.jvm_options)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
+        self.assertEqual('<default>', resource.properties.source.relative_path)
+        self.assertEqual('Jar', resource.properties.source.type)
+    
+    def test_create_deployment_with_active_override(self):
+        deployment = self._get_deployment()
+        deployment.properties.active = True
+        deployment.properties.source.jvm_options = 'test-options'
+        client = self._get_basic_mock_client('Standard', deployment)
+        self._execute('rg', 'asc', 'app', 'green', cpu='3', memory=None, instance_count=5, runtime_version='NetCore_31', client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual(5, resource.sku.capacity)
+        self.assertEqual('3', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+        self.assertEqual('NetCoreZip', resource.properties.source.type)
+        self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
+        self.assertEqual('<default>', resource.properties.source.relative_path)
+    
+    def test_create_deployment_with_active_is_source(self):
+        deployment = self._get_deployment()
+        deployment.properties.active = True
+        deployment.properties.source.type = 'Source'
+        client = self._get_basic_mock_client('Standard', deployment)
+        self._execute('rg', 'asc', 'app', 'green', cpu='3', memory=None, instance_count=5, client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual(5, resource.sku.capacity)
+        self.assertEqual('3', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+        self.assertIsNone(resource.properties.source.jvm_options)
+        self.assertEqual('Jar', resource.properties.source.type)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
+        self.assertEqual('<default>', resource.properties.source.relative_path)
+    
+    def test_create_deployment_with_active_is_container(self):
+        deployment = self._get_deployment()
+        deployment.properties.active = True
+        deployment.properties.source.type = 'Container'
+        client = self._get_basic_mock_client('Standard', deployment)
+        self._execute('rg', 'asc', 'app', 'green', cpu='3', memory=None, instance_count=5, client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual(5, resource.sku.capacity)
+        self.assertEqual('3', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+        self.assertIsNone(resource.properties.source.jvm_options)
+        self.assertEqual('Jar', resource.properties.source.type)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
+        self.assertEqual('<default>', resource.properties.source.relative_path)

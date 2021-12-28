@@ -249,7 +249,9 @@ def app_deploy(cmd, client, resource_group, service, name,
     }
 
     # inherit source type or runtime version from the existing deployment if not specified in command.
-    kwargs.update(options_source_assign_from({}, deployment, **kwargs))
+    orginal_source_options = options_source_assign_from({}, deployment)
+    orginal_source_options.update({k: v for k, v in kwargs.items() if v})
+    kwargs.update(orginal_source_options)
 
     deploy = deployable_selector(**kwargs)
     kwargs['source_type'] = deploy.get_source_type(**kwargs)
@@ -371,7 +373,8 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
             logger.warning('No production deployment found, use --skip-clone-settings to skip copying settings from '
                            'production deployment.')
         else:
-            options = options_assign_from(options, active_deployment, **kwargs)
+            options = options_assign_from(options, active_deployment)
     if not options.get('sku'):
         options['sku'] = get_spring_cloud_sku(client, resource_group, service)
+    options.update({k: v for k, v in kwargs.items() if v})
     return options

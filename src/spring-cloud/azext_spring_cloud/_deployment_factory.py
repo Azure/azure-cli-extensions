@@ -60,9 +60,11 @@ class DefaultDeployment:
         '''
         If the required method is PUT, should put the properties on original deployment back.
         '''
+        options = {}
         if self.require_put_method(deployment_resource, **kwargs):
-            return options_settings_assign_from({}, deployment_resource, **kwargs)
-        return {}
+            return options_settings_assign_from(options, deployment_resource)
+        options.update({k: v for k, v in kwargs.items() if v})
+        return options
 
     def get_deploy_method(self, client, **kwargs):
         if self.require_put_method(**kwargs):
@@ -102,12 +104,12 @@ def deployment_selector(**kwargs):
     return DefaultDeployment(**kwargs)
 
 
-def options_assign_from(options, original, **kwargs):
-    options = options_settings_assign_from(options, original, **kwargs)
-    return options_source_assign_from(options, original, **kwargs)
+def options_assign_from(options, original):
+    options = options_settings_assign_from(options, original)
+    return options_source_assign_from(options, original)
 
 
-def options_settings_assign_from(options, original, **kwargs):
+def options_settings_assign_from(options, original):
     options['cpu'] = original.properties.deployment_settings.resource_requests.cpu
     options['memory'] = original.properties.deployment_settings.resource_requests.memory
     options['instance_count'] = original.sku.capacity
@@ -115,14 +117,12 @@ def options_settings_assign_from(options, original, **kwargs):
     options['env'] = original.properties.deployment_settings.environment_variables
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
-    options.update({k: v for k, v in kwargs.items() if v})
     return options
 
 
-def options_source_assign_from(options, original, **kwargs):
+def options_source_assign_from(options, original):
     if hasattr(original.properties.source, 'jvm_options'):
         options['jvm_options'] = original.properties.source.jvm_options
     if hasattr(original.properties.source, 'runtime_version'):
         options['runtime_version'] = original.properties.source.runtime_version
-    options.update({k: v for k, v in kwargs.items() if v})
     return options
