@@ -24,6 +24,11 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220101preview
     )
 
+    app_command = CliCommandType(
+        operations_tmpl='azext_spring_cloud.app#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
     with self.command_group('spring-cloud', custom_command_type=spring_cloud_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
@@ -58,11 +63,14 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app', custom_command_type=app_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
-        g.custom_command('update', 'app_update')
+        g.custom_command('update', 'app_update', supports_no_wait=True)
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
+
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
         g.custom_command('unset-deployment', 'app_unset_deployment',
@@ -92,9 +100,12 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app deployment', custom_command_type=app_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
+
+    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_cloud_deployment_output)
         g.custom_show_command(

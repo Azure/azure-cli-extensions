@@ -318,6 +318,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
     return app_updated
 
 
+# This function is deprecated, see app.py#app_create
 def app_create(cmd, client, resource_group, service, name,
                assign_endpoint=None,
                cpu=None,
@@ -491,6 +492,7 @@ def _format_user_source(file_type,
         return None
 
 
+# This function is deprecated, see app.py#app_update
 def app_update(cmd, client, resource_group, service, name,
                assign_endpoint=None,
                deployment=None,
@@ -667,6 +669,7 @@ def app_get(cmd, client,
     return app
 
 
+# This function is deprecated, see app.py#app_deploy
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
@@ -928,6 +931,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
     return app_updated
 
 
+# This function is deprecated, see app.py#deployment_create
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
