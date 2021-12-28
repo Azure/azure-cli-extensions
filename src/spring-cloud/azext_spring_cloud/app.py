@@ -16,15 +16,19 @@ from ._app_validator import _get_active_deployment
 
 
 logger = get_logger(__name__)
-APPLICATION_CONFIGURATION_SERVICE_NAME = "ApplicationConfigurationService"
-APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "ConfigFilePatterns"
 DEFAULT_DEPLOYMENT_NAME = "default"
-DEFAULT_BUILD_SERVICE_NAME = "default"
 
 # pylint: disable=line-too-long
-NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
+#  App's command usually operates an Spring/Apps and the active Spring/Apps/Deployments under the app.
+# The general idea of these command is putting all input command in parameter dict and let the Resource factory to construct the payload.
+# - _app_factory construct the App's properties
+# - _deployment_factory construct the Deployment's properties, which includes source and other settings.
+# - There are 5 types for different deployment source types, here use _deployment_source_factory to construct the payload according to the source_type
+# - A deployment must consume a path can be deployable, it can be a relative path, custom container or build result resource id,
+#   - _deployment_deployable_factory determines the deployable type and upload necessary binary/code to the service when constructing the deployable_path.
+#   - _deployment_uploadable_factory will upload the local file to a given destination, or compress the local folder and upload according to the parameter.
 
 def app_create(cmd, client, resource_group, service, name,
                # deployment.settings
