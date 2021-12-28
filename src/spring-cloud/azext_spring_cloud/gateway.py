@@ -175,7 +175,7 @@ def _update_api_metadata(existing, api_title, api_description, api_documentation
 
 
 def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
-    if allowed_origins is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
+    if not any([allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers]):
         return None
     cors = existing if existing is not None else models.GatewayCorsProperties()
     if allowed_origins:
