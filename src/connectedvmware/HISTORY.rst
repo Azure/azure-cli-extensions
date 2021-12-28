@@ -5,7 +5,9 @@ Release History
 
 0.1.6
 ++++++
-* Fixed vm update, inventory item show issue and add tags support.
+* Fix vm update
+* Fix inventory item show
+* Add support for tagging
 
 0.1.5
 ++++++
