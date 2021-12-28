@@ -219,5 +219,5 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
         git_result = result.git_property_validation_result
         if not git_result.is_valid:
             validation_result = git_result.git_repos_validation_result
-            filter_result = [{'name':x.name, 'messages':x.messages} for x in validation_result if len(x.messages) > 0]
+            filter_result = [{'name': x.name, 'messages': x.messages} for x in validation_result if len(x.messages) > 0]
             raise CLIError("Application Configuration Service settings contain errors.\n{}".format(json.dumps(filter_result, indent=2)))
