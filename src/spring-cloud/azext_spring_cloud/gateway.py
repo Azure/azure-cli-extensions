@@ -4,15 +4,17 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
-from knack.util import CLIError
-from knack.log import get_logger
-from azure.cli.core.util import sdk_no_wait
-from .custom import LOG_RUNNING_PROMPT
 
+from azure.cli.core.util import sdk_no_wait
+from knack.log import get_logger
+from knack.util import CLIError
+
+from .custom import LOG_RUNNING_PROMPT
+from .vendored_sdks.appplatform.v2022_01_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_NAME = "default"
+
 
 def gateway_update(cmd, client, resource_group, service,
                    cpu=None,
@@ -205,7 +207,7 @@ def _update_app_resource_id(client, resource_group, service, app_name, app_resou
     return app_resource_id
 
 
-def _update_routes(routes_file, routes_json, rotues):
+def _update_routes(routes_file, routes_json, routes):
     if routes_file is not None:
         with open(routes_file, 'r') as json_file:
             routes = json.load(json_file)
