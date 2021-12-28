@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from knack.util import CLIError
 from azure.cli.testsdk import ScenarioTest
@@ -164,6 +164,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         resource_list = self.cmd('az connectedvmware vm disk list -g {rg} --vm-name {vm_name}').get_output_in_json()
         # At least 1 disk should be there for the vm resource.
         assert len(resource_list) >= 1
+
+        # Update VM.
+        self.cmd('az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2')
 
         # Stop VM.
         self.cmd('az connectedvmware vm stop -g {rg} --name {vm_name}')

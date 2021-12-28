@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Fixed vm update, inventory item show issue and add tags support.
+
 0.1.5
 ++++++
 * Fixed inventory item id issue.
