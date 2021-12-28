@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
