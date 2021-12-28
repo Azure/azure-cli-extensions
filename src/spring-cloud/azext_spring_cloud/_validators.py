@@ -13,13 +13,13 @@ from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from ._utils import _get_file_type
-from msrestazure.tools import is_valid_resource_id
-from msrestazure.tools import parse_resource_id
-from msrestazure.tools import resource_id
+from knack.validators import DefaultStr
+from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id
+from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
-from ._utils import ApiType
-from ._utils import _get_rg_location
+from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from .vendored_sdks.appplatform.v2020_07_01 import models
 
 logger = get_logger(__name__)
 
@@ -40,11 +40,37 @@ def validate_location(namespace):
                                       for piece in location_slice])
 
 
-def validate_sku(namespace):
-    if namespace.sku is not None:
-        namespace.sku = namespace.sku.upper()
-        if namespace.sku not in ['BASIC', 'STANDARD']:
-            raise InvalidArgumentValueError("The pricing tier only accepts value [Basic, Standard]")
+def validate_sku(cmd, namespace):
+    if not namespace.sku:
+        return
+    if namespace.sku.lower() == 'enterprise':
+        _validate_saas_provider(cmd, namespace)
+        _validate_terms(cmd, namespace)
+    namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+
+
+def _validate_saas_provider(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import ResourceType
+    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).providers
+    if client.get('Microsoft.SaaS').registration_state != 'Registered':
+        raise InvalidArgumentValueError('Microsoft.SaaS resource provider is not registered.\n'
+                                        'Run "az provider register -n Microsoft.SaaS" to register.')
+
+
+def _validate_terms(cmd, namespace):
+    from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
+    term = client.get(offer_type="virtualmachine",
+                      publisher_id='vmware-inc',
+                      offer_id='azure-spring-cloud-vmware-tanzu-2',
+                      plan_id='tanzu-asc-ent-mtr')
+    if not term.accepted:
+        raise InvalidArgumentValueError('Terms for Azure Spring Cloud Enterprise is not accepted.\n'
+                                        'Run "az term accept --publisher vmware-inc '
+                                        '--product azure-spring-cloud-vmware-tanzu-2 '
+                                        '--plan tanzu-asc-ent-mtr" to accept the term.')
 
 
 def validate_instance_count(namespace):
@@ -429,7 +455,7 @@ def validate_vnet_required_parameters(namespace):
        not namespace.reserved_cidr_range and \
        not namespace.vnet:
         return
-    if namespace.sku and namespace.sku.lower() == 'basic':
+    if namespace.sku and _parse_sku_name(namespace.sku) == 'basic':
         raise InvalidArgumentValueError('Virtual Network Injection is not supported for Basic tier.')
     if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
@@ -442,6 +468,14 @@ def validate_node_resource_group(namespace):
     _validate_resource_group_name(namespace.service_runtime_network_resource_group,
                                   'service-runtime-network-resource-group')
     _validate_resource_group_name(namespace.app_network_resource_group, 'app-network-resource-group')
+
+
+def _parse_sku_name(sku):
+    if not sku:
+        return 'standard'
+    if type(sku) is str or type(sku) is DefaultStr:
+        return sku.lower()
+    return sku.tier.lower()
 
 
 def _validate_resource_group_name(name, message_name):

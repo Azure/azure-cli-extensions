@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
-from ._client_factory import (cf_app_services,
-                              cf_spring_cloud,
+from ._client_factory import (cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
-                              cf_spring_cloud_20210901preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
@@ -20,17 +19,25 @@ from ._transformers import (transform_spring_cloud_table_output,
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
-    with self.command_group('spring-cloud', client_factory=cf_app_services,
-                            exception_handler=handle_asc_exception) as g:
-        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True, client_factory=cf_spring_cloud)
-        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True, client_factory=cf_spring_cloud)
-        g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
-        g.custom_command('start', 'spring_cloud_start', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
-        g.custom_command('stop', 'spring_cloud_stop', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
-        g.custom_command('list', 'spring_cloud_list', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
+    spring_cloud_routing_util = CliCommandType(
+        operations_tmpl='azext_spring_cloud.tier_routing_spring_cloud#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
 
-    with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud,
+    with self.command_group('spring-cloud', custom_command_type=spring_cloud_routing_util,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
+
+    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
+        g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
+        g.custom_command('start', 'spring_cloud_start', supports_no_wait=True)
+        g.custom_command('stop', 'spring_cloud_stop', supports_no_wait=True)
+        g.custom_command('list', 'spring_cloud_list', table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
+
+    with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('enable ', 'enable_test_endpoint')
         g.custom_show_command('disable ', 'disable_test_endpoint')
@@ -51,17 +58,17 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210901preview,
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update')
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
-        g.custom_command('scale', 'app_scale', supports_no_wait=True)
-        g.custom_command('show-deploy-log', 'app_get_build_log')
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
         g.custom_command('unset-deployment', 'app_unset_deployment',
                          supports_no_wait=True)
+        g.custom_command('scale', 'app_scale', supports_no_wait=True)
+        g.custom_command('show-deploy-log', 'app_get_build_log')
         g.custom_command('delete', 'app_delete')
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
@@ -74,18 +81,18 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
-    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud,
+    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign')
         g.custom_command('remove', 'app_identity_remove')
         g.custom_show_command('show', 'app_identity_show')
 
-    with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud,
+    with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud_20220101preview,
                             deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20210901preview,
+    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
         g.custom_command('list', 'deployment_list',
@@ -97,7 +104,7 @@ def load_command_table(self, _):
         g.custom_command('generate-thread-dump', 'deployment_generate_thread_dump')
         g.custom_command('start-jfr', 'deployment_start_jfr')
 
-    with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud,
+    with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'binding_list')
         g.custom_show_command('show', 'binding_get')
@@ -109,7 +116,7 @@ def load_command_table(self, _):
         g.custom_command('redis update', 'binding_redis_update')
         g.custom_show_command('remove', 'binding_remove')
 
-    with self.command_group('spring-cloud storage', client_factory=cf_spring_cloud_20210901preview,
+    with self.command_group('spring-cloud storage', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'storage_list')
         g.custom_show_command('show', 'storage_get')
@@ -118,7 +125,7 @@ def load_command_table(self, _):
         g.custom_command('remove', 'storage_remove')
         g.custom_command('list-persistent-storage', "storage_list_persistent_storage", table_transformer=transform_app_table_output)
 
-    with self.command_group('spring-cloud certificate', client_factory=cf_spring_cloud_20210901preview,
+    with self.command_group('spring-cloud certificate', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('add', 'certificate_add')
         g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_cloud_certificate_output)
@@ -126,7 +133,7 @@ def load_command_table(self, _):
         g.custom_command('remove', 'certificate_remove')
         g.custom_command('list-reference-app', 'certificate_list_reference_app', table_transformer=transform_app_table_output)
 
-    with self.command_group('spring-cloud app custom-domain', client_factory=cf_spring_cloud,
+    with self.command_group('spring-cloud app custom-domain', client_factory=cf_spring_cloud_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('bind', 'domain_bind')
         g.custom_show_command('show', 'domain_show', table_transformer=transform_spring_cloud_custom_domain_output)
