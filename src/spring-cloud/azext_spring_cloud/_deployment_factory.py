@@ -30,25 +30,25 @@ class DefaultDeployment:
 
     def format_settings(self, **kwargs):
         return models.DeploymentSettings(
-            resource_requests = self._format_resource_request(**kwargs),
+            resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
-            environment_variables = self._get_env(**kwargs)
+            environment_variables=self._get_env(**kwargs)
         )
 
     def _format_container_probe(self, disable_probe=None, **_):
         if disable_probe is None:
             return None
         return models.ContainerProbeSettings(
-                disable_probe=disable_probe
-            )
+            disable_probe=disable_probe
+        )
 
     def _format_resource_request(self, cpu=None, memory=None, **_):
         if not cpu and not memory:
             return None
         return models.ResourceRequests(
-                cpu=cpu,
-                memory=memory
-            )
+            cpu=cpu,
+            memory=memory
+        )
 
     def _get_env(self, env, **_):
         return env

@@ -86,7 +86,6 @@ class SourceBuildDeployableBuilder(UploadDeployableBuilder):
     def get_source_type(self, **_):
         return 'Source'
 
-
     def retrieve_log(self, client, resource_group, service, app, deployment, **_):
         def get_log_url():
             try:

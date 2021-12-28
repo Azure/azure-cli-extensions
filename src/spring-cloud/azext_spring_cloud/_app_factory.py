@@ -8,6 +8,7 @@ from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueEr
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from azure.cli.core.util import get_file_json
 
+
 class DefaultApp:
     def format_resource(self, **kwargs):
         return models.AppResource(
@@ -30,15 +31,15 @@ class DefaultApp:
     def _load_temp_disk(self, enable_temporary_disk=None, **_):
         if enable_temporary_disk is not None:
             return models.TemporaryDisk(
-                   size_in_gb=5, mount_path="/tmp"
-                )
+                size_in_gb=5, mount_path="/tmp"
+            )
 
     def _load_persistent_disk(self, enable_persistent_storage=None, **_):
-        if enable_persistent_storage is not None: # False matters
+        if enable_persistent_storage is not None:  # False matters
             return models.PersistentDisk(
-                    size_in_gb=self._get_persistent_disk_size(enable_persistent_storage),
-                    mount_path='/persistent'
-                )
+                size_in_gb=self._get_persistent_disk_size(enable_persistent_storage),
+                mount_path='/persistent'
+            )
 
     def _get_persistent_disk_size(self, enable_persistent_storage):
         return 50 if enable_persistent_storage else 0

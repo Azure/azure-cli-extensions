@@ -30,6 +30,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 #   - _deployment_deployable_factory determines the deployable type and upload necessary binary/code to the service when constructing the deployable_path.
 #   - _deployment_uploadable_factory will upload the local file to a given destination, or compress the local folder and upload according to the parameter.
 
+
 def app_create(cmd, client, resource_group, service, name,
                # deployment.settings
                cpu=None,
@@ -93,7 +94,6 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_factory = deployment_selector(**create_deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(sku)
     deployment_factory.validate_instance_count(instance_count)
-
 
     app_resource = app_factory.format_resource(**create_app_kwargs, **basic_kwargs)
     logger.warning('[1/3] Creating app {}'.format(name))
@@ -170,7 +170,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
-    deployment_kwargs.update(deployment_factory.source_factory \
+    deployment_kwargs.update(deployment_factory.source_factory
                              .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
@@ -187,8 +187,9 @@ def app_update(cmd, client, resource_group, service, name,
     wait_till_end(cmd, app_poller, poller)
     return app_get(cmd, client, resource_group, service, name)
 
+
 def app_deploy(cmd, client, resource_group, service, name,
-               deployment=None, # set by validator
+               deployment=None,  # set by validator
                # only used in validator
                disable_validation=None,
                # deployment.source
@@ -356,6 +357,7 @@ def _ensure_app_not_exist(client, resource_group, service, name):
         return
     if app:
         raise CLIError('App {} already exist.'.format(app.id))
+
 
 def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_group, service, app, **kwargs):
     options = {
