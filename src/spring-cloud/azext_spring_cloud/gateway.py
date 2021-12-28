@@ -5,9 +5,9 @@
 
 import json
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
-from knack.util import CLIError
 
 from .custom import LOG_RUNNING_PROMPT
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
@@ -197,7 +197,7 @@ def _validate_route_config_exist(client, resource_group, service, name):
     route_configs = client.gateway_route_configs.list(
         resource_group, service, DEFAULT_NAME)
     if name in (route_config.name for route_config in list(route_configs)):
-        raise CLIError("Route config " + name + " already exists")
+        raise InvalidArgumentValueError("Route config " + name + " already exists")
 
 
 def _update_app_resource_id(client, resource_group, service, app_name, app_resource_id):
