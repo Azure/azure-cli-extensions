@@ -1958,6 +1958,7 @@ def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_e
             response = requests.post(uri, json=data, verify=tls_verify)
             return response
         except Exception as e:
+            time.sleep(5)
             if i != consts.API_CALL_RETRIES - 1:
                 pass
             else:
