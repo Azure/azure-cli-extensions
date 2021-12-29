@@ -6,7 +6,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import json
 
-from azure.cli.core.azclierror import ClientRequestError
+from azure.cli.core.azclierror import ClientRequestError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError
@@ -50,7 +50,7 @@ def application_configuration_service_git_add(cmd, client, service, resource_gro
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repos = acs_resource.properties.settings.git_property.repositories
     if next((r for r in repos if r.name == name), None) is not None:
-        raise ClientRequestError("Repo '{}' already exists.".format(name))
+        raise ValidationError("Repo '{}' already exists.".format(name))
     repos.append(repo)
     acs_resource.properties.settings.git_property.repositories = repos
 
@@ -214,11 +214,11 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
     try:
         result = sdk_no_wait(False, client.configuration_services.begin_validate, resource_group, service, DEFAULT_NAME, acs_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if result is not None and result.git_property_validation_result is not None:
         git_result = result.git_property_validation_result
         if not git_result.is_valid:
             validation_result = git_result.git_repos_validation_result
             filter_result = [{'name': x.name, 'messages': x.messages} for x in validation_result if len(x.messages) > 0]
-            raise CLIError("Application Configuration Service settings contain errors.\n{}".format(json.dumps(filter_result, indent=2)))
+            raise ClientRequestError("Application Configuration Service settings contain errors.\n{}".format(json.dumps(filter_result, indent=2)))
