@@ -50,7 +50,7 @@ coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -m pytest tests/lates
 # generate coverage report
 coverage combine || true
 coverage report -m -i
-coverage json -o coverage_acs.json -i
+coverage json -o coverage.json -i
 popd
 
 # copy coverage report
