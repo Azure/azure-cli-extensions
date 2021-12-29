@@ -2,22 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
-from azure.cli.core.azclierror import ArgumentUsageError
-
-# pylint: disable=no-name-in-module,import-error
 from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
-from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
-
-
-def _parse_comma_separated_list(text):
-    if text is None:
-        return None
-    if text == "":
-        return []
-    return text.split(",")
 
 
 def _trim_fqdn_name_containing_hcp(normalized_fqdn: str) -> str:
