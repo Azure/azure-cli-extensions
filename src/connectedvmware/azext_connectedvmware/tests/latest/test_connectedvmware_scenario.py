@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from knack.util import CLIError
 from azure.cli.testsdk import ScenarioTest
@@ -166,7 +166,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         assert len(resource_list) >= 1
 
         # Update VM.
-        self.cmd('az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2')
+        self.cmd('az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2', checks=[
+            self.check('"hardwareProfile[memorySizeMb]', '2048'),
+        ])
 
         # Stop VM.
         self.cmd('az connectedvmware vm stop -g {rg} --name {vm_name}')
