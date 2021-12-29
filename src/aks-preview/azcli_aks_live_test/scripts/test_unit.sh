@@ -45,12 +45,12 @@ pushd ${UT_BASE_DIR}
 
 # perform unit test with module 'unittest'
 test_result=0
-coverage run --source=. --omit=*/tests/* -m pytest tests/latest/ || test_result=$?
+coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -m pytest tests/latest/ || test_result=$?
 
 # generate coverage report
 coverage combine || true
 coverage report -m -i
-coverage json -o coverage_acs.json
+coverage json -o coverage_acs.json -i
 popd
 
 # copy coverage report
