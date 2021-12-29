@@ -6,10 +6,11 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import json
 
+from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
+from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from knack.util import CLIError
 from msrestazure.tools import resource_id
 
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
@@ -49,7 +50,7 @@ def application_configuration_service_git_add(cmd, client, service, resource_gro
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repos = acs_resource.properties.settings.git_property.repositories
     if next((r for r in repos if r.name == name), None) is not None:
-        raise CLIError("Repo '{}' already exists.".format(name))
+        raise ClientRequestError("Repo '{}' already exists.".format(name))
     repos.append(repo)
     acs_resource.properties.settings.git_property.repositories = repos
 
@@ -98,7 +99,7 @@ def application_configuration_service_git_list(cmd, client, service, resource_gr
     acs_settings = acs_resource.properties.settings
 
     if not acs_settings or not acs_settings.git_property or not acs_settings.git_property.repositories:
-        raise CLIError("Repos not found.")
+        raise ResourceNotFoundError("Repos not found.")
 
     return acs_settings.git_property.repositories
 
@@ -167,7 +168,7 @@ def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username,
 def _get_existing_repo(repos, name):
     repo = next((r for r in repos if r.name == name), None)
     if not repo:
-        raise CLIError("Repo '{}' not found.".format(name))
+        raise ClientRequestError("Repo '{}' not found.".format(name))
     return repo
 
 
