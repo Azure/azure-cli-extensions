@@ -2,6 +2,16 @@
 
 Release History
 ===============
+1.2.2
+++++++
+
+* Updated connectedk8s proxy to support mooncake
+
+1.2.1
+++++++
+
+* Add maxCliCoreVersion as 2.29.0
+
 1.2.0
 ++++++
 

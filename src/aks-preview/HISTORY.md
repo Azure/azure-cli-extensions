@@ -2,10 +2,13 @@
 
 Release History
 ===============
-0.5.48
+0.5.49
 +++++
 * Add support for Alias Minor Version.
-* 
+
+0.5.48
++++++
+* Fix aks update issue with load balancer profile defaults being set when CLI arguments only include outbound IPs or outbound prefixes
 
 0.5.47
 ++++++
