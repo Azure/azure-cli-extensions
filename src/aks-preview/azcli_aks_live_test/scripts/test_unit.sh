@@ -58,7 +58,7 @@ mkdir -p reports/ && cp ${UT_BASE_DIR}/coverage.json reports/
 
 # prepare running options
 # unit test result
-options="--unit-test-result ${UT_BASE_DIR} --coverage-report ${UT_BASE_DIR}/coverage.json"
+options="--unit-test-result ${test_result} --coverage-report ${UT_BASE_DIR}/coverage.json"
 # ignore exit code
 if [[ -n ${IGNORE_EXIT_CODE} ]]; then
     options+=" --ignore-exit-code"
