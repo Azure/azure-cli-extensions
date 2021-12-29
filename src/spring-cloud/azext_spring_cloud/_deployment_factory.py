@@ -60,9 +60,8 @@ class DefaultDeployment:
         '''
         If the required method is PUT, should put the properties on original deployment back.
         '''
-        options = {}
-        if self.require_put_method(deployment_resource, **kwargs):
-            return options_settings_assign_from(options, deployment_resource)
+        options = deployment_settings_options_from_resource(deployment_resource) \
+            if self.require_put_method(deployment_resource, **kwargs) else {}
         options.update({k: v for k, v in kwargs.items() if v})
         return options
 
@@ -104,25 +103,46 @@ def deployment_selector(**kwargs):
     return DefaultDeployment(**kwargs)
 
 
-def options_assign_from(options, original):
-    options = options_settings_assign_from(options, original)
-    return options_source_assign_from(options, original)
-
-
-def options_settings_assign_from(options, original):
-    options['cpu'] = original.properties.deployment_settings.resource_requests.cpu
-    options['memory'] = original.properties.deployment_settings.resource_requests.memory
-    options['instance_count'] = original.sku.capacity
-    options['sku'] = original.sku
-    options['env'] = original.properties.deployment_settings.environment_variables
+def deployment_settings_options_from_resource(original):
+    '''
+    Construct the options about deployment settings from original resource.
+    '''
+    options = {
+        'cpu': original.properties.deployment_settings.resource_requests.cpu,
+        'memory': original.properties.deployment_settings.resource_requests.memory,
+        'instance_count': original.sku.capacity,
+        'sku': original.sku,
+        'env': original.properties.deployment_settings.environment_variables,
+    }
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
     return options
 
 
-def options_source_assign_from(options, original):
+def deployment_source_options_from_resource(original):
+    '''
+    Construct the options about deployment source from original resource.
+    '''
+    options = {}
     if hasattr(original.properties.source, 'jvm_options'):
         options['jvm_options'] = original.properties.source.jvm_options
     if hasattr(original.properties.source, 'runtime_version'):
         options['runtime_version'] = original.properties.source.runtime_version
     return options
+
+
+def default_deployment_create_options():
+    '''
+    Construct the default options for deployment creation.
+    TODO This is currently used for staging deployment creation when --skip-clone-settings set.
+    Putting it to validator and fulfill the command args makes more sense.
+    '''
+    return {
+        'cpu': '1',
+        'memory': '1Gi',
+        'runtime_version': 'Java_8',
+        'instance_count': 1,
+        'env': {},
+        'sku': None,
+        'disable_probe': None
+    }

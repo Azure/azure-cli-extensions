@@ -9,7 +9,10 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from .custom import app_get
 from ._utils import (get_spring_cloud_sku, wait_till_end)
-from ._deployment_factory import (deployment_selector, options_assign_from, options_source_assign_from)
+from ._deployment_factory import (deployment_selector,
+                                  deployment_settings_options_from_resource,
+                                  deployment_source_options_from_resource,
+                                  default_deployment_create_options)
 from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
@@ -250,7 +253,7 @@ def app_deploy(cmd, client, resource_group, service, name,
     }
 
     # inherit source type or runtime version from the existing deployment if not specified in command.
-    orginal_source_options = options_source_assign_from({}, deployment)
+    orginal_source_options = deployment_source_options_from_resource(deployment)
     orginal_source_options.update({k: v for k, v in kwargs.items() if v})
     kwargs.update(orginal_source_options)
 
@@ -360,23 +363,16 @@ def _ensure_app_not_exist(client, resource_group, service, name):
 
 
 def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_group, service, app, **kwargs):
-    options = {
-        'cpu': '1',
-        'memory': '1Gi',
-        'runtime_version': 'Java_8',
-        'instance_count': 1,
-        'env': {},
-        'sku': None,
-        'disable_probe': None
-    }
+    options = default_deployment_create_options()
     if not skip_clone_settings:
         active_deployment = _get_active_deployment(client, resource_group, service, app)
         if not active_deployment:
             logger.warning('No production deployment found, use --skip-clone-settings to skip copying settings from '
                            'production deployment.')
         else:
-            options = options_assign_from(options, active_deployment)
-    if not options.get('sku'):
+            options.update(deployment_settings_options_from_resource(active_deployment))
+            options.update(deployment_source_options_from_resource(active_deployment))
+    if not options.get('sku', None):
         options['sku'] = get_spring_cloud_sku(client, resource_group, service)
     options.update({k: v for k, v in kwargs.items() if v})
     return options
