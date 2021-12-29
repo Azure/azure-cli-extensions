@@ -7,33 +7,6 @@ import unittest
 import azext_aks_preview._helpers as helpers
 
 
-class TestSetVmSetType(unittest.TestCase):
-    def test_archaic_k8_version(self):
-        version = "1.11.9"
-        vm_type = helpers._set_vm_set_type("", version)
-        self.assertEqual(vm_type, "AvailabilitySet")
-
-    def test_archaic_k8_version_with_vm_set(self):
-        version = "1.11.9"
-        vm_type = helpers._set_vm_set_type("AvailabilitySet", version)
-        self.assertEqual(vm_type, "AvailabilitySet")
-
-    def test_no_vm_set(self):
-        version = "1.15.0"
-        vm_type = helpers._set_vm_set_type("", version)
-        self.assertEqual(vm_type, "VirtualMachineScaleSets")
-
-    def test_casing_vmss(self):
-        version = "1.15.0"
-        vm_type = helpers._set_vm_set_type("virtualmachineScaleSets", version)
-        self.assertEqual(vm_type, "VirtualMachineScaleSets")
-
-    def test_casing_as(self):
-        version = "1.15.0"
-        vm_type = helpers._set_vm_set_type("Availabilityset", version)
-        self.assertEqual(vm_type, "AvailabilitySet")
-
-
 class TestTrimContainerName(unittest.TestCase):
     def test_trim_fqdn_name_containing_hcp(self):
         container_name = 'abcdef-dns-ed55ba6d-hcp-centralus-azmk8s-io'

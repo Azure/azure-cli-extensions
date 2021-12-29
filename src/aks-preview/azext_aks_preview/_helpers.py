@@ -12,26 +12,6 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
 
 
-def _set_vm_set_type(vm_set_type, kubernetes_version):
-    if not vm_set_type:
-        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
-            print('Setting vm_set_type to availabilityset as it is \
-            not specified and kubernetes version(%s) less than 1.12.9 only supports \
-            availabilityset\n' % (kubernetes_version))
-            vm_set_type = "AvailabilitySet"
-
-    if not vm_set_type:
-        vm_set_type = "VirtualMachineScaleSets"
-
-    # normalize as server validation is case-sensitive
-    if vm_set_type.lower() == "AvailabilitySet".lower():
-        vm_set_type = "AvailabilitySet"
-
-    if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
-        vm_set_type = "VirtualMachineScaleSets"
-    return vm_set_type
-
-
 def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile):
     if (
         outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and
