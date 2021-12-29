@@ -34,7 +34,7 @@ elif [[ ${mode} == "ext" ]]; then
     UT_BASE_DIR=${AKS_PREVIEW_BASE_DIR}
 else
     echo "Unsupported coverage mode, please choose \"cli\" or \"ext\""
-    exit(1)
+    exit 1
 fi
 
 # unit test & coverage report
