@@ -4,34 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
-# pylint: disable=no-name-in-module,import-error
-from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import ManagedClusterAPIServerAccessProfile
 from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
-
-
-def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance=None):
-    if instance is None or instance.api_server_access_profile is None:
-        profile = ManagedClusterAPIServerAccessProfile()
-    else:
-        profile = instance.api_server_access_profile
-
-    if api_server_authorized_ip_ranges is None or api_server_authorized_ip_ranges == "":
-        authorized_ip_ranges = []
-    else:
-        authorized_ip_ranges = [ip.strip() for ip in api_server_authorized_ip_ranges.split(",")]
-
-    if profile.enable_private_cluster and authorized_ip_ranges:
-        raise ArgumentUsageError(
-            '--api-server-authorized-ip-ranges is not supported for private cluster')
-
-    profile.authorized_ip_ranges = authorized_ip_ranges
-    return profile
 
 
 def _set_vm_set_type(vm_set_type, kubernetes_version):
