@@ -209,6 +209,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               builder=None,
                # deployment.settings
                env=None,
                disable_probe=None,
@@ -249,6 +250,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'builder': builder,
         'no_wait': no_wait
     }
 
@@ -290,6 +292,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      builder=None,
                       # deployment.settings
                       skip_clone_settings=False,
                       cpu=None,
@@ -335,6 +338,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
+        'builder': builder,
         'no_wait': no_wait
     }
 

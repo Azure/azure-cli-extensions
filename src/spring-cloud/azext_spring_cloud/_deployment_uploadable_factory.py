@@ -13,6 +13,11 @@ from .azure_storage_file import FileService
 from ._utils import (get_azure_files_info, _pack_source_code)
 
 
+class Empty:
+    def upload_and_build(self, **_):
+        pass
+
+
 class FileUpload:
     '''
     Upload a file in local file system to upload url
@@ -49,3 +54,11 @@ class FolderUpload(FileUpload):
         file_path = os.path.join(tempfile.gettempdir(), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
         _pack_source_code(os.path.abspath(folder), file_path)
         return file_path
+
+
+def uploader_selector(source_path=None, artifact_path=None, upload_url=None, **_):
+    if source_path:
+        return FolderUpload(upload_url)
+    if artifact_path:
+        return FileUpload(upload_url)
+    return Empty()

@@ -11,6 +11,7 @@ from ._deployment_uploadable_factory import FileUpload, FolderUpload
 from azure.core.exceptions import HttpResponseError
 from time import sleep
 from ._stream_utils import stream_logs
+from ._buildservices_factory import BuildService
 from threading import Timer
 
 logger = get_logger(__name__)
@@ -119,14 +120,19 @@ class BuildServiceDeployableBuilder(EmptyDeployableBuilder):
     '''
     Call build service and get a successful build result
     '''
+    def __init__(self, cmd, client, resource_group, service, app, deployment, sku, **_):
+        super().__init__(cmd, client, resource_group, service, app, deployment, sku, **_)
+        self.build_service = BuildService(cmd, client, resource_group, service)
+
     def get_total_deploy_steps(self, **_):
-        return 5
+        return self.build_service.get_total_steps() + 1
 
     def get_source_type(self, **_):
         return 'BuildResult'
 
-    def build_deployable_path(self, **_):
-        return '<default>'
+    def build_deployable_path(self, **kwargs):
+        build_result = self.build_service.build_and_get_result(**kwargs)
+        return build_result
 
 
 def deployable_selector(**kwargs):
