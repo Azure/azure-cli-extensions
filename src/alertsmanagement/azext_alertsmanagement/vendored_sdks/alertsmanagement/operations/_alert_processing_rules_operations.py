@@ -275,7 +275,7 @@ class AlertProcessingRulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-08"
+        api_version = "2021-08-08-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -298,11 +298,18 @@ class AlertProcessingRulesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
+        print ("----------------------------------------")
+        from pprint import pprint
+        pprint (alert_processing_rule)
+        print ("----------------------------------------")
         body_content = self._serialize.body(alert_processing_rule, 'AlertProcessingRule')
+        pprint(body_content)
+        print ("----------------------------------------")
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
+        print('--got response')
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -348,7 +355,7 @@ class AlertProcessingRulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-08"
+        api_version = "2021-08-08-preview"
         accept = "application/json"
 
         # Construct URL
@@ -415,7 +422,7 @@ class AlertProcessingRulesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-08"
+        api_version = "2021-08-08-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

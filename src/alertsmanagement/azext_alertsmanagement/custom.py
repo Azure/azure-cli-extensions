@@ -10,6 +10,7 @@
 # pylint: disable=too-many-boolean-expressions
 
 from knack.util import CLIError
+from datetime import datetime
 
 
 def _transform_condition(condition):
@@ -52,81 +53,128 @@ def _alert_rule_id(subscription, resource_group, alert):
     return alert
 
 
-def create_alertsmanagement_action_rule(cmd, client,
+def create_alertsmanagement_processing_rule(cmd, client,
                                         resource_group_name,
-                                        action_rule_name,
+                                        processing_rule_name,
                                         rule_type,
-                                        location=None,
                                         description=None,
-                                        scope_type=None,
-                                        scope=None,
-                                        severity=None,
-                                        monitor_service=None,
-                                        monitor_condition=None,
-                                        target_resource_type=None,
+                                        scopes=None,
                                         alert_rule=None,
                                         alert_description=None,
                                         alert_context=None,
+                                        signal_type=None,
                                         tags=None,
-                                        status=None,
-                                        suppression_recurrence_type=None,
-                                        suppression_start_date=None,
-                                        suppression_end_date=None,
-                                        suppression_start_time=None,
-                                        suppression_end_time=None,
-                                        suppression_recurrence=None):
-    body = {'location': location, 'tags': tags}
-
+                                        enabled=None,
+                                        severity=None,
+                                        monitor_service=None,
+                                        monitor_condition=None,
+                                        resource_filter=None,
+                                        resource_group_filter=None,
+                                        resource_type_filter=None,
+                                        schedule_recurrence_type='Always',
+                                        schedule_start_date=None,
+                                        schedule_end_date=None,
+                                        schedule_start_time='00:00:00',
+                                        schedule_end_time='00:00:00',
+                                        schedule_recurrence=None,
+                                        schedule_time_zone="UTC"):
+    # body = {'location': location, 'tags': tags}
+    body = {
+        'location': 'Global'
+        }
     properties = {}
-    if status is not None:
-        properties['status'] = status
-    properties['type'] = rule_type
+    properties['actions'] = [
+        #TODO currently support only one, need to support a list
+        {
+            'actionType': rule_type
+        }
+    ]
+    properties['enabled'] = enabled if enabled is not None else 'True'
+    properties['scopes'] = scopes.split()
     if description is not None:
         properties['description'] = description
-    if scope is not None and scope_type is not None:
-        properties['scope'] = {
-            'scopeType': scope_type,
-            'values': scope
-        }
-    severity = _transform_condition(severity)
-    monitor_service = _transform_condition(monitor_service)
-    monitor_condition = _transform_condition(monitor_condition)
-    target_resource_type = _transform_condition(target_resource_type)
-    alert_rule = _alert_rule_id(client.config.subscription_id, resource_group_name, alert_rule)
-    alert_rule = _transform_condition(alert_rule)
-    alert_description = _transform_condition(alert_description)
+        
     alert_context = _transform_condition(alert_context)
-    properties['conditions'] = {}
-    if severity is not None:
-        properties['conditions']['severity'] = severity
-    if monitor_service is not None:
-        properties['conditions']['monitorService'] = monitor_service
-    if monitor_condition is not None:
-        properties['conditions']['monitorCondition'] = monitor_condition
-    if target_resource_type is not None:
-        properties['conditions']['targetResourceType'] = target_resource_type
-    if alert_rule is not None:
-        properties['conditions']['alertRuleId'] = alert_rule
-    if alert_description is not None:
-        properties['conditions']['description'] = alert_description
+    alert_rule = _alert_rule_id(client._config.subscription_id, resource_group_name, alert_rule)
+    alert_rule = _transform_condition(alert_rule)
+    monitor_condition = _transform_condition(monitor_condition)
+    monitor_service = _transform_condition(monitor_service)
+    resource_filter = _transform_condition(resource_filter)
+    resource_type_filter = _transform_condition(resource_type_filter)
+    resource_group_filter = _transform_condition(resource_group_filter)
+    severity = _transform_condition(severity)
+    signal_type = _transform_condition(signal_type)
+    alert_description = _transform_condition(alert_description)
+    
+    # conditions
+    if any ([alert_context, alert_rule, monitor_condition, monitor_service, resource_filter,\
+        resource_type_filter, resource_group_filter, severity, signal_type, alert_description]):
+        properties['conditions'] = []    
+    
     if alert_context is not None:
-        properties['conditions']['alertContext'] = alert_context
-    properties['suppressionConfig'] = {
-        'recurrenceType': suppression_recurrence_type
-    }
-    if suppression_recurrence_type not in ['Always']:
-        properties['suppressionConfig']['schedule'] = {
-            'startDate': suppression_start_date,
-            'endDate': suppression_end_date,
-            'startTime': suppression_start_time,
-            'endTime': suppression_end_time,
-            'recurrenceValues': suppression_recurrence
+        properties['conditions']['AlertContext'] = alert_context
+    if alert_rule is not None:
+        properties['conditions']['AlertRuleId'] = alert_rule
+    if monitor_condition is not None:
+        properties['conditions']['MonitorCondition'] = monitor_condition
+    if monitor_service is not None:
+        properties['conditions']['MonitorService'] = monitor_service
+    if resource_filter is not None:
+        properties['conditions']['TargetResource'] = resource_filter
+    if resource_type_filter is not None:
+        properties['conditions']['TargetResourceType'] = resource_type_filter
+    if resource_group_filter is not None:
+        properties['conditions']['TargetResourceGroup'] = resource_group_filter
+    if severity is not None:
+        properties['conditions']['Severity'] = severity
+    if signal_type is not None:
+        properties['conditions']['SignalType'] = signal_type
+    if alert_description is not None:
+        properties['conditions']['Description'] = alert_description
+
+    # schedule
+    if schedule_recurrence_type in ['Always'] and schedule_start_date is not None:
+        print('\033[93m' + 'Schedule start date will be ignored as the recurrence type is set to Always' + '\033[0m')
+    if schedule_recurrence_type not in ['Always']:
+        if schedule_start_date is not None:
+            schedule_start_date = datetime.datetime.strptime(schedule_start_date, '%M/%d/%Y').strftime('%Y-%M-%d')
+            effective_from = schedule_start_date + 'T' + schedule_start_time
+
+        if schedule_end_date is not None:
+            schedule_end_date = datetime.datetime.strptime(schedule_end_date, '%M/%d/%Y').strftime('%Y-%M-%d')
+            effective_until = schedule_start_date + 'T' + schedule_start_time
+
+        properties['schedule'] = {
+            'effectiveFrom': effective_from,
+            'timeZone' : schedule_time_zone
         }
+        
+        if (schedule_end_date is not None) and (schedule_end_time is not None):
+                properties['schedule']['effectiveUntil'] = effective_until
+        
+        if schedule_recurrence_type == 'Daily':
+            properties['recurrences'] = [
+                {
+                    'recurrenceType': schedule_recurrence_type,
+                    'startTime': schedule_start_time,
+                    'endTime' : schedule_end_time
+                }
+            ]
+        elif schedule_recurrence_type in ['Weekly', 'Monthly']:
+            #TODO currently support only one recurrence but need to support multiple recurrence
+            type_of_days = 'daysOfWeek' if schedule_recurrence_type == 'Weekly' else 'daysOfMonth'
+            properties['recurrences'] = [
+                {
+                    properties[type_of_days]: [
+                        schedule_recurrence
+                    ]
+                }
+            ]
 
     body['properties'] = properties
 
-    return client.create_update(resource_group_name=resource_group_name, action_rule_name=action_rule_name,
-                                action_rule=body)
+    return client.create_or_update(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name,
+                                alert_processing_rule=body)
 
 
 def update_alertsmanagement_action_rule(instance, client,
