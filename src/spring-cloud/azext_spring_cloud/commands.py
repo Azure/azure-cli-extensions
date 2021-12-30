@@ -14,7 +14,8 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
                             transform_spring_cloud_certificate_output,
-                            transform_spring_cloud_custom_domain_output)
+                            transform_spring_cloud_custom_domain_output,
+                            transform_service_registry_output)
 
 
 # pylint: disable=too-many-statements
@@ -26,6 +27,11 @@ def load_command_table(self, _):
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring_cloud.app#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    service_registry_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.service_registry#{}',
         client_factory=cf_spring_cloud_20220101preview
     )
 
@@ -157,6 +163,15 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'app_insights_update', supports_no_wait=True)
         g.custom_show_command('show', 'app_insights_show')
+
+    with self.command_group('spring-cloud service-registry',
+                            custom_command_type=service_registry_cmd_group,
+                            exception_handler=handle_asc_exception,
+                            is_preview=True) as g:
+        g.custom_command('show', 'service_registry_show',
+                         table_transformer=transform_service_registry_output)
+        g.custom_command('bind', 'service_registry_bind')
+        g.custom_command('unbind', 'service_registry_unbind')
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
         pass
