@@ -14,6 +14,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
+from ._validators_enterprise import only_support_enterprise
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
@@ -410,3 +411,13 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
+
+    for scope in ['spring-cloud service-registry']:
+        with self.argument_context(scope) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring-cloud service-registry bind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    with self.argument_context('spring-cloud service-registry unbind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)

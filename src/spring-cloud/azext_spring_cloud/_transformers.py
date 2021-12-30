@@ -130,3 +130,26 @@ def _apply_deployment_table(item, deployment):
     item['Memory'] = deployment['properties']['deploymentSettings']['resourceRequests']['memory']
     item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
     item['Registered Instance'] = _get_registration_state(deployment)
+
+
+def transform_service_registry_output(result):
+    return _transform_tanzu_component_output(result)
+
+
+def _transform_tanzu_component_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        instance_count = item['properties']['resourceRequests']['instanceCount']
+        instances = item['properties']['instances'] or []
+        running_number = len(
+            [x for x in instances if x['status'].upper() == "RUNNING"])
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['CPU'] = item['properties']['resourceRequests']['cpu']
+        item['Memory'] = item['properties']['resourceRequests']['memory']
+
+    return result if is_list else result[0]
