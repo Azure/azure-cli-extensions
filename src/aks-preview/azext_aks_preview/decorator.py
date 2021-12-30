@@ -77,6 +77,7 @@ LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
+ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
 Snapshot = TypeVar("Snapshot")
 
 
@@ -114,6 +115,11 @@ class AKSPreviewModels(AKSModels):
         self.init_nat_gateway_models()
         # holder for pod identity related models
         self.__pod_identity_models = None
+        self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
+            "ManagedClusterOIDCIssuerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
 
     # TODO: convert this to @property
     def init_nat_gateway_models(self) -> None:
@@ -1492,6 +1498,24 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_node_vm_size()
 
+    def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
+        """Obtain the value of oidc_issuer_profile based on the user input.
+
+        :return: ManagedClusterOIDCIssuerProfile
+        """
+        enable_flag_value = bool(self.raw_param.get("enable_oidc_issuer"))
+        if not enable_flag_value:
+            # enable flag not set, return a None profile, server side will backfill the default/existing value
+            return None
+
+        profile = self.models.ManagedClusterOIDCIssuerProfile()
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if self.mc.oidc_issuer_profile is not None:
+                profile = self.mc.oidc_issuer_profile
+        profile.enabled = True
+
+        return profile
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -1799,6 +1823,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
+    def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up OIDC issuer profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -1817,6 +1850,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
+        mc = self.set_up_oidc_issuer_profile(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -1963,7 +1997,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--enable-public-fqdn" or '
                 '"--disable-public-fqdn"'
                 '"--enble-windows-gmsa" or '
-                '"--nodepool-labels".'
+                '"--nodepool-labels" or '
+                '"--enable-oidc-issuer".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2078,6 +2113,17 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             _update_addon_pod_identity(mc, enable=False, models=self.models.pod_identity_models)
         return mc
 
+    def update_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update OIDC issuer profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2109,6 +2155,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
+        mc = self.update_oidc_issuer_profile(mc)
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
