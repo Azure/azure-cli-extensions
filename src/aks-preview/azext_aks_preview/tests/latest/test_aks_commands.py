@@ -3280,7 +3280,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('oidcIssuerProfile.enabled', True),
-            self.check_pattern('oidcIssuerProfile.issuerURL', r'^https:\/\/oidc\.prod-aks\.azure\.com\/.+\/$')
         ])
 
     @AllowLargeResponse()
@@ -3311,5 +3310,4 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('oidcIssuerProfile.enabled', True),
-            self.check_pattern('oidcIssuerProfile.issuerURL', r'^https:\/\/oidc\.prod-aks\.azure\.com\/.+\/$')
         ])
