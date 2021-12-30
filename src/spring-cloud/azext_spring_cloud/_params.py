@@ -226,6 +226,7 @@ def load_arguments(self, _):
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
@@ -242,9 +243,9 @@ def load_arguments(self, _):
             c.argument(
                 'registry_password', help='The password of the container registry.', arg_group='Custom Container')
             c.argument(
-                'container_command', help='The command of the container image.', arg_group='Custom Container')
+                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
-                'container_args', help='The arguments of the container image.', arg_group='Custom Container')
+                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
 
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)

@@ -46,6 +46,7 @@ import sys
 import json
 import base64
 from collections import defaultdict
+from ._log_stream import LogStream
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -318,6 +319,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
     return app_updated
 
 
+# This function is deprecated, see app.py#app_create
 def app_create(cmd, client, resource_group, service, name,
                assign_endpoint=None,
                cpu=None,
@@ -491,6 +493,7 @@ def _format_user_source(file_type,
         return None
 
 
+# This function is deprecated, see app.py#app_update
 def app_update(cmd, client, resource_group, service, name,
                assign_endpoint=None,
                deployment=None,
@@ -667,6 +670,7 @@ def app_get(cmd, client,
     return app
 
 
+# This function is deprecated, see app.py#app_deploy
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
@@ -788,18 +792,12 @@ def app_tail_log(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    test_keys = client.services.list_test_keys(resource_group, service)
-    primary_key = test_keys.primary_key
-    if not primary_key:
+    log_stream = LogStream(client, resource_group, service)
+    if not log_stream:
         raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
 
-    # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
-    test_url = test_keys.primary_test_endpoint
-    base_url = test_url.replace('.test.', '.')
-    base_url = re.sub('https://.+?\@', '', base_url)
-
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
-        base_url, name, instance)
+        log_stream.base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
@@ -811,7 +809,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, format_json, exceptions))
+        streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -928,6 +926,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
     return app_updated
 
 
+# This function is deprecated, see app.py#deployment_create
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
