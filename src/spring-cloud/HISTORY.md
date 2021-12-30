@@ -1,5 +1,9 @@
 Release History
 ===============
+2.12.3
+---
+* Fix the deploy jar failure.
+
 2.12.2
 ---
 * Add support for custom container image.
