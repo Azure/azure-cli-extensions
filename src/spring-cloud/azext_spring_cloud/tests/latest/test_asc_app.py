@@ -145,7 +145,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('Source', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
         self.assertIsNone(resource.properties.source.version)
-        self.assertIsNone(resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_continous_deploy_source(self, file_mock):
@@ -160,7 +160,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('Source', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
         self.assertIsNone(resource.properties.source.version)
-        self.assertIsNone(resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
 
 
 class TestAppDeploy_Enterprise_Patch(BasicTest):

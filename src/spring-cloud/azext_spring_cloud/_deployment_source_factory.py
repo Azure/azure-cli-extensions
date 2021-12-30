@@ -101,13 +101,14 @@ class BuildResult(BaseSource):
 
 
 class SourceBuild(BaseSource):
-    def format_source(self, deployable_path=None, target_module=None, version=None, **_):
-        if all(x is None for x in [deployable_path, target_module, version]):
+    def format_source(self, deployable_path=None, target_module=None, runtime_version=None, version=None, **_):
+        if all(x is None for x in [deployable_path, target_module, runtime_version, version]):
             return None
         return models.SourceUploadedUserSourceInfo(
             relative_path=deployable_path,
             version=version,
-            artifact_selector=target_module
+            artifact_selector=target_module,
+            runtime_version=runtime_version
         )
 
 

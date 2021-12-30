@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.azclierror import ValidationError
 from .custom import app_get
 from ._utils import (get_spring_cloud_sku, wait_till_end)
 from ._deployment_factory import (deployment_selector,
@@ -363,7 +363,7 @@ def _ensure_app_not_exist(client, resource_group, service, name):
         # ignore
         return
     if app:
-        raise CLIError('App {} already exist.'.format(app.id))
+        raise ValidationError('App {} already exist.'.format(app.id))
 
 
 def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_group, service, app, **kwargs):

@@ -9,11 +9,10 @@ import requests
 from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError, DeploymentError
 from msrestazure.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.azure_exceptions import CloudError
-from knack.util import CLIError
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
@@ -50,12 +49,12 @@ class BuildService:
         try:
             response = self.client.build_service.get_resource_upload_url(self.resource_group, self.service, self.name)
             if not response.upload_url:
-                raise CLIError("Failed to get a SAS URL to upload context.")
+                raise AzureInternalError("Failed to get a SAS URL to upload context.")
             return response
         except CloudError as e:
-            raise CLIError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
+            raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
         except AttributeError as e:
-            raise CLIError("Failed to get a SAS URL to upload context. Error: {}".format(e))
+            raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
     def _queue_build(self, relative_path=None, builder=None, target_module=None, app=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
@@ -73,7 +72,7 @@ class BuildService:
                                                                     app,
                                                                     build).properties.triggered_build_result.id
         except (AttributeError, CloudError) as e:
-            raise CLIError("Failed to create or update a build. Error: {}".format(e.message))
+            raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
     def _wait_build_finished(self, build_result_id):
         '''
@@ -100,7 +99,7 @@ class BuildService:
 
         if result.properties.provisioning_state != "Succeeded":
             log_url = self._try_get_build_log_url(build_result_id)
-            raise CLIError("Failed to build docker image, please check the build logs {} and retry.".format(log_url))
+            raise DeploymentError("Failed to build docker image, please check the build logs {} and retry.".format(log_url))
 
     def _get_build_result(self, id):
         resource_id = parse_resource_id(id)
