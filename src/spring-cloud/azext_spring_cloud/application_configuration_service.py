@@ -42,10 +42,10 @@ def application_configuration_service_git_add(cmd, client, service, resource_gro
                                               host_key=None,
                                               host_key_algorithm=None,
                                               private_key=None,
-                                              strict_host_key_checking=None,
+                                              host_key_check=None,
                                               no_wait=False):
     repo = models.ConfigurationServiceGitRepository(name=name, patterns=patterns, uri=uri, label=label)
-    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, strict_host_key_checking)
+    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check)
 
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repos = acs_resource.properties.settings.git_property.repositories
@@ -70,11 +70,11 @@ def application_configuration_service_git_update(cmd, client, service, resource_
                                                  host_key=None,
                                                  host_key_algorithm=None,
                                                  private_key=None,
-                                                 strict_host_key_checking=None,
+                                                 host_key_check=None,
                                                  no_wait=False):
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repo = _get_existing_repo(acs_resource.properties.settings.git_property.repositories, name)
-    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, strict_host_key_checking)
+    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check)
 
     _validate_acs_settings(client, resource_group, service, acs_resource.properties.settings)
 

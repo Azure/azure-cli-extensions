@@ -447,7 +447,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.')
-            c.argument('strict_host_key_checking', help='Strict_host_key_checking of the added config.')
+            c.argument('host_key_check', help='Strict_host_key_checking of the added config.')
 
     for scope in ['spring-cloud application-configuration-service git repo add',
                   'spring-cloud application-configuration-service git repo update',
@@ -471,7 +471,7 @@ def load_arguments(self, _):
         c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('api_title', arg_group='API metadata', help="Title describing the context of the APIs available on the Gateway instance.")
         c.argument('api_description', arg_group='API metadata', help="Detailed description of the APIs available on the Gateway instance.")
-        c.argument('api_documentation_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
+        c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")

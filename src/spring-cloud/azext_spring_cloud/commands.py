@@ -202,7 +202,7 @@ def load_command_table(self, _):
                             custom_command_type=service_registry_cmd_group,
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
-        g.custom_command('show', 'service_registry_show',
+        g.custom_show_command('show', 'service_registry_show',
                          table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
@@ -212,7 +212,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_command('clear', 'application_configuration_service_clear')
-        g.custom_command('show', 'application_configuration_service_show',
+        g.custom_show_command('show', 'application_configuration_service_show',
                          table_transformer=transform_application_configuration_service_output)
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
@@ -229,7 +229,7 @@ def load_command_table(self, _):
                             custom_command_type=gateway_cmd_group,
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
-        g.custom_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
+        g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
         g.custom_command('clear', 'gateway_clear')
 
@@ -247,7 +247,7 @@ def load_command_table(self, _):
     with self.command_group('spring-cloud gateway route-config',
                             custom_command_type=gateway_route_config_cmd_group,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('show', 'gateway_route_config_show')
+        g.custom_show_command('show', 'gateway_route_config_show')
         g.custom_command('list', 'gateway_route_config_list')
         g.custom_command('create', 'gateway_route_config_create')
         g.custom_command('update', 'gateway_route_config_update')
@@ -257,7 +257,7 @@ def load_command_table(self, _):
                             custom_command_type=api_portal_cmd_group,
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
-        g.custom_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
+        g.custom_show_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
         g.custom_command('update', 'api_portal_update', validator=validate_api_portal_update)
         g.custom_command('clear', 'api_portal_clear')
 

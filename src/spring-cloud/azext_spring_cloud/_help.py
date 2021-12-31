@@ -688,7 +688,7 @@ helps['spring-cloud gateway update'] = """
     short-summary: Update an existing gateway properties.
     examples:
         - name: Update gateway property.
-          text: az spring-cloud gateway update -s MyService -g MyResourceGroup --name MyName --assign-endpoint true --https-only true
+          text: az spring-cloud gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
 """
 
 helps['spring-cloud gateway route-config'] = """
@@ -717,7 +717,7 @@ helps['spring-cloud gateway route-config remove'] = """
     short-summary: Delete an existing gateway route config.
     examples:
         - name: Delete an existing gateway route config.
-          text: az spring-cloud gateway route-config delete -s MyService -g MyResourceGroup --name MyName
+          text: az spring-cloud gateway route-config remove -s MyService -g MyResourceGroup --name MyName
 """
 
 helps['spring-cloud gateway route-config show'] = """
@@ -795,7 +795,7 @@ helps['spring-cloud api-portal update'] = """
     short-summary: Update an existing API portal properties.
     examples:
         - name: Update API portal property.
-          text: az spring-cloud api-portal update -s MyService -g MyResourceGroup --name MyName --assign-endpoint true --https-only true
+          text: az spring-cloud api-portal update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
 """
 
 helps['spring-cloud api-portal custom-domain'] = """
