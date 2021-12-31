@@ -14,11 +14,9 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (validate_config_file_patterns, validate_cpu, validate_memory,
-                                     only_support_enterprise,
+from ._validators_enterprise import (only_support_enterprise,
                                      validate_git_uri, validate_acs_patterns,
-                                     validate_routes, validate_gateway_instance_count,
-                                     validate_api_portal_instance_count)
+                                     validate_routes)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
@@ -437,8 +435,10 @@ def load_arguments(self, _):
                   'spring-cloud application-configuration-service git repo update']:
         with self.argument_context(scope) as c:
             c.argument('patterns',
-                        help="Required patterns used to search in Git repositories. For each pattern, use format like {application} or {application}/{profile} instead of {application}-{profile}.yml, and separate them by comma.",
-                        validator=validate_acs_patterns),
+                       help='Required patterns used to search in Git repositories. '
+                            'For each pattern, use format like {application} or {application}/{profile} '
+                            'instead of {application}-{profile}.yml, and separate them by comma.',
+                       validator=validate_acs_patterns),
             c.argument('uri', help="Required Git URI.", validator=validate_git_uri),
             c.argument('label', help="Required branch name to search in the Git repository."),
             c.argument('search_paths', help='search_paths of the added config, use , as delimiter for multiple paths.')
