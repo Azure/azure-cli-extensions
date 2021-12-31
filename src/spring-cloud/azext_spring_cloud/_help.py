@@ -623,6 +623,16 @@ helps['spring-cloud application-configuration-service clear'] = """
     short-summary: Reset all Application Configuration Service settings.
 """
 
+helps['spring-cloud application-configuration-service git'] = """
+    type: group
+    short-summary: Commands to manage Application Configuration Service git property in Azure Spring Cloud.
+"""
+
+helps['spring-cloud application-configuration-service git repo'] = """
+    type: group
+    short-summary: Commands to manage Application Configuration Service git repository in Azure Spring Cloud.
+"""
+
 helps['spring-cloud application-configuration-service git repo add'] = """
     type: command
     short-summary: Add a Git property to the Application Configuration Service settings.

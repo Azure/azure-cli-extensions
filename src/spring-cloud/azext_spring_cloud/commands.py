@@ -203,7 +203,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_show_command('show', 'service_registry_show',
-                         table_transformer=transform_service_registry_output)
+                              table_transformer=transform_service_registry_output)
         g.custom_command('bind', 'service_registry_bind')
         g.custom_command('unbind', 'service_registry_unbind')
 
@@ -213,7 +213,7 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_command('clear', 'application_configuration_service_clear')
         g.custom_show_command('show', 'application_configuration_service_show',
-                         table_transformer=transform_application_configuration_service_output)
+                              table_transformer=transform_application_configuration_service_output)
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
 
