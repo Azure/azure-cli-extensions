@@ -14,7 +14,11 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import only_support_enterprise
+from ._validators_enterprise import (validate_config_file_patterns, validate_cpu, validate_memory,
+                                     only_support_enterprise,
+                                     validate_git_uri, validate_acs_patterns,
+                                     validate_routes, validate_gateway_instance_count,
+                                     validate_api_portal_instance_count)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
@@ -412,7 +416,8 @@ def load_arguments(self, _):
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
 
-    for scope in ['spring-cloud service-registry']:
+    for scope in ['spring-cloud application-configuration-service', 'spring-cloud service-registry',
+                  'spring-cloud gateway', 'spring-cloud api-portal']:
         with self.argument_context(scope) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -421,3 +426,81 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud service-registry unbind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    with self.argument_context('spring-cloud application-configuration-service bind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    with self.argument_context('spring-cloud application-configuration-service unbind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    for scope in ['spring-cloud application-configuration-service git repo add',
+                  'spring-cloud application-configuration-service git repo update']:
+        with self.argument_context(scope) as c:
+            c.argument('patterns',
+                        help="Required patterns used to search in Git repositories. For each pattern, use format like {application} or {application}/{profile} instead of {application}-{profile}.yml, and separate them by comma.",
+                        validator=validate_acs_patterns),
+            c.argument('uri', help="Required Git URI.", validator=validate_git_uri),
+            c.argument('label', help="Required branch name to search in the Git repository."),
+            c.argument('search_paths', help='search_paths of the added config, use , as delimiter for multiple paths.')
+            c.argument('username', help='Username of the added config.')
+            c.argument('password', help='Password of the added config.')
+            c.argument('host_key', help='Host key of the added config.')
+            c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
+            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('strict_host_key_checking', help='Strict_host_key_checking of the added config.')
+
+    for scope in ['spring-cloud application-configuration-service git repo add',
+                  'spring-cloud application-configuration-service git repo update',
+                  'spring-cloud application-configuration-service git repo remove']:
+        with self.argument_context(scope) as c:
+            c.argument('name', help="Required unique name to label each item of git configs.")
+
+    for scope in ['spring-cloud gateway update',
+                  'spring-cloud api-portal update']:
+        with self.argument_context(scope) as c:
+            c.argument('instance_count', type=int, help='Number of instance.')
+            c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
+            c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access endpoint via https')
+            c.argument('scope', arg_group='Single Sign On (SSO)', help="Comma-separated list of the specific actions applications can be allowed to do on a user's behalf.")
+            c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
+            c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
+            c.argument('issuer_uri', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
+
+    with self.argument_context('spring-cloud gateway update') as c:
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('api_title', arg_group='API metadata', help="Title describing the context of the APIs available on the Gateway instance.")
+        c.argument('api_description', arg_group='API metadata', help="Detailed description of the APIs available on the Gateway instance.")
+        c.argument('api_documentation_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
+        c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
+        c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
+        c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
+        c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
+        c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
+        c.argument('max_age', arg_group='Cross-origin Resource Sharing (CORS)', type=int,
+                   help="How long, in seconds, the response from a pre-flight request can be cached by clients.")
+        c.argument('allow_credentials', arg_group='Cross-origin Resource Sharing (CORS)', arg_type=get_three_state_flag(),
+                   help="Whether user credentials are supported on cross-site requests.")
+        c.argument('exposed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of HTTP response headers to expose for cross-site requests.")
+
+    for scope in ['spring-cloud gateway custom-domain',
+                  'spring-cloud api-portal custom-domain']:
+        with self.argument_context(scope) as c:
+            c.argument('domain_name', help='Name of custom domain.')
+
+    for scope in ['spring-cloud gateway custom-domain bind',
+                  'spring-cloud gateway custom-domain update',
+                  'spring-cloud api-portal custom-domain bind',
+                  'spring-cloud api-portal custom-domain update']:
+        with self.argument_context(scope) as c:
+            c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
+
+    with self.argument_context('spring-cloud gateway route-config') as c:
+        c.argument('name', help='Name of route config.')
+
+    for scope in ['spring-cloud gateway route-config create',
+                  'spring-cloud gateway route-config update']:
+        with self.argument_context(scope) as c:
+            c.argument('app_name', type=str, help="The Azure Spring Cloud app name to configure the route.")
+            c.argument('routes_json', type=str, help="The JSON array of API routes.", validator=validate_routes)
+            c.argument('routes_file', type=str, help="The file path of JSON array of API routes.", validator=validate_routes)
