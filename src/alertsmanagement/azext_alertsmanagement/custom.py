@@ -239,21 +239,17 @@ def create_alertsmanagement_processing_rule(cmd, client,
     body['properties'] = properties
     body['tags'] = tags
 
-    return client.create_or_update(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name,
+    return client.create_or_update(resource_group_name=resource_group_name, processing_rule_name=processing_rule_name,
                                 alert_processing_rule=body)
 
 
 def update_alertsmanagement_processing_rule(instance, client,
                                         tags=None,
                                         enabled=None):
-    print('starting update')
     if tags is not None:
         instance.tags = tags
     if enabled is not None:
         instance.properties.enabled = enabled
-    from pprint import pprint
-    pprint(instance)
-    print('--------------------------------------')
     return instance
 
 
@@ -266,7 +262,7 @@ def delete_alertsmanagement_processing_rule(cmd, client,
 def get_alertsmanagement_processing_rule(cmd, client,
                                      resource_group_name,
                                      processing_rule_name):
-    return client.get_by_name(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name)
+    return client.get_by_name(resource_group_name=resource_group_name, processing_rule_name=processing_rule_name)
 
 
 def list_alertsmanagement_processing_rule(cmd, client,

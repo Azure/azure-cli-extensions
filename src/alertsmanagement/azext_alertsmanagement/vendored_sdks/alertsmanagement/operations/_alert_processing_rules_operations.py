@@ -188,7 +188,7 @@ class AlertProcessingRulesOperations(object):
     def get_by_name(
         self,
         resource_group_name,  # type: str
-        alert_processing_rule_name,  # type: str
+        processing_rule_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.AlertProcessingRule"
@@ -196,9 +196,9 @@ class AlertProcessingRulesOperations(object):
 
         :param resource_group_name: Resource group name where the resource is created.
         :type resource_group_name: str
-        :param alert_processing_rule_name: The name of the alert processing rule that needs to be
+        :param processing_rule_name: The name of the alert processing rule that needs to be
          fetched.
-        :type alert_processing_rule_name: str
+        :type processing_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AlertProcessingRule, or the result of cls(response)
         :rtype: ~azure.mgmt.alertsmanagement.models.AlertProcessingRule
@@ -217,7 +217,7 @@ class AlertProcessingRulesOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'alertProcessingRuleName': self._serialize.url("alert_processing_rule_name", alert_processing_rule_name, 'str'),
+            'alertProcessingRuleName': self._serialize.url("alert_processing_rule_name", processing_rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -251,7 +251,7 @@ class AlertProcessingRulesOperations(object):
     def create_or_update(
         self,
         resource_group_name,  # type: str
-        alert_processing_rule_name,  # type: str
+        processing_rule_name,  # type: str
         alert_processing_rule,  # type: "models.AlertProcessingRule"
         **kwargs  # type: Any
     ):
@@ -260,9 +260,9 @@ class AlertProcessingRulesOperations(object):
 
         :param resource_group_name: Resource group name where the resource is created.
         :type resource_group_name: str
-        :param alert_processing_rule_name: The name of the alert processing rule that needs to be
+        :param processing_rule_name: The name of the alert processing rule that needs to be
          created/updated.
-        :type alert_processing_rule_name: str
+        :type processing_rule_name: str
         :param alert_processing_rule: Alert processing rule to be created/updated.
         :type alert_processing_rule: ~azure.mgmt.alertsmanagement.models.AlertProcessingRule
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -284,7 +284,7 @@ class AlertProcessingRulesOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'alertProcessingRuleName': self._serialize.url("alert_processing_rule_name", alert_processing_rule_name, 'str'),
+            'alertProcessingRuleName': self._serialize.url("alert_processing_rule_name", processing_rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
