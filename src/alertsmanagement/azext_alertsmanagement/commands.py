@@ -20,9 +20,8 @@ def load_command_table(self, _):
     with self.command_group('monitor processing-rule', alertsmanagement_processing_rules, client_factory=cf_processing_rules,
                             is_preview=True) as g:
         g.custom_command('create', 'create_alertsmanagement_processing_rule')
-        g.generic_update_command('update', custom_func_name='update_alertsmanagement_action_rule',
-                                setter_arg_name='action_rule', getter_name='get_by_name',
-                                setter_name='create_update')
+        g.generic_update_command('update', custom_func_name='update_alertsmanagement_processing_rule',
+                                setter_arg_name='alert_processing_rule', getter_name='get_by_name')
         g.custom_command('delete', 'delete_alertsmanagement_processing_rule')
         g.custom_show_command('show', 'get_alertsmanagement_processing_rule')
         g.custom_command('list', 'list_alertsmanagement_processing_rule')

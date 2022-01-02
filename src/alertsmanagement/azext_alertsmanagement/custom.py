@@ -243,16 +243,17 @@ def create_alertsmanagement_processing_rule(cmd, client,
                                 alert_processing_rule=body)
 
 
-def update_alertsmanagement_action_rule(instance, client,
-                                        location=None,
+def update_alertsmanagement_processing_rule(instance, client,
                                         tags=None,
-                                        status=None):
-    if location is not None:
-        instance.location = location
+                                        enabled=None):
+    print('starting update')
     if tags is not None:
         instance.tags = tags
-    if status is not None:
-        instance.properties.status = status
+    if enabled is not None:
+        instance.properties.enabled = enabled
+    from pprint import pprint
+    pprint(instance)
+    print('--------------------------------------')
     return instance
 
 
