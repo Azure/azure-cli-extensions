@@ -256,10 +256,10 @@ def update_alertsmanagement_action_rule(instance, client,
     return instance
 
 
-def delete_alertsmanagement_action_rule(cmd, client,
+def delete_alertsmanagement_processing_rule(cmd, client,
                                         resource_group_name,
-                                        action_rule_name):
-    return client.delete(resource_group_name=resource_group_name, action_rule_name=action_rule_name)
+                                        processing_rule_name):
+    return client.delete(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name)
 
 
 def get_alertsmanagement_processing_rule(cmd, client,

@@ -24,7 +24,7 @@ def load_arguments(self, _):
     processing_rule_name = CLIArgumentType(overrides=name_arg_type, help='Name of the alert processing rule.',
                                        id_part='name')
 
-    with self.argument_context('monitor action-rule create') as c:
+    with self.argument_context('monitor processing-rule create') as c:
         c.argument('processing_rule_name', processing_rule_name)
         c.argument('rule_type', arg_type=get_enum_type(ActionType), help='Indicate type of the alert processing rule')
         c.argument('action_groups', help='List of ARM IDs (comma-delimited) of action groups to add. A use of this argument requires that rule-type is AddActionGroups')
@@ -67,8 +67,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('enabled', nargs='+', arg_type=get_enum_type(['True', 'False']), help='Indicate if the given processing rule is enabled or disabled (values are True and False). Default True.')
 
-    with self.argument_context('monitor action-rule delete') as c:
+    with self.argument_context('monitor processing-rule delete') as c:
         c.argument('processing_rule_name', processing_rule_name)
 
-    with self.argument_context('monitor action-rule show') as c:
+    with self.argument_context('monitor processing-rule show') as c:
         c.argument('processing_rule_name', processing_rule_name)
