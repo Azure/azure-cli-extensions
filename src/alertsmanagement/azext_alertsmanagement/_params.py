@@ -10,7 +10,7 @@ from typing_extensions import Required
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
-    get_location_type
+    get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from knack.arguments import CLIArgumentType
@@ -30,7 +30,7 @@ def load_arguments(self, _):
         c.argument('action_groups', help='List of ARM IDs (comma-delimited) of action groups to add. A use of this argument requires that rule-type is AddActionGroups')
         c.argument('description', help='Description of the alert processing rule')
         c.argument('scopes', required=True, help='List of ARM IDs (comma-delimited) of the given scopes type which will be the target of the given processing rule.')
-        c.argument('enabled', arg_type=get_enum_type(['True', 'False']), help='Indicate if the given alert processing rule is enabled or disabled (values are True and False). Default True.')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given alert processing rule is enabled or disabled (values are True and False). Default True.')
         c.argument('tags', tags_type)
         c.argument('filter_severity', nargs='+', validator = validate_severity, help='Filter alerts by severity. All filters should follow format "operator value1 value2 ... valueN". Operator is one of Equals, NotEquals, Contains and DoesNotContain.')
         c.argument('filter_monitor_service', nargs='+', help='Filter alerts by monitor service')
@@ -64,7 +64,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor processing-rule update') as c:
         c.argument('processing_rule_name', processing_rule_name)
         c.argument('tags', tags_type)
-        c.argument('enabled', arg_type=get_enum_type(['True', 'False']), help='Indicate if the given processing rule is enabled or disabled (values are True and False).')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given processing rule is enabled or disabled (values are True and False).')
 
     with self.argument_context('monitor processing-rule delete') as c:
         c.argument('processing_rule_name', processing_rule_name)

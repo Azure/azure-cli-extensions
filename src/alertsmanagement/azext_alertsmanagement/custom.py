@@ -207,7 +207,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                     'recurrenceType': schedule_recurrence_type,
                     'startTime': schedule_start_time,
                     'endTime' : schedule_end_time,
-                    'daysOfWeek': schedule_recurrence
+                    type_of_days: schedule_recurrence
                 }
             ]
 
@@ -231,7 +231,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                     'recurrenceType': schedule_recurrence_type_2,
                     'startTime': schedule_start_time_2,
                     'endTime' : schedule_end_time_2,
-                    'daysOfWeek': schedule_recurrence_2
+                    type_of_days: schedule_recurrence_2
                     }
         
         properties['schedule']['recurrences'].append(second_recurrence)
