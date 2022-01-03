@@ -108,9 +108,10 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('skip_subnet_role_assignment', action='store_true')
-        c.argument('enable_fips_image', action='store_true', is_preview=True)
+        c.argument('enable_fips_image', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('uptime_sla', action='store_true')
+        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -163,6 +164,7 @@ def load_arguments(self, _):
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
         c.argument('disable_cluster_autoscaler', options_list=["--disable-cluster-autoscaler", "-d"], action='store_true')
         c.argument('update_cluster_autoscaler', options_list=["--update-cluster-autoscaler", "-u"], action='store_true')
+        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -237,7 +239,7 @@ def load_arguments(self, _):
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
             c.argument('os_type', type=str)
             c.argument('os_sku', type=str, options_list=['--os-sku'], completer=get_ossku_completion_list)
-            c.argument('enable_fips_image', action='store_true', is_preview=True)
+            c.argument('enable_fips_image', action='store_true')
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
             c.argument('scale_down_mode', arg_type=get_enum_type([CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]))
             c.argument('node_taints', type=str, validator=validate_taints)

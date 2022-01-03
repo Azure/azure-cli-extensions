@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.11.0
+++++++
+* [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
+* Job result histograms will be left-aligned (not centered) in console output.
+
 0.10.0
 ++++++
 * [2021-11-22] Version intended to work with QDK version v0.20.2111.177148

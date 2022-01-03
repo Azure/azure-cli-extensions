@@ -51,11 +51,13 @@ set -o xtrace
 [[ -z "${SELECTION_MODE}" ]] && (echo "SELECTION_MODE is empty")
 [[ -z "${SELECTION_COUNT}" ]] && (echo "SELECTION_COUNT is empty")
 [[ -z "${UNFIX_RANDOM_SEED}" ]] && (echo "UNFIX_RANDOM_SEED is empty")
-[[ -z "${BACKWARD_COMPATIBILITY_TEST}" ]] && (echo "BACKWARD_COMPATIBILITY_TEST is empty")
+[[ -z "${CLI_COVERAGE_CONFIG}" ]] && (echo "CLI_COVERAGE_CONFIG is empty")
+[[ -z "${EXT_COVERAGE_CONFIG}" ]] && (echo "EXT_COVERAGE_CONFIG is empty")
 [[ -z "${CLI_REPO}" ]] && (echo "CLI_REPO is empty"; exit 1)
 [[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
 [[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
 [[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
+[[ -z "${BACKWARD_COMPATIBILITY_TEST}" ]] && (echo "BACKWARD_COMPATIBILITY_TEST is empty")
 
 # base directories for acs, aks-preview and live test
 [[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
@@ -100,6 +102,7 @@ echo "AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION=${TEST_LOCATION}" >> env.list
 
 # custom - az-aks-tool
 echo "IGNORE_EXIT_CODE=${IGNORE_EXIT_CODE}" >> env.list
+# live test
 echo "COVERAGE=${COVERAGE}" >> env.list
 echo "TEST_MODE=${TEST_MODE}" >> env.list
 echo "CLI_TEST_MATRIX=${CLI_TEST_MATRIX}" >> env.list
@@ -112,6 +115,9 @@ echo "ENABLE_SELECTION=${ENABLE_SELECTION}" >> env.list
 echo "SELECTION_MODE=${SELECTION_MODE}" >> env.list
 echo "SELECTION_COUNT=${SELECTION_COUNT}" >> env.list
 echo "UNFIX_RANDOM_SEED=${UNFIX_RANDOM_SEED}" >> env.list
+# unit test
+echo "CLI_COVERAGE_CONFIG=${CLI_COVERAGE_CONFIG}" >> env.list
+echo "EXT_COVERAGE_CONFIG=${EXT_COVERAGE_CONFIG}" >> env.list
 
 # custom - repo
 echo "CLI_REPO=${CLI_REPO}" >> env.list
