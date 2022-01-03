@@ -13,8 +13,8 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_create
 from .example_steps import step_show
-from .example_steps import step_list
-from .example_steps import step_list2
+from .example_steps import step_list_by_resource_group
+from .example_steps import step_list_by_subscription
 from .example_steps import step_update
 from .example_steps import step_delete
 from .. import (
@@ -43,30 +43,34 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    step_create(test, checks=[
+    create_result = step_create(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
-        test.check("ledgerType", "Public", case_sensitive=False),
+        test.check("name", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerType", "Public", case_sensitive=False),
         test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-        test.check("ledgerName", "{myLedger}", case_sensitive=False),
     ])
+
     step_show(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
-        test.check("ledgerType", "Public", case_sensitive=False),
+        test.check("name", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerType", "Public", case_sensitive=False),
         test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-        test.check("ledgerName", "{myLedger}", case_sensitive=False),
     ])
-    step_list(test, checks=[
+    step_list_by_resource_group(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_list2(test, checks=[
+    step_list_by_subscription(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_update(test, checks=[
+    step_update(test, create_result.output, checks=[
         test.check("location", "EastUS", case_sensitive=False),
-        test.check("ledgerType", "Public", case_sensitive=False),
+        test.check("name", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
+        test.check("properties.ledgerType", "Public", case_sensitive=False),
         test.check("tags.additionProps2", "additional property value", case_sensitive=False),
         test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
-        test.check("ledgerName", "{myLedger}", case_sensitive=False),
     ])
     step_delete(test, checks=[])
     cleanup_scenario(test)

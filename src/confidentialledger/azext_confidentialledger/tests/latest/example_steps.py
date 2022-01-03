@@ -17,7 +17,7 @@ from .. import try_manual
 def step_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az confidentialledger create '
+    return test.cmd('az confidentialledger create '
              '--location "EastUS" '
              '--aad-based-security-principals ledger-role-name="Administrator" principal-id="34621747-6fc8-4771-a2eb-72'
              'f31c461f2e" tenant-id="bce123b9-2b7b-4975-8360-5ca0b9b1cd08" '
@@ -33,10 +33,9 @@ def step_create(test, checks=None):
              '--name "{myLedger}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az confidentialledger wait --created '
-             '--name "{myLedger}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+
+    # The `create` command already waits for resource creation. Testing the `wait` command
+    # results in an infinite loop of GET resource -> 200 OK.
 
 
 # EXAMPLE: /Ledger/get/ConfidentialLedgerGet
@@ -52,7 +51,7 @@ def step_show(test, checks=None):
 
 # EXAMPLE: /Ledger/get/ConfidentialLedgerList
 @try_manual
-def step_list(test, checks=None):
+def step_list_by_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confidentialledger list '
@@ -62,7 +61,7 @@ def step_list(test, checks=None):
 
 # EXAMPLE: /Ledger/get/ConfidentialLedgerListBySub
 @try_manual
-def step_list2(test, checks=None):
+def step_list_by_subscription(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confidentialledger list '
@@ -72,12 +71,46 @@ def step_list2(test, checks=None):
 
 # EXAMPLE: /Ledger/patch/ConfidentialLedgerUpdate
 @try_manual
-def step_update(test, checks=None):
+def step_update(test, create_output, checks=None):
     if checks is None:
         checks = []
+
+    aad_based_principals = ""
+    for aad_principal in create_output["properties"]["aadBasedSecurityPrincipals"]:
+        if len(aad_based_principals) == 0:
+            aad_based_principals = "--aad-based-security-principals"
+
+        role_name = aad_principal["ledgerRoleName"]
+        principal_id = aad_principal["principalId"]
+        tenant_id = aad_principal["tenantId"]
+        aad_based_principals += (
+            f' ledger-role-name="{role_name}" principal-id="{principal_id}" tenant-id="{tenant_id}"'
+        )
+
+    cert_based_principals = ""
+    for cert_based_principal in create_output["properties"]["certBasedSecurityPrincipals"]:
+        if len(cert_based_principals) == 0:
+            cert_based_principals = "cert-based-security-principals"
+
+        cert = cert_based_principal["cert"]
+        role_name = cert_based_principal["ledgerRoleName"]
+        cert_based_principals += (
+            f' cert="{cert}" ledger-role-name="{role_name}"'
+        )
+
+    location = create_output["location"]
+    ledger_type = create_output["properties"]["ledgerType"]
+
+    tags = 'additionProps2="additional property value"'
+    for key, value in create_output["tags"].items():
+        tags += f' {key}="{value}"'
+
     test.cmd('az confidentialledger update '
-             '--location "EastUS" '
-             '--tags additionProps2="additional property value" additionalProps1="additional properties" '
+             f'--location "{location}" '
+             f'{aad_based_principals} '
+             f'{cert_based_principals} '
+             f'--ledger-type "{ledger_type}" '
+             f'--tags {tags} '
              '--name "{myLedger}" '
              '--resource-group "{rg}"',
              checks=checks)
