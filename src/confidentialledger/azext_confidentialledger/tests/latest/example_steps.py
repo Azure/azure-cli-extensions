@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+import json
 
 from .. import try_manual
 
@@ -75,8 +76,10 @@ def step_update(test, create_output, checks=None):
     if checks is None:
         checks = []
 
+    create_output_json = json.loads(create_output)
+
     aad_based_principals = ""
-    for aad_principal in create_output["properties"]["aadBasedSecurityPrincipals"]:
+    for aad_principal in create_output_json["properties"]["aadBasedSecurityPrincipals"]:
         if len(aad_based_principals) == 0:
             aad_based_principals = "--aad-based-security-principals"
 
@@ -88,7 +91,7 @@ def step_update(test, create_output, checks=None):
         )
 
     cert_based_principals = ""
-    for cert_based_principal in create_output["properties"]["certBasedSecurityPrincipals"]:
+    for cert_based_principal in create_output_json["properties"]["certBasedSecurityPrincipals"]:
         if len(cert_based_principals) == 0:
             cert_based_principals = "cert-based-security-principals"
 
@@ -98,11 +101,11 @@ def step_update(test, create_output, checks=None):
             f' cert="{cert}" ledger-role-name="{role_name}"'
         )
 
-    location = create_output["location"]
-    ledger_type = create_output["properties"]["ledgerType"]
+    location = create_output_json["location"]
+    ledger_type = create_output_json["properties"]["ledgerType"]
 
     tags = 'additionProps2="additional property value"'
-    for key, value in create_output["tags"].items():
+    for key, value in create_output_json["tags"].items():
         tags += f' {key}="{value}"'
 
     test.cmd('az confidentialledger update '
