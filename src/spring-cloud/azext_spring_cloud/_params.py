@@ -14,7 +14,10 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app)
+from ._validators_enterprise import only_support_enterprise
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+                             ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
+                             validate_cpu, validate_memory)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -25,6 +28,13 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
+sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, help='Name of SKU. Enterprise is still in Preview.')
+source_path_type = CLIArgumentType(nargs='?', const='.',
+                                   help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
+                                   arg_group='Source Code deploy')
+# app cpu and memory
+cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
+memort_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 
 
 # pylint: disable=too-many-statements
@@ -39,6 +49,7 @@ def load_arguments(self, _):
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
+        c.argument('sku', arg_type=sku_type, default='Standard')
         c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
         c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
         c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
@@ -69,8 +80,14 @@ def load_arguments(self, _):
                         "--app-insights-key or --app-insights, "
                         "will create a new Application Insights instance in the same resource group.",
                    validator=validate_tracing_parameters_asc_create)
+        c.argument('zone_redundant',
+                   arg_type=get_three_state_flag(),
+                   help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
+                        "this could only be supported in several regions at the moment ",
+                   default=False, is_preview=True)
 
     with self.argument_context('spring-cloud update') as c:
+        c.argument('sku', arg_type=sku_type)
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,
@@ -97,7 +114,6 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
-            c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
@@ -114,10 +130,8 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
-        c.argument('cpu', type=str, default="1",
-                   help='CPU resource quantity. Should be 500m or number of CPU cores.')
-        c.argument('memory', type=str, default="1Gi",
-                   help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('cpu', arg_type=cpu_type, default="1")
+        c.argument('memory', arg_type=memort_type, default="1Gi")
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
         c.argument('persistent_storage', type=str,
@@ -182,7 +196,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app set-deployment') as c:
         c.argument('deployment', options_list=[
-            '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=validate_deployment_name)
+            '--deployment', '-d'], help='Name of an existing deployment of the app.', validator=ensure_not_active_deployment)
 
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
@@ -199,8 +213,8 @@ def load_arguments(self, _):
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
 
     with self.argument_context('spring-cloud app scale') as c:
-        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
-        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('cpu', arg_type=cpu_type)
+        c.argument('memory', arg_type=memort_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
@@ -211,24 +225,40 @@ def load_arguments(self, _):
                                                c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
                 help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
             c.argument(
-                'source_path', nargs='?', const='.',
-                help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.")
-            c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.', arg_group='Source Code deploy')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
+            c.argument(
+                'container_image', help='The container image tag.', arg_group='Custom Container')
+            c.argument(
+                'container_registry', default='docker.io', help='The registry of the container image.', arg_group='Custom Container')
+            c.argument(
+                'registry_username', help='The username of the container registry.', arg_group='Custom Container')
+            c.argument(
+                'registry_password', help='The password of the container registry.', arg_group='Custom Container')
+            c.argument(
+                'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
+            c.argument(
+                'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+
+    with self.argument_context('spring-cloud app deploy') as c:
+        c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
+
+    with self.argument_context('spring-cloud app deployment create') as c:
+        c.argument('source_path', arg_type=source_path_type, validator=validate_deloyment_create_path)
 
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
-        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
-        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('cpu', arg_type=cpu_type)
+        c.argument('memory', arg_type=memort_type)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app deployment') as c:
@@ -381,3 +411,13 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
+
+    for scope in ['spring-cloud service-registry']:
+        with self.argument_context(scope) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring-cloud service-registry bind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    with self.argument_context('spring-cloud service-registry unbind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
