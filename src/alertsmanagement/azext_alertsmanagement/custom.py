@@ -147,7 +147,6 @@ def create_alertsmanagement_processing_rule(cmd, client,
         properties['conditions'] = []    
         
     if severity is not None:
-        print(severity)
         properties['conditions'].append(severity)
     if monitor_service is not None:
         properties['conditions'].append(monitor_service)
@@ -183,7 +182,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
 
         if schedule_end_date is not None:
             schedule_end_date = datetime.strptime(schedule_end_date, '%m/%d/%Y').strftime('%Y-%m-%d')
-            effective_until = schedule_start_date + 'T' + schedule_end_time
+            effective_until = schedule_end_date + 'T' + schedule_end_time
 
         if schedule_time_zone is not None:
             properties['schedule']['timeZone'] = schedule_time_zone
@@ -213,6 +212,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                 }
             ]
 
+        second_recurrence = None
         if any([schedule_recurrence_type_2, schedule_start_time_2, schedule_end_time_2, schedule_recurrence_2]) and \
             len(properties['schedule']['recurrences']) < 1:
             print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
@@ -236,7 +236,8 @@ def create_alertsmanagement_processing_rule(cmd, client,
                     type_of_days: schedule_recurrence_2
                     }
         
-        properties['schedule']['recurrences'].append(second_recurrence)
+        if second_recurrence is not None:
+            properties['schedule']['recurrences'].append(second_recurrence)
 
     body['properties'] = properties
     body['tags'] = tags
