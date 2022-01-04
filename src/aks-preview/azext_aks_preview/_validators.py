@@ -517,3 +517,10 @@ def validate_snapshot_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")
+
+
+def validate_crg_id(namespace):
+    if namespace.crg_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.crg_id):
+            raise InvalidArgumentValueError("--crg-id is not a valid Azure resource ID.")

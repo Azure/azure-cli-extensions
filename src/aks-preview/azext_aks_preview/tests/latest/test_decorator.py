@@ -1572,6 +1572,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "gpu_instance_profile": None,
                 "kubelet_config": None,
                 "snapshot_id": None,
+                "crg_id": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1610,6 +1611,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             gpu_instance_profile=None,
             kubelet_config=None,
             creation_data=None,
+            capacity_reservation_group_id=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
@@ -1646,6 +1648,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "kubelet_config": _get_test_data_file("kubeletconfig.json"),
                 "linux_os_config": _get_test_data_file("linuxosconfig.json"),
                 "snapshot_id": "test_snapshot_id",
+                "crg_id": "test_crg_id",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1714,6 +1717,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             creation_data=self.models.CreationData(
                 source_resource_id="test_snapshot_id"
             ),
+            capacity_reservation_group_id="test_crg_id",
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]

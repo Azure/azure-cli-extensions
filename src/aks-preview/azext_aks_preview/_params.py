@@ -159,6 +159,7 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
+        c.argument('crg_id', type=str, validator=validate_crg_id, is_preview=True)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -261,6 +262,7 @@ def load_arguments(self, _):
             c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
             c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
             c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
+            c.argument('crg_id', type=str, validator=validate_crg_id, is_preview=True)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
