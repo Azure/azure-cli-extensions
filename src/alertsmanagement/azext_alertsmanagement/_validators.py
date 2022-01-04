@@ -18,17 +18,17 @@ def validate_time_format(namespace):
 def validate_severity(namespace):
     if namespace.filter_severity:
         for x in namespace.filter_severity:
-            if x not in ['Equals', 'NotEquals', 'Contains', 'DoesNotContain', 'Sev0', 'Sev1', 'Sev2', 'Sev3', 'Sev4']:
-                raise CLIError('filter-severity values have to be one of [Equals, NotEquals, Contains, DoesNotContain, Sev0, Sev1, Sev2, Sev3, Sev4]')
+            if x not in ['Equals', 'NotEquals', 'Sev0', 'Sev1', 'Sev2', 'Sev3', 'Sev4']:
+                raise CLIError('filter-severity values have to be one of [Equals, NotEquals, Sev0, Sev1, Sev2, Sev3, Sev4]')
 
 def validate_monitor_condition(namespace):
     if namespace.filter_monitor_condition:
         for x in namespace.filter_monitor_condition:
-            if x not in ['Equals', 'NotEquals', 'Contains', 'DoesNotContain', 'Fired', 'Resolved']:
-                raise CLIError('filter-monitor-condition values have to be one of [Equals, NotEquals, Contains, DoesNotContain, Fired, Resolved]')
+            if x not in ['Equals', 'NotEquals', 'Fired', 'Resolved']:
+                raise CLIError('filter-monitor-condition values have to be one of [Equals, NotEquals, Fired, Resolved]')
 
 def validate_signal_type(namespace):
     if namespace.filter_signal_type:
         for x in namespace.filter_signal_type:
-            if x not in ['Equals', 'NotEquals', 'Contains', 'DoesNotContain', 'Metric', 'Log', 'Unknown']:
-                raise CLIError('filter-signal-type values have to be one of [Equals, NotEquals, Contains, DoesNotContain, Metric, Log, Unknown]')
+            if x not in ['Equals', 'NotEquals', 'Metric', 'Log', 'Unknown']:
+                raise CLIError('filter-signal-type values have to be one of [Equals, NotEquals, Metric, Log, Unknown]')
