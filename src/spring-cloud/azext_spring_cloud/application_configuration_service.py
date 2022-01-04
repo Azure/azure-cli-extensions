@@ -98,9 +98,6 @@ def application_configuration_service_git_list(cmd, client, service, resource_gr
     acs_resource = client.configuration_services.get(resource_group, service, DEFAULT_NAME)
     acs_settings = acs_resource.properties.settings
 
-    if not acs_settings or not acs_settings.git_property or not acs_settings.git_property.repositories:
-        raise ResourceNotFoundError("Repos not found.")
-
     return acs_settings.git_property.repositories
 
 
