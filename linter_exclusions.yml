@@ -188,6 +188,20 @@ aks update:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+arcdata dc create:
+  parameters:
+    logs_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    logs_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:
@@ -600,6 +614,21 @@ dms project task create:
     target_connection_json:
       rule_exclusions:
       - option_length_too_long
+dt endpoint create servicebus:
+  parameters:
+    servicebus_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventgrid:
+  parameters:
+    eventgrid_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventhub:
+  parameters:
+    eventhub_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 eventgrid domain create:
   parameters:
     input_mapping_default_values:
@@ -966,6 +995,22 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
+iot central export destination update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central export update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot hub configuration update:
   parameters:
     auth_type_dataplane:

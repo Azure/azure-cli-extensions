@@ -1482,6 +1482,8 @@ class MetricSpecification(msrest.serialization.Model):
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric.
     :type dimensions: list[~azure.mgmt.appplatform.v2020_07_01.models.MetricDimension]
+    :param source_mdm_namespace: Name of the MDM namespace. Optional.
+    :type source_mdm_namespace: str
     """
 
     _attribute_map = {
@@ -1495,6 +1497,7 @@ class MetricSpecification(msrest.serialization.Model):
         'supported_time_grain_types': {'key': 'supportedTimeGrainTypes', 'type': '[str]'},
         'fill_gap_with_zero': {'key': 'fillGapWithZero', 'type': 'bool'},
         'dimensions': {'key': 'dimensions', 'type': '[MetricDimension]'},
+        'source_mdm_namespace': {'key': 'sourceMdmNamespace', 'type': 'str'},
     }
 
     def __init__(
@@ -1510,6 +1513,7 @@ class MetricSpecification(msrest.serialization.Model):
         supported_time_grain_types: Optional[List[str]] = None,
         fill_gap_with_zero: Optional[bool] = None,
         dimensions: Optional[List["MetricDimension"]] = None,
+        source_mdm_namespace: Optional[str] = None,
         **kwargs
     ):
         super(MetricSpecification, self).__init__(**kwargs)
@@ -1523,6 +1527,7 @@ class MetricSpecification(msrest.serialization.Model):
         self.supported_time_grain_types = supported_time_grain_types
         self.fill_gap_with_zero = fill_gap_with_zero
         self.dimensions = dimensions
+        self.source_mdm_namespace = source_mdm_namespace
 
 
 class MonitoringSettingProperties(msrest.serialization.Model):
