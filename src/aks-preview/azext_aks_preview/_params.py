@@ -18,7 +18,7 @@ from ._completers import (
 from ._validators import (
     validate_cluster_autoscaler_profile, validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_snapshot_id,
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_snapshot_id, validate_crg_id,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,

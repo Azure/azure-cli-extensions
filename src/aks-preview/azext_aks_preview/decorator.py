@@ -1516,6 +1516,16 @@ class AKSPreviewContext(AKSContext):
 
         return profile
 
+    def get_crg_id(self) -> str:
+        """Obtain the values of crg_id.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        crg_id = self.raw_param.get("crg_id")
+        
+        return crg_id
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -1575,6 +1585,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 source_resource_id=snapshot_id
             )
         agent_pool_profile.creation_data = creation_data
+        agent_pool_profile.capacity_reservation_group_id = self.context.get_crg_id()
 
         mc.agent_pool_profiles = [agent_pool_profile]
         return mc
@@ -1831,7 +1842,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
 
         return mc
-
+    
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
