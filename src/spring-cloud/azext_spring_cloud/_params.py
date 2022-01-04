@@ -14,7 +14,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
+from ._validators_enterprise import (only_support_enterprise, validate_builder, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
@@ -238,7 +238,7 @@ def load_arguments(self, _):
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
-            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True)
+            c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default', is_preview=True, validator=validate_builder)
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")

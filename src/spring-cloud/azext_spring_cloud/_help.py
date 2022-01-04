@@ -618,7 +618,7 @@ helps['spring-cloud build-service builder create'] = """
     short-summary: Create a builder.
     examples:
         - name: Create a builder using JSON file.
-          text: az spring-cloud build-service buildpacks-binding create --name my-builder --builder-json MyJson.json
+          text: az spring-cloud build-service builder create --name my-builder --builder-json MyJson.json
 """
 
 helps['spring-cloud build-service builder update'] = """
@@ -626,7 +626,7 @@ helps['spring-cloud build-service builder update'] = """
     short-summary: Update a builder.
     examples:
         - name: Update a builder using JSON file.
-          text: az spring-cloud build-service buildpacks-binding update --name my-builder --builder-json MyJson.json
+          text: az spring-cloud build-service builder update --name my-builder --builder-json MyJson.json
 """
 
 helps['spring-cloud build-service builder show'] = """
@@ -634,7 +634,7 @@ helps['spring-cloud build-service builder show'] = """
     short-summary: Show a builder.
     examples:
         - name: Show a builder.
-          text: az spring-cloud build-service buildpacks-binding show --name my-builder
+          text: az spring-cloud build-service builder show --name my-builder
 """
 
 helps['spring-cloud build-service builder delete'] = """
@@ -642,5 +642,5 @@ helps['spring-cloud build-service builder delete'] = """
     short-summary: Delete a builder.
     examples:
         - name: Delete a builder.
-          text: az spring-cloud build-service buildpacks-binding delete --name my-builder
+          text: az spring-cloud build-service builder delete --name my-builder
 """

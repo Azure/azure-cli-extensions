@@ -26,6 +26,20 @@ def not_support_enterprise(cmd, namespace):
         raise ClientRequestError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
 
 
+def validate_builder(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        builder = client.build_service_builder.get(namespace.resource_group,
+                                                   namespace.service,
+                                                   DEFAULT_BUILD_SERVICE_NAME,
+                                                   namespace.builder)
+        if builder.properties.provisioning_state != AppPlatformEnums.BuilderProvisioningState.SUCCEEDED:
+            raise CLIError('The provision state of builder {} is not succeeded, please choose a succeeded builder.'
+                           .format(namespace.builder))
+    except ResourceNotFoundError:
+        pass
+
+
 def validate_builder_create(cmd, namespace):
     client = get_client(cmd)
     try:

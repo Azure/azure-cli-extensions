@@ -43,7 +43,9 @@ def builder_delete(cmd, client, resource_group, service, name):
 def _update_builder(builder_file, builder_json):
     if builder_file is not None:
         with open(builder_file, 'r') as json_file:
-            return json.load(json_file)
+            builder = json.load(json_file)
 
     if builder_json is not None:
-        return json.loads(builder_json)
+        builder = json.loads(builder_json)
+
+    return builder
