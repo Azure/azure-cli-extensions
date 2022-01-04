@@ -132,7 +132,7 @@ class Tags(msrest.serialization.Model):
         self.tags = kwargs.get('tags', None)
 
 
-class Location(msrest.serialization.Model):
+class ResourceLocation(msrest.serialization.Model):
     """Location of the ARM Resource.
 
     :param location: The Azure location where the Confidential Ledger is running.
@@ -147,7 +147,7 @@ class Location(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(Location, self).__init__(**kwargs)
+        super(ResourceLocation, self).__init__(**kwargs)
         self.location = kwargs.get('location', None)
 
 
@@ -191,7 +191,7 @@ class Resource(msrest.serialization.Model):
         self.system_data = None
 
 
-class ConfidentialLedger(Resource, Location, Tags):
+class ConfidentialLedger(Resource, ResourceLocation, Tags):
     """Confidential Ledger. Contains the properties of Confidential Ledger Resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.

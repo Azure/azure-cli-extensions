@@ -50,7 +50,6 @@ def call_scenario(test):
         test.check("properties.ledgerType", "Public", case_sensitive=False),
         test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
     ])
-
     step_show(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
         test.check("name", "{myLedger}", case_sensitive=False),

@@ -18,6 +18,7 @@ from .. import try_manual
 def step_create(test, checks=None):
     if checks is None:
         checks = []
+
     return test.cmd('az confidentialledger create '
              '--location "EastUS" '
              '--aad-based-security-principals ledger-role-name="Administrator" principal-id="34621747-6fc8-4771-a2eb-72'
@@ -93,7 +94,7 @@ def step_update(test, create_output, checks=None):
     cert_based_principals = ""
     for cert_based_principal in create_output_json["properties"]["certBasedSecurityPrincipals"]:
         if len(cert_based_principals) == 0:
-            cert_based_principals = "cert-based-security-principals"
+            cert_based_principals = "--cert-based-security-principals"
 
         cert = cert_based_principal["cert"]
         role_name = cert_based_principal["ledgerRoleName"]

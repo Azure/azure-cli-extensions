@@ -17,8 +17,8 @@ try:
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
     from ._models_py3 import LedgerProperties
-    from ._models_py3 import Location
     from ._models_py3 import Resource
+    from ._models_py3 import ResourceLocation
     from ._models_py3 import ResourceProviderOperationDefinition
     from ._models_py3 import ResourceProviderOperationDisplay
     from ._models_py3 import ResourceProviderOperationList
@@ -35,8 +35,8 @@ except (SyntaxError, ImportError):
     from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import LedgerProperties  # type: ignore
-    from ._models import Location  # type: ignore
     from ._models import Resource  # type: ignore
+    from ._models import ResourceLocation  # type: ignore
     from ._models import ResourceProviderOperationDefinition  # type: ignore
     from ._models import ResourceProviderOperationDisplay  # type: ignore
     from ._models import ResourceProviderOperationList  # type: ignore
@@ -62,8 +62,8 @@ __all__ = [
     'ErrorDetail',
     'ErrorResponse',
     'LedgerProperties',
-    'Location',
     'Resource',
+    'ResourceLocation',
     'ResourceProviderOperationDefinition',
     'ResourceProviderOperationDisplay',
     'ResourceProviderOperationList',
