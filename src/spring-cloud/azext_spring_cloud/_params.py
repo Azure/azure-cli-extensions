@@ -414,9 +414,9 @@ def load_arguments(self, _):
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
 
-    for scope in ['spring-cloud application-configuration-service', 'spring-cloud service-registry',
-                  'spring-cloud gateway', 'spring-cloud api-portal']:
-        with self.argument_context(scope) as c:
+    for scope in ['application-configuration-service', 'service-registry',
+                  'gateway', 'api-portal']:
+        with self.argument_context('spring-cloud {}'.format(scope )) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     with self.argument_context('spring-cloud service-registry bind') as c:
