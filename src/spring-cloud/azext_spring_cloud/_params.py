@@ -14,7 +14,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import only_support_enterprise
+from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
+                                     validate_builder_update, validate_build_pool_size)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
@@ -85,6 +86,12 @@ def load_arguments(self, _):
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment ",
                    default=False, is_preview=True)
+        c.argument('build_pool_size',
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   validator=validate_build_pool_size,
+                   default='S1',
+                   is_preview=True,
+                   help='Only support in enterprise tier now. Size of build agent pool. See Azure Spring Cloud Doc for size info.')
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
@@ -111,6 +118,10 @@ def load_arguments(self, _):
                    deprecate_info=c.deprecate(target='az spring-cloud update --disable-app-insights',
                                               redirect='az spring-cloud app-insights update --disable',
                                               hide=True))
+        c.argument('build_pool_size',
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   is_preview=True,
+                   help='Only support in enterprise tier now. Size of build agent pool. See Azure Spring Cloud Doc for size info.')
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
@@ -421,3 +432,20 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud service-registry unbind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    for scope in ['spring-cloud build-service builder create',
+                  'spring-cloud build-service builder update']:
+        with self.argument_context(scope) as c:
+            c.argument('builder_json', type=str, help="The JSON array of builder.", validator=validate_builder_resource)
+            c.argument('builder_file', type=str, help="The file path of JSON array of builder.", validator=validate_builder_resource)
+
+    with self.argument_context('spring-cloud build-service builder create') as c:
+        c.argument('name', type=str, help="The builder name.", validator=validate_builder_create)
+
+    with self.argument_context('spring-cloud build-service builder update') as c:
+        c.argument('name', type=str, help="The builder name.", validator=validate_builder_update)
+
+    for scope in ['spring-cloud build-service builder show',
+                  'spring-cloud build-service builder delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', type=str, help="The builder name.")
