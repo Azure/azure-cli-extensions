@@ -400,7 +400,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) Enable OIDC issuer.
         - name: --crg-id
           type: string
-          short-summary: The CRG id used to associate the new cluster with the existed Capacity Reservation Group resource.
+          short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -456,7 +456,7 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
-        - name: create a kubernetes cluster with a CRG id.
+        - name: create a kubernetes cluster with a Capacity Reservation Group(CRG) ID.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --crg-id "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -1033,7 +1033,7 @@ helps['aks nodepool add'] = """
           short-summary: The source snapshot id used to create this nodepool.
         - name: --crg-id
           type: string
-          short-summary: The CRG id used to associate the new nodepool with the existed Capacity Reservation Group resource.
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1045,7 +1045,7 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
-        - name: create a nodepool with a CRG id.
+        - name: create a nodepool with a Capacity Reservation Group(CRG) ID.
           text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyManagedCluster --crg-id "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
 """
 

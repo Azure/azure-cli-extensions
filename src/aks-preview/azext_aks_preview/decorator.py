@@ -1523,7 +1523,6 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         crg_id = self.raw_param.get("crg_id")
-        
         return crg_id
 
 
@@ -1842,7 +1841,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
 
         return mc
-    
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
