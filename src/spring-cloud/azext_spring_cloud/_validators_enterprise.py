@@ -7,7 +7,9 @@
 
 from re import match
 
-from azure.cli.core.azclierror import ClientRequestError, ValidationError
+from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError)
 from knack.log import get_logger
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
@@ -40,7 +42,7 @@ def validate_memory(namespace):
 def validate_git_uri(namespace):
     uri = namespace.uri
     if uri and (not uri.startswith("https://")) and (not uri.startswith("git@")):
-        raise ValidationError("Git URI should start with \"https://\" or \"git@\"")
+        raise InvalidArgumentValueError("Git URI should start with \"https://\" or \"git@\"")
 
 
 def validate_config_file_patterns(namespace):
@@ -58,7 +60,7 @@ def _validate_patterns(patterns):
     invalid_list = [p for p in pattern_list if not _is_valid_pattern(p)]
     if len(invalid_list) > 0:
         logger.warning("Patterns '%s' are invalid.", ','.join(invalid_list))
-        raise ValidationError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
+        raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
 
 
 def _is_valid_pattern(pattern):
@@ -94,23 +96,23 @@ def _validate_sso(namespace):
     all_provided = namespace.scope and namespace.client_id and namespace.client_secret and namespace.issuer_uri
     none_provided = namespace.scope is None and namespace.client_id is None and namespace.client_secret is None and namespace.issuer_uri is None
     if not all_provided and not none_provided:
-        raise ValidationError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
+        raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
     if namespace.scope:
         namespace.scope = namespace.scope.split(",")
 
 
 def validate_routes(namespace):
     if namespace.routes_json is not None and namespace.routes_file is not None:
-        raise ValidationError("You can only specify either --routes-json or --routes-file.")
+        raise MutuallyExclusiveArgumentError("You can only specify either --routes-json or --routes-file.")
 
 
 def validate_gateway_instance_count(namespace):
     if namespace.gateway_instance_count is not None:
         if namespace.gateway_instance_count < 1:
-            raise ValidationError("--gateway-instance-count must be greater than 0")
+            raise InvalidArgumentValueError("--gateway-instance-count must be greater than 0")
 
 
 def validate_api_portal_instance_count(namespace):
     if namespace.api_portal_instance_count is not None:
         if namespace.api_portal_instance_count < 1:
-            raise ValidationError("--api-portal-instance-count must be greater than 0")
+            raise InvalidArgumentValueError("--api-portal-instance-count must be greater than 0")

@@ -419,17 +419,13 @@ def load_arguments(self, _):
         with self.argument_context('spring-cloud {}'.format(scope )) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
-    with self.argument_context('spring-cloud service-registry bind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring-cloud service-registry {}'.format(scope)) as c:
+            c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
-    with self.argument_context('spring-cloud service-registry unbind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
-
-    with self.argument_context('spring-cloud application-configuration-service bind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
-
-    with self.argument_context('spring-cloud application-configuration-service unbind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring-cloud application-configuration-service {}'.format(scope)) as c:
+            c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
     for scope in ['add', 'update']:
         with self.argument_context('spring-cloud application-configuration-service git repo {}'.format(scope)) as c:
@@ -446,12 +442,10 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.')
-            c.argument('host_key_check', help='Strict_host_key_checking of the added config.')
+            c.argument('host_key_check', help='Strict_host_key_checking of the added config. If false, ignore errors with host key.')
 
-    for scope in ['spring-cloud application-configuration-service git repo add',
-                  'spring-cloud application-configuration-service git repo update',
-                  'spring-cloud application-configuration-service git repo remove']:
-        with self.argument_context(scope) as c:
+    for scope in ['add', 'update', 'remove']:
+        with self.argument_context('spring-cloud application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
     for scope in ['spring-cloud gateway update',
@@ -497,9 +491,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud gateway route-config') as c:
         c.argument('name', help='Name of route config.')
 
-    for scope in ['spring-cloud gateway route-config create',
-                  'spring-cloud gateway route-config update']:
-        with self.argument_context(scope) as c:
+    for scope in ['create', 'update']:
+        with self.argument_context('spring-cloud gateway route-config {}'.format(scope)) as c:
             c.argument('app_name', type=str, help="The Azure Spring Cloud app name to configure the route.")
             c.argument('routes_json', type=str, help="The JSON array of API routes.", validator=validate_routes)
             c.argument('routes_file', type=str, help="The file path of JSON array of API routes.", validator=validate_routes)
