@@ -2,11 +2,15 @@
 
 Release History
 ===============
-0.5.50
+0.5.51
 ++++++
 * Add support for Capacity Reservation Group.
   * `az aks create --crg-id`
   * `az aks nodepool add --crg-id`
+
+0.5.50
+++++++
+* Add support for enabling OIDC issuer with `--enable-oidc-issuer` flag.
 
 0.5.49
 ++++++

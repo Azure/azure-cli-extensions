@@ -395,6 +395,9 @@ helps['aks create'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to create this cluster.
+        - name: --enable-oidc-issuer
+          type: bool
+          short-summary: (PREVIEW) Enable OIDC issuer.
         - name: --crg-id
           type: string
           short-summary: The CRG id used to associate the new cluster with the existed Capacity Reservation Group resource.
@@ -657,6 +660,9 @@ helps['aks update'] = """
           long-summary: |-
              You do not need to set this if you have set DNS server in the VNET used by the cluster.
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --enable-oidc-issuer
+          type: bool
+          short-summary: (PREVIEW) Enable OIDC issuer.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
