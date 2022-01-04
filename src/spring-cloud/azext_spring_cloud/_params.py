@@ -416,7 +416,7 @@ def load_arguments(self, _):
 
     for scope in ['application-configuration-service', 'service-registry',
                   'gateway', 'api-portal']:
-        with self.argument_context('spring-cloud {}'.format(scope )) as c:
+        with self.argument_context('spring-cloud {}'.format(scope)) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['bind', 'unbind']:
