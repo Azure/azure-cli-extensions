@@ -431,9 +431,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud application-configuration-service unbind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
-    for scope in ['spring-cloud application-configuration-service git repo add',
-                  'spring-cloud application-configuration-service git repo update']:
-        with self.argument_context(scope) as c:
+    for scope in ['add', 'update']:
+        with self.argument_context('spring-cloud application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('patterns',
                        help='Required patterns used to search in Git repositories. '
                             'For each pattern, use format like {application} or {application}/{profile} '
