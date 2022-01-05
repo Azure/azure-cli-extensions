@@ -91,7 +91,7 @@ def load_arguments(self, _):
                    validator=validate_build_pool_size,
                    default='S1',
                    is_preview=True,
-                   help='Only support in enterprise tier now. Size of build agent pool. See Azure Spring Cloud Doc for size info.')
+                   help='(Enterprise Tier Only) Size of build agent pool. See Azure Spring Cloud Doc for size info.')
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
