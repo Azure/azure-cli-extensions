@@ -16,7 +16,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule create
+      - monitor alert-processing-rule create
       Connection:
       - keep-alive
       Content-Length:
@@ -26,7 +26,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name --rule-type --scopes --filter-severity --filter-monitor-service
         --filter-monitor-condition --filter-resource-type --schedule-recurrence-type
-        --schedule-start-date --schedule-end-date --schedule-start-time --schedule-end-time
+        --schedule-start-datetime --schedule-end-datetime --schedule-recurrence-start-time
+        --schedule-recurrence-end-time
       User-Agent:
       - AZURECLI/2.31.0 azsdk-python-mgmt-alertsmanagement/1.0.0b1 Python/3.7.2 (Windows-10-10.0.22000-SP0)
     method: PUT
@@ -34,7 +35,7 @@ interactions:
   response:
     body:
       string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"recurrenceType":"Daily","startTime":"06:00:00","endTime":"14:00:00"}]},"conditions":[{"field":"Severity","operator":"Equals","values":["Sev0","Sev2"]},{"field":"MonitorService","operator":"Equals","values":["Platform","Application
-        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:42.4229302Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:42.4229302Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
+        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:09.6333282Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:09.6333282Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -45,7 +46,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:43 GMT
+      - Wed, 05 Jan 2022 14:45:11 GMT
       expires:
       - '-1'
       pragma:
@@ -55,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1194'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -69,7 +70,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule show
+      - monitor alert-processing-rule show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -81,7 +82,7 @@ interactions:
   response:
     body:
       string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"recurrenceType":"Daily","startTime":"06:00:00","endTime":"14:00:00"}]},"conditions":[{"field":"Severity","operator":"Equals","values":["Sev0","Sev2"]},{"field":"MonitorService","operator":"Equals","values":["Platform","Application
-        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:42.4229302Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:42.4229302Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
+        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:09.6333282Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:09.6333282Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -92,7 +93,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:44 GMT
+      - Wed, 05 Jan 2022 14:45:12 GMT
       expires:
       - '-1'
       pragma:
@@ -115,45 +116,45 @@ interactions:
 - request:
     body: '{"location": "Global", "properties": {"scopes": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],
       "schedule": {"effectiveFrom": "2018-12-09T06:00:00", "effectiveUntil": "2018-12-18T14:00:00",
-      "timeZone": "UTC", "recurrences": [{"recurrenceType": "Weekly", "startTime":
-      "06:00:00", "endTime": "14:00:00", "daysOfWeek": ["Sunday", "Saturday"]}]},
-      "actions": [{"actionType": "AddActionGroups", "actionGroupIds": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"]}],
-      "enabled": true}}'
+      "timeZone": "UTC", "recurrences": [{"recurrenceType": "Weekly", "daysOfWeek":
+      ["Sunday", "Saturday"]}]}, "actions": [{"actionType": "AddActionGroups", "actionGroupIds":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application
+      insights smart detection"]}], "enabled": true}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule create
+      - monitor alert-processing-rule create
       Connection:
       - keep-alive
       Content-Length:
-      - '620'
+      - '613'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --scopes --rule-type --action-groups --schedule-recurrence-type
-        --schedule-recurrence --schedule-start-date --schedule-end-date --schedule-start-time
-        --schedule-end-time
+        --schedule-recurrence --schedule-start-datetime --schedule-end-datetime
       User-Agent:
       - AZURECLI/2.31.0 azsdk-python-mgmt-alertsmanagement/1.0.0b1 Python/3.7.2 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2?api-version=2021-08-08-preview
   response:
     body:
-      string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly","startTime":"06:00:00","endTime":"14:00:00"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:49.9407239Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:49.9407239Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}'
+      string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application
+        insights smart detection"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:17.0333044Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:17.0333044Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '1075'
+      - '1072'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:50 GMT
+      - Wed, 05 Jan 2022 14:45:18 GMT
       expires:
       - '-1'
       pragma:
@@ -163,7 +164,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1193'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -177,7 +178,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule show
+      - monitor alert-processing-rule show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -188,18 +189,19 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2?api-version=2021-08-08-preview
   response:
     body:
-      string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly","startTime":"06:00:00","endTime":"14:00:00"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:49.9407239Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:49.9407239Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}'
+      string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application
+        insights smart detection"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:17.0333044Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:17.0333044Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '1075'
+      - '1072'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:51 GMT
+      - Wed, 05 Jan 2022 14:45:20 GMT
       expires:
       - '-1'
       pragma:
@@ -227,7 +229,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule update
+      - monitor alert-processing-rule update
       Connection:
       - keep-alive
       ParameterSetName:
@@ -239,7 +241,7 @@ interactions:
   response:
     body:
       string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"recurrenceType":"Daily","startTime":"06:00:00","endTime":"14:00:00"}]},"conditions":[{"field":"Severity","operator":"Equals","values":["Sev0","Sev2"]},{"field":"MonitorService","operator":"Equals","values":["Platform","Application
-        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:42.4229302Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:42.4229302Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
+        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":true,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:09.6333282Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:09.6333282Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -250,7 +252,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:52 GMT
+      - Wed, 05 Jan 2022 14:45:22 GMT
       expires:
       - '-1'
       pragma:
@@ -288,7 +290,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule update
+      - monitor alert-processing-rule update
       Connection:
       - keep-alive
       Content-Length:
@@ -304,7 +306,7 @@ interactions:
   response:
     body:
       string: '{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"recurrenceType":"Daily","startTime":"06:00:00","endTime":"14:00:00"}]},"conditions":[{"field":"Severity","operator":"Equals","values":["Sev0","Sev2"]},{"field":"MonitorService","operator":"Equals","values":["Platform","Application
-        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":false,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:42.4229302Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:54.4485416Z"},"location":"Global","tags":{"isUpdated":"YES","secondTag":"justATag"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
+        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":false,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:09.6333282Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:25.7550421Z"},"location":"Global","tags":{"isUpdated":"YES","secondTag":"justATag"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -315,7 +317,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:55 GMT
+      - Wed, 05 Jan 2022 14:45:31 GMT
       expires:
       - '-1'
       pragma:
@@ -329,7 +331,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -343,7 +345,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule list
+      - monitor alert-processing-rule list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -355,18 +357,19 @@ interactions:
   response:
     body:
       string: '{"value":[{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"recurrenceType":"Daily","startTime":"06:00:00","endTime":"14:00:00"}]},"conditions":[{"field":"Severity","operator":"Equals","values":["Sev0","Sev2"]},{"field":"MonitorService","operator":"Equals","values":["Platform","Application
-        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":false,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:42.4229302Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:54.4485416Z"},"location":"Global","tags":{"isUpdated":"YES","secondTag":"justATag"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"},{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly","startTime":"06:00:00","endTime":"14:00:00"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-04T12:25:49.9407239Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-04T12:25:49.9407239Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}]}'
+        Insights"]},{"field":"MonitorCondition","operator":"Equals","values":["Fired"]},{"field":"TargetResourceType","operator":"NotEquals","values":["Microsoft.Compute/VirtualMachines"]}],"enabled":false,"actions":[{"actionType":"RemoveAllActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:09.6333282Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:25.7550421Z"},"location":"Global","tags":{"isUpdated":"YES","secondTag":"justATag"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test1","type":"Microsoft.AlertsManagement/actionRules","name":"test1"},{"properties":{"scopes":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001"],"schedule":{"effectiveFrom":"2018-12-09T06:00:00","effectiveUntil":"2018-12-18T14:00:00","timeZone":"UTC","recurrences":[{"daysOfWeek":["Sunday","Saturday"],"recurrenceType":"Weekly"}]},"enabled":true,"actions":[{"actionGroupIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application
+        insights smart detection"],"actionType":"AddActionGroups"}]},"systemData":{"createdBy":"lienglender@microsoft.com","createdByType":"User","createdAt":"2022-01-05T14:45:17.0333044Z","lastModifiedBy":"lienglender@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-05T14:45:17.0333044Z"},"location":"Global","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_alertsmanagement_processing_rule_000001/providers/Microsoft.AlertsManagement/actionRules/test2","type":"Microsoft.AlertsManagement/actionRules","name":"test2"}]}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2389'
+      - '2386'
       content-security-policy:
       - script-src 'self'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 12:25:56 GMT
+      - Wed, 05 Jan 2022 14:45:32 GMT
       expires:
       - '-1'
       pragma:
@@ -380,7 +383,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '998'
+      - '999'
       x-xss-protection:
       - 1; mode=block
     status:
@@ -394,7 +397,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - monitor processing-rule delete
+      - monitor alert-processing-rule delete
       Connection:
       - keep-alive
       Content-Length:
@@ -416,7 +419,7 @@ interactions:
       content-security-policy:
       - script-src 'self'
       date:
-      - Tue, 04 Jan 2022 12:25:59 GMT
+      - Wed, 05 Jan 2022 14:45:46 GMT
       expires:
       - '-1'
       pragma:
@@ -426,7 +429,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
       x-xss-protection:
       - 1; mode=block
     status:

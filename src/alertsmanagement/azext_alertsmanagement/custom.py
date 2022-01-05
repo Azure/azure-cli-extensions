@@ -82,18 +82,18 @@ def create_alertsmanagement_processing_rule(cmd, client,
                                         filter_alert_rule_description=None,
                                         filter_alert_context=None,
                                         filter_signal_type=None,
-                                        filter_resource=None,
+                                        filter_target_resource=None,
                                         filter_resource_group=None,
                                         filter_resource_type=None,
                                         schedule_recurrence_type='Always',
-                                        schedule_start_date=None,
-                                        schedule_end_date=None,
-                                        schedule_start_time='00:00:00',
-                                        schedule_end_time='00:00:00',
+                                        schedule_start_datetime=None,
+                                        schedule_end_datetime=None,
+                                        schedule_recurrence_start_time=None,
+                                        schedule_recurrence_end_time=None,
                                         schedule_recurrence=None,
-                                        schedule_recurrence_type_2=None,
-                                        schedule_start_time_2=None,
-                                        schedule_end_time_2=None,
+                                        schedule_recurrence_2_type=None,
+                                        schedule_recurrence_2_start_time=None,
+                                        schedule_recurrence_2_end_time=None,
                                         schedule_recurrence_2=None,
                                         schedule_time_zone="UTC"):
     # body = {'location': location, 'tags': tags}
@@ -117,11 +117,11 @@ def create_alertsmanagement_processing_rule(cmd, client,
             properties['actions'] = [
                 {
                     'actionType': rule_type,
-                    'actionGroupIds': [x.strip() for x in scopes.split(',')]
+                    'actionGroupIds': [x.strip() for x in action_groups] #[x.strip() for x in scopes.split(',')]
                 }
             ]
     properties['enabled'] = enabled if enabled is not None else 'True'
-    properties['scopes'] = [x.strip() for x in scopes.split(',')]
+    properties['scopes'] = [x.strip() for x in scopes] #[x.strip() for x in scopes.split(',')]
     if description is not None:
         properties['description'] = description
 
@@ -136,14 +136,14 @@ def create_alertsmanagement_processing_rule(cmd, client,
     alert_description = _transform_condition(filter_alert_rule_description, 'Description')
     alert_context = _transform_condition(filter_alert_context, 'AlertContext')
     signal_type = _transform_condition(filter_signal_type, 'SignalType')
-    resource_filter = _transform_condition(filter_resource, 'TargetResource')
+    resource_filter = _transform_condition(filter_target_resource, 'TargetResource')
     resource_group_filter = _transform_condition(filter_resource_group, 'TargetResourceGroup')
     resource_type_filter = _transform_condition(filter_resource_type, 'TargetResourceType')
     
     # conditions
     if any ([filter_severity, filter_monitor_service, filter_monitor_condition, filter_alert_rule_name, \
             filter_alert_rule_id, filter_alert_rule_description, filter_alert_context, filter_signal_type, \
-            filter_resource, filter_resource_group, filter_resource_type]):
+            filter_target_resource, filter_resource_group, filter_resource_type]):
         properties['conditions'] = []    
         
     if severity is not None:
@@ -170,25 +170,22 @@ def create_alertsmanagement_processing_rule(cmd, client,
         properties['conditions'].append(resource_type_filter)
 
     # schedule
-    if schedule_recurrence_type in ['Always'] and schedule_start_date is not None:
-        print(bcolors.WARNING + 'WARNING: Schedule start date will be ignored as the recurrence type is set to Always' + bcolors.ENDC)
-    
-    if schedule_recurrence_type not in ['Always']:
+    if schedule_recurrence_type is not None or (schedule_start_datetime is not None or schedule_end_datetime is not None):
         properties['schedule'] = {}
-        if schedule_start_date is not None:
-            schedule_start_date = datetime.strptime(schedule_start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
-            effective_from = schedule_start_date + 'T' + schedule_start_time
+        if schedule_start_datetime is not None:
+            effective_from = schedule_start_datetime.replace(' ', 'T', 1)
+            properties['schedule']['effectiveFrom'] = effective_from
+        elif schedule_recurrence_type is not None:
+            effective_from = datetime.strftime(datetime.now().date(), '%Y-%m-%d') + 'T00:00:00'
+            print('effective_from: ' + effective_from)
             properties['schedule']['effectiveFrom'] = effective_from
 
-        if schedule_end_date is not None:
-            schedule_end_date = datetime.strptime(schedule_end_date, '%m/%d/%Y').strftime('%Y-%m-%d')
-            effective_until = schedule_end_date + 'T' + schedule_end_time
+        if schedule_end_datetime is not None:
+            effective_until = schedule_end_datetime.replace(' ', 'T', 1)
+            properties['schedule']['effectiveUntil'] = effective_until
 
         if schedule_time_zone is not None:
-            properties['schedule']['timeZone'] = schedule_time_zone
-        
-        if (schedule_end_date is not None) and (schedule_end_time is not None):
-                properties['schedule']['effectiveUntil'] = effective_until
+            properties['schedule']['timeZone'] = schedule_time_zone        
         
         if schedule_recurrence_type == 'Daily':
             if schedule_recurrence is not None:
@@ -197,8 +194,8 @@ def create_alertsmanagement_processing_rule(cmd, client,
             properties['schedule']['recurrences'] = [
                 {
                     'recurrenceType': schedule_recurrence_type,
-                    'startTime': schedule_start_time,
-                    'endTime' : schedule_end_time
+                    'startTime': schedule_recurrence_start_time,
+                    'endTime' : schedule_recurrence_end_time
                 }
             ]
         elif schedule_recurrence_type in ['Weekly', 'Monthly']:
@@ -206,33 +203,33 @@ def create_alertsmanagement_processing_rule(cmd, client,
             properties['schedule']['recurrences'] = [
                 {
                     'recurrenceType': schedule_recurrence_type,
-                    'startTime': schedule_start_time,
-                    'endTime' : schedule_end_time,
+                    'startTime': schedule_recurrence_start_time,
+                    'endTime' : schedule_recurrence_end_time,
                     type_of_days: schedule_recurrence
                 }
             ]
 
         second_recurrence = None
-        if any([schedule_recurrence_type_2, schedule_start_time_2, schedule_end_time_2, schedule_recurrence_2]) and \
+        if any([schedule_recurrence_2_type, schedule_recurrence_2_start_time, schedule_recurrence_2_end_time, schedule_recurrence_2]) and \
             len(properties['schedule']['recurrences']) < 1:
             print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
             return
         
-        if schedule_recurrence_type_2 == 'Daily':
+        if schedule_recurrence_2_type == 'Daily':
             if schedule_recurrence_2 is not None:
                 print(bcolors.WARNING + 'WARNING: schedule-recurrence-2 will be ignored as it can\'t be used while schedule-recurrence-type-2 is set to Daily' + bcolors.ENDC)
 
             second_recurrence = {
-                    'recurrenceType': schedule_recurrence_type_2,
-                    'startTime': schedule_start_time_2,
-                    'endTime' : schedule_end_time_2
+                    'recurrenceType': schedule_recurrence_2_type,
+                    'startTime': schedule_recurrence_2_start_time,
+                    'endTime' : schedule_recurrence_2_end_time
                     }
-        elif schedule_recurrence_type_2 in ['Weekly', 'Monthly']:
-            type_of_days = 'daysOfWeek' if schedule_recurrence_type_2 == 'Weekly' else 'daysOfMonth'
+        elif schedule_recurrence_2_type in ['Weekly', 'Monthly']:
+            type_of_days = 'daysOfWeek' if schedule_recurrence_2_type == 'Weekly' else 'daysOfMonth'
             second_recurrence = {
-                    'recurrenceType': schedule_recurrence_type_2,
-                    'startTime': schedule_start_time_2,
-                    'endTime' : schedule_end_time_2,
+                    'recurrenceType': schedule_recurrence_2_type,
+                    'startTime': schedule_recurrence_2_start_time,
+                    'endTime' : schedule_recurrence_2_end_time,
                     type_of_days: schedule_recurrence_2
                     }
         

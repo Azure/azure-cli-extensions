@@ -22,7 +22,7 @@ class AlertsScenarioTest(ScenarioTest):
         self.kwargs.update({
             'rg_id': rg_id
         })
-        self.cmd('az monitor processing-rule create '
+        self.cmd('az monitor alert-processing-rule create '
                  '--resource-group {rg} '
                  '--name test1 '
                  '--rule-type RemoveAllActionGroups '
@@ -32,15 +32,15 @@ class AlertsScenarioTest(ScenarioTest):
                  '--filter-monitor-condition Equals Fired '
                  '--filter-resource-type NotEquals Microsoft.Compute/VirtualMachines '
                  '--schedule-recurrence-type Daily '
-                 '--schedule-start-date 12/09/2018 '
-                 '--schedule-end-date 12/18/2018 '
-                 '--schedule-start-time 06:00:00 '
-                 '--schedule-end-time 14:00:00',
+                 '--schedule-start-datetime \'2018-12-09 06:00:00\' '
+                 '--schedule-end-datetime \'2018-12-18 14:00:00\' '
+                 '--schedule-recurrence-start-time \'06:00:00\' '
+                 '--schedule-recurrence-end-time \'14:00:00\' ',
                  checks=[
                      self.check('name', 'test1')
                  ])
 
-        self.cmd('az monitor processing-rule show '
+        self.cmd('az monitor alert-processing-rule show '
                  '--resource-group {rg} '
                  '--name "test1"',
                  checks=[
@@ -51,7 +51,7 @@ class AlertsScenarioTest(ScenarioTest):
                      self.check('properties.conditions[3].values[0]','Microsoft.Compute/VirtualMachines')
                  ])
 
-        self.cmd('az monitor processing-rule create '
+        self.cmd('az monitor alert-processing-rule create '
                  '--resource-group {rg} '
                  '--name test2 '
                  '--scopes {rg_id} '
@@ -59,17 +59,15 @@ class AlertsScenarioTest(ScenarioTest):
                  '--action-groups "/subscriptions/dd91de05-d791-4ceb-b6dc-988682dc7d72/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application insights smart detection" '
                  '--schedule-recurrence-type Weekly '
                  '--schedule-recurrence Sunday Saturday '
-                 '--schedule-start-date 12/09/2018 '
-                 '--schedule-end-date 12/18/2018 '
-                 '--schedule-start-time 06:00:00 '
-                 '--schedule-end-time 14:00:00',
+                 '--schedule-start-datetime \'2018-12-09 06:00:00\' '
+                 '--schedule-end-datetime \'2018-12-18 14:00:00\' ',
                  checks=[
                      self.check('name', 'test2'),
                      self.check('properties.schedule.recurrences[0].daysOfWeek[0]', 'Sunday'),
                      self.check('properties.schedule.recurrences[0].daysOfWeek[1]', 'Saturday')
                  ])
 
-        self.cmd('az monitor processing-rule show '
+        self.cmd('az monitor alert-processing-rule show '
                  '--resource-group {rg} '
                  '--name "test2"',
                  checks=[
@@ -80,7 +78,7 @@ class AlertsScenarioTest(ScenarioTest):
                      self.check('properties.schedule.effectiveUntil', '2018-12-18T14:00:00')
                  ])
 
-        self.cmd('az monitor processing-rule update '
+        self.cmd('az monitor alert-processing-rule update '
                  '--resource-group {rg} '
                  '--name test1 '
                  '--enabled False '
@@ -93,8 +91,8 @@ class AlertsScenarioTest(ScenarioTest):
         # self.cmd('az monitor processing-rule list',
         #          checks=self.check('[0].name', 'test1'))
 
-        self.cmd('az monitor processing-rule list -g {rg}',
+        self.cmd('az monitor alert-processing-rule list -g {rg}',
                  checks=self.check('[0].name', 'test1'))
 
-        self.cmd('az monitor processing-rule delete -g {rg} -n test1')
+        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test1')
         # self.cmd('az monitor action-rule delete -g {rg} -n rule2')
