@@ -103,7 +103,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
     properties = {}
     if rule_type == ActionType.REMOVE_ALL_ACTION_GROUPS:
         if action_groups is not None:
-            print(bcolors.WARNING + 'Ignoring --action-groups argument as it can\'t be used with AddActionGroups rule type' + bcolors.ENDC)
+            print(bcolors.FAIL + 'Argument Conflict: --action-groups argument can\'t be used with RemoveAllActionGroups rule type' + bcolors.ENDC)
         properties['actions'] = [
             {
                 'actionType': rule_type
@@ -117,11 +117,11 @@ def create_alertsmanagement_processing_rule(cmd, client,
             properties['actions'] = [
                 {
                     'actionType': rule_type,
-                    'actionGroupIds': [x.strip() for x in action_groups] #[x.strip() for x in scopes.split(',')]
+                    'actionGroupIds': [x.strip() for x in action_groups]
                 }
             ]
     properties['enabled'] = enabled if enabled is not None else 'True'
-    properties['scopes'] = [x.strip() for x in scopes] #[x.strip() for x in scopes.split(',')]
+    properties['scopes'] = [x.strip() for x in scopes]
     if description is not None:
         properties['description'] = description
 

@@ -88,11 +88,8 @@ class AlertsScenarioTest(ScenarioTest):
                      self.check('tags.isUpdated', 'YES')
                  ])
 
-        # self.cmd('az monitor processing-rule list',
-        #          checks=self.check('[0].name', 'test1'))
-
         self.cmd('az monitor alert-processing-rule list -g {rg}',
                  checks=self.check('[0].name', 'test1'))
 
         self.cmd('az monitor alert-processing-rule delete -g {rg} -n test1')
-        # self.cmd('az monitor action-rule delete -g {rg} -n rule2')
+        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test2')
