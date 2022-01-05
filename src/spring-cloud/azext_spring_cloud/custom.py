@@ -18,8 +18,7 @@ from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (_get_upload_local_file, _get_persistent_disk_size,
-                     get_portal_uri, get_azure_files_info,
-                     wait_till_end)
+                     get_portal_uri, get_azure_files_info)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
@@ -61,78 +60,22 @@ DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deplo
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None,
-                        vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
-                        service_runtime_network_resource_group=None, app_network_resource_group=None,
-                        app_insights_key=None, app_insights=None, sampling_rate=None,
-                        disable_app_insights=None, enable_java_agent=None,
-                        sku=None, tags=None, zone_redundant=False, no_wait=False):
-    """
-    Note: This is the command for create Spring-Cloud Standard and Basic tier. Refer tier_routing_spring_cloud.py for
-    the command definition. And _enteprise.py for Spring-Cloud Enterprise tier creation.
-
-    If app_insights_key, app_insights and disable_app_insights are all None,
-    will still create an application insights and enable application insights.
-    :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
-    :param app_insights: application insights name or its resource id
-    :param app_insights_key: Connection string or Instrumentation key
-    """
-    # TODO (jiec) Deco this method when we deco parameter "--enable-java-agent"
-    _warn_enable_java_agent(enable_java_agent)
-
-    poller = _create_service(cmd, client, resource_group, name,
-                             location=location,
-                             service_runtime_subnet=service_runtime_subnet,
-                             app_subnet=app_subnet,
-                             reserved_cidr_range=reserved_cidr_range,
-                             service_runtime_network_resource_group=service_runtime_network_resource_group,
-                             app_network_resource_group=app_network_resource_group,
-                             zone_redundant=zone_redundant,
-                             sku=sku,
-                             tags=tags)
-    _update_application_insights_asc_create(cmd, resource_group, name, location,
-                                            app_insights_key, app_insights, sampling_rate,
-                                            disable_app_insights, no_wait)
-    return poller
-
-
-def _create_service(cmd, client, resource_group, name, location=None,
-                    service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
-                    service_runtime_network_resource_group=None, app_network_resource_group=None,
-                    zone_redundant=False,
-                    sku=None, tags=None):
-    if location is None:
-        location = _get_rg_location(cmd.cli_ctx, resource_group)
-    properties = models_20220101preview.ClusterResourceProperties()
-
-    if service_runtime_subnet or app_subnet or reserved_cidr_range:
-        properties.network_profile = models_20220101preview.NetworkProfile(
-            service_runtime_subnet_id=service_runtime_subnet,
-            app_subnet_id=app_subnet,
-            service_cidr=reserved_cidr_range,
-            app_network_resource_group=app_network_resource_group,
-            service_runtime_network_resource_group=service_runtime_network_resource_group
-        )
-
-    properties.zone_redundant = zone_redundant
-    resource = models_20220101preview.ServiceResource(location=location, sku=sku, properties=properties, tags=tags)
-
-    poller = client.services.begin_create_or_update(
-        resource_group, name, resource)
-    logger.warning(" - Creating Service ..")
-    wait_till_end(cmd, poller)
-    return poller
-
-
-def _warn_enable_java_agent(enable_java_agent):
+def _warn_enable_java_agent(enable_java_agent, **_):
     if enable_java_agent is not None:
         logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                     "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
 
 
-def _update_application_insights_asc_create(cmd, resource_group, name, location,
-                                            app_insights_key, app_insights, sampling_rate,
-                                            disable_app_insights, no_wait):
+def _update_application_insights_asc_create(cmd,
+                                            resource_group,
+                                            name,
+                                            location,
+                                            app_insights_key=None,
+                                            app_insights=None,
+                                            sampling_rate=None,
+                                            disable_app_insights=None,
+                                            no_wait=None,
+                                            **_):
     monitoring_setting_resource = models.MonitoringSettingResource()
     if disable_app_insights is not True:
         client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)

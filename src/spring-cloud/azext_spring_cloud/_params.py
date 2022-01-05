@@ -51,31 +51,36 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
         c.argument('sku', arg_type=sku_type, default='Standard')
-        c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
-        c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
-        c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
-        c.argument('service_runtime_subnet', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
-        c.argument('service_runtime_network_resource_group', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
-        c.argument('app_network_resource_group', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
+        c.argument('reserved_cidr_range', arg_group='VNet Injection', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
+        c.argument('vnet', arg_group='VNet Injection', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
+        c.argument('app_subnet', arg_group='VNet Injection', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
+        c.argument('service_runtime_subnet', arg_group='VNet Injection', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
+        c.argument('service_runtime_network_resource_group', arg_group='VNet Injection', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
+        c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
         c.argument('enable_java_agent',
+                   arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
                    help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                         "This parameter is no longer needed and will be removed in future release.",
                    validator=validate_java_agent_parameters,
                    deprecate_info=c.deprecate(target='--enable-java-agent', hide=True))
         c.argument('app_insights_key',
+                   arg_group='Application Insights',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_create)
         c.argument('app_insights',
+                   arg_group='Application Insights',
                    help="Name of the existing Application Insights in the same Resource Group. "
                         "Or Resource ID of the existing Application Insights in a different Resource Group.",
                    validator=validate_tracing_parameters_asc_create)
         c.argument('sampling_rate',
                    type=float,
+                   arg_group='Application Insights',
                    help="Sampling Rate of application insights. Minimum is 0, maximum is 100.",
                    validator=validate_tracing_parameters_asc_create)
         c.argument('disable_app_insights',
                    arg_type=get_three_state_flag(),
+                   arg_group='Application Insights',
                    help="Disable Application Insights, "
                         "if not disabled and no existing Application Insights specified with "
                         "--app-insights-key or --app-insights, "
@@ -84,7 +89,7 @@ def load_arguments(self, _):
         c.argument('zone_redundant',
                    arg_type=get_three_state_flag(),
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
-                        "this could only be supported in several regions at the moment ",
+                        "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),

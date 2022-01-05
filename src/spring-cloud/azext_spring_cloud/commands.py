@@ -21,7 +21,7 @@ from ._transformers import (transform_spring_cloud_table_output,
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
     spring_cloud_routing_util = CliCommandType(
-        operations_tmpl='azext_spring_cloud.tier_routing_spring_cloud#{}',
+        operations_tmpl='azext_spring_cloud.spring_cloud_instance#{}',
         client_factory=cf_spring_cloud_20220101preview
     )
 
