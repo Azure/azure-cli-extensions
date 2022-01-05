@@ -17,7 +17,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_alertsmanagement.vendored_sdks.alertsmanagement.operations._alert_processing_rules_operations'
                         '#AlertProcessingRulesOperations.{}',
         client_factory=cf_processing_rules)
-    with self.command_group('monitor processing-rule', alertsmanagement_processing_rules, client_factory=cf_processing_rules,
+    with self.command_group('monitor alert-processing-rule', alertsmanagement_processing_rules, client_factory=cf_processing_rules,
                             is_preview=True) as g:
         g.custom_command('create', 'create_alertsmanagement_processing_rule')
         g.generic_update_command('update', custom_func_name='update_alertsmanagement_processing_rule',
