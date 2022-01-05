@@ -6,6 +6,7 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
 import json
+from azure.cli.core.util import sdk_no_wait
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 
 DEFAULT_BUILD_SERVICE_NAME = "default"
