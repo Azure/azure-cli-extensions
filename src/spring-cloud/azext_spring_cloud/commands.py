@@ -183,7 +183,7 @@ def load_command_table(self, _):
     with self.command_group('spring-cloud build-service builder',
                             custom_command_type=builder_cmd_group,
                             exception_handler=handle_asc_exception, is_preview=True) as g:
-        g.custom_command('create', 'create_or_update_builder')
-        g.custom_command('update', 'create_or_update_builder')
+        g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('show', 'builder_show')
-        g.custom_command('delete', 'builder_delete')
+        g.custom_command('delete', 'builder_delete', supports_no_wait=True)
