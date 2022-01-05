@@ -9,6 +9,7 @@ from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
+from ._buildservices import _update_default_build_agent_pool
 
 from ._validators import (_parse_sku_name)
 from knack.log import get_logger
@@ -78,6 +79,8 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
     def after_create(self, no_wait=None, **kwargs):
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
+            _update_default_build_agent_pool(
+                self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size'])
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
@@ -106,6 +109,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
                         sku=None,
                         tags=None,
                         zone_redundant=False,
+                        build_pool_size=None,
                         no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -126,6 +130,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
         'sku': sku,
         'tags': tags,
         'zone_redundant': zone_redundant,
+        'build_pool_size': build_pool_size,
         'no_wait': no_wait
     }
 
