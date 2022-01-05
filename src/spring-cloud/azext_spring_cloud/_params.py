@@ -121,7 +121,7 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    is_preview=True,
-                   help='Only support in enterprise tier now. Size of build agent pool. See Azure Spring Cloud Doc for size info.')
+                   help='(Enterprise Tier Only) Size of build agent pool. See Azure Spring Cloud Doc for size info.')
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
