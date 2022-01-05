@@ -37,7 +37,7 @@ def builder_show(cmd, client, resource_group, service, name):
 
 
 def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
-    return client.build_service_builder.begin_delete(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name, no_wait)
+    return sdk_no_wait(no_wait, client.build_service_builder.begin_delete, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
 def _update_builder(builder_file, builder_json):
