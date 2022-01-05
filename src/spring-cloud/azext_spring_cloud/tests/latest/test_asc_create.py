@@ -21,7 +21,7 @@ from azure.cli.core.commands import AzCliCommand
 from knack.log import get_logger
 
 logger = get_logger(__name__)
-
+free_mock_client = mock.MagicMock()
 
 def _get_test_cmd():
     cli_ctx = DummyCli()
@@ -39,11 +39,11 @@ def _cf_resource_group(cli_ctx, subscription_id=None):
     rg.location = 'east us'
     client.resource_groups.get.return_value = rg
     return client
-    # return 'East US'
 
 
 def _get_basic_mock_client(*_):
     return mock.MagicMock()
+
 
 class BasicTest(unittest.TestCase):
     def __init__(self, methodName: str = ...):
@@ -68,18 +68,64 @@ class BasicTest(unittest.TestCase):
         self.created_resource = call_args[0][0][2]
 
 
-class TestSpringCloudCreate(BasicTest):
-    @mock.patch('azext_spring_cloud.custom.get_mgmt_service_client', _get_basic_mock_client)
-    def test_asc_create_happy_path(self):
-        self._execute('rg', 'asc', sku=self._get_sku())
-        resource = self.created_resource
-        self.assertEqual('S0', resource.sku.name)
-        self.assertEqual('Standard', resource.sku.tier)
-        self.assertEqual(False, resource.properties.zone_redundant)
-
+class TestSpringCloudCreateEnerprise(BasicTest):
     def test_asc_create_enterprise(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'))
         resource = self.created_resource
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
         self.assertEqual(False, resource.properties.zone_redundant)
+
+
+class TestSpringCloudCreateWithAI(BasicTest):
+    def _get_ai_client(ctx, type):
+        ai_create_resource = mock.MagicMock()
+        ai_create_resource.connection_string = 'fake-connection'
+        free_mock_client.components.create_or_update.return_value = ai_create_resource
+        ai_get_resource = mock.MagicMock()
+        ai_get_resource.connection_string = 'get-connection'
+        free_mock_client.components.get.return_value = ai_get_resource
+        return free_mock_client
+
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.monitoring_settings_resource = None
+    
+    @mock.patch('azext_spring_cloud.custom.get_mgmt_service_client', _get_ai_client)
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+
+        call_args = free_mock_client.monitoring_settings.begin_update_put.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(3, len(call_args[0][1]))
+        self.assertEqual(resource_group, call_args[0][1]['resource_group_name'])
+        self.assertEqual(name, call_args[0][1]['service_name'])
+        self.monitoring_settings_resource = call_args[0][1]['monitoring_setting_resource']
+
+    def test_asc_create_with_AI_happy_path(self):
+        self._execute('rg', 'asc', sku=self._get_sku())
+        resource = self.created_resource
+        self.assertEqual('S0', resource.sku.name)
+        self.assertEqual('Standard', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('fake-connection', self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
+        self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
+
+    def test_asc_create_with_AI_key(self):
+        self._execute('rg', 'asc', sku=self._get_sku(), app_insights_key='my-key')
+        resource = self.created_resource
+        self.assertEqual('S0', resource.sku.name)
+        self.assertEqual('Standard', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('my-key', self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
+        self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
+
+    def test_asc_create_with_AI_name(self):
+        self._execute('rg', 'asc', sku=self._get_sku(), app_insights='my-key')
+        resource = self.created_resource
+        self.assertEqual('S0', resource.sku.name)
+        self.assertEqual('Standard', resource.sku.tier)
+        self.assertEqual(False, resource.properties.zone_redundant)
+        self.assertEqual('get-connection', self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
+        self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
