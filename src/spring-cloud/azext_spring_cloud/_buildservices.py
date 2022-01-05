@@ -23,21 +23,21 @@ def _update_default_build_agent_pool(cmd, client, resource_group, name, build_po
             resource_group, name, DEFAULT_BUILD_SERVICE_NAME, DEFAULT_BUILD_AGENT_POOL_NAME, agent_pool_resource)
 
 
-def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None):
+def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None, no_wait=False):
     builder = _update_builder(builder_file, builder_json)
     builder_resource = models_20220101preview.BuilderResource(
         properties=builder
     )
     return client.build_service_builder.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME,
-                                                               name, builder_resource)
+                                                               name, builder_resource, no_wait)
 
 
-def builder_show(cmd, client, resource_group, service, name,):
+def builder_show(cmd, client, resource_group, service, name):
     return client.build_service_builder.get(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
-def builder_delete(cmd, client, resource_group, service, name):
-    return client.build_service_builder.begin_delete(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
+def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
+    return client.build_service_builder.begin_delete(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name, no_wait)
 
 
 def _update_builder(builder_file, builder_json):
