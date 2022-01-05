@@ -1,5 +1,10 @@
 Release History
 ===============
+3.0.0
+---
+* Add `az spring-cloud create -n <your-service-name> -g <your-resource-group-name> --sku=Enterprise` support for Azure Spring Cloud Enterprise.
+
+
 2.12.3
 ---
 * Fix the deploy jar failure.
