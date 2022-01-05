@@ -480,11 +480,11 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('domain_name', help='Name of custom domain.')
 
-    for scope in ['spring-cloud gateway custom-domain bind',
-                  'spring-cloud gateway custom-domain update',
-                  'spring-cloud api-portal custom-domain bind',
-                  'spring-cloud api-portal custom-domain update']:
-        with self.argument_context(scope) as c:
+    for scope in ['gateway custom-domain bind',
+                  'gateway custom-domain update',
+                  'api-portal custom-domain bind',
+                  'api-portal custom-domain update']:
+        with self.argument_context('spring-cloud {}'.format(scope)) as c:
             c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
 
     with self.argument_context('spring-cloud gateway route-config') as c:
