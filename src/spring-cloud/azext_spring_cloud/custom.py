@@ -66,7 +66,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
-                        sku=None, tags=None, zone_redundant=False, build_pool_size=None, no_wait=False):
+                        sku=None, tags=None, zone_redundant=False, no_wait=False):
     """
     Note: This is the command for create Spring-Cloud Standard and Basic tier. Refer tier_routing_spring_cloud.py for
     the command definition. And _enteprise.py for Spring-Cloud Enterprise tier creation.
@@ -93,8 +93,6 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None,
     _update_application_insights_asc_create(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, sampling_rate,
                                             disable_app_insights, no_wait)
-    _update_default_build_agent_pool(
-        cmd, client, resource_group, name, build_pool_size)
     return poller
 
 
@@ -170,7 +168,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
-    
+
     _update_default_build_agent_pool(
         cmd, client, resource_group, name, build_pool_size)
 
