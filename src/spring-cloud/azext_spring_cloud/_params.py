@@ -448,9 +448,8 @@ def load_arguments(self, _):
         with self.argument_context('spring-cloud application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
-    for scope in ['spring-cloud gateway update',
-                  'spring-cloud api-portal update']:
-        with self.argument_context(scope) as c:
+    for scope in ['gateway update', 'api-portal update']:
+        with self.argument_context('spring-cloud {}'.format(scope)) as c:
             c.argument('instance_count', type=int, help='Number of instance.')
             c.argument('assign_endpoint', arg_type=get_three_state_flag(), help='If true, assign endpoint URL for direct access.')
             c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access endpoint via https')
