@@ -3,7 +3,11 @@ Release History
 3.0.0
 ---
 * Add `az spring-cloud create -n <your-service-name> -g <your-resource-group-name> --sku=Enterprise` support for Azure Spring Cloud Enterprise.
-
+* [BREAKING CHANGE] Remove `properties.activeDeploymentName` in `az spring-cloud app` command output, use `properties.activeDeployment.name` instead.
+* [BREAKING CHANGE] Remove `properties.createdTime` in `az spring-cloud app` command output, use `systemData.createdAt` instead.
+* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.jvmOptions` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.jvmOptions` instead.
+* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.runtimeVersion` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.runtimeVersion` instead.
+* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.netCoreMainEntryPath` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.netCoreMainEntryPath` instead.
 
 2.12.3
 ---
