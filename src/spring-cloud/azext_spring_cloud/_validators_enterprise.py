@@ -34,7 +34,7 @@ def validate_builder_create(cmd, namespace):
                                                    DEFAULT_BUILD_SERVICE_NAME,
                                                    namespace.name)
         if builder is not None:
-            raise CLIError('Builder {} already exists.'.format(namespace.name))
+            raise ClientRequestError('Builder {} already exists.'.format(namespace.name))
     except ResourceNotFoundError:
         pass
 
@@ -47,12 +47,12 @@ def validate_builder_update(cmd, namespace):
                                          DEFAULT_BUILD_SERVICE_NAME,
                                          namespace.name)
     except ResourceNotFoundError:
-        raise CLIError('Builder {} does not exist.'.format(namespace.name))
+        raise ClientRequestError('Builder {} does not exist.'.format(namespace.name))
 
 
 def validate_builder_resource(namespace):
     if namespace.builder_json is not None and namespace.builder_file is not None:
-        raise CLIError("You can only specify either --builder-json or --builder-file.")
+        raise ClientRequestError("You can only specify either --builder-json or --builder-file.")
 
 
 def validate_build_pool_size(namespace):

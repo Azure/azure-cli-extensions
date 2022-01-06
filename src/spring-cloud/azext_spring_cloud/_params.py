@@ -96,7 +96,7 @@ def load_arguments(self, _):
                    validator=validate_build_pool_size,
                    default='S1',
                    is_preview=True,
-                   help='(Enterprise Tier Only) Size of build agent pool. See Azure Spring Cloud Doc for size info.')
+                   help='(Enterprise Tier Only) Size of build agent pool. See aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
@@ -126,7 +126,7 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    is_preview=True,
-                   help='(Enterprise Tier Only) Size of build agent pool. See Azure Spring Cloud Doc for size info.')
+                   help='(Enterprise Tier Only) Size of build agent pool. See aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:

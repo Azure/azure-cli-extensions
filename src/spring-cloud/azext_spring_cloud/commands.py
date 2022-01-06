@@ -186,4 +186,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('show', 'builder_show')
-        g.custom_command('delete', 'builder_delete', supports_no_wait=True)
+        g.custom_command('delete', 'builder_delete', supports_no_wait=True, confirmation=True)
