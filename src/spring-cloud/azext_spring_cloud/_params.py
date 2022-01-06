@@ -442,7 +442,7 @@ def load_arguments(self, _):
             c.argument('host_key', help='Host key of the added config.')
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.')
-            c.argument('host_key_check', help='Strict_host_key_checking of the added config. If false, ignore errors with host key.')
+            c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
 
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring-cloud application-configuration-service git repo {}'.format(scope)) as c:
