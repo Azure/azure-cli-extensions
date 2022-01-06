@@ -27,7 +27,7 @@ def step_hierarchy_setting_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting create '
-             '--group-id "root"',
+             '--group-id "c7a87cda-9a66-4920-b0f8-869baa04efe0"',
              checks=checks)
 
 
@@ -37,7 +37,7 @@ def step_hierarchy_setting_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting show '
-             '--group-id "root"',
+             '--group-id "c7a87cda-9a66-4920-b0f8-869baa04efe0"',
              checks=checks)
 
 
@@ -47,7 +47,7 @@ def step_hierarchy_setting_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting list '
-             '--group-id "root"',
+             '--group-id "c7a87cda-9a66-4920-b0f8-869baa04efe0"',
              checks=checks)
 
 
@@ -57,7 +57,9 @@ def step_hierarchy_setting_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting update '
-             '--group-id "root"',
+             '--default-mg "/providers/Microsoft.Management/managementGroups/thomasdolanTestMG" ' 
+             '--req-auth-for-g "true" '
+             '--group-id "c7a87cda-9a66-4920-b0f8-869baa04efe0"',
              checks=checks)
 
 
@@ -67,7 +69,7 @@ def step_hierarchy_setting_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting delete -y '
-             '--group-id "root"',
+             '--group-id "c7a87cda-9a66-4920-b0f8-869baa04efe0"',
              checks=checks)
 
 
@@ -202,8 +204,8 @@ def step_management_group_subscription_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group-subscription create '
-             '--group-id "Group"'
-             '--subscription-id "728bcbe4-8d56-4510-86c2-4921b8beefbc"',
+             '--group-id "thomasdolanTestMG" '
+             '--subscription-id "5602fbd9-fb0d-4fbb-98b3-10c8ea20b6de"',
              checks=checks)
 
 
@@ -213,7 +215,7 @@ def step_management_group_subscription(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group-subscription show-subscription-under-management-group '
-             '--group-id "Group"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -223,8 +225,8 @@ def step_management_group_subscription2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group-subscription show-subscription '
-             '--group-id "Group" '
-             '--subscription-id "728bcbe4-8d56-4510-86c2-4921b8beefbc"',
+             '--group-id "thomasdolanTestMG" '
+             '--subscription-id "5602fbd9-fb0d-4fbb-98b3-10c8ea20b6de"',
              checks=checks)
 
 
@@ -234,6 +236,6 @@ def step_management_group_subscription_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group-subscription delete -y '
-             '--group-id "Group" '
-             '--subscription-id "728bcbe4-8d56-4510-86c2-4921b8beefbc"',
+             '--group-id "thomasdolanTestMG" '
+             '--subscription-id "5602fbd9-fb0d-4fbb-98b3-10c8ea20b6de"',
              checks=checks)
