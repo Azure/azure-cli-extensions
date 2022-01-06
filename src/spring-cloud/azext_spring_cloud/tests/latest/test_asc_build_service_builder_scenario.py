@@ -24,7 +24,7 @@ class BuildServiceBuilderTest(ScenarioTest):
             'builderFile': builder_file
         })
 
-        self.cmd('spring-cloud build-service builder create -n {name} -g {rg} -s {serviceName} --builder-file {}', checks=[
+        self.cmd('spring-cloud build-service builder create -n {name} -g {rg} -s {serviceName} --builder-file {builderFile}', checks=[
             self.check('name', '{name}'),
             self.check('properties.name', 'default'),
             self.check('properties.buildpackGroups[0].buildpacks[0].id', 'tanzu-buildpacks/java-azure'),
