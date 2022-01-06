@@ -58,7 +58,7 @@ class DefaultDeployment:
     def _get_env(self, env, **_):
         return env
 
-    def _get_addon_configs(self, config_file_patterns, **_):
+    def _get_addon_configs(self, config_file_patterns=None, **_):
         if config_file_patterns is not None:
             addon_configs = {
                 APPLICATION_CONFIGURATION_SERVICE_NAME: {
