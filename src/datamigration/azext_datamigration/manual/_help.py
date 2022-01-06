@@ -26,7 +26,7 @@ helps['datamigration get-assessment'] = """
 
 helps['datamigration register-integration-runtime'] = """
     type: command
-    short-summary: Register Sql Migration Service on Integration Runtime
+    short-summary: Register Database Migration Service on Integration Runtime
     examples:
       - name: Register Sql Migration Service on Self Hosted Integration Runtime.
         text: |-

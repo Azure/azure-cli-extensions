@@ -20,6 +20,7 @@ import subprocess
 import time
 import urllib.request
 from zipfile import ZipFile
+from knack.util import CLIError
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ def datamigration_assessment(connection_string=None,
     try:
 
         if not platform.system().__contains__('Windows'):
-            raise Exception("This command cannot be run in non-windows environment")
+            raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environement")
 
         defaultOutputFolder = get_default_output_folder()
 
@@ -74,7 +75,7 @@ def datamigration_assessment(connection_string=None,
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
         else:
-            raise Exception('Please provide any one of the these prameters: connection_string, config_file_path')
+            raise CLIError('No valid parameter set used. Please provide any one of the these prameters: connection_string, config_file_path')
 
         # Printing log file path
         logFilePath = os.path.join(defaultOutputFolder, "Logs")
@@ -90,14 +91,14 @@ def datamigration_assessment(connection_string=None,
 def test_config_file_path(path):
 
     if not os.path.exists(path):
-        raise Exception(f'Invalid Config File path: {path}')
+        raise CLIError(f'Invalid config file path: {path}. Please provide a valid config file path.')
 
     # JSON file
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
 
     if not ((configJson['action'] == "Assess") or (configJson['action'] == "assess")):
-        raise Exception("The desired action was invalid.")
+        raise CLIError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -126,14 +127,14 @@ def datamigration_register_ir(auth_key,
     osPlatform = platform.system()
 
     if not osPlatform.__contains__('Windows'):
-        raise Exception("This command cannot be run in non-windows environment")
+        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environement")
 
     if not is_user_admin():
-        raise Exception("Failed: You do not have Administrator rights to run this command! Please re-run this command as an Administrator!")
+        raise CLIError("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     validate_input(auth_key)
     if ir_path is not None:
         if not os.path.exists(ir_path):
-            raise Exception(f"Invalid gateway path : {ir_path}")
+            raise CLIError(f"Invalid gateway path : {ir_path}. Please provide a valid Integration Runtime MSI path")
         install_gateway(ir_path)
 
     register_ir(auth_key)
@@ -157,7 +158,7 @@ def is_user_admin():
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
     if key == "":
-        raise Exception("Failed: IR Auth key is empty")
+        raise CLIError("Failed: IR Auth key is empty. Please provide a valid auth key.")
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -180,7 +181,7 @@ def check_whether_gateway_installed(name):
             displayName = winreg.QueryValueEx(installedSoftwareKey, r"DisplayName")[0]
             if name in displayName:
                 return True
-        except:
+        except FileNotFoundError:
             pass
 
     return False
@@ -240,5 +241,5 @@ def get_cmd_file_path():
         accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
 
         return accessValue
-    except Exception as e:
-        raise Exception("Failed: No installed IR found!") from e
+    except FileNotFoundError as e:
+        raise CLIError("Failed: No installed IR found. Please install Integration Runtime and re-run this command") from e
