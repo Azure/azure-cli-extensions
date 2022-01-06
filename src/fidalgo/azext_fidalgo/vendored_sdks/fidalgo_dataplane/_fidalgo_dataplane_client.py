@@ -14,7 +14,7 @@ from msrest import Deserializer, Serializer
 
 from . import models
 from ._configuration import FidalgoDataplaneClientConfiguration
-from .operations import CatalogItemOperations, DeploymentsOperations, EnvironmentTypeOperations, EnvironmentsOperations, PoolOperations, ProjectOperations, VirtualMachineOperations
+from .operations import ActionsOperations, ArtifactsOperations, CatalogItemOperations, EnvironmentTypeOperations, EnvironmentsOperations, PoolOperations, ProjectOperations, VirtualMachineOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -34,14 +34,19 @@ class FidalgoDataplaneClient(object):
     :vartype virtual_machine: azure.fidalgo.operations.VirtualMachineOperations
     :ivar environments: EnvironmentsOperations operations
     :vartype environments: azure.fidalgo.operations.EnvironmentsOperations
-    :ivar deployments: DeploymentsOperations operations
-    :vartype deployments: azure.fidalgo.operations.DeploymentsOperations
+    :ivar actions: ActionsOperations operations
+    :vartype actions: azure.fidalgo.operations.ActionsOperations
+    :ivar artifacts: ArtifactsOperations operations
+    :vartype artifacts: azure.fidalgo.operations.ArtifactsOperations
     :ivar catalog_item: CatalogItemOperations operations
     :vartype catalog_item: azure.fidalgo.operations.CatalogItemOperations
     :ivar environment_type: EnvironmentTypeOperations operations
     :vartype environment_type: azure.fidalgo.operations.EnvironmentTypeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
+    :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+     overriding this default value may result in unsupported behavior.
+    :paramtype api_version: str
     """
 
     def __init__(
@@ -51,7 +56,7 @@ class FidalgoDataplaneClient(object):
     ):
         # type: (...) -> None
         _base_url = 'https://{devCenter}.{fidalgoDnsSuffix}'
-        self._config = FidalgoDataplaneClientConfiguration(credential, **kwargs)
+        self._config = FidalgoDataplaneClientConfiguration(credential=credential, **kwargs)
         self._client = PipelineClient(base_url=_base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
@@ -61,7 +66,8 @@ class FidalgoDataplaneClient(object):
         self.pool = PoolOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine = VirtualMachineOperations(self._client, self._config, self._serialize, self._deserialize)
         self.environments = EnvironmentsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.deployments = DeploymentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.actions = ActionsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.artifacts = ArtifactsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.catalog_item = CatalogItemOperations(self._client, self._config, self._serialize, self._deserialize)
         self.environment_type = EnvironmentTypeOperations(self._client, self._config, self._serialize, self._deserialize)
 

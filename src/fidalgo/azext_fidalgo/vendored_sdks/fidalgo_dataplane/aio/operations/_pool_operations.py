@@ -20,7 +20,6 @@ from azure.core.tracing.decorator_async import distributed_trace_async
 from ... import models as _models
 from ..._vendor import _convert_request
 from ...operations._pool_operations import build_get_request, build_list_request
-
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -68,11 +67,16 @@ class PoolOperations:
         :type top: int
         :param filter: An OData $filter clause to apply to the operation.
         :type filter: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PoolListResult or the result of cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.fidalgo.models.PoolListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PoolListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -83,6 +87,7 @@ class PoolOperations:
                 
                 request = build_list_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     filter=filter,
                     template_url=self.list.metadata['url'],
@@ -98,6 +103,7 @@ class PoolOperations:
                 
                 request = build_list_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     filter=filter,
                     template_url=next_link,
@@ -161,6 +167,9 @@ class PoolOperations:
         :type project_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Pool, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.Pool
@@ -172,10 +181,13 @@ class PoolOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_get_request(
             pool_name=pool_name,
             project_name=project_name,
+            api_version=api_version,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -185,7 +197,7 @@ class PoolOperations:
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:

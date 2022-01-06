@@ -20,7 +20,6 @@ from azure.core.tracing.decorator_async import distributed_trace_async
 from ... import models as _models
 from ..._vendor import _convert_request
 from ...operations._catalog_item_operations import build_list_by_project_request
-
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -65,12 +64,17 @@ class CatalogItemOperations:
         :type fidalgo_dns_suffix: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either CatalogItemListResult or the result of
          cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.fidalgo.models.CatalogItemListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CatalogItemListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -81,6 +85,7 @@ class CatalogItemOperations:
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=self.list_by_project.metadata['url'],
                 )
@@ -95,6 +100,7 @@ class CatalogItemOperations:
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=next_link,
                 )

@@ -7,17 +7,19 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import Action
+    from ._models_py3 import ActionListResult
+    from ._models_py3 import ActionRequest
+    from ._models_py3 import Artifact
+    from ._models_py3 import ArtifactListResult
     from ._models_py3 import Assignment
     from ._models_py3 import CatalogItem
-    from ._models_py3 import CatalogItemEngineProperties
+    from ._models_py3 import CatalogItemAction
     from ._models_py3 import CatalogItemListResult
-    from ._models_py3 import CatalogItemParameterProperties
+    from ._models_py3 import CatalogItemParameter
     from ._models_py3 import CloudError
     from ._models_py3 import CloudErrorBody
-    from ._models_py3 import Deployment
-    from ._models_py3 import DeploymentHistoryResult
     from ._models_py3 import Environment
-    from ._models_py3 import EnvironmentDeploy
     from ._models_py3 import EnvironmentListResult
     from ._models_py3 import EnvironmentType
     from ._models_py3 import EnvironmentTypeListResult
@@ -28,20 +30,23 @@ try:
     from ._models_py3 import ProjectListResult
     from ._models_py3 import ProvisioningError
     from ._models_py3 import RdpConnection
+    from ._models_py3 import ScheduledTask
     from ._models_py3 import VirtualMachine
     from ._models_py3 import VirtualMachineListResult
 except (SyntaxError, ImportError):
+    from ._models import Action  # type: ignore
+    from ._models import ActionListResult  # type: ignore
+    from ._models import ActionRequest  # type: ignore
+    from ._models import Artifact  # type: ignore
+    from ._models import ArtifactListResult  # type: ignore
     from ._models import Assignment  # type: ignore
     from ._models import CatalogItem  # type: ignore
-    from ._models import CatalogItemEngineProperties  # type: ignore
+    from ._models import CatalogItemAction  # type: ignore
     from ._models import CatalogItemListResult  # type: ignore
-    from ._models import CatalogItemParameterProperties  # type: ignore
+    from ._models import CatalogItemParameter  # type: ignore
     from ._models import CloudError  # type: ignore
     from ._models import CloudErrorBody  # type: ignore
-    from ._models import Deployment  # type: ignore
-    from ._models import DeploymentHistoryResult  # type: ignore
     from ._models import Environment  # type: ignore
-    from ._models import EnvironmentDeploy  # type: ignore
     from ._models import EnvironmentListResult  # type: ignore
     from ._models import EnvironmentType  # type: ignore
     from ._models import EnvironmentTypeListResult  # type: ignore
@@ -52,26 +57,32 @@ except (SyntaxError, ImportError):
     from ._models import ProjectListResult  # type: ignore
     from ._models import ProvisioningError  # type: ignore
     from ._models import RdpConnection  # type: ignore
+    from ._models import ScheduledTask  # type: ignore
     from ._models import VirtualMachine  # type: ignore
     from ._models import VirtualMachineListResult  # type: ignore
 
 from ._fidalgo_dataplane_client_enums import (
-    CatalogItemType,
+    ActionState,
+    ActionType,
     OsType,
+    ParameterType,
+    ScheduledTaskType,
 )
 
 __all__ = [
+    'Action',
+    'ActionListResult',
+    'ActionRequest',
+    'Artifact',
+    'ArtifactListResult',
     'Assignment',
     'CatalogItem',
-    'CatalogItemEngineProperties',
+    'CatalogItemAction',
     'CatalogItemListResult',
-    'CatalogItemParameterProperties',
+    'CatalogItemParameter',
     'CloudError',
     'CloudErrorBody',
-    'Deployment',
-    'DeploymentHistoryResult',
     'Environment',
-    'EnvironmentDeploy',
     'EnvironmentListResult',
     'EnvironmentType',
     'EnvironmentTypeListResult',
@@ -82,8 +93,12 @@ __all__ = [
     'ProjectListResult',
     'ProvisioningError',
     'RdpConnection',
+    'ScheduledTask',
     'VirtualMachine',
     'VirtualMachineListResult',
-    'CatalogItemType',
+    'ActionState',
+    'ActionType',
     'OsType',
+    'ParameterType',
+    'ScheduledTaskType',
 ]

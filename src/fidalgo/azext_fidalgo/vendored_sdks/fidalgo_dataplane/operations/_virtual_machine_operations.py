@@ -23,7 +23,6 @@ from .._vendor import _convert_request, _format_url_section
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
-
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
@@ -34,10 +33,10 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
     filter = kwargs.pop('filter', None)  # type: Optional[str]
     top = kwargs.pop('top', None)  # type: Optional[int]
 
-    api_version = "2021-09-01-privatepreview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/virtualmachines')
@@ -69,10 +68,10 @@ def build_list_by_project_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
     filter = kwargs.pop('filter', None)  # type: Optional[str]
     top = kwargs.pop('top', None)  # type: Optional[int]
 
-    api_version = "2021-09-01-privatepreview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines')
@@ -111,7 +110,8 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-09-01-privatepreview"
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}')
@@ -147,9 +147,9 @@ def build_create_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-09-01-privatepreview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}')
@@ -187,7 +187,8 @@ def build_delete_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-09-01-privatepreview"
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}')
@@ -223,7 +224,8 @@ def build_start_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-09-01-privatepreview"
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/start')
@@ -259,7 +261,8 @@ def build_stop_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-09-01-privatepreview"
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/stop')
@@ -295,9 +298,9 @@ def build_assign_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-09-01-privatepreview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/assign')
@@ -335,7 +338,8 @@ def build_get_rdp_file_contents_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-09-01-privatepreview"
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/getRdpFileContents')
@@ -406,12 +410,17 @@ class VirtualMachineOperations(object):
         :type filter: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachineListResult or the result of
          cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.VirtualMachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -421,6 +430,7 @@ class VirtualMachineOperations(object):
             if not next_link:
                 
                 request = build_list_request(
+                    api_version=api_version,
                     filter=filter,
                     top=top,
                     template_url=self.list.metadata['url'],
@@ -435,6 +445,7 @@ class VirtualMachineOperations(object):
             else:
                 
                 request = build_list_request(
+                    api_version=api_version,
                     filter=filter,
                     top=top,
                     template_url=next_link,
@@ -506,12 +517,17 @@ class VirtualMachineOperations(object):
         :type filter: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachineListResult or the result of
          cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.VirtualMachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -523,6 +539,7 @@ class VirtualMachineOperations(object):
                 request = build_list_by_project_request(
                     project_name=project_name,
                     user_id=user_id,
+                    api_version=api_version,
                     filter=filter,
                     top=top,
                     template_url=self.list_by_project.metadata['url'],
@@ -539,6 +556,7 @@ class VirtualMachineOperations(object):
                 request = build_list_by_project_request(
                     project_name=project_name,
                     user_id=user_id,
+                    api_version=api_version,
                     filter=filter,
                     top=top,
                     template_url=next_link,
@@ -607,6 +625,9 @@ class VirtualMachineOperations(object):
         :type virtual_machine_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.VirtualMachine
@@ -618,11 +639,14 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_get_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -632,7 +656,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
@@ -677,6 +701,9 @@ class VirtualMachineOperations(object):
         :type body: ~azure.fidalgo.models.VirtualMachine
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.VirtualMachine
@@ -688,16 +715,18 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        json = self._serialize.body(body, 'VirtualMachine')
+        _json = self._serialize.body(body, 'VirtualMachine')
 
         request = build_create_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             content_type=content_type,
-            json=json,
+            json=_json,
             template_url=self.create.metadata['url'],
         )
         request = _convert_request(request)
@@ -707,7 +736,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [201]:
@@ -735,7 +764,7 @@ class VirtualMachineOperations(object):
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.VirtualMachine"
+        # type: (...) -> Optional["_models.VirtualMachine"]
         """Deletes a virtual machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -749,22 +778,28 @@ class VirtualMachineOperations(object):
         :type virtual_machine_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.VirtualMachine
+        :rtype: ~azure.fidalgo.models.VirtualMachine or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.VirtualMachine"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
 
         
         request = build_delete_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             template_url=self.delete.metadata['url'],
         )
         request = _convert_request(request)
@@ -774,15 +809,17 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
             raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('VirtualMachine', pipeline_response)
+        deserialized = None
+        if response.status_code == 202:
+            deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -816,6 +853,9 @@ class VirtualMachineOperations(object):
         :type virtual_machine_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -827,11 +867,14 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_start_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             template_url=self.start.metadata['url'],
         )
         request = _convert_request(request)
@@ -841,7 +884,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
@@ -879,6 +922,9 @@ class VirtualMachineOperations(object):
         :type virtual_machine_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -890,11 +936,14 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_stop_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             template_url=self.stop.metadata['url'],
         )
         request = _convert_request(request)
@@ -904,7 +953,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
@@ -945,6 +994,9 @@ class VirtualMachineOperations(object):
         :type body: ~azure.fidalgo.models.Assignment
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -956,16 +1008,18 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        json = self._serialize.body(body, 'Assignment')
+        _json = self._serialize.body(body, 'Assignment')
 
         request = build_assign_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             content_type=content_type,
-            json=json,
+            json=_json,
             template_url=self.assign.metadata['url'],
         )
         request = _convert_request(request)
@@ -975,7 +1029,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [202]:
@@ -1013,6 +1067,9 @@ class VirtualMachineOperations(object):
         :type virtual_machine_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: RdpConnection, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.RdpConnection
@@ -1024,11 +1081,14 @@ class VirtualMachineOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_get_rdp_file_contents_request(
             project_name=project_name,
             user_id=user_id,
             virtual_machine_name=virtual_machine_name,
+            api_version=api_version,
             template_url=self.get_rdp_file_contents.metadata['url'],
         )
         request = _convert_request(request)
@@ -1038,7 +1098,7 @@ class VirtualMachineOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:

@@ -25,6 +25,8 @@ class FidalgoDataplaneClientConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
+    :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that overriding this default value may result in unsupported behavior.
+    :paramtype api_version: str
     """
 
     def __init__(
@@ -32,12 +34,14 @@ class FidalgoDataplaneClientConfiguration(Configuration):
         credential: "AsyncTokenCredential",
         **kwargs: Any
     ) -> None:
+        super(FidalgoDataplaneClientConfiguration, self).__init__(**kwargs)
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
-        super(FidalgoDataplaneClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.api_version = "2021-09-01-privatepreview"
+        self.api_version = api_version
         self.credential_scopes = kwargs.pop('credential_scopes', [])
         kwargs.setdefault('sdk_moniker', 'fidalgo/{}'.format(VERSION))
         self._configure(**kwargs)

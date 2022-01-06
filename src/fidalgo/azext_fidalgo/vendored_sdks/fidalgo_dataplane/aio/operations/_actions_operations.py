@@ -6,105 +6,25 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import functools
-from typing import TYPE_CHECKING
+from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
+from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpResponse
+from azure.core.pipeline.transport import AsyncHttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from msrest import Serializer
+from azure.core.tracing.decorator_async import distributed_trace_async
 
-from .. import models as _models
-from .._vendor import _convert_request, _format_url_section
+from ... import models as _models
+from ..._vendor import _convert_request
+from ...operations._actions_operations import build_create_request, build_get_request, build_list_by_environment_request
+T = TypeVar('T')
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
-    T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
-
-_SERIALIZER = Serializer()
-# fmt: off
-
-def build_list_request(
-    project_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-    top = kwargs.pop('top', None)  # type: Optional[int]
-    filter = kwargs.pop('filter', None)  # type: Optional[str]
-
-    accept = "application/json"
-    # Construct URL
-    url = kwargs.pop("template_url", '/projects/{projectName}/pools')
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-    }
-
-    url = _format_url_section(url, **path_format_arguments)
-
-    # Construct parameters
-    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if top is not None:
-        query_parameters['$top'] = _SERIALIZER.query("top", top, 'int')
-    if filter is not None:
-        query_parameters['$filter'] = _SERIALIZER.query("filter", filter, 'str')
-
-    # Construct headers
-    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=url,
-        params=query_parameters,
-        headers=header_parameters,
-        **kwargs
-    )
-
-
-def build_get_request(
-    pool_name,  # type: str
-    project_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    url = kwargs.pop("template_url", '/projects/{projectName}/pools/{poolName}')
-    path_format_arguments = {
-        "poolName": _SERIALIZER.url("pool_name", pool_name, 'str'),
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-    }
-
-    url = _format_url_section(url, **path_format_arguments)
-
-    # Construct parameters
-    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=url,
-        params=query_parameters,
-        headers=header_parameters,
-        **kwargs
-    )
-
-# fmt: on
-class PoolOperations(object):
-    """PoolOperations operations.
+class ActionsOperations:
+    """ActionsOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -119,46 +39,40 @@ class PoolOperations(object):
 
     models = _models
 
-    def __init__(self, client, config, serializer, deserializer):
+    def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
 
     @distributed_trace
-    def list(
+    def list_by_environment(
         self,
-        dev_center,  # type: str
-        project_name,  # type: str
-        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
-        top=None,  # type: Optional[int]
-        filter=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["_models.PoolListResult"]
-        """Lists available pools.
+        dev_center: str,
+        project_name: str,
+        environment_name: str,
+        fidalgo_dns_suffix: str = "devcenters.fidalgo.azure.com",
+        top: Optional[int] = None,
+        **kwargs: Any
+    ) -> AsyncIterable["_models.ActionListResult"]:
+        """Gets an environment's actions.
 
         :param dev_center: The DevCenter to operate on.
         :type dev_center: str
         :param project_name: The Fidalgo Project upon which to execute operations.
         :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
-        :param filter: An OData $filter clause to apply to the operation.
-        :type filter: str
-        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
-         overriding this default value may result in unsupported behavior.
-        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either PoolListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.PoolListResult]
+        :return: An iterator like instance of either ActionListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.fidalgo.models.ActionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PoolListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ActionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -166,12 +80,11 @@ class PoolOperations(object):
         def prepare_request(next_link=None):
             if not next_link:
                 
-                request = build_list_request(
+                request = build_list_by_environment_request(
                     project_name=project_name,
-                    api_version=api_version,
+                    environment_name=environment_name,
                     top=top,
-                    filter=filter,
-                    template_url=self.list.metadata['url'],
+                    template_url=self.list_by_environment.metadata['url'],
                 )
                 request = _convert_request(request)
                 path_format_arguments = {
@@ -182,11 +95,10 @@ class PoolOperations(object):
 
             else:
                 
-                request = build_list_request(
+                request = build_list_by_environment_request(
                     project_name=project_name,
-                    api_version=api_version,
+                    environment_name=environment_name,
                     top=top,
-                    filter=filter,
                     template_url=next_link,
                 )
                 request = _convert_request(request)
@@ -203,17 +115,17 @@ class PoolOperations(object):
                 request.method = "GET"
             return request
 
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("PoolListResult", pipeline_response)
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize("ActionListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
-        def get_next(next_link=None):
+        async def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
@@ -224,52 +136,114 @@ class PoolOperations(object):
             return pipeline_response
 
 
-        return ItemPaged(
+        return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/projects/{projectName}/pools'}  # type: ignore
+    list_by_environment.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/actions'}  # type: ignore
 
-    @distributed_trace
-    def get(
+    @distributed_trace_async
+    async def create(
         self,
-        dev_center,  # type: str
-        pool_name,  # type: str
-        project_name,  # type: str
-        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.Pool"
-        """Gets a pool.
+        dev_center: str,
+        project_name: str,
+        environment_name: str,
+        action: "_models.ActionRequest",
+        fidalgo_dns_suffix: str = "devcenters.fidalgo.azure.com",
+        **kwargs: Any
+    ) -> None:
+        """Creates and executes an action.
 
         :param dev_center: The DevCenter to operate on.
         :type dev_center: str
-        :param pool_name: The name of a pool of virtual machines.
-        :type pool_name: str
         :param project_name: The Fidalgo Project upon which to execute operations.
         :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param action: Action properties overriding the environment's default values.
+        :type action: ~azure.fidalgo.models.ActionRequest
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
-        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
-         overriding this default value may result in unsupported behavior.
-        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Pool, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.Pool
+        :return: None, or the result of cls(response)
+        :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Pool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(action, 'ActionRequest')
+
+        request = build_create_request(
+            project_name=project_name,
+            environment_name=environment_name,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create.metadata['url'],
+        )
+        request = _convert_request(request)
+        path_format_arguments = {
+            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
+
+        if cls:
+            return cls(pipeline_response, None, {})
+
+    create.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/actions'}  # type: ignore
+
+
+    @distributed_trace_async
+    async def get(
+        self,
+        dev_center: str,
+        project_name: str,
+        environment_name: str,
+        action_id: str,
+        fidalgo_dns_suffix: str = "devcenters.fidalgo.azure.com",
+        **kwargs: Any
+    ) -> "_models.Action":
+        """Gets an environment's deployment history.
+
+        :param dev_center: The DevCenter to operate on.
+        :type dev_center: str
+        :param project_name: The Fidalgo Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param action_id: The unique id of the action.
+        :type action_id: str
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
+        :type fidalgo_dns_suffix: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Action, or the result of cls(response)
+        :rtype: ~azure.fidalgo.models.Action
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Action"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
 
         
         request = build_get_request(
-            pool_name=pool_name,
             project_name=project_name,
-            api_version=api_version,
+            environment_name=environment_name,
+            action_id=action_id,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -279,7 +253,7 @@ class PoolOperations(object):
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
@@ -287,12 +261,12 @@ class PoolOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
             raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('Pool', pipeline_response)
+        deserialized = self._deserialize('Action', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': '/projects/{projectName}/pools/{poolName}'}  # type: ignore
+    get.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/actions/{actionId}'}  # type: ignore
 

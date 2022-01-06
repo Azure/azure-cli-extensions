@@ -11,14 +11,45 @@ from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class CatalogItemType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of catalog item used to deploy the environment.
+class ActionState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The state of the action.
     """
 
-    ARM = "ARM"
+    PENDING = "Pending"
+    INITIALIZING = "Initializing"
+    PROCESSING = "Processing"
+    SUCCEEDED = "Succeeded"
+    CANCELED = "Canceled"
+    FAILED = "Failed"
+
+class ActionType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of action.
+    """
+
+    CUSTOM = "Custom"
+    DEPLOY = "Deploy"
+    DELETE = "Delete"
 
 class OsType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The operating system type.
     """
 
     WINDOWS = "Windows"
+
+class ParameterType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of data a parameter accepts.
+    """
+
+    ARRAY = "array"
+    BOOLEAN = "boolean"
+    INTEGER = "integer"
+    NULL = "null"
+    NUMBER = "number"
+    OBJECT = "object"
+    STRING = "string"
+
+class ScheduledTaskType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The supported types for a scheduled task.
+    """
+
+    AUTO_EXPIRE = "AutoExpire"

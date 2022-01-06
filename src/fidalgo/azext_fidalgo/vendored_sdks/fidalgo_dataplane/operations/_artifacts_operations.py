@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
@@ -22,14 +21,16 @@ from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 # fmt: off
 
-def build_list_by_dev_center_request(
+def build_list_by_environment_request(
+    project_name,  # type: str
+    environment_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -37,7 +38,13 @@ def build_list_by_dev_center_request(
 
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/projects')
+    url = kwargs.pop("template_url", '/projects/{projectName}/environments/{environmentName}/artifacts')
+    path_format_arguments = {
+        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
+        "environmentName": _SERIALIZER.url("environment_name", environment_name, 'str'),
+    }
+
+    url = _format_url_section(url, **path_format_arguments)
 
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
@@ -58,6 +65,8 @@ def build_list_by_dev_center_request(
 
 def build_get_request(
     project_name,  # type: str
+    environment_name,  # type: str
+    artifact_path,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -65,9 +74,11 @@ def build_get_request(
 
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/projects/{projectName}')
+    url = kwargs.pop("template_url", '/projects/{projectName}/environments/{environmentName}/artifacts/{artifactPath}')
     path_format_arguments = {
         "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
+        "environmentName": _SERIALIZER.url("environment_name", environment_name, 'str'),
+        "artifactPath": _SERIALIZER.url("artifact_path", artifact_path, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -89,8 +100,8 @@ def build_get_request(
     )
 
 # fmt: on
-class ProjectOperations(object):
-    """ProjectOperations operations.
+class ArtifactsOperations(object):
+    """ArtifactsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -112,120 +123,105 @@ class ProjectOperations(object):
         self._config = config
 
     @distributed_trace
-    def list_by_dev_center(
+    def list_by_environment(
         self,
         dev_center,  # type: str
+        project_name,  # type: str
+        environment_name,  # type: str
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.ProjectListResult"]
-        """Lists all projects.
+        # type: (...) -> "_models.ArtifactListResult"
+        """Lists the artifacts for an environment.
 
         :param dev_center: The DevCenter to operate on.
         :type dev_center: str
+        :param project_name: The Fidalgo Project upon which to execute operations.
+        :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
          overriding this default value may result in unsupported behavior.
         :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ProjectListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.ProjectListResult]
+        :return: ArtifactListResult, or the result of cls(response)
+        :rtype: ~azure.fidalgo.models.ArtifactListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ProjectListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ArtifactListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_by_dev_center_request(
-                    api_version=api_version,
-                    template_url=self.list_by_dev_center.metadata['url'],
-                )
-                request = _convert_request(request)
-                path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-                }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
 
-            else:
-                
-                request = build_list_by_dev_center_request(
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-                }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
 
-                path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-                }
-                request.method = "GET"
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("ProjectListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-                raise HttpResponseError(response=response, model=error)
-
-            return pipeline_response
-
-
-        return ItemPaged(
-            get_next, extract_data
+        
+        request = build_list_by_environment_request(
+            project_name=project_name,
+            environment_name=environment_name,
+            api_version=api_version,
+            template_url=self.list_by_environment.metadata['url'],
         )
-    list_by_dev_center.metadata = {'url': '/projects'}  # type: ignore
+        request = _convert_request(request)
+        path_format_arguments = {
+            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
+
+        deserialized = self._deserialize('ArtifactListResult', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    list_by_environment.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/artifacts'}  # type: ignore
+
 
     @distributed_trace
     def get(
         self,
         dev_center,  # type: str
         project_name,  # type: str
+        environment_name,  # type: str
+        artifact_path,  # type: str
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.Project"
-        """Gets a project.
+        # type: (...) -> "_models.ArtifactListResult"
+        """Lists the artifacts for an environment at a specified path, or returns the file at the path.
 
         :param dev_center: The DevCenter to operate on.
         :type dev_center: str
         :param project_name: The Fidalgo Project upon which to execute operations.
         :type project_name: str
+        :param environment_name: The name of the environment.
+        :type environment_name: str
+        :param artifact_path: The path of the artifact.
+        :type artifact_path: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
          overriding this default value may result in unsupported behavior.
         :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Project, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.Project
+        :return: ArtifactListResult, or the result of cls(response)
+        :rtype: ~azure.fidalgo.models.ArtifactListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Project"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ArtifactListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -236,6 +232,8 @@ class ProjectOperations(object):
         
         request = build_get_request(
             project_name=project_name,
+            environment_name=environment_name,
+            artifact_path=artifact_path,
             api_version=api_version,
             template_url=self.get.metadata['url'],
         )
@@ -254,12 +252,12 @@ class ProjectOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
             raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('Project', pipeline_response)
+        deserialized = self._deserialize('ArtifactListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': '/projects/{projectName}'}  # type: ignore
+    get.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/artifacts/{artifactPath}'}  # type: ignore
 

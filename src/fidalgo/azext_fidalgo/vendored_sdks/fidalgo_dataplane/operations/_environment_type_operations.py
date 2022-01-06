@@ -23,7 +23,6 @@ from .._vendor import _convert_request, _format_url_section
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
-
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
@@ -35,9 +34,9 @@ def build_list_by_project_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
     top = kwargs.pop('top', None)  # type: Optional[int]
 
-    api_version = "2021-09-01-privatepreview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/projects/{projectName}/environmentTypes')
@@ -108,12 +107,17 @@ class EnvironmentTypeOperations(object):
         :type fidalgo_dns_suffix: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either EnvironmentTypeListResult or the result of
          cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.EnvironmentTypeListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.EnvironmentTypeListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -124,6 +128,7 @@ class EnvironmentTypeOperations(object):
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=self.list_by_project.metadata['url'],
                 )
@@ -138,6 +143,7 @@ class EnvironmentTypeOperations(object):
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=next_link,
                 )

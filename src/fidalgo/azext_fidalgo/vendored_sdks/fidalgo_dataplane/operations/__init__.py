@@ -10,7 +10,8 @@ from ._project_operations import ProjectOperations
 from ._pool_operations import PoolOperations
 from ._virtual_machine_operations import VirtualMachineOperations
 from ._environments_operations import EnvironmentsOperations
-from ._deployments_operations import DeploymentsOperations
+from ._actions_operations import ActionsOperations
+from ._artifacts_operations import ArtifactsOperations
 from ._catalog_item_operations import CatalogItemOperations
 from ._environment_type_operations import EnvironmentTypeOperations
 
@@ -19,7 +20,8 @@ __all__ = [
     'PoolOperations',
     'VirtualMachineOperations',
     'EnvironmentsOperations',
-    'DeploymentsOperations',
+    'ActionsOperations',
+    'ArtifactsOperations',
     'CatalogItemOperations',
     'EnvironmentTypeOperations',
 ]

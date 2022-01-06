@@ -10,6 +10,246 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
+class Action(msrest.serialization.Model):
+    """Properties of an Action.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Action unique identifier.
+    :vartype id: str
+    :ivar requested_by: Identifier of the user that executed the Action.
+    :vartype requested_by: str
+    :ivar task_id: Identifier of the scheduled task that executed the Action.
+    :vartype task_id: str
+    :ivar type: The type of action to execute. Possible values include: "Custom", "Deploy",
+     "Delete".
+    :vartype type: str or ~azure.fidalgo.models.ActionType
+    :ivar type_name: The name of the custom Action type.
+    :vartype type_name: str
+    :ivar created_time: Time the action was created.
+    :vartype created_time: ~datetime.datetime
+    :ivar started_time: Time the action started.
+    :vartype started_time: ~datetime.datetime
+    :ivar finished_time: Time the action finished.
+    :vartype finished_time: ~datetime.datetime
+    :ivar parameters: Parameters object for the Action.
+    :vartype parameters: any
+    :ivar output: Output from the Action execution. This is null on list operations.
+    :vartype output: str
+    :ivar action_state: The state of the action executiton. Possible values include: "Pending",
+     "Initializing", "Processing", "Succeeded", "Canceled", "Failed".
+    :vartype action_state: str or ~azure.fidalgo.models.ActionState
+    :ivar exit_code: Exit code of the Action execution.
+    :vartype exit_code: int
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'requested_by': {'readonly': True},
+        'task_id': {'readonly': True},
+        'type': {'readonly': True},
+        'type_name': {'readonly': True},
+        'created_time': {'readonly': True},
+        'started_time': {'readonly': True},
+        'finished_time': {'readonly': True},
+        'parameters': {'readonly': True},
+        'output': {'readonly': True},
+        'action_state': {'readonly': True},
+        'exit_code': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'requested_by': {'key': 'requestedBy', 'type': 'str'},
+        'task_id': {'key': 'taskId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'type_name': {'key': 'typeName', 'type': 'str'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
+        'started_time': {'key': 'startedTime', 'type': 'iso-8601'},
+        'finished_time': {'key': 'finishedTime', 'type': 'iso-8601'},
+        'parameters': {'key': 'parameters', 'type': 'object'},
+        'output': {'key': 'output', 'type': 'str'},
+        'action_state': {'key': 'actionState', 'type': 'str'},
+        'exit_code': {'key': 'exitCode', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(Action, self).__init__(**kwargs)
+        self.id = None
+        self.requested_by = None
+        self.task_id = None
+        self.type = None
+        self.type_name = None
+        self.created_time = None
+        self.started_time = None
+        self.finished_time = None
+        self.parameters = None
+        self.output = None
+        self.action_state = None
+        self.exit_code = None
+
+
+class ActionListResult(msrest.serialization.Model):
+    """Results of the actions list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~azure.fidalgo.models.Action]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Action]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(ActionListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class ActionRequest(msrest.serialization.Model):
+    """Action request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar action_id: Required. The Catalog Item action id to execute.
+    :vartype action_id: str
+    :ivar parameters: Parameters object for the Action.
+    :vartype parameters: any
+    """
+
+    _validation = {
+        'action_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'action_id': {'key': 'actionId', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword action_id: Required. The Catalog Item action id to execute.
+        :paramtype action_id: str
+        :keyword parameters: Parameters object for the Action.
+        :paramtype parameters: any
+        """
+        super(ActionRequest, self).__init__(**kwargs)
+        self.action_id = kwargs['action_id']
+        self.parameters = kwargs.get('parameters', None)
+
+
+class Artifact(msrest.serialization.Model):
+    """Properties of an Artifact.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Artifact identifier.
+    :vartype id: str
+    :ivar name: Artifact name.
+    :vartype name: str
+    :ivar is_directory: Whether artifact is a directory.
+    :vartype is_directory: bool
+    :ivar download_uri: Uri where the file contents can be downloaded.
+    :vartype download_uri: str
+    :ivar file_size: Size of file in bytes, if the artifact is a file.
+    :vartype file_size: float
+    :ivar created_time: Time the artifact was created.
+    :vartype created_time: ~datetime.datetime
+    :ivar last_modified_time: Time the artifact was last modified.
+    :vartype last_modified_time: ~datetime.datetime
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'is_directory': {'readonly': True},
+        'download_uri': {'readonly': True},
+        'file_size': {'readonly': True},
+        'created_time': {'readonly': True},
+        'last_modified_time': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'is_directory': {'key': 'isDirectory', 'type': 'bool'},
+        'download_uri': {'key': 'downloadUri', 'type': 'str'},
+        'file_size': {'key': 'fileSize', 'type': 'float'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
+        'last_modified_time': {'key': 'lastModifiedTime', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(Artifact, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.is_directory = None
+        self.download_uri = None
+        self.file_size = None
+        self.created_time = None
+        self.last_modified_time = None
+
+
+class ArtifactListResult(msrest.serialization.Model):
+    """Results of the artifact list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~azure.fidalgo.models.Artifact]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Artifact]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(ArtifactListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
 class Assignment(msrest.serialization.Model):
     """An assignment request.
 
@@ -38,24 +278,52 @@ class CatalogItem(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
+    :ivar id: Unique identifier of the catalog item.
+    :vartype id: str
     :ivar name: Name of the catalog item.
     :vartype name: str
-    :ivar description: Description of the catalog item.
+    :ivar catalog_name: Name of the catalog.
+    :vartype catalog_name: str
+    :ivar summary: A short summary of the catalog item.
+    :vartype summary: str
+    :ivar description: A long description of the catalog item.
     :vartype description: str
-    :ivar engine: The catalog item engine.
-    :vartype engine: ~azure.fidalgo.models.CatalogItemEngineProperties
+    :ivar template_path: Path to the catalog item entrypoint file.
+    :vartype template_path: str
+    :ivar parameters_schema: JSON schema defining the parameters object passed to actions.
+    :vartype parameters_schema: str
+    :ivar parameters: Input parameters passed to actions.
+    :vartype parameters: list[~azure.fidalgo.models.CatalogItemParameter]
+    :ivar actions: Custom actions for the catalog item.
+    :vartype actions: list[~azure.fidalgo.models.CatalogItemAction]
+    :ivar runner: The default container image to use to execute actions.
+    :vartype runner: str
     """
 
     _validation = {
+        'id': {'readonly': True},
         'name': {'readonly': True},
+        'catalog_name': {'readonly': True},
+        'summary': {'readonly': True},
         'description': {'readonly': True},
-        'engine': {'readonly': True},
+        'template_path': {'readonly': True},
+        'parameters_schema': {'readonly': True},
+        'parameters': {'readonly': True},
+        'actions': {'readonly': True},
+        'runner': {'readonly': True},
     }
 
     _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'catalog_name': {'key': 'catalogName', 'type': 'str'},
+        'summary': {'key': 'summary', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
-        'engine': {'key': 'engine', 'type': 'CatalogItemEngineProperties'},
+        'template_path': {'key': 'templatePath', 'type': 'str'},
+        'parameters_schema': {'key': 'parametersSchema', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameter]'},
+        'actions': {'key': 'actions', 'type': '[CatalogItemAction]'},
+        'runner': {'key': 'runner', 'type': 'str'},
     }
 
     def __init__(
@@ -65,35 +333,61 @@ class CatalogItem(msrest.serialization.Model):
         """
         """
         super(CatalogItem, self).__init__(**kwargs)
+        self.id = None
         self.name = None
+        self.catalog_name = None
+        self.summary = None
         self.description = None
-        self.engine = None
+        self.template_path = None
+        self.parameters_schema = None
+        self.parameters = None
+        self.actions = None
+        self.runner = None
 
 
-class CatalogItemEngineProperties(msrest.serialization.Model):
-    """Properties of a catalog item engine.
+class CatalogItemAction(msrest.serialization.Model):
+    """CatalogItemAction.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar type: The type of catalog item used to deploy the environment. Possible values include:
-     "ARM".
-    :vartype type: str or ~azure.fidalgo.models.CatalogItemType
-    :ivar template_path: Path to the catalog item entrypoint file.
-    :vartype template_path: str
-    :ivar parameters: Parameters that can be provided to the catalog item.
-    :vartype parameters: list[~azure.fidalgo.models.CatalogItemParameterProperties]
+    :ivar id: Unique identifier of the action.
+    :vartype id: str
+    :ivar name: Display name of the action.
+    :vartype name: str
+    :ivar description: Description of the action.
+    :vartype description: str
+    :ivar parameters_schema: JSON schema defining the parameters specific to the custom action.
+    :vartype parameters_schema: str
+    :ivar parameters: Input parameters passed to the action.
+    :vartype parameters: list[~azure.fidalgo.models.CatalogItemParameter]
+    :ivar type: The action type. Possible values include: "Custom", "Deploy", "Delete".
+    :vartype type: str or ~azure.fidalgo.models.ActionType
+    :ivar type_name: Name of the custom action type.
+    :vartype type_name: str
+    :ivar runner: The container image to use to execute the action.
+    :vartype runner: str
     """
 
     _validation = {
-        'type': {'readonly': True},
-        'template_path': {'readonly': True},
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'description': {'readonly': True},
+        'parameters_schema': {'readonly': True},
         'parameters': {'readonly': True},
+        'type': {'readonly': True},
+        'type_name': {'readonly': True},
+        'runner': {'readonly': True},
     }
 
     _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'parameters_schema': {'key': 'parametersSchema', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameter]'},
         'type': {'key': 'type', 'type': 'str'},
-        'template_path': {'key': 'templatePath', 'type': 'str'},
-        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameterProperties]'},
+        'type_name': {'key': 'typeName', 'type': 'str'},
+        'runner': {'key': 'runner', 'type': 'str'},
     }
 
     def __init__(
@@ -102,10 +396,15 @@ class CatalogItemEngineProperties(msrest.serialization.Model):
     ):
         """
         """
-        super(CatalogItemEngineProperties, self).__init__(**kwargs)
-        self.type = None
-        self.template_path = None
+        super(CatalogItemAction, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.description = None
+        self.parameters_schema = None
         self.parameters = None
+        self.type = None
+        self.type_name = None
+        self.runner = None
 
 
 class CatalogItemListResult(msrest.serialization.Model):
@@ -140,29 +439,52 @@ class CatalogItemListResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class CatalogItemParameterProperties(msrest.serialization.Model):
-    """Properties of a catalog item parameter.
+class CatalogItemParameter(msrest.serialization.Model):
+    """Properties of an Catalog Item parameter.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar name: The name of the parameter.
+    :ivar id: Unique ID of the parameter.
+    :vartype id: str
+    :ivar name: Display name of the parameter.
     :vartype name: str
-    :ivar type: The type accepted for the parameter value.
-    :vartype type: str
     :ivar description: Description of the parameter.
     :vartype description: str
+    :ivar default: Default value of the parameter.
+    :vartype default: any
+    :ivar type: A string of one of the basic JSON types (number, integer, null, array, object,
+     boolean, string). Possible values include: "array", "boolean", "integer", "null", "number",
+     "object", "string".
+    :vartype type: str or ~azure.fidalgo.models.ParameterType
+    :ivar read_only: Whether or not this parameter is read-only.  If true, default should have a
+     value.
+    :vartype read_only: bool
+    :ivar required: Whether or not this parameter is required.
+    :vartype required: bool
+    :ivar allowed: An array of allowed values.
+    :vartype allowed: list[any]
     """
 
     _validation = {
+        'id': {'readonly': True},
         'name': {'readonly': True},
-        'type': {'readonly': True},
         'description': {'readonly': True},
+        'default': {'readonly': True},
+        'type': {'readonly': True},
+        'read_only': {'readonly': True},
+        'required': {'readonly': True},
+        'allowed': {'readonly': True, 'min_items': 1, 'unique': True},
     }
 
     _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
+        'default': {'key': 'default', 'type': 'object'},
+        'type': {'key': 'type', 'type': 'str'},
+        'read_only': {'key': 'readOnly', 'type': 'bool'},
+        'required': {'key': 'required', 'type': 'bool'},
+        'allowed': {'key': 'allowed', 'type': '[object]'},
     }
 
     def __init__(
@@ -171,10 +493,15 @@ class CatalogItemParameterProperties(msrest.serialization.Model):
     ):
         """
         """
-        super(CatalogItemParameterProperties, self).__init__(**kwargs)
+        super(CatalogItemParameter, self).__init__(**kwargs)
+        self.id = None
         self.name = None
-        self.type = None
         self.description = None
+        self.default = None
+        self.type = None
+        self.read_only = None
+        self.required = None
+        self.allowed = None
 
 
 class CloudError(msrest.serialization.Model):
@@ -247,90 +574,31 @@ class CloudErrorBody(msrest.serialization.Model):
         self.details = kwargs.get('details', None)
 
 
-class Deployment(msrest.serialization.Model):
-    """Details of a specific deployment of an environment.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar provisioning_state: Current provisioning state of the deployment.
-    :vartype provisioning_state: str
-    :ivar logs: Deployment logs.
-    :vartype logs: str
-    :ivar parameters: Deployment parameters passed to the catalog item.
-    :vartype parameters: any
-    """
-
-    _validation = {
-        'provisioning_state': {'readonly': True},
-        'logs': {'readonly': True},
-        'parameters': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'logs': {'key': 'logs', 'type': 'str'},
-        'parameters': {'key': 'parameters', 'type': 'object'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(Deployment, self).__init__(**kwargs)
-        self.provisioning_state = None
-        self.logs = None
-        self.parameters = None
-
-
-class DeploymentHistoryResult(msrest.serialization.Model):
-    """Results of the get deployment history operation.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar value: Recent deployment history.
-    :vartype value: list[~azure.fidalgo.models.Deployment]
-    :ivar next_link: URL to get the next set of results if there are any.
-    :vartype next_link: str
-    """
-
-    _validation = {
-        'value': {'readonly': True},
-        'next_link': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[Deployment]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(DeploymentHistoryResult, self).__init__(**kwargs)
-        self.value = None
-        self.next_link = None
-
-
 class EnvironmentUpdate(msrest.serialization.Model):
     """Properties of an environment. These properties can be updated after the resource has been created.
 
     :ivar description: Description of the Environment.
     :vartype description: str
+    :ivar catalog_name: Name of the catalog.
+    :vartype catalog_name: str
     :ivar catalog_item_name: Name of the catalog item.
     :vartype catalog_item_name: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
+    :ivar parameters: Parameters object for the deploy action.
+    :vartype parameters: any
+    :ivar scheduled_tasks: Set of supported scheduled tasks to help manage cost.
+    :vartype scheduled_tasks: dict[str, ~azure.fidalgo.models.ScheduledTask]
+    :ivar tags: A set of tags. Key value pairs that will be applied to resources deployed in this
+     environment as tags.
+    :vartype tags: dict[str, str]
     """
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
+        'catalog_name': {'key': 'catalogName', 'type': 'str'},
         'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
-        'deployment_parameters': {'key': 'deploymentParameters', 'type': 'object'},
+        'parameters': {'key': 'parameters', 'type': 'object'},
+        'scheduled_tasks': {'key': 'scheduledTasks', 'type': '{ScheduledTask}'},
+        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
     def __init__(
@@ -340,15 +608,25 @@ class EnvironmentUpdate(msrest.serialization.Model):
         """
         :keyword description: Description of the Environment.
         :paramtype description: str
+        :keyword catalog_name: Name of the catalog.
+        :paramtype catalog_name: str
         :keyword catalog_item_name: Name of the catalog item.
         :paramtype catalog_item_name: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
+        :keyword parameters: Parameters object for the deploy action.
+        :paramtype parameters: any
+        :keyword scheduled_tasks: Set of supported scheduled tasks to help manage cost.
+        :paramtype scheduled_tasks: dict[str, ~azure.fidalgo.models.ScheduledTask]
+        :keyword tags: A set of tags. Key value pairs that will be applied to resources deployed in
+         this environment as tags.
+        :paramtype tags: dict[str, str]
         """
         super(EnvironmentUpdate, self).__init__(**kwargs)
         self.description = kwargs.get('description', None)
+        self.catalog_name = kwargs.get('catalog_name', None)
         self.catalog_item_name = kwargs.get('catalog_item_name', None)
-        self.deployment_parameters = kwargs.get('deployment_parameters', None)
+        self.parameters = kwargs.get('parameters', None)
+        self.scheduled_tasks = kwargs.get('scheduled_tasks', None)
+        self.tags = kwargs.get('tags', None)
 
 
 class Environment(EnvironmentUpdate):
@@ -360,10 +638,17 @@ class Environment(EnvironmentUpdate):
 
     :ivar description: Description of the Environment.
     :vartype description: str
+    :ivar catalog_name: Name of the catalog.
+    :vartype catalog_name: str
     :ivar catalog_item_name: Name of the catalog item.
     :vartype catalog_item_name: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
+    :ivar parameters: Parameters object for the deploy action.
+    :vartype parameters: any
+    :ivar scheduled_tasks: Set of supported scheduled tasks to help manage cost.
+    :vartype scheduled_tasks: dict[str, ~azure.fidalgo.models.ScheduledTask]
+    :ivar tags: A set of tags. Key value pairs that will be applied to resources deployed in this
+     environment as tags.
+    :vartype tags: dict[str, str]
     :ivar name: Environment name.
     :vartype name: str
     :ivar environment_type: Required. Environment type.
@@ -375,11 +660,6 @@ class Environment(EnvironmentUpdate):
     :ivar resource_group_id: The identifier of the resource group containing the environment's
      resources.
     :vartype resource_group_id: str
-    :ivar outputs: Outputs from the deployment.
-    :vartype outputs: any
-    :ivar tags: A set of tags. Key value pairs that will be applied to resources deployed in this
-     environment as tags.
-    :vartype tags: dict[str, str]
     """
 
     _validation = {
@@ -387,20 +667,20 @@ class Environment(EnvironmentUpdate):
         'environment_type': {'required': True},
         'provisioning_state': {'readonly': True},
         'resource_group_id': {'readonly': True},
-        'outputs': {'readonly': True},
     }
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
+        'catalog_name': {'key': 'catalogName', 'type': 'str'},
         'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
-        'deployment_parameters': {'key': 'deploymentParameters', 'type': 'object'},
+        'parameters': {'key': 'parameters', 'type': 'object'},
+        'scheduled_tasks': {'key': 'scheduledTasks', 'type': '{ScheduledTask}'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'name': {'key': 'name', 'type': 'str'},
         'environment_type': {'key': 'environmentType', 'type': 'str'},
         'owner': {'key': 'owner', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'resource_group_id': {'key': 'resourceGroupId', 'type': 'str'},
-        'outputs': {'key': 'outputs', 'type': 'object'},
-        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
     def __init__(
@@ -410,17 +690,21 @@ class Environment(EnvironmentUpdate):
         """
         :keyword description: Description of the Environment.
         :paramtype description: str
+        :keyword catalog_name: Name of the catalog.
+        :paramtype catalog_name: str
         :keyword catalog_item_name: Name of the catalog item.
         :paramtype catalog_item_name: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
+        :keyword parameters: Parameters object for the deploy action.
+        :paramtype parameters: any
+        :keyword scheduled_tasks: Set of supported scheduled tasks to help manage cost.
+        :paramtype scheduled_tasks: dict[str, ~azure.fidalgo.models.ScheduledTask]
+        :keyword tags: A set of tags. Key value pairs that will be applied to resources deployed in
+         this environment as tags.
+        :paramtype tags: dict[str, str]
         :keyword environment_type: Required. Environment type.
         :paramtype environment_type: str
         :keyword owner: Identifier of the owner of this Environment.
         :paramtype owner: str
-        :keyword tags: A set of tags. Key value pairs that will be applied to resources deployed in
-         this environment as tags.
-        :paramtype tags: dict[str, str]
         """
         super(Environment, self).__init__(**kwargs)
         self.name = None
@@ -428,31 +712,6 @@ class Environment(EnvironmentUpdate):
         self.owner = kwargs.get('owner', None)
         self.provisioning_state = None
         self.resource_group_id = None
-        self.outputs = None
-        self.tags = kwargs.get('tags', None)
-
-
-class EnvironmentDeploy(msrest.serialization.Model):
-    """Environment deploymentment request.
-
-    :ivar parameters: Deployment parameters.
-    :vartype parameters: any
-    """
-
-    _attribute_map = {
-        'parameters': {'key': 'parameters', 'type': 'object'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        :keyword parameters: Deployment parameters.
-        :paramtype parameters: any
-        """
-        super(EnvironmentDeploy, self).__init__(**kwargs)
-        self.parameters = kwargs.get('parameters', None)
 
 
 class EnvironmentListResult(msrest.serialization.Model):
@@ -735,6 +994,78 @@ class RdpConnection(msrest.serialization.Model):
         self.contents = kwargs.get('contents', None)
 
 
+class ScheduledTask(msrest.serialization.Model):
+    """Scheduled task to auto-expire an environment.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar type: Required. Supported type this scheduled task represents. Possible values include:
+     "AutoExpire".
+    :vartype type: str or ~azure.fidalgo.models.ScheduledTaskType
+    :ivar enabled: Indicates whether or not this scheduled task is enabled.
+    :vartype enabled: bool
+    :ivar start_time: Required. Date/time by which the environment should expire.
+    
+     The start date and time in this format:
+    
+     YYYY-MM-DDThh:mm:ss if you specify a time zone
+    
+     -or-
+    
+     YYYY-MM-DDThh:mm:ssZ if you don't specify a time zone.
+    :vartype start_time: ~datetime.datetime
+    :ivar time_zone: Time zone for the date/time by which the environment should expire.
+    
+     Applies only when you specify a start time because the scheduled task doesn't accept UTC
+     offset.
+    :vartype time_zone: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+        'start_time': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
+        'time_zone': {'key': 'timeZone', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword type: Required. Supported type this scheduled task represents. Possible values
+         include: "AutoExpire".
+        :paramtype type: str or ~azure.fidalgo.models.ScheduledTaskType
+        :keyword enabled: Indicates whether or not this scheduled task is enabled.
+        :paramtype enabled: bool
+        :keyword start_time: Required. Date/time by which the environment should expire.
+        
+         The start date and time in this format:
+        
+         YYYY-MM-DDThh:mm:ss if you specify a time zone
+        
+         -or-
+        
+         YYYY-MM-DDThh:mm:ssZ if you don't specify a time zone.
+        :paramtype start_time: ~datetime.datetime
+        :keyword time_zone: Time zone for the date/time by which the environment should expire.
+        
+         Applies only when you specify a start time because the scheduled task doesn't accept UTC
+         offset.
+        :paramtype time_zone: str
+        """
+        super(ScheduledTask, self).__init__(**kwargs)
+        self.type = kwargs['type']
+        self.enabled = kwargs.get('enabled', None)
+        self.start_time = kwargs['start_time']
+        self.time_zone = kwargs.get('time_zone', None)
+
+
 class VirtualMachine(msrest.serialization.Model):
     """A DevBox virtual machine.
 
@@ -748,9 +1079,11 @@ class VirtualMachine(msrest.serialization.Model):
     :vartype pool_name: str
     :ivar provisioning_state: The current provisioning state of the virtual machine.
     :vartype provisioning_state: str
-    :ivar provisioning_error: Provisioning error details for last provisioning state. Populated
-     only for error states.
-    :vartype provisioning_error: ~azure.fidalgo.models.ProvisioningError
+    :ivar action_state: The current action state of the virtual machine. This is state is based on
+     previous action performed by user.
+    :vartype action_state: str
+    :ivar error_details: Provisioning or action error details. Populated only for error states.
+    :vartype error_details: ~azure.fidalgo.models.ProvisioningError
     :ivar location: Azure region where this virtual machines is located. This will be the same
      region as the Virtual Network it is attached to.
     :vartype location: str
@@ -765,7 +1098,8 @@ class VirtualMachine(msrest.serialization.Model):
         'name': {'readonly': True},
         'pool_name': {'required': True},
         'provisioning_state': {'readonly': True},
-        'provisioning_error': {'readonly': True},
+        'action_state': {'readonly': True},
+        'error_details': {'readonly': True},
         'location': {'readonly': True},
         'os_type': {'readonly': True},
         'owner': {'readonly': True},
@@ -775,7 +1109,8 @@ class VirtualMachine(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'pool_name': {'key': 'poolName', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'provisioning_error': {'key': 'provisioningError', 'type': 'ProvisioningError'},
+        'action_state': {'key': 'actionState', 'type': 'str'},
+        'error_details': {'key': 'errorDetails', 'type': 'ProvisioningError'},
         'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'owner': {'key': 'owner', 'type': 'str'},
@@ -793,7 +1128,8 @@ class VirtualMachine(msrest.serialization.Model):
         self.name = None
         self.pool_name = kwargs['pool_name']
         self.provisioning_state = None
-        self.provisioning_error = None
+        self.action_state = None
+        self.error_details = None
         self.location = None
         self.os_type = None
         self.owner = None

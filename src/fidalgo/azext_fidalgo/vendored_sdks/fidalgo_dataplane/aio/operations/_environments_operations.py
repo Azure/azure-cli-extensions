@@ -19,8 +19,7 @@ from azure.core.tracing.decorator_async import distributed_trace_async
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._environments_operations import build_create_or_update_request, build_delete_request, build_deploy_request, build_get_request, build_list_by_project_request, build_update_request
-
+from ...operations._environments_operations import build_create_or_update_request, build_delete_request, build_get_request, build_list_by_project_request, build_update_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -65,12 +64,17 @@ class EnvironmentsOperations:
         :type fidalgo_dns_suffix: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either EnvironmentListResult or the result of
          cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.fidalgo.models.EnvironmentListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.EnvironmentListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -81,6 +85,7 @@ class EnvironmentsOperations:
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=self.list_by_project.metadata['url'],
                 )
@@ -95,6 +100,7 @@ class EnvironmentsOperations:
                 
                 request = build_list_by_project_request(
                     project_name=project_name,
+                    api_version=api_version,
                     top=top,
                     template_url=next_link,
                 )
@@ -157,6 +163,9 @@ class EnvironmentsOperations:
         :type environment_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Environment, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.Environment
@@ -168,10 +177,13 @@ class EnvironmentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_get_request(
             project_name=project_name,
             environment_name=environment_name,
+            api_version=api_version,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -181,7 +193,7 @@ class EnvironmentsOperations:
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
@@ -221,6 +233,9 @@ class EnvironmentsOperations:
         :type body: ~azure.fidalgo.models.Environment
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Environment, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.Environment
@@ -232,15 +247,17 @@ class EnvironmentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        json = self._serialize.body(body, 'Environment')
+        _json = self._serialize.body(body, 'Environment')
 
         request = build_create_or_update_request(
             project_name=project_name,
             environment_name=environment_name,
+            api_version=api_version,
             content_type=content_type,
-            json=json,
+            json=_json,
             template_url=self.create_or_update.metadata['url'],
         )
         request = _convert_request(request)
@@ -250,7 +267,7 @@ class EnvironmentsOperations:
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
@@ -294,6 +311,9 @@ class EnvironmentsOperations:
         :type body: ~azure.fidalgo.models.EnvironmentUpdate
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Environment, or the result of cls(response)
         :rtype: ~azure.fidalgo.models.Environment
@@ -305,15 +325,17 @@ class EnvironmentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        json = self._serialize.body(body, 'EnvironmentUpdate')
+        _json = self._serialize.body(body, 'EnvironmentUpdate')
 
         request = build_update_request(
             project_name=project_name,
             environment_name=environment_name,
+            api_version=api_version,
             content_type=content_type,
-            json=json,
+            json=_json,
             template_url=self.update.metadata['url'],
         )
         request = _convert_request(request)
@@ -323,7 +345,7 @@ class EnvironmentsOperations:
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202]:
@@ -364,6 +386,9 @@ class EnvironmentsOperations:
         :type environment_name: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+         overriding this default value may result in unsupported behavior.
+        :paramtype api_version: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -375,10 +400,13 @@ class EnvironmentsOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
+        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+
         
         request = build_delete_request(
             project_name=project_name,
             environment_name=environment_name,
+            api_version=api_version,
             template_url=self.delete.metadata['url'],
         )
         request = _convert_request(request)
@@ -388,7 +416,7 @@ class EnvironmentsOperations:
         }
         request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [202, 204]:
@@ -400,72 +428,4 @@ class EnvironmentsOperations:
             return cls(pipeline_response, None, {})
 
     delete.metadata = {'url': '/projects/{projectName}/environments/{environmentName}'}  # type: ignore
-
-
-    @distributed_trace_async
-    async def deploy(
-        self,
-        dev_center: str,
-        project_name: str,
-        environment_name: str,
-        fidalgo_dns_suffix: str = "devcenters.fidalgo.azure.com",
-        deployment: Optional["_models.EnvironmentDeploy"] = None,
-        **kwargs: Any
-    ) -> None:
-        """Deploys an environment's resources.
-
-        :param dev_center: The DevCenter to operate on.
-        :type dev_center: str
-        :param project_name: The Fidalgo Project upon which to execute operations.
-        :type project_name: str
-        :param environment_name: The name of the environment.
-        :type environment_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
-        :type fidalgo_dns_suffix: str
-        :param deployment: Deployment properties overriding the environment's default values.
-        :type deployment: ~azure.fidalgo.models.EnvironmentDeploy
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-
-        if deployment is not None:
-            json = self._serialize.body(deployment, 'EnvironmentDeploy')
-        else:
-            json = None
-
-        request = build_deploy_request(
-            project_name=project_name,
-            environment_name=environment_name,
-            content_type=content_type,
-            json=json,
-            template_url=self.deploy.metadata['url'],
-        )
-        request = _convert_request(request)
-        path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-        }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
-
-        pipeline_response = await self._client.send_request(request, stream=False, _return_pipeline_response=True, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
-
-        if cls:
-            return cls(pipeline_response, None, {})
-
-    deploy.metadata = {'url': '/projects/{projectName}/environments/{environmentName}/deploy'}  # type: ignore
 
