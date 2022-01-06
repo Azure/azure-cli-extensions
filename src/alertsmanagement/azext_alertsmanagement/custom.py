@@ -136,9 +136,10 @@ def create_alertsmanagement_processing_rule(cmd, client,
     monitor_service = _transform_condition(filter_monitor_service, 'MonitorService')
     monitor_condition = _transform_condition(filter_monitor_condition, 'MonitorCondition')
     alert_rule_name = _transform_condition(filter_alert_rule_name, 'AlertRuleName')
+    alert_rule_ids = None
     if filter_alert_rule_id is not None:
         alert_rule_ids = _alert_rule_ids(client._config.subscription_id, resource_group_name, filter_alert_rule_id) 
-    alert_rule_id = _transform_condition(alert_rule_ids, 'AlertRuleId')
+        alert_rule_ids = _transform_condition(alert_rule_ids, 'AlertRuleId')
     alert_description = _transform_condition(filter_alert_rule_description, 'Description')
     alert_context = _transform_condition(filter_alert_context, 'AlertContext')
     signal_type = _transform_condition(filter_signal_type, 'SignalType')
@@ -160,8 +161,8 @@ def create_alertsmanagement_processing_rule(cmd, client,
         properties['conditions'].append(monitor_condition)
     if alert_rule_name is not None:
         properties['conditions'].append(alert_rule_name)
-    if alert_rule_id is not None:
-        properties['conditions'].append(alert_rule_id)
+    if alert_rule_ids is not None:
+        properties['conditions'].append(alert_rule_ids)
     if alert_description is not None:
         properties['conditions'].append(alert_description)
     if  alert_context is not None:
