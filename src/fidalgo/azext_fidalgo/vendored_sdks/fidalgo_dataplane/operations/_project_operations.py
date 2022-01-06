@@ -34,6 +34,8 @@ def build_list_by_dev_center_request(
 ):
     # type: (...) -> HttpRequest
     api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
+    filter = kwargs.pop('filter', None)  # type: Optional[str]
+    top = kwargs.pop('top', None)  # type: Optional[int]
 
     accept = "application/json"
     # Construct URL
@@ -42,6 +44,10 @@ def build_list_by_dev_center_request(
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
     query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    if filter is not None:
+        query_parameters['$filter'] = _SERIALIZER.query("filter", filter, 'str')
+    if top is not None:
+        query_parameters['$top'] = _SERIALIZER.query("top", top, 'int')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -116,6 +122,8 @@ class ProjectOperations(object):
         self,
         dev_center,  # type: str
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
+        filter=None,  # type: Optional[str]
+        top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["_models.ProjectListResult"]
@@ -125,6 +133,10 @@ class ProjectOperations(object):
         :type dev_center: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :param filter: An OData $filter clause to apply to the operation.
+        :type filter: str
+        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :type top: int
         :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
          overriding this default value may result in unsupported behavior.
         :paramtype api_version: str
@@ -145,6 +157,8 @@ class ProjectOperations(object):
                 
                 request = build_list_by_dev_center_request(
                     api_version=api_version,
+                    filter=filter,
+                    top=top,
                     template_url=self.list_by_dev_center.metadata['url'],
                 )
                 request = _convert_request(request)
@@ -158,6 +172,8 @@ class ProjectOperations(object):
                 
                 request = build_list_by_dev_center_request(
                     api_version=api_version,
+                    filter=filter,
+                    top=top,
                     template_url=next_link,
                 )
                 request = _convert_request(request)

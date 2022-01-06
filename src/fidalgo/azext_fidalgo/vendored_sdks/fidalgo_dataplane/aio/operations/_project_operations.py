@@ -50,6 +50,8 @@ class ProjectOperations:
         self,
         dev_center: str,
         fidalgo_dns_suffix: str = "devcenters.fidalgo.azure.com",
+        filter: Optional[str] = None,
+        top: Optional[int] = None,
         **kwargs: Any
     ) -> AsyncIterable["_models.ProjectListResult"]:
         """Lists all projects.
@@ -58,6 +60,10 @@ class ProjectOperations:
         :type dev_center: str
         :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
+        :param filter: An OData $filter clause to apply to the operation.
+        :type filter: str
+        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :type top: int
         :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
          overriding this default value may result in unsupported behavior.
         :paramtype api_version: str
@@ -78,6 +84,8 @@ class ProjectOperations:
                 
                 request = build_list_by_dev_center_request(
                     api_version=api_version,
+                    filter=filter,
+                    top=top,
                     template_url=self.list_by_dev_center.metadata['url'],
                 )
                 request = _convert_request(request)
@@ -91,6 +99,8 @@ class ProjectOperations:
                 
                 request = build_list_by_dev_center_request(
                     api_version=api_version,
+                    filter=filter,
+                    top=top,
                     template_url=next_link,
                 )
                 request = _convert_request(request)
