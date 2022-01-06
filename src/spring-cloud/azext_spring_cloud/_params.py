@@ -429,18 +429,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
-
-    for scope in ['application-configuration-service', 'service-registry',
-                  'gateway', 'api-portal']:
-        with self.argument_context('spring-cloud {}'.format(scope)) as c:
-            c.argument('service', service_name_type, validator=only_support_enterprise)
-
-    with self.argument_context('spring-cloud service-registry bind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
-
-    with self.argument_context('spring-cloud service-registry unbind') as c:
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
-
+    
     for scope in ['spring-cloud build-service builder create',
                   'spring-cloud build-service builder update']:
         with self.argument_context(scope) as c:
@@ -457,6 +446,18 @@ def load_arguments(self, _):
                   'spring-cloud build-service builder delete']:
         with self.argument_context(scope) as c:
             c.argument('name', type=str, help="The builder name.")
+
+    for scope in ['application-configuration-service', 'service-registry',
+                  'gateway', 'api-portal']:
+        with self.argument_context('spring-cloud {}'.format(scope)) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring-cloud service-registry bind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+    with self.argument_context('spring-cloud service-registry unbind') as c:
+        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
     for scope in ['bind', 'unbind']:
         with self.argument_context('spring-cloud service-registry {}'.format(scope)) as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
