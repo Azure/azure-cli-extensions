@@ -48,7 +48,7 @@ def _transform_condition(condition, name_of_field):
     }
 
 
-def _alert_rule_id(subscription, resource_group, alert):
+def _alert_rule_ids(subscription, resource_group, alert_ids):
     """
     Transform alert rule name or ID to alert rule ID
     :param subscription:
@@ -56,13 +56,19 @@ def _alert_rule_id(subscription, resource_group, alert):
     :param alert:
     :return: alert rule ID
     """
-    if alert is None:
+    if alert_ids is None:
         return None
     from msrestazure.tools import resource_id, is_valid_resource_id
-    if not is_valid_resource_id(alert):
-        return resource_id(subscription=subscription, resource_group=resource_group,
-                           namespace='microsoft.insights', type='alertrules', name=alert)
-    return alert
+    ids = []
+    ids.append(alert_ids[0])
+    for id in alert_ids[1:]:
+        if not is_valid_resource_id(id):
+            rid = resource_id(subscription=subscription, resource_group=resource_group,
+                            namespace='microsoft.insights', type='alertrules', name=id)
+            ids.append(rid)
+        ids.append(id)
+
+    return ids
 
 
 def create_alertsmanagement_processing_rule(cmd, client,
@@ -85,7 +91,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                                         filter_target_resource=None,
                                         filter_resource_group=None,
                                         filter_resource_type=None,
-                                        schedule_recurrence_type='Always',
+                                        schedule_recurrence_type=None,
                                         schedule_start_datetime=None,
                                         schedule_end_datetime=None,
                                         schedule_recurrence_start_time=None,
@@ -130,10 +136,9 @@ def create_alertsmanagement_processing_rule(cmd, client,
     monitor_service = _transform_condition(filter_monitor_service, 'MonitorService')
     monitor_condition = _transform_condition(filter_monitor_condition, 'MonitorCondition')
     alert_rule_name = _transform_condition(filter_alert_rule_name, 'AlertRuleName')
-    # we currently don't support multiple rule ids
     if filter_alert_rule_id is not None:
-        alert_rule_id = _alert_rule_id(client._config.subscription_id, resource_group_name, filter_alert_rule_id[1]) 
-    alert_rule_id = _transform_condition(filter_alert_rule_id, 'AlertRuleId')
+        alert_rule_ids = _alert_rule_ids(client._config.subscription_id, resource_group_name, filter_alert_rule_id) 
+    alert_rule_id = _transform_condition(alert_rule_ids, 'AlertRuleId')
     alert_description = _transform_condition(filter_alert_rule_description, 'Description')
     alert_context = _transform_condition(filter_alert_context, 'AlertContext')
     signal_type = _transform_condition(filter_signal_type, 'SignalType')

@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-import azext_alertsmanagement._help
+from azext_alertsmanagement._help import helps
 from azure.cli.core import AzCommandsLoader
 
 
