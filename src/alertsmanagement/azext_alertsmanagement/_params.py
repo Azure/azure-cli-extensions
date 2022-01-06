@@ -46,8 +46,8 @@ def load_arguments(self, _):
         c.argument('schedule_recurrence_type', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly']), help='Specifies when the processing rule should be applied. Default to Always')
         c.argument('schedule_start_datetime', help='Start date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator = validate_datetime_format)
         c.argument('schedule_end_datetime', help='End date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator = validate_datetime_format)
-        c.argument('schedule_recurrence_start_time', help='Start time for the rule. Format: hh:mm:ss', validator = validate_time_format)
-        c.argument('schedule_recurrence_end_time', help='End time for the rule. Format: hh:mm:ss', validator = validate_time_format)
+        c.argument('schedule_recurrence_start_time', help='Start time for the rule. Format: \'hh:mm:ss\'', validator = validate_time_format)
+        c.argument('schedule_recurrence_end_time', help='End time for the rule. Format: \'hh:mm:ss\'', validator = validate_time_format)
         c.argument('schedule_time_zone', help='schedule time zone')
         c.argument('schedule_recurrence', nargs='+',
                            help='List of recurrence pattern values, delimited by space. If --schedule-recurrence-type is '

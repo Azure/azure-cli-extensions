@@ -104,6 +104,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
     if rule_type == ActionType.REMOVE_ALL_ACTION_GROUPS:
         if action_groups is not None:
             print(bcolors.FAIL + 'Argument Conflict: --action-groups argument can\'t be used with RemoveAllActionGroups rule type' + bcolors.ENDC)
+            return
         properties['actions'] = [
             {
                 'actionType': rule_type
