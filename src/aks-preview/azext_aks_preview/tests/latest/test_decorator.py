@@ -50,6 +50,7 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azure.cli.core.azclierror import (
+    AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
@@ -57,6 +58,7 @@ from azure.cli.core.azclierror import (
     UnknownError,
 )
 from knack.util import CLIError
+from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
 
 
@@ -915,9 +917,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        mc_4 = self.models.ManagedCluster(
-            location="test_location"
-        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
         ctx_4.attach_mc(mc_4)
         # fail on managed identity not enabled
         with self.assertRaises(RequiredArgumentMissingError):
@@ -2559,11 +2559,11 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "resource_group_name": "test_rg_name",
                 "name": "test_name",
                 "enable_managed_identity": True,
+                # "enable_msi_auth_for_monitoring": True,
                 "no_wait": False,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
-
         dec_1.context.attach_mc(mc_1)
         dec_1.context.set_intermediate(
             "monitoring", True, overwrite_exists=True
@@ -2571,16 +2571,17 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.set_intermediate(
             "subscription_id", "test_subscription_id", overwrite_exists=True
         )
-        resp = requests.Response()
-        resp.status_code = 500
-        err = CloudError(resp)
-        err.message = "not found in Active Directory tenant"
-        # fail on mock CloudError
-        with self.assertRaises(CloudError), patch("time.sleep"), patch(
+
+        # raise exception
+        err_1 = HttpResponseError(
+            message="not found in Active Directory tenant"
+        )
+        # fail on mock HttpResponseError, max retry exceeded
+        with self.assertRaises(AzCLIError), patch("time.sleep"), patch(
             "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc"
         ), patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
-            side_effect=err,
+            side_effect=err_1,
         ) as ensure_monitoring:
             dec_1.create_mc_preview(mc_1)
         ensure_monitoring.assert_called_with(
@@ -2595,6 +2596,30 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             create_dcr=False,
             create_dcra=True,
         )
+
+        # raise exception
+        resp = Mock(
+            reason="error reason",
+            status_code=500,
+            text=Mock(return_value="error text"),
+        )
+        err_2 = HttpResponseError(response=resp)
+        # fail on mock HttpResponseError
+        with self.assertRaises(HttpResponseError), patch("time.sleep",), patch(
+            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc"
+        ), patch(
+            "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
+            side_effect=[err_1, err_2],
+        ):
+            dec_1.create_mc_preview(mc_1)
+
+        # return mc
+        with patch(
+            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc", return_value=mc_1
+        ), patch(
+            "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
+        ):
+            self.assertEqual(dec_1.create_mc_preview(mc_1), mc_1)
 
 
 class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
