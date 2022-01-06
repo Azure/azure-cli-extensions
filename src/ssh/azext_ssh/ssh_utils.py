@@ -7,6 +7,7 @@ import platform
 import subprocess
 import time
 import multiprocessing as mp
+import datetime
 from azext_ssh import file_utils
 
 from knack import log
@@ -91,12 +92,24 @@ def get_ssh_cert_principals(cert_file):
     return principals
 
 
-def get_ssh_cert_validity(cert_file):
-    info = get_ssh_cert_info(cert_file)
-    for line in info:
-        if "Valid:" in line:
-            return line.strip()
+def _get_ssh_cert_validity(cert_file):
+    if cert_file:
+        info = get_ssh_cert_info(cert_file)
+        for line in info:
+            if "Valid:" in line:
+                return line.strip()
     return None
+
+
+def get_certificate_start_and_end_times(cert_file):
+    validity_str = _get_ssh_cert_validity(cert_file)
+    times = None
+    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
+        times = validity_str.replace("Valid: from ", "").split(" to ")
+        t0 = datetime.datetime.strptime(times[0], '%Y-%m-%dT%X')
+        t1 = datetime.datetime.strptime(times[1], '%Y-%m-%dT%X')
+        times = (t0, t1)
+    return times
 
 
 def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
@@ -110,13 +123,18 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
         if not delete_keys:
             path_to_delete = cert_file
             items_to_delete = ""
-        validity = get_ssh_cert_validity(cert_file)
-        validity_warning = ""
-        if validity:
-            validity_warning = f" {validity.lower()}"
-        logger.warning("%s contains sensitive information%s%s\n"
-                       "Please delete it once you no longer need this config file. ",
-                       path_to_delete, items_to_delete, validity_warning)
+
+        expiration = None
+        try:
+            expiration = get_certificate_start_and_end_times(cert_file)[1]
+            expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
+        except Exception as e:
+            logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
+
+        if expiration:
+            print(f"The generated certificate {cert_file} is valid until {expiration} in local time.")
+        print(f"{path_to_delete} contains sensitive information{items_to_delete}. "
+              "Please delete it once you no longer this config file.")
 
     lines = [""]
 
@@ -125,9 +143,9 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
         lines.append("\tUser " + username)
         lines.append("\tHostName " + ip)
         if cert_file:
-            lines.append("\tCertificateFile " + cert_file)
+            lines.append("\tCertificateFile \"" + cert_file + "\"")
         if private_key_file:
-            lines.append("\tIdentityFile " + private_key_file)
+            lines.append("\tIdentityFile \"" + private_key_file + "\"")
         if port:
             lines.append("\tPort " + port)
 
@@ -138,9 +156,9 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
     lines.append("Host " + ip)
     lines.append("\tUser " + username)
     if cert_file:
-        lines.append("\tCertificateFile " + cert_file)
+        lines.append("\tCertificateFile \"" + cert_file + "\"")
     if private_key_file:
-        lines.append("\tIdentityFile " + private_key_file)
+        lines.append("\tIdentityFile \"" + private_key_file + "\"")
     if port:
         lines.append("\tPort " + port)
 
@@ -188,7 +206,7 @@ def _build_args(cert_file, private_key_file, port):
     if port:
         port_arg = ["-p", port]
     if cert_file:
-        certificate = ["-o", "CertificateFile=" + cert_file]
+        certificate = ["-o", "CertificateFile=\"" + cert_file + "\""]
     return private_key + certificate + port_arg
 
 
