@@ -30,7 +30,7 @@ def create_or_update_builder(cmd, client, resource_group, service, name, builder
         properties=builder
     )
     return sdk_no_wait(no_wait, client.build_service_builder.begin_create_or_update,
-                    resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name, builder_resource)
+                       resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name, builder_resource)
 
 
 def builder_show(cmd, client, resource_group, service, name):
