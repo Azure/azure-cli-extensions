@@ -16,21 +16,20 @@ DEFAULT_NAME = "default"
 logger = get_logger(__name__)
 
 
-def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service):
+def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service, **_):
     if enable_application_configuration_service:
         logger.warning(" - Creating Application Configuration Service ..")
         acs_resource = models.ConfigurationServiceResource()
         return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
-def create_service_registry(cmd, client, resource_group, service, enable_service_registry):
+def create_service_registry(cmd, client, resource_group, service, enable_service_registry, **_):
     if enable_service_registry:
         logger.warning(" - Creating Service Registry ..")
         return client.service_registries.begin_create_or_update(resource_group, service, DEFAULT_NAME)
 
 
 def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway_instance_count=None, sku=None, **_):
-
     if enable_gateway:
         logger.warning(" - Creating Spring Cloud Gateway ..")
         gateway_resource = models.GatewayResource()

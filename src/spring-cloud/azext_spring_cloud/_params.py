@@ -263,12 +263,12 @@ def load_arguments(self, _):
             c.argument('env', env_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
 
-    for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
-        with self.argument_context(scope) as c:
+    for scope in ['update', 'deployment create', 'deploy']:
+        with self.argument_context('spring-cloud app {}'.format(scope)) as c:
             c.argument('config_file_patterns', type=str,
-                    help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
-                        "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
-                    validator=validate_config_file_patterns, is_preview=True)
+                       help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
+                            "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+                       validator=validate_config_file_patterns, is_preview=True)
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
