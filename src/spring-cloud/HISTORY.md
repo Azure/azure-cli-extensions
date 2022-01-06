@@ -3,11 +3,11 @@ Release History
 3.0.0
 ---
 * Add argument `--sku=Enterprise` on `az spring-cloud create` to support Azure Spring Cloud Enterprise creation.
-* [BREAKING CHANGE] Remove `properties.activeDeploymentName` in `az spring-cloud app` command output, use `properties.activeDeployment.name` instead.
-* [BREAKING CHANGE] Remove `properties.createdTime` in `az spring-cloud app` command output, use `systemData.createdAt` instead.
-* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.jvmOptions` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.jvmOptions` instead.
-* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.runtimeVersion` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.runtimeVersion` instead.
-* [BREAKING CHANGE] Remove `properties.activeDeployment.properties.deploymentSettings.netCoreMainEntryPath` in `az spring-cloud app` command output, use `properties.activeDeployment.properties.source.netCoreMainEntryPath` instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeploymentName", use "properties.activeDeployment.name" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.createdTime", use "systemData.createdAt" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.jvmOptions", use "properties.activeDeployment.properties.source.jvmOptions" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.runtimeVersion", use "properties.activeDeployment.properties.source.runtimeVersion" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.netCoreMainEntryPath", use "properties.activeDeployment.properties.source.netCoreMainEntryPath" instead.
 
 2.12.3
 ---
