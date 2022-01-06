@@ -43,3 +43,5 @@ class BuildServiceBuilderTest(ScenarioTest):
             self.check('properties.stack.id', 'io.buildpacks.stacks.bionic'),
             self.check('properties.stack.version', 'base'),
         ])
+
+        self.cmd('spring-cloud build-service builder delete -n {name} -g {rg} -s {serviceName}')
