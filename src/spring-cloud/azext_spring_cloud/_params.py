@@ -103,11 +103,13 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    default=False,
                    is_preview=True,
+                   options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Support Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
                    arg_type=get_three_state_flag(),
                    default=False,
                    is_preview=True,
+                   options_list=['--enable-service-registry', '--enable-sr'],
                    help='(Support Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
@@ -132,6 +134,7 @@ def load_arguments(self, _):
                    type=int,
                    validator=validate_api_portal_instance_count,
                    is_preview=True,
+                   options_list=['--api-portal-instance-count', '--ap-instance'],
                    help='(Support Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring-cloud update') as c:
@@ -263,7 +266,8 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
         with self.argument_context(scope) as c:
             c.argument('config_file_patterns', type=str,
-                    help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+                    help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
+                        "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                     validator=validate_config_file_patterns, is_preview=True)
 
     with self.argument_context('spring-cloud app scale') as c:

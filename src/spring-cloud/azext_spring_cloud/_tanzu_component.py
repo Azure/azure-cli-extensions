@@ -21,14 +21,12 @@ def create_application_configuration_service(cmd, client, resource_group, servic
         logger.warning(" - Creating Application Configuration Service ..")
         acs_resource = models.ConfigurationServiceResource()
         return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
-    return
 
 
 def create_service_registry(cmd, client, resource_group, service, enable_service_registry):
     if enable_service_registry:
         logger.warning(" - Creating Service Registry ..")
         return client.service_registries.begin_create_or_update(resource_group, service, DEFAULT_NAME)
-    return
 
 
 def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway_instance_count=None, sku=None, **_):
@@ -40,10 +38,9 @@ def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway
             gateway_resource.sku = models.Sku(name=sku.name, tier=sku.tier,
                                               capacity=gateway_instance_count)
         return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
-    return
 
 
-def create_api_portal(cmd, client, resource_group, service, enable_api_portal, api_portal_instance_count, sku):
+def create_api_portal(cmd, client, resource_group, service, enable_api_portal, api_portal_instance_count=None, sku=None, **_):
     if enable_api_portal:
         logger.warning(" - Creating API portal ..")
         gateway_id = resource_id(
@@ -57,7 +54,7 @@ def create_api_portal(cmd, client, resource_group, service, enable_api_portal, a
         )
 
         api_portal_resource = models.ApiPortalResource(
-            properties = models.ApiPortalProperties(
+            properties=models.ApiPortalProperties(
                 gateway_ids=[gateway_id]
             )
         )
@@ -65,4 +62,3 @@ def create_api_portal(cmd, client, resource_group, service, enable_api_portal, a
             api_portal_resource.sku = models.Sku(name=sku.name, tier=sku.tier,
                                                  capacity=api_portal_instance_count)
         return client.api_portals.begin_create_or_update(resource_group, service, DEFAULT_NAME, api_portal_resource)
-    return

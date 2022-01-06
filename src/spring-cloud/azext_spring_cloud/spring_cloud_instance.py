@@ -85,10 +85,10 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs)
-            create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, kwargs['enable_application_configuration_service']),
-            create_service_registry(self.cmd, self.client, self.resource_group, self.name, kwargs['enable_service_registry']),
+            create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
-            create_api_portal(self.cmd, self.client, self.resource_group, self.name, kwargs['enable_api_portal'], kwargs['api_portal_instance_count'], service.sku)
+            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
