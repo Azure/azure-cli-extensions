@@ -46,7 +46,7 @@ import json
 import base64
 from collections import defaultdict
 from ._log_stream import LogStream
-from ._buildservices import _update_default_build_agent_pool
+from ._build_service import _update_default_build_agent_pool
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"

@@ -18,7 +18,7 @@ from ._resource_quantity import \
     validate_memory as validate_and_normalize_memory
 from ._util_enterprise import (is_enterprise_tier, get_client)
 from ._validators import (validate_instance_count, _parse_sku_name)
-from ._buildservices import DEFAULT_BUILD_SERVICE_NAME
+from ._build_service import DEFAULT_BUILD_SERVICE_NAME
 
 logger = get_logger(__name__)
 

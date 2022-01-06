@@ -9,7 +9,7 @@ from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
-from ._buildservices import _update_default_build_agent_pool
+from ._build_service import _update_default_build_agent_pool
 
 from ._validators import (_parse_sku_name)
 from knack.log import get_logger
