@@ -1,0 +1,462 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotFound","message":"KPack builder does not exist","target":"default/test-builder","details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '117'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:13:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"stack": {"id": "io.buildpacks.stacks.bionic", "version":
+      "base"}, "buildpackGroups": [{"name": "mix", "buildpacks": [{"id": "tanzu-buildpacks/java-azure"}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '176'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Creating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-06T09:13:34.0849695Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:13:34.0849695Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/360f8ffa-440a-4f9e-bd28-e6b1b54237d2?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '695'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:13:33 GMT
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationResults/360f8ffa-440a-4f9e-bd28-e6b1b54237d2/Spring/qingyliu-test?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/360f8ffa-440a-4f9e-bd28-e6b1b54237d2?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/799c12ba-353c-44a1-883d-84808ebb2216/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/360f8ffa-440a-4f9e-bd28-e6b1b54237d2","name":"360f8ffa-440a-4f9e-bd28-e6b1b54237d2","status":"Succeeded","startTime":"2022-01-06T09:13:34.1397744Z","endTime":"2022-01-06T09:13:49.4464726Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '367'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-06T09:13:34.0849695Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:13:34.0849695Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-05T01:52:10.8179915Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:05:06.5786358Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '680'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"stack": {"id": "io.buildpacks.stacks.bionic", "version":
+      "base"}, "buildpackGroups": [{"name": "mix", "buildpacks": [{"id": "tanzu-buildpacks/java-azure"}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '176'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Updating","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-05T01:52:10.8179915Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:14:08.7841678Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/ad2fdede-1462-4ffe-8c2f-76166e6a67d0?api-version=2022-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '679'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationResults/ad2fdede-1462-4ffe-8c2f-76166e6a67d0/Spring/qingyliu-test?api-version=2022-01-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/ad2fdede-1462-4ffe-8c2f-76166e6a67d0?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/799c12ba-353c-44a1-883d-84808ebb2216/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/qingyliu-test/operationId/ad2fdede-1462-4ffe-8c2f-76166e6a67d0","name":"ad2fdede-1462-4ffe-8c2f-76166e6a67d0","status":"Succeeded","startTime":"2022-01-06T09:14:08.8641946Z","endTime":"2022-01-06T09:14:24.5773427Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '367'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service --builder-file
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test","name":"test","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-05T01:52:10.8179915Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:14:08.7841678Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '680'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud build-service builder show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --service
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/buildServices/builders","properties":{"provisioningState":"Succeeded","stack":{"id":"io.buildpacks.stacks.bionic","version":"base"},"buildpackGroups":[{"name":"mix","buildpacks":[{"id":"tanzu-buildpacks/java-azure"}]}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qingyliu/providers/Microsoft.AppPlatform/Spring/qingyliu-test/buildServices/default/builders/test-builder","name":"test-builder","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-01-06T09:13:34.0849695Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-06T09:13:34.0849695Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jan 2022 09:14:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - cc1e6a6d-ec79-4c00-8edc-e572f9122efd
+    status:
+      code: 200
+      message: OK
+version: 1
