@@ -30,9 +30,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'winreg'
-]
+DEPENDENCIES = []
 
 try:
     from azext_datamigration.manual.dependency import DEPENDENCIES

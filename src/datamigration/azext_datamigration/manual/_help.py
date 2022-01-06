@@ -12,7 +12,7 @@
 from knack.help_files import helps
 
 
-helps['ddatamigration get-assessment'] = """
+helps['datamigration get-assessment'] = """
     type: command
     short-summary: Start assessment on SQL Server instance(s).
     examples:
@@ -24,14 +24,14 @@ helps['ddatamigration get-assessment'] = """
                az datamigration get-assessment --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
-helps['datamigration register-integration-runtime'] = """
-    type: command
-    short-summary: Register Sql Migration Service on Integration Runtime
-    examples:
-      - name: Register Sql Migration Service on Self Hosted Integration Runtime.
-        text: |-
-               az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
-      - name: Install Integration Runtime and register a Sql Migration Service on it.
-        text: |-
-               az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
-"""
+# helps['datamigration register-integration-runtime'] = """
+#     type: command
+#     short-summary: Register Sql Migration Service on Integration Runtime
+#     examples:
+#       - name: Register Sql Migration Service on Self Hosted Integration Runtime.
+#         text: |-
+#                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
+#       - name: Install Integration Runtime and register a Sql Migration Service on it.
+#         text: |-
+#                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
+# """
