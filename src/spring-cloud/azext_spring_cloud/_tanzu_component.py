@@ -31,7 +31,8 @@ def create_service_registry(cmd, client, resource_group, service, enable_service
     return
 
 
-def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway_instance_count, sku):
+def create_gateway(cmd, client, resource_group, service, enable_gateway, gateway_instance_count=None, sku=None, **_):
+
     if enable_gateway:
         logger.warning(" - Creating Spring Cloud Gateway ..")
         gateway_resource = models.GatewayResource()
