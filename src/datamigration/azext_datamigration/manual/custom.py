@@ -19,7 +19,6 @@ import platform
 import subprocess
 import time
 import urllib.request
-# import winreg
 from zipfile import ZipFile
 
 
@@ -32,6 +31,10 @@ def datamigration_assessment(connection_string=None,
                              config_file_path=None):
 
     try:
+
+        if not platform.system().__contains__('Windows'):
+            raise Exception("This command cannot be run in non-windows environment")
+
         defaultOutputFolder = get_default_output_folder()
 
         # Assigning base folder path
@@ -114,124 +117,128 @@ def get_default_output_folder():
     return defaultOutputPath
 
 
-# # -----------------------------------------------------------------------------------------------------------------
-# # Register Sql Migration Service on IR command Implementation.
-# # -----------------------------------------------------------------------------------------------------------------
-# def datamigration_register_ir(auth_key,
-#                               ir_path=None):
+# -----------------------------------------------------------------------------------------------------------------
+# Register Sql Migration Service on IR command Implementation.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_register_ir(auth_key,
+                              ir_path=None):
 
-#     osPlatform = platform.system()
+    osPlatform = platform.system()
 
-#     if not osPlatform.__contains__('Windows'):
-#         raise Exception("This command cannot be run in non-windows environment")
+    if not osPlatform.__contains__('Windows'):
+        raise Exception("This command cannot be run in non-windows environment")
 
-#     if not is_user_admin():
-#         raise Exception("Failed: You do not have Administrator rights to run this command! Please re-run this command as an Administrator!")
-#     validate_input(auth_key)
-#     if ir_path is not None:
-#         if not os.path.exists(ir_path):
-#             raise Exception(f"Invalid gateway path : {ir_path}")
-#         install_gateway(ir_path)
+    if not is_user_admin():
+        raise Exception("Failed: You do not have Administrator rights to run this command! Please re-run this command as an Administrator!")
+    validate_input(auth_key)
+    if ir_path is not None:
+        if not os.path.exists(ir_path):
+            raise Exception(f"Invalid gateway path : {ir_path}")
+        install_gateway(ir_path)
 
-#     register_ir(auth_key)
-
-
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to check whether the command is run as admin.
-# # -----------------------------------------------------------------------------------------------------------------
-# def is_user_admin():
-#     try:
-#         isAdmin = os.getuid() == 0
-#     except AttributeError:
-#         isAdmin = ctypes.windll.shell32.IsUserAnAdmin() != 0
-
-#     return isAdmin
+    register_ir(auth_key)
 
 
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to validate key input.
-# # -----------------------------------------------------------------------------------------------------------------
-# def validate_input(key):
-#     if key == "":
-#         raise Exception("Failed: IR Auth key is empty")
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check whether the command is run as admin.
+# -----------------------------------------------------------------------------------------------------------------
+def is_user_admin():
+
+    try:
+        isAdmin = os.getuid() == 0
+    except AttributeError:
+        isAdmin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+    return isAdmin
 
 
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to check whether SHIR is installed or not.
-# # -----------------------------------------------------------------------------------------------------------------
-# def check_whether_gateway_installed(name):
-
-#     # Connecting to key in registry
-#     accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
-
-#     # Get the path of Installed softwares
-#     accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
-
-#     for i in range(0, winreg.QueryInfoKey(accessKey)[0]):
-
-#         installedSoftware = winreg.EnumKey(accessKey, i)
-#         installedSoftwareKey = winreg.OpenKey(accessKey, installedSoftware)
-#         try:
-#             displayName = winreg.QueryValueEx(installedSoftwareKey, r"DisplayName")[0]
-#             if name in displayName:
-#                 return True
-#         except:
-#             pass
-
-#     return False
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to validate key input.
+# -----------------------------------------------------------------------------------------------------------------
+def validate_input(key):
+    if key == "":
+        raise Exception("Failed: IR Auth key is empty")
 
 
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to install SHIR
-# # -----------------------------------------------------------------------------------------------------------------
-# def install_gateway(path):
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check whether SHIR is installed or not.
+# -----------------------------------------------------------------------------------------------------------------
+def check_whether_gateway_installed(name):
 
-#     if check_whether_gateway_installed("Microsoft Integration Runtime"):
-#         print("Microsoft Integration Runtime is alreasy installed")
-#         return
+    import winreg
+    # Connecting to key in registry
+    accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
 
-#     print("Start Gateway installation")
+    # Get the path of Installed softwares
+    accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
 
-#     installCmd = f'msiexec.exe /i "{path}" /quiet /passive'
-#     subprocess.call(installCmd, shell=False)
-#     time.sleep(30)
+    for i in range(0, winreg.QueryInfoKey(accessKey)[0]):
 
-#     print("Succeed to install gateway")
+        installedSoftware = winreg.EnumKey(accessKey, i)
+        installedSoftwareKey = winreg.OpenKey(accessKey, installedSoftware)
+        try:
+            displayName = winreg.QueryValueEx(installedSoftwareKey, r"DisplayName")[0]
+            if name in displayName:
+                return True
+        except:
+            pass
 
-
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to register Sql Migration Service on IR
-# # -----------------------------------------------------------------------------------------------------------------
-# def register_ir(key):
-#     print(f"Start to register IR with key: {key}")
-
-#     cmdFilePath = get_cmd_file_path()
-
-#     directoryPath = os.path.dirname(cmdFilePath)
-#     parentDirPath = os.path.dirname(directoryPath)
-
-#     dmgCmdPath = os.path.join(directoryPath, "dmgcmd.exe")
-#     regIRScriptPath = os.path.join(parentDirPath, "PowerShellScript", "RegisterIntegrationRuntime.ps1")
-
-#     portCmd = f'{dmgCmdPath} -EnableRemoteAccess 8060'
-#     irCmd = f'powershell -command "& \'{regIRScriptPath}\' -gatewayKey {key}"'
-
-#     subprocess.call(portCmd, shell=False)
-#     subprocess.call(irCmd, shell=False)
+    return False
 
 
-# # -----------------------------------------------------------------------------------------------------------------
-# # Helper function to get SHIR script path
-# # -----------------------------------------------------------------------------------------------------------------
-# def get_cmd_file_path():
-#     try:
-#         # Connecting to key in registry
-#         accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to install SHIR
+# -----------------------------------------------------------------------------------------------------------------
+def install_gateway(path):
 
-#         # Get the path of Integration Runtime
-#         accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\DataTransfer\DataManagementGateway\ConfigurationManager")
-#         accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
+    if check_whether_gateway_installed("Microsoft Integration Runtime"):
+        print("Microsoft Integration Runtime is alreasy installed")
+        return
 
-#         return accessValue
-#     except Exception as e:
-#         raise Exception("Failed: No installed IR found!") from e
+    print("Start Gateway installation")
+
+    installCmd = f'msiexec.exe /i "{path}" /quiet /passive'
+    subprocess.call(installCmd, shell=False)
+    time.sleep(30)
+
+    print("Succeed to install gateway")
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to register Sql Migration Service on IR
+# -----------------------------------------------------------------------------------------------------------------
+def register_ir(key):
+    print(f"Start to register IR with key: {key}")
+
+    cmdFilePath = get_cmd_file_path()
+
+    directoryPath = os.path.dirname(cmdFilePath)
+    parentDirPath = os.path.dirname(directoryPath)
+
+    dmgCmdPath = os.path.join(directoryPath, "dmgcmd.exe")
+    regIRScriptPath = os.path.join(parentDirPath, "PowerShellScript", "RegisterIntegrationRuntime.ps1")
+
+    portCmd = f'{dmgCmdPath} -EnableRemoteAccess 8060'
+    irCmd = f'powershell -command "& \'{regIRScriptPath}\' -gatewayKey {key}"'
+
+    subprocess.call(portCmd, shell=False)
+    subprocess.call(irCmd, shell=False)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to get SHIR script path
+# -----------------------------------------------------------------------------------------------------------------
+def get_cmd_file_path():
+
+    import winreg
+    try:
+        # Connecting to key in registry
+        accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
+
+        # Get the path of Integration Runtime
+        accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\DataTransfer\DataManagementGateway\ConfigurationManager")
+        accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
+
+        return accessValue
+    except Exception as e:
+        raise Exception("Failed: No installed IR found!") from e

@@ -19,7 +19,7 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('', 'datamigration_assessment')
 
-    # with self.command_group(
-    #     'datamigration register-integration-runtime'
-    # ) as g:
-    #     g.custom_command('', 'datamigration_register_ir')
+    with self.command_group(
+        'datamigration register-integration-runtime'
+    ) as g:
+        g.custom_command('', 'datamigration_register_ir')

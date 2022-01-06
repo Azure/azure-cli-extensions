@@ -19,6 +19,6 @@ def load_arguments(self, _):
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
         c.argument('overwrite', help='Enable this parameter to overwrite the existing assessment report')
 
-    # with self.argument_context('datamigration register-integration-runtime') as c:
-    #     c.argument('auth_key', type=str, help='AuthKey of Sql Migration Service')
-    #     c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
+    with self.argument_context('datamigration register-integration-runtime') as c:
+        c.argument('auth_key', type=str, help='AuthKey of Sql Migration Service')
+        c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
