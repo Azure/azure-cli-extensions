@@ -10,12 +10,11 @@ import random
 
 # Env setup_scenario
 def setup_scenario(test):
-    randomString = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 5))
     test.kwargs.update({
         "serviceRG": "CLIUnitTest",
         "sqlMigrationService": "dmsCliUnitTest",
         "location": "eastus2euap",
-        "createSqlMigrationService": "sqlServiceUnitTest"+randomString
+        "createSqlMigrationService": "sqlServiceUnitTest-Pipeline"
     }),
     test.kwargs.update({
         "miRG": "migrationTesting",
