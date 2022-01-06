@@ -37,6 +37,33 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
         fully_qualified_user_definition_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/{2}/mongodbUserDefinitions/{3}'.format(
             subscription, resource_group, acc_name, user_definition_id)
 
+        # Contract violation request body
+        empty_id_role_definition_create_body = ' {{ \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)
+        invalid_role_id_role_definition_create_body = ' {{ \\"Id\\": \\"randomid\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)
+        empty_name_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)      
+        no_privilege_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)
+        no_resource_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)
+        no_actions_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}}}}],\\"Roles\\":[]}} '.format(
+            role_def_id1, db_name, role_def_name1)  
+        empty_id_user_definition_create_body = ' {{ \\"Id\\": \\"\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+        invalid_id_user_definition_create_body = ' {{ \\"Id\\": \\"randomuserid\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+        empty_username_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+        empty_password_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+        empty_db_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+        no_roles_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\"}} '.format(
+            user_definition_id, db_name, user_name, role_def_name1)
+
+
         self.kwargs.update({
             'acc': acc_name,
             'db_name': db_name,
@@ -53,18 +80,36 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
             'fully_qualified_role_def_id2': fully_qualified_role_def_id2,
             'user_definition_id': user_definition_id,
             'fully_qualified_user_definition_id': fully_qualified_user_definition_id,
-            'user_definition_update_body': user_definition_update_body
-        })
+            'user_definition_update_body': user_definition_update_body,
+            'empty_role_def_id_body' : empty_id_role_definition_create_body,
+            'inalid_id_role_def_create_body' : invalid_role_id_role_definition_create_body,
+            'empty_role_name_create_body' : empty_name_role_definition_create_body,
+            'no_privilege_role_def_body': no_privilege_role_definition_create_body,
+            'no_resource_role_def_body': no_resource_role_definition_create_body,
+            'no_actions_role_def_body' : no_actions_role_definition_create_body,
+            'empty_id_user_def_create_body' : empty_id_user_definition_create_body,
+            'invalid_id_user_def_create_body' : invalid_id_user_definition_create_body,
+            'empty_username_user_def_create_body' : empty_username_user_definition_create_body,
+            'empty_password_user_def_create_body' : empty_password_user_definition_create_body,
+            'empty_db_user_def_create_body' : empty_db_user_definition_create_body,
+            'no_roles_user_def_create_body' : no_roles_user_definition_create_body
 
-        print('account name')
-        print(acc_name)
-        print('resource group')
-        print(resource_group)
+        })
 
         self.cmd(
             'az cosmosdb create -n {acc} -g {rg} --kind MongoDB --capabilities EnableMongoRoleBasedAccessControl')
         self.cmd(
             'az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
+
+        # Contract Violation for Role Definition. Failure tests
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{empty_role_def_id_body}"', expect_failure=True)
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{inalid_id_role_def_create_body}"', expect_failure=True)
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{empty_role_name_create_body}"', expect_failure=True)
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{no_privilege_role_def_body}"', expect_failure=True)
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{no_resource_role_def_body}"', expect_failure=True)
+        msg = self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{no_actions_role_def_body}"', expect_failure=True)
+
+        # Success Tests
         self.cmd('az cosmosdb mongodb role definition create -g {rg} -a {acc} -b "{create_body}"', checks=[
             self.check('id', fully_qualified_role_def_id1),
             self.check('roleName', role_def_name1)
@@ -91,6 +136,14 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
         role_definition_list = self.cmd(
             'az cosmosdb mongodb role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 2
+
+        # User definition contract violations.
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{empty_id_user_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{invalid_id_user_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{empty_username_user_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{empty_password_user_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{empty_db_user_def_create_body}"', expect_failure=True)
+        self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{no_roles_user_def_create_body}"', expect_failure=True)
 
         self.cmd('az cosmosdb mongodb user definition create -g {rg} -a {acc} -b "{user_def_create_body}"', checks=[
             self.check('id', fully_qualified_user_definition_id),
