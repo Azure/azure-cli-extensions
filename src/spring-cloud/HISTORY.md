@@ -2,7 +2,7 @@ Release History
 ===============
 3.0.0
 ---
-* New argument: `az spring-cloud create` has new argument `--sku=Enterprise` to support Azure Spring Cloud Enterprise creation.
+* New argument: `az spring-cloud create` has new argument "--sku=Enterprise" to support Azure Spring Cloud Enterprise creation.
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeploymentName", use "properties.activeDeployment.name" instead.
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.createdTime", use "systemData.createdAt" instead.
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.jvmOptions", use "properties.activeDeployment.properties.source.jvmOptions" instead.
