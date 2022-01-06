@@ -429,7 +429,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
-    
+
     for scope in ['spring-cloud build-service builder create',
                   'spring-cloud build-service builder update']:
         with self.argument_context(scope) as c:

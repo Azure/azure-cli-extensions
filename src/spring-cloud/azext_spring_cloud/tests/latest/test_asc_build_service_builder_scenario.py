@@ -5,7 +5,6 @@
 
 import os
 
-from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, record_only)
 
 # pylint: disable=line-too-long
