@@ -213,6 +213,95 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_pod_subnet_id(), "test_mc_pod_subnet_id")
 
+    def test_get_pod_cidrs(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_pod_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_pod_cidrs(), [])
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_pod_cidrs(), None)
+
+    def test_get_service_cidrs(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_service_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_service_cidrs(), [])
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_service_cidrs(), None)
+
+    def test_get_ip_families(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': 'IPv4,IPv6'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_ip_families(), ['IPv4','IPv6'])
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_ip_families(), [])
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_ip_families(), None)
+
+    def test_get_ipv6_count(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'load_balancer_managed_outbound_ipv6_count': 4},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
+
     def test_get_enable_fips_image(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -492,6 +581,50 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_enable_pod_security_policy(), True)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_enable_pod_security_policy()
+
+    def test_get_disable_pod_security_policy(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"disable_pod_security_policy": False},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disable_pod_security_policy()
 
     def test_get_enable_managed_identity(self):
         # custom value
@@ -1481,6 +1614,64 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+        # dual-stack
+        dec_3 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_sku": None,
+                "load_balancer_managed_outbound_ip_count": None,
+                "load_balancer_managed_outbound_ipv6_count": 3,
+                "load_balancer_outbound_ips": None,
+                "load_balancer_outbound_ip_prefixes": None,
+                "load_balancer_outbound_ports": None,
+                "load_balancer_idle_timeout": None,
+                "outbound_type": None,
+                "network_plugin": "kubenet",
+                "pod_cidr": None,
+                "service_cidr": None,
+                "pod_cidrs": "10.246.0.0/16,2001:abcd::/64",
+                "service_cidrs": "10.0.0.0/16,2001:ffff::/108",
+                "ip_families": "IPv4,IPv6",
+                "dns_service_ip": None,
+                "docker_bridge_cidr": None,
+                "network_policy": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_mc_3 = dec_3.set_up_network_profile(mc_3)
+
+        network_profile_3 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet",
+            pod_cidr=None,  # overwritten to None
+            service_cidr=None,  # overwritten to None
+            dns_service_ip=None,  # overwritten to None
+            docker_bridge_cidr=None,  # overwritten to None
+            load_balancer_sku="standard",
+            outbound_type="loadBalancer",
+            ip_families=["IPv4", "IPv6"],
+            pod_cidrs=["10.246.0.0/16", "2001:abcd::/64"],
+            service_cidrs=["10.0.0.0/16", "2001:ffff::/108"],
+        )
+        load_balancer_profile = self.models.lb_models.get(
+            "ManagedClusterLoadBalancerProfile"
+        )(
+            managed_outbound_i_ps=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+            )(
+                count=1,
+                count_ipv6=3,
+            )
+        )
+
+        network_profile_3.load_balancer_profile = load_balancer_profile
+
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_3
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
     def test_set_up_pod_security_policy(self):
         # default value in `aks_create`
         dec_1 = AKSPreviewCreateDecorator(
@@ -1923,7 +2114,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_construct_preview_mc_profile(self):
+    def test_construct_mc_preview_profile(self):
         import inspect
 
         import paramiko
@@ -1969,13 +2160,13 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             get_subscription_id=Mock(return_value="1234-5678-9012")
         )
         with patch(
-            "azure.cli.command_modules.acs.decorator._get_rg_location",
+            "azure.cli.command_modules.acs.decorator.get_rg_location",
             return_value="test_location",
         ), patch(
             "azure.cli.command_modules.acs.decorator.Profile",
             return_value=mock_profile,
         ):
-            dec_mc_1 = dec_1.construct_preview_mc_profile()
+            dec_mc_1 = dec_1.construct_mc_preview_profile()
 
         agent_pool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
             # Must be 12 chars or less before ACS RP adds to it
@@ -2021,7 +2212,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
         raw_param_dict.print_usage_statistics()
 
-    def test_create_mc(self):
+    def test_create_mc_preview(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             addon_profiles={
@@ -2063,7 +2254,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             side_effect=err,
         ) as ensure_monitoring:
-            dec_1.create_mc(mc_1)
+            dec_1.create_mc_preview(mc_1)
         ensure_monitoring.assert_called_with(
             self.cmd,
             mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2086,3 +2277,110 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
+
+    def test_update_ipv6_count(self):
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_profile=self.models.lb_models.get(
+                    'ManagedClusterLoadBalancerProfile'
+                )(
+                    managed_outbound_i_ps=self.models.lb_models.get(
+                        "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+                    )(
+                        count=3,
+                        count_ipv6=7,
+                    )
+                )
+            )
+        )
+        self.client.get = Mock(return_value=mc_1)
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_cluster",
+                "resource_group_name": "test_rg_name",
+                "load_balancer_managed_outbound_ipv6_count": 4,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc = dec_1.fetch_mc()
+        mc = dec_1.update_load_balancer_profile(mc)
+        self.assertEquals(
+            mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count, 3)
+        self.assertEquals(
+            mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6, 4)
+
+    def test_update_pod_security_policy(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": False,
+                "disable_pod_security_policy": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_pod_security_policy(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_pod_security_policy(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_pod_security_policy(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": False,
+                "disable_pod_security_policy": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_pod_security_policy(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)

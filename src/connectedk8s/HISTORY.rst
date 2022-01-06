@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.1
+++++++
+
+* Add maxCliCoreVersion as 2.29.0
+
 1.2.0
 ++++++
 
