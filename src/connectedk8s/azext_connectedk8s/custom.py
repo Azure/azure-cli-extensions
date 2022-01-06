@@ -1629,16 +1629,21 @@ def client_side_proxy_wrapper(cmd,
     if port_error_string != "":
         raise ClientRequestError(port_error_string)
 
+    # Set csp url based on cloud
+    CSP_Url = consts.CSP_Storage_Url
+    if cloud == consts.Azure_ChinaCloudName:
+        CSP_Url = consts.CSP_Storage_Url_Mooncake
+
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
         install_location_string = f'.clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
-        requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
+        requestUri = f'{CSP_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
-        requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
+        requestUri = f'{CSP_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
 
@@ -1727,6 +1732,9 @@ def client_side_proxy_wrapper(cmd,
         if cloud == 'DOGFOOD':
             dict_file['cloud'] = 'AzureDogFood'
 
+        if cloud == consts.Azure_ChinaCloudName:
+            dict_file['cloud'] = 'AzureChinaCloud'
+
         # Fetching creds
         creds_location = os.path.expanduser(os.path.join('~', creds_string))
         try:
@@ -1762,6 +1770,8 @@ def client_side_proxy_wrapper(cmd,
             dict_file['identity']['clientSecret'] = creds
     else:
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
+        if cloud == consts.Azure_ChinaCloudName:
+            dict_file['cloud'] = 'AzureChinaCloud'
 
     telemetry.set_debug_info('User type is ', user_type)
 
@@ -1948,6 +1958,7 @@ def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_e
             response = requests.post(uri, json=data, verify=tls_verify)
             return response
         except Exception as e:
+            time.sleep(5)
             if i != consts.API_CALL_RETRIES - 1:
                 pass
             else:
