@@ -285,6 +285,6 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception, is_preview=True) as g:
         g.custom_command('create', 'create_or_update_buildpack_binding')
         g.custom_command('set', 'create_or_update_buildpack_binding')
-        g.custom_command('show', 'buildpack_binding_show')
+        g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete')
