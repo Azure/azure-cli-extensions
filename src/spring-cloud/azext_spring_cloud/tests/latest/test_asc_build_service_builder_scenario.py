@@ -17,8 +17,8 @@ class BuildServiceBuilderTest(ScenarioTest):
         builder_file = os.path.join(py_path, 'files/build_service_builder.json').replace("\\","/")
 
         self.kwargs.update({
-            'serviceName': 'qingyliu-test',
-            'rg': 'qingyliu',
+            'serviceName': 'cli-unittest',
+            'rg': 'clitest',
             'name': 'test-builder',
             'builderFile': builder_file
         })
