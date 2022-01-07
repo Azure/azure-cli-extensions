@@ -1564,6 +1564,31 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
+    def test_get_crg_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": "test_crg_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_crg_id(), "test_crg_id")
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": ""},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_crg_id(), "")
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_crg_id(), None)
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
