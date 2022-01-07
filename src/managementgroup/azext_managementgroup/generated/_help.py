@@ -210,7 +210,7 @@ helps['managementgroup hierarchy-setting delete'] = """
 
 helps['managementgroup start-tenant-backfill'] = """
     type: command
-    short-summary: "Starts backfilling subscriptions for the Tenant."
+    short-summary: "Start backfilling subscriptions for the Tenant."
     examples:
       - name: StartTenantBackfill
         text: |-
