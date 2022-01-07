@@ -607,3 +607,303 @@ helps['spring-cloud service-registry unbind'] = """
         - name: Unbind an app from Service Registry.
           text: az spring-cloud service-registry unbind --app MyApp -s MyService -g MyResourceGroup
 """
+
+helps['spring-cloud application-configuration-service'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Cloud.
+"""
+
+helps['spring-cloud application-configuration-service show'] = """
+    type: command
+    short-summary: Show the provisioning status, runtime status, and settings of Application Configuration Service.
+"""
+
+helps['spring-cloud application-configuration-service clear'] = """
+    type: command
+    short-summary: Reset all Application Configuration Service settings.
+"""
+
+helps['spring-cloud application-configuration-service git'] = """
+    type: group
+    short-summary: Commands to manage Application Configuration Service git property in Azure Spring Cloud.
+"""
+
+helps['spring-cloud application-configuration-service git repo'] = """
+    type: group
+    short-summary: Commands to manage Application Configuration Service git repository in Azure Spring Cloud.
+"""
+
+helps['spring-cloud application-configuration-service git repo add'] = """
+    type: command
+    short-summary: Add a Git property to the Application Configuration Service settings.
+    examples:
+        - name: Add a Git property.
+          text: az spring-cloud application-configuration-service git repo add -s MyService -g MyResourceGroup --name MyName --patterns MyPattern --uri https://MyURI --label master
+"""
+
+helps['spring-cloud application-configuration-service git repo update'] = """
+    type: command
+    short-summary: Update an existing Git property in the Application Configuration Service settings.
+    examples:
+        - name: Update a Git property.
+          text: az spring-cloud application-configuration-service git repo update -s MyService -g MyResourceGroup --name MyName --patterns MyPattern
+"""
+
+helps['spring-cloud application-configuration-service git repo remove'] = """
+    type: command
+    short-summary: Delete an existing Git property from the Application Configuration Service settings.
+    examples:
+        - name: Delete a Git property.
+          text: az spring-cloud application-configuration-service git repo remove -s MyService -g MyResourceGroup --name MyName
+"""
+
+helps['spring-cloud application-configuration-service git repo list'] = """
+    type: command
+    short-summary: List all Git settings of Application Configuration Service.
+"""
+
+helps['spring-cloud application-configuration-service bind'] = """
+    type: command
+    short-summary: Bind an app to Application Configuration Service.
+    examples:
+        - name: Bind an app to Application Configuration Service.
+          text: az spring-cloud application-configuration-service bind --app MyApp -s MyService -g MyResourceGroup
+"""
+
+helps['spring-cloud application-configuration-service unbind'] = """
+    type: command
+    short-summary: Unbind an app from Application Configuration Service.
+    examples:
+        - name: Unbind an app from Application Configuration Service.
+          text: az spring-cloud application-configuration-service unbind --app MyApp -s MyService -g MyResourceGroup
+"""
+
+helps['spring-cloud gateway'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage gateway in Azure Spring Cloud.
+"""
+
+helps['spring-cloud gateway clear'] = """
+    type: command
+    short-summary: Clear all settings of gateway.
+"""
+
+helps['spring-cloud gateway show'] = """
+    type: command
+    short-summary: Show the settings, provisioning status and runtime status of gateway.
+"""
+
+helps['spring-cloud gateway update'] = """
+    type: command
+    short-summary: Update an existing gateway properties.
+    examples:
+        - name: Update gateway property.
+          text: az spring-cloud gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+"""
+
+helps['spring-cloud gateway route-config'] = """
+    type: group
+    short-summary: Commands to manage gateway route configs in Azure Spring Cloud.
+"""
+
+helps['spring-cloud gateway route-config create'] = """
+    type: command
+    short-summary: Create a gateway route config with routing rules of Json array format.
+    examples:
+        - name: Create a gateway route config targeting the app in Azure Spring Cloud.
+          text: az spring-cloud gateway route-config create -s MyService -g MyResourceGroup --name MyName --app-name MyApp --routes-file MyJson.json
+"""
+
+helps['spring-cloud gateway route-config update'] = """
+    type: command
+    short-summary: Update an existing gateway route config with routing rules of Json array format.
+    examples:
+        - name: Update an existing gateway route config targeting the app in Azure Spring Cloud.
+          text: az spring-cloud gateway route-config update -s MyService -g MyResourceGroup --name MyName --app-name MyApp --routes-file MyJson.json
+"""
+
+helps['spring-cloud gateway route-config remove'] = """
+    type: command
+    short-summary: Delete an existing gateway route config.
+    examples:
+        - name: Delete an existing gateway route config.
+          text: az spring-cloud gateway route-config remove -s MyService -g MyResourceGroup --name MyName
+"""
+
+helps['spring-cloud gateway route-config show'] = """
+    type: command
+    short-summary: Get an existing gateway route config.
+    examples:
+        - name: Get an existing gateway route config.
+          text: az spring-cloud gateway route-config show -s MyService -g MyResourceGroup --name MyName
+"""
+
+helps['spring-cloud gateway route-config list'] = """
+    type: command
+    short-summary: List all existing gateway route configs.
+    examples:
+        - name: List all existing gateway route configs.
+          text: az spring-cloud gateway route-config list -s MyService -g MyResourceGroup
+"""
+
+helps['spring-cloud gateway custom-domain'] = """
+    type: group
+    short-summary: Commands to manage custom domains for gateway.
+"""
+
+helps['spring-cloud gateway custom-domain bind'] = """
+    type: command
+    short-summary: Bind a custom domain with the gateway.
+    examples:
+    - name: Bind a custom domain to gateway.
+      text: az spring-cloud gateway custom-domain bind --domain-name MyDomainName --certificate MyCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud gateway custom-domain show'] = """
+    type: command
+    short-summary: Show details of a custom domain.
+"""
+
+helps['spring-cloud gateway custom-domain list'] = """
+    type: command
+    short-summary: List all custom domains of the gateway.
+    examples:
+    - name: List all custom domains of the gateway.
+      text: az spring-cloud gateway custom-domain list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud gateway custom-domain update'] = """
+    type: command
+    short-summary: Update a custom domain of the gateway.
+    examples:
+    - name: Bind custom domain with a specified certificate.
+      text: az spring-cloud gateway custom-domain update --domain-name MyDomainName --certificate MCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud gateway custom-domain unbind'] = """
+    type: command
+    short-summary: Unbind a custom-domain of the gateway.
+"""
+
+helps['spring-cloud api-portal'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage API portal in Azure Spring Cloud.
+"""
+
+helps['spring-cloud api-portal clear'] = """
+    type: command
+    short-summary: Clear all settings of API portal.
+"""
+
+helps['spring-cloud api-portal show'] = """
+    type: command
+    short-summary: Show the settings, provisioning status and runtime status of API portal.
+"""
+
+helps['spring-cloud api-portal update'] = """
+    type: command
+    short-summary: Update an existing API portal properties.
+    examples:
+        - name: Update API portal property.
+          text: az spring-cloud api-portal update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+"""
+
+helps['spring-cloud api-portal custom-domain'] = """
+    type: group
+    short-summary: Commands to manage custom domains for API portal.
+"""
+
+helps['spring-cloud api-portal custom-domain bind'] = """
+    type: command
+    short-summary: Bind a custom domain with the API portal.
+    examples:
+    - name: Bind a custom domain to API portal.
+      text: az spring-cloud api-portal custom-domain bind --domain-name MyDomainName --certificate MyCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud api-portal custom-domain show'] = """
+    type: command
+    short-summary: Show details of a custom domain.
+"""
+
+helps['spring-cloud api-portal custom-domain list'] = """
+    type: command
+    short-summary: List all custom domains of the API portal.
+    examples:
+    - name: List all custom domains of the API portal.
+      text: az spring-cloud api-portal custom-domain list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud api-portal custom-domain update'] = """
+    type: command
+    short-summary: Update a custom domain of the API portal.
+    examples:
+    - name: Bind custom domain with a specified certificate.
+      text: az spring-cloud api-portal custom-domain update --domain-name MyDomainName --certificate MCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud api-portal custom-domain unbind'] = """
+    type: command
+    short-summary: Unbind a custom-domain of the API portal.
+"""
+
+helps['spring-cloud build-service'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage build service in Azure Spring Cloud.
+"""
+
+helps['spring-cloud build-service builder'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage builder of build service.
+"""
+
+helps['spring-cloud build-service builder buildpack-binding'] = """
+    type: group
+    short-summary: (Support Enterprise Tier Only) Commands to manage buildpack-binding of builder.
+"""
+
+helps['spring-cloud build-service builder buildpack-binding create'] = """
+    type: command
+    short-summary: (Support Enterprise Tier Only) Create a buildpack binding.
+    examples:
+        - name: Create a buildpack binding without properties or secrets.
+          text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --service MyCluster --resource-group MyResourceGroup
+        - name: Create a buildpack binding with only secrets.
+          text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+        - name: Create a buildpack binding with only properties.
+          text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --properties a=b c=d --service MyCluster --resource-group MyResourceGroup
+        - name: Create a buildpack binding with properties and secrets.
+          text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud build-service builder buildpack-binding set'] = """
+    type: command
+    short-summary: (Support Enterprise Tier Only) Set a buildpack binding.
+    examples:
+        - name: Set a buildpack binding with properties and secrets.
+          text: az spring-cloud build-service builder buildpack-binding set --name first-binding --builder-name first-builder --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud build-service builder buildpack-binding show'] = """
+    type: command
+    short-summary: (Support Enterprise Tier Only) Show a buildpack binding. The secrets will be masked.
+    examples:
+        - name: Show a buildpack binding.
+          text: az spring-cloud build-service builder buildpack-binding show --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud build-service builder buildpack-binding list'] = """
+    type: command
+    short-summary: (Support Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
+    examples:
+        - name: Show a buildpack binding.
+          text: az spring-cloud build-service builder buildpack-binding list --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring-cloud build-service builder buildpack-binding delete'] = """
+    type: command
+    short-summary: (Support Enterprise Tier Only) Delete a buildpack binding.
+    examples:
+        - name: Delete a buildpack binding.
+          text: az spring-cloud build-service builder buildpack-binding delete --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
+"""
