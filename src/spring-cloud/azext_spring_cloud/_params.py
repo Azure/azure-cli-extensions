@@ -14,13 +14,16 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import only_support_enterprise
+from ._validators_enterprise import (only_support_enterprise, validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
+                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2022_01_01_preview.models \
+    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -426,3 +429,56 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud service-registry unbind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create']:
+        with self.argument_context(scope) as c:
+            c.argument('type',
+                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       help='Required type for buildpack binding.')
+            c.argument('properties',
+                       help='Non-sensitive properties for launchProperties. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for launchProperties. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_secrets)
+            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_not_exist)
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+
+    for scope in ['spring-cloud build-service builder buildpack-binding set']:
+        with self.argument_context(scope) as c:
+            c.argument('type',
+                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       help='Required type for buildpack binding.')
+            c.argument('properties',
+                       help='Non-sensitive properties for launchProperties. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for launchProperties. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_secrets)
+            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+
+    for scope in ['spring-cloud build-service builder buildpack-binding show',
+                  'spring-cloud build-service builder buildpack-binding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding list']:
+        with self.argument_context(scope) as c:
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)

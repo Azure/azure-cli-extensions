@@ -35,6 +35,11 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220101preview
     )
 
+    buildpack_binding_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring_cloud.buildpack_binding#{}",
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
     with self.command_group('spring-cloud', custom_command_type=spring_cloud_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
@@ -174,3 +179,12 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
         pass
+
+    with self.command_group('spring-cloud build-service builder buildpack-binding',
+                            custom_command_type=buildpack_binding_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('create', 'create_or_update_buildpack_binding')
+        g.custom_command('set', 'create_or_update_buildpack_binding')
+        g.custom_command('show', 'buildpack_binding_show')
+        g.custom_command('list', 'buildpack_binding_list')
+        g.custom_command('delete', 'buildpack_binding_delete')
