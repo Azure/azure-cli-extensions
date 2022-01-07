@@ -46,6 +46,8 @@ def validate_sku(cmd, namespace):
     if namespace.sku.lower() == 'enterprise':
         _validate_saas_provider(cmd, namespace)
         _validate_terms(cmd, namespace)
+    else:
+        _check_tanzu_components_not_enable(cmd, namespace)
     namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
 
 
@@ -71,6 +73,18 @@ def _validate_terms(cmd, namespace):
                                         'Run "az term accept --publisher vmware-inc '
                                         '--product azure-spring-cloud-vmware-tanzu-2 '
                                         '--plan tanzu-asc-ent-mtr" to accept the term.')
+
+
+def _check_tanzu_components_not_enable(cmd, namespace):
+    suffix = 'can only be used for Azure Spring Cloud Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
+    if namespace.enable_application_configuration_service:
+        raise InvalidArgumentValueError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_service_registry:
+        raise InvalidArgumentValueError('--enable-service-registry {}'.format(suffix))
+    if namespace.enable_gateway:
+        raise InvalidArgumentValueError('--enable-gateway {}'.format(suffix))
+    if namespace.enable_api_portal:
+        raise InvalidArgumentValueError('--enable-api-portal {}'.format(suffix))
 
 
 def validate_instance_count(namespace):

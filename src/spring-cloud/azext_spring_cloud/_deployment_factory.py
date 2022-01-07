@@ -9,8 +9,8 @@ from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_source_factory import source_selector
 
 
-APPLICATION_CONFIGURATION_SERVICE_NAME = "ApplicationConfigurationService"
-APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "ConfigFilePatterns"
+APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
+APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "configFilePatterns"
 
 
 class DefaultDeployment:
