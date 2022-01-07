@@ -608,6 +608,11 @@ helps['spring-cloud service-registry unbind'] = """
           text: az spring-cloud service-registry unbind --app MyApp -s MyService -g MyResourceGroup
 """
 
+helps['spring-cloud build-service'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Build Service
+"""
+
 helps['spring-cloud build-service builder'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage Builder Resource
@@ -618,7 +623,7 @@ helps['spring-cloud build-service builder create'] = """
     short-summary: Create a builder.
     examples:
         - name: Create a builder using JSON file.
-          text: az spring-cloud build-service builder create --name my-builder --builder-json MyJson.json
+          text: az spring-cloud build-service builder create --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring-cloud build-service builder update'] = """
@@ -626,7 +631,7 @@ helps['spring-cloud build-service builder update'] = """
     short-summary: Update a builder.
     examples:
         - name: Update a builder using JSON file.
-          text: az spring-cloud build-service builder update --name my-builder --builder-json MyJson.json
+          text: az spring-cloud build-service builder update --name my-builder --builder-json MyJson.json --service clitest --resource-group cli
 """
 
 helps['spring-cloud build-service builder show'] = """
@@ -634,7 +639,7 @@ helps['spring-cloud build-service builder show'] = """
     short-summary: Show a builder.
     examples:
         - name: Show a builder.
-          text: az spring-cloud build-service builder show --name my-builder
+          text: az spring-cloud build-service builder show --name my-builder --service clitest --resource-group cli
 """
 
 helps['spring-cloud build-service builder delete'] = """
@@ -642,7 +647,7 @@ helps['spring-cloud build-service builder delete'] = """
     short-summary: Delete a builder.
     examples:
         - name: Delete a builder.
-          text: az spring-cloud build-service builder delete --name my-builder
+          text: az spring-cloud build-service builder delete --name my-builder --service clitest --resource-group cli
 """
 
 helps['spring-cloud application-configuration-service'] = """
