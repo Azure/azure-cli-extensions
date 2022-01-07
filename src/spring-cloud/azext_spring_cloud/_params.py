@@ -429,8 +429,7 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud service-registry bind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
-    with self.argument_context('
-                               unbind') as c:
+    with self.argument_context('spring-cloud service-registry unbind') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
     for scope in ['bind', 'unbind']:
