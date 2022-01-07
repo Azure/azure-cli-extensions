@@ -219,7 +219,7 @@ helps['managementgroup start-tenant-backfill'] = """
 
 helps['managementgroup tenant-backfill-status'] = """
     type: command
-    short-summary: "Gets tenant backfill status."
+    short-summary: "Get tenant backfill status."
     examples:
       - name: TenantBackfillStatus
         text: |-
