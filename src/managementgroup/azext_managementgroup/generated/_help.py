@@ -163,7 +163,7 @@ helps['managementgroup hierarchy-setting'] = """
 
 helps['managementgroup hierarchy-setting list'] = """
     type: command
-    short-summary: "Gets all the hierarchy settings defined at the Management Group level. Settings can only be set on \
+    short-summary: "Get all the hierarchy settings defined at the Management Group level. Settings can only be set on \
 the root Management Group of the hierarchy."
     examples:
       - name: ListGroupSettings
