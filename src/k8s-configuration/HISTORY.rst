@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations
+
 1.3.0
 ++++++++++++++++++
 * Add `deployed-object` command group for showing deployed Flux objects from configuration

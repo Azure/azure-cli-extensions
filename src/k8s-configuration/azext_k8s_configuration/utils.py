@@ -7,28 +7,34 @@ import base64
 import json
 import re
 from datetime import timedelta
+from typing import Tuple
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
-    InvalidArgumentValueError
+    InvalidArgumentValueError,
 )
 from . import consts
 
 
-def get_cluster_rp(cluster_type):
-    if cluster_type.lower() == consts.CONNECTED_CLUSTERS:
-        return consts.CONNECTED_RP_NAMESPACE
-    if cluster_type.lower() == consts.APPLIANCES:
-        return consts.APPLIANCE_RP_NAMESPACE
-    if cluster_type.lower() == '' or cluster_type.lower() == 'managedclusters':
-        return consts.MANAGED_RP_NAMESPACE
-    raise InvalidArgumentValueError("Error! Cluster type '{}' is not supported".format(cluster_type))
+def get_cluster_rp_api_version(cluster_type) -> Tuple[str, str]:
+    if cluster_type.lower() == consts.CONNECTED_CLUSTER_TYPE:
+        return consts.CONNECTED_CLUSTER_RP, consts.CONNECTED_CLUSTER_API_VERSION
+    if cluster_type.lower() == consts.APPLIANCE_TYPE:
+        return consts.APPLIANCE_RP, consts.APPLIANCE_API_VERSION
+    if (
+        cluster_type.lower() == ""
+        or cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE
+    ):
+        return consts.MANAGED_CLUSTER_RP, consts.MANAGED_CLUSTER_API_VERSION
+    raise InvalidArgumentValueError(
+        "Error! Cluster type '{}' is not supported".format(cluster_type)
+    )
 
 
 def get_data_from_key_or_file(key, filepath, strip_newline=False):
     if key and filepath:
         raise MutuallyExclusiveArgumentError(
-            consts.KEY_AND_FILE_TOGETHER_ERROR,
-            consts.KEY_AND_FILE_TOGETHER_HELP)
+            consts.KEY_AND_FILE_TOGETHER_ERROR, consts.KEY_AND_FILE_TOGETHER_HELP
+        )
     data = None
     if filepath:
         data = read_key_file(filepath, strip_newline)
@@ -39,7 +45,7 @@ def get_data_from_key_or_file(key, filepath, strip_newline=False):
 
 def read_config_settings_file(file_path):
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             settings = json.load(f)
             if len(settings) == 0:
                 raise Exception("File {} is empty".format(file_path))
@@ -55,27 +61,27 @@ def read_key_file(path, strip_newline=False):
             data_list_len = len(data_list)
             if (data_list_len) <= 0:
                 raise Exception("File provided does not contain any data")
-            raw_data = ''.join(data_list)
+            raw_data = "".join(data_list)
         if strip_newline:
             raw_data = raw_data.strip()
         return to_base64(raw_data)
     except Exception as ex:
         raise InvalidArgumentValueError(
-            consts.KEY_FILE_READ_ERROR.format(ex),
-            consts.KEY_FILE_READ_HELP) from ex
+            consts.KEY_FILE_READ_ERROR.format(ex), consts.KEY_FILE_READ_HELP
+        ) from ex
 
 
 def parse_dependencies(depends_on):
     depends_on = depends_on.strip()
-    if depends_on[0] == '[':
+    if depends_on[0] == "[":
         depends_on = depends_on[1:-1]
-    return depends_on.split(',')
+    return depends_on.split(",")
 
 
 def parse_duration(duration):
     if not duration:
         return duration
-    regex = re.compile(r'((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
+    regex = re.compile(r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?")
     parts = regex.match(duration)
     parts = parts.groupdict()
     time_params = {}
@@ -93,13 +99,13 @@ def format_duration(seconds):
     seconds -= hours * 3600
     minutes = seconds // 60
     seconds -= minutes * 60
-    res = ''
+    res = ""
     if hours > 0:
-        res += '{}h'.format(hours)
+        res += "{}h".format(hours)
     if minutes > 0:
-        res += '{}m'.format(minutes)
+        res += "{}m".format(minutes)
     if seconds > 0:
-        res += '{}s'.format(seconds)
+        res += "{}s".format(seconds)
     return res
 
 
@@ -108,29 +114,18 @@ def from_base64(base64_str):
 
 
 def to_base64(raw_data):
-    bytes_data = raw_data.encode('utf-8')
-    return base64.b64encode(bytes_data).decode('utf-8')
+    bytes_data = raw_data.encode("utf-8")
+    return base64.b64encode(bytes_data).decode("utf-8")
 
 
 def fix_compliance_state(config):
     # If we get Compliant/NonCompliant as compliance_sate, change them before returning
-    if config.compliance_status.compliance_state.lower() == 'noncompliant':
-        config.compliance_status.compliance_state = 'Failed'
-    elif config.compliance_status.compliance_state.lower() == 'compliant':
-        config.compliance_status.compliance_state = 'Installed'
+    if config.compliance_status.compliance_state.lower() == "noncompliant":
+        config.compliance_status.compliance_state = "Failed"
+    elif config.compliance_status.compliance_state.lower() == "compliant":
+        config.compliance_status.compliance_state = "Installed"
 
     return config
-
-
-def get_parent_api_version(cluster_rp):
-    if cluster_rp == 'Microsoft.Kubernetes':
-        return '2020-01-01-preview'
-    if cluster_rp == 'Microsoft.ResourceConnector':
-        return '2020-09-15-privatepreview'
-    if cluster_rp == 'Microsoft.ContainerService':
-        return '2017-07-01'
-    raise InvalidArgumentValueError("Error! Cluster RP '{}' is not supported"
-                                    " for extension identity".format(cluster_rp))
 
 
 def is_dogfood_cluster(cmd):

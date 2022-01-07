@@ -132,11 +132,15 @@ def _apply_deployment_table(item, deployment):
     item['Registered Instance'] = _get_registration_state(deployment)
 
 
+def transform_application_configuration_service_output(result):
+    return _transform_acs_service_registry_output(result)
+
+
 def transform_service_registry_output(result):
-    return _transform_tanzu_component_output(result)
+    return _transform_acs_service_registry_output(result)
 
 
-def _transform_tanzu_component_output(result):
+def _transform_acs_service_registry_output(result):
     is_list = isinstance(result, list)
 
     if not is_list:
@@ -144,6 +148,54 @@ def _transform_tanzu_component_output(result):
 
     for item in result:
         instance_count = item['properties']['resourceRequests']['instanceCount']
+        instances = item['properties']['instances'] or []
+        running_number = len(
+            [x for x in instances if x['status'].upper() == "RUNNING"])
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['CPU'] = item['properties']['resourceRequests']['cpu']
+        item['Memory'] = item['properties']['resourceRequests']['memory']
+
+    return result if is_list else result[0]
+
+
+def transform_spring_cloud_gateway_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Public Url'] = item['properties']['url']
+        instance_count = item['sku']['capacity']
+        instances = item['properties']['instances'] or []
+        running_number = len(
+            [x for x in instances if x['status'].upper() == "RUNNING"])
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Running Instance'] = "{}/{}".format(running_number, instance_count)
+        item['CPU'] = item['properties']['resourceRequests']['cpu']
+        item['Memory'] = item['properties']['resourceRequests']['memory']
+        operator = item['properties']['operatorProperties']
+        operator_instance_count = operator['resourceRequests']['instanceCount']
+        operator_instances = item['properties']['instances'] or []
+        operator_running_number = len(
+            [x for x in operator_instances if x['status'].upper() == "RUNNING"])
+        item['Operator Running Instance'] = "{}/{}".format(operator_running_number, operator_instance_count)
+        item['Operator CPU'] = operator['resourceRequests']['cpu']
+        item['Operator Memory'] = operator['resourceRequests']['memory']
+
+    return result if is_list else result[0]
+
+
+def transform_api_portal_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Public Url'] = item['properties']['url']
+        instance_count = item['sku']['capacity']
         instances = item['properties']['instances'] or []
         running_number = len(
             [x for x in instances if x['status'].upper() == "RUNNING"])

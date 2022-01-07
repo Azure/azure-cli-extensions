@@ -2,11 +2,14 @@
 
 Release History
 ===============
-0.5.51
+0.5.52
 ++++++
 * Add support for Capacity Reservation Group.
   * `az aks create --crg-id`
   * `az aks nodepool add --crg-id`
+
+0.5.51
+* Add currentKubernetesVersion column for az aks show --output table.
 
 0.5.50
 ++++++

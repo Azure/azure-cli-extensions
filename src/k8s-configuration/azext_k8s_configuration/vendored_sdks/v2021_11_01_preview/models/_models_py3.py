@@ -822,7 +822,7 @@ class FluxConfigurationPatch(msrest.serialization.Model):
         self,
         *,
         source_kind: Optional[Union[str, "SourceKindType"]] = None,
-        suspend: Optional[bool] = None,
+        suspend: Optional[bool] = False,
         git_repository: Optional["GitRepositoryDefinition"] = None,
         kustomizations: Optional[Dict[str, "KustomizationDefinition"]] = None,
         configuration_protected_settings: Optional[Dict[str, str]] = None,
@@ -1057,6 +1057,11 @@ class KustomizationDefinition(msrest.serialization.Model):
     :param prune: Enable/disable garbage collections of Kubernetes objects created by this
      Kustomization.
     :type prune: bool
+    :param validation: Specify whether to validate the Kubernetes objects referenced in the
+     Kustomization before applying them to the cluster. Possible values include: "none", "client",
+     "server". Default value: "none".
+    :type validation: str or
+     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationValidationType
     :param force: Enable/disable re-creating Kubernetes resources on the cluster when patching
      fails due to an immutable field change.
     :type force: bool
@@ -1069,6 +1074,7 @@ class KustomizationDefinition(msrest.serialization.Model):
         'sync_interval_in_seconds': {'key': 'syncIntervalInSeconds', 'type': 'long'},
         'retry_interval_in_seconds': {'key': 'retryIntervalInSeconds', 'type': 'long'},
         'prune': {'key': 'prune', 'type': 'bool'},
+        'validation': {'key': 'validation', 'type': 'str'},
         'force': {'key': 'force', 'type': 'bool'},
     }
 
@@ -1080,8 +1086,9 @@ class KustomizationDefinition(msrest.serialization.Model):
         timeout_in_seconds: Optional[int] = 600,
         sync_interval_in_seconds: Optional[int] = 600,
         retry_interval_in_seconds: Optional[int] = None,
-        prune: Optional[bool] = None,
-        force: Optional[bool] = None,
+        prune: Optional[bool] = False,
+        validation: Optional[Union[str, "KustomizationValidationType"]] = "none",
+        force: Optional[bool] = False,
         **kwargs
     ):
         super(KustomizationDefinition, self).__init__(**kwargs)
@@ -1091,6 +1098,7 @@ class KustomizationDefinition(msrest.serialization.Model):
         self.sync_interval_in_seconds = sync_interval_in_seconds
         self.retry_interval_in_seconds = retry_interval_in_seconds
         self.prune = prune
+        self.validation = validation
         self.force = force
 
 

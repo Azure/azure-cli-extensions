@@ -23,6 +23,7 @@ from azure.cli.command_modules.acs.decorator import (
 )
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
+    AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
@@ -32,6 +33,7 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
+from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from msrestazure.azure_exceptions import CloudError
@@ -1879,7 +1881,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         # Due to SPN replication latency, we do a few retries here
         max_retry = 30
-        retry_exception = Exception(None)
+        error_msg = ""
         for _ in range(0, max_retry):
             try:
                 if self.context.get_intermediate("monitoring") and self.context.get_enable_msi_auth_for_monitoring():
@@ -1897,13 +1899,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                         create_dcra=True,
                     )
                 return created_cluster
-            except CloudError as ex:
-                retry_exception = ex
+            # CloudError was raised before, but since the adoption of track 2 SDK,
+            # HttpResponseError would be raised instead
+            except (CloudError, HttpResponseError) as ex:
+                error_msg = str(ex)
                 if 'not found in Active Directory tenant' in ex.message:
                     time.sleep(3)
                 else:
                     raise ex
-        raise retry_exception
+        raise AzCLIError("Maximum number of retries exceeded. " + error_msg)
 
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
