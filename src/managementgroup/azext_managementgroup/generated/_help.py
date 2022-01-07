@@ -192,7 +192,7 @@ helps['managementgroup hierarchy-setting create'] = """
 
 helps['managementgroup hierarchy-setting update'] = """
     type: command
-    short-summary: "Updates the hierarchy settings defined at the Management Group level."
+    short-summary: "Update the hierarchy settings defined at the Management Group level."
     examples:
       - name: GetGroupSettings
         text: |-
