@@ -173,7 +173,7 @@ the root Management Group of the hierarchy."
 
 helps['managementgroup hierarchy-setting show'] = """
     type: command
-    short-summary: "Gets the hierarchy settings defined at the Management Group level. Settings can only be set on the \
+    short-summary: "Get the hierarchy settings defined at the Management Group level. Settings can only be set on the \
 root Management Group of the hierarchy."
     examples:
       - name: GetGroupSettings
