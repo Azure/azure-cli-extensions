@@ -148,7 +148,7 @@ helps['managementgroup management-group-subscription show-subscription'] = """
 
 helps['managementgroup management-group-subscription show-subscription-under-management-group'] = """
     type: command
-    short-summary: "Retrieves details about all subscriptions which are associated with the management group."
+    short-summary: "Retrieve details about all subscriptions which are associated with the management group."
     examples:
       - name: GetAllSubscriptionsFromManagementGroup
         text: |-
