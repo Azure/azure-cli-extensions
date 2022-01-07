@@ -128,7 +128,7 @@ helps['managementgroup management-group-subscription create'] = """
 
 helps['managementgroup management-group-subscription delete'] = """
     type: command
-    short-summary: "De-associates subscription from the management group."
+    short-summary: "De-associate subscription from the management group."
     examples:
       - name: DeleteSubscriptionFromManagementGroup
         text: |-
