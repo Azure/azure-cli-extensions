@@ -100,6 +100,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
     return models.BuildpackBindingProperties(binding_type="ApplicationInsights", launch_properties=launch_properties)
 
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
+
     try:
         created_app_insights = _try_create_application_insights(cmd, resource_group, service_name, location)
         if created_app_insights:
@@ -135,6 +136,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 def _get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
+
     if not appinsights or not appinsights.connection_string:
         raise ResourceNotFoundError("App Insights {} under resource group {} was not found."
                                     .format(name, resource_group))
@@ -148,7 +150,6 @@ def _try_create_application_insights(cmd, resource_group, name, location):
     ai_resource_group_name = resource_group
     ai_name = name
     ai_location = location
-
     app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
     ai_properties = {
         "name": ai_name,
@@ -158,7 +159,9 @@ def _try_create_application_insights(cmd, resource_group, name, location):
             "Application_Type": "web"
         }
     }
+
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+
     if not appinsights or not appinsights.connection_string:
         logger.warning(creation_failed_warn)
         return None
