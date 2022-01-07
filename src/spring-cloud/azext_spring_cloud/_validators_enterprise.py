@@ -63,8 +63,12 @@ def validate_builder_resource(namespace):
 
 
 def validate_build_pool_size(namespace):
-    if _parse_sku_name(namespace.sku) != 'enterprise':
-        namespace.build_pool_size = None
+    if _parse_sku_name(namespace.sku) == 'enterprise':
+        if namespace.build_pool_size is None:
+            namespace.build_pool_size = 'S1'
+    else:
+        if namespace.build_pool_size is not None:
+            raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
 
 
 def validate_cpu(namespace):

@@ -96,7 +96,6 @@ def load_arguments(self, _):
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    validator=validate_build_pool_size,
-                   default='S1',
                    is_preview=True,
                    help='(Enterprise Tier Only) Size of build agent pool. See aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
