@@ -118,7 +118,7 @@ helps['managementgroup management-group-subscription'] = """
 
 helps['managementgroup management-group-subscription create'] = """
     type: command
-    short-summary: "Associates existing subscription with the management group."
+    short-summary: "Associate existing subscription with the management group."
     examples:
       - name: AddSubscriptionToManagementGroup
         text: |-
