@@ -104,38 +104,38 @@ def load_arguments(self, _):
                    default=False,
                    is_preview=True,
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
-                   help='(Support Enterprise Tier Only) Enable Application Configuration Service.')
+                   help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
                    arg_type=get_three_state_flag(),
                    default=False,
                    is_preview=True,
                    options_list=['--enable-service-registry', '--enable-sr'],
-                   help='(Support Enterprise Tier Only) Enable Service Registry.')
+                   help='(Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
                    arg_type=get_three_state_flag(),
                    default=False,
                    is_preview=True,
-                   help='(Support Enterprise Tier Only) Enable Spring Cloud Gateway.')
+                   help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
                    arg_group="Spring Cloud Gateway",
                    type=int,
                    validator=validate_gateway_instance_count,
                    is_preview=True,
-                   help='(Support Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
+                   help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
                    arg_type=get_three_state_flag(),
                    default=False,
                    is_preview=True,
-                   help='(Support Enterprise Tier Only) Enable API portal.')
+                   help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
                    arg_group="API portal",
                    type=int,
                    validator=validate_api_portal_instance_count,
                    is_preview=True,
                    options_list=['--api-portal-instance-count', '--ap-instance'],
-                   help='(Support Enterprise Tier Only) Number of API portal instances.')
+                   help='(Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
@@ -266,7 +266,7 @@ def load_arguments(self, _):
     for scope in ['update', 'deployment create', 'deploy']:
         with self.argument_context('spring-cloud app {}'.format(scope)) as c:
             c.argument('config_file_patterns', type=str,
-                       help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
+                       help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                        validator=validate_config_file_patterns, is_preview=True)
 

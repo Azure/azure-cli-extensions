@@ -159,7 +159,7 @@ def gateway_route_config_remove(cmd, client, resource_group, service, name):
 
 def _update_api_metadata(existing, api_title, api_description, api_documentation_location, version, server_url):
     if not any([api_title, api_description, api_documentation_location, version, server_url]):
-        return None
+        return existing
     api_metadata = models.GatewayApiMetadataProperties() if existing is None else existing
     if api_title:
         api_metadata.title = api_title
@@ -176,7 +176,7 @@ def _update_api_metadata(existing, api_title, api_description, api_documentation
 
 def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
     if not any([allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers]):
-        return None
+        return existing
     cors = existing if existing is not None else models.GatewayCorsProperties()
     if allowed_origins:
         cors.allowed_origins = allowed_origins.split(",")
