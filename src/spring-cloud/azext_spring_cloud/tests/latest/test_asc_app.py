@@ -250,7 +250,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual('BuildResult', resource.properties.source.type)
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
-        self.assertEqual({'ApplicationConfigurationService': {'ConfigFilePatterns': 'my-pattern'}},\
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
     
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
@@ -403,9 +403,10 @@ class TestAppUpdate(BasicTest):
     def test_app_update_in_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
         deployment=self._get_deployment(sku='Enterprise')
-        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, config_file_patterns='my-pattern')
+        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, config_file_patterns='updated-pattern')
         resource = self.patch_deployment_resource
-        self.assertEqual({'ApplicationConfigurationService': {'ConfigFilePatterns': 'my-pattern'}},\
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
 
     def test_app_update_custom_container_deployment(self):
@@ -608,7 +609,8 @@ class TestDeploymentCreate(BasicTest):
     def test_create_deployment_with_ACS_Pattern_in_enterprise(self):
         deployment=self._get_deployment(sku='Enterprise')
         client = self._get_basic_mock_client('Enterprise', deployment)
-        self._execute('rg', 'asc', 'app', 'green', client=client, config_file_patterns='my-pattern')
+        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        self._execute('rg', 'asc', 'app', 'green', client=client)
         resource = self.put_deployment_resource
-        self.assertEqual({'ApplicationConfigurationService': {'ConfigFilePatterns': 'my-pattern'}},\
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
