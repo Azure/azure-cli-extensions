@@ -231,6 +231,7 @@ class CustomImageTest(ScenarioTest):
 
 @record_only()
 class EnterpriseServiceTest(ScenarioTest):
+
     def test_enterprise_service_create(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-ent',
