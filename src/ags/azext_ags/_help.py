@@ -32,10 +32,10 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Dashboard for Grafana.
 """
 
-# helps['grafana update'] = """
-#     type: command
-#     short-summary: Update a Azure Managed Dashboard for Grafana.
-# """
+helps['grafana update'] = """
+     type: command
+     short-summary: Update a Azure Managed Dashboard for Grafana.
+ """
 
 helps['grafana show'] = """
     type: command
@@ -65,19 +65,49 @@ helps['grafana dashboard'] = """
 helps['grafana dashboard create'] = """
     type: group
     short-summary: Create a new dashboard.
+    examples:
+        - name: Create a dashboard with definition in a json file. For quick start, clone from the output of "az grafana dashboard show", remove "id" and "uid", and apply changes.
+          text: |
+            az grafana dashboard create -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\temp\dashboard.json
+"""
+
+helps['grafana dashboard update'] = """
+    type: group
+    short-summary: Update a new dashboard.
+    examples:
+        - name: Update a dashboard with definition in a json file. For quick start, get existing configuration from "az grafana dashboard show", and apply changes.
+                "version" field need to be updated, and "overwrite" field should be true.
+          text: |
+            az grafana dashboard update -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\temp\dashboard.json
 """
 
 helps['grafana dashboard list'] = """
     type: group
     short-summary: List all dashboards of an instance.
+    examples:
+        - name: Find the dashboard for K8s API Server and retrieve the unique identifier(in order to invoke "az grafana dashboard show" command)
+          text: |
+           az grafana dashboard list -g MyResourceGroup -n MyGrafana --query "[?contains(@.title, 'API server')].uid"
 """
 
 helps['grafana dashboard show'] = """
     type: group
     short-summary: show the detail of a dashboard.
+    examples:
+        - name: Get details of a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
+          text: |
+           az grafana dashboard show -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
+        - name: Get home dashboard
+          text: |
+           az grafana dashboard show -g MyResourceGroup -n MyGrafana --show-home-dashboard 
 """
 
 helps['grafana dashboard delete'] = """
     type: group
     short-summary: delete a dashboard
+    examples:
+        - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
+          text: |
+           az grafana dashboard delete -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
+           
 """

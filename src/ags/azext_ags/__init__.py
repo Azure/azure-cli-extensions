@@ -17,7 +17,7 @@ class AgsCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_ags.custom#{}',
             client_factory=cf_ags)
         super(AgsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=ags_custom)
+                                                custom_command_type=ags_custom)
 
     def load_command_table(self, args):
         from azext_ags.commands import load_command_table
