@@ -7,6 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_ags._client_factory import cf_ags
 
+from ._validators import process_grafana_create_namespace, process_missing_resource_group_parameter
 
 def load_command_table(self, _):
 
@@ -17,30 +18,35 @@ def load_command_table(self, _):
 
     # TODO: ensure HTTP doc url in the help
 
-    with self.command_group('grafana', is_preview=True) as g:
-        g.custom_command('create', 'create_grafana')
-        g.custom_command('delete', 'delete_grafana')
-        g.custom_command('list', 'list_grafana')
-        g.custom_command('show', 'show_grafana')
-        # g.custom_command('update', 'update_grafana')
-        g.custom_command('get-short-url', 'get_short_url')   # TODO
+    # TODO ensure each command return error on 4xx/5xx
 
-    with self.command_group('grafana dashboard') as g:
+    # TODO support no resource group parameter
+
+    with self.command_group('grafana', is_preview=True) as g:
+        g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
+        g.custom_command('delete', 'delete_grafana', validator=process_missing_resource_group_parameter)
+        g.custom_command('list', 'list_grafana')
+        g.custom_command('show', 'show_grafana', validator=process_missing_resource_group_parameter)
+        # g.custom_command('update', 'update_grafana')
+        # g.custom_command('get-short-url', 'get_short_url')   # TODO
+
+    with self.command_group('grafana dashboard', validator=process_missing_resource_group_parameter) as g:
         g.custom_command('create', 'create_dashboard')  # TODO need examples
         g.custom_command('delete', 'delete_dashboard')
         g.custom_command('list', 'list_dashboards')
-        g.custom_command('show', 'show_dashboard')  # TODO handle HOME dashboard
+        g.custom_command('show', 'show_dashboard')  # TODO handle HOME dashboard and name 
         g.custom_command('update', 'update_dashboard')  # TODO
         # g.custom_command('get-tags', 'get_dashboard_tags')  # TODO handle HOME dashboard
 
-    #with self.command_group('grafana data-source') as g:
-    #    g.custom_command('create', 'create_data_source')  # TODO
-    #    g.custom_command('list', 'list_data_sources')
-    #    g.custom_command('show', 'show_data_source')  # TODO handle both id, uid, name
-    #    g.custom_command('delete', 'delete_data_source')  # TODO handle both id, uid, name
-    #    g.custom_command('query', 'query_data_source')  # TODO handle both id, uid, name
-    #    g.custom_command('test', 'test_data_source')   # TODO
+    with self.command_group('grafana data-source') as g:
+        g.custom_command('create', 'create_data_source') # TODO add one more example of using service principal
+        g.custom_command('list', 'list_data_sources')
+        g.custom_command('show', 'show_data_source')
+        g.custom_command('delete', 'delete_data_source')
+        g.custom_command('query', 'query_data_source')
 
+    with self.command_group('grafana folder') as g:
+        pass
     #with self.command_group('grafana user'):
     #    g.custom_command('list', 'list_users')  # TODO
     #    g.custom_command('show', 'show_user')  # TODO
