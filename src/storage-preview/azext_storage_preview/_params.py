@@ -172,11 +172,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['update', 'network-rule']:
-        with self.argument_context('storage account {}'.format(item)) as c:
-            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
-            c.argument('resource_group_name', required=False, validator=process_resource_group)
-
     with self.argument_context('storage account create', resource_type=CUSTOM_MGMT_STORAGE) as c:
         t_account_type, t_sku_name, t_kind, t_tls_version = \
             self.get_models('AccountType', 'SkuName', 'Kind', 'MinimumTlsVersion',
@@ -379,6 +374,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
             c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
             c.argument('action', action_type)
+
+    for item in ['update', 'network-rule']:
+        with self.argument_context('storage account {}'.format(item)) as c:
+            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
+            c.argument('resource_group_name', required=False, validator=process_resource_group)
 
     with self.argument_context('storage account network-rule') as c:
         c.argument('account_name', acct_name_type, id_part=None)

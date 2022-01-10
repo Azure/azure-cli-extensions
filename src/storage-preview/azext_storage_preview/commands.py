@@ -37,6 +37,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         client_factory=cf_sa,
         resource_type=CUSTOM_MGMT_STORAGE
     )
+
     with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.custom_command('create', 'create_storage_account')
