@@ -22,9 +22,11 @@ from ._app_validator import (fulfill_deployment_param, active_deployment_exist, 
                              validate_cpu, validate_memory)
 from ._utils import ApiType
 
+
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
 from .vendored_sdks.appplatform.v2022_01_01_preview.models \
     import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -214,7 +216,7 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
-            c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
+            c.argument('runtime_version', arg_type=get_enum_type(SupportedRuntimeValue),
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
