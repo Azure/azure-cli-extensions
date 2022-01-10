@@ -144,10 +144,10 @@ def validate_buildpack_binding_not_exist(cmd, namespace):
     client = get_client(cmd)
     try:
         binding_resource = client.buildpack_binding.get(namespace.resource_group,
-                                                         namespace.service,
-                                                         DEFAULT_BUILD_SERVICE_NAME,
-                                                         namespace.builder_name,
-                                                         namespace.name)
+                                                        namespace.service,
+                                                        DEFAULT_BUILD_SERVICE_NAME,
+                                                        namespace.builder_name,
+                                                        namespace.name)
         if binding_resource is not None:
             raise ClientRequestError('buildpack Binding {} in builder {} already exists '
                                      'in resource group {}, service {}. You can edit it by set command.'
@@ -161,7 +161,7 @@ def validate_buildpack_binding_exist(cmd, namespace):
     client = get_client(cmd)
     # If not exists exception will be raised
     client.buildpack_binding.get(namespace.resource_group,
-                                  namespace.service,
-                                  DEFAULT_BUILD_SERVICE_NAME,
-                                  namespace.builder_name,
-                                  namespace.name)
+                                 namespace.service,
+                                 DEFAULT_BUILD_SERVICE_NAME,
+                                 namespace.builder_name,
+                                 namespace.name)
