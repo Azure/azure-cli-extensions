@@ -47,4 +47,4 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
         # self.cmd('az vmware datastore show --name ANFDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster}')
 
         # Delete the newly created ANF based datastore
-        self.cmd('az vmware datastore delete --name iSCSIDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster}')
+        self.cmd('az vmware datastore delete --name iSCSIDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --yes')
