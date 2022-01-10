@@ -444,9 +444,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud build-service builder update') as c:
         c.argument('name', type=str, help="The builder name.", validator=validate_builder_update)
 
-    for scope in ['spring-cloud build-service builder show',
-                  'spring-cloud build-service builder delete']:
-        with self.argument_context(scope) as c:
+    for scope in ['show', 'delete']:
+        with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
             c.argument('name', type=str, help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
