@@ -434,18 +434,18 @@ def load_arguments(self, _):
 
     for scope in ['create', 'update']:
         with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
-            c.argument('builder_json', type=str, help="The JSON array of builder.", validator=validate_builder_resource)
-            c.argument('builder_file', type=str, help="The file path of JSON array of builder.", validator=validate_builder_resource)
+            c.argument('builder_json', help="The JSON array of builder.", validator=validate_builder_resource)
+            c.argument('builder_file', help="The file path of JSON array of builder.", validator=validate_builder_resource)
 
     with self.argument_context('spring-cloud build-service builder create') as c:
-        c.argument('name', type=str, help="The builder name.", validator=validate_builder_create)
+        c.argument('name', help="The builder name.", validator=validate_builder_create)
 
     with self.argument_context('spring-cloud build-service builder update') as c:
-        c.argument('name', type=str, help="The builder name.", validator=validate_builder_update)
+        c.argument('name', help="The builder name.", validator=validate_builder_update)
 
     for scope in ['show', 'delete']:
         with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
-            c.argument('name', type=str, help="The builder name.")
+            c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
                   'gateway', 'api-portal']:
