@@ -72,6 +72,7 @@ def create_default_buildpack_binding_for_application_insights(cmd, client, resou
         return client.buildpack_binding.begin_create_or_update(resource_group, name, DEFAULT_BUILD_SERVICE_NAME,
                                                                DEFAULT_BUILDER_NAME, DEFAULT_BINDING_NAME, binding_resource)
 
+
 def _build_buildpack_binding_resource(binding_type, properties_dict, secrets_dict):
     launch_properties = models.BuildpackBindingLaunchProperties(properties=properties_dict,
                                                                 secrets=secrets_dict)
@@ -90,7 +91,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
 
     if not connection_string:
         raise InvalidArgumentValueError('Error while trying to get the ConnectionString of Application Insights for the Azure Spring Cloud. '
-            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+                                        'Please use the Azure Portal to create and configure the Application Insights, if needed.')
 
     launch_properties = models.BuildpackBindingLaunchProperties(properties={
         "connection-string": connection_string,
@@ -98,6 +99,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
     })
 
     return models.BuildpackBindingProperties(binding_type="ApplicationInsights", launch_properties=launch_properties)
+
 
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
 
@@ -110,6 +112,7 @@ def _create_app_insights_and_get_connection_string(cmd, resource_group, service_
             'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
             'Please use the Azure Portal to create and configure the Application Insights, if needed.')
     return None
+
 
 def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     """Get connection string from:
@@ -133,6 +136,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
     return connection_string
 
+
 def _get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
@@ -141,6 +145,7 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
         raise ResourceNotFoundError("App Insights {} under resource group {} was not found."
                                     .format(name, resource_group))
     return appinsights.connection_string
+
 
 def _try_create_application_insights(cmd, resource_group, name, location):
     creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
