@@ -142,8 +142,8 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights = appinsights_client.components.get(resource_group, name)
 
     if not appinsights or not appinsights.connection_string:
-        raise ResourceNotFoundError("App Insights {} under resource group {} was not found."
-                                    .format(name, resource_group))
+        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+
     return appinsights.connection_string
 
 
