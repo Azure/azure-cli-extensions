@@ -83,12 +83,15 @@ def gateway_show(cmd, client, resource_group, service):
     return client.gateways.get(resource_group, service, DEFAULT_NAME)
 
 
-def gateway_clear(cmd, client, resource_group, service):
+def gateway_clear(cmd, client, resource_group, service, no_wait=False):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
     properties = models.GatewayProperties()
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier)
     gateway_resource = models.GatewayResource(properties=properties, sku=sku)
-    return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
+
+    logger.warning(LOG_RUNNING_PROMPT)
+    return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
+                       resource_group, service, DEFAULT_NAME, gateway_resource)
 
 
 def gateway_custom_domain_show(cmd, client, resource_group, service, domain_name):
@@ -154,6 +157,7 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
 
 
 def gateway_route_config_remove(cmd, client, resource_group, service, name):
+    client.gateway_route_configs.get(resource_group, service, DEFAULT_NAME, name)
     return client.gateway_route_configs.begin_delete(resource_group, service, DEFAULT_NAME, name)
 
 

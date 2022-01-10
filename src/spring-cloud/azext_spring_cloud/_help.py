@@ -36,7 +36,7 @@ helps['spring-cloud create'] = """
         az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise
     - name: Create a Azure Spring Cloud Enterprise instance with Tanzu components enabled.
       text: |
-        az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service true --enable-service-registry true --enable-gateway true --enable-api-portal true
+        az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
 helps['spring-cloud update'] = """

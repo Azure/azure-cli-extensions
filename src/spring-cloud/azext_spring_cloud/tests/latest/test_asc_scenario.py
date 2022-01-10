@@ -240,10 +240,10 @@ class EnterpriseServiceTest(ScenarioTest):
         })
         self.cmd('group create -n {rg} -l {location}')
         self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --sku="Enterprise" '
-                 '--enable-application-configuration-service true '
-                 '--enable-service-registry true '
-                 '--enable-gateway true --gateway-instance-count 2 '
-                 '--enable-api-portal true --api-portal-instance-count 1')
+                 '--enable-application-configuration-service '
+                 '--enable-service-registry '
+                 '--enable-gateway --gateway-instance-count 2 '
+                 '--enable-api-portal --api-portal-instance-count 1')
         self.cmd('spring-cloud show --name {serviceName} -g {rg}', checks=[
             self.check('properties.provisioningState', 'Succeeded')
         ])

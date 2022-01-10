@@ -100,21 +100,18 @@ def load_arguments(self, _):
                         "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
         c.argument('enable_application_configuration_service',
-                   arg_type=get_three_state_flag(),
-                   default=False,
+                   action='store_true',
                    is_preview=True,
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_service_registry',
-                   arg_type=get_three_state_flag(),
-                   default=False,
+                   action='store_true',
                    is_preview=True,
                    options_list=['--enable-service-registry', '--enable-sr'],
                    help='(Enterprise Tier Only) Enable Service Registry.')
         c.argument('enable_gateway',
                    arg_group="Spring Cloud Gateway",
-                   arg_type=get_three_state_flag(),
-                   default=False,
+                   action='store_true',
                    is_preview=True,
                    help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
         c.argument('gateway_instance_count',
@@ -125,8 +122,7 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
         c.argument('enable_api_portal',
                    arg_group="API portal",
-                   arg_type=get_three_state_flag(),
-                   default=False,
+                   action='store_true',
                    is_preview=True,
                    help='(Enterprise Tier Only) Enable API portal.')
         c.argument('api_portal_instance_count',
@@ -265,7 +261,7 @@ def load_arguments(self, _):
 
     for scope in ['update', 'deployment create', 'deploy']:
         with self.argument_context('spring-cloud app {}'.format(scope)) as c:
-            c.argument('config_file_patterns', type=str,
+            c.argument('config_file_patterns',
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                        validator=validate_config_file_patterns, is_preview=True)

@@ -12,7 +12,7 @@ import zipfile
 from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 from knack.validators import DefaultStr
 from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
@@ -78,13 +78,13 @@ def _validate_terms(cmd, namespace):
 def _check_tanzu_components_not_enable(cmd, namespace):
     suffix = 'can only be used for Azure Spring Cloud Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
     if namespace.enable_application_configuration_service:
-        raise InvalidArgumentValueError('--enable-application-configuration-service {}'.format(suffix))
+        raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
     if namespace.enable_service_registry:
-        raise InvalidArgumentValueError('--enable-service-registry {}'.format(suffix))
+        raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
     if namespace.enable_gateway:
-        raise InvalidArgumentValueError('--enable-gateway {}'.format(suffix))
+        raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
     if namespace.enable_api_portal:
-        raise InvalidArgumentValueError('--enable-api-portal {}'.format(suffix))
+        raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
