@@ -8,7 +8,6 @@
 from re import match
 from azure.cli.core.commands.validators import validate_tag
 from azure.core.exceptions import ResourceNotFoundError
-from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)

@@ -896,7 +896,7 @@ helps['spring-cloud build-service builder buildpack-binding list'] = """
     type: command
     short-summary: (Support Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
     examples:
-        - name: Show a buildpack binding.
+        - name: List all buildpack binding of a builder.
           text: az spring-cloud build-service builder buildpack-binding list --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
 """
 

@@ -22,7 +22,7 @@ DEFAULT_BUILD_SERVICE_NAME = "default"
 
 
 def create_or_update_buildpack_binding(cmd, client, resource_group, service,
-                                        name, type, builder_name=None, properties=None, secrets=None):
+                                       name, type, builder_name=None, properties=None, secrets=None):
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
         logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
@@ -31,7 +31,7 @@ def create_or_update_buildpack_binding(cmd, client, resource_group, service,
 
     binding_resource = _build_buildpack_binding_resource(type, properties, secrets)
     return sdk_no_wait(False, client.buildpack_binding.begin_create_or_update, resource_group,
-                      service, DEFAULT_BUILD_SERVICE_NAME, builder_name, name, binding_resource)
+                       service, DEFAULT_BUILD_SERVICE_NAME, builder_name, name, binding_resource)
 
 
 def buildpack_binding_show(cmd, client, resource_group, service, name, builder_name=None):
@@ -74,9 +74,9 @@ def create_default_buildpack_binding_for_application_insights(cmd, client, resou
 
 def _build_buildpack_binding_resource(binding_type, properties_dict, secrets_dict):
     launch_properties = models.BuildpackBindingLaunchProperties(properties=properties_dict,
-                                                                 secrets=secrets_dict)
+                                                                secrets=secrets_dict)
     binding_properties = models.BuildpackBindingProperties(binding_type=binding_type,
-                                                            launch_properties=launch_properties)
+                                                           launch_properties=launch_properties)
     return models.BuildpackBindingResource(properties=binding_properties)
 
 
