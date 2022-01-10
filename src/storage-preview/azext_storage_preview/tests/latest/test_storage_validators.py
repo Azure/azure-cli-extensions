@@ -131,6 +131,5 @@ class TestEncryptionValidators(unittest.TestCase):
                           encryption_key_version='key_version', encryption_key_vault='https://example.com/key_uri'))
 
 
-
 if __name__ == '__main__':
     unittest.main()
