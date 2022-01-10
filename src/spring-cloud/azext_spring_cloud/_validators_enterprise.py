@@ -150,9 +150,9 @@ def validate_buildpack_binding_not_exist(cmd, namespace):
                                                          namespace.builder_name,
                                                          namespace.name)
         if binding_resource is not None:
-            raise CLIError('buildpack Binding {} in builder {} already exists '
-                           'in resource group {}, service {}. You can edit it by set command.'
-                           .format(namespace.name, namespace.resource_group, namespace.service, namespace.builder_name))
+            raise ClientRequestError('buildpack Binding {} in builder {} already exists '
+                                     'in resource group {}, service {}. You can edit it by set command.'
+                                     .format(namespace.name, namespace.resource_group, namespace.service, namespace.builder_name))
     except ResourceNotFoundError:
         # Excepted case
         pass
