@@ -432,9 +432,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
-    for scope in ['spring-cloud build-service builder create',
-                  'spring-cloud build-service builder update']:
-        with self.argument_context(scope) as c:
+    for scope in ['create', 'update']:
+        with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
             c.argument('builder_json', type=str, help="The JSON array of builder.", validator=validate_builder_resource)
             c.argument('builder_file', type=str, help="The file path of JSON array of builder.", validator=validate_builder_resource)
 
