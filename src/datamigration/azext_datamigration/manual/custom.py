@@ -34,7 +34,7 @@ def datamigration_assessment(connection_string=None,
     try:
 
         if not platform.system().__contains__('Windows'):
-            raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environement")
+            raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
 
         defaultOutputFolder = get_default_output_folder()
 
@@ -71,7 +71,7 @@ def datamigration_assessment(connection_string=None,
                     cmd = f'{exePath} Assess --sqlConnectionStrings "{connection_string}" --overwrite False'
                 subprocess.call(cmd, shell=False)
         elif config_file_path is not None:
-            test_config_file_path(config_file_path)
+            validate_config_file_path(config_file_path)
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
         else:
@@ -88,7 +88,7 @@ def datamigration_assessment(connection_string=None,
 # -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to test whether the given cofig_file_path is valid and has valid action specified.
 # -----------------------------------------------------------------------------------------------------------------
-def test_config_file_path(path):
+def validate_config_file_path(path):
 
     if not os.path.exists(path):
         raise CLIError(f'Invalid config file path: {path}. Please provide a valid config file path.')
@@ -102,7 +102,7 @@ def test_config_file_path(path):
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Assessment helper function to test whether the given cofig_file_path is valid and has valid action specified.
+# Assessment helper function to return the default output folder path depending on OS environment.
 # -----------------------------------------------------------------------------------------------------------------
 def get_default_output_folder():
 
@@ -127,14 +127,14 @@ def datamigration_register_ir(auth_key,
     osPlatform = platform.system()
 
     if not osPlatform.__contains__('Windows'):
-        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environement")
+        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
 
     if not is_user_admin():
         raise CLIError("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     validate_input(auth_key)
     if ir_path is not None:
         if not os.path.exists(ir_path):
-            raise CLIError(f"Invalid gateway path : {ir_path}. Please provide a valid Integration Runtime MSI path")
+            raise CLIError(f"Invalid Integration Runtime MSI path : {ir_path}. Please provide a valid Integration Runtime MSI path")
         install_gateway(ir_path)
 
     register_ir(auth_key)
@@ -174,7 +174,6 @@ def check_whether_gateway_installed(name):
     accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
 
     for i in range(0, winreg.QueryInfoKey(accessKey)[0]):
-
         installedSoftware = winreg.EnumKey(accessKey, i)
         installedSoftwareKey = winreg.OpenKey(accessKey, installedSoftware)
         try:
@@ -196,13 +195,13 @@ def install_gateway(path):
         print("Microsoft Integration Runtime is alreasy installed")
         return
 
-    print("Start Gateway installation")
+    print("Start Integration Runtime installation")
 
     installCmd = f'msiexec.exe /i "{path}" /quiet /passive'
     subprocess.call(installCmd, shell=False)
     time.sleep(30)
 
-    print("Succeed to install gateway")
+    print("Succeed to install Integration Runtime")
 
 
 # -----------------------------------------------------------------------------------------------------------------
