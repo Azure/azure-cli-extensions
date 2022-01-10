@@ -157,7 +157,6 @@ def gateway_route_config_update(cmd, client, resource_group, service, name,
 
 
 def gateway_route_config_remove(cmd, client, resource_group, service, name):
-    client.gateway_route_configs.get(resource_group, service, DEFAULT_NAME, name)
     return client.gateway_route_configs.begin_delete(resource_group, service, DEFAULT_NAME, name)
 
 
