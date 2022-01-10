@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer, StorageAccountPreparer,
                                api_version_constraint)
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
 from ...profiles import CUSTOM_MGMT_STORAGE
 from knack.util import CLIError

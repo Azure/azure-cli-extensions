@@ -28,7 +28,7 @@ class ResourcePoolsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -120,7 +120,7 @@ class ResourcePoolsOperations:
         :param resource_pool_name: Name of the resourcePool.
         :type resource_pool_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -128,7 +128,7 @@ class ResourcePoolsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ResourcePool or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.ResourcePool]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.ResourcePool]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -193,7 +193,7 @@ class ResourcePoolsOperations:
         :type resource_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :rtype: ~azure.mgmt.connectedvmware.models.ResourcePool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
@@ -254,10 +254,10 @@ class ResourcePoolsOperations:
         :param resource_pool_name: Name of the resourcePool.
         :type resource_pool_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :rtype: ~azure.mgmt.connectedvmware.models.ResourcePool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
@@ -438,7 +438,7 @@ class ResourcePoolsOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ResourcePoolsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]
@@ -510,7 +510,7 @@ class ResourcePoolsOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ResourcePoolsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]

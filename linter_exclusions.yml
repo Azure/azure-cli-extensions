@@ -52,6 +52,9 @@ aks create:
     load_balancer_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
+      rule_exclusions:
+      - option_length_too_long
     load_balancer_outbound_ip_prefixes:
       rule_exclusions:
       - option_length_too_long
@@ -161,6 +164,9 @@ aks update:
     load_balancer_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
+      rule_exclusions:
+      - option_length_too_long
     load_balancer_outbound_ip_prefixes:
       rule_exclusions:
       - option_length_too_long
@@ -180,6 +186,20 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
+arcdata dc create:
+  parameters:
+    logs_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    logs_ui_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    metrics_ui_public_key_file:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:
@@ -594,6 +614,21 @@ dms project task create:
     target_connection_json:
       rule_exclusions:
       - option_length_too_long
+dt endpoint create servicebus:
+  parameters:
+    servicebus_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventgrid:
+  parameters:
+    eventgrid_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+dt endpoint create eventhub:
+  parameters:
+    eventhub_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 eventgrid domain create:
   parameters:
     input_mapping_default_values:
@@ -960,6 +995,22 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
+iot central export destination update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central export update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot hub configuration update:
   parameters:
     auth_type_dataplane:
@@ -1625,6 +1676,35 @@ network private-dns record-set txt remove-record:
 network vhub connection create:
   parameters:
     allow_remote_vnet_to_use_hub_vnet_gateways:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn add:
+  parameters:
+    use_local_azure_ip_address:
+      rule_exclusions:
+      - option_length_too_long
+    use_policy_based_traffic_selectors:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_connection_protocol_type:
+      rule_exclusions:
+      - option_length_too_long
+    vpn_link_connection_mode:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy add:
+  parameters:
+    vpn_site_link_conn_name:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy list:
+  parameters:
+    vpn_site_link_conn_name:
+      rule_exclusions:
+      - option_length_too_long
+network vpn-gateway connection vpn-site-link-conn ipsec-policy remove:
+  parameters:
+    vpn_site_link_conn_name:
       rule_exclusions:
       - option_length_too_long
 network vpn-server-config create:
