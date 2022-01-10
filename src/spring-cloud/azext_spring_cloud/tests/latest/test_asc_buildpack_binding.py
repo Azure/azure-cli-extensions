@@ -11,8 +11,6 @@ from knack.log import get_logger
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-logger = get_logger(__name__)
-
 @record_only()
 class BuildpackBindingTest(ScenarioTest):
 
@@ -28,8 +26,6 @@ class BuildpackBindingTest(ScenarioTest):
             'secrets': "x=y y=z",
             'builderName': "test-builder-name",
         })
-
-        logger.warning("=======================")
 
         self.cmd('spring-cloud build-service builder buildpack-binding create --name {bindingName} --type {bindingType} \
             --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',
@@ -55,7 +51,7 @@ class BuildpackBindingTest(ScenarioTest):
                 self.check('properties.launchProperties.secrets', {'c': '*'}),
             ])
 
-        self.cmd('spring-cloud build-service builder buildpack-binding delete --name {bindingName} -g {rg} -s {serviceName}')
+        self.cmd('spring-cloud build-service builder buildpack-binding delete --name {bindingName} -g {rg} -s {serviceName} --yes')
 
         self.cmd('spring-cloud build-service builder buildpack-binding create --name {bindingName}-0 --type ApplicationInsights \
             --properties {properties} --secrets {secrets} -g {rg} -s {serviceName}',

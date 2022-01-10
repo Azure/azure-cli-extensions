@@ -155,6 +155,7 @@ def _try_create_application_insights(cmd, resource_group, name, location):
     ai_resource_group_name = resource_group
     ai_name = name
     ai_location = location
+
     app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
     ai_properties = {
         "name": ai_name,
@@ -164,7 +165,6 @@ def _try_create_application_insights(cmd, resource_group, name, location):
             "Application_Type": "web"
         }
     }
-
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
 
     if not appinsights or not appinsights.connection_string:
