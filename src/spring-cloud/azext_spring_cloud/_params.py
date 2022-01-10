@@ -524,7 +524,7 @@ def load_arguments(self, _):
                             'Format "key[=value]".',
                        nargs='*',
                        validator=validate_buildpack_binding_secrets)
-            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_not_exist)
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_not_exist)
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -544,7 +544,7 @@ def load_arguments(self, _):
                             'Format "key[=value]".',
                        nargs='*',
                        validator=validate_buildpack_binding_secrets)
-            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -552,7 +552,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud build-service builder buildpack-binding show',
                   'spring-cloud build-service builder buildpack-binding delete']:
         with self.argument_context(scope) as c:
-            c.argument('name', help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
