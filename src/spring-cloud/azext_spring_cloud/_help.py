@@ -34,6 +34,9 @@ helps['spring-cloud create'] = """
         az provider register -n Microsoft.SaaS
         az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
         az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise
+    - name: Create a Azure Spring Cloud Enterprise instance with Tanzu components enabled.
+      text: |
+        az spring-cloud create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal
 """
 
 helps['spring-cloud update'] = """
@@ -227,6 +230,8 @@ helps['spring-cloud app deploy'] = """
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
     - name: Deploy a container image on a private registry to an app.
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
+    - name: Deploy with Application Configuration Service config file patterns to an app.
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --jar-path app.jar
 """
 
 helps['spring-cloud app scale'] = """

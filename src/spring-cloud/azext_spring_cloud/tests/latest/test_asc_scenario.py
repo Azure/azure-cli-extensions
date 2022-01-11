@@ -227,3 +227,36 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.type', 'Jar'),
             self.check('properties.source.runtimeVersion', 'Java_8'),
         ])
+
+
+@record_only()
+class EnterpriseServiceTest(ScenarioTest):
+
+    def test_enterprise_service_create(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-ent',
+            'location': 'eastus2euap',
+            'rg': 'cli'
+        })
+        self.cmd('group create -n {rg} -l {location}')
+        self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --sku="Enterprise" '
+                 '--disable-app-insights '
+                 '--enable-application-configuration-service '
+                 '--enable-service-registry '
+                 '--enable-gateway --gateway-instance-count 2 '
+                 '--enable-api-portal --api-portal-instance-count 1')
+        self.cmd('spring-cloud show --name {serviceName} -g {rg}', checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+        self.cmd('spring-cloud application-configuration-service show -s {serviceName} -g {rg}', checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+        self.cmd('spring-cloud service-registry show -s {serviceName} -g {rg}', checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+        self.cmd('spring-cloud gateway show -s {serviceName} -g {rg}', checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+        self.cmd('spring-cloud api-portal show -s {serviceName} -g {rg}', checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])

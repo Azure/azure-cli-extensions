@@ -238,17 +238,20 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         deployment.properties.source.jvm_options = None
         deployment.sku.tier = 'Enterprise'
         deployment.sku.name = 'E0'
+        deployment.properties.deployment_settings.addon_configs = None
         return deployment
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path')
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', config_file_patterns='my-pattern')
         resource = self.patch_deployment_resource
         self.assertEqual('BuildResult', resource.properties.source.type)
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
+            resource.properties.deployment_settings.addon_configs)
     
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
@@ -396,6 +399,15 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_deployment_resource
         self.assertIsNone(resource.properties.source)
         self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, config_file_patterns='updated-pattern')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
+                         resource.properties.deployment_settings.addon_configs)
 
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()
@@ -593,3 +605,12 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('Jar', resource.properties.source.type)
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
+
+    def test_create_deployment_with_ACS_Pattern_in_enterprise(self):
+        deployment=self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        self._execute('rg', 'asc', 'app', 'green', client=client)
+        resource = self.put_deployment_resource
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
+                         resource.properties.deployment_settings.addon_configs)

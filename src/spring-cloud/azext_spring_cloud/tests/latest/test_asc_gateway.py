@@ -15,9 +15,6 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 class GatewayTest(ScenarioTest):
 
     def test_gateway(self):
-        #route_json = '[{\"title\":\"Customers-service_route_config\",\"description\":\"The_first_routeconfig\",\"ssoEnabled\":True,\"tokenRelay\":True,\"predicates\":[\"Path=/api/customers-service/**\"],\"filters\":[\"StripPrefix=2\",\"RateLimit=1,1s\"],\"orders\":1}]'
-        #route_json = '[{"predicates":["Path=/api/customers-service/**"]}]'
-        #route_json = '[{\'predicates\': []}]'
         py_path = os.path.abspath(os.path.dirname(__file__))
         routes_file = os.path.join(py_path, 'files/gateway_routes.json').replace("\\","/")
         
