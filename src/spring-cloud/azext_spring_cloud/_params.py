@@ -14,7 +14,10 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (only_support_enterprise, validate_git_uri, validate_acs_patterns, validate_routes,
+from ._validators_enterprise import (only_support_enterprise,
+                                     validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
+                                     validate_routes, validate_gateway_instance_count,
+                                     validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
@@ -96,6 +99,40 @@ def load_arguments(self, _):
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
+        c.argument('enable_application_configuration_service',
+                   arg_type=get_three_state_flag(),
+                   default=False,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_service_registry',
+                   arg_type=get_three_state_flag(),
+                   default=False,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Enable Service Registry.')
+        c.argument('enable_gateway',
+                   arg_group="Spring Cloud Gateway",
+                   arg_type=get_three_state_flag(),
+                   default=False,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Enable Spring Cloud Gateway.')
+        c.argument('gateway_instance_count',
+                   arg_group="Spring Cloud Gateway",
+                   type=int,
+                   validator=validate_gateway_instance_count,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
+        c.argument('enable_api_portal',
+                   arg_group="API portal",
+                   arg_type=get_three_state_flag(),
+                   default=False,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Enable API portal.')
+        c.argument('api_portal_instance_count',
+                   arg_group="API portal",
+                   type=int,
+                   validator=validate_api_portal_instance_count,
+                   is_preview=True,
+                   help='(Support Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type)
@@ -222,6 +259,12 @@ def load_arguments(self, _):
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
+
+    for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
+        with self.argument_context(scope) as c:
+            c.argument('config_file_patterns', type=str,
+                    help="(Support Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+                    validator=validate_config_file_patterns, is_preview=True)
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', arg_type=cpu_type)

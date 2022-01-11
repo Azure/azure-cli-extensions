@@ -135,6 +135,7 @@ def app_update(cmd, client, resource_group, service, name,
                # deployment.settings
                env=None,
                disable_probe=None,
+               config_file_patterns=None,
                # general
                no_wait=False):
     '''app_update
@@ -156,6 +157,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     deployment_kwargs = {
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
@@ -213,6 +215,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                # deployment.settings
                env=None,
                disable_probe=None,
+               config_file_patterns=None,
                # general
                no_wait=False):
     '''app_deploy
@@ -236,6 +239,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'deployment_resource': deployment,
         'sku': deployment.sku,
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
@@ -300,6 +304,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       disable_probe=None,
+                      config_file_patterns=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -321,6 +326,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'app': app,
         'deployment': name,
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
