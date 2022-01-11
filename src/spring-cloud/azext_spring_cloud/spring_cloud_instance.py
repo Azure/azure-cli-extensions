@@ -82,7 +82,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
             _update_default_build_agent_pool(
-                self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size'])
+                self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs)
         ]
         pollers = [x for x in pollers if x]
