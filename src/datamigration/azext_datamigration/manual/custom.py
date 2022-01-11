@@ -58,18 +58,10 @@ def datamigration_assessment(connection_string=None,
                 zipFile.extractall(path=baseFolder)
 
         if connection_string is not None:
-            if output_folder is not None:
-                if overwrite is True:
-                    cmd = f'{exePath} Assess --sqlConnectionStrings "{connection_string}" --outputFolder {output_folder}'
-                else:
-                    cmd = f'{exePath} Assess --sqlConnectionStrings "{connection_string}" --outputFolder {output_folder} --overwrite False'
-                subprocess.call(cmd, shell=False)
-            else:
-                if overwrite is True:
-                    cmd = f'{exePath} Assess --sqlConnectionStrings "{connection_string}"'
-                else:
-                    cmd = f'{exePath} Assess --sqlConnectionStrings "{connection_string}" --overwrite False'
-                subprocess.call(cmd, shell=False)
+            connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
+            cmd = f'{exePath} Assess --sqlConnectionStrings {connection_string} ' if output_folder is None else f'{exePath} Assess --sqlConnectionStrings {connection_string} --outputFolder "{output_folder}" '
+            cmd += '--overwrite False' if overwrite is False else ''
+            subprocess.call(cmd, shell=False)
         elif config_file_path is not None:
             validate_config_file_path(config_file_path)
             cmd = f'{exePath} --configFile "{config_file_path}"'
@@ -96,9 +88,11 @@ def validate_config_file_path(path):
     # JSON file
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
-
-    if not ((configJson['action'] == "Assess") or (configJson['action'] == "assess")):
-        raise CLIError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
+    try:
+        if not ((configJson['action'] == "Assess") or (configJson['action'] == "assess")):
+            raise CLIError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
+    except KeyError as e:
+        raise CLIError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -154,7 +148,7 @@ def is_user_admin():
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Helper function to validate key input.
+# Helper function to validate key input. More checks to be added here using regex.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
     if key == "":
@@ -192,7 +186,7 @@ def check_whether_gateway_installed(name):
 def install_gateway(path):
 
     if check_whether_gateway_installed("Microsoft Integration Runtime"):
-        print("Microsoft Integration Runtime is alreasy installed")
+        print("Microsoft Integration Runtime is already installed")
         return
 
     print("Start Integration Runtime installation")
@@ -201,7 +195,7 @@ def install_gateway(path):
     subprocess.call(installCmd, shell=False)
     time.sleep(30)
 
-    print("Succeed to install Integration Runtime")
+    print("Integration Runtime installation is complete")
 
 
 # -----------------------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 def load_arguments(self, _):
 
     with self.argument_context('datamigration get-assessment') as c:
-        c.argument('connection_string', type=str, help='Sql Server Connection Strings')
+        c.argument('connection_string', nargs='+', help='Sql Server Connection Strings')
         c.argument('output_folder', type=str, help='Output folder to store assessment report')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
         c.argument('overwrite', help='Enable this parameter to overwrite the existing assessment report')
