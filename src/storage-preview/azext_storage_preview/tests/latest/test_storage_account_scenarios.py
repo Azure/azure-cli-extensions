@@ -281,3 +281,5 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('sshAuthorizedKeys', None),
             JMESPathCheckExists('sshPassword')
         )
+
+        self.cmd('{cmd} delete --account-name {sa} -g {rg} -n {username}')
