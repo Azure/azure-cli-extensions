@@ -74,7 +74,7 @@ class BasicTest(unittest.TestCase):
 
 class TestSpringCloudCreateEnerprise(BasicTest):
     def test_asc_create_enterprise(self):
-        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'))
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), disable_app_insights=True)
         resource = self.created_resource
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
@@ -101,6 +101,7 @@ class TestSpringCloudCreateWithAI(BasicTest):
         super()._execute(resource_group, name, client=client, **kwargs)
 
         call_args = free_mock_client.monitoring_settings.begin_update_put.call_args_list
+
         self.assertEqual(1, len(call_args))
         self.assertEqual(3, len(call_args[0][1]))
         self.assertEqual(resource_group, call_args[0][1]['resource_group_name'])
@@ -133,3 +134,70 @@ class TestSpringCloudCreateWithAI(BasicTest):
         self.assertEqual(False, resource.properties.zone_redundant)
         self.assertEqual('get-connection', self.monitoring_settings_resource.properties.app_insights_instrumentation_key)
         self.assertEqual(True, self.monitoring_settings_resource.properties.trace_enabled)
+
+
+class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
+    def _get_application_insights_client(ctx, type):
+        application_insights_create_resource = mock.MagicMock()
+        application_insights_create_resource.connection_string = 'fake-create-connection-string'
+
+        application_insights_get_resource = mock.MagicMock()
+        application_insights_get_resource.connection_string = 'fake-get-connection-string'
+
+        free_mock_client.components.create_or_update.return_value = application_insights_create_resource
+        free_mock_client.components.get.return_value = application_insights_get_resource
+
+        return free_mock_client
+
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.buildpack_binding_resource = None
+
+    @mock.patch('azext_spring_cloud.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+
+        call_args = client.buildpack_binding.begin_create_or_update.call_args_list
+
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(2, len(call_args[0]))
+        self.assertEqual(resource_group, call_args[0][0][0])
+        self.assertEqual(name, call_args[0][0][1])
+        self.assertEqual("default", call_args[0][0][2])
+        self.assertEqual("default", call_args[0][0][3])
+        self.assertEqual("default", call_args[0][0][4])
+        self.buildpack_binding_resource = call_args[0][0][5]
+
+    def test_asc_create_with_application_insights_default(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'))
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
+        self.assertEqual('fake-create-connection-string',
+            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+        self.assertEqual(10,
+            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+
+    def test_asc_create_with_application_insights_key(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights_key='test-application-insights-key', sampling_rate=23)
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
+        self.assertEqual('test-application-insights-key',
+            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+        self.assertEqual(23,
+            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+
+    def test_asc_create_with_application_insights_name(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights='test-application-insights', sampling_rate=53)
+        resource = self.created_resource
+        self.assertEqual('E0', resource.sku.name)
+        self.assertEqual('Enterprise', resource.sku.tier)
+        self.assertEqual('ApplicationInsights', self.buildpack_binding_resource.properties.binding_type)
+        self.assertEqual('fake-get-connection-string',
+            self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
+        self.assertEqual(53,
+            self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
