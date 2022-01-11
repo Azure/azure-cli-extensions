@@ -28,7 +28,7 @@ def gateway_update(cmd, client, resource_group, service,
                    issuer_uri=None,
                    api_title=None,
                    api_description=None,
-                   api_documentation_location=None,
+                   api_doc_location=None,
                    api_version=None,
                    server_url=None,
                    allowed_origins=None,
@@ -51,7 +51,7 @@ def gateway_update(cmd, client, resource_group, service,
         )
 
     api_metadata_properties = _update_api_metadata(
-        gateway.properties.api_metadata_properties, api_title, api_description, api_documentation_location, api_version, server_url)
+        gateway.properties.api_metadata_properties, api_title, api_description, api_doc_location, api_version, server_url)
 
     cors_properties = _update_cors(
         gateway.properties.cors_properties, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)

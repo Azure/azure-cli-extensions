@@ -13,7 +13,7 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_storage_data_plane_list,
                           process_resource_group, add_upload_progress_callback)
 
-from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
+from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -77,76 +77,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    type=get_datetime_type(False))
         c.argument('if_match')
         c.argument('if_none_match')
-
-    with self.argument_context('storage account blob-inventory-policy') as c:
-        c.ignore('blob_inventory_policy_name')
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('account_name',
-                   help='The name of the storage account within the specified resource group. Storage account names '
-                        'must be between 3 and 24 characters in length and use numbers and lower-case letters only.')
-
-    with self.argument_context('storage account blob-inventory-policy create') as c:
-        # t_inventory_rule_type = self.get_models('InventoryRuleType', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
-        c.argument('policy', type=file_type, completer=FilesCompleter(),
-                   help='The Storage Account Blob Inventory Policy, string in JSON format or json file path. '
-                        'See more details in: {https://review.docs.microsoft.com/en-us/azure/storage/blobs/'
-                        'blob-inventory?branch=pr-en-us-135665}.')
-        # c.argument('destination',
-        #            help='Container name where blob inventory files are stored. Must be pre-created.')
-        # c.argument('enabled', arg_type=get_three_state_flag(), help='Policy is enabled if set to true.')
-        # c.argument('type', arg_type=get_enum_type(t_inventory_rule_type), default='Inventory', required=False,
-        #            help='The valid value is Inventory. Possible values include: "Inventory".')
-        # c.argument('rule_name', arg_group='Blob Inventory Policy Rule',
-        #            help='A rule name can contain any combination of alpha numeric characters. Rule name is '
-        #            'case-sensitive. It must be unique within a policy.')
-        # c.argument('prefix_match', arg_group='Blob Inventory Policy Rule', nargs='+',
-        #            help='An array of strings for blob prefixes to be matched.')
-        # c.argument('blob_types', arg_group='Blob Inventory Policy Rule', nargs='+',
-        #            help='An array of predefined enum values. Valid values include blockBlob, appendBlob, pageBlob. '
-        #                 'Hns accounts does not support pageBlobs.')
-        # c.argument('include_blob_versions', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
-        #            help='Include blob versions in blob inventory when value set to true.')
-        # c.argument('include_snapshots', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
-        #            help='Include blob snapshots in blob inventory when value set to true.')
-
-    # with self.argument_context('storage account blob-inventory-policy rule') as c:
-    #     c.argument('destination', help='')
-    #     c.argument('enabled', help='')
-    #     c.argument('type', help='')
-
-    with self.argument_context('storage account file-service-properties show',
-                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account file-service-properties update',
-                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
-        from azure.cli.command_modules.storage._validators import validate_file_delete_retention_days
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
-                   min_api='2019-06-01', help='Enable file service properties for share soft delete.')
-        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
-                   validator=validate_file_delete_retention_days, min_api='2019-06-01',
-                   help=' Indicate the number of days that the deleted item should be retained. The minimum specified '
-                        'value can be 1 and the maximum value can be 365.')
-        c.argument('enable_smb_multichannel', options_list=['--enable-smb-multichannel', '--mc'],
-                   arg_type=get_three_state_flag(), min_api='2020-08-01-preview', arg_group='SMB Setting',
-                   help='Set SMB Multichannel setting for file service. Applies to Premium FileStorage only.')
-        c.argument('versions', arg_group='SMB Setting', min_api='2020-08-01-preview',
-                   help="SMB protocol versions supported by server. Valid values are SMB2.1, SMB3.0, "
-                        "SMB3.1.1. Should be passed as a string with delimiter ';'.")
-        c.argument('authentication_methods', options_list='--auth-methods', arg_group='SMB Setting',
-                   min_api='2020-08-01-preview',
-                   help="SMB authentication methods supported by server. Valid values are NTLMv2, Kerberos. "
-                        "Should be passed as a string with delimiter ';'.")
-        c.argument('kerberos_ticket_encryption', options_list=['--kerb-ticket-encryption', '-k'],
-                   arg_group='SMB Setting', min_api='2020-08-01-preview',
-                   help="Kerberos ticket encryption supported by server. Valid values are RC4-HMAC, AES-256. "
-                        "Should be passed as a string with delimiter ';'.")
-        c.argument('channel_encryption', arg_group='SMB Setting', min_api='2020-08-01-preview',
-                   help="SMB channel encryption supported by server. Valid values are AES-CCM-128, AES-GCM-128, "
-                        "AES-GCM-256. Should be passed as a string with delimiter ';'.")
 
     with self.argument_context('storage account network-rule') as c:
         from ._validators import validate_subnet

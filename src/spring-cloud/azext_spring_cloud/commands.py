@@ -14,13 +14,58 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
                             transform_spring_cloud_certificate_output,
-                            transform_spring_cloud_custom_domain_output)
+                            transform_spring_cloud_custom_domain_output,
+                            transform_application_configuration_service_output,
+                            transform_service_registry_output,
+                            transform_spring_cloud_gateway_output,
+                            transform_api_portal_output)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
 
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
     spring_cloud_routing_util = CliCommandType(
-        operations_tmpl='azext_spring_cloud.tier_routing_spring_cloud#{}',
+        operations_tmpl='azext_spring_cloud.spring_cloud_instance#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    app_command = CliCommandType(
+        operations_tmpl='azext_spring_cloud.app#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    service_registry_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.service_registry#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    application_configuration_service_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.application_configuration_service#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    gateway_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.gateway#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    gateway_custom_domain_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.gateway#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    gateway_route_config_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.gateway#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    api_portal_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.api_portal#{}',
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    api_portal_custom_domain_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.api_portal#{}',
         client_factory=cf_spring_cloud_20220101preview
     )
 
@@ -58,11 +103,14 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app', custom_command_type=app_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
-        g.custom_command('update', 'app_update')
+        g.custom_command('update', 'app_update', supports_no_wait=True)
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
+
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
         g.custom_command('unset-deployment', 'app_unset_deployment',
@@ -92,9 +140,12 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app deployment', custom_command_type=app_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
+
+    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
+                            exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_cloud_deployment_output)
         g.custom_show_command(
@@ -146,6 +197,80 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'app_insights_update', supports_no_wait=True)
         g.custom_show_command('show', 'app_insights_show')
+
+    with self.command_group('spring-cloud service-registry',
+                            custom_command_type=service_registry_cmd_group,
+                            exception_handler=handle_asc_exception,
+                            is_preview=True) as g:
+        g.custom_show_command('show', 'service_registry_show',
+                              table_transformer=transform_service_registry_output)
+        g.custom_command('bind', 'service_registry_bind')
+        g.custom_command('unbind', 'service_registry_unbind')
+
+    with self.command_group('spring-cloud application-configuration-service',
+                            custom_command_type=application_configuration_service_cmd_group,
+                            exception_handler=handle_asc_exception,
+                            is_preview=True) as g:
+        g.custom_command('clear', 'application_configuration_service_clear')
+        g.custom_show_command('show', 'application_configuration_service_show',
+                              table_transformer=transform_application_configuration_service_output)
+        g.custom_command('bind', 'application_configuration_service_bind')
+        g.custom_command('unbind', 'application_configuration_service_unbind')
+
+    with self.command_group('spring-cloud application-configuration-service git repo',
+                            custom_command_type=application_configuration_service_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('add', 'application_configuration_service_git_add')
+        g.custom_command('update', 'application_configuration_service_git_update')
+        g.custom_command('remove', 'application_configuration_service_git_remove')
+        g.custom_command('list', 'application_configuration_service_git_list')
+
+    with self.command_group('spring-cloud gateway',
+                            custom_command_type=gateway_cmd_group,
+                            exception_handler=handle_asc_exception,
+                            is_preview=True) as g:
+        g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
+        g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
+        g.custom_command('clear', 'gateway_clear')
+
+    with self.command_group('spring-cloud gateway custom-domain',
+                            custom_command_type=gateway_custom_domain_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'gateway_custom_domain_show',
+                              table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('list', 'gateway_custom_domain_list',
+                         table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('bind', 'gateway_custom_domain_update')
+        g.custom_command('unbind', 'gateway_custom_domain_unbind')
+        g.custom_command('update', 'gateway_custom_domain_update')
+
+    with self.command_group('spring-cloud gateway route-config',
+                            custom_command_type=gateway_route_config_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'gateway_route_config_show')
+        g.custom_command('list', 'gateway_route_config_list')
+        g.custom_command('create', 'gateway_route_config_create')
+        g.custom_command('update', 'gateway_route_config_update')
+        g.custom_command('remove', 'gateway_route_config_remove')
+
+    with self.command_group('spring-cloud api-portal',
+                            custom_command_type=api_portal_cmd_group,
+                            exception_handler=handle_asc_exception,
+                            is_preview=True) as g:
+        g.custom_show_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
+        g.custom_command('update', 'api_portal_update', validator=validate_api_portal_update)
+        g.custom_command('clear', 'api_portal_clear')
+
+    with self.command_group('spring-cloud api-portal custom-domain',
+                            custom_command_type=api_portal_custom_domain_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'api_portal_custom_domain_show',
+                              table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('list', 'api_portal_custom_domain_list',
+                         table_transformer=transform_spring_cloud_custom_domain_output)
+        g.custom_command('bind', 'api_portal_custom_domain_update')
+        g.custom_command('unbind', 'api_portal_custom_domain_unbind')
+        g.custom_command('update', 'api_portal_custom_domain_update')
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
         pass

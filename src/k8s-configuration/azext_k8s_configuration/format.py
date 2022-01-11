@@ -44,7 +44,7 @@ def __get_fluxconfig_table_row(result):
             ("scope", result["scope"]),
             ("provisioningState", result["provisioningState"]),
             ("complianceState", result["complianceState"]),
-            ("lastSourceSyncedAt", result["lastSourceSyncedAt"]),
+            ("lastSourceUpdatedAt", result["lastSourceUpdatedAt"]),
         ]
     )
 

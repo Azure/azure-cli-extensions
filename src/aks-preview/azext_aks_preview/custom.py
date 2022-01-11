@@ -757,6 +757,7 @@ def aks_create(cmd,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                snapshot_id=None,
+               enable_oidc_issuer=False,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -833,7 +834,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_azure_rbac=False,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
-               gmsa_root_domain_name=None):
+               gmsa_root_domain_name=None,
+               enable_oidc_issuer=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
