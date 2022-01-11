@@ -83,7 +83,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
     def after_create(self, no_wait=None, **kwargs):
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
-            _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs)
+            _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),

@@ -240,6 +240,7 @@ class EnterpriseServiceTest(ScenarioTest):
         })
         self.cmd('group create -n {rg} -l {location}')
         self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --sku="Enterprise" '
+                 '--disable-app-insights '
                  '--enable-application-configuration-service '
                  '--enable-service-registry '
                  '--enable-gateway --gateway-instance-count 2 '
