@@ -99,7 +99,7 @@ def network_manager_commit_post(cmd,
                                 client,
                                 resource_group_name,
                                 network_manager_name,
-                                target_locations=None,
+                                target_locations,
                                 configuration_ids=None,
                                 commit_type=None):
     client = cf_networkmanagercommit(cmd.cli_ctx)
@@ -167,11 +167,11 @@ def network_manager_active_config_list(cmd,
                                        resource_group_name,
                                        network_manager_name,
                                        skip_token=None,
-                                       region=None):
+                                       regions=None):
     client = cf_activeconnectivityconfiguration(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
-    parameters['region'] = region
+    parameters['regions'] = regions
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        parameters=parameters)
@@ -429,12 +429,10 @@ def network_manager_security_user_config_create(client,
                                                 configuration_name,
                                                 display_name=None,
                                                 description=None,
-                                                security_type=None,
                                                 delete_existing_ns_gs=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
-    security_configuration['security_type'] = security_type
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -496,12 +494,10 @@ def network_manager_security_admin_config_create(client,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 security_type=None,
                                                  delete_existing_ns_gs=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
-    security_configuration['security_type'] = security_type
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -515,14 +511,11 @@ def network_manager_security_admin_config_update(instance,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 security_type=None,
                                                  delete_existing_ns_gs=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
         instance.description = description
-    if security_type is not None:
-        instance.security_type = security_type
     if delete_existing_ns_gs is not None:
         instance.delete_existing_ns_gs = delete_existing_ns_gs
     return instance

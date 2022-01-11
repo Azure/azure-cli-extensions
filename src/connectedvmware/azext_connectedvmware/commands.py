@@ -15,6 +15,7 @@ from ._client_factory import (
     cf_cluster,
     cf_datastore,
     cf_host,
+    cf_machine_extension,
 )
 
 
@@ -115,6 +116,15 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
         g.custom_show_command('show', 'show_guest_agent')
+
+    with self.command_group(
+        'connectedvmware vm extension', client_factory=cf_machine_extension
+    ) as g:
+        g.custom_command('list', 'connectedvmware_extension_list')
+        g.custom_show_command('show', 'connectedvmware_extension_show')
+        g.custom_command('create', 'connectedvmware_extension_create', supports_no_wait=True)
+        g.custom_command('update', 'connectedvmware_extension_update', supports_no_wait=True)
+        g.custom_command('delete', 'connectedvmware_extension_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('connectedvmware', is_preview=False):
         pass

@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.4.0
+++++++++++++++++++
+* Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations
+
+1.3.0
+++++++++++++++++++
+* Add `deployed-object` command group for showing deployed Flux objects from configuration
+* Show extension error when `microsoft.flux` extension is in a failed state
+
+1.2.0
+++++++++++++++++++
+* Add Flux v2 support with command subgroups
+* Add update support to Flux v2 resources
+
 1.1.1
 ++++++++++++++++++
 * Enable helm-operator chart version 1.4.0
