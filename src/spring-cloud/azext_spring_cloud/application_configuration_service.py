@@ -28,6 +28,7 @@ def application_configuration_service_show(cmd, client, service, resource_group)
 
 
 def application_configuration_service_clear(cmd, client, service, resource_group):
+    logger.warn("Please make sure no patterns are used in your apps.")
     properties = models.ConfigurationServiceGitProperty()
     acs_resource = models.ConfigurationServiceResource(properties=properties)
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
