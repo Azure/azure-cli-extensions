@@ -39,8 +39,14 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220101preview
     )
 
+
     builder_cmd_group = CliCommandType(
         operations_tmpl="azext_spring_cloud._build_service#{}",
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
+    buildpack_binding_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring_cloud.buildpack_binding#{}",
         client_factory=cf_spring_cloud_20220101preview
     )
 
@@ -287,3 +293,12 @@ def load_command_table(self, _):
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
         g.custom_show_command('show', 'builder_show')
         g.custom_command('delete', 'builder_delete', supports_no_wait=True, confirmation=True)
+
+    with self.command_group('spring-cloud build-service builder buildpack-binding',
+                            custom_command_type=buildpack_binding_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('create', 'create_or_update_buildpack_binding')
+        g.custom_command('set', 'create_or_update_buildpack_binding')
+        g.custom_show_command('show', 'buildpack_binding_show')
+        g.custom_command('list', 'buildpack_binding_list')
+        g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)

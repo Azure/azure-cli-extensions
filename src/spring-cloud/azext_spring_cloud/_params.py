@@ -14,16 +14,21 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
-                                     validate_builder_update, validate_build_pool_size,
-                                     validate_git_uri, validate_acs_patterns,
-                                     validate_routes)
+from ._validators_enterprise import (only_support_enterprise, validate_git_uri, validate_acs_patterns, validate_routes,
+                                     validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
+                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
+                                     validate_builder_resource, validate_builder_create,
+                                     validate_builder_update, validate_build_pool_size,)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory)
 from ._utils import ApiType
 
+
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2022_01_01_preview.models \
+    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -222,7 +227,7 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
-            c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
+            c.argument('runtime_version', arg_type=get_enum_type(SupportedRuntimeValue),
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
@@ -528,3 +533,39 @@ def load_arguments(self, _):
             c.argument('app_name', type=str, help="The Azure Spring Cloud app name to configure the route.")
             c.argument('routes_json', type=str, help="The JSON array of API routes.", validator=validate_routes)
             c.argument('routes_file', type=str, help="The file path of JSON array of API routes.", validator=validate_routes)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_not_exist)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create',
+                  'spring-cloud build-service builder buildpack-binding set']:
+        with self.argument_context(scope) as c:
+            c.argument('type',
+                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       help='Required type for buildpack binding.')
+            c.argument('properties',
+                       help='Non-sensitive properties for launchProperties. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for launchProperties. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_secrets)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding set',
+                  'spring-cloud build-service builder buildpack-binding show',
+                  'spring-cloud build-service builder buildpack-binding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create',
+                  'spring-cloud build-service builder buildpack-binding set',
+                  'spring-cloud build-service builder buildpack-binding list',
+                  'spring-cloud build-service builder buildpack-binding show',
+                  'spring-cloud build-service builder buildpack-binding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)

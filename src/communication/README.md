@@ -49,3 +49,22 @@ az communication regenerate-key --name "MyCommunicationResource" --key-type "Pri
 ```
 az communication delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
+##### Issue-Access-Token #####
+```
+az communication identity issue-access-token --scope chat
+
+az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+```
+##### Send-SMS #####
+```
+az communication sms send-sms --sender "+1833xxxxxxx" \
+    --recipient "+1425xxxxxxx" --message "Hello there!!"
+```
+##### List-Phonenumbers #####
+```
+az communication phonenumbers list-phonenumbers
+```
+##### Show-Phonenumber #####
+```
+az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
+```

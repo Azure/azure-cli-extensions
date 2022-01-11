@@ -10,6 +10,8 @@ from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
+from .buildpack_binding import create_default_buildpack_binding_for_application_insights
+
 
 from ._validators import (_parse_sku_name)
 from knack.log import get_logger
@@ -81,6 +83,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
             # create sub components like Service registry, ACS, build service, etc.
             _update_default_build_agent_pool(
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size'])
+            _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs)
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
@@ -136,3 +139,13 @@ def spring_cloud_create(cmd, client, resource_group, name,
 
     spring_cloud_factory = _get_factory(cmd, client, resource_group, name, location=location, sku=sku)
     return spring_cloud_factory.create(**kwargs)
+
+
+def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key, app_insights,
+                         sampling_rate, disable_app_insights, **_):
+    if disable_app_insights:
+        return
+
+    return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
+                                                                     location, app_insights_key, app_insights,
+                                                                     sampling_rate)

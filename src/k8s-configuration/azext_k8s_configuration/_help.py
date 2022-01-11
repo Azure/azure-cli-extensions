@@ -86,6 +86,14 @@ helps[
           --name myconfig --scope cluster --namespace my-namespace \\
           --kind git --url https://github.com/Azure/arc-k8s-demo \\
           --branch main --kustomization name=my-kustomization
+      - name: Create a Kubernetes v2 Flux Configuration with Bucket Source Kind
+        text: |-
+          az k8s-configuration flux create --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters \\
+          --name myconfig --scope cluster --namespace my-namespace \\
+          --kind bucket --url https://bucket-provider.minio.io \\
+          --bucket-name my-bucket --kustomization name=my-kustomization \\
+          --access-key my-access-key --secret-key my-secret-key
 """
 
 helps[

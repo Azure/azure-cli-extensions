@@ -6,7 +6,8 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
 from re import match
-
+from azure.cli.core.commands.validators import validate_tag
+from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
@@ -16,9 +17,11 @@ from knack.log import get_logger
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
     validate_memory as validate_and_normalize_memory
-from ._util_enterprise import (is_enterprise_tier, get_client)
+from ._util_enterprise import (
+    is_enterprise_tier, get_client
+)
 from ._validators import (validate_instance_count, _parse_sku_name)
-from ._build_service import DEFAULT_BUILD_SERVICE_NAME
+from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
 
 logger = get_logger(__name__)
 
@@ -156,3 +159,48 @@ def validate_api_portal_instance_count(namespace):
     if namespace.api_portal_instance_count is not None:
         if namespace.api_portal_instance_count < 1:
             raise InvalidArgumentValueError("--api-portal-instance-count must be greater than 0")
+
+
+def validate_buildpack_binding_properties(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def validate_buildpack_binding_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
+
+
+def validate_buildpack_binding_not_exist(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        binding_resource = client.buildpack_binding.get(namespace.resource_group,
+                                                        namespace.service,
+                                                        DEFAULT_BUILD_SERVICE_NAME,
+                                                        namespace.builder_name,
+                                                        namespace.name)
+        if binding_resource is not None:
+            raise ClientRequestError('buildpack Binding {} in builder {} already exists '
+                                     'in resource group {}, service {}. You can edit it by set command.'
+                                     .format(namespace.name, namespace.resource_group, namespace.service, namespace.builder_name))
+    except ResourceNotFoundError:
+        # Excepted case
+        pass
+
+
+def validate_buildpack_binding_exist(cmd, namespace):
+    client = get_client(cmd)
+    # If not exists exception will be raised
+    client.buildpack_binding.get(namespace.resource_group,
+                                 namespace.service,
+                                 DEFAULT_BUILD_SERVICE_NAME,
+                                 namespace.builder_name,
+                                 namespace.name)
