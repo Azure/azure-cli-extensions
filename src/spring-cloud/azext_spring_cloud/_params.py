@@ -17,9 +17,9 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
 from ._validators_enterprise import (only_support_enterprise,
                                      validate_git_uri, validate_acs_patterns,
                                      validate_routes)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app_or_warning,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_memory)
+                             validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
@@ -156,6 +156,9 @@ def load_arguments(self, _):
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
                    help='A json file path indicates the certificates which would be loaded to app')
+        c.argument('deployment', options_list=['--deployment', '-d'],
+                   help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
+                   validator=fulfill_deployment_param_or_warning)
 
     with self.argument_context('spring-cloud app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -168,16 +171,16 @@ def load_arguments(self, _):
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
 
-    for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
+    for scope in ['spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
-            c.argument('main_entry', options_list=[
-                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
-    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']:
-        with self.argument_context(scope) as c:
-            c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+    with self.argument_context('spring-cloud app unset-deployment') as c:
+        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+
+    with self.argument_context('spring-cloud app identity') as c:
+        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
@@ -218,6 +221,8 @@ def load_arguments(self, _):
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
+            c.argument('main_entry', options_list=[
+                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
@@ -289,7 +294,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
-                   validator=active_deployment_exist_under_app)
+                   validator=active_deployment_exist_under_app_or_warning)
         c.argument('name', name_type, help='Name of service binding.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
@@ -391,7 +396,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
-        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app)
+        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app_or_warning)
         c.argument('domain_name', help='Name of custom domain.')
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:

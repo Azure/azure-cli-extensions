@@ -357,16 +357,30 @@ class TestAppUpdate(BasicTest):
         app_update(_get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
-        self.assertEqual(1, len(call_args))
-        self.assertEqual(5, len(call_args[0][0]))
-        self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
-        self.patch_deployment_resource = call_args[0][0][4]
+        if kwargs.get('deployment', None):
+            self.assertEqual(1, len(call_args))
+            self.assertEqual(5, len(call_args[0][0]))
+            self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
+            self.patch_deployment_resource = call_args[0][0][4]
+        else:
+            self.patch_deployment_resource = None
 
         call_args = client.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
         self.assertEqual(args[0:3], call_args[0][0][0:3])
         self.patch_app_resource = call_args[0][0][3]
+    
+    def test_app_update_without_deployment(self):
+        self._execute('rg', 'asc', 'app', assign_endpoint=True)
+        
+        self.assertIsNone(self.patch_deployment_resource)
+        resource = self.patch_app_resource
+        self.assertEqual(True, resource.properties.public)
+
+    def test_invalid_app_update_deployment_settings_without_deployment(self):
+        with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when there is no active deployment.'):
+            self._execute('rg', 'asc', 'app', jvm_options='test-option')
     
     def test_app_update_jvm_options(self):
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), jvm_options='test-option')

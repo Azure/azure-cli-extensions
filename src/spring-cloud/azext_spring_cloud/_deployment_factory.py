@@ -50,7 +50,7 @@ class DefaultDeployment:
             memory=memory
         )
 
-    def _get_env(self, env, **_):
+    def _get_env(self, env=None, **_):
         return env
 
     def format_source(self, **kwargs):
