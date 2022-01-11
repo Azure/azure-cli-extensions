@@ -357,6 +357,7 @@ def _generate_local_user(local_user, PermissionScope, SshPublicKey, permission_s
     if has_ssh_password is not None:
         local_user.has_ssh_password = has_ssh_password
 
+
 def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
                       has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
     LocalUser, PermissionScope, SshPublicKey = cmd.get_models('LocalUser', 'PermissionScope', 'SshPublicKey')
