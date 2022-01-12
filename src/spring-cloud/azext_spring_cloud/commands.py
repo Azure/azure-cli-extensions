@@ -39,7 +39,6 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220101preview
     )
 
-
     builder_cmd_group = CliCommandType(
         operations_tmpl="azext_spring_cloud._build_service#{}",
         client_factory=cf_spring_cloud_20220101preview
