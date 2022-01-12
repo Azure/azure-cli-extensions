@@ -176,7 +176,7 @@ def app_update(cmd, client, resource_group, service, name,
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
         if updated_deployment_kwargs:
             raise ArgumentUsageError('{} cannot be set when there is no active deployment.'
-                                      .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
+                                     .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
