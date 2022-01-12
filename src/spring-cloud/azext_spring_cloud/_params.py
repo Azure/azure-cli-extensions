@@ -14,12 +14,11 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (only_support_enterprise,
+from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
+                                     validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count,
                                      validate_api_portal_instance_count,
-                                     validate_builder_resource, validate_builder_create,
-                                     validate_builder_update, validate_build_pool_size,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app_or_warning,
