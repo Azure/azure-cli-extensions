@@ -5,7 +5,13 @@
 
 # pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension
 
+import os.path
+import json
 import time
+
+from azure.common.credentials import ServicePrincipalCredentials
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.resource.resources.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
@@ -159,13 +165,73 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
-    poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-    while not poller.done():
-        time.sleep(POLLING_TIME_DURATION)
-    quantum_workspace = poller.result()
-    if not skip_role_assignment:
-        quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
+
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Old code...
+    # _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+    # poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+    # while not poller.done():
+    #     time.sleep(POLLING_TIME_DURATION)
+    # quantum_workspace = poller.result()
+    # if not skip_role_assignment:
+    #     quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
+    #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> New code...
+    template_path = os.path.join(os.path.dirname(
+        __file__), 'templates', 'create-workspace-and-assign-role.json')
+    with open(template_path, 'r') as template_file_fd:
+        template = json.load(template_file_fd)
+
+    parameters = {
+        'quantumWorkspaceName': workspace_name,
+        'location': location,
+        'tags': {},
+        'providers': [{"providerId": "Microsoft", "providerSku": "Basic"}],     #<<<<< Parse this from provider_sku_list
+        'storageAccountName': storage_account,
+        'storageAccountId': _get_storage_account_path(info, storage_account),
+        'storageAccountLocation': location,
+        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())  
+    }
+    parameters = {k: {'value': v} for k, v in parameters.items()}
+
+    deployment_properties = {
+        'mode': DeploymentMode.incremental,
+        'template': template,
+        'parameters': parameters
+    }
+
+    # credentials = ServicePrincipalCredentials(
+    #         client_id=os.environ['AZURE_CLIENT_ID'],
+    #         secret=os.environ['AZURE_CLIENT_SECRET'],
+    #         tenant=os.environ['AZURE_TENANT_ID']
+    #     )
+
+    #>>>>> Similar code from azure-cli-extensions\src\db-up\azext_db_up\_client_factory.py
+    # from os import getenv
+    # client_id = getenv(CLIENT_ID)
+    # if client_id:
+    #     from azure.common.credentials import ServicePrincipalCredentials
+    #     credentials = ServicePrincipalCredentials(
+    #         client_id=client_id,
+    #         secret=getenv(CLIENT_SECRET),
+    #         tenant=getenv(TENANT_ID))
+    # else:
+    #     from msrest.authentication import Authentication    # pylint: disable=import-error
+    #     credentials = Authentication()
+ 
+    credentials = ServicePrincipalCredentials(
+        client_id="ID-for-debugging",               #<<<<< Bogus values to temorarily avoid an error from calling this function
+        secret='Secret-for-debugging',
+        tenant='Tenant-ID-for-debugging')
+
+    arm_client = ResourceManagementClient(credentials, info.subscription)
+
+    deployment_async_operation = arm_client.deployments.begin_create_or_update(
+        info.resource_group,
+        "Microsoft.Quantum",
+        deployment_properties
+    )
+    deployment_async_operation.wait()
     return quantum_workspace
 
 

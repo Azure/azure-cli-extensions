@@ -11,14 +11,14 @@
         "location": {
             "type": "string",
             "metadata": {
-                "description": "Datacenter Location"
+                "description": "Workspace Location"
             }
         },
         "tags": {
             "type": "object",
             "defaultValue": {},
             "metadata": {
-                "description": "One or more Tags for this workspace"
+                "description": "Tags for this workspace"
             }
         },
             "providers": {
@@ -27,16 +27,16 @@
                 "description": "A list of Providers for this workspace"
             }
         },
-        "storageAccount": {
-            "type": "string",
-            "metadata": {
-                "description": "Storage account ID"
-            }
-        },
         "storageAccountName": {
             "type": "string",
             "metadata": {
-                "description": "Storage account [short] name"
+                "description": "Storage account short name"
+            }
+        },
+        "storageAccountId": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account ID (path)"
             }
         },
         "storageAccountLocation": {
@@ -45,16 +45,10 @@
                 "description": "Storage account location"
             }
         },
-        "storageAccountId": {
-            "type": "string",
-            "metadata": {
-                "description": "Storage account ID"
-            }
-        },
         "storageAccountDeploymentName": {
             "type": "string",
             "metadata": {
-                "description": "Storage account deployment name"
+                "description": "Deployment name for role assignment operation"
             }
         }
     },
@@ -72,7 +66,7 @@
             },
             "properties": {
                 "providers": "[parameters('providers')]",
-                "storageAccount": "[parameters('storageAccount')]"
+                "storageAccount": "[parameters('storageAccountId')]"
             }
         },
         {
@@ -92,47 +86,7 @@
                             "apiVersion": "2019-06-01",
                             "name": "[parameters('storageAccountName')]",
                             "location": "[parameters('storageAccountLocation')]",
-                            "type": "Microsoft.Storage/storageAccounts",
-                            "sku": {
-                                "name": "Standard_LRS"
-                            },
-                            "kind": "Storage",
-                            "resources": [
-                                {
-                                    "name": "default",
-                                    "type": "fileServices",
-                                    "apiVersion": "2019-06-01",
-                                    "dependsOn": [
-                                        "[parameters('storageAccountId')]"
-                                    ],
-                                    "properties": {
-                                        "cors": {
-                                            "corsRules": [
-                                                {
-                                                    "allowedOrigins": [
-                                                        "*"
-                                                    ],
-                                                    "allowedHeaders": [
-                                                        "*"
-                                                    ],
-                                                    "allowedMethods": [
-                                                        "GET",
-                                                        "HEAD",
-                                                        "OPTIONS",
-                                                        "PATCH",
-                                                        "POST",
-                                                        "PUT"
-                                                    ],
-                                                    "exposedHeaders": [
-                                                        "*"
-                                                    ],
-                                                    "maxAgeInSeconds": 180
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
+                            "type": "Microsoft.Storage/storageAccounts"
                         },
                         {
                             "apiVersion": "2020-04-01-preview",
