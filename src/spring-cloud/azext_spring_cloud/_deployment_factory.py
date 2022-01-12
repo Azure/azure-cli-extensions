@@ -55,7 +55,7 @@ class DefaultDeployment:
             memory=memory
         )
 
-    def _get_env(self, env, **_):
+    def _get_env(self, env=None, **_):
         return env
 
     def _get_addon_configs(self, config_file_patterns=None, **_):

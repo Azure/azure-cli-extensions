@@ -6,9 +6,9 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
 from .custom import app_get
-from ._utils import (get_spring_cloud_sku, wait_till_end)
+from ._utils import (get_spring_cloud_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
                                   deployment_source_options_from_resource,
@@ -150,9 +150,9 @@ def app_update(cmd, client, resource_group, service, name,
         'resource_group': resource_group,
         'service': service,
         'app': name,
-        'deployment': deployment.name,
+        'sku': deployment.sku if deployment else get_spring_cloud_sku(client, resource_group, service),
+        'deployment': deployment.name if deployment else None,
         'deployment_resource': deployment,
-        'sku': deployment.sku
     }
 
     deployment_kwargs = {
@@ -162,8 +162,9 @@ def app_update(cmd, client, resource_group, service, name,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
-        'source_type': deployment.properties.source.type
+        'source_type': deployment.properties.source.type if deployment else None
     }
+
     app_kwargs = {
         'public': assign_endpoint,
         'enable_persistent_storage': enable_persistent_storage,
@@ -173,6 +174,12 @@ def app_update(cmd, client, resource_group, service, name,
         'https_only': https_only,
     }
 
+    if deployment is None:
+        updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
+        if updated_deployment_kwargs:
+            raise ArgumentUsageError('{} cannot be set when there is no active deployment.'
+                                     .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
+
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
     deployment_kwargs.update(deployment_factory.source_factory
@@ -181,15 +188,18 @@ def app_update(cmd, client, resource_group, service, name,
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
     deployment_resource = deployment_factory.format_resource(**deployment_kwargs, **basic_kwargs)
 
-    app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
-    poller = client.deployments.begin_update(resource_group,
-                                             service,
-                                             name,
-                                             DEFAULT_DEPLOYMENT_NAME,
-                                             deployment_resource)
+    pollers = [
+        client.apps.begin_update(resource_group, service, name, app_resource)
+    ]
+    if deployment_kwargs:
+        pollers.append(client.deployments.begin_update(resource_group,
+                                                       service,
+                                                       name,
+                                                       DEFAULT_DEPLOYMENT_NAME,
+                                                       deployment_resource))
     if no_wait:
         return
-    wait_till_end(cmd, app_poller, poller)
+    wait_till_end(cmd, *pollers)
     return app_get(cmd, client, resource_group, service, name)
 
 
