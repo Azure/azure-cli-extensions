@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError)
+from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
 from .custom import app_get
 from ._utils import (get_spring_cloud_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
@@ -175,8 +175,8 @@ def app_update(cmd, client, resource_group, service, name,
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
         if updated_deployment_kwargs:
-            raise InvalidArgumentValueError('{} cannot be set when there is no active deployment.'
-                                            .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
+            raise ArgumentUsageError ('{} cannot be set when there is no active deployment.'
+                                      .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
