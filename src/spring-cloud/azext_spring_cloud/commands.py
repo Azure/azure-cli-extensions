@@ -241,7 +241,7 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
-        g.custom_command('clear', 'gateway_clear')
+        g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
 
     with self.command_group('spring-cloud gateway custom-domain',
                             custom_command_type=gateway_custom_domain_cmd_group,

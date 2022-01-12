@@ -11,6 +11,10 @@ from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
+from ._tanzu_component import (create_application_configuration_service,
+                               create_service_registry,
+                               create_gateway,
+                               create_api_portal)
 
 
 from ._validators import (_parse_sku_name)
@@ -83,7 +87,11 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
             # create sub components like Service registry, ACS, build service, etc.
             _update_default_build_agent_pool(
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
-            _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs)
+            _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
+            create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
@@ -113,6 +121,12 @@ def spring_cloud_create(cmd, client, resource_group, name,
                         tags=None,
                         zone_redundant=False,
                         build_pool_size=None,
+                        enable_application_configuration_service=False,
+                        enable_service_registry=False,
+                        enable_gateway=False,
+                        gateway_instance_count=None,
+                        enable_api_portal=False,
+                        api_portal_instance_count=None,
                         no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -134,6 +148,12 @@ def spring_cloud_create(cmd, client, resource_group, name,
         'tags': tags,
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
+        'enable_application_configuration_service': enable_application_configuration_service,
+        'enable_service_registry': enable_service_registry,
+        'enable_gateway': enable_gateway,
+        'gateway_instance_count': gateway_instance_count,
+        'enable_api_portal': enable_api_portal,
+        'api_portal_instance_count': api_portal_instance_count,
         'no_wait': no_wait
     }
 

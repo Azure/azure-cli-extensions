@@ -151,14 +151,18 @@ def validate_routes(namespace):
 
 def validate_gateway_instance_count(namespace):
     if namespace.gateway_instance_count is not None:
+        if namespace.enable_gateway is False:
+            raise ArgumentUsageError("--gateway-instance-count can only be set when enable gateway.")
         if namespace.gateway_instance_count < 1:
-            raise InvalidArgumentValueError("--gateway-instance-count must be greater than 0")
+            raise ArgumentUsageError("--gateway-instance-count must be greater than 0")
 
 
 def validate_api_portal_instance_count(namespace):
     if namespace.api_portal_instance_count is not None:
+        if namespace.enable_api_portal is False:
+            raise ArgumentUsageError("--api-portal-instance-count can only be set when enable API portal.")
         if namespace.api_portal_instance_count < 1:
-            raise InvalidArgumentValueError("--api-portal-instance-count must be greater than 0")
+            raise ArgumentUsageError("--api-portal-instance-count must be greater than 0")
 
 
 def validate_buildpack_binding_properties(namespace):
