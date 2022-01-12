@@ -21,7 +21,6 @@ from ._validators_enterprise import (only_support_enterprise,
                                      validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
-                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app_or_warning,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
