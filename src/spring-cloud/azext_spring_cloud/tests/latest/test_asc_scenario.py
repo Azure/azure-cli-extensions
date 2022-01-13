@@ -236,7 +236,7 @@ class EnterpriseServiceTest(ScenarioTest):
         self.kwargs.update({
             'serviceName': 'cli-unittest-ent',
             'location': 'eastus2euap',
-            'rg': 'cli'
+            'rg': 'cli-test'
         })
         self.cmd('group create -n {rg} -l {location}')
         self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --sku="Enterprise" '
