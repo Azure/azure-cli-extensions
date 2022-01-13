@@ -61,13 +61,13 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage account local-user', local_users_sdk,
                             custom_command_type=local_users_custom_type,
                             resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
-        g.storage_custom_command_oauth('create', 'create_local_user')
-        g.storage_custom_command_oauth('update', 'update_local_user')
-        g.storage_custom_command_oauth('delete', 'delete_local_user')
-        g.storage_custom_command_oauth('list', 'list_local_user')
-        g.storage_custom_command_oauth('show', 'show_local_user')
-        g.storage_custom_command_oauth('list-keys', 'list_keys_for_local_user')
-        g.storage_custom_command_oauth('regenerate-password', 'regenerate_password_for_local_user')
+        g.custom_command('create', 'create_local_user')
+        g.custom_command('update', 'update_local_user')
+        g.command('delete', 'delete')
+        g.command('list', 'list')
+        g.command('show', 'get')
+        g.command('list-keys', 'list_keys')
+        g.command('regenerate-password', 'regenerate_password')
 
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',

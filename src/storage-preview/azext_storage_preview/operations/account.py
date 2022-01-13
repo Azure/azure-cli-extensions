@@ -318,36 +318,12 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
     return params
 
 
-def _generate_local_user(local_user, PermissionScope, SshPublicKey, permission_scope=None, ssh_authorized_key=None,
+def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=None,
                          home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None):
-    permission_scopes = []
     if permission_scope is not None:
-        for scope in permission_scope:
-            permissions, service, resource_name = '', '', ''
-            for s in scope:
-                if "permissions" in s:
-                    permissions = s.split('=')[1]
-                elif "service" in s:
-                    service = s.split('=')[1]
-                elif "resource-name" in s:
-                    resource_name = s.split('=')[1]
-            permission_scopes.append(
-                PermissionScope(permissions=permissions, service=service, resource_name=resource_name))
-        local_user.permission_scopes = permission_scopes
-
-    ssh_authorized_keys = []
+        local_user.permission_scopes = permission_scope
     if ssh_authorized_key is not None:
-        for ssh_key in ssh_authorized_key:
-            description, key = '', ''
-            for k in ssh_key:
-                if "description" in k:
-                    description = k.split('=')[1]
-                elif "key" in k:
-                    key = k.split('=')[1]
-            ssh_authorized_keys.append(
-                SshPublicKey(description=description, key=key))
-        local_user.ssh_authorized_keys = ssh_authorized_keys
-
+        local_user.ssh_authorized_keys = ssh_authorized_key
     if home_directory is not None:
         local_user.home_directory = home_directory
     if has_shared_key is not None:
@@ -360,10 +336,10 @@ def _generate_local_user(local_user, PermissionScope, SshPublicKey, permission_s
 
 def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
                       has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
-    LocalUser, PermissionScope, SshPublicKey = cmd.get_models('LocalUser', 'PermissionScope', 'SshPublicKey')
+    LocalUser = cmd.get_models('LocalUser')
     local_user = LocalUser()
 
-    _generate_local_user(local_user, PermissionScope, SshPublicKey, permission_scope, ssh_authorized_key,
+    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
                          home_directory, has_shared_key, has_ssh_key, has_ssh_password)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
@@ -373,29 +349,9 @@ def update_local_user(cmd, client, resource_group_name, account_name, username, 
                       home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
                       ssh_authorized_key=None, **kwargs):
     local_user = client.get(resource_group_name, account_name, username)
-    PermissionScope, SshPublicKey = cmd.get_models('PermissionScope', 'SshPublicKey')
 
-    _generate_local_user(local_user, PermissionScope, SshPublicKey, permission_scope, ssh_authorized_key,
+    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
                          home_directory, has_shared_key, has_ssh_key, has_ssh_password)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
 
-
-def delete_local_user(client, resource_group_name, account_name, username, **kwargs):
-    return client.delete(resource_group_name=resource_group_name, account_name=account_name, username=username)
-
-
-def list_local_user(client, resource_group_name, account_name, **kwargs):
-    return client.list(resource_group_name=resource_group_name, account_name=account_name)
-
-
-def show_local_user(client, resource_group_name, account_name, username, **kwargs):
-    return client.get(resource_group_name=resource_group_name, account_name=account_name, username=username)
-
-
-def list_keys_for_local_user(client, resource_group_name, account_name, username, **kwargs):
-    return client.list_keys(resource_group_name=resource_group_name, account_name=account_name, username=username)
-
-
-def regenerate_password_for_local_user(client, resource_group_name, account_name, username, **kwargs):
-    return client.regenerate_password(resource_group_name=resource_group_name, account_name=account_name, username=username)

@@ -11,7 +11,8 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list,
-                          process_resource_group, add_upload_progress_callback)
+                          process_resource_group, add_upload_progress_callback, PermissionScopeAddAction,
+                          SshPublicKeyAddAction)
 
 from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
@@ -96,7 +97,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for item in ['create', 'update']:
         with self.argument_context(f'storage account local-user {item}') as c:
-            c.argument('permission_scope', nargs='+', action='append',
+            c.argument('permission_scope', nargs='+', action=PermissionScopeAddAction,
                        help='The permission scope argument list which includes the permissions, service, and resource_name.'
                             'The permissions can be a combination of the below possible values: '
                             'Read(r), Write (w), Delete (d), List (l), and Create (c). '
@@ -107,7 +108,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                             '--permission-scope permissions=rw service=blob resource-name=container1'
                             '--permission-scope permissions=rwd service=file resource-name=share2')
             c.argument('home_directory', help='The home directory.')
-            c.argument('ssh_authorized_key', nargs='+', action='append',
+            c.argument('ssh_authorized_key', nargs='+', action=SshPublicKeyAddAction,
                        help='SSH authorized keys for SFTP. Includes an optional description and key. '
                             'The key is the base64 encoded SSH public key , with format: '
                             '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
