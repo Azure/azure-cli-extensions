@@ -78,10 +78,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                              help="Specify the security identifier (SID) for Azure Storage. "
                                                   "Required when --enable-files-adds is set to True")
     sam_account_name_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
-                                            help="Specify the Active Directory SAMAccountName for Azure Storage.")
+                                            help="Specify the Active Directory SAMAccountName for Azure Storage.",
+                                            is_preview=True)
     t_account_type = self.get_models('ActiveDirectoryPropertiesAccountType', resource_type=CUSTOM_MGMT_STORAGE)
     account_type_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
-                                        arg_type=get_enum_type(t_account_type),
+                                        arg_type=get_enum_type(t_account_type), is_preview=True,
                                         help="Specify the Active Directory account type for Azure Storage.")
     t_routing_choice = self.get_models('RoutingChoice', resource_type=CUSTOM_MGMT_STORAGE)
     routing_choice_type = CLIArgumentType(
