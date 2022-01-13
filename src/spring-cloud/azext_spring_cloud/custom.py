@@ -42,6 +42,7 @@ import json
 import base64
 from collections import defaultdict
 from ._log_stream import LogStream
+from ._build_service import _update_default_build_agent_pool
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -85,7 +86,7 @@ def _update_application_insights_asc_create(cmd,
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_app_insights=None, sku=None, tags=None, no_wait=False):
+                        disable_app_insights=None, sku=None, tags=None, build_pool_size=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -106,6 +107,9 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
+
+    _update_default_build_agent_pool(
+        cmd, client, resource_group, name, build_pool_size)
 
     # update service tags
     if tags is not None:

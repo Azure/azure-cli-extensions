@@ -11,6 +11,7 @@ from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
+from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
@@ -19,7 +20,7 @@ from ._resource_quantity import \
 from ._util_enterprise import (
     is_enterprise_tier, get_client
 )
-from ._validators import validate_instance_count
+from ._validators import (validate_instance_count, _parse_sku_name)
 from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
 
 logger = get_logger(__name__)
@@ -33,6 +34,44 @@ def only_support_enterprise(cmd, namespace):
 def not_support_enterprise(cmd, namespace):
     if namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
         raise ClientRequestError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
+
+
+def validate_builder_create(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        builder = client.build_service_builder.get(namespace.resource_group,
+                                                   namespace.service,
+                                                   DEFAULT_BUILD_SERVICE_NAME,
+                                                   namespace.name)
+        if builder is not None:
+            raise ClientRequestError('Builder {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_builder_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        client.build_service_builder.get(namespace.resource_group,
+                                         namespace.service,
+                                         DEFAULT_BUILD_SERVICE_NAME,
+                                         namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('Builder {} does not exist.'.format(namespace.name))
+
+
+def validate_builder_resource(namespace):
+    if namespace.builder_json is not None and namespace.builder_file is not None:
+        raise ClientRequestError("You can only specify either --builder-json or --builder-file.")
+
+
+def validate_build_pool_size(namespace):
+    if _parse_sku_name(namespace.sku) == 'enterprise':
+        if namespace.build_pool_size is None:
+            namespace.build_pool_size = 'S1'
+    else:
+        if namespace.build_pool_size is not None:
+            raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
 
 
 def validate_cpu(namespace):
