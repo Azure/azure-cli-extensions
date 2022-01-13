@@ -10,7 +10,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
-# pylint: disable=bare-except
 
 import ctypes
 import json
@@ -24,6 +23,15 @@ from knack.util import CLIError
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Common helper function to validate if the commands are running on Windows.
+# -----------------------------------------------------------------------------------------------------------------
+def validate_os_env():
+
+    if not platform.system().__contains__('Windows'):
+        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_assessment(connection_string=None,
@@ -33,8 +41,7 @@ def datamigration_assessment(connection_string=None,
 
     try:
 
-        if not platform.system().__contains__('Windows'):
-            raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+        validate_os_env()
 
         defaultOutputFolder = get_default_output_folder()
 
@@ -89,7 +96,7 @@ def validate_config_file_path(path):
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
     try:
-        if not ((configJson['action'] == "Assess") or (configJson['action'] == "assess")):
+        if not configJson['action'].lower() == "assess":
             raise CLIError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
     except KeyError as e:
         raise CLIError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
@@ -118,10 +125,7 @@ def get_default_output_folder():
 def datamigration_register_ir(auth_key,
                               ir_path=None):
 
-    osPlatform = platform.system()
-
-    if not osPlatform.__contains__('Windows'):
-        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+    validate_os_env()
 
     if not is_user_admin():
         raise CLIError("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
