@@ -142,7 +142,7 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
                az datamigration to-sql-vm create --source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\"\
 :\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders/Microsoft.Storage/storageAccounts/MyStorage\\",\
 \\"accountKey\\":\\"======AccountKey====\\",\\"blobContainerName\\":\\"ContainerName-X\\"}}' --migration-service "/subscriptions\
-/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent"\
+/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
 --offline-configuration last-backup-name="last_backup_file_name" offline=true --scope "/subscriptions/00000000-1111-222\
 2-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/testvm" \
 --source-database-name "aaa" --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" \
