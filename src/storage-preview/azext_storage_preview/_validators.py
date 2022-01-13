@@ -344,28 +344,16 @@ def validate_encryption_services(cmd, namespace):
         namespace.encryption_services = t_encryption_services(**services)
 
 
-def validate_encryption_source(cmd, namespace):
-    ns = vars(namespace)
-
-    key_name = ns.pop('encryption_key_name', None)
-    key_version = ns.pop('encryption_key_version', None)
-    key_vault_uri = ns.pop('encryption_key_vault', None)
-
-    if namespace.encryption_key_source == 'Microsoft.Keyvault' and not (key_name and key_version and key_vault_uri):
-        raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are required '
+def validate_encryption_source(namespace):
+    if namespace.encryption_key_source == 'Microsoft.Keyvault' and \
+            not (namespace.encryption_key_name and namespace.encryption_key_vault):
+        raise ValueError('--encryption-key-name and --encryption-key-vault are required '
                          'when --encryption-key-source=Microsoft.Keyvault is specified.')
 
-    if key_name or key_version or key_vault_uri:
-        if namespace.encryption_key_source != 'Microsoft.Keyvault':
+    if namespace.encryption_key_name or namespace.encryption_key_version is not None or namespace.encryption_key_vault:
+        if namespace.encryption_key_source and namespace.encryption_key_source != 'Microsoft.Keyvault':
             raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
-                             'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE, 'KeyVaultProperties',
-                                     mod='models')
-        if not KeyVaultProperties:
-            return
-
-        kv_prop = KeyVaultProperties(key_name=key_name, key_version=key_version, key_vault_uri=key_vault_uri)
-        namespace.encryption_key_vault_properties = kv_prop
+                             'applicable without Microsoft.Keyvault key-source.')
 
 
 def get_file_path_validator(default_file_param=None):
@@ -410,6 +398,18 @@ def validate_storage_account(cmd, namespace):
     if "access" in cmd.name:
         if not storage_account_property.is_hns_enabled:
             raise CLIError("You storage account doesn't enable HNS property.")
+
+
+def validate_immutability_arguments(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if not namespace.enable_alw:
+        if any([namespace.immutability_period_since_creation_in_days,
+                namespace.immutability_policy_state, namespace.allow_protected_append_writes is not None]):
+            raise InvalidArgumentValueError("Incorrect usage: To enable account level immutability, "
+                                            "need to specify --enable-alw true. "
+                                            "Cannot set --enable_alw to false and specify "
+                                            "--immutability-period --immutability-state "
+                                            "--allow-append")
 
 
 def validate_subnet(cmd, namespace):

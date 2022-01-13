@@ -3,8 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import register_resource_type
-from ...profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
+import os
+import unittest
 
-register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2021-08-01')
-register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
+from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+
+
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+# TODO

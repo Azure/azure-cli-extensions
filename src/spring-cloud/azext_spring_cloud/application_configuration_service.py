@@ -9,7 +9,6 @@ import json
 from azure.cli.core.azclierror import ClientRequestError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from msrestazure.tools import resource_id
 
@@ -29,6 +28,7 @@ def application_configuration_service_show(cmd, client, service, resource_group)
 
 
 def application_configuration_service_clear(cmd, client, service, resource_group):
+    logger.warn("Please make sure no patterns are used in your apps.")
     properties = models.ConfigurationServiceGitProperty()
     acs_resource = models.ConfigurationServiceResource(properties=properties)
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)

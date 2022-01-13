@@ -347,7 +347,7 @@ def app_scale(cmd, client, resource_group, service, name,
                        resource_group, service, name, deployment.name, deployment_resource)
 
 
-def app_get_build_log(cmd, client, resource_group, service, name, deployment):
+def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment.properties.source.type != "Source":
         raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
     return stream_logs(client.deployments, resource_group, service, name, deployment.name)
