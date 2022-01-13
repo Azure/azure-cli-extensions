@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.8.0(2022-01-11)
+0.8.0
 ++++++++++++++++++
 * Remove `az storage account file-service-properties` as SMB multichannel and secured SMB has been supported in main Azure CLI
 * Remove `az storage account blob-inventory-policy` as it is supported in main Azure CLI
