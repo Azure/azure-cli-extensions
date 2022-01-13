@@ -174,6 +174,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     # quantum_workspace = poller.result()
     # if not skip_role_assignment:
     #     quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
+    # return quantum_workspace
     #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> New code...
@@ -206,6 +207,12 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     #         tenant=os.environ['AZURE_TENANT_ID']
     #     )
 
+    # from azure.identity import DefaultAzureCredential
+    # credentials = DefaultAzureCredential()
+
+    from azure.identity import AzureCliCredential
+    credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
+
     #>>>>> Similar code from azure-cli-extensions\src\db-up\azext_db_up\_client_factory.py
     # from os import getenv
     # client_id = getenv(CLIENT_ID)
@@ -219,11 +226,6 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     #     from msrest.authentication import Authentication    # pylint: disable=import-error
     #     credentials = Authentication()
  
-    credentials = ServicePrincipalCredentials(
-        client_id="ID-for-debugging",               #<<<<< Bogus values to temorarily avoid an error from calling this function
-        secret='Secret-for-debugging',
-        tenant='Tenant-ID-for-debugging')
-
     arm_client = ResourceManagementClient(credentials, info.subscription)
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
