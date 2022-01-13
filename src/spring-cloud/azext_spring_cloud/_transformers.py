@@ -60,7 +60,7 @@ def _parse_item_resource_id(addon, key, secondary):
     if not resource_id:
         return None
     resource_dict = parse_resource_id(resource_id)
-    return resource_dict.get('name', '')
+    return resource_dict.get('resource_name', '')
 
 
 def transform_spring_cloud_deployment_output(result):

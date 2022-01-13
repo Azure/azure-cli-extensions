@@ -39,6 +39,11 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220101preview
     )
 
+    buildpack_binding_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring_cloud.buildpack_binding#{}",
+        client_factory=cf_spring_cloud_20220101preview
+    )
+
     application_configuration_service_cmd_group = CliCommandType(
         operations_tmpl='azext_spring_cloud.application_configuration_service#{}',
         client_factory=cf_spring_cloud_20220101preview
@@ -231,7 +236,7 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('update', 'gateway_update', validator=validate_gateway_update, supports_no_wait=True)
-        g.custom_command('clear', 'gateway_clear')
+        g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
 
     with self.command_group('spring-cloud gateway custom-domain',
                             custom_command_type=gateway_custom_domain_cmd_group,
@@ -274,3 +279,12 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
         pass
+
+    with self.command_group('spring-cloud build-service builder buildpack-binding',
+                            custom_command_type=buildpack_binding_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('create', 'create_or_update_buildpack_binding')
+        g.custom_command('set', 'create_or_update_buildpack_binding')
+        g.custom_show_command('show', 'buildpack_binding_show')
+        g.custom_command('list', 'buildpack_binding_list')
+        g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)

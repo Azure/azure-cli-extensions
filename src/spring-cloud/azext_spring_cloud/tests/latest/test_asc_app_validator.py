@@ -7,7 +7,7 @@ from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
 from azure.core.exceptions import ResourceNotFoundError
-from ..._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+from ..._app_validator import (fulfill_deployment_param, active_deployment_exist,
                                validate_cpu, validate_memory, validate_deloyment_create_path, validate_deloy_path)
 
 
