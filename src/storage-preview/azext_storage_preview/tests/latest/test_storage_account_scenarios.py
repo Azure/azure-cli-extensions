@@ -10,6 +10,25 @@ from ...profiles import CUSTOM_MGMT_STORAGE
 from knack.util import CLIError
 
 
+class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
+    @AllowLargeResponse()
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
+    @ResourceGroupPreparer(name_prefix='cli_test_storage_account_sftp')
+    def test_storage_account_sftp(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'sa': self.create_random_name(prefix='cli', length=24),
+            'loc': 'centraluseuap'
+        })
+        self.cmd('storage account create -n {sa} -g {rg} -l {loc} --sku Standard_LRS --hns true '
+                 '--enable-sftp true --enable-nfs-v3 false --enable-local-user true',
+                 checks=[JMESPathCheck('isSftpEnabled', True), JMESPathCheck('isLocalUserEnabled', True)])
+        self.cmd('storage account update -n {sa} --enable-sftp false',
+                 checks=[JMESPathCheck('isSftpEnabled', False), JMESPathCheck('isLocalUserEnabled', True)])
+        self.cmd('storage account update -n {sa} --enable-local-user false',
+                 checks=[JMESPathCheck('isSftpEnabled', False), JMESPathCheck('isLocalUserEnabled', False)])
+
+
 @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2017-06-01')
