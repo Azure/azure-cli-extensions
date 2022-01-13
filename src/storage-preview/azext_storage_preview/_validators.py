@@ -634,7 +634,7 @@ class PermissionScopeAddAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not namespace.permission_scope:
             namespace.permission_scope = []
-        PermissionScope= namespace._cmd.get_models('PermissionScope')
+        PermissionScope = namespace._cmd.get_models('PermissionScope')
         try:
             permissions, service, resource_name = '', '', ''
             for s in values:
@@ -658,7 +658,7 @@ class SshPublicKeyAddAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not namespace.ssh_authorized_key:
             namespace.ssh_authorized_key = []
-        SshPublicKey= namespace._cmd.get_models('SshPublicKey')
+        SshPublicKey = namespace._cmd.get_models('SshPublicKey')
         try:
             description, key = '', ''
             for k in values:

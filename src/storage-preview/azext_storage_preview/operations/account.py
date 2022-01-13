@@ -700,4 +700,3 @@ def update_local_user(cmd, client, resource_group_name, account_name, username, 
                          home_directory, has_shared_key, has_ssh_key, has_ssh_password)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
-
