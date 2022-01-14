@@ -19,7 +19,12 @@ import subprocess
 import time
 import urllib.request
 from zipfile import ZipFile
-from knack.util import CLIError
+from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import FileOperationError
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+from azure.cli.core.azclierror import RequiredArgumentMissingError
+from azure.cli.core.azclierror import UnclassifiedUserFault
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -28,7 +33,7 @@ from knack.util import CLIError
 def validate_os_env():
 
     if not platform.system().__contains__('Windows'):
-        raise CLIError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+        raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -64,6 +69,9 @@ def datamigration_assessment(connection_string=None,
             with ZipFile(zipDestination, 'r') as zipFile:
                 zipFile.extractall(path=baseFolder)
 
+        if connection_string is not None and config_file_path is not None:
+            raise MutuallyExclusiveArgumentError("Both connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
+
         if connection_string is not None:
             connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
             cmd = f'{exePath} Assess --sqlConnectionStrings {connection_string} ' if output_folder is None else f'{exePath} Assess --sqlConnectionStrings {connection_string} --outputFolder "{output_folder}" '
@@ -74,7 +82,7 @@ def datamigration_assessment(connection_string=None,
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
         else:
-            raise CLIError('No valid parameter set used. Please provide any one of the these prameters: connection_string, config_file_path')
+            raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: connection_string, config_file_path')
 
         # Printing log file path
         logFilePath = os.path.join(defaultOutputFolder, "Logs")
@@ -90,16 +98,16 @@ def datamigration_assessment(connection_string=None,
 def validate_config_file_path(path):
 
     if not os.path.exists(path):
-        raise CLIError(f'Invalid config file path: {path}. Please provide a valid config file path.')
+        raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
 
     # JSON file
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
     try:
         if not configJson['action'].lower() == "assess":
-            raise CLIError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
+            raise FileOperationError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
     except KeyError as e:
-        raise CLIError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
+        raise FileOperationError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -128,11 +136,11 @@ def datamigration_register_ir(auth_key,
     validate_os_env()
 
     if not is_user_admin():
-        raise CLIError("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
+        raise UnclassifiedUserFault("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     validate_input(auth_key)
     if ir_path is not None:
         if not os.path.exists(ir_path):
-            raise CLIError(f"Invalid Integration Runtime MSI path : {ir_path}. Please provide a valid Integration Runtime MSI path")
+            raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {ir_path}. Please provide a valid Integration Runtime MSI path")
         install_gateway(ir_path)
 
     register_ir(auth_key)
@@ -156,7 +164,7 @@ def is_user_admin():
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
     if key == "":
-        raise CLIError("Failed: IR Auth key is empty. Please provide a valid auth key.")
+        raise InvalidArgumentValueError("Failed: IR Auth key is empty. Please provide a valid auth key.")
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -239,4 +247,4 @@ def get_cmd_file_path():
 
         return accessValue
     except FileNotFoundError as e:
-        raise CLIError("Failed: No installed IR found. Please install Integration Runtime and re-run this command") from e
+        raise FileOperationError("Failed: No installed IR found. Please install Integration Runtime and re-run this command") from e
