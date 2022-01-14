@@ -37,11 +37,11 @@ class StaticWebAppFrontDoorClient:
         return r
 
     @classmethod
-    def set(cls, cmd, resource_group, name, enable):
+    def set(cls, cmd, resource_group, name, enable, no_register=False):
         params = cls.get(cmd, resource_group, name).json()
 
-        if enable:
-            cls._validate_cdn_provider_registered(cmd)
+        if enable and not no_register:
+            cls._register_cdn_provider(cmd)
             cls._validate_sku(params["sku"].get("name"))
 
         params["properties"]["enterpriseGradeCdnStatus"] = "enabled" if enable else "disabled"
@@ -52,18 +52,23 @@ class StaticWebAppFrontDoorClient:
         return cls._request(cmd, resource_group, name)
 
     @classmethod
-    def _validate_cdn_provider_registered(cls, cmd):
+    def _register_cdn_provider(cls, cmd):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2021-04-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/providers/Microsoft.CDN?api-version={}"
+        url_fmt = "{}/subscriptions/{}/providers/Microsoft.CDN/register?api-version={}"
 
         request_url = url_fmt.format(management_hostname.strip('/'), sub_id, api_version)
 
-        registration = send_raw_request(cmd.cli_ctx, "GET", request_url).json().get("registrationState").lower()
-        if registration != "registered":
-            raise CLIError("Provider Microsoft.CDN is not registered. "
-                           "Please run 'az provider register --wait --namespace Microsoft.CDN'")
+        try:
+            registration = send_raw_request(cmd.cli_ctx, "POST", request_url, body="{'thirdPartyProviderConsent':{'consentToAuthorization':true}}")
+        except Exception as e:
+            msg = "Server responded with error message : {} \n"\
+                  "Enabling enterprise-grade edge requires reregistration for the Azure Front Door Microsoft.CDN resource provider. "\
+                  "We were unable to perform that reregistration on your behalf. "\
+                  "Please check with your admin on permissions and review the documentation available at https://go.microsoft.com/fwlink/?linkid=2185350"\
+                  "Or try running registration manually with: az provider register --wait --namespace Microsoft.CDN"
+            raise CLIError(msg.format(e.args)) from e 
 
     @classmethod
     def _validate_sku(cls, sku_name):
@@ -77,9 +82,9 @@ def _format_show_response(cmd, name, resource_group_name):
     return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
 
 
-def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
+def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name, no_register=False):
     logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
+    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True, no_register=no_register)
     return _format_show_response(cmd, name, resource_group_name)
 
 
