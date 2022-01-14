@@ -2113,6 +2113,16 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             mc.enable_pod_security_policy = False
         return mc
 
+    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.http_proxy_config = self.context.get_http_proxy_config()
+        return mc
+
     def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update windows profile for the ManagedCluster object.
 
@@ -2225,6 +2235,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         mc = self.update_oidc_issuer_profile(mc)
+        mc = self.update_http_proxy_config(mc)
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
