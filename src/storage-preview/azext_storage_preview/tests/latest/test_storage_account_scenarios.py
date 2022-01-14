@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer, StorageAccountPreparer,
+from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists, ResourceGroupPreparer, StorageAccountPreparer,
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
@@ -231,3 +231,74 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(
             '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
+
+
+class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_storage_account_local_user')
+    @StorageAccountPreparer(name_prefix='storagelocaluser', kind='StorageV2', location='eastus2euap')
+    def test_storage_account_local_user(self, resource_group, storage_account):
+        username = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'cmd': 'storage account local-user',
+            'username': username
+        })
+
+        self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
+                 '--permission-scope permissions=r service=blob resource-name=container1 '
+                 '--permission-scope permissions=rw service=file resource-name=share2 '
+                 '--has-ssh-key false --has-shared-key false').assert_with_checks(
+            JMESPathCheck('hasSharedKey', False),
+            JMESPathCheck('hasSshKey', False),
+            JMESPathCheck('hasSshPassword', None),
+            JMESPathCheck('homeDirectory', 'home'),
+            JMESPathCheck('name', username),
+            JMESPathCheck('length(permissionScopes)', 2),
+            JMESPathCheck('permissionScopes[0].permissions', 'r'),
+            JMESPathCheck('permissionScopes[0].service', 'blob'),
+            JMESPathCheck('permissionScopes[0].resourceName', 'container1')
+        )
+
+        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --home-directory home2 '
+                 '--permission-scope permissions=rw service=file resource-name=share2').assert_with_checks(
+            JMESPathCheck('homeDirectory', 'home2'),
+            JMESPathCheck('length(permissionScopes)', 1),
+            JMESPathCheck('permissionScopes[0].permissions', 'rw'),
+            JMESPathCheck('permissionScopes[0].service', 'file'),
+            JMESPathCheck('permissionScopes[0].resourceName', 'share2')
+        )
+
+        self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('value[0].hasSshKey', False),
+            JMESPathCheck('value[0].hasSshPassword', False),
+            JMESPathCheck('value[0].homeDirectory', 'home2'),
+            JMESPathCheck('value[0].length(permissionScopes)', 1),
+            JMESPathCheck('value[0].sshAuthorizedKeys', None)
+        )
+
+        self.cmd('{cmd} show --account-name {sa} -g {rg} -n {username}').assert_with_checks(
+            JMESPathCheck('hasSshKey', False),
+            JMESPathCheck('hasSshPassword', False),
+            JMESPathCheck('homeDirectory', 'home2'),
+            JMESPathCheck('length(permissionScopes)', 1),
+            JMESPathCheck('permissionScopes[0].permissions', 'rw'),
+            JMESPathCheck('permissionScopes[0].service', 'file'),
+            JMESPathCheck('permissionScopes[0].resourceName', 'share2'),
+            JMESPathCheck('sshAuthorizedKeys', None)
+        )
+
+        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
+                 '--ssh-authorized-key key="ssh-rsa a2V5" ')
+
+        self.cmd('{cmd} list-keys --account-name {sa} -g {rg} -n {username}').assert_with_checks(
+            JMESPathCheck('sshAuthorizedKeys', None)
+        )
+
+        self.cmd('{cmd} regenerate-password --account-name {sa} -g {rg} -n {username}').assert_with_checks(
+            JMESPathCheck('sshAuthorizedKeys', None),
+            JMESPathCheckExists('sshPassword')
+        )
+
+        self.cmd('{cmd} delete --account-name {sa} -g {rg} -n {username}')

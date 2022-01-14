@@ -13,7 +13,8 @@ from ._validators import (get_datetime_type, validate_metadata, validate_bypass,
                           validate_azcopy_target_url, validate_included_datasets, validate_custom_domain,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_immutability_arguments,
-                          process_resource_group, add_upload_progress_callback, validate_encryption_source)
+                          process_resource_group, add_upload_progress_callback, validate_encryption_source,
+                          PermissionScopeAddAction, SshPublicKeyAddAction)
 
 from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
@@ -384,6 +385,38 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('action', help='The action of virtual network rule.')
         c.argument('resource_id', help='The resource id to add in network rule.')
         c.argument('tenant_id', help='The tenant id to add in network rule.')
+
+    with self.argument_context('storage account local-user') as c:
+        c.argument('account_name', acct_name_type, options_list='--account-name', id_part=None)
+        c.argument('username', options_list=['--username', '--name', '-n'],
+                   help='The name of local user. The username must contain lowercase letters and numbers '
+                        'only. It must be unique only within the storage account.')
+
+    for item in ['create', 'update']:
+        with self.argument_context(f'storage account local-user {item}') as c:
+            c.argument('permission_scope', nargs='+', action=PermissionScopeAddAction,
+                       help='The permission scope argument list which includes the permissions, service, and resource_name.'
+                            'The permissions can be a combination of the below possible values: '
+                            'Read(r), Write (w), Delete (d), List (l), and Create (c). '
+                            'The service has possible values: blob, file. '
+                            'The resource-name is the container name or the file share name. '
+                            'Example: --permission-scope permissions=r service=blob resource-name=container1'
+                            'Can specify multiple permission scopes: '
+                            '--permission-scope permissions=rw service=blob resource-name=container1'
+                            '--permission-scope permissions=rwd service=file resource-name=share2')
+            c.argument('home_directory', help='The home directory.')
+            c.argument('ssh_authorized_key', nargs='+', action=SshPublicKeyAddAction,
+                       help='SSH authorized keys for SFTP. Includes an optional description and key. '
+                            'The key is the base64 encoded SSH public key , with format: '
+                            '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
+                            'Example: --ssh_authorized_key description=description key="ssh-ras AAAABBBB"'
+                            'or --ssh_authorized_key key="ssh-ras AAAABBBB"')
+            c.argument('has_shared_key', arg_type=get_three_state_flag(),
+                       help='Indicates whether shared key exists. Set it to false to remove existing shared key.')
+            c.argument('has_ssh_key', arg_type=get_three_state_flag(),
+                       help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
+            c.argument('has_ssh_password', arg_type=get_three_state_flag(),
+                       help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
 
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
