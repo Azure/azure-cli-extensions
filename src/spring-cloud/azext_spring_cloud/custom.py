@@ -1274,7 +1274,7 @@ def certificate_list_reference_app(cmd, client, resource_group, service, name):
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
                 certificate=None,
-                enable_end_to_end_tls=None):
+                enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1282,24 +1282,24 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
-    if enable_end_to_end_tls is not None:
-        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_end_to_end_tls)
+    if enable_ingress_to_app_tls is not None:
+        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,
                                                         domain_name, custom_domain_resource)
 
 
-def _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_end_to_end_tls):
+def _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls):
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20220101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    properties = models_20220101preview.AppResourceProperties(enable_end_to_end_tls=enable_ingress_to_app_tls)
     app_resource = models_20220101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
-    logger.warning("Set end to end tls for app '{}'".format(app))
+    logger.warning("Set ingress to app tls for app '{}'".format(app))
     poller = client.apps.begin_update(
         resource_group, service, app, app_resource)
     return poller.result()
@@ -1316,7 +1316,7 @@ def domain_list(cmd, client, resource_group, service, app):
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
                   certificate=None,
-                  enable_end_to_end_tls=None):
+                  enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1324,8 +1324,8 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
-    if enable_end_to_end_tls is not None:
-        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_end_to_end_tls)
+    if enable_ingress_to_app_tls is not None:
+        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,

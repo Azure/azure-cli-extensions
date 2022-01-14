@@ -124,7 +124,7 @@ def app_update(cmd, client, resource_group, service, name,
                # app
                assign_endpoint=None,
                enable_persistent_storage=None,
-               enable_end_to_end_tls=None,
+               enable_ingress_to_app_tls=None,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
@@ -170,7 +170,7 @@ def app_update(cmd, client, resource_group, service, name,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'loaded_public_certificate_file': loaded_public_certificate_file,
-        'enable_end_to_end_tls': enable_end_to_end_tls,
+        'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
     }
 
