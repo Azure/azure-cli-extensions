@@ -86,7 +86,47 @@
                             "apiVersion": "2019-06-01",
                             "name": "[parameters('storageAccountName')]",
                             "location": "[parameters('storageAccountLocation')]",
-                            "type": "Microsoft.Storage/storageAccounts"
+                            "type": "Microsoft.Storage/storageAccounts",
+                            "sku": {
+                                "name": "Standard_LRS"
+                            },
+                            "kind": "Storage",
+                            "resources": [
+                                {
+                                    "name": "default",
+                                    "type": "fileServices",
+                                    "apiVersion": "2019-06-01",
+                                    "dependsOn": [
+                                        "[parameters('storageAccountId')]"
+                                    ],
+                                    "properties": {
+                                        "cors": {
+                                            "corsRules": [
+                                                {
+                                                    "allowedOrigins": [
+                                                        "*"
+                                                    ],
+                                                    "allowedHeaders": [
+                                                        "*"
+                                                    ],
+                                                    "allowedMethods": [
+                                                        "GET",
+                                                        "HEAD",
+                                                        "OPTIONS",
+                                                        "PATCH",
+                                                        "POST",
+                                                        "PUT"
+                                                    ],
+                                                    "exposedHeaders": [
+                                                        "*"
+                                                    ],
+                                                    "maxAgeInSeconds": 180
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
                         },
                         {
                             "apiVersion": "2020-04-01-preview",
