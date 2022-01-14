@@ -85,7 +85,7 @@ def load_arguments(self, _):
             c.argument('service_user_distinguished_name', options_list=['--ldap-service-user-dn'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
             c.argument('service_user_password', options_list=['--ldap-svc-user-pwd'], help="Password of the look up user.")
             c.argument('search_base_distinguished_name', options_list=['--ldap-search-base-dn'], help="Distinguished name of the object to start the recursive search of users from.")
-            c.argument('search_filter_template', options_list=['--ldap-search-filter'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login.")
+            c.argument('search_filter_template', options_list=['--ldap-search-filter'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login. While using this parameter from Windows Powershell (not Windows CommandPrompt or Linux) there is a known issue with escaping special characters, so pass as \"\"\"(cn=%s)\"\"\" instead.")
             c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-server-certs'], help="LDAP server certificate. It should have subject alternative name(SAN) DNS Name entry matching the hostname of the LDAP server.")
 
     # Managed Cassandra Datacenter
