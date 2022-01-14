@@ -81,12 +81,12 @@ def load_arguments(self, _):
             c.argument('managed_disk_customer_key_uri', options_list=['--managed-disk-customer-key-uri', '-k'], help="Key uri to use for encryption of managed disks. Ensure the system assigned identity of the cluster has been assigned appropriate permissions(key get/wrap/unwrap permissions) on the key.")
             c.argument('backup_storage_customer_key_uri', options_list=['--backup-storage-customer-key-uri', '-p'], help="Indicates the Key Uri of the customer key to use for encryption of the backup storage account.")
             c.argument('server_hostname', options_list=['--ldap-server-hostname'], help="Hostname of the LDAP server.")
-            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server.")
-            c.argument('service_user_distinguished_name', options_list=['--ldap-user-name'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
-            c.argument('service_user_password', options_list=['--ldap-user-password'], help="Password of the look up user.")
-            c.argument('search_base_distinguished_name', options_list=['--ldap-base-name'], help="Distinguished name of the object to start the recursive search of users from.")
-            c.argument('search_filter_template', options_list=['--ldap-filter-template'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login.")
-            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-certificates'], help="LDAP server certificate.")
+            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server. Defaults to 636")
+            c.argument('service_user_distinguished_name', options_list=['--ldap-service-user-dn'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
+            c.argument('service_user_password', options_list=['--ldap-svc-user-pwd'], help="Password of the look up user.")
+            c.argument('search_base_distinguished_name', options_list=['--ldap-search-base-dn'], help="Distinguished name of the object to start the recursive search of users from.")
+            c.argument('search_filter_template', options_list=['--ldap-search-filter'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login.")
+            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-server-certs'], help="LDAP server certificate. It should have subject alternative name(SAN) DNS Name entry matching the hostname of the LDAP server.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter create') as c:

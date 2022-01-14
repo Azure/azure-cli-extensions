@@ -272,6 +272,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     if server_hostname is None and is_ldap_properties_none is False:
         server_hostname = data_center_resource.properties.authentication_method_ldap_properties.server_hostname
 
+    if server_port is None and is_ldap_properties_none is False:
+        server_port = data_center_resource.properties.authentication_method_ldap_properties.server_port
+
     if service_user_password is None and is_ldap_properties_none is False:
         service_user_password = data_center_resource.properties.authentication_method_ldap_properties.service_user_password
 
