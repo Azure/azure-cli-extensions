@@ -71,7 +71,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.custom_command('update', 'update_local_user')
         g.command('delete', 'delete')
         g.command('list', 'list')
-        g.command('show', 'get')
+        g.show_command('show', 'get')
         g.command('list-keys', 'list_keys')
         g.command('regenerate-password', 'regenerate_password')
 
