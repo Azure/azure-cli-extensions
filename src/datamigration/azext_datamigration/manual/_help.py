@@ -36,7 +36,7 @@ helps['datamigration register-integration-runtime'] = """
                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
 """
 
-helps['datamigration to-sql-managed-instance create'] = """
+helps['datamigration sql-managed-instance create'] = """
     type: command
     short-summary: "Create a new database migration to a given SQL Managed Instance."
     parameters:
@@ -71,7 +71,7 @@ in file share.
     examples:
       - name: Create or Update Database Migration resource with fileshare as source for backup files.
         text: |-
-               az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
 --source-location '{\\"fileShare\\":{\\"path\\":\\"\\\\\\\\SharedBackup\\\\user\\",\\"password\\":\\"placeholder\\",\
 \\"username\\":\\"Server\\\\name\\"}}' --target-location account-key="abcd" storage-account-resource-id="account.database.win\
 dows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
@@ -82,7 +82,7 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
       - name: Create or Update Database Migration resource with Azure Blob storage as source for backup files.
         text: |-
-               az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
 --source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\":\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders\
 /Microsoft.Storage/storageAccounts/MyStorage\\",\\"accountKey\\":\\"======AccountKey====\\",\\"blobContainerName\\":\\"ContainerName\
 -X\\"}}' --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
@@ -93,7 +93,7 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-vm create'] = """
+helps['datamigration sql-vm create'] = """
     type: command
     short-summary: "Create a new database migration to a given SQL VM."
     parameters:
@@ -128,7 +128,7 @@ in file share.
     examples:
       - name: Create or Update Database Migration resource with fileshare as source for backup files.
         text: |-
-               az datamigration to-sql-vm create --source-location '{\\"fileShare\\":{\\"path\\":\\"\\\\\\\\SharedBackup\
+               az datamigration sql-vm create --source-location '{\\"fileShare\\":{\\"path\\":\\"\\\\\\\\SharedBackup\
 \\\\user\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"Server\\\\name\\"}}' --target-location account-key="abcd" \
 storage-account-resource-id="account.database.windows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-\
 444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
@@ -139,7 +139,7 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 --sql-vm-name "testvm" --target-db-name "db1"
       - name: Create or Update Database Migration resource with Azure Blob storage as source for backup files.
         text: |-
-               az datamigration to-sql-vm create --source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\"\
+               az datamigration sql-vm create --source-location '{\\"AzureBlob\\":{\\"storageAccountResourceId\\"\
 :\\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders/Microsoft.Storage/storageAccounts/MyStorage\\",\
 \\"accountKey\\":\\"======AccountKey====\\",\\"blobContainerName\\":\\"ContainerName-X\\"}}' --migration-service "/subscriptions\
 /00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \

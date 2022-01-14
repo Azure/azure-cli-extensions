@@ -141,10 +141,10 @@ def step_sql_service_list_integration_runtime_metric(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlMi/put/Create or Update Database Migration resource with Maximum parameters.
 @try_manual
-def step_to_sql_managed_instance_create(test, checks=None):
+def step_sql_managed_instance_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-managed-instance create '
+    test.cmd('az datamigration sql-managed-instance create '
              '--managed-instance-name "managedInstance1" '
              '--source-location "{{\\"fileShare\\":{{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\'
              '":\\"placeholder\\",\\"username\\":\\"name\\"}}}}" '
@@ -164,16 +164,16 @@ def step_to_sql_managed_instance_create(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlMi/put/Create or Update Database Migration resource with Minimum parameters.
 @try_manual
-def step_to_sql_managed_instance_create2(test, checks=None):
-    return step_to_sql_managed_instance_create(test, checks)
+def step_sql_managed_instance_create2(test, checks=None):
+    return step_sql_managed_instance_create(test, checks)
 
 
 # EXAMPLE: /DatabaseMigrationsSqlMi/get/Get Database Migration resource.
 @try_manual
-def step_to_sql_managed_instance_show(test, checks=None):
+def step_sql_managed_instance_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-managed-instance show '
+    test.cmd('az datamigration sql-managed-instance show '
              '--managed-instance-name "managedInstance1" '
              '--resource-group "{rg}" '
              '--target-db-name "db1"',
@@ -182,10 +182,10 @@ def step_to_sql_managed_instance_show(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlMi/post/Cutover online migration operation for the database.
 @try_manual
-def step_to_sql_managed_instance_cutover(test, checks=None):
+def step_sql_managed_instance_cutover(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-managed-instance cutover '
+    test.cmd('az datamigration sql-managed-instance cutover '
              '--managed-instance-name "managedInstance1" '
              '--migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" '
              '--resource-group "{rg}" '
@@ -195,10 +195,10 @@ def step_to_sql_managed_instance_cutover(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlMi/post/Stop ongoing migration for the database.
 @try_manual
-def step_to_sql_managed_instance_cancel(test, checks=None):
+def step_sql_managed_instance_cancel(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-managed-instance cancel '
+    test.cmd('az datamigration sql-managed-instance cancel '
              '--managed-instance-name "managedInstance1" '
              '--migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" '
              '--resource-group "{rg}" '
@@ -208,10 +208,10 @@ def step_to_sql_managed_instance_cancel(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlVm/put/Create or Update Database Migration resource with Maximum parameters.
 @try_manual
-def step_to_sql_vm_create(test, checks=None):
+def step_sql_vm_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-vm create '
+    test.cmd('az datamigration sql-vm create '
              '--source-location "{{\\"fileShare\\":{{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\'
              '":\\"placeholder\\",\\"username\\":\\"name\\"}}}}" '
              '--target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" '
@@ -231,16 +231,16 @@ def step_to_sql_vm_create(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlVm/put/Create or Update Database Migration resource with Minimum parameters.
 @try_manual
-def step_to_sql_vm_create2(test, checks=None):
-    return step_to_sql_vm_create(test, checks)
+def step_sql_vm_create2(test, checks=None):
+    return step_sql_vm_create(test, checks)
 
 
 # EXAMPLE: /DatabaseMigrationsSqlVm/get/Get Database Migration resource.
 @try_manual
-def step_to_sql_vm_show(test, checks=None):
+def step_sql_vm_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-vm show '
+    test.cmd('az datamigration sql-vm show '
              '--resource-group "{rg}" '
              '--sql-vm-name "testvm" '
              '--target-db-name "db1"',
@@ -249,10 +249,10 @@ def step_to_sql_vm_show(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlVm/post/Cutover online migration operation for the database.
 @try_manual
-def step_to_sql_vm_cutover(test, checks=None):
+def step_sql_vm_cutover(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-vm cutover '
+    test.cmd('az datamigration sql-vm cutover '
              '--migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" '
              '--resource-group "{rg}" '
              '--sql-vm-name "testvm" '
@@ -262,10 +262,10 @@ def step_to_sql_vm_cutover(test, checks=None):
 
 # EXAMPLE: /DatabaseMigrationsSqlVm/post/Stop ongoing migration for the database.
 @try_manual
-def step_to_sql_vm_cancel(test, checks=None):
+def step_sql_vm_cancel(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-vm cancel '
+    test.cmd('az datamigration sql-vm cancel '
              '--migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" '
              '--resource-group "{rg}" '
              '--sql-vm-name "testvm" '

@@ -20,15 +20,15 @@ from azext_datamigration.generated._client_factory import (
 )
 
 
-datamigration_sqlmigration_service = CliCommandType(
-    operations_tmpl='azext_datamigration.vendored_sdks.datamigration.operations._sql_migration_services_operations#SqlMigrationServicesOperations.{}',
-    client_factory=cf_sqlmigration_service,
-)
-
-
 datamigration_database_migration_sqlmi = CliCommandType(
     operations_tmpl='azext_datamigration.vendored_sdks.datamigration.operations._database_migrations_sql_mi_operations#DatabaseMigrationsSqlMiOperations.{}',
     client_factory=cf_database_migration_sqlmi,
+)
+
+
+datamigration_sqlmigration_service = CliCommandType(
+    operations_tmpl='azext_datamigration.vendored_sdks.datamigration.operations._sql_migration_services_operations#SqlMigrationServicesOperations.{}',
+    client_factory=cf_sqlmigration_service,
 )
 
 
@@ -39,6 +39,23 @@ datamigration_database_migration_sqlvm = CliCommandType(
 
 
 def load_command_table(self, _):
+
+    with self.command_group(
+        'datamigration sql-managed-instance',
+        datamigration_database_migration_sqlmi,
+        client_factory=cf_database_migration_sqlmi,
+    ) as g:
+        g.custom_show_command('show', 'datamigration_sql_managed_instance_show')
+        g.custom_command('create', 'datamigration_sql_managed_instance_create', supports_no_wait=True)
+        g.generic_update_command(
+            'update',
+            supports_no_wait=True,
+            custom_func_name='datamigration_sql_managed_instance_update',
+            setter_name='begin_create_or_update',
+        )
+        g.custom_command('cancel', 'datamigration_sql_managed_instance_cancel', supports_no_wait=True)
+        g.custom_command('cutover', 'datamigration_sql_managed_instance_cutover', supports_no_wait=True)
+        g.custom_wait_command('wait', 'datamigration_sql_managed_instance_show')
 
     with self.command_group(
         'datamigration sql-service', datamigration_sqlmigration_service, client_factory=cf_sqlmigration_service
@@ -56,36 +73,19 @@ def load_command_table(self, _):
         g.custom_wait_command('wait', 'datamigration_sql_service_show')
 
     with self.command_group(
-        'datamigration to-sql-managed-instance',
-        datamigration_database_migration_sqlmi,
-        client_factory=cf_database_migration_sqlmi,
+        'datamigration sql-vm', datamigration_database_migration_sqlvm, client_factory=cf_database_migration_sqlvm
     ) as g:
-        g.custom_show_command('show', 'datamigration_to_sql_managed_instance_show')
-        g.custom_command('create', 'datamigration_to_sql_managed_instance_create', supports_no_wait=True)
+        g.custom_show_command('show', 'datamigration_sql_vm_show')
+        g.custom_command('create', 'datamigration_sql_vm_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
-            custom_func_name='datamigration_to_sql_managed_instance_update',
+            custom_func_name='datamigration_sql_vm_update',
             setter_name='begin_create_or_update',
         )
-        g.custom_command('cancel', 'datamigration_to_sql_managed_instance_cancel', supports_no_wait=True)
-        g.custom_command('cutover', 'datamigration_to_sql_managed_instance_cutover', supports_no_wait=True)
-        g.custom_wait_command('wait', 'datamigration_to_sql_managed_instance_show')
-
-    with self.command_group(
-        'datamigration to-sql-vm', datamigration_database_migration_sqlvm, client_factory=cf_database_migration_sqlvm
-    ) as g:
-        g.custom_show_command('show', 'datamigration_to_sql_vm_show')
-        g.custom_command('create', 'datamigration_to_sql_vm_create', supports_no_wait=True)
-        g.generic_update_command(
-            'update',
-            supports_no_wait=True,
-            custom_func_name='datamigration_to_sql_vm_update',
-            setter_name='begin_create_or_update',
-        )
-        g.custom_command('cancel', 'datamigration_to_sql_vm_cancel', supports_no_wait=True)
-        g.custom_command('cutover', 'datamigration_to_sql_vm_cutover', supports_no_wait=True)
-        g.custom_wait_command('wait', 'datamigration_to_sql_vm_show')
+        g.custom_command('cancel', 'datamigration_sql_vm_cancel', supports_no_wait=True)
+        g.custom_command('cutover', 'datamigration_sql_vm_cutover', supports_no_wait=True)
+        g.custom_wait_command('wait', 'datamigration_sql_vm_show')
 
     with self.command_group('datamigration', is_experimental=True):
         pass

@@ -17,22 +17,22 @@ helps['datamigration'] = '''
     short-summary: Manage Data Migration
 '''
 
-helps['datamigration to-sql-managed-instance'] = """
+helps['datamigration sql-managed-instance'] = """
     type: group
     short-summary: Manage database migrations to SQL Managed Instance.
 """
 
-helps['datamigration to-sql-managed-instance show'] = """
+helps['datamigration sql-managed-instance show'] = """
     type: command
     short-summary: "Retrieve the specified database migration for a given SQL Managed Instance."
     examples:
       - name: Get Database Migration resource.
         text: |-
-               az datamigration to-sql-managed-instance show --managed-instance-name "managedInstance1" \
---resource-group "testrg" --target-db-name "db1"
+               az datamigration sql-managed-instance show --managed-instance-name "managedInstance1" --resource-group \
+"testrg" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-managed-instance create'] = """
+helps['datamigration sql-managed-instance create'] = """
     type: command
     short-summary: "Create a new database migration to a given SQL Managed Instance."
     parameters:
@@ -67,7 +67,7 @@ in file share.
     examples:
       - name: Create or Update Database Migration resource with Maximum parameters.
         text: |-
-               az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
 --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\
 \\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" storage-account-resource-id="account.database.win\
 dows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
@@ -78,7 +78,7 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
       - name: Create or Update Database Migration resource with Minimum parameters.
         text: |-
-               az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
 --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\
 \\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" storage-account-resource-id="account.database.win\
 dows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Micr\
@@ -89,7 +89,7 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-managed-instance update'] = """
+helps['datamigration sql-managed-instance update'] = """
     type: command
     short-summary: "Update a new database migration to a given SQL Managed Instance."
     parameters:
@@ -123,58 +123,58 @@ in file share.
             account-key: Storage Account Key.
 """
 
-helps['datamigration to-sql-managed-instance cancel'] = """
+helps['datamigration sql-managed-instance cancel'] = """
     type: command
     short-summary: "Stop in-progress database migration to SQL Managed Instance."
     examples:
       - name: Stop ongoing migration for the database.
         text: |-
-               az datamigration to-sql-managed-instance cancel --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance cancel --managed-instance-name "managedInstance1" \
 --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-managed-instance cutover'] = """
+helps['datamigration sql-managed-instance cutover'] = """
     type: command
     short-summary: "Initiate cutover for in-progress online database migration to SQL Managed Instance."
     examples:
       - name: Cutover online migration operation for the database.
         text: |-
-               az datamigration to-sql-managed-instance cutover --managed-instance-name "managedInstance1" \
+               az datamigration sql-managed-instance cutover --managed-instance-name "managedInstance1" \
 --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-managed-instance wait'] = """
+helps['datamigration sql-managed-instance wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the datamigration to-sql-managed-instance is \
+    short-summary: Place the CLI in a waiting state until a condition of the datamigration sql-managed-instance is \
 met.
     examples:
-      - name: Pause executing next line of CLI script until the datamigration to-sql-managed-instance is successfully \
+      - name: Pause executing next line of CLI script until the datamigration sql-managed-instance is successfully \
 created.
         text: |-
-               az datamigration to-sql-managed-instance wait --managed-instance-name "managedInstance1" \
---resource-group "testrg" --target-db-name "db1" --created
-      - name: Pause executing next line of CLI script until the datamigration to-sql-managed-instance is successfully \
+               az datamigration sql-managed-instance wait --managed-instance-name "managedInstance1" --resource-group \
+"testrg" --target-db-name "db1" --created
+      - name: Pause executing next line of CLI script until the datamigration sql-managed-instance is successfully \
 updated.
         text: |-
-               az datamigration to-sql-managed-instance wait --managed-instance-name "managedInstance1" \
---resource-group "testrg" --target-db-name "db1" --updated
+               az datamigration sql-managed-instance wait --managed-instance-name "managedInstance1" --resource-group \
+"testrg" --target-db-name "db1" --updated
 """
 
-helps['datamigration to-sql-vm'] = """
+helps['datamigration sql-vm'] = """
     type: group
     short-summary: Manage database migrations to SQL VM.
 """
 
-helps['datamigration to-sql-vm show'] = """
+helps['datamigration sql-vm show'] = """
     type: command
     short-summary: "Retrieve the specified database migration for a given SQL VM."
     examples:
       - name: Get Database Migration resource.
         text: |-
-               az datamigration to-sql-vm show --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
+               az datamigration sql-vm show --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-vm create'] = """
+helps['datamigration sql-vm create'] = """
     type: command
     short-summary: "Create a new database migration to a given SQL VM."
     parameters:
@@ -209,8 +209,8 @@ in file share.
     examples:
       - name: Create or Update Database Migration resource with Maximum parameters.
         text: |-
-               az datamigration to-sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\
-\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
+               az datamigration sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\b\
+bb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
 storage-account-resource-id="account.database.windows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-\
 444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
 --offline-configuration last-backup-name="last_backup_file_name" offline=true --scope "/subscriptions/00000000-1111-222\
@@ -220,8 +220,8 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 --sql-vm-name "testvm" --target-db-name "db1"
       - name: Create or Update Database Migration resource with Minimum parameters.
         text: |-
-               az datamigration to-sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\
-\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
+               az datamigration sql-vm create --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\b\
+bb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" --target-location account-key="abcd" \
 storage-account-resource-id="account.database.windows.net" --migration-service "/subscriptions/00000000-1111-2222-3333-\
 444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
 --offline-configuration last-backup-name="last_backup_file_name" offline=true --scope "/subscriptions/00000000-1111-222\
@@ -231,7 +231,7 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 --sql-vm-name "testvm" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-vm update'] = """
+helps['datamigration sql-vm update'] = """
     type: command
     short-summary: "Update a new database migration to a given SQL VM."
     parameters:
@@ -265,37 +265,37 @@ in file share.
             account-key: Storage Account Key.
 """
 
-helps['datamigration to-sql-vm cancel'] = """
+helps['datamigration sql-vm cancel'] = """
     type: command
     short-summary: "Stop in-progress database migration to SQL VM."
     examples:
       - name: Stop ongoing migration for the database.
         text: |-
-               az datamigration to-sql-vm cancel --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
+               az datamigration sql-vm cancel --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
 --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-vm cutover'] = """
+helps['datamigration sql-vm cutover'] = """
     type: command
     short-summary: "Initiate cutover for in-progress online database migration to SQL VM."
     examples:
       - name: Cutover online migration operation for the database.
         text: |-
-               az datamigration to-sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
+               az datamigration sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
 --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1"
 """
 
-helps['datamigration to-sql-vm wait'] = """
+helps['datamigration sql-vm wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the datamigration to-sql-vm is met.
+    short-summary: Place the CLI in a waiting state until a condition of the datamigration sql-vm is met.
     examples:
-      - name: Pause executing next line of CLI script until the datamigration to-sql-vm is successfully created.
+      - name: Pause executing next line of CLI script until the datamigration sql-vm is successfully created.
         text: |-
-               az datamigration to-sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
+               az datamigration sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
 --created
-      - name: Pause executing next line of CLI script until the datamigration to-sql-vm is successfully updated.
+      - name: Pause executing next line of CLI script until the datamigration sql-vm is successfully updated.
         text: |-
-               az datamigration to-sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
+               az datamigration sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
 --updated
 """
 

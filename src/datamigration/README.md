@@ -11,7 +11,7 @@ az extension add --name datamigration
 #### datamigration to-sql-managed-instance ####
 ##### Create #####
 ```
-az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
     --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
@@ -23,7 +23,7 @@ az datamigration to-sql-managed-instance create --managed-instance-name "managed
 ```
 ##### Create #####
 ```
-az datamigration to-sql-managed-instance create --managed-instance-name "managedInstance1" \
+az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
     --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
@@ -35,23 +35,23 @@ az datamigration to-sql-managed-instance create --managed-instance-name "managed
 ```
 ##### Show #####
 ```
-az datamigration to-sql-managed-instance show --managed-instance-name "managedInstance1" --resource-group "testrg" \
+az datamigration sql-managed-instance show --managed-instance-name "managedInstance1" --resource-group "testrg" \
     --target-db-name "db1" 
 ```
 ##### Cancel #####
 ```
-az datamigration to-sql-managed-instance cancel --managed-instance-name "managedInstance1" \
+az datamigration sql-managed-instance cancel --managed-instance-name "managedInstance1" \
     --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1" 
 ```
 ##### Cutover #####
 ```
-az datamigration to-sql-managed-instance cutover --managed-instance-name "managedInstance1" \
+az datamigration sql-managed-instance cutover --managed-instance-name "managedInstance1" \
     --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1" 
 ```
 #### datamigration to-sql-vm ####
 ##### Create #####
 ```
-az datamigration to-sql-vm create \
+az datamigration sql-vm create \
     --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
@@ -63,7 +63,7 @@ az datamigration to-sql-vm create \
 ```
 ##### Create #####
 ```
-az datamigration to-sql-vm create \
+az datamigration sql-vm create \
     --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
@@ -75,16 +75,16 @@ az datamigration to-sql-vm create \
 ```
 ##### Show #####
 ```
-az datamigration to-sql-vm show --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1"
+az datamigration sql-vm show --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1"
 ```
 ##### Cancel #####
 ```
-az datamigration to-sql-vm cancel --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
+az datamigration sql-vm cancel --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
     --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1" 
 ```
 ##### Cutover #####
 ```
-az datamigration to-sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
+az datamigration sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
     --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1" 
 ```
 #### datamigration sql-service ####

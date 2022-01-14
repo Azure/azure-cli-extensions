@@ -100,19 +100,19 @@ def step_sql_service_delete(test, checks=None):
              '--name "{createSqlMigrationService}"',
              checks=checks)
 
-def step_to_sql_managed_instance_show(test, checks=None):
+def step_sql_managed_instance_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-managed-instance show '
+    test.cmd('az datamigration sql-managed-instance show '
              '--managed-instance-name "{managedInstance}" '
              '--resource-group "{miRG}" '
              '--target-db-name "{miTargetDb}"',
              checks=checks)
 
-def step_to_sql_vm_show(test, checks=None):
+def step_sql_vm_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datamigration to-sql-vm show '
+    test.cmd('az datamigration sql-vm show '
              '--resource-group "{vmRG}" '
              '--sql-vm-name "{virtualMachine}" '
              '--target-db-name "{vmTargetDb}"',
@@ -145,12 +145,12 @@ def call_scenario(test):
             test.check("name", "default-ir", case_sensitive=False)
         ])
         step_sql_service_delete(test)
-        step_to_sql_managed_instance_show(test, checks=[
+        step_sql_managed_instance_show(test, checks=[
             test.check("name", "{miTargetDb}", case_sensitive=False),
             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
             test.check("properties.kind", "SqlMi", case_sensitive=False)
         ])
-        step_to_sql_vm_show(test, checks=[
+        step_sql_vm_show(test, checks=[
             test.check("name", "{vmTargetDb}", case_sensitive=False),
             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
             test.check("properties.kind", "SqlVm", case_sensitive=False)

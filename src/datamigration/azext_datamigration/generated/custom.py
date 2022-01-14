@@ -13,12 +13,12 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def datamigration_to_sql_managed_instance_show(client,
-                                               resource_group_name,
-                                               managed_instance_name,
-                                               target_db_name,
-                                               migration_operation_id=None,
-                                               expand=None):
+def datamigration_sql_managed_instance_show(client,
+                                            resource_group_name,
+                                            managed_instance_name,
+                                            target_db_name,
+                                            migration_operation_id=None,
+                                            expand=None):
     return client.get(resource_group_name=resource_group_name,
                       managed_instance_name=managed_instance_name,
                       target_db_name=target_db_name,
@@ -26,21 +26,21 @@ def datamigration_to_sql_managed_instance_show(client,
                       expand=expand)
 
 
-def datamigration_to_sql_managed_instance_create(client,
-                                                 resource_group_name,
-                                                 managed_instance_name,
-                                                 target_db_name,
-                                                 scope=None,
-                                                 source_sql_connection=None,
-                                                 source_database_name=None,
-                                                 migration_service=None,
-                                                 migration_operation_id=None,
-                                                 target_db_collation=None,
-                                                 provisioning_error=None,
-                                                 offline_configuration=None,
-                                                 source_location=None,
-                                                 target_location=None,
-                                                 no_wait=False):
+def datamigration_sql_managed_instance_create(client,
+                                              resource_group_name,
+                                              managed_instance_name,
+                                              target_db_name,
+                                              scope=None,
+                                              source_sql_connection=None,
+                                              source_database_name=None,
+                                              migration_service=None,
+                                              migration_operation_id=None,
+                                              target_db_collation=None,
+                                              provisioning_error=None,
+                                              offline_configuration=None,
+                                              source_location=None,
+                                              target_location=None,
+                                              no_wait=False):
     parameters = {}
     parameters['properties'] = {}
     if scope is not None:
@@ -74,21 +74,21 @@ def datamigration_to_sql_managed_instance_create(client,
                        parameters=parameters)
 
 
-def datamigration_to_sql_managed_instance_update(instance,
-                                                 resource_group_name,
-                                                 managed_instance_name,
-                                                 target_db_name,
-                                                 scope=None,
-                                                 source_sql_connection=None,
-                                                 source_database_name=None,
-                                                 migration_service=None,
-                                                 migration_operation_id=None,
-                                                 target_db_collation=None,
-                                                 provisioning_error=None,
-                                                 offline_configuration=None,
-                                                 source_location=None,
-                                                 target_location=None,
-                                                 no_wait=False):
+def datamigration_sql_managed_instance_update(instance,
+                                              resource_group_name,
+                                              managed_instance_name,
+                                              target_db_name,
+                                              scope=None,
+                                              source_sql_connection=None,
+                                              source_database_name=None,
+                                              migration_service=None,
+                                              migration_operation_id=None,
+                                              target_db_collation=None,
+                                              provisioning_error=None,
+                                              offline_configuration=None,
+                                              source_location=None,
+                                              target_location=None,
+                                              no_wait=False):
     if scope is not None:
         instance.properties.scope = scope
     if source_sql_connection is not None:
@@ -112,12 +112,12 @@ def datamigration_to_sql_managed_instance_update(instance,
     return instance
 
 
-def datamigration_to_sql_managed_instance_cancel(client,
-                                                 resource_group_name,
-                                                 managed_instance_name,
-                                                 target_db_name,
-                                                 migration_operation_id=None,
-                                                 no_wait=False):
+def datamigration_sql_managed_instance_cancel(client,
+                                              resource_group_name,
+                                              managed_instance_name,
+                                              target_db_name,
+                                              migration_operation_id=None,
+                                              no_wait=False):
     parameters = {}
     if migration_operation_id is not None:
         parameters['migration_operation_id'] = migration_operation_id
@@ -129,12 +129,12 @@ def datamigration_to_sql_managed_instance_cancel(client,
                        parameters=parameters)
 
 
-def datamigration_to_sql_managed_instance_cutover(client,
-                                                  resource_group_name,
-                                                  managed_instance_name,
-                                                  target_db_name,
-                                                  migration_operation_id=None,
-                                                  no_wait=False):
+def datamigration_sql_managed_instance_cutover(client,
+                                               resource_group_name,
+                                               managed_instance_name,
+                                               target_db_name,
+                                               migration_operation_id=None,
+                                               no_wait=False):
     parameters = {}
     if migration_operation_id is not None:
         parameters['migration_operation_id'] = migration_operation_id
@@ -146,12 +146,12 @@ def datamigration_to_sql_managed_instance_cutover(client,
                        parameters=parameters)
 
 
-def datamigration_to_sql_vm_show(client,
-                                 resource_group_name,
-                                 sql_vm_name,
-                                 target_db_name,
-                                 migration_operation_id=None,
-                                 expand=None):
+def datamigration_sql_vm_show(client,
+                              resource_group_name,
+                              sql_vm_name,
+                              target_db_name,
+                              migration_operation_id=None,
+                              expand=None):
     return client.get(resource_group_name=resource_group_name,
                       sql_virtual_machine_name=sql_vm_name,
                       target_db_name=target_db_name,
@@ -159,21 +159,21 @@ def datamigration_to_sql_vm_show(client,
                       expand=expand)
 
 
-def datamigration_to_sql_vm_create(client,
-                                   resource_group_name,
-                                   sql_vm_name,
-                                   target_db_name,
-                                   scope=None,
-                                   source_sql_connection=None,
-                                   source_database_name=None,
-                                   migration_service=None,
-                                   migration_operation_id=None,
-                                   target_db_collation=None,
-                                   provisioning_error=None,
-                                   offline_configuration=None,
-                                   source_location=None,
-                                   target_location=None,
-                                   no_wait=False):
+def datamigration_sql_vm_create(client,
+                                resource_group_name,
+                                sql_vm_name,
+                                target_db_name,
+                                scope=None,
+                                source_sql_connection=None,
+                                source_database_name=None,
+                                migration_service=None,
+                                migration_operation_id=None,
+                                target_db_collation=None,
+                                provisioning_error=None,
+                                offline_configuration=None,
+                                source_location=None,
+                                target_location=None,
+                                no_wait=False):
     parameters = {}
     parameters['properties'] = {}
     if scope is not None:
@@ -207,21 +207,21 @@ def datamigration_to_sql_vm_create(client,
                        parameters=parameters)
 
 
-def datamigration_to_sql_vm_update(instance,
-                                   resource_group_name,
-                                   sql_vm_name,
-                                   target_db_name,
-                                   scope=None,
-                                   source_sql_connection=None,
-                                   source_database_name=None,
-                                   migration_service=None,
-                                   migration_operation_id=None,
-                                   target_db_collation=None,
-                                   provisioning_error=None,
-                                   offline_configuration=None,
-                                   source_location=None,
-                                   target_location=None,
-                                   no_wait=False):
+def datamigration_sql_vm_update(instance,
+                                resource_group_name,
+                                sql_vm_name,
+                                target_db_name,
+                                scope=None,
+                                source_sql_connection=None,
+                                source_database_name=None,
+                                migration_service=None,
+                                migration_operation_id=None,
+                                target_db_collation=None,
+                                provisioning_error=None,
+                                offline_configuration=None,
+                                source_location=None,
+                                target_location=None,
+                                no_wait=False):
     if scope is not None:
         instance.properties.scope = scope
     if source_sql_connection is not None:
@@ -245,12 +245,12 @@ def datamigration_to_sql_vm_update(instance,
     return instance
 
 
-def datamigration_to_sql_vm_cancel(client,
-                                   resource_group_name,
-                                   sql_vm_name,
-                                   target_db_name,
-                                   migration_operation_id=None,
-                                   no_wait=False):
+def datamigration_sql_vm_cancel(client,
+                                resource_group_name,
+                                sql_vm_name,
+                                target_db_name,
+                                migration_operation_id=None,
+                                no_wait=False):
     parameters = {}
     if migration_operation_id is not None:
         parameters['migration_operation_id'] = migration_operation_id
@@ -262,12 +262,12 @@ def datamigration_to_sql_vm_cancel(client,
                        parameters=parameters)
 
 
-def datamigration_to_sql_vm_cutover(client,
-                                    resource_group_name,
-                                    sql_vm_name,
-                                    target_db_name,
-                                    migration_operation_id=None,
-                                    no_wait=False):
+def datamigration_sql_vm_cutover(client,
+                                 resource_group_name,
+                                 sql_vm_name,
+                                 target_db_name,
+                                 migration_operation_id=None,
+                                 no_wait=False):
     parameters = {}
     if migration_operation_id is not None:
         parameters['migration_operation_id'] = migration_operation_id

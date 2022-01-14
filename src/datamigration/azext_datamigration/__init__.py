@@ -9,8 +9,8 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-from azure.cli.core import AzCommandsLoader
 import azext_datamigration._help
+from azure.cli.core import AzCommandsLoader
 
 
 class DataMigrationManagementClientCommandsLoader(AzCommandsLoader):
