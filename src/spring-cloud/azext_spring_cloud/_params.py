@@ -462,9 +462,9 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
-            options_list=['--enable-ingress-to-app-tls',
-            c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)],
-            help='If true, enable ingress to app tls')
+                    options_list=['--enable-ingress-to-app-tls',
+                    c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)],
+                    help='If true, enable ingress to app tls')
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
