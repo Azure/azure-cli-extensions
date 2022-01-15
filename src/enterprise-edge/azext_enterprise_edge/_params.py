@@ -19,4 +19,4 @@ def load_arguments(self, _):
         c.argument("resource_group_name", arg_type=resource_group_name_type)
 
     with self.argument_context('staticwebapp enterprise-edge') as c:
-    	c.argument("no_register", help="Don't try to register the Microsoft.CDN provider.", default=False)
+        c.argument("no_register", help="Don't try to register the Microsoft.CDN provider. Registration can be done manually with: az provider register --wait --namespace Microsoft.CDN", default=False)

@@ -61,14 +61,16 @@ class StaticWebAppFrontDoorClient:
         request_url = url_fmt.format(management_hostname.strip('/'), sub_id, api_version)
 
         try:
-            registration = send_raw_request(cmd.cli_ctx, "POST", request_url, body="{'thirdPartyProviderConsent':{'consentToAuthorization':true}}")
+            send_raw_request(cmd.cli_ctx, "POST", request_url,
+                             body="{'thirdPartyProviderConsent':{'consentToAuthorization':true}}")
         except Exception as e:
             msg = "Server responded with error message : {} \n"\
-                  "Enabling enterprise-grade edge requires reregistration for the Azure Front Door Microsoft.CDN resource provider. "\
-                  "We were unable to perform that reregistration on your behalf. "\
-                  "Please check with your admin on permissions and review the documentation available at https://go.microsoft.com/fwlink/?linkid=2185350"\
+                  "Enabling enterprise-grade edge requires reregistration for the Azure Front "\
+                  "Door Microsoft.CDN resource provider. We were unable to perform that reregistration on your "\
+                  "behalf. Please check with your admin on permissions and review the documentation available at "\
+                  "https://go.microsoft.com/fwlink/?linkid=2185350. "\
                   "Or try running registration manually with: az provider register --wait --namespace Microsoft.CDN"
-            raise CLIError(msg.format(e.args)) from e 
+            raise CLIError(msg.format(e.args)) from e
 
     @classmethod
     def _validate_sku(cls, sku_name):
@@ -83,17 +85,18 @@ def _format_show_response(cmd, name, resource_group_name):
 
 
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name, no_register=False):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True, no_register=no_register)
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True, 
+                                    no_register=no_register)
     return _format_show_response(cmd, name, resource_group_name)
 
 
 def disable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=False)
     return _format_show_response(cmd, name, resource_group_name)
 
 
 def show_staticwebapp_enterprise_edge_status(cmd, name, resource_group_name):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     return _format_show_response(cmd, name, resource_group_name)
