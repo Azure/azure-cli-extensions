@@ -162,6 +162,7 @@ def connect_vcenter(
         port=port,
         extended_location=extended_location,
         credentials=username_creds,
+        tags=tags
     )
 
     return sdk_no_wait(
@@ -206,14 +207,14 @@ def show_inventory_item(
     inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter, inventory_item)
+    return client.get(resource_group_name, vcenter.split('/')[-1], inventory_item.split('/')[-1])
 
 
 def list_inventory_item(
     client: InventoryItemsOperations, resource_group_name, vcenter
 ):
 
-    return client.list_by_v_center(resource_group_name, vcenter)
+    return client.list_by_v_center(resource_group_name, vcenter.split('/')[-1])
 
 
 # endregion
@@ -283,6 +284,7 @@ def create_resource_pool(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         resource_pool = ResourcePool(
@@ -290,6 +292,7 @@ def create_resource_pool(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -391,6 +394,7 @@ def create_cluster(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         cluster = Cluster(
@@ -398,6 +402,7 @@ def create_cluster(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -499,6 +504,7 @@ def create_datastore(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         datastore = Datastore(
@@ -506,6 +512,7 @@ def create_datastore(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -607,6 +614,7 @@ def create_host(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         host = Host(
@@ -614,6 +622,7 @@ def create_host(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -715,6 +724,7 @@ def create_virtual_network(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         virtual_network = VirtualNetwork(
@@ -722,6 +732,7 @@ def create_virtual_network(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -829,6 +840,7 @@ def create_vm_template(
             location=location,
             extended_location=extended_location,
             inventory_item_id=inventory_item_id,
+            tags=tags
         )
     else:
         vm_template = VirtualMachineTemplate(
@@ -836,6 +848,7 @@ def create_vm_template(
             extended_location=extended_location,
             v_center_id=vcenter_id,
             mo_ref_id=mo_ref_id,
+            tags=tags
         )
 
     return sdk_no_wait(
@@ -1071,6 +1084,7 @@ def create_vm(
                 os_profile=os_profile,
                 network_profile=network_profile,
                 storage_profile=storage_profile,
+                tags=tags
             )
         else:
             vm = VirtualMachine(
@@ -1082,6 +1096,7 @@ def create_vm(
                 os_profile=os_profile,
                 network_profile=network_profile,
                 storage_profile=storage_profile,
+                tags=tags
             )
 
     return sdk_no_wait(
@@ -1121,14 +1136,17 @@ def update_vm(
             num_cores_per_socket=num_cores_per_socket,
         )
 
-    vm_update = VirtualMachineUpdate(hardware_profile=hardware_profile)
+    vm_update = VirtualMachineUpdate(
+        hardware_profile=hardware_profile,
+        tags=tags
+    )
+
     return sdk_no_wait(
         no_wait,
         client.begin_update,
         resource_group_name,
         resource_name,
-        vm_update,
-        tags,
+        vm_update
     )
 
 

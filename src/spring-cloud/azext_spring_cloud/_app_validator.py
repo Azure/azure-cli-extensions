@@ -4,12 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
-
+from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
 from azure.core.exceptions import (ResourceNotFoundError)
-from ._client_factory import cf_spring_cloud
 from ._resource_quantity import (validate_cpu as validate_cpu_value, validate_memory as validate_memory_value)
+from ._client_factory import cf_spring_cloud_20220101preview
+
+
+logger = get_logger(__name__)
 
 
 # pylint: disable=line-too-long,raise-missing-from
@@ -18,7 +21,7 @@ NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use
 
 
 def fulfill_deployment_param(cmd, namespace):
-    client = cf_spring_cloud(cmd.cli_ctx)
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
     if not namespace.name or not namespace.service or not namespace.resource_group:
         return
     if namespace.deployment:
@@ -27,22 +30,43 @@ def fulfill_deployment_param(cmd, namespace):
         namespace.deployment = _ensure_active_deployment_exist_and_get(client, namespace.resource_group, namespace.service, namespace.name)
 
 
+def fulfill_deployment_param_or_warning(cmd, namespace):
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    if not namespace.name or not namespace.service or not namespace.resource_group:
+        return
+    if namespace.deployment:
+        namespace.deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
+    else:
+        namespace.deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
+        if not namespace.deployment:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+
 def active_deployment_exist(cmd, namespace):
     if not namespace.name or not namespace.service or not namespace.resource_group:
         return
-    client = cf_spring_cloud(cmd.cli_ctx)
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
     deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
     if not deployment:
         raise InvalidArgumentValueError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
 
-def active_deployment_exist_under_app(cmd, namespace):
+def active_deployment_exist_or_warning(cmd, namespace):
+    if not namespace.name or not namespace.service or not namespace.resource_group:
+        return
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
+    if not deployment:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+
+def active_deployment_exist_under_app_or_warning(cmd, namespace):
     if not namespace.app or not namespace.service or not namespace.resource_group:
         return
-    client = cf_spring_cloud(cmd.cli_ctx)
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
     deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.app)
     if not deployment:
-        raise InvalidArgumentValueError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
 
 def ensure_not_active_deployment(cmd, namespace):
@@ -51,7 +75,7 @@ def ensure_not_active_deployment(cmd, namespace):
     """
     if not namespace.deployment or not namespace.resource_group or not namespace.service or not namespace.name:
         return
-    client = cf_spring_cloud(cmd.cli_ctx)
+    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
     deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
     if deployment.properties.active:
         raise InvalidArgumentValueError('Deployment {} is already the production deployment'.format(deployment.name))
@@ -76,7 +100,7 @@ def _get_active_deployment(client, resource_group, service, name):
         deployments = client.deployments.list(resource_group, service, name)
         return next(iter(x for x in deployments if x.properties.active), None)
     except ResourceNotFoundError:
-        raise InvalidArgumentValueError('Deployments not found under App {}'.format(name))
+        raise InvalidArgumentValueError('App {} not found'.format(name))
 
 
 def validate_deloy_path(namespace):

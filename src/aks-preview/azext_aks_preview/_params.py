@@ -111,6 +111,7 @@ def load_arguments(self, _):
         c.argument('enable_fips_image', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('uptime_sla', action='store_true')
+        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -158,11 +159,13 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
+        c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
         c.argument('disable_cluster_autoscaler', options_list=["--disable-cluster-autoscaler", "-d"], action='store_true')
         c.argument('update_cluster_autoscaler', options_list=["--update-cluster-autoscaler", "-u"], action='store_true')
+        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
         c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
@@ -200,6 +203,7 @@ def load_arguments(self, _):
         c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,

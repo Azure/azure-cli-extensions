@@ -24,10 +24,11 @@ class CustomDomainTests(ScenarioTest):
             'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
             'KeyVaultCertName': 'cli-unittest',
             'domain': 'cli.asc-test.net',
-            'app': 'test-app',
+            'app': 'test-custom-domain',
             'serviceName': 'cli-unittest',
             'rg': 'cli'
         })
+        self.cmd('spring-cloud app create -n {app} -s {serviceName} -g {rg}')
 
         self.cmd('spring-cloud certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{cert}')
@@ -146,7 +147,7 @@ class SslTests(ScenarioTest):
             'baltiCertPath': baltiCertPath,
             'digiCertPath': digiCertPath,
             'loadCertPath': loadCertPath,
-            'app': 'test-app',
+            'app': 'test-app-cert',
             'serviceName': 'cli-unittest',
             'rg': 'cli'
         })
@@ -191,17 +192,18 @@ class SslTests(ScenarioTest):
             'spring-cloud certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(app_result) > 0)
 
-        self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
-
 
 class CustomImageTest(ScenarioTest):
 
     def test_app_deploy_container(self):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
         self.kwargs.update({
             'app': 'test-container',
             'serviceName': 'cli-unittest',
             'containerImage': 'springio/gs-spring-boot-docker',
             'resourceGroup': 'cli',
+            'file': file_path
         })
 
         self.cmd('spring-cloud app create -s {serviceName} -g {resourceGroup} -n {app}')
@@ -211,8 +213,17 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.type', 'Container'),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
         ])
-        
-        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green' 
+
+        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
                  + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
+        ])
+
+        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+            self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
+
+        self.cmd('spring-cloud app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[
+            self.check('name', 'default'),
+            self.check('properties.source.type', 'Jar'),
+            self.check('properties.source.runtimeVersion', 'Java_8'),
         ])

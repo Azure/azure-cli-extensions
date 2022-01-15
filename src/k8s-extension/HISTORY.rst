@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Support SSL secret
+
 1.0.3
 ++++++++++++++++++
 * Remove identity creation for calls to Microsoft.ResourceConnector

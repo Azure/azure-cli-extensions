@@ -6,7 +6,11 @@
 
 import argparse
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .vendored_sdks.v2021_11_01_preview.models import KustomizationDefinition, DependsOnDefinition
+from .vendored_sdks.v2022_01_01_preview.models import (
+    KustomizationDefinition,
+    KustomizationPatchDefinition,
+    DependsOnDefinition,
+)
 from .validators import validate_kustomization
 from . import consts
 from .utils import parse_dependencies, parse_duration
@@ -14,14 +18,20 @@ from .utils import parse_dependencies, parse_duration
 
 class InternalKustomizationDefinition(KustomizationDefinition):
     def __init__(self, **kwargs):
-        self.name = kwargs.get('name', "")
+        self.name = kwargs.get("name", "")
         super().__init__(**kwargs)
 
     def to_KustomizationDefinition(self):
         k_dict = dict(self.__dict__)
-        del k_dict['name']
-        del k_dict['additional_properties']
+        del k_dict["name"]
+        del k_dict["additional_properties"]
         return KustomizationDefinition(**k_dict)
+
+    def to_KustomizationPatchDefinition(self):
+        k_dict = dict(self.__dict__)
+        del k_dict["name"]
+        del k_dict["additional_properties"]
+        return KustomizationPatchDefinition(**k_dict)
 
 
 class KustomizationAddAction(argparse._AppendAction):
@@ -34,14 +44,12 @@ class KustomizationAddAction(argparse._AppendAction):
         kwargs = {}
         for item in values:
             try:
-                key, value = item.split('=', 1)
+                key, value = item.split("=", 1)
                 if key in consts.DEPENDENCY_KEYS:
                     dependencies = parse_dependencies(value)
                     for dep in dependencies:
                         model_dependency.append(
-                            DependsOnDefinition(
-                                kustomization_name=dep
-                            )
+                            DependsOnDefinition(kustomization_name=dep)
                         )
                 elif key in consts.SYNC_INTERVAL_KEYS:
                     sync_interval = value
@@ -52,8 +60,9 @@ class KustomizationAddAction(argparse._AppendAction):
                 else:
                     kwargs[key] = value
             except ValueError as ex:
-                raise InvalidArgumentValueError('usage error: {} KEY=VALUE [KEY=VALUE ...]'
-                                                .format(option_string)) from ex
+                raise InvalidArgumentValueError(
+                    "usage error: {} KEY=VALUE [KEY=VALUE ...]".format(option_string)
+                ) from ex
         super().__call__(
             parser,
             namespace,
@@ -64,5 +73,5 @@ class KustomizationAddAction(argparse._AppendAction):
                 timeout_in_seconds=parse_duration(timeout),
                 **kwargs
             ),
-            option_string
+            option_string,
         )

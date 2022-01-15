@@ -53,7 +53,7 @@ def api_portal_update(cmd, client, resource_group, service,
 
 def api_portal_clear(cmd, client, resource_group, service):
     api_portal = client.api_portals.get(resource_group, service, DEFAULT_NAME)
-    properties = models.GatewayProperties(
+    properties = models.ApiPortalProperties(
         gateway_ids=api_portal.properties.gateway_ids
     )
 
