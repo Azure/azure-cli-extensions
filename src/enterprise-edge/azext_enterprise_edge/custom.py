@@ -10,6 +10,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.appservice._client_factory import providers_client_factory
 
 
 logger = get_logger(__name__)
@@ -37,11 +38,11 @@ class StaticWebAppFrontDoorClient:
         return r
 
     @classmethod
-    def set(cls, cmd, resource_group, name, enable):
+    def set(cls, cmd, resource_group, name, enable, no_register=False):
         params = cls.get(cmd, resource_group, name).json()
 
-        if enable:
-            cls._validate_cdn_provider_registered(cmd)
+        if enable and not no_register:
+            cls._register_cdn_provider(cmd)
             cls._validate_sku(params["sku"].get("name"))
 
         params["properties"]["enterpriseGradeCdnStatus"] = "enabled" if enable else "disabled"
@@ -52,18 +53,24 @@ class StaticWebAppFrontDoorClient:
         return cls._request(cmd, resource_group, name)
 
     @classmethod
-    def _validate_cdn_provider_registered(cls, cmd):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = "2021-04-01"
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/providers/Microsoft.CDN?api-version={}"
+    def _register_cdn_provider(cls, cmd):
+        from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
-        request_url = url_fmt.format(management_hostname.strip('/'), sub_id, api_version)
+        namespace = "Microsoft.CDN"
+        properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(
+            consent_to_authorization=True))
 
-        registration = send_raw_request(cmd.cli_ctx, "GET", request_url).json().get("registrationState").lower()
-        if registration != "registered":
-            raise CLIError("Provider Microsoft.CDN is not registered. "
-                           "Please run 'az provider register --wait --namespace Microsoft.CDN'")
+        client = providers_client_factory(cmd.cli_ctx)
+        try:
+            client.register(namespace, properties=properties)
+        except Exception as e:
+            msg = "Server responded with error message : {} \n"\
+                  "Enabling enterprise-grade edge requires reregistration for the Azure Front "\
+                  "Door Microsoft.CDN resource provider. We were unable to perform that reregistration on your "\
+                  "behalf. Please check with your admin on permissions and review the documentation available at "\
+                  "https://go.microsoft.com/fwlink/?linkid=2185350. "\
+                  "Or try running registration manually with: az provider register --wait --namespace Microsoft.CDN"
+            raise CLIError(msg.format(e.args)) from e
 
     @classmethod
     def _validate_sku(cls, sku_name):
@@ -77,18 +84,19 @@ def _format_show_response(cmd, name, resource_group_name):
     return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
 
 
-def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
+def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name, no_register=False):
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True,
+                                    no_register=no_register)
     return _format_show_response(cmd, name, resource_group_name)
 
 
 def disable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=False)
     return _format_show_response(cmd, name, resource_group_name)
 
 
 def show_staticwebapp_enterprise_edge_status(cmd, name, resource_group_name):
-    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
+    logger.warning("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     return _format_show_response(cmd, name, resource_group_name)

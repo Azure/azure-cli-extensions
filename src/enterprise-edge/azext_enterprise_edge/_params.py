@@ -17,3 +17,6 @@ def load_arguments(self, _):
     with self.argument_context('staticwebapp enterprise-edge') as c:
         c.argument("name", arg_type=staticsite_name_arg_type)
         c.argument("resource_group_name", arg_type=resource_group_name_type)
+
+    with self.argument_context('staticwebapp enterprise-edge') as c:
+        c.argument("no_register", help="Don't try to register the Microsoft.CDN provider. Registration can be done manually with: az provider register --wait --namespace Microsoft.CDN. For more details, please review the documentation available at https://go.microsoft.com/fwlink/?linkid=2184995 .", default=False)

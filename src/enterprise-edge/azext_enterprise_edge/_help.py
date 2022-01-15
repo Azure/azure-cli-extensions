@@ -14,7 +14,7 @@ helps['staticwebapp enterprise-edge'] = """
 
 helps['staticwebapp enterprise-edge enable'] = """
     type: command
-    short-summary: Enable the Azure Front Door CDN for a static webapp. For optimal experience and availability please check our documentation https://aka.ms/swaedge
+    short-summary: Enable the Azure Front Door CDN for a static webapp. Enabling enterprise-grade edge requires re-registration for the Azure Front Door Microsoft.CDN resource provider. For optimal experience and availability please check our documentation https://aka.ms/swaedge
 """
 
 helps['staticwebapp enterprise-edge disable'] = """
