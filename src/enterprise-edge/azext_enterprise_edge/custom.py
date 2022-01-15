@@ -10,7 +10,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.appservice._client_factory import web_client_factory
+from azure.cli.command_modules.appservice._client_factory import providers_client_factory
 
 
 logger = get_logger(__name__)
@@ -54,15 +54,15 @@ class StaticWebAppFrontDoorClient:
 
     @classmethod
     def _register_cdn_provider(cls, cmd):
+        from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+
         namespace = "Microsoft.CDN"
-        api_version = "2021-04-01"
-        ProviderRegistrationRequest, ProviderConsentDefinition = cmd.get_models('ProviderRegistrationRequest',
-                                                                                'ProviderConsentDefinition')
         properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(
             consent_to_authorization=True))
-        client = web_client_factory(cmd.cli_ctx, api_version=api_version)
+
+        client = providers_client_factory(cmd.cli_ctx)
         try:
-            client.providers.register(namespace, properties=properties)
+            client.register(namespace, properties=properties)
         except Exception as e:
             msg = "Server responded with error message : {} \n"\
                   "Enabling enterprise-grade edge requires reregistration for the Azure Front "\
