@@ -4,10 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-from azext_ags._client_factory import cf_ags
-
 from ._validators import process_grafana_create_namespace, process_missing_resource_group_parameter
+
 
 def load_command_table(self, _):
 
@@ -18,9 +16,15 @@ def load_command_table(self, _):
 
     # TODO: ensure HTTP doc url in the help
 
-    # TODO ensure each command return error on 4xx/5xx
+    # TODO ensure each command throw error on 4xx/5xx
 
     # TODO support no resource group parameter
+
+    # TODO add confirm when delete a workspace
+
+    # TODO hyphen in uid is blocking command execution
+
+    # TODO right place to place the validator who handles missing resource group
 
     with self.command_group('grafana', is_preview=True) as g:
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
@@ -34,40 +38,45 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_dashboard')  # TODO need examples
         g.custom_command('delete', 'delete_dashboard')
         g.custom_command('list', 'list_dashboards')
-        g.custom_command('show', 'show_dashboard')  # TODO handle HOME dashboard and name 
+        g.custom_command('show', 'show_dashboard')  # TODO handle HOME dashboard and name
         g.custom_command('update', 'update_dashboard')  # TODO
         # g.custom_command('get-tags', 'get_dashboard_tags')  # TODO handle HOME dashboard
 
     with self.command_group('grafana data-source') as g:
-        g.custom_command('create', 'create_data_source') # TODO add one more example of using service principal
+        g.custom_command('create', 'create_data_source')  # TODO add one more example of using service principal
         g.custom_command('list', 'list_data_sources')
         g.custom_command('show', 'show_data_source')
         g.custom_command('delete', 'delete_data_source')
         g.custom_command('query', 'query_data_source')
 
-    with self.command_group('grafana folder') as g:
-        pass
-    #with self.command_group('grafana user'):
-    #    g.custom_command('list', 'list_users')  # TODO
-    #    g.custom_command('show', 'show_user')  # TODO
-    #    g.custom_command('actual-user', 'get_actual_user')  # TODO
-    #    g.custom_command('star-dashboard', 'star_dashboard')  # TODO consider to move under "dashboard"
-    #    g.custom_command('unstar-dashboard', 'unstar_dashboard')  # TODO consider to move under "dashboard"
+    with self.command_group('grafana folder', validator=process_missing_resource_group_parameter) as g:
+        g.custom_command('create', 'create_folder')
+        g.custom_command('list', 'list_folders', validator=process_missing_resource_group_parameter)
+        g.custom_command('show', 'show_folder')
+        g.custom_command('delete', 'delete_folder')
+        g.custom_command('update', 'update_folder')
 
-    #with self.command_group('grafana alert'):
-    #    g.custom_command('list', 'list_alerts')
-    #    g.custom_command('show', 'show-alert')
-    #    g.custom_command('pause', 'pause_alert')  # TODO handle "pause-all"
+    with self.command_group('grafana user') as g:
+        g.custom_command('list', 'list_users', validator=process_missing_resource_group_parameter)
+        g.custom_command('show', 'show_user', validator=process_missing_resource_group_parameter)
+        g.custom_command('actual-user', 'get_actual_user', validator=process_missing_resource_group_parameter)
+        # g.custom_command('star-dashboard', 'star_dashboard')  # TODO consider to move under "dashboard"
+        # g.custom_command('unstar-dashboard', 'unstar_dashboard')  # TODO consider to move under "dashboard"
 
-    #with self.command_group('grafana alert notification-channel'):
-    #    g.custom_command('create', 'create_notification_channel')  # TODO
-    #    g.custom_command('list', 'list_notification_channels')  # TODO handle look up modes
-    #    g.custom_command('show', 'show_notification_channel')  # TODO handle both uid and id
-    #    g.custom_command('delete', 'delete_notification_channel')  # TODO handle both uid and id
-    #    g.custom_command('update', 'update_notification_channel')  # TODO handle both uid and id
-    #    g.custom_command('test', 'test_notification_channel')  # TODO handle both uid and id
+    # with self.command_group('grafana alert'):
+    #     g.custom_command('list', 'list_alerts')
+    #     g.custom_command('show', 'show-alert')
+    #     g.custom_command('pause', 'pause_alert')  # TODO handle "pause-all"
 
-    #with self.command_group('grafana annotation'):
+    # with self.command_group('grafana alert notification-channel'):
+    #     g.custom_command('create', 'create_notification_channel')  # TODO
+    #     g.custom_command('list', 'list_notification_channels')  # TODO handle look up modes
+    #     g.custom_command('show', 'show_notification_channel')  # TODO handle both uid and id
+    #     g.custom_command('delete', 'delete_notification_channel')  # TODO handle both uid and id
+    #     g.custom_command('update', 'update_notification_channel')  # TODO handle both uid and id
+    #     g.custom_command('test', 'test_notification_channel')  # TODO handle both uid and id
+
+    # with self.command_group('grafana annotation'):
     #    g.custom_command('create', 'create_annotation')  # TODO
     #    g.custom_command('create', 'list_annotation')  # TODO (find)
     #    g.custom_command('update', 'update_annotation')  # TODO

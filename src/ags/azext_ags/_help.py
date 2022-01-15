@@ -9,37 +9,37 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['grafana'] = """
     type: group
-    short-summary: Commands to manage Azure Managed Dashboard for Grafanas.
+    short-summary: Commands to manage Azure Managed Workspace for Grafana.
 """
 
 helps['grafana create'] = """
     type: command
-    short-summary: Create a Azure Managed Dashboard for Grafana.
+    short-summary: Create a Azure Managed Workspace for Grafana.
 """
 
 helps['grafana list'] = """
     type: command
-    short-summary: List Azure Managed Dashboard for Grafanas.
+    short-summary: List Azure Managed Workspace for Grafana.
 """
 
 helps['grafana delete'] = """
     type: command
-    short-summary: Delete a Azure Managed Dashboard for Grafana.
+    short-summary: Delete a Azure Managed Workspace for Grafana.
 """
 
 helps['grafana show'] = """
     type: command
-    short-summary: Show details of a Azure Managed Dashboard for Grafana.
+    short-summary: Show details of a Azure Managed Workspace for Grafana.
 """
 
 helps['grafana update'] = """
      type: command
-     short-summary: Update a Azure Managed Dashboard for Grafana.
+     short-summary: Update a Azure Managed Workspace for Grafana.
  """
 
 helps['grafana show'] = """
     type: command
-    short-summary: Show details of a Azure Managed Dashboard for Grafana.
+    short-summary: Show details of a Azure Managed Workspace for Grafana.
 """
 
 helps['grafana data-source'] = """
@@ -68,7 +68,7 @@ helps['grafana dashboard create'] = """
     examples:
         - name: Create a dashboard with definition in a json file. For quick start, clone from the output of "az grafana dashboard show", remove "id" and "uid", and apply changes.
           text: |
-            az grafana dashboard create -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\temp\dashboard.json
+            az grafana dashboard create -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\\temp\\dashboard.json
 """
 
 helps['grafana dashboard update'] = """
@@ -78,7 +78,7 @@ helps['grafana dashboard update'] = """
         - name: Update a dashboard with definition in a json file. For quick start, get existing configuration from "az grafana dashboard show", and apply changes.
                 "version" field need to be updated, and "overwrite" field should be true.
           text: |
-            az grafana dashboard update -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\temp\dashboard.json
+            az grafana dashboard update -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\\temp\\dashboard.json
 """
 
 helps['grafana dashboard list'] = """
@@ -99,7 +99,7 @@ helps['grafana dashboard show'] = """
            az grafana dashboard show -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
         - name: Get home dashboard
           text: |
-           az grafana dashboard show -g MyResourceGroup -n MyGrafana --show-home-dashboard 
+           az grafana dashboard show -g MyResourceGroup -n MyGrafana --show-home-dashboard
 """
 
 helps['grafana dashboard delete'] = """
@@ -109,5 +109,4 @@ helps['grafana dashboard delete'] = """
         - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
            az grafana dashboard delete -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
-           
 """

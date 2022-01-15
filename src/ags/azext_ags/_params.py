@@ -48,3 +48,5 @@ def load_arguments(self, _):
         c.argument("max_data_points", help="Maximum amount of data points that dashboard panel can render")
         c.argument("internal_ms", help="The time interval in milliseconds of time series")
 
+    with self.argument_context("grafana user") as c:
+        c.argument("user", help="user login name or email")

@@ -31,9 +31,9 @@ def create_grafana(cmd, resource_group_name, grafana_name,
 def list_grafana(cmd, resource_group_name=None):
     filters = []
     if resource_group_name:
-        filters.append("resourceGroup eq '{}'".format(resource_group_name))
-    filters.append("resourceType eq 'Microsoft.Dashboard/grafana'")
-    odata_filter = ' and '.join(filters)
+        filters.append('resourceGroup eq "{}"'.format(resource_group_name))
+    filters.append('resourceType eq "Microsoft.Dashboard/grafana"')
+    odata_filter = " and ".join(filters)
 
     expand = "createdTime,changedTime,provisioningState"
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
@@ -66,12 +66,14 @@ def show_dashboard(cmd, grafana_name, uid=None, show_home_dashboard=None, resour
 
 
 def list_dashboards(cmd, grafana_name, resource_group_name=None):
-    return show_dashboard(cmd, resource_group_name=resource_group_name, grafana_name=grafana_name, show_home_dashboard=None)
+    return show_dashboard(cmd, resource_group_name=resource_group_name,
+                          grafana_name=grafana_name, show_home_dashboard=None)
 
 
 def create_dashboard(cmd, grafana_name, dashboard_definition, resource_group_name):
     dashboard_definition = _try_load_file_content(dashboard_definition)
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db", dashboard_definition)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
+                             json.loads(dashboard_definition))
     return json.loads(response.content)
 
 
@@ -99,24 +101,77 @@ def create_data_source(cmd, resource_group_name, grafana_name, definition):
 
 def delete_data_source(cmd, resource_group_name, grafana_name, data_source):
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
-    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/datasources/uid/" + data['uid'])
+    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/datasources/uid/" + data["uid"])
+
+
+def create_folder(cmd, grafana_name, title, resource_group_name=None):
+    payload = {
+        "title": title
+    }
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/folders", payload)
+    return json.loads(response.content)
+
+
+def list_folders(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders")
+    return json.loads(response.content)
+
+
+def update_folder(cmd, grafana_name, uid, title, resource_group_name=None):
+    version = show_folder(cmd, grafana_name, uid, resource_group_name)['version']
+    data = {
+        "title": title,
+        "version": int(version)
+    }
+    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + uid, data)
+    return json.loads(response.content)
+
+
+def show_folder(cmd, grafana_name, uid, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + uid)
+    return json.loads(response.content)
+
+
+def delete_folder(cmd, grafana_name, uid, resource_group_name=None):
+    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/folders/" + uid)
+
+
+def get_actual_user(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/user")
+    return json.loads(response.content)
+
+
+def list_users(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/org/users")
+    return json.loads(response.content)
+
+
+def show_user(cmd, grafana_name, user, resource_group_name=None):
+    if "@" in user:
+        uri = "/api/org/users/lookup?loginOrEmail="
+    else:
+        raise CLIError("Searching by id other than login name or email is not yet supported")
+
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", uri + user)
+    return json.loads(response.content)
 
 
 def query_data_source(cmd, resource_group_name, grafana_name, data_source, time_from=None, time_to=None,
                       max_data_points=100, internal_ms=1000, conditions=None):
     if not time_from or not time_to:  # TODO accept tiem string
-        import datetime, time
+        import datetime
+        import time
         right_now = datetime.datetime.now()
         if not time_from:
             time_from = time.mktime((right_now - datetime.timedelta(hours=1)).timetuple()) * 1000
         if not time_to:
             time_to = time.mktime(right_now.timetuple()) * 1000
-    data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source)['id']
+    data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source)["id"]
 
     data = {
         "from": time_from,
         "to": time_to,
-        "queries":[{
+        "queries": [{
             "intervalMs": internal_ms,
             "maxDataPoints": max_data_points,
             "datasourceId": data_source_id,
@@ -126,8 +181,8 @@ def query_data_source(cmd, resource_group_name, grafana_name, data_source, time_
 
     if conditions:
         for c in json.loads(conditions):
-            k, v = c.split('=', 1)
-            data['queries'][k] = v
+            k, v = c.split("=", 1)
+            data["queries"][k] = v
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/tsdb/query")
     return json.loads(response.content)
@@ -138,7 +193,8 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
     if response.status_code >= 400:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/" + data_source)
         if response.status_code >= 400:
-            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/uid/" + data_source)
+            response = _send_request(cmd, resource_group_name, grafana_name,
+                                     "get", "/api/datasources/uid/" + data_source)
     if response.status_code >= 400:
         raise CLIError("Not found. Ex: {}".format(response.status_code))
     return json.loads(response.content)
@@ -166,12 +222,12 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
                                         resource="ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")  # TODO, support dogfood
 
     headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer ' + creds[1]
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds[1]
     }
 
-    return requests.request(http_method, 
-                            url=endpoint + path, 
-                            headers=headers, 
-                            data=body,
+    return requests.request(http_method,
+                            url=endpoint + path,
+                            headers=headers,
+                            json=body,
                             verify=(not should_disable_connection_verify()))

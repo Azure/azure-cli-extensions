@@ -9,9 +9,11 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 
+
 def process_grafana_create_namespace(cmd, namespace):
     if not namespace.location:
         get_default_location_from_resource_group(cmd, namespace)
+
 
 def process_missing_resource_group_parameter(cmd, namespace):
     if not namespace.resource_group_name and namespace.grafana_name:
