@@ -8,8 +8,8 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_ADLS, \
+    CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -18,8 +18,10 @@ class StorageCommandsLoader(AzCommandsLoader):
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
-        register_resource_type('latest', CUSTOM_MGMT_PREVIEW_STORAGE, '2020-08-01-preview')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2021-08-01')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2020-02-10')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
+
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -63,8 +65,9 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
 
-        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter type of Python SDK
-        # When the Python SDK is fixed (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
+        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter
+        # type of Python SDK When the Python SDK is fixed
+        # (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
         # this parameter should not be passed in any more
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
                    validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,
@@ -115,12 +118,12 @@ class StorageArgumentContext(AzArgumentContext):
         from ._validators import validate_encryption_services
 
         t_access_tier, t_sku_name, t_encryption_services = self.command_loader.get_models(
-            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=CUSTOM_MGMT_STORAGE)
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
-        self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE,
+        self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',
                       help='Generate and assign a new Storage Account Identity for this storage account for use '
                            'with key management services like Azure KeyVault.')
@@ -133,7 +136,7 @@ class StorageArgumentContext(AzArgumentContext):
             encryption_choices = list(
                 t_encryption_services._attribute_map.keys())  # pylint: disable=protected-access
             self.argument('encryption_services', arg_type=get_enum_type(encryption_choices),
-                          resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01', nargs='+',
+                          resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01', nargs='+',
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
 

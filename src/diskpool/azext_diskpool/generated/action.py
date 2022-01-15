@@ -19,29 +19,6 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
-class AddDiskPoolUpdateDisks(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-
-        for item in action:
-            super(AddDiskPoolUpdateDisks, self).__call__(parser, namespace, item, option_string)
-
-    def get_action(self, values, option_string=None):
-        try:
-            value_chunk_list = [values[x: x + 1] for x in range(0, len(values), 1)]
-            value_list = []
-            for chunk in value_chunk_list:
-                id = chunk
-                value_list.append(
-                    {
-                        'id': id,
-                    }
-                )
-            return value_list
-        except ValueError:
-            raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
-
-
 class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -57,17 +34,13 @@ class AddSku(argparse.Action):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
 
             if kl == 'name':
-
                 d['name'] = v[0]
 
             elif kl == 'tier':
-
                 d['tier'] = v[0]
 
             else:
@@ -78,24 +51,35 @@ class AddSku(argparse.Action):
         return d
 
 
+class AddDiskPoolUpdateDisks(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        for item in action:
+            super(AddDiskPoolUpdateDisks, self).__call__(parser, namespace, item, option_string)
+
+    def get_action(self, values, option_string=None):
+        try:
+            value_keys = [
+                'id',
+            ]
+            value_list = [dict(zip(value_keys, values[x: x + 1])) for x in range(0, len(values), 1)]
+            return value_list
+        except ValueError:
+            raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
+
+
 class AddDiskPoolCreateDisks(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-
         for item in action:
             super(AddDiskPoolCreateDisks, self).__call__(parser, namespace, item, option_string)
 
     def get_action(self, values, option_string=None):
         try:
-            value_chunk_list = [values[x: x + 1] for x in range(0, len(values), 1)]
-            value_list = []
-            for chunk in value_chunk_list:
-                id = chunk
-                value_list.append(
-                    {
-                        'id': id,
-                    }
-                )
+            value_keys = [
+                'id',
+            ]
+            value_list = [dict(zip(value_keys, values[x: x + 1])) for x in range(0, len(values), 1)]
             return value_list
         except ValueError:
             raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
@@ -116,17 +100,13 @@ class AddDiskPoolIscsiTargetUpdateStaticAcls(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
 
             if kl == 'initiator-iqn':
-
                 d['initiator_iqn'] = v[0]
 
             elif kl == 'mapped-luns':
-
                 d['mapped_luns'] = v
 
             else:
@@ -153,17 +133,13 @@ class AddDiskPoolIscsiTargetUpdateLuns(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
 
             if kl == 'name':
-
                 d['name'] = v[0]
 
             elif kl == 'managed-disk-azure-resource-id':
-
                 d['managed_disk_azure_resource_id'] = v[0]
 
             else:
@@ -190,17 +166,13 @@ class AddDiskPoolIscsiTargetCreateStaticAcls(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
 
             if kl == 'initiator-iqn':
-
                 d['initiator_iqn'] = v[0]
 
             elif kl == 'mapped-luns':
-
                 d['mapped_luns'] = v
 
             else:
@@ -227,17 +199,13 @@ class AddDiskPoolIscsiTargetCreateLuns(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
 
             if kl == 'name':
-
                 d['name'] = v[0]
 
             elif kl == 'managed-disk-azure-resource-id':
-
                 d['managed_disk_azure_resource_id'] = v[0]
 
             else:

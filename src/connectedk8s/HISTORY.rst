@@ -2,6 +2,62 @@
 
 Release History
 ===============
+1.2.3
+++++++
+
+* Added private link support
+
+1.2.2
+++++++
+
+* Updated connectedk8s proxy to support mooncake
+
+1.2.1
+++++++
+
+* Add maxCliCoreVersion as 2.29.0
+
+1.2.0
+++++++
+
+* Updated CSP version to 1.3.017131
+* Updated GA SDK to 2021-10-01
+* Updated CSP endpoint to CDN
+* Disabled proxy command in fairfax
+
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
+
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
+1.1.9
+++++++
+
+* Increase onboarding and upgrade timeout
+
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
+
+
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
+
+1.1.6
+++++++
+* Moved to track2 SDK
+* `az connectedk8s connect`: Added onboarding timeout parameter
+* `az connectedk8s upgrade`: Added upgrade timeout parameter
+* Release namespace detection bug fix in multiple commands
+
 
 1.1.5
 ++++++

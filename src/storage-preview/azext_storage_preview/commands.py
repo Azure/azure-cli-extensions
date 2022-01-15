@@ -7,9 +7,10 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client)
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
+                              cf_adls_service, cf_adls_file_system, cf_local_users)
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE,
+                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -25,74 +26,54 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         )
 
     storage_account_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
                         'StorageAccountsOperations.{}',
         client_factory=cf_sa,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
     storage_account_custom_type = CliCommandType(
         operations_tmpl='azext_storage_preview.operations.account#{}',
         client_factory=cf_sa,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
-    blob_inventory_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
-                        'BlobInventoryPoliciesOperations.{}',
-        client_factory=cf_sa_blob_inventory,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
-    )
-
-    blob_inventory_custom_type = CliCommandType(
-        operations_tmpl='azext_storage_preview.operations.account#{}',
-        client_factory=cf_sa_blob_inventory,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
-    )
-
-    with self.command_group('storage account blob-inventory-policy', blob_inventory_sdk,
-                            custom_command_type=blob_inventory_custom_type, is_preview=True,
-                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
-        g.custom_command('create', 'create_blob_inventory_policy')
-        g.generic_update_command('update', getter_name='get_blob_inventory_policy',
-                                 getter_type=blob_inventory_custom_type,
-                                 setter_name='update_blob_inventory_policy',
-                                 setter_type=blob_inventory_custom_type)
-        g.custom_command('delete', 'delete_blob_inventory_policy', confirmation=True)
-        g.custom_show_command('show', 'get_blob_inventory_policy')
-
-    # with self.command_group('storage account blob-inventory-policy rule', blob_inventory_sdk,
-    #                         custom_command_type=blob_inventory_custom_type, is_preview=True,
-    #                         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview') as g:
-    #     g.custom_command('add', 'add_blob_inventory_policy_rule')
-    #     g.custom_command('list', 'list_blob_inventory_policy_rules')
-    #     g.custom_command('remove', 'remove_blob_inventory_policy_rule')
-    #     g.custom_command('show', 'get_blob_inventory_policy_rule')
-    #     g.custom_command('update', 'update_blob_inventory_policy_rule')
-
-    file_service_mgmt_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations'
-                        '#FileServicesOperations.{}',
-        client_factory=cf_mgmt_file_services,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
-    )
-
-    with self.command_group('storage account file-service-properties', file_service_mgmt_sdk,
-                            custom_command_type=get_custom_sdk('account', client_factory=cf_mgmt_file_services,
-                                                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE),
-                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2019-06-01', is_preview=True) as g:
-        g.show_command('show', 'get_service_properties')
-        g.generic_update_command('update',
-                                 getter_name='get_service_properties',
-                                 setter_name='set_service_properties',
-                                 custom_func_name='update_file_service_properties')
+    with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
+                            custom_command_type=storage_account_custom_type) as g:
+        g.custom_command('create', 'create_storage_account')
+        g.generic_update_command('update', getter_name='get_properties', setter_name='update',
+                                 custom_func_name='update_storage_account')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
-                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2017-06-01') as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
         g.custom_command('add', 'add_network_rule')
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
+
+    local_users_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
+                        'LocalUsersOperations.{}',
+        client_factory=cf_local_users,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    local_users_custom_type = CliCommandType(
+        operations_tmpl='azext_storage_preview.operations.account#{}',
+        client_factory=cf_local_users,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    with self.command_group('storage account local-user', local_users_sdk,
+                            custom_command_type=local_users_custom_type,
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
+        g.custom_command('create', 'create_local_user')
+        g.custom_command('update', 'update_local_user')
+        g.command('delete', 'delete')
+        g.command('list', 'list')
+        g.show_command('show', 'get')
+        g.command('list-keys', 'list_keys')
+        g.command('regenerate-password', 'regenerate_password')
 
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
@@ -205,3 +186,26 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command('upload', 'storage_file_upload', transform=transform_file_upload)
         g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
                                  custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))
+
+    adls_fs_service_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._data_lake_service_client#DataLakeServiceClient.{}',
+        client_factory=cf_adls_service,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+
+    with self.command_group('storage fs service-properties', command_type=adls_fs_service_sdk,
+                            custom_command_type=get_custom_sdk('filesystem', cf_adls_service),
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
+        g.storage_command_oauth('show', 'get_service_properties', exception_handler=show_exception_handler)
+        g.storage_custom_command_oauth('update', 'set_service_properties')
+
+    adls_fs_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._file_system_client#FileSystemClient.{}',
+        client_factory=cf_adls_file_system,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+    with self.command_group('storage fs', command_type=adls_fs_sdk,
+                            custom_command_type=get_custom_sdk('filesystem', cf_adls_file_system),
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
+        g.storage_custom_command_oauth('list-deleted-path', 'list_deleted_path')
+        g.storage_command_oauth('undelete-path', '_undelete_path')

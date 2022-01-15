@@ -37,6 +37,8 @@ def load_arguments(self, _):
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
         c.argument('enable_private_link', options_list=['--enable-private-link'], arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, arg_type=get_enum_type(["true", "false"]), validator=validate_private_link_properties)
         c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
+        c.argument('onboarding_timeout', options_list=['--onboarding-timeout'], arg_group='Timeout', help='Time required (in seconds) for the arc-agent pods to be installed on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for installing the arc-agent pods.')
+        c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
@@ -57,6 +59,7 @@ def load_arguments(self, _):
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('arc_agent_version', options_list=['--agent-version'], help='Version of agent to update the helm charts to.')
+        c.argument('upgrade_timeout', options_list=['--upgrade-timeout'], help='Time required (in seconds) for the arc-agent pods to be upgraded on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for upgrading the arc-agent pods.')
 
     with self.argument_context('connectedk8s enable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

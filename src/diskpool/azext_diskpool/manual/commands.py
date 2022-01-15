@@ -14,11 +14,27 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_diskpool.generated._client_factory import cf_disk_pool, cf_disk_pool_zone
+    from azext_diskpool.generated._client_factory import cf_disk_pool, cf_iscsi_target
+    from azext_diskpool.manual._client_factory import cf_disk_pool_zone
     diskpool_disk_pool = CliCommandType(
         operations_tmpl='azext_diskpool.vendored_sdks.storagepool.operations._disk_pools_operations#DiskPoolsOperations'
         '.{}',
         client_factory=cf_disk_pool)
-    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool, is_preview=True) as g:
-        from ._transformers import transform_disk_pool_list_output
+    diskpool_iscsi_target = CliCommandType(
+        operations_tmpl=(
+            'azext_diskpool.vendored_sdks.storagepool.operations._iscsi_targets_operations#IscsiTargetsOperations.{}'
+        ),
+        client_factory=cf_iscsi_target,
+    )
+    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool) as g:
+        from ._transformers import transform_disk_pool_list_output, transform_disk_pool_show_output
         g.custom_command('list', 'disk_pool_list', table_transformer=transform_disk_pool_list_output)
+        g.custom_show_command('show', 'disk_pool_show', table_transformer=transform_disk_pool_show_output)
+
+    with self.command_group('disk-pool iscsi-target', diskpool_iscsi_target, client_factory=cf_iscsi_target) as g:
+        from ._transformers import transform_disk_pool_iscsi_target_list_output, \
+            transform_disk_pool_iscsi_target_show_output
+        g.custom_command('list', 'disk_pool_iscsi_target_list',
+                         table_transformer=transform_disk_pool_iscsi_target_list_output)
+        g.custom_show_command('show', 'disk_pool_iscsi_target_show',
+                              table_transformer=transform_disk_pool_iscsi_target_show_output)

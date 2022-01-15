@@ -14,61 +14,65 @@ from knack.help_files import helps
 
 helps['communication'] = """
     type: group
-    short-summary: Manage communication service
+    short-summary: Manage communication service with communication
 """
 
 helps['communication list'] = """
     type: command
-    short-summary: "List all resources in a subscription or a resource group."
+    short-summary: "Handles requests to list all resources in a resource group. And Handles requests to list all \
+resources in a subscription."
     examples:
       - name: List by resource group
         text: |-
                az communication list --resource-group "MyResourceGroup"
+      - name: List by subscription
+        text: |-
+               az communication list
 """
 
 helps['communication show'] = """
     type: command
-    short-summary: "Get the Communication Service and its properties."
+    short-summary: "Get the CommunicationService and its properties."
     examples:
-      - name: Get the detail of a Communication Service
+      - name: Get resource
         text: |-
                az communication show --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication create'] = """
     type: command
-    short-summary: "Create a new Communication Service or update an existing Communication Service."
+    short-summary: "Create a new CommunicationService or update an existing CommunicationService."
     examples:
-      - name: Create a Communication Service
+      - name: Create or update resource
         text: |-
-               az communication create --name "MyCommunicationResource" --location "Global" --data-location \
-"United States" --resource-group "MyResourceGroup"
+               az communication create --name "MyCommunicationResource" --location "Global" --data-location "United \
+States" --resource-group "MyResourceGroup"
 """
 
 helps['communication update'] = """
     type: command
-    short-summary: "Operation to update an existing Communication Service."
+    short-summary: "Operation to update an existing CommunicationService."
     examples:
-      - name: Update a Communication Service
+      - name: Update resource
         text: |-
-               az communication update --name "MyCommunicationResource" --tags newTag="newVal" \
---resource-group "MyResourceGroup"
+               az communication update --name "MyCommunicationResource" --tags newTag="newVal" --resource-group \
+"MyResourceGroup"
 """
 
 helps['communication delete'] = """
     type: command
-    short-summary: "Operation to delete a Communication Service."
+    short-summary: "Operation to delete a CommunicationService."
     examples:
-      - name: Delete a Communication Service
+      - name: Delete resource
         text: |-
                az communication delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication link-notification-hub'] = """
     type: command
-    short-summary: "Link an Azure Notification Hub to this communication."
+    short-summary: "Links an Azure Notification Hub to this communication service."
     examples:
-      - name: Link a Communication Service to a existing notification hub
+      - name: Link notification hub
         text: |-
                az communication link-notification-hub --name "MyCommunicationResource" --connection-string \
 "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" --resource-id \
@@ -78,22 +82,22 @@ otificationHubs/MyHub" --resource-group "MyResourceGroup"
 
 helps['communication list-key'] = """
     type: command
-    short-summary: "Get the access keys of the Communication Service resource."
+    short-summary: "Get the access keys of the CommunicationService resource."
     examples:
-      - name: List access keys of a Communication Service
+      - name: List keys
         text: |-
                az communication list-key --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 """
 
 helps['communication regenerate-key'] = """
     type: command
-    short-summary: "Regenerate Communication Service access key. PrimaryKey and SecondaryKey cannot be regenerated at \
+    short-summary: "Regenerate CommunicationService access key. PrimaryKey and SecondaryKey cannot be regenerated at \
 the same time."
     examples:
-      - name: Regenerate primary access keys of a Communication Service
+      - name: Regenerate key
         text: |-
-               az communication regenerate-key --name "MyCommunicationResource" --key-type "Primary" \
---resource-group "MyResourceGroup"
+               az communication regenerate-key --name "MyCommunicationResource" --key-type "Primary" --resource-group \
+"MyResourceGroup"
 """
 
 helps['communication wait'] = """
@@ -102,19 +106,63 @@ helps['communication wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the communication is successfully created.
         text: |-
-               az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" \
---created
+               az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --created
       - name: Pause executing next line of CLI script until the communication is successfully deleted.
         text: |-
-               az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" \
---deleted
+               az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
 
-helps['communication show-status'] = """
+helps['communication identity'] = """
+    type: group
+    short-summary: Commands to manage User Identity for a CommunicationService resource.
+"""
+
+helps['communication identity issue-access-token'] = """
     type: command
-    short-summary: "Get the current status of an async operation."
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
     examples:
-      - name: Get the current status of a specific operation
+      - name: issue-access-token
         text: |-
-               az communication show-status --operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" --location "westus2"
+               az communication identity issue-access-token --scope chat
+      - name: issue-access-token with multiple scopes and userid
+        text: |-
+               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+"""
+
+helps['communication sms'] = """
+    type: group
+    short-summary: Commands to manage SMS for a CommunicationService resource.
+"""
+
+helps['communication sms send-sms'] = """
+    type: command
+    short-summary: "Sends an SMS from the sender phone number to the recipient phone number."
+    examples:
+      - name: send sms
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" \
+--recipient "+1425xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication phonenumbers'] = """
+    type: group
+    short-summary: Commands to manage phone numbers for a CommunicationService resource.
+"""
+
+helps['communication phonenumbers list-phonenumbers'] = """
+    type: command
+    short-summary: "Lists all phone numbers associated with the CommunicationService resource."
+    examples:
+      - name: list phonenumbers
+        text: |-
+               az communication phonenumbers list-phonenumbers
+"""
+
+helps['communication phonenumbers show-phonenumber'] = """
+    type: command
+    short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
+    examples:
+      - name: show phonenumber
+        text: |-
+               az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
 """

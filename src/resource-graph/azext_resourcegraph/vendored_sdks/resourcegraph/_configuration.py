@@ -29,20 +29,25 @@ class ResourceGraphClientConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
+    :param subscription_id: The Azure subscription Id.
+    :type subscription_id: str
     """
 
     def __init__(
         self,
         credential,  # type: "TokenCredential"
+        subscription_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
+        if subscription_id is None:
+            raise ValueError("Parameter 'subscription_id' must not be None.")
         super(ResourceGraphClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.api_version = "2021-03-01"
+        self.subscription_id = subscription_id
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-resourcegraph/{}'.format(VERSION))
         self._configure(**kwargs)

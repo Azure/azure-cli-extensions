@@ -8,6 +8,7 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
@@ -44,7 +45,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S.%f')
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -85,6 +86,9 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
+    # Prompt input for public ip usage
+    if not namespace.associate_public_ip:
+        _prompt_public_ip(namespace)
 
 
 def validate_restore(cmd, namespace):
@@ -199,6 +203,18 @@ def _prompt_repair_password(namespace):
         namespace.repair_password = prompt_pass('Repair VM admin password: ', confirm=True)
     except NoTTYException:
         raise CLIError('Please specify the password parameter in non-interactive mode.')
+
+
+def _prompt_public_ip(namespace):
+    from knack.prompting import prompt_y_n, NoTTYException
+    try:
+        if prompt_y_n('Does repair vm requires public ip?'):
+            namespace.associate_public_ip = "yes"
+        else:
+            namespace.associate_public_ip = '""'
+
+    except NoTTYException:
+        raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):

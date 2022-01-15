@@ -8,18 +8,18 @@
 from io import open
 from setuptools import setup, find_packages
 
-VERSION = "2.0.1"
+VERSION = "4.0.1"
 
 with open('README.md', encoding='utf-8') as f:
     readme = f.read()
-with open('CHANGELOG.md', encoding='utf-8') as f:
-    changelog = f.read()
+with open('HISTORY.md', encoding='utf-8') as f:
+    history = f.read()
 
 setup(
     name='vmware',
     version=VERSION,
     description='Azure VMware Solution commands.',
-    long_description=readme + '\n\n' + changelog,
+    long_description=readme + '\n\n' + history,
     long_description_content_type='text/markdown',
     license='MIT',
     author='Microsoft',

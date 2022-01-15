@@ -46,6 +46,7 @@ class ResourceTypeRegistrationOperations:
         self,
         provider_namespace: str,
         resource_type: str,
+        nested_resource_type: str,
         properties: "models.ResourceTypeRegistration",
         **kwargs
     ) -> "models.ResourceTypeRegistration":
@@ -65,6 +66,7 @@ class ResourceTypeRegistrationOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+            'nestedResourceType': self._serialize.url("nested_resource_type", nested_resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -109,12 +111,13 @@ class ResourceTypeRegistrationOperations:
 
         return deserialized
     _create_or_update_initial.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}{nestedResourceTypeUrl}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
         provider_namespace: str,
         resource_type: str,
+        nested_resource_type: str,
         properties: "models.ResourceTypeRegistration",
         **kwargs
     ) -> AsyncLROPoller["models.ResourceTypeRegistration"]:
@@ -124,6 +127,8 @@ class ResourceTypeRegistrationOperations:
         :type provider_namespace: str
         :param resource_type: The resource type.
         :type resource_type: str
+        :param nested_resource_type: The nested resource type.
+        :type nested_resource_type: str
         :param properties: The resource type registration parameters supplied to the CreateOrUpdate operation.
         :type properties: ~providerhub.models.ResourceTypeRegistration
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -150,6 +155,7 @@ class ResourceTypeRegistrationOperations:
             raw_result = await self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 resource_type=resource_type,
+                nested_resource_type=nested_resource_type,
                 properties=properties,
                 cls=lambda x, y, z: x,
                 **kwargs
@@ -170,6 +176,7 @@ class ResourceTypeRegistrationOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+            'nestedResourceType': self._serialize.url("nested_resource_type", nested_resource_type, 'str'),
         }
 
         if polling is True:
@@ -189,12 +196,13 @@ class ResourceTypeRegistrationOperations:
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}{nestedResourceTypeUrl}'}  # type: ignore
 
     async def delete(
         self,
         provider_namespace: str,
         resource_type: str,
+        nested_resource_type: str,
         **kwargs
     ) -> None:
         """Deletes a resource type.
@@ -203,6 +211,8 @@ class ResourceTypeRegistrationOperations:
         :type provider_namespace: str
         :param resource_type: The resource type.
         :type resource_type: str
+        :param nested_resource_type: The nested resource type.
+        :type nested_resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -222,6 +232,7 @@ class ResourceTypeRegistrationOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+            'nestedResourceType': self._serialize.url("nested_resource_type", nested_resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -250,4 +261,4 @@ class ResourceTypeRegistrationOperations:
             return cls(pipeline_response, None, {})
 
     delete.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}{nestedResourceTypeUrl}'}  # type: ignore

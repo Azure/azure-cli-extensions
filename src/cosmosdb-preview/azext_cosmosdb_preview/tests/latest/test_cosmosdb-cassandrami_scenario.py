@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import mock
+from unittest import mock
 
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -15,6 +15,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ManagedCassandraScenarioTest(ScenarioTest):
 
+    # pylint: disable=line-too-long
+    # pylint: disable=broad-except
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
     def test_managed_cassandra_cluster_without_datacenters(self, resource_group):
 
@@ -36,7 +38,9 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         except Exception as e:
             print(e)
 
+    # pylint: disable=broad-except
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
     def test_managed_cassandra_verify_lists(self, resource_group):
 
         self.kwargs.update({
@@ -74,6 +78,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         except Exception as e:
             print(e)
 
+    # pylint: disable=line-too-long
     def create_subnet(self, resource_group):
 
         self.kwargs.update({

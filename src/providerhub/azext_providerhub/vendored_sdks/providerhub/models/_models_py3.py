@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Union
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
-from ._providerhub_enums import *
+from ._provider_hub_enums import *
 
 
 class AuthorizationActionMapping(msrest.serialization.Model):
@@ -115,7 +115,7 @@ class CheckinManifestParams(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param environment: The environment supplied to the checkin manifest operation.
+    :param environment: Required. The environment supplied to the checkin manifest operation.
     :type environment: str
     :param baseline_arm_manifest_location: Required. The baseline ARM manifest location supplied to
      the checkin manifest operation.
@@ -222,51 +222,39 @@ class CustomRollout(Resource):
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
-     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
-     "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
-    :param specification: Required.
-    :type specification: ~providerhub.models.CustomRolloutSpecification
-    :param status:
-    :type status: ~providerhub.models.CustomRolloutStatus
+    :param properties: Required. Properties of the rollout.
+    :type properties: ~provider_hub.models.CustomRolloutProperties
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'specification': {'required': True},
+        'properties': {'required': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'specification': {'key': 'properties.specification', 'type': 'CustomRolloutSpecification'},
-        'status': {'key': 'properties.status', 'type': 'CustomRolloutStatus'},
+        'properties': {'key': 'properties', 'type': 'CustomRolloutProperties'},
     }
 
     def __init__(
         self,
         *,
-        specification: "CustomRolloutSpecification",
-        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        status: Optional["CustomRolloutStatus"] = None,
+        properties: "CustomRolloutProperties",
         **kwargs
     ):
         super(CustomRollout, self).__init__(**kwargs)
-        self.provisioning_state = provisioning_state
-        self.specification = specification
-        self.status = status
+        self.properties = properties
 
 
 class CustomRolloutArrayResponseWithContinuation(msrest.serialization.Model):
     """CustomRolloutArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.CustomRollout]
+    :type value: list[~provider_hub.models.CustomRollout]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -288,17 +276,92 @@ class CustomRolloutArrayResponseWithContinuation(msrest.serialization.Model):
         self.next_link = next_link
 
 
+class CustomRolloutProperties(msrest.serialization.Model):
+    """CustomRolloutProperties.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
+     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
+     "MovingResources", "TransientFailure", "RolloutInProgress".
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
+    :param specification: Required.
+    :type specification: ~provider_hub.models.CustomRolloutSpecification
+    :param status:
+    :type status: ~provider_hub.models.CustomRolloutStatus
+    """
+
+    _validation = {
+        'specification': {'required': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'specification': {'key': 'specification', 'type': 'CustomRolloutSpecification'},
+        'status': {'key': 'status', 'type': 'CustomRolloutStatus'},
+    }
+
+    def __init__(
+        self,
+        *,
+        specification: "CustomRolloutSpecification",
+        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
+        status: Optional["CustomRolloutStatus"] = None,
+        **kwargs
+    ):
+        super(CustomRolloutProperties, self).__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.specification = specification
+        self.status = status
+
+
+class CustomRolloutPropertiesautogenerated(CustomRolloutProperties):
+    """Properties of the rollout.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
+     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
+     "MovingResources", "TransientFailure", "RolloutInProgress".
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
+    :param specification: Required.
+    :type specification: ~provider_hub.models.CustomRolloutSpecification
+    :param status:
+    :type status: ~provider_hub.models.CustomRolloutStatus
+    """
+
+    _validation = {
+        'specification': {'required': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'specification': {'key': 'specification', 'type': 'CustomRolloutSpecification'},
+        'status': {'key': 'status', 'type': 'CustomRolloutStatus'},
+    }
+
+    def __init__(
+        self,
+        *,
+        specification: "CustomRolloutSpecification",
+        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
+        status: Optional["CustomRolloutStatus"] = None,
+        **kwargs
+    ):
+        super(CustomRolloutPropertiesautogenerated, self).__init__(provisioning_state=provisioning_state, specification=specification, status=status, **kwargs)
+
+
 class CustomRolloutSpecification(msrest.serialization.Model):
     """CustomRolloutSpecification.
 
     All required parameters must be populated in order to send to Azure.
 
     :param canary: Required.
-    :type canary: ~providerhub.models.TrafficRegions
+    :type canary: ~provider_hub.models.TrafficRegions
     :param provider_registration:
-    :type provider_registration: ~providerhub.models.ProviderRegistration
+    :type provider_registration: ~provider_hub.models.ProviderRegistration
     :param resource_type_registrations:
-    :type resource_type_registrations: list[~providerhub.models.ResourceTypeRegistration]
+    :type resource_type_registrations: list[~provider_hub.models.ResourceTypeRegistration]
     """
 
     _validation = {
@@ -331,11 +394,11 @@ class CustomRolloutPropertiesSpecification(CustomRolloutSpecification):
     All required parameters must be populated in order to send to Azure.
 
     :param canary: Required.
-    :type canary: ~providerhub.models.TrafficRegions
+    :type canary: ~provider_hub.models.TrafficRegions
     :param provider_registration:
-    :type provider_registration: ~providerhub.models.ProviderRegistration
+    :type provider_registration: ~provider_hub.models.ProviderRegistration
     :param resource_type_registrations:
-    :type resource_type_registrations: list[~providerhub.models.ResourceTypeRegistration]
+    :type resource_type_registrations: list[~provider_hub.models.ResourceTypeRegistration]
     """
 
     _validation = {
@@ -356,8 +419,7 @@ class CustomRolloutPropertiesSpecification(CustomRolloutSpecification):
         resource_type_registrations: Optional[List["ResourceTypeRegistration"]] = None,
         **kwargs
     ):
-        super(CustomRolloutPropertiesSpecification, self).__init__(canary=canary,
-                                                                   provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
+        super(CustomRolloutPropertiesSpecification, self).__init__(canary=canary, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
 
 
 class CustomRolloutStatus(msrest.serialization.Model):
@@ -366,7 +428,7 @@ class CustomRolloutStatus(msrest.serialization.Model):
     :param completed_regions:
     :type completed_regions: list[str]
     :param failed_or_skipped_regions: Dictionary of :code:`<ExtendedErrorInfo>`.
-    :type failed_or_skipped_regions: dict[str, ~providerhub.models.ExtendedErrorInfo]
+    :type failed_or_skipped_regions: dict[str, ~provider_hub.models.ExtendedErrorInfo]
     """
 
     _attribute_map = {
@@ -378,8 +440,7 @@ class CustomRolloutStatus(msrest.serialization.Model):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str,
-                                                 "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
         super(CustomRolloutStatus, self).__init__(**kwargs)
@@ -393,7 +454,7 @@ class CustomRolloutPropertiesStatus(CustomRolloutStatus):
     :param completed_regions:
     :type completed_regions: list[str]
     :param failed_or_skipped_regions: Dictionary of :code:`<ExtendedErrorInfo>`.
-    :type failed_or_skipped_regions: dict[str, ~providerhub.models.ExtendedErrorInfo]
+    :type failed_or_skipped_regions: dict[str, ~provider_hub.models.ExtendedErrorInfo]
     """
 
     _attribute_map = {
@@ -405,12 +466,10 @@ class CustomRolloutPropertiesStatus(CustomRolloutStatus):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str,
-                                                 "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
-        super(CustomRolloutPropertiesStatus, self).__init__(
-            completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
+        super(CustomRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
 
 
 class TrafficRegions(msrest.serialization.Model):
@@ -451,8 +510,7 @@ class CustomRolloutSpecificationCanary(TrafficRegions):
         regions: Optional[List[str]] = None,
         **kwargs
     ):
-        super(CustomRolloutSpecificationCanary, self).__init__(
-            regions=regions, **kwargs)
+        super(CustomRolloutSpecificationCanary, self).__init__(regions=regions, **kwargs)
 
 
 class ProviderRegistration(Resource):
@@ -469,7 +527,7 @@ class ProviderRegistration(Resource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.ProviderRegistrationProperties
+    :type properties: ~provider_hub.models.ProviderRegistrationProperties
     """
 
     _validation = {
@@ -509,7 +567,7 @@ class CustomRolloutSpecificationProviderRegistration(ProviderRegistration):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.ProviderRegistrationProperties
+    :type properties: ~provider_hub.models.ProviderRegistrationProperties
     """
 
     _validation = {
@@ -531,8 +589,7 @@ class CustomRolloutSpecificationProviderRegistration(ProviderRegistration):
         properties: Optional["ProviderRegistrationProperties"] = None,
         **kwargs
     ):
-        super(CustomRolloutSpecificationProviderRegistration,
-              self).__init__(properties=properties, **kwargs)
+        super(CustomRolloutSpecificationProviderRegistration, self).__init__(properties=properties, **kwargs)
 
 
 class DefaultRollout(Resource):
@@ -548,14 +605,8 @@ class DefaultRollout(Resource):
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
-     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
-     "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
-    :param specification:
-    :type specification: ~providerhub.models.DefaultRolloutSpecification
-    :param status:
-    :type status: ~providerhub.models.DefaultRolloutStatus
+    :param properties: Properties of the rollout.
+    :type properties: ~provider_hub.models.DefaultRolloutProperties
     """
 
     _validation = {
@@ -568,30 +619,24 @@ class DefaultRollout(Resource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'specification': {'key': 'properties.specification', 'type': 'DefaultRolloutSpecification'},
-        'status': {'key': 'properties.status', 'type': 'DefaultRolloutStatus'},
+        'properties': {'key': 'properties', 'type': 'DefaultRolloutProperties'},
     }
 
     def __init__(
         self,
         *,
-        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        specification: Optional["DefaultRolloutSpecification"] = None,
-        status: Optional["DefaultRolloutStatus"] = None,
+        properties: Optional["DefaultRolloutProperties"] = None,
         **kwargs
     ):
         super(DefaultRollout, self).__init__(**kwargs)
-        self.provisioning_state = provisioning_state
-        self.specification = specification
-        self.status = status
+        self.properties = properties
 
 
 class DefaultRolloutArrayResponseWithContinuation(msrest.serialization.Model):
     """DefaultRolloutArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.DefaultRollout]
+    :type value: list[~provider_hub.models.DefaultRollout]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -613,25 +658,88 @@ class DefaultRolloutArrayResponseWithContinuation(msrest.serialization.Model):
         self.next_link = next_link
 
 
+class DefaultRolloutProperties(msrest.serialization.Model):
+    """DefaultRolloutProperties.
+
+    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
+     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
+     "MovingResources", "TransientFailure", "RolloutInProgress".
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
+    :param specification:
+    :type specification: ~provider_hub.models.DefaultRolloutSpecification
+    :param status:
+    :type status: ~provider_hub.models.DefaultRolloutStatus
+    """
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'specification': {'key': 'specification', 'type': 'DefaultRolloutSpecification'},
+        'status': {'key': 'status', 'type': 'DefaultRolloutStatus'},
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
+        specification: Optional["DefaultRolloutSpecification"] = None,
+        status: Optional["DefaultRolloutStatus"] = None,
+        **kwargs
+    ):
+        super(DefaultRolloutProperties, self).__init__(**kwargs)
+        self.provisioning_state = provisioning_state
+        self.specification = specification
+        self.status = status
+
+
+class DefaultRolloutPropertiesautogenerated(DefaultRolloutProperties):
+    """Properties of the rollout.
+
+    :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
+     "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
+     "MovingResources", "TransientFailure", "RolloutInProgress".
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
+    :param specification:
+    :type specification: ~provider_hub.models.DefaultRolloutSpecification
+    :param status:
+    :type status: ~provider_hub.models.DefaultRolloutStatus
+    """
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'specification': {'key': 'specification', 'type': 'DefaultRolloutSpecification'},
+        'status': {'key': 'status', 'type': 'DefaultRolloutStatus'},
+    }
+
+    def __init__(
+        self,
+        *,
+        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
+        specification: Optional["DefaultRolloutSpecification"] = None,
+        status: Optional["DefaultRolloutStatus"] = None,
+        **kwargs
+    ):
+        super(DefaultRolloutPropertiesautogenerated, self).__init__(provisioning_state=provisioning_state, specification=specification, status=status, **kwargs)
+
+
 class DefaultRolloutSpecification(msrest.serialization.Model):
     """DefaultRolloutSpecification.
 
     :param canary:
-    :type canary: ~providerhub.models.CanaryTrafficRegionRolloutConfiguration
+    :type canary: ~provider_hub.models.CanaryTrafficRegionRolloutConfiguration
     :param low_traffic:
-    :type low_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type low_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param medium_traffic:
-    :type medium_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type medium_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param high_traffic:
-    :type high_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type high_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param rest_of_the_world_group_one:
-    :type rest_of_the_world_group_one: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type rest_of_the_world_group_one: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param rest_of_the_world_group_two:
-    :type rest_of_the_world_group_two: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type rest_of_the_world_group_two: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param provider_registration:
-    :type provider_registration: ~providerhub.models.ProviderRegistration
+    :type provider_registration: ~provider_hub.models.ProviderRegistration
     :param resource_type_registrations:
-    :type resource_type_registrations: list[~providerhub.models.ResourceTypeRegistration]
+    :type resource_type_registrations: list[~provider_hub.models.ResourceTypeRegistration]
     """
 
     _attribute_map = {
@@ -673,21 +781,21 @@ class DefaultRolloutPropertiesSpecification(DefaultRolloutSpecification):
     """DefaultRolloutPropertiesSpecification.
 
     :param canary:
-    :type canary: ~providerhub.models.CanaryTrafficRegionRolloutConfiguration
+    :type canary: ~provider_hub.models.CanaryTrafficRegionRolloutConfiguration
     :param low_traffic:
-    :type low_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type low_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param medium_traffic:
-    :type medium_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type medium_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param high_traffic:
-    :type high_traffic: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type high_traffic: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param rest_of_the_world_group_one:
-    :type rest_of_the_world_group_one: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type rest_of_the_world_group_one: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param rest_of_the_world_group_two:
-    :type rest_of_the_world_group_two: ~providerhub.models.TrafficRegionRolloutConfiguration
+    :type rest_of_the_world_group_two: ~provider_hub.models.TrafficRegionRolloutConfiguration
     :param provider_registration:
-    :type provider_registration: ~providerhub.models.ProviderRegistration
+    :type provider_registration: ~provider_hub.models.ProviderRegistration
     :param resource_type_registrations:
-    :type resource_type_registrations: list[~providerhub.models.ResourceTypeRegistration]
+    :type resource_type_registrations: list[~provider_hub.models.ResourceTypeRegistration]
     """
 
     _attribute_map = {
@@ -714,8 +822,7 @@ class DefaultRolloutPropertiesSpecification(DefaultRolloutSpecification):
         resource_type_registrations: Optional[List["ResourceTypeRegistration"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutPropertiesSpecification, self).__init__(canary=canary, low_traffic=low_traffic, medium_traffic=medium_traffic, high_traffic=high_traffic, rest_of_the_world_group_one=rest_of_the_world_group_one,
-                                                                    rest_of_the_world_group_two=rest_of_the_world_group_two, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
+        super(DefaultRolloutPropertiesSpecification, self).__init__(canary=canary, low_traffic=low_traffic, medium_traffic=medium_traffic, high_traffic=high_traffic, rest_of_the_world_group_one=rest_of_the_world_group_one, rest_of_the_world_group_two=rest_of_the_world_group_two, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
 
 
 class RolloutStatusBase(msrest.serialization.Model):
@@ -724,7 +831,7 @@ class RolloutStatusBase(msrest.serialization.Model):
     :param completed_regions:
     :type completed_regions: list[str]
     :param failed_or_skipped_regions: Dictionary of :code:`<ExtendedErrorInfo>`.
-    :type failed_or_skipped_regions: dict[str, ~providerhub.models.ExtendedErrorInfo]
+    :type failed_or_skipped_regions: dict[str, ~provider_hub.models.ExtendedErrorInfo]
     """
 
     _attribute_map = {
@@ -736,8 +843,7 @@ class RolloutStatusBase(msrest.serialization.Model):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str,
-                                                 "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
         super(RolloutStatusBase, self).__init__(**kwargs)
@@ -751,16 +857,16 @@ class DefaultRolloutStatus(RolloutStatusBase):
     :param completed_regions:
     :type completed_regions: list[str]
     :param failed_or_skipped_regions: Dictionary of :code:`<ExtendedErrorInfo>`.
-    :type failed_or_skipped_regions: dict[str, ~providerhub.models.ExtendedErrorInfo]
+    :type failed_or_skipped_regions: dict[str, ~provider_hub.models.ExtendedErrorInfo]
     :param next_traffic_region:  Possible values include: "NotSpecified", "Canary", "LowTraffic",
      "MediumTraffic", "HighTraffic", "None", "RestOfTheWorldGroupOne", "RestOfTheWorldGroupTwo".
-    :type next_traffic_region: str or ~providerhub.models.TrafficRegionCategory
+    :type next_traffic_region: str or ~provider_hub.models.TrafficRegionCategory
     :param next_traffic_region_scheduled_time:
     :type next_traffic_region_scheduled_time: ~datetime.datetime
     :param subscription_reregistration_result:  Possible values include: "NotApplicable",
      "ConditionalUpdate", "ForcedUpdate", "Failed".
     :type subscription_reregistration_result: str or
-     ~providerhub.models.SubscriptionReregistrationResult
+     ~provider_hub.models.SubscriptionReregistrationResult
     """
 
     _attribute_map = {
@@ -775,17 +881,13 @@ class DefaultRolloutStatus(RolloutStatusBase):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str,
-                                                 "ExtendedErrorInfo"]] = None,
-        next_traffic_region: Optional[Union[str,
-                                            "TrafficRegionCategory"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
+        next_traffic_region: Optional[Union[str, "TrafficRegionCategory"]] = None,
         next_traffic_region_scheduled_time: Optional[datetime.datetime] = None,
-        subscription_reregistration_result: Optional[Union[str,
-                                                           "SubscriptionReregistrationResult"]] = None,
+        subscription_reregistration_result: Optional[Union[str, "SubscriptionReregistrationResult"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutStatus, self).__init__(completed_regions=completed_regions,
-                                                   failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
+        super(DefaultRolloutStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
         self.next_traffic_region = next_traffic_region
         self.next_traffic_region_scheduled_time = next_traffic_region_scheduled_time
         self.subscription_reregistration_result = subscription_reregistration_result
@@ -797,16 +899,16 @@ class DefaultRolloutPropertiesStatus(DefaultRolloutStatus):
     :param completed_regions:
     :type completed_regions: list[str]
     :param failed_or_skipped_regions: Dictionary of :code:`<ExtendedErrorInfo>`.
-    :type failed_or_skipped_regions: dict[str, ~providerhub.models.ExtendedErrorInfo]
+    :type failed_or_skipped_regions: dict[str, ~provider_hub.models.ExtendedErrorInfo]
     :param next_traffic_region:  Possible values include: "NotSpecified", "Canary", "LowTraffic",
      "MediumTraffic", "HighTraffic", "None", "RestOfTheWorldGroupOne", "RestOfTheWorldGroupTwo".
-    :type next_traffic_region: str or ~providerhub.models.TrafficRegionCategory
+    :type next_traffic_region: str or ~provider_hub.models.TrafficRegionCategory
     :param next_traffic_region_scheduled_time:
     :type next_traffic_region_scheduled_time: ~datetime.datetime
     :param subscription_reregistration_result:  Possible values include: "NotApplicable",
      "ConditionalUpdate", "ForcedUpdate", "Failed".
     :type subscription_reregistration_result: str or
-     ~providerhub.models.SubscriptionReregistrationResult
+     ~provider_hub.models.SubscriptionReregistrationResult
     """
 
     _attribute_map = {
@@ -821,17 +923,13 @@ class DefaultRolloutPropertiesStatus(DefaultRolloutStatus):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str,
-                                                 "ExtendedErrorInfo"]] = None,
-        next_traffic_region: Optional[Union[str,
-                                            "TrafficRegionCategory"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
+        next_traffic_region: Optional[Union[str, "TrafficRegionCategory"]] = None,
         next_traffic_region_scheduled_time: Optional[datetime.datetime] = None,
-        subscription_reregistration_result: Optional[Union[str,
-                                                           "SubscriptionReregistrationResult"]] = None,
+        subscription_reregistration_result: Optional[Union[str, "SubscriptionReregistrationResult"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, next_traffic_region=next_traffic_region,
-                                                             next_traffic_region_scheduled_time=next_traffic_region_scheduled_time, subscription_reregistration_result=subscription_reregistration_result, **kwargs)
+        super(DefaultRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, next_traffic_region=next_traffic_region, next_traffic_region_scheduled_time=next_traffic_region_scheduled_time, subscription_reregistration_result=subscription_reregistration_result, **kwargs)
 
 
 class DefaultRolloutSpecificationCanary(CanaryTrafficRegionRolloutConfiguration):
@@ -855,8 +953,7 @@ class DefaultRolloutSpecificationCanary(CanaryTrafficRegionRolloutConfiguration)
         regions: Optional[List[str]] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationCanary, self).__init__(
-            skip_regions=skip_regions, regions=regions, **kwargs)
+        super(DefaultRolloutSpecificationCanary, self).__init__(skip_regions=skip_regions, regions=regions, **kwargs)
 
 
 class TrafficRegionRolloutConfiguration(TrafficRegions):
@@ -880,8 +977,7 @@ class TrafficRegionRolloutConfiguration(TrafficRegions):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(TrafficRegionRolloutConfiguration, self).__init__(
-            regions=regions, **kwargs)
+        super(TrafficRegionRolloutConfiguration, self).__init__(regions=regions, **kwargs)
         self.wait_duration = wait_duration
 
 
@@ -906,8 +1002,7 @@ class DefaultRolloutSpecificationHighTraffic(TrafficRegionRolloutConfiguration):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationHighTraffic, self).__init__(
-            regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationHighTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationLowTraffic(TrafficRegionRolloutConfiguration):
@@ -931,8 +1026,7 @@ class DefaultRolloutSpecificationLowTraffic(TrafficRegionRolloutConfiguration):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationLowTraffic, self).__init__(
-            regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationLowTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationMediumTraffic(TrafficRegionRolloutConfiguration):
@@ -956,8 +1050,7 @@ class DefaultRolloutSpecificationMediumTraffic(TrafficRegionRolloutConfiguration
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationMediumTraffic, self).__init__(
-            regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationMediumTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationProviderRegistration(ProviderRegistration):
@@ -974,7 +1067,7 @@ class DefaultRolloutSpecificationProviderRegistration(ProviderRegistration):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.ProviderRegistrationProperties
+    :type properties: ~provider_hub.models.ProviderRegistrationProperties
     """
 
     _validation = {
@@ -996,8 +1089,7 @@ class DefaultRolloutSpecificationProviderRegistration(ProviderRegistration):
         properties: Optional["ProviderRegistrationProperties"] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationProviderRegistration,
-              self).__init__(properties=properties, **kwargs)
+        super(DefaultRolloutSpecificationProviderRegistration, self).__init__(properties=properties, **kwargs)
 
 
 class DefaultRolloutSpecificationRestOfTheWorldGroupOne(TrafficRegionRolloutConfiguration):
@@ -1021,8 +1113,7 @@ class DefaultRolloutSpecificationRestOfTheWorldGroupOne(TrafficRegionRolloutConf
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationRestOfTheWorldGroupOne, self).__init__(
-            regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationRestOfTheWorldGroupOne, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationRestOfTheWorldGroupTwo(TrafficRegionRolloutConfiguration):
@@ -1046,8 +1137,7 @@ class DefaultRolloutSpecificationRestOfTheWorldGroupTwo(TrafficRegionRolloutConf
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationRestOfTheWorldGroupTwo, self).__init__(
-            regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationRestOfTheWorldGroupTwo, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class Error(msrest.serialization.Model):
@@ -1062,10 +1152,10 @@ class Error(msrest.serialization.Model):
     :ivar target: Target of the error.
     :vartype target: str
     :ivar details: Array of details about specific errors that led to this reported error.
-    :vartype details: list[~providerhub.models.Error]
+    :vartype details: list[~provider_hub.models.Error]
     :ivar inner_error: Object containing more specific information than  the current object about
      the error.
-    :vartype inner_error: ~providerhub.models.InnerError
+    :vartype inner_error: ~provider_hub.models.InnerError
     """
 
     _validation = {
@@ -1108,7 +1198,7 @@ class InnerError(msrest.serialization.Model):
     :vartype code: str
     :ivar inner_error: Object containing more specific information than the current object about
      the error.
-    :vartype inner_error: ~providerhub.models.InnerError
+    :vartype inner_error: object
     """
 
     _validation = {
@@ -1119,7 +1209,7 @@ class InnerError(msrest.serialization.Model):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'code': {'key': 'code', 'type': 'str'},
-        'inner_error': {'key': 'innerError', 'type': 'InnerError'},
+        'inner_error': {'key': 'innerError', 'type': 'object'},
     }
 
     def __init__(
@@ -1146,7 +1236,7 @@ class ErrorInnerError(InnerError):
     :vartype code: str
     :ivar inner_error: Object containing more specific information than the current object about
      the error.
-    :vartype inner_error: ~providerhub.models.InnerError
+    :vartype inner_error: object
     """
 
     _validation = {
@@ -1157,7 +1247,7 @@ class ErrorInnerError(InnerError):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'code': {'key': 'code', 'type': 'str'},
-        'inner_error': {'key': 'innerError', 'type': 'InnerError'},
+        'inner_error': {'key': 'innerError', 'type': 'object'},
     }
 
     def __init__(
@@ -1166,15 +1256,14 @@ class ErrorInnerError(InnerError):
         additional_properties: Optional[Dict[str, object]] = None,
         **kwargs
     ):
-        super(ErrorInnerError, self).__init__(
-            additional_properties=additional_properties, **kwargs)
+        super(ErrorInnerError, self).__init__(additional_properties=additional_properties, **kwargs)
 
 
 class ErrorResponse(msrest.serialization.Model):
     """Standard error response.
 
     :param error: Standard error object.
-    :type error: ~providerhub.models.Error
+    :type error: ~provider_hub.models.Error
     """
 
     _attribute_map = {
@@ -1203,10 +1292,10 @@ class ErrorResponseError(Error):
     :ivar target: Target of the error.
     :vartype target: str
     :ivar details: Array of details about specific errors that led to this reported error.
-    :vartype details: list[~providerhub.models.Error]
+    :vartype details: list[~provider_hub.models.Error]
     :ivar inner_error: Object containing more specific information than  the current object about
      the error.
-    :vartype inner_error: ~providerhub.models.InnerError
+    :vartype inner_error: ~provider_hub.models.InnerError
     """
 
     _validation = {
@@ -1242,9 +1331,9 @@ class ExtendedErrorInfo(msrest.serialization.Model):
     :param message:
     :type message: str
     :param details:
-    :type details: list[~providerhub.models.ExtendedErrorInfo]
+    :type details: list[~provider_hub.models.ExtendedErrorInfo]
     :param additional_info:
-    :type additional_info: list[~providerhub.models.TypedErrorInfo]
+    :type additional_info: list[~provider_hub.models.TypedErrorInfo]
     """
 
     _attribute_map = {
@@ -1303,9 +1392,9 @@ class ExtensionOptions(msrest.serialization.Model):
     """ExtensionOptions.
 
     :param request:
-    :type request: list[str or ~providerhub.models.ExtensionOptionType]
+    :type request: list[str or ~provider_hub.models.ExtensionOptionType]
     :param response:
-    :type response: list[str or ~providerhub.models.ExtensionOptionType]
+    :type response: list[str or ~provider_hub.models.ExtensionOptionType]
     """
 
     _attribute_map = {
@@ -1331,7 +1420,7 @@ class FeaturesRule(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -1357,7 +1446,7 @@ class IdentityManagement(msrest.serialization.Model):
 
     :param type:  Possible values include: "NotSpecified", "SystemAssigned", "UserAssigned",
      "Actor", "DelegatedResourceIdentity".
-    :type type: str or ~providerhub.models.IdentityManagementTypes
+    :type type: str or ~provider_hub.models.IdentityManagementTypes
     """
 
     _attribute_map = {
@@ -1379,7 +1468,7 @@ class IdentityManagementProperties(msrest.serialization.Model):
 
     :param type:  Possible values include: "NotSpecified", "SystemAssigned", "UserAssigned",
      "Actor", "DelegatedResourceIdentity".
-    :type type: str or ~providerhub.models.IdentityManagementTypes
+    :type type: str or ~provider_hub.models.IdentityManagementTypes
     :param application_id:
     :type application_id: str
     """
@@ -1399,42 +1488,6 @@ class IdentityManagementProperties(msrest.serialization.Model):
         super(IdentityManagementProperties, self).__init__(**kwargs)
         self.type = type
         self.application_id = application_id
-
-
-class InnerErrorautogenerated(InnerError):
-    """Object containing more specific information than the current object about the error.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :param additional_properties: Unmatched properties from the message are deserialized to this
-     collection.
-    :type additional_properties: dict[str, object]
-    :ivar code: Specific error code than was provided by the containing error.
-    :vartype code: str
-    :ivar inner_error: Object containing more specific information than the current object about
-     the error.
-    :vartype inner_error: ~providerhub.models.InnerError
-    """
-
-    _validation = {
-        'code': {'readonly': True},
-        'inner_error': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'additional_properties': {'key': '', 'type': '{object}'},
-        'code': {'key': 'code', 'type': 'str'},
-        'inner_error': {'key': 'innerError', 'type': 'InnerError'},
-    }
-
-    def __init__(
-        self,
-        *,
-        additional_properties: Optional[Dict[str, object]] = None,
-        **kwargs
-    ):
-        super(InnerErrorautogenerated, self).__init__(
-            additional_properties=additional_properties, **kwargs)
 
 
 class LightHouseAuthorization(msrest.serialization.Model):
@@ -1518,10 +1571,10 @@ class LinkedOperationRule(msrest.serialization.Model):
 
     :param linked_operation: Required.  Possible values include: "None",
      "CrossResourceGroupResourceMove", "CrossSubscriptionResourceMove".
-    :type linked_operation: str or ~providerhub.models.LinkedOperation
+    :type linked_operation: str or ~provider_hub.models.LinkedOperation
     :param linked_action: Required.  Possible values include: "NotSpecified", "Blocked",
      "Validate", "Enabled".
-    :type linked_action: str or ~providerhub.models.LinkedAction
+    :type linked_action: str or ~provider_hub.models.LinkedAction
     """
 
     _validation = {
@@ -1580,11 +1633,11 @@ class LoggingRule(msrest.serialization.Model):
     :param action: Required.
     :type action: str
     :param direction: Required.  Possible values include: "None", "Request", "Response".
-    :type direction: str or ~providerhub.models.LoggingDirections
+    :type direction: str or ~provider_hub.models.LoggingDirections
     :param detail_level: Required.  Possible values include: "None", "Body".
-    :type detail_level: str or ~providerhub.models.LoggingDetails
+    :type detail_level: str or ~provider_hub.models.LoggingDetails
     :param hidden_property_paths:
-    :type hidden_property_paths: ~providerhub.models.LoggingHiddenPropertyPath
+    :type hidden_property_paths: ~provider_hub.models.LoggingHiddenPropertyPath
     """
 
     _validation = {
@@ -1637,8 +1690,7 @@ class LoggingRuleHiddenPropertyPaths(LoggingHiddenPropertyPath):
         hidden_paths_on_response: Optional[List[str]] = None,
         **kwargs
     ):
-        super(LoggingRuleHiddenPropertyPaths, self).__init__(
-            hidden_paths_on_request=hidden_paths_on_request, hidden_paths_on_response=hidden_paths_on_response, **kwargs)
+        super(LoggingRuleHiddenPropertyPaths, self).__init__(hidden_paths_on_request=hidden_paths_on_request, hidden_paths_on_response=hidden_paths_on_response, **kwargs)
 
 
 class NotificationEndpoint(msrest.serialization.Model):
@@ -1681,7 +1733,7 @@ class NotificationRegistration(Resource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.NotificationRegistrationProperties
+    :type properties: ~provider_hub.models.NotificationRegistrationProperties
     """
 
     _validation = {
@@ -1711,7 +1763,7 @@ class NotificationRegistrationArrayResponseWithContinuation(msrest.serialization
     """NotificationRegistrationArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.NotificationRegistration]
+    :type value: list[~provider_hub.models.NotificationRegistration]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -1728,8 +1780,7 @@ class NotificationRegistrationArrayResponseWithContinuation(msrest.serialization
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(NotificationRegistrationArrayResponseWithContinuation,
-              self).__init__(**kwargs)
+        super(NotificationRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -1738,13 +1789,13 @@ class NotificationRegistrationProperties(msrest.serialization.Model):
     """NotificationRegistrationProperties.
 
     :param notification_mode:  Possible values include: "NotSpecified", "EventHub", "WebHook".
-    :type notification_mode: str or ~providerhub.models.NotificationMode
+    :type notification_mode: str or ~provider_hub.models.NotificationMode
     :param message_scope:  Possible values include: "NotSpecified", "RegisteredSubscriptions".
-    :type message_scope: str or ~providerhub.models.MessageScope
+    :type message_scope: str or ~provider_hub.models.MessageScope
     :param included_events:
     :type included_events: list[str]
     :param notification_endpoints:
-    :type notification_endpoints: list[~providerhub.models.NotificationEndpoint]
+    :type notification_endpoints: list[~provider_hub.models.NotificationEndpoint]
     """
 
     _attribute_map = {
@@ -1774,13 +1825,13 @@ class NotificationRegistrationPropertiesautogenerated(NotificationRegistrationPr
     """NotificationRegistrationPropertiesautogenerated.
 
     :param notification_mode:  Possible values include: "NotSpecified", "EventHub", "WebHook".
-    :type notification_mode: str or ~providerhub.models.NotificationMode
+    :type notification_mode: str or ~provider_hub.models.NotificationMode
     :param message_scope:  Possible values include: "NotSpecified", "RegisteredSubscriptions".
-    :type message_scope: str or ~providerhub.models.MessageScope
+    :type message_scope: str or ~provider_hub.models.MessageScope
     :param included_events:
     :type included_events: list[str]
     :param notification_endpoints:
-    :type notification_endpoints: list[~providerhub.models.NotificationEndpoint]
+    :type notification_endpoints: list[~provider_hub.models.NotificationEndpoint]
     """
 
     _attribute_map = {
@@ -1799,8 +1850,7 @@ class NotificationRegistrationPropertiesautogenerated(NotificationRegistrationPr
         notification_endpoints: Optional[List["NotificationEndpoint"]] = None,
         **kwargs
     ):
-        super(NotificationRegistrationPropertiesautogenerated, self).__init__(notification_mode=notification_mode,
-                                                                              message_scope=message_scope, included_events=included_events, notification_endpoints=notification_endpoints, **kwargs)
+        super(NotificationRegistrationPropertiesautogenerated, self).__init__(notification_mode=notification_mode, message_scope=message_scope, included_events=included_events, notification_endpoints=notification_endpoints, **kwargs)
 
 
 class OperationsContent(Resource):
@@ -1821,11 +1871,11 @@ class OperationsContent(Resource):
     :param is_data_action: Indicates whether the operation applies to data-plane.
     :type is_data_action: bool
     :param origin:  Possible values include: "NotSpecified", "User", "System".
-    :type origin: str or ~providerhub.models.OperationsDefinitionOrigin
+    :type origin: str or ~provider_hub.models.OperationsDefinitionOrigin
     :param display: Display information of the operation.
-    :type display: ~providerhub.models.OperationsDisplayDefinition
+    :type display: ~provider_hub.models.OperationsDisplayDefinition
     :param action_type:  Possible values include: "NotSpecified", "Internal".
-    :type action_type: str or ~providerhub.models.OperationsDefinitionActionType
+    :type action_type: str or ~provider_hub.models.OperationsDefinitionActionType
     :param properties: Any object.
     :type properties: object
     """
@@ -1855,8 +1905,7 @@ class OperationsContent(Resource):
         is_data_action: Optional[bool] = None,
         origin: Optional[Union[str, "OperationsDefinitionOrigin"]] = None,
         display: Optional["OperationsDisplayDefinition"] = None,
-        action_type: Optional[Union[str,
-                                    "OperationsDefinitionActionType"]] = None,
+        action_type: Optional[Union[str, "OperationsDefinitionActionType"]] = None,
         properties: Optional[object] = None,
         **kwargs
     ):
@@ -1879,11 +1928,11 @@ class OperationsDefinition(msrest.serialization.Model):
     :param is_data_action: Indicates whether the operation applies to data-plane.
     :type is_data_action: bool
     :param origin:  Possible values include: "NotSpecified", "User", "System".
-    :type origin: str or ~providerhub.models.OperationsDefinitionOrigin
+    :type origin: str or ~provider_hub.models.OperationsDefinitionOrigin
     :param display: Required. Display information of the operation.
-    :type display: ~providerhub.models.OperationsDisplayDefinition
+    :type display: ~provider_hub.models.OperationsDisplayDefinition
     :param action_type:  Possible values include: "NotSpecified", "Internal".
-    :type action_type: str or ~providerhub.models.OperationsDefinitionActionType
+    :type action_type: str or ~provider_hub.models.OperationsDefinitionActionType
     :param properties: Any object.
     :type properties: object
     """
@@ -1909,8 +1958,7 @@ class OperationsDefinition(msrest.serialization.Model):
         display: "OperationsDisplayDefinition",
         is_data_action: Optional[bool] = None,
         origin: Optional[Union[str, "OperationsDefinitionOrigin"]] = None,
-        action_type: Optional[Union[str,
-                                    "OperationsDefinitionActionType"]] = None,
+        action_type: Optional[Union[str, "OperationsDefinitionActionType"]] = None,
         properties: Optional[object] = None,
         **kwargs
     ):
@@ -1927,7 +1975,7 @@ class OperationsDefinitionArrayResponseWithContinuation(msrest.serialization.Mod
     """OperationsDefinitionArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.OperationsDefinition]
+    :type value: list[~provider_hub.models.OperationsDefinition]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -1944,8 +1992,7 @@ class OperationsDefinitionArrayResponseWithContinuation(msrest.serialization.Mod
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(OperationsDefinitionArrayResponseWithContinuation,
-              self).__init__(**kwargs)
+        super(OperationsDefinitionArrayResponseWithContinuation, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -2033,19 +2080,45 @@ class OperationsDefinitionDisplay(OperationsDisplayDefinition):
         description: str,
         **kwargs
     ):
-        super(OperationsDefinitionDisplay, self).__init__(provider=provider,
-                                                          resource=resource, operation=operation, description=description, **kwargs)
+        super(OperationsDefinitionDisplay, self).__init__(provider=provider, resource=resource, operation=operation, description=description, **kwargs)
+
+
+class OperationsPutContent(msrest.serialization.Model):
+    """OperationsPutContent.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param contents: Required.
+    :type contents: list[~provider_hub.models.OperationsDefinition]
+    """
+
+    _validation = {
+        'contents': {'required': True},
+    }
+
+    _attribute_map = {
+        'contents': {'key': 'contents', 'type': '[OperationsDefinition]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        contents: List["OperationsDefinition"],
+        **kwargs
+    ):
+        super(OperationsPutContent, self).__init__(**kwargs)
+        self.contents = contents
 
 
 class ProviderHubMetadata(msrest.serialization.Model):
     """ProviderHubMetadata.
 
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param third_party_provider_authorization:
-    :type third_party_provider_authorization: ~providerhub.models.ThirdPartyProviderAuthorization
+    :type third_party_provider_authorization: ~provider_hub.models.ThirdPartyProviderAuthorization
     """
 
     _attribute_map = {
@@ -2118,15 +2191,14 @@ class ProviderHubMetadataProviderAuthentication(ResourceProviderAuthentication):
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ProviderHubMetadataProviderAuthentication, self).__init__(
-            allowed_audiences=allowed_audiences, **kwargs)
+        super(ProviderHubMetadataProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ThirdPartyProviderAuthorization(msrest.serialization.Model):
     """ThirdPartyProviderAuthorization.
 
     :param authorizations:
-    :type authorizations: list[~providerhub.models.LightHouseAuthorization]
+    :type authorizations: list[~provider_hub.models.LightHouseAuthorization]
     :param managed_by_tenant_id:
     :type managed_by_tenant_id: str
     """
@@ -2152,7 +2224,7 @@ class ProviderHubMetadataThirdPartyProviderAuthorization(ThirdPartyProviderAutho
     """ProviderHubMetadataThirdPartyProviderAuthorization.
 
     :param authorizations:
-    :type authorizations: list[~providerhub.models.LightHouseAuthorization]
+    :type authorizations: list[~provider_hub.models.LightHouseAuthorization]
     :param managed_by_tenant_id:
     :type managed_by_tenant_id: str
     """
@@ -2169,15 +2241,14 @@ class ProviderHubMetadataThirdPartyProviderAuthorization(ThirdPartyProviderAutho
         managed_by_tenant_id: Optional[str] = None,
         **kwargs
     ):
-        super(ProviderHubMetadataThirdPartyProviderAuthorization, self).__init__(
-            authorizations=authorizations, managed_by_tenant_id=managed_by_tenant_id, **kwargs)
+        super(ProviderHubMetadataThirdPartyProviderAuthorization, self).__init__(authorizations=authorizations, managed_by_tenant_id=managed_by_tenant_id, **kwargs)
 
 
 class ProviderRegistrationArrayResponseWithContinuation(msrest.serialization.Model):
     """ProviderRegistrationArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.ProviderRegistration]
+    :type value: list[~provider_hub.models.ProviderRegistration]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -2194,8 +2265,7 @@ class ProviderRegistrationArrayResponseWithContinuation(msrest.serialization.Mod
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(ProviderRegistrationArrayResponseWithContinuation,
-              self).__init__(**kwargs)
+        super(ProviderRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -2204,30 +2274,30 @@ class ResourceProviderManifestProperties(msrest.serialization.Model):
     """ResourceProviderManifestProperties.
 
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param namespace:
     :type namespace: str
     :param provider_version:
     :type provider_version: str
     :param provider_type:  Possible values include: "NotSpecified", "Internal", "External",
      "Hidden", "RegistrationFree", "LegacyRegistrationRequired", "TenantOnly", "AuthorizationFree".
-    :type provider_type: str or ~providerhub.models.ResourceProviderType
+    :type provider_type: str or ~provider_hub.models.ResourceProviderType
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param management:
-    :type management: ~providerhub.models.ResourceProviderManagement
+    :type management: ~provider_hub.models.ResourceProviderManagement
     :param capabilities:
-    :type capabilities: list[~providerhub.models.ResourceProviderCapabilities]
+    :type capabilities: list[~provider_hub.models.ResourceProviderCapabilities]
     :param metadata: Any object.
     :type metadata: object
     :param template_deployment_options:
-    :type template_deployment_options: ~providerhub.models.TemplateDeploymentOptions
+    :type template_deployment_options: ~provider_hub.models.TemplateDeploymentOptions
     """
 
     _attribute_map = {
@@ -2281,39 +2351,39 @@ class ProviderRegistrationProperties(ResourceProviderManifestProperties):
     """ProviderRegistrationProperties.
 
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param namespace:
     :type namespace: str
     :param provider_version:
     :type provider_version: str
     :param provider_type:  Possible values include: "NotSpecified", "Internal", "External",
      "Hidden", "RegistrationFree", "LegacyRegistrationRequired", "TenantOnly", "AuthorizationFree".
-    :type provider_type: str or ~providerhub.models.ResourceProviderType
+    :type provider_type: str or ~provider_hub.models.ResourceProviderType
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param management:
-    :type management: ~providerhub.models.ResourceProviderManagement
+    :type management: ~provider_hub.models.ResourceProviderManagement
     :param capabilities:
-    :type capabilities: list[~providerhub.models.ResourceProviderCapabilities]
+    :type capabilities: list[~provider_hub.models.ResourceProviderCapabilities]
     :param metadata: Any object.
     :type metadata: object
     :param template_deployment_options:
-    :type template_deployment_options: ~providerhub.models.TemplateDeploymentOptions
+    :type template_deployment_options: ~provider_hub.models.TemplateDeploymentOptions
     :param provider_hub_metadata:
-    :type provider_hub_metadata: ~providerhub.models.ProviderHubMetadata
+    :type provider_hub_metadata: ~provider_hub.models.ProviderHubMetadata
     :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
      "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
      "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
     :param subscription_lifecycle_notification_specifications:
     :type subscription_lifecycle_notification_specifications:
-     ~providerhub.models.SubscriptionLifecycleNotificationSpecifications
+     ~provider_hub.models.SubscriptionLifecycleNotificationSpecifications
     """
 
     _attribute_map = {
@@ -2351,12 +2421,10 @@ class ProviderRegistrationProperties(ResourceProviderManifestProperties):
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         provider_hub_metadata: Optional["ProviderHubMetadata"] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        subscription_lifecycle_notification_specifications: Optional[
-            "SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationProperties, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type,
-                                                             required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, **kwargs)
+        super(ProviderRegistrationProperties, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, **kwargs)
         self.provider_hub_metadata = provider_hub_metadata
         self.provisioning_state = provisioning_state
         self.subscription_lifecycle_notification_specifications = subscription_lifecycle_notification_specifications
@@ -2366,39 +2434,39 @@ class ProviderRegistrationPropertiesautogenerated(ProviderRegistrationProperties
     """ProviderRegistrationPropertiesautogenerated.
 
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param namespace:
     :type namespace: str
     :param provider_version:
     :type provider_version: str
     :param provider_type:  Possible values include: "NotSpecified", "Internal", "External",
      "Hidden", "RegistrationFree", "LegacyRegistrationRequired", "TenantOnly", "AuthorizationFree".
-    :type provider_type: str or ~providerhub.models.ResourceProviderType
+    :type provider_type: str or ~provider_hub.models.ResourceProviderType
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param management:
-    :type management: ~providerhub.models.ResourceProviderManagement
+    :type management: ~provider_hub.models.ResourceProviderManagement
     :param capabilities:
-    :type capabilities: list[~providerhub.models.ResourceProviderCapabilities]
+    :type capabilities: list[~provider_hub.models.ResourceProviderCapabilities]
     :param metadata: Any object.
     :type metadata: object
     :param template_deployment_options:
-    :type template_deployment_options: ~providerhub.models.TemplateDeploymentOptions
+    :type template_deployment_options: ~provider_hub.models.TemplateDeploymentOptions
     :param provider_hub_metadata:
-    :type provider_hub_metadata: ~providerhub.models.ProviderHubMetadata
+    :type provider_hub_metadata: ~provider_hub.models.ProviderHubMetadata
     :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
      "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
      "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
     :param subscription_lifecycle_notification_specifications:
     :type subscription_lifecycle_notification_specifications:
-     ~providerhub.models.SubscriptionLifecycleNotificationSpecifications
+     ~provider_hub.models.SubscriptionLifecycleNotificationSpecifications
     """
 
     _attribute_map = {
@@ -2436,23 +2504,21 @@ class ProviderRegistrationPropertiesautogenerated(ProviderRegistrationProperties
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         provider_hub_metadata: Optional["ProviderHubMetadata"] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        subscription_lifecycle_notification_specifications: Optional[
-            "SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesautogenerated, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options,
-                                                                          management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, provider_hub_metadata=provider_hub_metadata, provisioning_state=provisioning_state, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, **kwargs)
+        super(ProviderRegistrationPropertiesautogenerated, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, provider_hub_metadata=provider_hub_metadata, provisioning_state=provisioning_state, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, **kwargs)
 
 
 class ProviderRegistrationPropertiesProviderHubMetadata(ProviderHubMetadata):
     """ProviderRegistrationPropertiesProviderHubMetadata.
 
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param third_party_provider_authorization:
-    :type third_party_provider_authorization: ~providerhub.models.ThirdPartyProviderAuthorization
+    :type third_party_provider_authorization: ~provider_hub.models.ThirdPartyProviderAuthorization
     """
 
     _attribute_map = {
@@ -2469,8 +2535,7 @@ class ProviderRegistrationPropertiesProviderHubMetadata(ProviderHubMetadata):
         third_party_provider_authorization: Optional["ThirdPartyProviderAuthorization"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesProviderHubMetadata, self).__init__(provider_authorizations=provider_authorizations,
-                                                                                provider_authentication=provider_authentication, third_party_provider_authorization=third_party_provider_authorization, **kwargs)
+        super(ProviderRegistrationPropertiesProviderHubMetadata, self).__init__(provider_authorizations=provider_authorizations, provider_authentication=provider_authentication, third_party_provider_authorization=third_party_provider_authorization, **kwargs)
 
 
 class SubscriptionLifecycleNotificationSpecifications(msrest.serialization.Model):
@@ -2478,7 +2543,7 @@ class SubscriptionLifecycleNotificationSpecifications(msrest.serialization.Model
 
     :param subscription_state_override_actions:
     :type subscription_state_override_actions:
-     list[~providerhub.models.SubscriptionStateOverrideAction]
+     list[~provider_hub.models.SubscriptionStateOverrideAction]
     :param soft_delete_ttl:
     :type soft_delete_ttl: ~datetime.timedelta
     """
@@ -2495,8 +2560,7 @@ class SubscriptionLifecycleNotificationSpecifications(msrest.serialization.Model
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(SubscriptionLifecycleNotificationSpecifications,
-              self).__init__(**kwargs)
+        super(SubscriptionLifecycleNotificationSpecifications, self).__init__(**kwargs)
         self.subscription_state_override_actions = subscription_state_override_actions
         self.soft_delete_ttl = soft_delete_ttl
 
@@ -2506,7 +2570,7 @@ class ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecificati
 
     :param subscription_state_override_actions:
     :type subscription_state_override_actions:
-     list[~providerhub.models.SubscriptionStateOverrideAction]
+     list[~provider_hub.models.SubscriptionStateOverrideAction]
     :param soft_delete_ttl:
     :type soft_delete_ttl: ~datetime.timedelta
     """
@@ -2523,12 +2587,11 @@ class ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecificati
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(
-            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
+        super(ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
 
 
 class ProxyResource(Resource):
-    """The resource model definition for an Azure Resource Manager proxy resource. It will have everything other than required location and tags.
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -2566,7 +2629,7 @@ class RequestHeaderOptions(msrest.serialization.Model):
 
     :param opt_in_headers:  Possible values include: "NotSpecified", "SignedUserToken",
      "ClientGroupMembership", "SignedAuxiliaryTokens", "UnboundedClientGroupMembership".
-    :type opt_in_headers: str or ~providerhub.models.OptInHeaderType
+    :type opt_in_headers: str or ~provider_hub.models.OptInHeaderType
     """
 
     _attribute_map = {
@@ -2685,7 +2748,7 @@ class ResourceProviderCapabilities(msrest.serialization.Model):
     :param quota_id: Required.
     :type quota_id: str
     :param effect: Required.  Possible values include: "NotSpecified", "Allow", "Disallow".
-    :type effect: str or ~providerhub.models.ResourceProviderCapabilitiesEffect
+    :type effect: str or ~provider_hub.models.ResourceProviderCapabilitiesEffect
     :param required_features:
     :type required_features: list[str]
     """
@@ -2729,7 +2792,7 @@ class ResourceProviderEndpoint(msrest.serialization.Model):
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param timeout:
     :type timeout: ~datetime.timedelta
     """
@@ -2772,7 +2835,7 @@ class ResourceProviderEndpointFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -2789,8 +2852,7 @@ class ResourceProviderEndpointFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderEndpointFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderEndpointFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManagement(msrest.serialization.Model):
@@ -2807,11 +2869,11 @@ class ResourceProviderManagement(msrest.serialization.Model):
     :param incident_contact_email:
     :type incident_contact_email: str
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param resource_access_policy:  Possible values include: "NotSpecified", "AcisReadAllowed",
      "AcisActionAllowed".
     :type resource_access_policy: str or
-     ~providerhub.models.ResourceProviderManagementResourceAccessPolicy
+     ~provider_hub.models.ResourceProviderManagementResourceAccessPolicy
     :param resource_access_roles:
     :type resource_access_roles: list[object]
     """
@@ -2836,8 +2898,7 @@ class ResourceProviderManagement(msrest.serialization.Model):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str,
-                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
@@ -2856,34 +2917,34 @@ class ResourceProviderManifest(msrest.serialization.Model):
     """ResourceProviderManifest.
 
     :param provider_authentication:
-    :type provider_authentication: ~providerhub.models.ResourceProviderAuthentication
+    :type provider_authentication: ~provider_hub.models.ResourceProviderAuthentication
     :param provider_authorizations:
-    :type provider_authorizations: list[~providerhub.models.ResourceProviderAuthorization]
+    :type provider_authorizations: list[~provider_hub.models.ResourceProviderAuthorization]
     :param namespace:
     :type namespace: str
     :param provider_version:
     :type provider_version: str
     :param provider_type:  Possible values include: "NotSpecified", "Internal", "External",
      "Hidden", "RegistrationFree", "LegacyRegistrationRequired", "TenantOnly", "AuthorizationFree".
-    :type provider_type: str or ~providerhub.models.ResourceProviderType
+    :type provider_type: str or ~provider_hub.models.ResourceProviderType
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param resource_types:
-    :type resource_types: list[~providerhub.models.ResourceType]
+    :type resource_types: list[~provider_hub.models.ResourceType]
     :param management:
-    :type management: ~providerhub.models.ResourceProviderManagement
+    :type management: ~provider_hub.models.ResourceProviderManagement
     :param capabilities:
-    :type capabilities: list[~providerhub.models.ResourceProviderCapabilities]
+    :type capabilities: list[~provider_hub.models.ResourceProviderCapabilities]
     :param metadata: Any object.
     :type metadata: object
     :param global_notification_endpoints:
-    :type global_notification_endpoints: list[~providerhub.models.ResourceProviderEndpoint]
+    :type global_notification_endpoints: list[~provider_hub.models.ResourceProviderEndpoint]
     :param re_register_subscription_metadata:
-    :type re_register_subscription_metadata: ~providerhub.models.ReRegisterSubscriptionMetadata
+    :type re_register_subscription_metadata: ~provider_hub.models.ReRegisterSubscriptionMetadata
     """
 
     _attribute_map = {
@@ -2945,7 +3006,7 @@ class ResourceProviderManifestFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -2962,8 +3023,7 @@ class ResourceProviderManifestFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderManifestFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderManifestFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManifestManagement(ResourceProviderManagement):
@@ -2980,11 +3040,11 @@ class ResourceProviderManifestManagement(ResourceProviderManagement):
     :param incident_contact_email:
     :type incident_contact_email: str
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param resource_access_policy:  Possible values include: "NotSpecified", "AcisReadAllowed",
      "AcisActionAllowed".
     :type resource_access_policy: str or
-     ~providerhub.models.ResourceProviderManagementResourceAccessPolicy
+     ~provider_hub.models.ResourceProviderManagementResourceAccessPolicy
     :param resource_access_roles:
     :type resource_access_roles: list[object]
     """
@@ -3009,13 +3069,11 @@ class ResourceProviderManifestManagement(ResourceProviderManagement):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str,
-                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
-                                                                 incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
+        super(ResourceProviderManifestManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team, incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
 
 
 class ResourceProviderManifestPropertiesFeaturesRule(FeaturesRule):
@@ -3024,7 +3082,7 @@ class ResourceProviderManifestPropertiesFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -3041,8 +3099,7 @@ class ResourceProviderManifestPropertiesFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderManifestPropertiesFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManifestPropertiesManagement(ResourceProviderManagement):
@@ -3059,11 +3116,11 @@ class ResourceProviderManifestPropertiesManagement(ResourceProviderManagement):
     :param incident_contact_email:
     :type incident_contact_email: str
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param resource_access_policy:  Possible values include: "NotSpecified", "AcisReadAllowed",
      "AcisActionAllowed".
     :type resource_access_policy: str or
-     ~providerhub.models.ResourceProviderManagementResourceAccessPolicy
+     ~provider_hub.models.ResourceProviderManagementResourceAccessPolicy
     :param resource_access_roles:
     :type resource_access_roles: list[object]
     """
@@ -3088,13 +3145,11 @@ class ResourceProviderManifestPropertiesManagement(ResourceProviderManagement):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str,
-                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
-                                                                           incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
+        super(ResourceProviderManifestPropertiesManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team, incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
 
 
 class ResourceProviderManifestPropertiesProviderAuthentication(ResourceProviderAuthentication):
@@ -3120,8 +3175,7 @@ class ResourceProviderManifestPropertiesProviderAuthentication(ResourceProviderA
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesProviderAuthentication,
-              self).__init__(allowed_audiences=allowed_audiences, **kwargs)
+        super(ResourceProviderManifestPropertiesProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ResourceProviderManifestPropertiesRequestHeaderOptions(RequestHeaderOptions):
@@ -3129,7 +3183,7 @@ class ResourceProviderManifestPropertiesRequestHeaderOptions(RequestHeaderOption
 
     :param opt_in_headers:  Possible values include: "NotSpecified", "SignedUserToken",
      "ClientGroupMembership", "SignedAuxiliaryTokens", "UnboundedClientGroupMembership".
-    :type opt_in_headers: str or ~providerhub.models.OptInHeaderType
+    :type opt_in_headers: str or ~provider_hub.models.OptInHeaderType
     """
 
     _attribute_map = {
@@ -3142,8 +3196,7 @@ class ResourceProviderManifestPropertiesRequestHeaderOptions(RequestHeaderOption
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesRequestHeaderOptions,
-              self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceProviderManifestPropertiesRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class TemplateDeploymentOptions(msrest.serialization.Model):
@@ -3152,7 +3205,7 @@ class TemplateDeploymentOptions(msrest.serialization.Model):
     :param preflight_supported:
     :type preflight_supported: bool
     :param preflight_options:
-    :type preflight_options: list[str or ~providerhub.models.PreflightOption]
+    :type preflight_options: list[str or ~provider_hub.models.PreflightOption]
     """
 
     _attribute_map = {
@@ -3164,8 +3217,7 @@ class TemplateDeploymentOptions(msrest.serialization.Model):
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str,
-                                               "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
         **kwargs
     ):
         super(TemplateDeploymentOptions, self).__init__(**kwargs)
@@ -3179,7 +3231,7 @@ class ResourceProviderManifestPropertiesTemplateDeploymentOptions(TemplateDeploy
     :param preflight_supported:
     :type preflight_supported: bool
     :param preflight_options:
-    :type preflight_options: list[str or ~providerhub.models.PreflightOption]
+    :type preflight_options: list[str or ~provider_hub.models.PreflightOption]
     """
 
     _attribute_map = {
@@ -3191,12 +3243,10 @@ class ResourceProviderManifestPropertiesTemplateDeploymentOptions(TemplateDeploy
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str,
-                                               "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesTemplateDeploymentOptions, self).__init__(
-            preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
+        super(ResourceProviderManifestPropertiesTemplateDeploymentOptions, self).__init__(preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
 
 
 class ResourceProviderManifestProviderAuthentication(ResourceProviderAuthentication):
@@ -3222,8 +3272,7 @@ class ResourceProviderManifestProviderAuthentication(ResourceProviderAuthenticat
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ResourceProviderManifestProviderAuthentication, self).__init__(
-            allowed_audiences=allowed_audiences, **kwargs)
+        super(ResourceProviderManifestProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ResourceProviderManifestRequestHeaderOptions(RequestHeaderOptions):
@@ -3231,7 +3280,7 @@ class ResourceProviderManifestRequestHeaderOptions(RequestHeaderOptions):
 
     :param opt_in_headers:  Possible values include: "NotSpecified", "SignedUserToken",
      "ClientGroupMembership", "SignedAuxiliaryTokens", "UnboundedClientGroupMembership".
-    :type opt_in_headers: str or ~providerhub.models.OptInHeaderType
+    :type opt_in_headers: str or ~provider_hub.models.OptInHeaderType
     """
 
     _attribute_map = {
@@ -3244,8 +3293,7 @@ class ResourceProviderManifestRequestHeaderOptions(RequestHeaderOptions):
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestRequestHeaderOptions, self).__init__(
-            opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceProviderManifestRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceProviderManifestReRegisterSubscriptionMetadata(ReRegisterSubscriptionMetadata):
@@ -3275,8 +3323,7 @@ class ResourceProviderManifestReRegisterSubscriptionMetadata(ReRegisterSubscript
         concurrency_limit: Optional[int] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestReRegisterSubscriptionMetadata, self).__init__(
-            enabled=enabled, concurrency_limit=concurrency_limit, **kwargs)
+        super(ResourceProviderManifestReRegisterSubscriptionMetadata, self).__init__(enabled=enabled, concurrency_limit=concurrency_limit, **kwargs)
 
 
 class ResourceType(msrest.serialization.Model):
@@ -3286,52 +3333,52 @@ class ResourceType(msrest.serialization.Model):
     :type name: str
     :param routing_type:  Possible values include: "Default", "ProxyOnly", "HostBased",
      "Extension", "Tenant", "Fanout", "LocationBased", "Failover", "CascadeExtension".
-    :type routing_type: str or ~providerhub.models.RoutingType
+    :type routing_type: str or ~provider_hub.models.RoutingType
     :param resource_validation:  Possible values include: "NotSpecified", "ReservedWords",
      "ProfaneWords".
-    :type resource_validation: str or ~providerhub.models.ResourceValidation
+    :type resource_validation: str or ~provider_hub.models.ResourceValidation
     :param allowed_unauthorized_actions:
     :type allowed_unauthorized_actions: list[str]
     :param authorization_action_mappings:
-    :type authorization_action_mappings: list[~providerhub.models.AuthorizationActionMapping]
+    :type authorization_action_mappings: list[~provider_hub.models.AuthorizationActionMapping]
     :param linked_access_checks:
-    :type linked_access_checks: list[~providerhub.models.LinkedAccessCheck]
+    :type linked_access_checks: list[~provider_hub.models.LinkedAccessCheck]
     :param default_api_version:
     :type default_api_version: str
     :param logging_rules:
-    :type logging_rules: list[~providerhub.models.LoggingRule]
+    :type logging_rules: list[~provider_hub.models.LoggingRule]
     :param throttling_rules:
-    :type throttling_rules: list[~providerhub.models.ThrottlingRule]
+    :type throttling_rules: list[~provider_hub.models.ThrottlingRule]
     :param endpoints:
-    :type endpoints: list[~providerhub.models.ResourceProviderEndpoint]
+    :type endpoints: list[~provider_hub.models.ResourceProviderEndpoint]
     :param marketplace_type:  Possible values include: "NotSpecified", "AddOn", "Bypass", "Store".
-    :type marketplace_type: str or ~providerhub.models.ResourceTypeMarketplaceType
+    :type marketplace_type: str or ~provider_hub.models.ResourceTypeMarketplaceType
     :param identity_management:
-    :type identity_management: ~providerhub.models.IdentityManagement
+    :type identity_management: ~provider_hub.models.IdentityManagement
     :param metadata: Any object.
     :type metadata: object
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param subscription_state_rules:
-    :type subscription_state_rules: list[~providerhub.models.SubscriptionStateRule]
+    :type subscription_state_rules: list[~provider_hub.models.SubscriptionStateRule]
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param sku_link:
     :type sku_link: str
     :param disallowed_action_verbs:
     :type disallowed_action_verbs: list[str]
     :param template_deployment_policy:
-    :type template_deployment_policy: ~providerhub.models.TemplateDeploymentPolicy
+    :type template_deployment_policy: ~provider_hub.models.TemplateDeploymentPolicy
     :param extended_locations:
-    :type extended_locations: list[~providerhub.models.ExtendedLocationOptions]
+    :type extended_locations: list[~provider_hub.models.ExtendedLocationOptions]
     :param linked_operation_rules:
-    :type linked_operation_rules: list[~providerhub.models.LinkedOperationRule]
+    :type linked_operation_rules: list[~provider_hub.models.LinkedOperationRule]
     :param resource_deletion_policy:  Possible values include: "NotSpecified", "Cascade", "Force".
-    :type resource_deletion_policy: str or ~providerhub.models.ManifestResourceDeletionPolicy
+    :type resource_deletion_policy: str or ~provider_hub.models.ManifestResourceDeletionPolicy
     """
 
     _attribute_map = {
@@ -3374,8 +3421,7 @@ class ResourceType(msrest.serialization.Model):
         logging_rules: Optional[List["LoggingRule"]] = None,
         throttling_rules: Optional[List["ThrottlingRule"]] = None,
         endpoints: Optional[List["ResourceProviderEndpoint"]] = None,
-        marketplace_type: Optional[Union[str,
-                                         "ResourceTypeMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str, "ResourceTypeMarketplaceType"]] = None,
         identity_management: Optional["IdentityManagement"] = None,
         metadata: Optional[object] = None,
         required_features: Optional[List[str]] = None,
@@ -3388,8 +3434,7 @@ class ResourceType(msrest.serialization.Model):
         template_deployment_policy: Optional["TemplateDeploymentPolicy"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         linked_operation_rules: Optional[List["LinkedOperationRule"]] = None,
-        resource_deletion_policy: Optional[Union[str,
-                                                 "ManifestResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str, "ManifestResourceDeletionPolicy"]] = None,
         **kwargs
     ):
         super(ResourceType, self).__init__(**kwargs)
@@ -3431,9 +3476,9 @@ class ResourceTypeEndpoint(msrest.serialization.Model):
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param extensions:
-    :type extensions: list[~providerhub.models.ResourceTypeExtension]
+    :type extensions: list[~provider_hub.models.ResourceTypeExtension]
     :param timeout:
     :type timeout: ~datetime.timedelta
     """
@@ -3476,7 +3521,7 @@ class ResourceTypeEndpointFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -3493,8 +3538,7 @@ class ResourceTypeEndpointFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeEndpointFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeEndpointFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeExtension(msrest.serialization.Model):
@@ -3503,7 +3547,7 @@ class ResourceTypeExtension(msrest.serialization.Model):
     :param endpoint_uri:
     :type endpoint_uri: str
     :param extension_categories:
-    :type extension_categories: list[str or ~providerhub.models.ExtensionCategory]
+    :type extension_categories: list[str or ~provider_hub.models.ExtensionCategory]
     :param timeout:
     :type timeout: ~datetime.timedelta
     """
@@ -3518,8 +3562,7 @@ class ResourceTypeExtension(msrest.serialization.Model):
         self,
         *,
         endpoint_uri: Optional[str] = None,
-        extension_categories: Optional[List[Union[str,
-                                                  "ExtensionCategory"]]] = None,
+        extension_categories: Optional[List[Union[str, "ExtensionCategory"]]] = None,
         timeout: Optional[datetime.timedelta] = None,
         **kwargs
     ):
@@ -3533,35 +3576,30 @@ class ResourceTypeExtensionOptions(msrest.serialization.Model):
     """ResourceTypeExtensionOptions.
 
     :param resource_creation_begin:
-    :type resource_creation_begin: ~providerhub.models.ExtensionOptions
-    :param resource_patch_begin:
-    :type resource_patch_begin: ~providerhub.models.ExtensionOptions
+    :type resource_creation_begin: ~provider_hub.models.ExtensionOptions
     """
 
     _attribute_map = {
         'resource_creation_begin': {'key': 'resourceCreationBegin', 'type': 'ExtensionOptions'},
-        'resource_patch_begin': {'key': 'resourcePatchBegin', 'type': 'ExtensionOptions'},
     }
 
     def __init__(
         self,
         *,
         resource_creation_begin: Optional["ExtensionOptions"] = None,
-        resource_patch_begin: Optional["ExtensionOptions"] = None,
         **kwargs
     ):
         super(ResourceTypeExtensionOptions, self).__init__(**kwargs)
         self.resource_creation_begin = resource_creation_begin
-        self.resource_patch_begin = resource_patch_begin
 
 
 class ResourceTypeExtensionOptionsResourceCreationBegin(ExtensionOptions):
     """ResourceTypeExtensionOptionsResourceCreationBegin.
 
     :param request:
-    :type request: list[str or ~providerhub.models.ExtensionOptionType]
+    :type request: list[str or ~provider_hub.models.ExtensionOptionType]
     :param response:
-    :type response: list[str or ~providerhub.models.ExtensionOptionType]
+    :type response: list[str or ~provider_hub.models.ExtensionOptionType]
     """
 
     _attribute_map = {
@@ -3576,33 +3614,7 @@ class ResourceTypeExtensionOptionsResourceCreationBegin(ExtensionOptions):
         response: Optional[List[Union[str, "ExtensionOptionType"]]] = None,
         **kwargs
     ):
-        super(ResourceTypeExtensionOptionsResourceCreationBegin, self).__init__(
-            request=request, response=response, **kwargs)
-
-
-class ResourceTypeExtensionOptionsResourcePatchBegin(ExtensionOptions):
-    """ResourceTypeExtensionOptionsResourcePatchBegin.
-
-    :param request:
-    :type request: list[str or ~providerhub.models.ExtensionOptionType]
-    :param response:
-    :type response: list[str or ~providerhub.models.ExtensionOptionType]
-    """
-
-    _attribute_map = {
-        'request': {'key': 'request', 'type': '[str]'},
-        'response': {'key': 'response', 'type': '[str]'},
-    }
-
-    def __init__(
-        self,
-        *,
-        request: Optional[List[Union[str, "ExtensionOptionType"]]] = None,
-        response: Optional[List[Union[str, "ExtensionOptionType"]]] = None,
-        **kwargs
-    ):
-        super(ResourceTypeExtensionOptionsResourcePatchBegin, self).__init__(
-            request=request, response=response, **kwargs)
+        super(ResourceTypeExtensionOptionsResourceCreationBegin, self).__init__(request=request, response=response, **kwargs)
 
 
 class ResourceTypeFeaturesRule(FeaturesRule):
@@ -3611,7 +3623,7 @@ class ResourceTypeFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -3628,8 +3640,7 @@ class ResourceTypeFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeIdentityManagement(IdentityManagement):
@@ -3637,7 +3648,7 @@ class ResourceTypeIdentityManagement(IdentityManagement):
 
     :param type:  Possible values include: "NotSpecified", "SystemAssigned", "UserAssigned",
      "Actor", "DelegatedResourceIdentity".
-    :type type: str or ~providerhub.models.IdentityManagementTypes
+    :type type: str or ~provider_hub.models.IdentityManagementTypes
     """
 
     _attribute_map = {
@@ -3650,8 +3661,7 @@ class ResourceTypeIdentityManagement(IdentityManagement):
         type: Optional[Union[str, "IdentityManagementTypes"]] = None,
         **kwargs
     ):
-        super(ResourceTypeIdentityManagement,
-              self).__init__(type=type, **kwargs)
+        super(ResourceTypeIdentityManagement, self).__init__(type=type, **kwargs)
 
 
 class ResourceTypeRegistration(Resource):
@@ -3668,7 +3678,7 @@ class ResourceTypeRegistration(Resource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.ResourceTypeRegistrationProperties
+    :type properties: ~provider_hub.models.ResourceTypeRegistrationProperties
     """
 
     _validation = {
@@ -3698,7 +3708,7 @@ class ResourceTypeRegistrationArrayResponseWithContinuation(msrest.serialization
     """ResourceTypeRegistrationArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.ResourceTypeRegistration]
+    :type value: list[~provider_hub.models.ResourceTypeRegistration]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -3715,8 +3725,7 @@ class ResourceTypeRegistrationArrayResponseWithContinuation(msrest.serialization
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationArrayResponseWithContinuation,
-              self).__init__(**kwargs)
+        super(ResourceTypeRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -3726,69 +3735,69 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
 
     :param routing_type:  Possible values include: "Default", "ProxyOnly", "HostBased",
      "Extension", "Tenant", "Fanout", "LocationBased", "Failover", "CascadeExtension".
-    :type routing_type: str or ~providerhub.models.RoutingType
+    :type routing_type: str or ~provider_hub.models.RoutingType
     :param regionality:  Possible values include: "NotSpecified", "Global", "Regional".
-    :type regionality: str or ~providerhub.models.Regionality
+    :type regionality: str or ~provider_hub.models.Regionality
     :param endpoints:
-    :type endpoints: list[~providerhub.models.ResourceTypeEndpoint]
+    :type endpoints: list[~provider_hub.models.ResourceTypeEndpoint]
     :param extension_options:
-    :type extension_options: ~providerhub.models.ResourceTypeExtensionOptions
+    :type extension_options: ~provider_hub.models.ResourceTypeExtensionOptions
     :param marketplace_type:  Possible values include: "NotSpecified", "AddOn", "Bypass", "Store".
     :type marketplace_type: str or
-     ~providerhub.models.ResourceTypeRegistrationPropertiesMarketplaceType
+     ~provider_hub.models.ResourceTypeRegistrationPropertiesMarketplaceType
     :param swagger_specifications:
-    :type swagger_specifications: list[~providerhub.models.SwaggerSpecification]
+    :type swagger_specifications: list[~provider_hub.models.SwaggerSpecification]
     :param allowed_unauthorized_actions:
     :type allowed_unauthorized_actions: list[str]
     :param authorization_action_mappings:
-    :type authorization_action_mappings: list[~providerhub.models.AuthorizationActionMapping]
+    :type authorization_action_mappings: list[~provider_hub.models.AuthorizationActionMapping]
     :param linked_access_checks:
-    :type linked_access_checks: list[~providerhub.models.LinkedAccessCheck]
+    :type linked_access_checks: list[~provider_hub.models.LinkedAccessCheck]
     :param default_api_version:
     :type default_api_version: str
     :param logging_rules:
-    :type logging_rules: list[~providerhub.models.LoggingRule]
+    :type logging_rules: list[~provider_hub.models.LoggingRule]
     :param throttling_rules:
-    :type throttling_rules: list[~providerhub.models.ThrottlingRule]
+    :type throttling_rules: list[~provider_hub.models.ThrottlingRule]
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param enable_async_operation:
     :type enable_async_operation: bool
     :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
      "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
      "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
     :param enable_third_party_s2s:
     :type enable_third_party_s2s: bool
     :param subscription_lifecycle_notification_specifications:
     :type subscription_lifecycle_notification_specifications:
-     ~providerhub.models.SubscriptionLifecycleNotificationSpecifications
+     ~provider_hub.models.SubscriptionLifecycleNotificationSpecifications
     :param is_pure_proxy:
     :type is_pure_proxy: bool
     :param identity_management:
-    :type identity_management: ~providerhub.models.IdentityManagementProperties
+    :type identity_management: ~provider_hub.models.IdentityManagementProperties
     :param check_name_availability_specifications:
     :type check_name_availability_specifications:
-     ~providerhub.models.CheckNameAvailabilitySpecifications
+     ~provider_hub.models.CheckNameAvailabilitySpecifications
     :param disallowed_action_verbs:
     :type disallowed_action_verbs: list[str]
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param subscription_state_rules:
-    :type subscription_state_rules: list[~providerhub.models.SubscriptionStateRule]
+    :type subscription_state_rules: list[~provider_hub.models.SubscriptionStateRule]
     :param template_deployment_options:
-    :type template_deployment_options: ~providerhub.models.TemplateDeploymentOptions
+    :type template_deployment_options: ~provider_hub.models.TemplateDeploymentOptions
     :param extended_locations:
-    :type extended_locations: list[~providerhub.models.ExtendedLocationOptions]
+    :type extended_locations: list[~provider_hub.models.ExtendedLocationOptions]
     :param resource_move_policy:
-    :type resource_move_policy: ~providerhub.models.ResourceMovePolicy
+    :type resource_move_policy: ~provider_hub.models.ResourceMovePolicy
     :param resource_deletion_policy:  Possible values include: "NotSpecified", "CascadeDeleteAll",
      "CascadeDeleteProxyOnlyChildren".
-    :type resource_deletion_policy: str or ~providerhub.models.ResourceDeletionPolicy
+    :type resource_deletion_policy: str or ~provider_hub.models.ResourceDeletionPolicy
     """
 
     _attribute_map = {
@@ -3830,8 +3839,7 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         regionality: Optional[Union[str, "Regionality"]] = None,
         endpoints: Optional[List["ResourceTypeEndpoint"]] = None,
         extension_options: Optional["ResourceTypeExtensionOptions"] = None,
-        marketplace_type: Optional[Union[str,
-                                         "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str, "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
         swagger_specifications: Optional[List["SwaggerSpecification"]] = None,
         allowed_unauthorized_actions: Optional[List[str]] = None,
         authorization_action_mappings: Optional[List["AuthorizationActionMapping"]] = None,
@@ -3844,8 +3852,7 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         enable_async_operation: Optional[bool] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         enable_third_party_s2s: Optional[bool] = None,
-        subscription_lifecycle_notification_specifications: Optional[
-            "SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
         is_pure_proxy: Optional[bool] = None,
         identity_management: Optional["IdentityManagementProperties"] = None,
         check_name_availability_specifications: Optional["CheckNameAvailabilitySpecifications"] = None,
@@ -3856,8 +3863,7 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         resource_move_policy: Optional["ResourceMovePolicy"] = None,
-        resource_deletion_policy: Optional[Union[str,
-                                                 "ResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str, "ResourceDeletionPolicy"]] = None,
         **kwargs
     ):
         super(ResourceTypeRegistrationProperties, self).__init__(**kwargs)
@@ -3897,69 +3903,69 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
 
     :param routing_type:  Possible values include: "Default", "ProxyOnly", "HostBased",
      "Extension", "Tenant", "Fanout", "LocationBased", "Failover", "CascadeExtension".
-    :type routing_type: str or ~providerhub.models.RoutingType
+    :type routing_type: str or ~provider_hub.models.RoutingType
     :param regionality:  Possible values include: "NotSpecified", "Global", "Regional".
-    :type regionality: str or ~providerhub.models.Regionality
+    :type regionality: str or ~provider_hub.models.Regionality
     :param endpoints:
-    :type endpoints: list[~providerhub.models.ResourceTypeEndpoint]
+    :type endpoints: list[~provider_hub.models.ResourceTypeEndpoint]
     :param extension_options:
-    :type extension_options: ~providerhub.models.ResourceTypeExtensionOptions
+    :type extension_options: ~provider_hub.models.ResourceTypeExtensionOptions
     :param marketplace_type:  Possible values include: "NotSpecified", "AddOn", "Bypass", "Store".
     :type marketplace_type: str or
-     ~providerhub.models.ResourceTypeRegistrationPropertiesMarketplaceType
+     ~provider_hub.models.ResourceTypeRegistrationPropertiesMarketplaceType
     :param swagger_specifications:
-    :type swagger_specifications: list[~providerhub.models.SwaggerSpecification]
+    :type swagger_specifications: list[~provider_hub.models.SwaggerSpecification]
     :param allowed_unauthorized_actions:
     :type allowed_unauthorized_actions: list[str]
     :param authorization_action_mappings:
-    :type authorization_action_mappings: list[~providerhub.models.AuthorizationActionMapping]
+    :type authorization_action_mappings: list[~provider_hub.models.AuthorizationActionMapping]
     :param linked_access_checks:
-    :type linked_access_checks: list[~providerhub.models.LinkedAccessCheck]
+    :type linked_access_checks: list[~provider_hub.models.LinkedAccessCheck]
     :param default_api_version:
     :type default_api_version: str
     :param logging_rules:
-    :type logging_rules: list[~providerhub.models.LoggingRule]
+    :type logging_rules: list[~provider_hub.models.LoggingRule]
     :param throttling_rules:
-    :type throttling_rules: list[~providerhub.models.ThrottlingRule]
+    :type throttling_rules: list[~provider_hub.models.ThrottlingRule]
     :param required_features:
     :type required_features: list[str]
     :param features_rule:
-    :type features_rule: ~providerhub.models.FeaturesRule
+    :type features_rule: ~provider_hub.models.FeaturesRule
     :param enable_async_operation:
     :type enable_async_operation: bool
     :param provisioning_state:  Possible values include: "NotSpecified", "Accepted", "Running",
      "Creating", "Created", "Deleting", "Deleted", "Canceled", "Failed", "Succeeded",
      "MovingResources", "TransientFailure", "RolloutInProgress".
-    :type provisioning_state: str or ~providerhub.models.ProvisioningState
+    :type provisioning_state: str or ~provider_hub.models.ProvisioningState
     :param enable_third_party_s2s:
     :type enable_third_party_s2s: bool
     :param subscription_lifecycle_notification_specifications:
     :type subscription_lifecycle_notification_specifications:
-     ~providerhub.models.SubscriptionLifecycleNotificationSpecifications
+     ~provider_hub.models.SubscriptionLifecycleNotificationSpecifications
     :param is_pure_proxy:
     :type is_pure_proxy: bool
     :param identity_management:
-    :type identity_management: ~providerhub.models.IdentityManagementProperties
+    :type identity_management: ~provider_hub.models.IdentityManagementProperties
     :param check_name_availability_specifications:
     :type check_name_availability_specifications:
-     ~providerhub.models.CheckNameAvailabilitySpecifications
+     ~provider_hub.models.CheckNameAvailabilitySpecifications
     :param disallowed_action_verbs:
     :type disallowed_action_verbs: list[str]
     :param service_tree_infos:
-    :type service_tree_infos: list[~providerhub.models.ServiceTreeInfo]
+    :type service_tree_infos: list[~provider_hub.models.ServiceTreeInfo]
     :param request_header_options:
-    :type request_header_options: ~providerhub.models.RequestHeaderOptions
+    :type request_header_options: ~provider_hub.models.RequestHeaderOptions
     :param subscription_state_rules:
-    :type subscription_state_rules: list[~providerhub.models.SubscriptionStateRule]
+    :type subscription_state_rules: list[~provider_hub.models.SubscriptionStateRule]
     :param template_deployment_options:
-    :type template_deployment_options: ~providerhub.models.TemplateDeploymentOptions
+    :type template_deployment_options: ~provider_hub.models.TemplateDeploymentOptions
     :param extended_locations:
-    :type extended_locations: list[~providerhub.models.ExtendedLocationOptions]
+    :type extended_locations: list[~provider_hub.models.ExtendedLocationOptions]
     :param resource_move_policy:
-    :type resource_move_policy: ~providerhub.models.ResourceMovePolicy
+    :type resource_move_policy: ~provider_hub.models.ResourceMovePolicy
     :param resource_deletion_policy:  Possible values include: "NotSpecified", "CascadeDeleteAll",
      "CascadeDeleteProxyOnlyChildren".
-    :type resource_deletion_policy: str or ~providerhub.models.ResourceDeletionPolicy
+    :type resource_deletion_policy: str or ~provider_hub.models.ResourceDeletionPolicy
     """
 
     _attribute_map = {
@@ -4001,8 +4007,7 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         regionality: Optional[Union[str, "Regionality"]] = None,
         endpoints: Optional[List["ResourceTypeEndpoint"]] = None,
         extension_options: Optional["ResourceTypeExtensionOptions"] = None,
-        marketplace_type: Optional[Union[str,
-                                         "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str, "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
         swagger_specifications: Optional[List["SwaggerSpecification"]] = None,
         allowed_unauthorized_actions: Optional[List[str]] = None,
         authorization_action_mappings: Optional[List["AuthorizationActionMapping"]] = None,
@@ -4015,8 +4020,7 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         enable_async_operation: Optional[bool] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         enable_third_party_s2s: Optional[bool] = None,
-        subscription_lifecycle_notification_specifications: Optional[
-            "SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
         is_pure_proxy: Optional[bool] = None,
         identity_management: Optional["IdentityManagementProperties"] = None,
         check_name_availability_specifications: Optional["CheckNameAvailabilitySpecifications"] = None,
@@ -4027,12 +4031,10 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         resource_move_policy: Optional["ResourceMovePolicy"] = None,
-        resource_deletion_policy: Optional[Union[str,
-                                                 "ResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str, "ResourceDeletionPolicy"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesautogenerated, self).__init__(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state,
-                                                                              enable_third_party_s2s=enable_third_party_s2s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy, **kwargs)
+        super(ResourceTypeRegistrationPropertiesautogenerated, self).__init__(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state, enable_third_party_s2s=enable_third_party_s2s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications(CheckNameAvailabilitySpecifications):
@@ -4056,34 +4058,27 @@ class ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications(Chec
         resource_types_with_custom_validation: Optional[List[str]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications, self).__init__(
-            enable_default_validation=enable_default_validation, resource_types_with_custom_validation=resource_types_with_custom_validation, **kwargs)
+        super(ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications, self).__init__(enable_default_validation=enable_default_validation, resource_types_with_custom_validation=resource_types_with_custom_validation, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesExtensionOptions(ResourceTypeExtensionOptions):
     """ResourceTypeRegistrationPropertiesExtensionOptions.
 
     :param resource_creation_begin:
-    :type resource_creation_begin: ~providerhub.models.ExtensionOptions
-    :param resource_patch_begin:
-    :type resource_patch_begin: ~providerhub.models.ExtensionOptions
+    :type resource_creation_begin: ~provider_hub.models.ExtensionOptions
     """
 
     _attribute_map = {
         'resource_creation_begin': {'key': 'resourceCreationBegin', 'type': 'ExtensionOptions'},
-        'resource_patch_begin': {'key': 'resourcePatchBegin', 'type': 'ExtensionOptions'},
     }
 
     def __init__(
         self,
         *,
         resource_creation_begin: Optional["ExtensionOptions"] = None,
-        resource_patch_begin: Optional["ExtensionOptions"] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesExtensionOptions, self).__init__(
-            resource_creation_begin=resource_creation_begin,
-            resource_patch_begin=resource_patch_begin, **kwargs)
+        super(ResourceTypeRegistrationPropertiesExtensionOptions, self).__init__(resource_creation_begin=resource_creation_begin, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesFeaturesRule(FeaturesRule):
@@ -4092,7 +4087,7 @@ class ResourceTypeRegistrationPropertiesFeaturesRule(FeaturesRule):
     All required parameters must be populated in order to send to Azure.
 
     :param required_features_policy: Required.  Possible values include: "Any", "All".
-    :type required_features_policy: str or ~providerhub.models.FeaturesPolicy
+    :type required_features_policy: str or ~provider_hub.models.FeaturesPolicy
     """
 
     _validation = {
@@ -4109,8 +4104,7 @@ class ResourceTypeRegistrationPropertiesFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesFeaturesRule, self).__init__(
-            required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeRegistrationPropertiesFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesIdentityManagement(IdentityManagementProperties):
@@ -4118,7 +4112,7 @@ class ResourceTypeRegistrationPropertiesIdentityManagement(IdentityManagementPro
 
     :param type:  Possible values include: "NotSpecified", "SystemAssigned", "UserAssigned",
      "Actor", "DelegatedResourceIdentity".
-    :type type: str or ~providerhub.models.IdentityManagementTypes
+    :type type: str or ~provider_hub.models.IdentityManagementTypes
     :param application_id:
     :type application_id: str
     """
@@ -4135,8 +4129,7 @@ class ResourceTypeRegistrationPropertiesIdentityManagement(IdentityManagementPro
         application_id: Optional[str] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesIdentityManagement, self).__init__(
-            type=type, application_id=application_id, **kwargs)
+        super(ResourceTypeRegistrationPropertiesIdentityManagement, self).__init__(type=type, application_id=application_id, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesRequestHeaderOptions(RequestHeaderOptions):
@@ -4144,7 +4137,7 @@ class ResourceTypeRegistrationPropertiesRequestHeaderOptions(RequestHeaderOption
 
     :param opt_in_headers:  Possible values include: "NotSpecified", "SignedUserToken",
      "ClientGroupMembership", "SignedAuxiliaryTokens", "UnboundedClientGroupMembership".
-    :type opt_in_headers: str or ~providerhub.models.OptInHeaderType
+    :type opt_in_headers: str or ~provider_hub.models.OptInHeaderType
     """
 
     _attribute_map = {
@@ -4157,8 +4150,7 @@ class ResourceTypeRegistrationPropertiesRequestHeaderOptions(RequestHeaderOption
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesRequestHeaderOptions,
-              self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceTypeRegistrationPropertiesRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesResourceMovePolicy(ResourceMovePolicy):
@@ -4186,8 +4178,7 @@ class ResourceTypeRegistrationPropertiesResourceMovePolicy(ResourceMovePolicy):
         cross_subscription_move_enabled: Optional[bool] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesResourceMovePolicy, self).__init__(validation_required=validation_required,
-                                                                                   cross_resource_group_move_enabled=cross_resource_group_move_enabled, cross_subscription_move_enabled=cross_subscription_move_enabled, **kwargs)
+        super(ResourceTypeRegistrationPropertiesResourceMovePolicy, self).__init__(validation_required=validation_required, cross_resource_group_move_enabled=cross_resource_group_move_enabled, cross_subscription_move_enabled=cross_subscription_move_enabled, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications(SubscriptionLifecycleNotificationSpecifications):
@@ -4195,7 +4186,7 @@ class ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifi
 
     :param subscription_state_override_actions:
     :type subscription_state_override_actions:
-     list[~providerhub.models.SubscriptionStateOverrideAction]
+     list[~provider_hub.models.SubscriptionStateOverrideAction]
     :param soft_delete_ttl:
     :type soft_delete_ttl: ~datetime.timedelta
     """
@@ -4212,8 +4203,7 @@ class ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifi
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(
-            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
+        super(ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesTemplateDeploymentOptions(TemplateDeploymentOptions):
@@ -4222,7 +4212,7 @@ class ResourceTypeRegistrationPropertiesTemplateDeploymentOptions(TemplateDeploy
     :param preflight_supported:
     :type preflight_supported: bool
     :param preflight_options:
-    :type preflight_options: list[str or ~providerhub.models.PreflightOption]
+    :type preflight_options: list[str or ~provider_hub.models.PreflightOption]
     """
 
     _attribute_map = {
@@ -4234,12 +4224,10 @@ class ResourceTypeRegistrationPropertiesTemplateDeploymentOptions(TemplateDeploy
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str,
-                                               "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesTemplateDeploymentOptions, self).__init__(
-            preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
+        super(ResourceTypeRegistrationPropertiesTemplateDeploymentOptions, self).__init__(preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
 
 
 class ResourceTypeRequestHeaderOptions(RequestHeaderOptions):
@@ -4247,7 +4235,7 @@ class ResourceTypeRequestHeaderOptions(RequestHeaderOptions):
 
     :param opt_in_headers:  Possible values include: "NotSpecified", "SignedUserToken",
      "ClientGroupMembership", "SignedAuxiliaryTokens", "UnboundedClientGroupMembership".
-    :type opt_in_headers: str or ~providerhub.models.OptInHeaderType
+    :type opt_in_headers: str or ~provider_hub.models.OptInHeaderType
     """
 
     _attribute_map = {
@@ -4260,8 +4248,7 @@ class ResourceTypeRequestHeaderOptions(RequestHeaderOptions):
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRequestHeaderOptions, self).__init__(
-            opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceTypeRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceTypeSku(msrest.serialization.Model):
@@ -4270,7 +4257,7 @@ class ResourceTypeSku(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param sku_settings: Required.
-    :type sku_settings: list[~providerhub.models.SkuSetting]
+    :type sku_settings: list[~provider_hub.models.SkuSetting]
     """
 
     _validation = {
@@ -4297,10 +4284,10 @@ class TemplateDeploymentPolicy(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param capabilities: Required.  Possible values include: "Default", "Preflight".
-    :type capabilities: str or ~providerhub.models.TemplateDeploymentCapabilities
+    :type capabilities: str or ~provider_hub.models.TemplateDeploymentCapabilities
     :param preflight_options: Required.  Possible values include: "None", "ValidationRequests",
      "DeploymentRequests", "TestOnly", "RegisteredOnly".
-    :type preflight_options: str or ~providerhub.models.TemplateDeploymentPreflightOptions
+    :type preflight_options: str or ~provider_hub.models.TemplateDeploymentPreflightOptions
     """
 
     _validation = {
@@ -4331,10 +4318,10 @@ class ResourceTypeTemplateDeploymentPolicy(TemplateDeploymentPolicy):
     All required parameters must be populated in order to send to Azure.
 
     :param capabilities: Required.  Possible values include: "Default", "Preflight".
-    :type capabilities: str or ~providerhub.models.TemplateDeploymentCapabilities
+    :type capabilities: str or ~provider_hub.models.TemplateDeploymentCapabilities
     :param preflight_options: Required.  Possible values include: "None", "ValidationRequests",
      "DeploymentRequests", "TestOnly", "RegisteredOnly".
-    :type preflight_options: str or ~providerhub.models.TemplateDeploymentPreflightOptions
+    :type preflight_options: str or ~provider_hub.models.TemplateDeploymentPreflightOptions
     """
 
     _validation = {
@@ -4354,8 +4341,7 @@ class ResourceTypeTemplateDeploymentPolicy(TemplateDeploymentPolicy):
         preflight_options: Union[str, "TemplateDeploymentPreflightOptions"],
         **kwargs
     ):
-        super(ResourceTypeTemplateDeploymentPolicy, self).__init__(
-            capabilities=capabilities, preflight_options=preflight_options, **kwargs)
+        super(ResourceTypeTemplateDeploymentPolicy, self).__init__(capabilities=capabilities, preflight_options=preflight_options, **kwargs)
 
 
 class ServiceTreeInfo(msrest.serialization.Model):
@@ -4429,7 +4415,7 @@ class SkuCapacity(msrest.serialization.Model):
     :param default:
     :type default: int
     :param scale_type:  Possible values include: "None", "Manual", "Automatic".
-    :type scale_type: str or ~providerhub.models.SkuScaleType
+    :type scale_type: str or ~provider_hub.models.SkuScaleType
     """
 
     _validation = {
@@ -4506,11 +4492,11 @@ class SkuLocationInfo(msrest.serialization.Model):
     :param zones:
     :type zones: list[str]
     :param zone_details:
-    :type zone_details: list[~providerhub.models.SkuZoneDetail]
+    :type zone_details: list[~provider_hub.models.SkuZoneDetail]
     :param extended_locations:
     :type extended_locations: list[str]
     :param type:  Possible values include: "NotSpecified", "EdgeZone", "ArcZone".
-    :type type: str or ~providerhub.models.SkuLocationInfoType
+    :type type: str or ~provider_hub.models.SkuLocationInfoType
     """
 
     _validation = {
@@ -4557,7 +4543,7 @@ class SkuResource(Resource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param properties:
-    :type properties: ~providerhub.models.ResourceTypeSku
+    :type properties: ~provider_hub.models.ResourceTypeSku
     """
 
     _validation = {
@@ -4587,7 +4573,7 @@ class SkuResourceArrayResponseWithContinuation(msrest.serialization.Model):
     """SkuResourceArrayResponseWithContinuation.
 
     :param value:
-    :type value: list[~providerhub.models.SkuResource]
+    :type value: list[~provider_hub.models.SkuResource]
     :param next_link: The URL to get to the next set of results, if there are any.
     :type next_link: str
     """
@@ -4615,7 +4601,7 @@ class SkuResourceProperties(ResourceTypeSku):
     All required parameters must be populated in order to send to Azure.
 
     :param sku_settings: Required.
-    :type sku_settings: list[~providerhub.models.SkuSetting]
+    :type sku_settings: list[~provider_hub.models.SkuSetting]
     """
 
     _validation = {
@@ -4632,8 +4618,7 @@ class SkuResourceProperties(ResourceTypeSku):
         sku_settings: List["SkuSetting"],
         **kwargs
     ):
-        super(SkuResourceProperties, self).__init__(
-            sku_settings=sku_settings, **kwargs)
+        super(SkuResourceProperties, self).__init__(sku_settings=sku_settings, **kwargs)
 
 
 class SkuSetting(msrest.serialization.Model):
@@ -4654,17 +4639,17 @@ class SkuSetting(msrest.serialization.Model):
     :param locations:
     :type locations: list[str]
     :param location_info:
-    :type location_info: list[~providerhub.models.SkuLocationInfo]
+    :type location_info: list[~provider_hub.models.SkuLocationInfo]
     :param required_quota_ids:
     :type required_quota_ids: list[str]
     :param required_features:
     :type required_features: list[str]
     :param capacity:
-    :type capacity: ~providerhub.models.SkuCapacity
+    :type capacity: ~provider_hub.models.SkuCapacity
     :param costs:
-    :type costs: list[~providerhub.models.SkuCost]
+    :type costs: list[~provider_hub.models.SkuCost]
     :param capabilities:
-    :type capabilities: list[~providerhub.models.SkuCapability]
+    :type capabilities: list[~provider_hub.models.SkuCapability]
     """
 
     _validation = {
@@ -4730,7 +4715,7 @@ class SkuSettingCapacity(SkuCapacity):
     :param default:
     :type default: int
     :param scale_type:  Possible values include: "None", "Manual", "Automatic".
-    :type scale_type: str or ~providerhub.models.SkuScaleType
+    :type scale_type: str or ~provider_hub.models.SkuScaleType
     """
 
     _validation = {
@@ -4753,8 +4738,7 @@ class SkuSettingCapacity(SkuCapacity):
         scale_type: Optional[Union[str, "SkuScaleType"]] = None,
         **kwargs
     ):
-        super(SkuSettingCapacity, self).__init__(minimum=minimum,
-                                                 maximum=maximum, default=default, scale_type=scale_type, **kwargs)
+        super(SkuSettingCapacity, self).__init__(minimum=minimum, maximum=maximum, default=default, scale_type=scale_type, **kwargs)
 
 
 class SkuZoneDetail(msrest.serialization.Model):
@@ -4763,7 +4747,7 @@ class SkuZoneDetail(msrest.serialization.Model):
     :param name:
     :type name: list[str]
     :param capabilities:
-    :type capabilities: list[~providerhub.models.SkuCapability]
+    :type capabilities: list[~provider_hub.models.SkuCapability]
     """
 
     _attribute_map = {
@@ -4792,10 +4776,10 @@ class SubscriptionStateOverrideAction(msrest.serialization.Model):
      "Suspended", "Deleted", "WarnedToRegistered", "WarnedToSuspended", "WarnedToDeleted",
      "WarnedToUnregistered", "SuspendedToRegistered", "SuspendedToWarned", "SuspendedToDeleted",
      "SuspendedToUnregistered".
-    :type state: str or ~providerhub.models.SubscriptionTransitioningState
+    :type state: str or ~provider_hub.models.SubscriptionTransitioningState
     :param action: Required.  Possible values include: "NotDefined", "DeleteAllResources",
      "SoftDeleteAllResources", "NoOp", "BillingCancellation", "UndoSoftDelete".
-    :type action: str or ~providerhub.models.SubscriptionNotificationOperation
+    :type action: str or ~provider_hub.models.SubscriptionNotificationOperation
     """
 
     _validation = {
@@ -4825,7 +4809,7 @@ class SubscriptionStateRule(msrest.serialization.Model):
 
     :param state:  Possible values include: "NotDefined", "Enabled", "Warned", "PastDue",
      "Disabled", "Deleted".
-    :type state: str or ~providerhub.models.SubscriptionState
+    :type state: str or ~provider_hub.models.SubscriptionState
     :param allowed_actions:
     :type allowed_actions: list[str]
     """
@@ -4880,7 +4864,7 @@ class ThrottlingMetric(msrest.serialization.Model):
 
     :param type: Required.  Possible values include: "NotSpecified", "NumberOfRequests",
      "NumberOfResources".
-    :type type: str or ~providerhub.models.ThrottlingMetricType
+    :type type: str or ~provider_hub.models.ThrottlingMetricType
     :param limit: Required.
     :type limit: long
     :param interval:
@@ -4920,7 +4904,7 @@ class ThrottlingRule(msrest.serialization.Model):
     :param action: Required.
     :type action: str
     :param metrics: Required.
-    :type metrics: list[~providerhub.models.ThrottlingMetric]
+    :type metrics: list[~provider_hub.models.ThrottlingMetric]
     :param required_features:
     :type required_features: list[str]
     """

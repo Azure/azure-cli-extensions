@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.5.0
++++++
+* az datafactory managed-virtual-network: Support create/update/list/show managed virtual network.
+* az datafactory managed-private-endpoint: Support create/update/list/show/delete managed private endpoint.
+
+0.4.0
++++++
+* GA the whole module
+
 0.3.0
 +++++
 * [BREAKING CHANGE] Renamed command subgroup `az datafactory factory` to `az datafactory`.

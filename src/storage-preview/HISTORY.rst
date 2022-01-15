@@ -2,6 +2,16 @@
 
 Release History
 ===============
+0.8.0
+++++++++++++++++++
+* Remove `az storage account file-service-properties` as SMB multichannel and secured SMB has been supported in main Azure CLI
+* Remove `az storage account blob-inventory-policy` as it is supported in main Azure CLI
+* `az storage account local-user`: Add support for local user
+
+0.7.3(2021-05-20)
+++++++++++++++++++
+* Support soft delete for ADLS Gen2 account
+
 0.7.2(2021-04-09)
 ++++++++++++++++++
 * Remove `az storage blob service-properties` as it is supported in storage-blob-preview extension and Azure CLI

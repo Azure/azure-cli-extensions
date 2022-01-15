@@ -10,7 +10,7 @@ import filecmp
 from pathlib import Path
 import shutil
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, JMESPathCheckExists,
                                NoneCheck)
@@ -93,7 +93,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--change-notes "First release"',
             checks=[])
 
-        import mock
+        from unittest import mock
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             assignment = self.cmd(
                 'az blueprint assignment create '
@@ -215,7 +215,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--version "1.0" '
             '--change-notes "First release"',
             checks=[JMESPathCheck('name', '1.0')])
-        import mock
+        from unittest import mock
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             assignment = self.cmd(
                 'az blueprint assignment create '

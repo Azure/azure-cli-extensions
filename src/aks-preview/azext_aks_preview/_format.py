@@ -10,19 +10,40 @@ from jmespath import compile as compile_jmes, Options
 from jmespath import functions
 
 
-def aks_run_command_result_format(cmdResult):
-    result = OrderedDict()
-    if cmdResult['provisioningState'] == "Succeeded":
-        result['exit code'] = cmdResult['exitCode']
-        result['logs'] = cmdResult['logs']
-        return result
-    if cmdResult['provisioningState'] == "Failed":
-        result['provisioning state'] = cmdResult['provisioningState']
-        result['reason'] = cmdResult['reason']
-        return result
-    result['provisioning state'] = cmdResult['provisioningState']
-    result['started At'] = cmdResult['startedAt']
-    return result
+def aks_addon_list_available_table_format(result):
+    def parser(entry):
+        parsed = compile_jmes("""{
+                name: name,
+                description: description
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return [parser(r) for r in result]
+
+
+def aks_addon_list_table_format(result):
+    def parser(entry):
+        parsed = compile_jmes("""{
+                name: name,
+                enabled: enabled
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return [parser(r) for r in result]
+
+
+def aks_addon_show_table_format(result):
+    def parser(entry):
+        config = ""
+        for k, v in entry["config"].items():
+            config += k + "=" + v + ";"
+        entry["config"] = config
+        parsed = compile_jmes("""{
+                name: name,
+                api_key: api_key,
+                config: config,
+                identity: identity
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return parser(result)
 
 
 def aks_agentpool_show_table_format(result):
@@ -67,6 +88,7 @@ def _aks_table_format(result):
         location: location,
         resourceGroup: resourceGroup,
         kubernetesVersion: kubernetesVersion,
+        currentKubernetesVersion: currentKubernetesVersion,
         provisioningState: provisioningState,
         fqdn: fqdn
     }""")
@@ -193,3 +215,28 @@ def aks_pod_identities_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+
+
+def aks_list_snapshot_table_format(results):
+    """"Format a list of snapshots as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(r) for r in results]
+
+
+def aks_show_snapshot_table_format(result):
+    """Format a snapshot as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(result)]
+
+
+def _aks_snapshot_table_format(result):
+    parsed = compile_jmes("""{
+        name: name,
+        location: location,
+        resourceGroup: resourceGroup,
+        nodeImageVersion: nodeImageVersion,
+        kubernetesVersion: kubernetesVersion,
+        osType: osType,
+        osSku: osSku,
+        enableFIPS: enableFIPS
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict))

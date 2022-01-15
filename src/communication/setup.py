@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '1.1.0'
 try:
     from azext_communication.manual.version import VERSION
 except ImportError:
@@ -30,7 +30,8 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['azure-core', 'azure-communication-identity',
+                'azure-communication-phonenumbers', 'azure-communication-sms']
 
 try:
     from azext_communication.manual.dependency import DEPENDENCIES

@@ -49,7 +49,22 @@ az communication regenerate-key --name "MyCommunicationResource" --key-type "Pri
 ```
 az communication delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
-##### Show-status #####
+##### Issue-Access-Token #####
 ```
-az communication show-status --operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" --location "westus2"
+az communication identity issue-access-token --scope chat
+
+az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+```
+##### Send-SMS #####
+```
+az communication sms send-sms --sender "+1833xxxxxxx" \
+    --recipient "+1425xxxxxxx" --message "Hello there!!"
+```
+##### List-Phonenumbers #####
+```
+az communication phonenumbers list-phonenumbers
+```
+##### Show-Phonenumber #####
+```
+az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
 ```

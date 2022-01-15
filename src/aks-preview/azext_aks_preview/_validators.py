@@ -12,11 +12,12 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import ManagedClusterPropertiesAutoScalerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import ManagedClusterPropertiesAutoScalerProfile
 
 from ._helpers import (_fuzzy_match)
 
@@ -67,13 +68,13 @@ def validate_k8s_version(namespace):
     """Validates a string as a possible Kubernetes version. An empty string is also valid, which tells the server
     to use its default version."""
     if namespace.kubernetes_version:
-        k8s_release_regex = re.compile(r'^[v|V]?(\d+\.\d+\.\d+.*)$')
+        k8s_release_regex = re.compile(r'^[v|V]?(\d+\.\d+(?:\.\d+)?)$')
         found = k8s_release_regex.findall(namespace.kubernetes_version)
         if found:
             namespace.kubernetes_version = found[0]
         else:
-            raise CLIError('--kubernetes-version should be the full version number, '
-                           'such as "1.7.12" or "1.8.7"')
+            raise CLIError('--kubernetes-version should be the full version number or alias minor version, '
+                           'such as "1.7.12" or "1.7"')
 
 
 def validate_linux_host_name(namespace):
@@ -265,6 +266,20 @@ def validate_load_balancer_idle_timeout(namespace):
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,100]")
 
 
+def validate_nat_gateway_managed_outbound_ip_count(namespace):
+    """validate NAT gateway profile managed outbound IP count"""
+    if namespace.nat_gateway_managed_outbound_ip_count is not None:
+        if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
+            raise InvalidArgumentValueError("--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
+
+
+def validate_nat_gateway_idle_timeout(namespace):
+    """validate NAT gateway profile idle timeout"""
+    if namespace.nat_gateway_idle_timeout is not None:
+        if namespace.nat_gateway_idle_timeout < 4 or namespace.nat_gateway_idle_timeout > 120:
+            raise InvalidArgumentValueError("--nat-gateway-idle-timeout must be in the range [4,120]")
+
+
 def validate_nodepool_tags(ns):
     """ Extracts multiple space-separated tags in key[=value] format """
     if isinstance(ns.nodepool_tags, list):
@@ -399,12 +414,7 @@ def validate_assign_identity(namespace):
             raise CLIError("--assign-identity is not a valid Azure resource ID.")
 
 
-def validate_addons(namespace):
-    if not hasattr(namespace, 'addons'):
-        return
-    addons = namespace.addons
-    addon_args = addons.split(',')
-
+def _recognize_addons(addon_args):
     for addon_arg in addon_args:
         if addon_arg not in ADDONS:
             matches = _fuzzy_match(addon_arg, list(ADDONS))
@@ -417,6 +427,23 @@ def validate_addons(namespace):
 
             raise CLIError(
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
+
+
+def validate_addon(namespace):
+    if not hasattr(namespace, 'addon'):
+        return
+    addon = namespace.addon
+    if ',' in addon:
+        raise CLIError("Please pick only 1 addon.")
+    _recognize_addons([addon])
+
+
+def validate_addons(namespace):
+    if not hasattr(namespace, 'addons'):
+        return
+    addons = namespace.addons
+    addon_args = addons.split(',')
+    _recognize_addons(addon_args)
 
 
 def validate_pod_identity_pod_labels(namespace):
@@ -477,3 +504,16 @@ def validate_assign_kubelet_identity(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_kubelet_identity):
             raise CLIError("--assign-kubelet-identity is not a valid Azure resource ID.")
+
+
+def validate_nodepool_id(namespace):
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(namespace.nodepool_id):
+        raise InvalidArgumentValueError("--nodepool-id is not a valid Azure resource ID.")
+
+
+def validate_snapshot_id(namespace):
+    if namespace.snapshot_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.snapshot_id):
+            raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")

@@ -8,6 +8,7 @@
 
 from azure.cli.core.commands.parameters import get_generic_completion_list
 from azure.cli.core.commands.parameters import get_three_state_flag
+from azure.cli.core.commands.parameters import tags_type
 
 _QUERY_EXAMPLES = [
     '''summarize count()''',
@@ -41,3 +42,11 @@ def load_arguments(self, _):
         c.argument('allow_partial_scopes', options_list=['--allow-partial-scopes', '-a'],
                    arg_type=get_three_state_flag(), required=False, default=False,
                    help='Indicates if query should succeed when only partial number of subscription underneath can be processed by server.')
+
+    with self.argument_context('graph shared-query') as c:
+        c.argument('graph_query', options_list=['--graph-query', '--q', '-q'],
+                   completer=get_generic_completion_list(_QUERY_EXAMPLES), help='Resource Graph query to execute.')
+        c.argument('resource_name', options_list=['--name', '-n'], help='Name of the graph shared query.')
+        c.argument('tags', tags_type)
+        c.argument('description', options_list=['-d', '--description'], help='Description of the graph shared query.')
+        c.ignore('location')

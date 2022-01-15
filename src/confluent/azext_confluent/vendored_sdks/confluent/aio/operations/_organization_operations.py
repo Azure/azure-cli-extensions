@@ -28,7 +28,7 @@ class OrganizationOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~confluent_management_client.models
+    :type models: ~azure.mgmt.confluent.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -53,7 +53,7 @@ class OrganizationOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OrganizationResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~confluent_management_client.models.OrganizationResourceListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.confluent.models.OrganizationResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OrganizationResourceListResult"]
@@ -61,7 +61,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -125,7 +125,7 @@ class OrganizationOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OrganizationResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~confluent_management_client.models.OrganizationResourceListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.confluent.models.OrganizationResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OrganizationResourceListResult"]
@@ -133,7 +133,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -201,7 +201,7 @@ class OrganizationOperations:
         :type organization_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OrganizationResource, or the result of cls(response)
-        :rtype: ~confluent_management_client.models.OrganizationResource
+        :rtype: ~azure.mgmt.confluent.models.OrganizationResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OrganizationResource"]
@@ -209,7 +209,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         accept = "application/json"
 
         # Construct URL
@@ -250,11 +250,7 @@ class OrganizationOperations:
         self,
         resource_group_name: str,
         organization_name: str,
-        tags: Optional[Dict[str, str]] = None,
-        location: Optional[str] = None,
-        provisioning_state: Optional[Union[str, "models.ProvisionState"]] = None,
-        offer_detail: Optional["models.OfferDetail"] = None,
-        user_detail: Optional["models.UserDetail"] = None,
+        body: Optional["models.OrganizationResource"] = None,
         **kwargs
     ) -> "models.OrganizationResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OrganizationResource"]
@@ -262,9 +258,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        body = models.OrganizationResource(tags=tags, location=location, provisioning_state=provisioning_state, offer_detail=offer_detail, user_detail=user_detail)
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -317,11 +311,7 @@ class OrganizationOperations:
         self,
         resource_group_name: str,
         organization_name: str,
-        tags: Optional[Dict[str, str]] = None,
-        location: Optional[str] = None,
-        provisioning_state: Optional[Union[str, "models.ProvisionState"]] = None,
-        offer_detail: Optional["models.OfferDetail"] = None,
-        user_detail: Optional["models.UserDetail"] = None,
+        body: Optional["models.OrganizationResource"] = None,
         **kwargs
     ) -> AsyncLROPoller["models.OrganizationResource"]:
         """Create Organization resource.
@@ -332,16 +322,8 @@ class OrganizationOperations:
         :type resource_group_name: str
         :param organization_name: Organization resource name.
         :type organization_name: str
-        :param tags: Organization resource tags.
-        :type tags: dict[str, str]
-        :param location: Location of Organization resource.
-        :type location: str
-        :param provisioning_state: Provision states for confluent RP.
-        :type provisioning_state: str or ~confluent_management_client.models.ProvisionState
-        :param offer_detail: Confluent offer detail.
-        :type offer_detail: ~confluent_management_client.models.OfferDetail
-        :param user_detail: Subscriber detail.
-        :type user_detail: ~confluent_management_client.models.UserDetail
+        :param body: Organization resource model.
+        :type body: ~azure.mgmt.confluent.models.OrganizationResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -349,7 +331,7 @@ class OrganizationOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either OrganizationResource or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~confluent_management_client.models.OrganizationResource]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.confluent.models.OrganizationResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -363,11 +345,7 @@ class OrganizationOperations:
             raw_result = await self._create_initial(
                 resource_group_name=resource_group_name,
                 organization_name=organization_name,
-                tags=tags,
-                location=location,
-                provisioning_state=provisioning_state,
-                offer_detail=offer_detail,
-                user_detail=user_detail,
+                body=body,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -406,7 +384,7 @@ class OrganizationOperations:
         self,
         resource_group_name: str,
         organization_name: str,
-        tags: Optional[Dict[str, str]] = None,
+        body: Optional["models.OrganizationResourceUpdate"] = None,
         **kwargs
     ) -> "models.OrganizationResource":
         """Update Organization resource.
@@ -417,11 +395,11 @@ class OrganizationOperations:
         :type resource_group_name: str
         :param organization_name: Organization resource name.
         :type organization_name: str
-        :param tags: ARM resource tags.
-        :type tags: dict[str, str]
+        :param body: Updated Organization resource.
+        :type body: ~azure.mgmt.confluent.models.OrganizationResourceUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OrganizationResource, or the result of cls(response)
-        :rtype: ~confluent_management_client.models.OrganizationResource
+        :rtype: ~azure.mgmt.confluent.models.OrganizationResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OrganizationResource"]
@@ -429,9 +407,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        body = models.OrganizationResourceUpdate(tags=tags)
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -487,7 +463,7 @@ class OrganizationOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
+        api_version = "2021-03-01-preview"
         accept = "application/json"
 
         # Construct URL

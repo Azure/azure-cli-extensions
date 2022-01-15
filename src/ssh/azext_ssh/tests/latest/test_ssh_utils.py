@@ -3,34 +3,54 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack import util
-import mock
+from azure.cli.core import azclierror
+from unittest import mock
 import unittest
 import platform
 
 from azext_ssh import ssh_utils
 
-
 class SSHUtilsTests(unittest.TestCase):
+
+    @mock.patch('os.path.join')
     @mock.patch.object(ssh_utils, '_get_ssh_path')
     @mock.patch.object(ssh_utils, '_get_host')
     @mock.patch.object(ssh_utils, '_build_args')
     @mock.patch('subprocess.call')
-    def test_start_ssh_connection(self, mock_call, mock_build, mock_host, mock_path):
+    def test_start_ssh_connection(self, mock_call, mock_build, mock_host, mock_path, mock_join):
         mock_path.return_value = "ssh"
         mock_host.return_value = "user@ip"
         mock_build.return_value = ['-i', 'file', '-o', 'option']
-        expected_command = ["ssh", "user@ip", "-i", "file", "-o", "option"]
+        mock_join.return_value = "/log/file/path"
 
-        ssh_utils.start_ssh_connection("ip", "user", "cert", "private")
+        expected_command = ["ssh", "user@ip", "-i", "file", "-o", "option", "-E", "/log/file/path", "-v"]
+
+        ssh_utils.start_ssh_connection("port", None, "ip", "user", "cert", "private", True, True)
 
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")
-        mock_build.assert_called_once_with("cert", "private")
+        mock_build.assert_called_once_with("cert", "private", "port")
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
-    @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
-    def test_write_ssh_config_ip_and_vm(self, mock_make_dirs):
+    @mock.patch.object(ssh_utils, '_get_ssh_path')
+    @mock.patch.object(ssh_utils, '_get_host')
+    @mock.patch('subprocess.call')
+    def test_start_ssh_connection_with_args(self, mock_call, mock_host, mock_path):
+        mock_path.return_value = "ssh"
+        mock_host.return_value = "user@ip"
+
+        expected_command = ["ssh", "user@ip", "-i", "private", "-o", "CertificateFile=cert", "-p", "2222", "--thing", "-vv"]
+
+        ssh_utils.start_ssh_connection("2222", ["--thing", "-vv"], "ip", "user", "cert", "private", True, True)
+
+        mock_path.assert_called_once_with()
+        mock_host.assert_called_once_with("user", "ip")
+        mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
+
+
+    @mock.patch.object(ssh_utils, 'get_ssh_cert_validity')
+    def test_write_ssh_config_ip_and_vm(self, mock_validity):
+        mock_validity.return_value = None
         expected_lines = [
             "",
             "Host rg-vm",
@@ -38,25 +58,26 @@ class SSHUtilsTests(unittest.TestCase):
             "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
+            "\tPort port",
             "Host 1.2.3.4",
             "\tUser username",
             "\tCertificateFile cert",
-            "\tIdentityFile privatekey"
+            "\tIdentityFile privatekey",
+            "\tPort port"
         ]
 
         with mock.patch('builtins.open') as mock_open:
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", "rg", "vm", True, "1.2.3.4", "username", "cert", "privatekey"
+                "path/to/file", "rg", "vm", True, "port", "1.2.3.4", "username", "cert", "privatekey", True, False
             )
-
-        mock_make_dirs.assert_called_once_with("path/to/file")
+        mock_validity.assert_called_once_with("cert")
         mock_open.assert_called_once_with("path/to/file", "w")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
 
-    @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
-    def test_write_ssh_config_append(self, mock_make_dirs):
+    @mock.patch.object(ssh_utils, 'get_ssh_cert_validity')
+    def test_write_ssh_config_append(self, mock_validity):
         expected_lines = [
             "",
             "Host rg-vm",
@@ -70,19 +91,22 @@ class SSHUtilsTests(unittest.TestCase):
             "\tIdentityFile privatekey"
         ]
 
+        mock_validity.return_value = None
+
         with mock.patch('builtins.open') as mock_open:
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", "rg", "vm", False, "1.2.3.4", "username", "cert", "privatekey"
+                "path/to/file", "rg", "vm", False, None, "1.2.3.4", "username", "cert", "privatekey", True, True
             )
 
-        mock_make_dirs.assert_called_once_with("path/to/file")
+        mock_validity.assert_called_once_with("cert")
+
         mock_open.assert_called_once_with("path/to/file", "a")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
-
-    @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
-    def test_write_ssh_config_ip_only(self, mock_make_dirs):
+    
+    @mock.patch.object(ssh_utils, 'get_ssh_cert_validity')
+    def test_write_ssh_config_ip_only(self, mock_validity):
         expected_lines = [
             "",
             "Host 1.2.3.4",
@@ -90,15 +114,17 @@ class SSHUtilsTests(unittest.TestCase):
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
+        mock_validity.return_value = None
 
         with mock.patch('builtins.open') as mock_open:
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", None, None, True, "1.2.3.4", "username", "cert", "privatekey"
+                "path/to/file", None, None, True, None, "1.2.3.4", "username", "cert", "privatekey", False, False
             )
 
-        mock_make_dirs.assert_called_once_with("path/to/file")
+        mock_validity.assert_not_called()
+
         mock_open.assert_called_once_with("path/to/file", "w")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
 
@@ -126,15 +152,15 @@ class SSHUtilsTests(unittest.TestCase):
         mock_environ.__getitem__.return_value = "rootpath"
         mock_isfile.return_value = False
 
-        self.assertRaises(util.CLIError, ssh_utils._get_ssh_path)
+        self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils._get_ssh_path)
 
     def test_get_host(self):
         actual_host = ssh_utils._get_host("username", "10.0.0.1")
         self.assertEqual("username@10.0.0.1", actual_host)
 
     def test_build_args(self):
-        actual_args = ssh_utils._build_args("cert", "privatekey")
-        expected_args = ["-i", "privatekey", "-o", "CertificateFile=cert"]
+        actual_args = ssh_utils._build_args("cert", "privatekey", "2222")
+        expected_args = ["-i", "privatekey", "-o", "CertificateFile=cert", "-p", "2222"]
         self.assertEqual(expected_args, actual_args)
 
     @mock.patch('platform.system')
