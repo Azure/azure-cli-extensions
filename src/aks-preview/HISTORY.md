@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.5.51
+* Add currentKubernetesVersion column for az aks show --output table.
+
+0.5.50
+++++++
+* Add support for enabling OIDC issuer with `--enable-oidc-issuer` flag.
+
 0.5.49
 ++++++
 * Add support for Alias Minor Version.
