@@ -137,23 +137,23 @@ def load_arguments(self, _):
             help="File path to known_hosts contents containing public SSH keys required to access private Git instances",
         )
         c.argument(
-            "access_key",
+            "bucket_access_key",
             arg_group="Bucket Auth",
-            help="Access Key Id used to authenticate with the bucket url",
+            help="Access Key ID used to authenticate with the bucket",
         )
         c.argument(
-            "secret_key",
+            "bucket_secret_key",
             arg_group="Bucket Auth",
-            help="Secret Key used to authenticate with the bucket url",
+            help="Secret Key used to authenticate with the bucket",
         )
         c.argument(
             "bucket_name",
-            help="Name of the S3 bucket at the given url to connect to",
+            help="Name of the S3 bucket to sync",
         )
         c.argument(
-            "insecure",
+            "bucket_insecure",
             arg_type=get_three_state_flag(),
-            help="Communicate with a bucket without TLS",
+            help="Communicate with a bucket without TLS. Default: false",
         )
         c.argument(
             "local_auth_ref",
@@ -164,7 +164,7 @@ def load_arguments(self, _):
         c.argument(
             "suspend",
             arg_type=get_three_state_flag(),
-            help="Suspend the reconciliation of the source and kustomizations associated with this configuration",
+            help="Suspend the reconciliation of the source and kustomizations associated with this configuration. Default: false",
         )
         c.argument(
             "kustomization",
@@ -333,12 +333,12 @@ def load_arguments(self, _):
         c.argument(
             "prune",
             arg_type=get_three_state_flag(),
-            help="Garbage collect resources deployed by the kustomization on the cluster",
+            help="Garbage collect resources deployed by the kustomization on the cluster. Default: false",
         )
         c.argument(
             "force",
             arg_type=get_three_state_flag(),
-            help="Re-create resources that cannot be updated on the cluster (i.e. jobs)",
+            help="Re-create resources that cannot be updated on the cluster (i.e. jobs). Default: false",
         )
 
     with self.argument_context("k8s-configuration flux kustomization delete") as c:

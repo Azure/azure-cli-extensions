@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.4.1
+++++++++++++++++++
+* Prepend bucket parameters with "bucket" keyword
+* Fix some help text
+
 1.4.0
 ++++++++++++++++++
 * Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations

@@ -93,7 +93,7 @@ helps[
           --name myconfig --scope cluster --namespace my-namespace \\
           --kind bucket --url https://bucket-provider.minio.io \\
           --bucket-name my-bucket --kustomization name=my-kustomization \\
-          --access-key my-access-key --secret-key my-secret-key
+          --bucket-access-key my-access-key --bucket-secret-key my-secret-key
 """
 
 helps[
@@ -108,6 +108,11 @@ helps[
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --url https://github.com/Azure/arc-k8s-demo --branch main \\
           --kustomization name=my-kustomization path=./my/new-path
+      - name: Update a Flux v2 Kubernetse configuration with Bucket Source Kind to connect insecurely
+        text: |-
+          az k8s-configuration flux update --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
+          --bucket-insecure
 """
 
 helps[

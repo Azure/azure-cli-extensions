@@ -6,7 +6,7 @@ Describe 'Bucket Flux Configuration Testing' {
     }
 
     It 'Creates a configuration and checks that it onboards correctly' {
-        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" --kind bucket -u "http://52.190.35.89" --bucket-name flux -n $configurationName --scope cluster --namespace $configurationName --access-key test --secret-key test --no-wait
+        az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" --kind bucket -u "http://52.190.35.89" --bucket-name flux -n $configurationName --scope cluster --namespace $configurationName --bucket-access-key test --bucket-secret-key test --no-wait
         $? | Should -BeTrue
 
         # Loop and retry until the configuration installs
