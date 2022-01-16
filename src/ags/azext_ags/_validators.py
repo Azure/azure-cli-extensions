@@ -5,6 +5,8 @@
 
 from msrestazure.tools import parse_resource_id
 
+from knack.util import CLIError
+
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -23,6 +25,10 @@ def process_missing_resource_group_parameter(cmd, namespace):
         match = next((i for i in resources if i.name == namespace.grafana_name), None)
         if match:
             namespace.resource_group_name = parse_resource_id(match.id)["resource_group"]
+        else:
+            raise CLIError(("Not able to find the Grafana workspace: '{}'. Please "
+                            "correct the name, or provide resource group name, or set CLI "
+                            "subscription the workspace belongs to").format(namespace.grafana_name))
 
 def process_leading_hyphen(cmd, namespace):
     if namespace.uid:

@@ -16,10 +16,9 @@ def load_arguments(self, _):
                                         id_part="name")
 
     with self.argument_context("grafana") as c:
-        c.argument('resource_group_name', arg_type=resource_group_name_type, validator=process_missing_resource_group_parameter)
         c.argument("tags", tags_type)
         c.argument("location", validator=get_default_location_from_resource_group)
-        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"])
+        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=process_missing_resource_group_parameter)
         c.argument("uid", options_list=["--unique-identifier", "--uid"],
                    help=("The unique identifier (uid) of a dashboard can be used for uniquely identifying a dashboard or data source "
                          "between multiple Grafana installs. It’s automatically generated if not provided on creating. "
@@ -31,7 +30,10 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana create") as c:
         c.argument("enable_system_assigned_identity", arg_type=get_three_state_flag())
-        c.argument('resource_group_name', arg_type=resource_group_name_type, validator=None)
+        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
+
+    with self.argument_context("grafana delete") as c:
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("dashboard_definition", help="The complete dashboard model in json string, or a path to a file with such json string")
@@ -45,8 +47,8 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana data-source query") as c:
         c.argument("conditions", nargs="+", help="space-separated condition in a format of `<name>=<value>`")
-        c.argument("time_from", options_list=["--from"], help="start time")
-        c.argument("time_to", options_list=["--to"], help="end time")
+        c.argument("time_from", options_list=["--from"], help="start time in iso 8601, e.g. '2022-01-02T16:15:00'. Default: 1 hour early")
+        c.argument("time_to", options_list=["--to"], help="end time in iso 8601, e.g. '2022-01-02T17:15:00'. Default: current time ")
         c.argument("max_data_points", help="Maximum amount of data points that dashboard panel can render")
         c.argument("internal_ms", help="The time interval in milliseconds of time series")
 

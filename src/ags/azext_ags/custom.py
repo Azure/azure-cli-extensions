@@ -31,8 +31,8 @@ def create_grafana(cmd, resource_group_name, grafana_name,
 def list_grafana(cmd, resource_group_name=None):
     filters = []
     if resource_group_name:
-        filters.append('resourceGroup eq "{}"'.format(resource_group_name))
-    filters.append('resourceType eq "Microsoft.Dashboard/grafana"')
+        filters.append("resourceGroup eq '{}'".format(resource_group_name))
+    filters.append("resourceType eq 'Microsoft.Dashboard/grafana'")
     odata_filter = " and ".join(filters)
 
     expand = "createdTime,changedTime,provisioningState"
@@ -47,7 +47,9 @@ def show_grafana(cmd, grafana_name, resource_group_name=None):
                                 "", "grafana", grafana_name, "2021-09-01-preview")
 
 
-def delete_grafana(cmd, grafana_name, resource_group_name=None):
+def delete_grafana(cmd, grafana_name, yes=False, resource_group_name=None):
+    from azure.cli.core.util import user_confirmation
+    user_confirmation("Are you sure you want to delete the Grafana workspace '{}'?".format(grafana_name), yes)
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
     return client.resources.begin_delete(resource_group_name, "Microsoft.Dashboard",
                                          "", "grafana", grafana_name, "2021-09-01-preview")
@@ -85,21 +87,21 @@ def delete_dashboard(cmd, grafana_name, uid, resource_group_name):
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/dashboards/uid/" + uid)
 
 
-def list_data_sources(cmd, resource_group_name, grafana_name):
+def list_data_sources(cmd, grafana_name, resource_group_name=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources")
     return json.loads(response.content)
 
 
-def show_data_source(cmd, resource_group_name, grafana_name, data_source):
+def show_data_source(cmd, grafana_name, data_source, resource_group_name=None):
     return _find_data_source(cmd, resource_group_name, grafana_name, data_source)
 
 
-def create_data_source(cmd, resource_group_name, grafana_name, definition):
+def create_data_source(cmd, grafana_name, definition, resource_group_name=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", definition)
     return json.loads(response.content)
 
 
-def delete_data_source(cmd, resource_group_name, grafana_name, data_source):
+def delete_data_source(cmd, grafana_name, data_source, resource_group_name=None):
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/datasources/uid/" + data["uid"])
 
@@ -156,21 +158,30 @@ def show_user(cmd, grafana_name, user, resource_group_name=None):
     return json.loads(response.content)
 
 
-def query_data_source(cmd, resource_group_name, grafana_name, data_source, time_from=None, time_to=None,
-                      max_data_points=100, internal_ms=1000, conditions=None):
-    if not time_from or not time_to:  # TODO accept tiem string
-        import datetime
-        import time
-        right_now = datetime.datetime.now()
-        if not time_from:
-            time_from = time.mktime((right_now - datetime.timedelta(hours=1)).timetuple()) * 1000
-        if not time_to:
-            time_to = time.mktime(right_now.timetuple()) * 1000
+def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=None,
+                      max_data_points=100, internal_ms=1000, conditions=None, resource_group_name=None):
+    import datetime
+    import time
+    from dateutil import parser
+    right_now = datetime.datetime.now()
+
+    if time_from:
+        time_from = parser.parse(time_from)
+    else:
+        time_from = right_now - datetime.timedelta(hours=1)
+    time_from_epoch = time.mktime(time_from.timetuple()) * 1000
+    
+    if time_to:
+        time_to = parser.parse(time_to)
+    else:
+        time_to = right_now
+    time_to_epoch = time.mktime(time_to.timetuple()) * 1000
+
     data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source)["id"]
 
     data = {
-        "from": time_from,
-        "to": time_to,
+        "from": time_from_epoch,
+        "to": time_to_epoch,
         "queries": [{
             "intervalMs": internal_ms,
             "maxDataPoints": max_data_points,
@@ -218,16 +229,22 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     profile = Profile(cli_ctx=cmd.cli_ctx)
     # this might be a cross tenant scenario, so pass subscription to get_raw_token
     subscription = get_subscription_id(cmd.cli_ctx)
+    ags_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3" 
+                           if "-ppe." in cmd.cli_ctx.cloud.endpoints.active_directory
+                           else "ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")
     creds, _, _ = profile.get_raw_token(subscription=subscription,
-                                        resource="ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")  # TODO, support dogfood
+                                        resource=ags_first_party_app + "/.default")
 
     headers = {
         "content-type": "application/json",
         "authorization": "Bearer " + creds[1]
     }
 
-    return requests.request(http_method,
-                            url=endpoint + path,
-                            headers=headers,
-                            json=body,
-                            verify=(not should_disable_connection_verify()))
+    # TODO: handle re-try on 429
+    response = requests.request(http_method,
+                               url=endpoint + path,
+                               headers=headers,
+                               json=body,
+                               verify=(not should_disable_connection_verify()))
+    response.raise_for_status()
+    return response

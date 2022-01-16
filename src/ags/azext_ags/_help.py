@@ -10,6 +10,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 helps['grafana'] = """
     type: group
     short-summary: Commands to manage Azure Managed Workspace for Grafana.
+    long-summary: For optimized experience, not all data plane Apis, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
 """
 
 helps['grafana create'] = """
