@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._validators import process_grafana_create_namespace, process_missing_resource_group_parameter
+from ._validators import process_grafana_create_namespace
 
 
 def load_command_table(self, _):
@@ -28,14 +28,14 @@ def load_command_table(self, _):
 
     with self.command_group('grafana', is_preview=True) as g:
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
-        g.custom_command('delete', 'delete_grafana', validator=process_missing_resource_group_parameter)
+        g.custom_command('delete', 'delete_grafana')
         g.custom_command('list', 'list_grafana')
-        g.custom_command('show', 'show_grafana', validator=process_missing_resource_group_parameter)
+        g.custom_command('show', 'show_grafana')
         # g.custom_command('update', 'update_grafana')
         # g.custom_command('get-short-url', 'get_short_url')   # TODO
 
-    with self.command_group('grafana dashboard', validator=process_missing_resource_group_parameter) as g:
-        g.custom_command('create', 'create_dashboard')  # TODO need examples
+    with self.command_group('grafana dashboard') as g:
+        g.custom_command('create', 'create_dashboard')  # TODO need examples, expose folder
         g.custom_command('delete', 'delete_dashboard')
         g.custom_command('list', 'list_dashboards')
         g.custom_command('show', 'show_dashboard')  # TODO handle HOME dashboard and name
@@ -49,17 +49,17 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_data_source')
         g.custom_command('query', 'query_data_source')
 
-    with self.command_group('grafana folder', validator=process_missing_resource_group_parameter) as g:
+    with self.command_group('grafana folder') as g:
         g.custom_command('create', 'create_folder')
-        g.custom_command('list', 'list_folders', validator=process_missing_resource_group_parameter)
+        g.custom_command('list', 'list_folders')
         g.custom_command('show', 'show_folder')
         g.custom_command('delete', 'delete_folder')
         g.custom_command('update', 'update_folder')
 
     with self.command_group('grafana user') as g:
-        g.custom_command('list', 'list_users', validator=process_missing_resource_group_parameter)
-        g.custom_command('show', 'show_user', validator=process_missing_resource_group_parameter)
-        g.custom_command('actual-user', 'get_actual_user', validator=process_missing_resource_group_parameter)
+        g.custom_command('list', 'list_users')
+        g.custom_command('show', 'show_user')
+        g.custom_command('actual-user', 'get_actual_user')
         # g.custom_command('star-dashboard', 'star_dashboard')  # TODO consider to move under "dashboard"
         # g.custom_command('unstar-dashboard', 'unstar_dashboard')  # TODO consider to move under "dashboard"
 

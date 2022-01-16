@@ -23,3 +23,8 @@ def process_missing_resource_group_parameter(cmd, namespace):
         match = next((i for i in resources if i.name == namespace.grafana_name), None)
         if match:
             namespace.resource_group_name = parse_resource_id(match.id)["resource_group"]
+
+def process_leading_hyphen(cmd, namespace):
+    if namespace.uid:
+        namespace.uid=namespace.uid.lstrip()
+
