@@ -176,7 +176,13 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
         assert len(user_def_list) == 0
 
         self.cmd(
-            'az cosmosdb mongodb role definition delete -g {rg} -a {acc} -i {role_def_id2} --yes')
+            'az cosmosdb mongodb role definition delete -g {rg} -a {acc} -i {role_def_id1} --yes')
         role_definition_list = self.cmd(
             'az cosmosdb mongodb role definition list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_definition_list) == 1
+
+        self.cmd(
+            'az cosmosdb mongodb role definition delete -g {rg} -a {acc} -i {role_def_id2} --yes')
+        role_definition_list = self.cmd(
+            'az cosmosdb mongodb role definition list -g {rg} -a {acc}').get_output_in_json()
+        assert len(role_definition_list) == 0
