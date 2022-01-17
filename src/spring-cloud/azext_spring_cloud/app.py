@@ -75,6 +75,7 @@ def app_create(cmd, client, resource_group, service, name,
         'enable_temporary_disk': True,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
+        'public': assign_endpoint,
         'loaded_public_certificate_file': loaded_public_certificate_file
     }
     create_deployment_kwargs = {
@@ -88,6 +89,7 @@ def app_create(cmd, client, resource_group, service, name,
         'jvm_options': jvm_options,
     }
     update_app_kwargs = {
+        'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
     }
 

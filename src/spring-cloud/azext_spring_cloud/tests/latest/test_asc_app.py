@@ -525,6 +525,8 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource
         self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        resource = self.patch_app_resource
+        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
 
     def test_app_with_persistent_storage_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
