@@ -373,7 +373,7 @@ class TestAppUpdate(BasicTest):
         app_update(_get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
-        if kwargs.get('deployment', None):
+        if len(call_args):
             self.assertEqual(1, len(call_args))
             self.assertEqual(5, len(call_args[0][0]))
             self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])

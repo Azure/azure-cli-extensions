@@ -48,6 +48,10 @@ def validate_sku(cmd, namespace):
         _validate_terms(cmd, namespace)
     else:
         _check_tanzu_components_not_enable(cmd, namespace)
+    normalize_sku(cmd, namespace)
+
+
+def normalize_sku(cmd, namespace):
     namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
 
 
