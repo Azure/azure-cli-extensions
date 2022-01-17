@@ -31,11 +31,12 @@ def load_command_table(self, _):
         # g.custom_command('get-tags', 'get_dashboard_tags')  # TODO handle HOME dashboard
 
     with self.command_group('grafana data-source') as g:
-        g.custom_command('create', 'create_data_source')  # TODO add one more example of using service principal
+        g.custom_command('create', 'create_data_source')
         g.custom_command('list', 'list_data_sources')
         g.custom_command('show', 'show_data_source')
         g.custom_command('delete', 'delete_data_source')
         g.custom_command('query', 'query_data_source')
+        g.custom_command('update', 'update_data_source')
 
     with self.command_group('grafana folder') as g:
         g.custom_command('create', 'create_folder')

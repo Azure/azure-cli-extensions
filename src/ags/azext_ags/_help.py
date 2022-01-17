@@ -51,7 +51,70 @@ helps['grafana data-source'] = """
 helps['grafana data-source create'] = """
     type: group
     short-summary: Create a data source.
+    examples:
+        - name: create a data source using Managed Service Identity 
+          text: |
+            az grafana data-source create --definition '{
+              "access": "proxy",
+              "basicAuth": false,
+              "jsonData": {
+                "azureAuth": true,
+                "azureCredentials": {
+                  "authType": "msi"
+                },
+                "azureEndpointResourceId": "https://monitor.core.windows.net"
+              },
+              "name": "Geneva Datasource using MSI",
+              "type": "geneva-datasource",
+              "withCredentials": false
+            }'
+        - name: create a data source using Service Principal 
+          text: |
+            az grafana data-source create --definition '{
+              "access": "proxy",
+              "basicAuth": false,
+              "jsonData": {
+                "azureAuth": true,
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "clientId": "fb31a2f5-9122-4be9-9705-xxxxxxxxxxxx",
+                  "tenantId": "72f988bf-86f1-41af-91ab-xxxxxxxxxxxx",
+                  "clientSecret": "xxxxxx"
+                },
+                "azureEndpointResourceId": "https://monitor.core.windows.net"
+              },
+              "name": "Geneva Datasource using Service principal",
+              "type": "geneva-datasource"
+            }'
 """
+
+
+helps['grafana data-source update'] = """
+    type: group
+    short-summary: Update a data source.
+    examples:
+        - name: update a data source's credentials (make sure either set "version" to the latest version to bump to a new version, or omit it to overwrite the existing version)
+          text: |
+            az grafana data-source create --data-source "Geneva Datasource" --definition '{
+              "access": "proxy",
+              "basicAuth": false,
+              "jsonData": {
+                "azureAuth": true,
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "clientId": "fb31a2f5-9122-4be9-9705-xxxxxxxxxxxx",
+                  "tenantId": "72f988bf-86f1-41af-91ab-xxxxxxxxxxxx",
+                  "clientSecret": "newPassword"
+                },
+                "azureEndpointResourceId": "https://monitor.core.windows.net"
+              },
+              "name": "Geneva Datasource",
+              "type": "geneva-datasource"
+            }'
+"""
+
 
 helps['grafana data-source list'] = """
     type: group

@@ -7,11 +7,14 @@ import json
 import requests
 
 from knack.util import CLIError
+from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import should_disable_connection_verify
+
+logger = get_logger(__name__)
 
 
 def create_grafana(cmd, resource_group_name, grafana_name,
@@ -87,8 +90,9 @@ def delete_dashboard(cmd, grafana_name, uid, resource_group_name):
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/dashboards/uid/" + uid)
 
 
-def list_data_sources(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources")
+def create_data_source(cmd, grafana_name, definition, resource_group_name=None):
+    payload = json.loads(definition)
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", payload)
     return json.loads(response.content)
 
 
@@ -96,14 +100,21 @@ def show_data_source(cmd, grafana_name, data_source, resource_group_name=None):
     return _find_data_source(cmd, resource_group_name, grafana_name, data_source)
 
 
-def create_data_source(cmd, grafana_name, definition, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", definition)
-    return json.loads(response.content)
-
-
 def delete_data_source(cmd, grafana_name, data_source, resource_group_name=None):
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/datasources/uid/" + data["uid"])
+
+
+def list_data_sources(cmd, grafana_name, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources")
+    return json.loads(response.content)
+
+
+def update_data_source(cmd, grafana_name, data_source, definition, resource_group_name=None):
+    data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
+    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/datasources/" + str(data['id']),
+                             json.loads(definition))
+    return json.loads(response.content)
 
 
 def create_folder(cmd, grafana_name, title, resource_group_name=None):
@@ -200,12 +211,15 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
 
 
 def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/name/" + data_source)
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/name/" + data_source,
+                             raise_for_error_status=False)
     if response.status_code >= 400:
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/" + data_source)
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/datasources/" + data_source,
+                                 raise_for_error_status=False)
         if response.status_code >= 400:
             response = _send_request(cmd, resource_group_name, grafana_name,
-                                     "get", "/api/datasources/uid/" + data_source)
+                                     "get", "/api/datasources/uid/" + data_source,
+                                     raise_for_error_status=False)
     if response.status_code >= 400:
         raise CLIError("Not found. Ex: {}".format(response.status_code))
     return json.loads(response.content)
@@ -221,7 +235,7 @@ def _try_load_file_content(file_content):
     return file_content
 
 
-def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None):
+def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None, raise_for_error_status=True):
     grafana = show_grafana(cmd, grafana_name, resource_group_name)
     endpoint = grafana.properties["endpoint"]
 
@@ -246,5 +260,9 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
                                headers=headers,
                                json=body,
                                verify=(not should_disable_connection_verify()))
-    response.raise_for_status()
+    if response.status_code >= 400:
+        if raise_for_error_status:
+            logger.warning(str(response.content))
+            response.raise_for_status()
+    # TODO: log headers, requests and response
     return response
