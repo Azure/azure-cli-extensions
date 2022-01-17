@@ -52,7 +52,8 @@ def validate_sku(cmd, namespace):
 
 
 def normalize_sku(cmd, namespace):
-    namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+    if namespace.sku:
+        namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
 
 
 def _validate_saas_provider(cmd, namespace):
