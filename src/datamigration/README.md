@@ -8,11 +8,22 @@ az extension add --name datamigration
 ```
 
 ### Included Features ###
+
+##### Get-assessment #####
+```
+az datamigration get-assessment --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\AssessmentOutput" --overwrite
+```
+
+##### Register-integration-runtime #####
+```
+az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
+```
+
 #### datamigration to-sql-managed-instance ####
-##### Create #####
+##### Create (Backup source Fileshare) #####
 ```
 az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
-    --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
+    --source-location '{\"fileShare\":{\"path\":\"\\\\SharedBackup\\user\",\"password\":\"placeholder\",\"username\":\"Server\\name\"}}' \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
     --offline-configuration last-backup-name="last_backup_file_name" offline=true \
@@ -21,11 +32,10 @@ az datamigration sql-managed-instance create --managed-instance-name "managedIns
     --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
     --resource-group "testrg" --target-db-name "db1" 
 ```
-##### Create #####
+##### Create (Backup source Azure Blob) #####
 ```
 az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
-    --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
-    --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
+    --source-location '{\"AzureBlob\":{\"storageAccountResourceId\":\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders/Microsoft.Storage/storageAccounts/MyStorage\",\"accountKey\":\"======AccountKey====\",\"blobContainerName\":\"ContainerName-X\"}}' \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
     --offline-configuration last-backup-name="last_backup_file_name" offline=true \
     --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.Sql/managedInstances/instance" \
@@ -49,11 +59,10 @@ az datamigration sql-managed-instance cutover --managed-instance-name "managedIn
     --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1" 
 ```
 #### datamigration to-sql-vm ####
-##### Create #####
+##### Create (Backup source Fileshare) #####
 ```
 az datamigration sql-vm create \
-    --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
-    --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
+    --source-location '{\"fileShare\":{\"path\":\"\\\\SharedBackup\\user\",\"password\":\"placeholder\",\"username\":\"Server\\name\"}}' \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
     --offline-configuration last-backup-name="last_backup_file_name" offline=true \
     --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/testvm" \
@@ -61,10 +70,10 @@ az datamigration sql-vm create \
     --source-sql-connection authentication="WindowsAuthentication" data-source="aaa" encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" \
     --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1" 
 ```
-##### Create #####
+##### Create (Backup source Azure Blob) #####
 ```
 az datamigration sql-vm create \
-    --source-location "{\\"fileShare\\":{\\"path\\":\\"C:\\\\\\\\aaa\\\\\\\\bbb\\\\\\\\ccc\\",\\"password\\":\\"placeholder\\",\\"username\\":\\"name\\"}}" \
+    --source-location '{\"AzureBlob\":{\"storageAccountResourceId\":\"/subscriptions/1111-2222-3333-4444/resourceGroups/RG/prooviders/Microsoft.Storage/storageAccounts/MyStorage\",\"accountKey\":\"======AccountKey====\",\"blobContainerName\":\"ContainerName-X\"}}' \
     --target-location account-key="abcd" storage-account-resource-id="account.database.windows.net" \
     --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/testrg/providers/Microsoft.DataMigration/sqlMigrationServices/testagent" \
     --offline-configuration last-backup-name="last_backup_file_name" offline=true \
@@ -88,12 +97,6 @@ az datamigration sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d
     --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1" 
 ```
 #### datamigration sql-service ####
-##### Create #####
-```
-az datamigration sql-service create --location "northeurope" --resource-group "testrg" --name "testagent"
-
-az datamigration sql-service wait --created --resource-group "{rg}" --name "{mySqlMigrationService}"
-```
 ##### Create #####
 ```
 az datamigration sql-service create --location "northeurope" --resource-group "testrg" --name "testagent"

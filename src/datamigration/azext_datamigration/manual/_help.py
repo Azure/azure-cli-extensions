@@ -149,3 +149,13 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 encrypt-connection=true password="placeholder" trust-server-certificate=true user-name="bbb" --resource-group "testrg" \
 --sql-vm-name "testvm" --target-db-name "db1"
 """
+
+helps['datamigration sql-service create'] = """
+    type: command
+    short-summary: "Create Database Migration Service."
+    examples:
+      - name: Create or Update SQL Migration Service.
+        text: |-
+               az datamigration sql-service create --location "northeurope" --resource-group "testrg" --name \
+"testagent"
+"""
