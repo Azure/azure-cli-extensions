@@ -104,6 +104,7 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     resource = client.services.get(resource_group, name)
     location = resource.location
     updated_resource_properties = models_20220101preview.ClusterResourceProperties()
+    updated_resource_properties.zone_redundant = None
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
