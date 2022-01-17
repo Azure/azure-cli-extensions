@@ -11,7 +11,7 @@ az extension add --name datamigration
 
 ##### Get-assessment #####
 ```
-az datamigration get-assessment --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\AssessmentOutput" --overwrite
+az datamigration get-assessment --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\AssessmentOutput" --overwrite
 ```
 
 ##### Register-integration-runtime #####
@@ -19,7 +19,7 @@ az datamigration get-assessment --connection-string "Data Source=LabServer.datab
 az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
 ```
 
-#### datamigration to-sql-managed-instance ####
+#### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```
 az datamigration sql-managed-instance create --managed-instance-name "managedInstance1" \
@@ -58,7 +58,7 @@ az datamigration sql-managed-instance cancel --managed-instance-name "managedIns
 az datamigration sql-managed-instance cutover --managed-instance-name "managedInstance1" \
     --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" --resource-group "testrg" --target-db-name "db1" 
 ```
-#### datamigration to-sql-vm ####
+#### datamigration sql-vm ####
 ##### Create (Backup source Fileshare) #####
 ```
 az datamigration sql-vm create \
