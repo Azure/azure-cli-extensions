@@ -8,6 +8,7 @@ from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from azure.cli.core.azclierror import (ArgumentUsageError)
 from ._utils import convert_argument_to_parameter_list
 
+
 class BaseSource:
     def fulfilled_options_from_original_source_info(self, **_):
         return {}
