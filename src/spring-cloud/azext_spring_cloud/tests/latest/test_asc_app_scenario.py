@@ -249,5 +249,3 @@ class I2aTLSTest(ScenarioTest):
         self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls false', checks=[
             self.check('properties.enableEndToEndTls', False)
         ])
-
-
