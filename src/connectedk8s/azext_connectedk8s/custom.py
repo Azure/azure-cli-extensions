@@ -195,7 +195,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
-                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
                 # Dibabling cluster-connect if private link is getting enabled
                 if enable_private_link == "true":
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
@@ -299,7 +299,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
 
     # Create connected cluster resource
-    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
@@ -728,7 +728,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
     if not release_namespace:
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
         return
 
     # Loading config map
@@ -753,7 +753,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                     summary='The resource cannot be deleted as user is using proxy kubeconfig.')
             raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation="Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
     else:
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
                                 summary='The resource cannot be deleted as kubernetes cluster is onboarded with some other resource id')
@@ -874,7 +874,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
-    patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait)
+    patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait).result()
 
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and not enable_private_link:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
@@ -995,6 +995,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
                                 summary='Unable to install helm release')
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
+    logger.info(str.format(consts.Update_Agent_Success, connected_cluster.name))
     return patch_cc_response
 
 
