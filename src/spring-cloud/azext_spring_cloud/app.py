@@ -188,12 +188,13 @@ def app_update(cmd, client, resource_group, service, name,
                              .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
+    deployment_factory.source_factory.validate_source(**deployment_kwargs, **basic_kwargs)
     deployment_resource = deployment_factory.format_resource(**deployment_kwargs, **basic_kwargs)
 
     pollers = [
         client.apps.begin_update(resource_group, service, name, app_resource)
     ]
-    if deployment_kwargs:
+    if deployment:
         pollers.append(client.deployments.begin_update(resource_group,
                                                        service,
                                                        name,
