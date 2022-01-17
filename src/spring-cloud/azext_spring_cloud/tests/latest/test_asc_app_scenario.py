@@ -221,3 +221,31 @@ class BlueGreenTest(ScenarioTest):
         ])
 
         self.cmd('spring-cloud app delete -n {app} -g {rg} -s {serviceName}')
+
+
+@record_only()
+class I2aTLSTest(ScenarioTest):
+    def test_app_i2a_tls(self):
+        self.kwargs.update({
+            'app': 'test-i2atls-app',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli'
+        })
+
+        self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName}')
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true', checks=[
+            self.check('properties.enableEndToEndTls', True)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls false', checks=[
+            self.check('properties.enableEndToEndTls', False)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls true', checks=[
+            self.check('properties.enableEndToEndTls', True)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls false', checks=[
+            self.check('properties.enableEndToEndTls', False)
+        ])

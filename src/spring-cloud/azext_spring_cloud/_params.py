@@ -201,7 +201,9 @@ def load_arguments(self, _):
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
         c.argument('persistent_storage', type=str,
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
@@ -458,11 +460,15 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
