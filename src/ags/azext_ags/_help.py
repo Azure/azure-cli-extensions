@@ -49,7 +49,7 @@ helps['grafana data-source'] = """
 """
 
 helps['grafana data-source create'] = """
-    type: group
+    type: command
     short-summary: Create a data source.
     examples:
         - name: create a data source using Managed Service Identity 
@@ -91,7 +91,7 @@ helps['grafana data-source create'] = """
 
 
 helps['grafana data-source update'] = """
-    type: group
+    type: command
     short-summary: Update a data source.
     examples:
         - name: update a data source's credentials (make sure either set "version" to the latest version to bump to a new version, or omit it to overwrite the existing version)
@@ -115,10 +115,24 @@ helps['grafana data-source update'] = """
             }'
 """
 
+helps['grafana data-source show'] = """
+    type: command
+    short-summary: get details of a data source
+"""
+
+helps['grafana data-source delete'] = """
+    type: command
+    short-summary: delete a data source
+"""
 
 helps['grafana data-source list'] = """
-    type: group
+    type: command
     short-summary: List all data sources of an instance.
+"""
+
+helps['grafana data-source query'] = """
+    type: command
+    short-summary: query a data source having backend implementation
 """
 
 helps['grafana dashboard'] = """
@@ -127,7 +141,7 @@ helps['grafana dashboard'] = """
 """
 
 helps['grafana dashboard create'] = """
-    type: group
+    type: command
     short-summary: Create a new dashboard.
     examples:
         - name: Create a dashboard with definition in a json file. For quick start, clone from the output of "az grafana dashboard show", remove "id" and "uid", and apply changes.
@@ -136,7 +150,7 @@ helps['grafana dashboard create'] = """
 """
 
 helps['grafana dashboard update'] = """
-    type: group
+    type: command
     short-summary: Update a new dashboard.
     examples:
         - name: Update a dashboard with definition in a json file. For quick start, get existing configuration from "az grafana dashboard show", and apply changes.
@@ -146,7 +160,7 @@ helps['grafana dashboard update'] = """
 """
 
 helps['grafana dashboard list'] = """
-    type: group
+    type: command
     short-summary: List all dashboards of an instance.
     examples:
         - name: Find the dashboard for K8s API Server and retrieve the unique identifier(in order to invoke "az grafana dashboard show" command)
@@ -155,7 +169,7 @@ helps['grafana dashboard list'] = """
 """
 
 helps['grafana dashboard show'] = """
-    type: group
+    type: command
     short-summary: show the detail of a dashboard.
     examples:
         - name: Get details of a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
@@ -167,10 +181,61 @@ helps['grafana dashboard show'] = """
 """
 
 helps['grafana dashboard delete'] = """
-    type: group
+    type: command
     short-summary: delete a dashboard
     examples:
         - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
            az grafana dashboard delete -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
 """
+
+helps['grafana folder'] = """
+    type: group
+    short-summary: Commands to manage folders of an instance.
+"""
+
+helps['grafana folder create'] = """
+    type: command
+    short-summary: create a new folder.
+"""
+
+helps['grafana folder show'] = """
+    type: command
+    short-summary: show the details of a folder.
+"""
+
+helps['grafana folder list'] = """
+    type: command
+    short-summary: list all folders of an instance.
+"""
+
+helps['grafana folder update'] = """
+    type: command
+    short-summary: update a folder.
+"""
+
+helps['grafana folder delete'] = """
+    type: command
+    short-summary: delete a folder.
+"""
+
+helps['grafana user'] = """
+    type: group
+    short-summary: Commands to manage users of an instance.
+"""
+
+helps['grafana user actual-user'] = """
+    type: command
+    short-summary: show details of current user.
+"""
+
+helps['grafana user list'] = """
+    type: command
+    short-summary: list users.
+"""
+
+helps['grafana user show'] = """
+    type: command
+    short-summary: show detail of a user.
+"""
+

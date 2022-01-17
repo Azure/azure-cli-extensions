@@ -130,23 +130,35 @@ def list_folders(cmd, grafana_name, resource_group_name=None):
     return json.loads(response.content)
 
 
-def update_folder(cmd, grafana_name, uid, title, resource_group_name=None):
-    version = show_folder(cmd, grafana_name, uid, resource_group_name)['version']
+def update_folder(cmd, grafana_name, folder, title, resource_group_name=None):
+    f = show_folder(cmd, grafana_name, folder, resource_group_name)
+    version = f['version']
     data = {
         "title": title,
         "version": int(version)
     }
-    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + uid, data)
+    response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/folders/" + f["uid"], data)
     return json.loads(response.content)
 
 
-def show_folder(cmd, grafana_name, uid, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + uid)
+def show_folder(cmd, grafana_name, folder, resource_group_name=None):
+    return _find_folder(cmd, resource_group_name, grafana_name, folder)
+
+
+def delete_folder(cmd, grafana_name, folder, resource_group_name=None):
+    data = _find_folder(cmd, resource_group_name, grafana_name, folder)
+    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/folders/" + data['uid'])
+
+
+def _find_folder(cmd, resource_group_name, grafana_name, folder):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/id/" + folder,
+                             raise_for_error_status=False)
+    if response.status_code >= 400 or not json.loads(response.content)['uid']:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
+                                 raise_for_error_status=False)
+    if response.status_code >= 400:
+        raise CLIError("Not found. Ex: {}".format(response.status_code))
     return json.loads(response.content)
-
-
-def delete_folder(cmd, grafana_name, uid, resource_group_name=None):
-    _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/folders/" + uid)
 
 
 def get_actual_user(cmd, grafana_name, resource_group_name=None):

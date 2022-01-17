@@ -30,7 +30,8 @@ def process_missing_resource_group_parameter(cmd, namespace):
                             "correct the name, or provide resource group name, or set CLI "
                             "subscription the workspace belongs to").format(namespace.grafana_name))
 
-def process_leading_hyphen(cmd, namespace):
+
+def process_leading_hyphen(cmd, namespace):  # TODO: find a common solution
     if namespace.uid:
         namespace.uid=namespace.uid.lstrip()
 
