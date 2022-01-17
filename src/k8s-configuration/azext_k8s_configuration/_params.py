@@ -153,7 +153,7 @@ def load_arguments(self, _):
         c.argument(
             "bucket_insecure",
             arg_type=get_three_state_flag(),
-            help="Communicate with a bucket without TLS. Default: false",
+            help="Communicate with a bucket without TLS",
         )
         c.argument(
             "local_auth_ref",
@@ -164,7 +164,7 @@ def load_arguments(self, _):
         c.argument(
             "suspend",
             arg_type=get_three_state_flag(),
-            help="Suspend the reconciliation of the source and kustomizations associated with this configuration. Default: false",
+            help="Suspend the reconciliation of the source and kustomizations associated with this configuration",
         )
         c.argument(
             "kustomization",
@@ -333,12 +333,12 @@ def load_arguments(self, _):
         c.argument(
             "prune",
             arg_type=get_three_state_flag(),
-            help="Garbage collect resources deployed by the kustomization on the cluster. Default: false",
+            help="Garbage collect resources deployed by the kustomization on the cluster",
         )
         c.argument(
             "force",
             arg_type=get_three_state_flag(),
-            help="Re-create resources that cannot be updated on the cluster (i.e. jobs). Default: false",
+            help="Re-create resources that cannot be updated on the cluster (i.e. jobs)",
         )
 
     with self.argument_context("k8s-configuration flux kustomization delete") as c:
