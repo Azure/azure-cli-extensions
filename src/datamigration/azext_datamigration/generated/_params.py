@@ -55,25 +55,6 @@ def load_arguments(self, _):
         c.argument('target_location', action=AddTargetLocation, nargs='+', help='Target location for copying backups.',
                    arg_group='Backup Configuration')
 
-    with self.argument_context('datamigration sql-managed-instance update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('managed_instance_name', type=str, help='Name of the target SQL Managed Instance.', id_part='name')
-        c.argument('target_db_name', type=str, help='The name of the target database.', id_part='child_name_1')
-        c.argument('scope', type=str, help='Resource Id of the target resource (SQL VM or SQL Managed Instance)')
-        c.argument('source_sql_connection', action=AddSourceSqlConnection, nargs='+', help='Source SQL Server '
-                   'connection details.')
-        c.argument('source_database_name', type=str, help='Name of the source database.')
-        c.argument('migration_service', type=str, help='Resource Id of the Migration Service.')
-        c.argument('migration_operation_id', type=str, help='ID tracking current migration operation.')
-        c.argument('target_db_collation', type=str, help='Database collation to be used for the target database.')
-        c.argument('provisioning_error', type=str, help='Error message for migration provisioning failure, if any.')
-        c.argument('offline_configuration', action=AddOfflineConfiguration, nargs='+', help='Offline configuration.')
-        c.argument('source_location', type=validate_file_or_dict, help='Source location of backups. Expected value: '
-                   'json-string/json-file/@json-file.', arg_group='Backup Configuration')
-        c.argument('target_location', action=AddTargetLocation, nargs='+', help='Target location for copying backups.',
-                   arg_group='Backup Configuration')
-        c.ignore('parameters')
-
     with self.argument_context('datamigration sql-managed-instance cancel') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('managed_instance_name', type=str, help='Name of the target SQL Managed Instance.', id_part='name')
@@ -121,25 +102,6 @@ def load_arguments(self, _):
                    'json-string/json-file/@json-file.', arg_group='Backup Configuration')
         c.argument('target_location', action=AddTargetLocation, nargs='+', help='Target location for copying backups.',
                    arg_group='Backup Configuration')
-
-    with self.argument_context('datamigration sql-vm update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('sql_vm_name', type=str, help='Name of the target SQL Virtual Machine.', id_part='name')
-        c.argument('target_db_name', type=str, help='The name of the target database.', id_part='child_name_1')
-        c.argument('scope', type=str, help='Resource Id of the target resource (SQL VM or SQL Managed Instance)')
-        c.argument('source_sql_connection', action=AddSourceSqlConnection, nargs='+', help='Source SQL Server '
-                   'connection details.')
-        c.argument('source_database_name', type=str, help='Name of the source database.')
-        c.argument('migration_service', type=str, help='Resource Id of the Migration Service.')
-        c.argument('migration_operation_id', type=str, help='ID tracking current migration operation.')
-        c.argument('target_db_collation', type=str, help='Database collation to be used for the target database.')
-        c.argument('provisioning_error', type=str, help='Error message for migration provisioning failure, if any.')
-        c.argument('offline_configuration', action=AddOfflineConfiguration, nargs='+', help='Offline configuration.')
-        c.argument('source_location', type=validate_file_or_dict, help='Source location of backups. Expected value: '
-                   'json-string/json-file/@json-file.', arg_group='Backup Configuration')
-        c.argument('target_location', action=AddTargetLocation, nargs='+', help='Target location for copying backups.',
-                   arg_group='Backup Configuration')
-        c.ignore('sql_virtual_machine_name', 'parameters')
 
     with self.argument_context('datamigration sql-vm cancel') as c:
         c.argument('resource_group_name', resource_group_name_type)

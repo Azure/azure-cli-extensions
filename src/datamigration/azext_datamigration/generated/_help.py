@@ -89,40 +89,6 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
 """
 
-helps['datamigration sql-managed-instance update'] = """
-    type: command
-    short-summary: "Update a new database migration to a given SQL Managed Instance."
-    parameters:
-      - name: --source-sql-connection
-        short-summary: "Source SQL Server connection details."
-        long-summary: |
-            Usage: --source-sql-connection data-source=XX authentication=XX user-name=XX password=XX \
-encrypt-connection=XX trust-server-certificate=XX
-
-            data-source: Data source.
-            authentication: Authentication type.
-            user-name: User name to connect to source SQL.
-            password: Password to connect to source SQL.
-            encrypt-connection: Whether to encrypt connection or not.
-            trust-server-certificate: Whether to trust server certificate or not.
-      - name: --offline-configuration
-        short-summary: "Offline configuration."
-        long-summary: |
-            Usage: --offline-configuration offline=XX last-backup-name=XX
-
-            offline: Offline migration
-            last-backup-name: Last backup name for offline migration. This is optional for migrations from file share. \
-If it is not provided, then the service will determine the last backup file name based on latest backup files present \
-in file share.
-      - name: --target-location
-        short-summary: "Target location for copying backups."
-        long-summary: |
-            Usage: --target-location storage-account-resource-id=XX account-key=XX
-
-            storage-account-resource-id: Resource Id of the storage account copying backups.
-            account-key: Storage Account Key.
-"""
-
 helps['datamigration sql-managed-instance cancel'] = """
     type: command
     short-summary: "Stop in-progress database migration to SQL Managed Instance."
@@ -153,11 +119,6 @@ created.
         text: |-
                az datamigration sql-managed-instance wait --managed-instance-name "managedInstance1" --resource-group \
 "testrg" --target-db-name "db1" --created
-      - name: Pause executing next line of CLI script until the datamigration sql-managed-instance is successfully \
-updated.
-        text: |-
-               az datamigration sql-managed-instance wait --managed-instance-name "managedInstance1" --resource-group \
-"testrg" --target-db-name "db1" --updated
 """
 
 helps['datamigration sql-vm'] = """
@@ -231,40 +192,6 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 --sql-vm-name "testvm" --target-db-name "db1"
 """
 
-helps['datamigration sql-vm update'] = """
-    type: command
-    short-summary: "Update a new database migration to a given SQL VM."
-    parameters:
-      - name: --source-sql-connection
-        short-summary: "Source SQL Server connection details."
-        long-summary: |
-            Usage: --source-sql-connection data-source=XX authentication=XX user-name=XX password=XX \
-encrypt-connection=XX trust-server-certificate=XX
-
-            data-source: Data source.
-            authentication: Authentication type.
-            user-name: User name to connect to source SQL.
-            password: Password to connect to source SQL.
-            encrypt-connection: Whether to encrypt connection or not.
-            trust-server-certificate: Whether to trust server certificate or not.
-      - name: --offline-configuration
-        short-summary: "Offline configuration."
-        long-summary: |
-            Usage: --offline-configuration offline=XX last-backup-name=XX
-
-            offline: Offline migration
-            last-backup-name: Last backup name for offline migration. This is optional for migrations from file share. \
-If it is not provided, then the service will determine the last backup file name based on latest backup files present \
-in file share.
-      - name: --target-location
-        short-summary: "Target location for copying backups."
-        long-summary: |
-            Usage: --target-location storage-account-resource-id=XX account-key=XX
-
-            storage-account-resource-id: Resource Id of the storage account copying backups.
-            account-key: Storage Account Key.
-"""
-
 helps['datamigration sql-vm cancel'] = """
     type: command
     short-summary: "Stop in-progress database migration to SQL VM."
@@ -293,10 +220,6 @@ helps['datamigration sql-vm wait'] = """
         text: |-
                az datamigration sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
 --created
-      - name: Pause executing next line of CLI script until the datamigration sql-vm is successfully updated.
-        text: |-
-               az datamigration sql-vm wait --resource-group "testrg" --sql-vm-name "testvm" --target-db-name "db1" \
---updated
 """
 
 helps['datamigration sql-service'] = """

@@ -19,7 +19,6 @@
 |---------|------------|--------|-----------|
 |[az datamigration sql-managed-instance show](#DatabaseMigrationsSqlMiGet)|Get|[Parameters](#ParametersDatabaseMigrationsSqlMiGet)|[Example](#ExamplesDatabaseMigrationsSqlMiGet)|
 |[az datamigration sql-managed-instance create](#DatabaseMigrationsSqlMiCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDatabaseMigrationsSqlMiCreateOrUpdate#Create)|[Example](#ExamplesDatabaseMigrationsSqlMiCreateOrUpdate#Create)|
-|[az datamigration sql-managed-instance update](#DatabaseMigrationsSqlMiCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatabaseMigrationsSqlMiCreateOrUpdate#Update)|Not Found|
 |[az datamigration sql-managed-instance cancel](#DatabaseMigrationsSqlMicancel)|cancel|[Parameters](#ParametersDatabaseMigrationsSqlMicancel)|[Example](#ExamplesDatabaseMigrationsSqlMicancel)|
 |[az datamigration sql-managed-instance cutover](#DatabaseMigrationsSqlMicutover)|cutover|[Parameters](#ParametersDatabaseMigrationsSqlMicutover)|[Example](#ExamplesDatabaseMigrationsSqlMicutover)|
 
@@ -43,7 +42,6 @@
 |---------|------------|--------|-----------|
 |[az datamigration sql-vm show](#DatabaseMigrationsSqlVmGet)|Get|[Parameters](#ParametersDatabaseMigrationsSqlVmGet)|[Example](#ExamplesDatabaseMigrationsSqlVmGet)|
 |[az datamigration sql-vm create](#DatabaseMigrationsSqlVmCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDatabaseMigrationsSqlVmCreateOrUpdate#Create)|[Example](#ExamplesDatabaseMigrationsSqlVmCreateOrUpdate#Create)|
-|[az datamigration sql-vm update](#DatabaseMigrationsSqlVmCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatabaseMigrationsSqlVmCreateOrUpdate#Update)|Not Found|
 |[az datamigration sql-vm cancel](#DatabaseMigrationsSqlVmcancel)|cancel|[Parameters](#ParametersDatabaseMigrationsSqlVmcancel)|[Example](#ExamplesDatabaseMigrationsSqlVmcancel)|
 |[az datamigration sql-vm cutover](#DatabaseMigrationsSqlVmcutover)|cutover|[Parameters](#ParametersDatabaseMigrationsSqlVmcutover)|[Example](#ExamplesDatabaseMigrationsSqlVmcutover)|
 
@@ -90,26 +88,6 @@ offline=true --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resour
 --resource-group "testrg" --target-db-name "db1"
 ```
 ##### <a name="ParametersDatabaseMigrationsSqlMiCreateOrUpdate#Create">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
-|**--managed-instance-name**|string|Name of the target SQL Managed Instance.|managed_instance_name|managedInstanceName|
-|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
-|**--scope**|string|Resource Id of the target resource (SQL VM or SQL Managed Instance)|scope|scope|
-|**--source-sql-connection**|object|Source SQL Server connection details.|source_sql_connection|sourceSqlConnection|
-|**--source-database-name**|string|Name of the source database.|source_database_name|sourceDatabaseName|
-|**--migration-service**|string|Resource Id of the Migration Service.|migration_service|migrationService|
-|**--migration-operation-id**|string|ID tracking current migration operation.|migration_operation_id|migrationOperationId|
-|**--target-db-collation**|string|Database collation to be used for the target database.|target_db_collation|targetDatabaseCollation|
-|**--provisioning-error**|string|Error message for migration provisioning failure, if any.|provisioning_error|provisioningError|
-|**--offline-configuration**|object|Offline configuration.|offline_configuration|offlineConfiguration|
-|**--source-location**|object|Source location of backups.|source_location|sourceLocation|
-|**--target-location**|object|Target location for copying backups.|target_location|targetLocation|
-
-#### <a name="DatabaseMigrationsSqlMiCreateOrUpdate#Update">Command `az datamigration sql-managed-instance update`</a>
-
-
-##### <a name="ParametersDatabaseMigrationsSqlMiCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
@@ -336,26 +314,6 @@ encrypt-connection=true password="placeholder" trust-server-certificate=true use
 --sql-vm-name "testvm" --target-db-name "db1"
 ```
 ##### <a name="ParametersDatabaseMigrationsSqlVmCreateOrUpdate#Create">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|
-|**--sql-vm-name**|string|Name of the target SQL Virtual Machine.|sql_vm_name|sqlVirtualMachineName|
-|**--target-db-name**|string|The name of the target database.|target_db_name|targetDbName|
-|**--scope**|string|Resource Id of the target resource (SQL VM or SQL Managed Instance)|scope|scope|
-|**--source-sql-connection**|object|Source SQL Server connection details.|source_sql_connection|sourceSqlConnection|
-|**--source-database-name**|string|Name of the source database.|source_database_name|sourceDatabaseName|
-|**--migration-service**|string|Resource Id of the Migration Service.|migration_service|migrationService|
-|**--migration-operation-id**|string|ID tracking current migration operation.|migration_operation_id|migrationOperationId|
-|**--target-db-collation**|string|Database collation to be used for the target database.|target_db_collation|targetDatabaseCollation|
-|**--provisioning-error**|string|Error message for migration provisioning failure, if any.|provisioning_error|provisioningError|
-|**--offline-configuration**|object|Offline configuration.|offline_configuration|offlineConfiguration|
-|**--source-location**|object|Source location of backups.|source_location|sourceLocation|
-|**--target-location**|object|Target location for copying backups.|target_location|targetLocation|
-
-#### <a name="DatabaseMigrationsSqlVmCreateOrUpdate#Update">Command `az datamigration sql-vm update`</a>
-
-
-##### <a name="ParametersDatabaseMigrationsSqlVmCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.|resource_group_name|resourceGroupName|

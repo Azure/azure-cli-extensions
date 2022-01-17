@@ -47,12 +47,6 @@ def load_command_table(self, _):
     ) as g:
         g.custom_show_command('show', 'datamigration_sql_managed_instance_show')
         g.custom_command('create', 'datamigration_sql_managed_instance_create', supports_no_wait=True)
-        g.generic_update_command(
-            'update',
-            supports_no_wait=True,
-            custom_func_name='datamigration_sql_managed_instance_update',
-            setter_name='begin_create_or_update',
-        )
         g.custom_command('cancel', 'datamigration_sql_managed_instance_cancel', supports_no_wait=True)
         g.custom_command('cutover', 'datamigration_sql_managed_instance_cutover', supports_no_wait=True)
         g.custom_wait_command('wait', 'datamigration_sql_managed_instance_show')
@@ -77,12 +71,6 @@ def load_command_table(self, _):
     ) as g:
         g.custom_show_command('show', 'datamigration_sql_vm_show')
         g.custom_command('create', 'datamigration_sql_vm_create', supports_no_wait=True)
-        g.generic_update_command(
-            'update',
-            supports_no_wait=True,
-            custom_func_name='datamigration_sql_vm_update',
-            setter_name='begin_create_or_update',
-        )
         g.custom_command('cancel', 'datamigration_sql_vm_cancel', supports_no_wait=True)
         g.custom_command('cutover', 'datamigration_sql_vm_cutover', supports_no_wait=True)
         g.custom_wait_command('wait', 'datamigration_sql_vm_show')

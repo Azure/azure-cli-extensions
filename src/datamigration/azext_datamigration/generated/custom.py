@@ -8,7 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
 
@@ -72,44 +71,6 @@ def datamigration_sql_managed_instance_create(client,
                        managed_instance_name=managed_instance_name,
                        target_db_name=target_db_name,
                        parameters=parameters)
-
-
-def datamigration_sql_managed_instance_update(instance,
-                                              resource_group_name,
-                                              managed_instance_name,
-                                              target_db_name,
-                                              scope=None,
-                                              source_sql_connection=None,
-                                              source_database_name=None,
-                                              migration_service=None,
-                                              migration_operation_id=None,
-                                              target_db_collation=None,
-                                              provisioning_error=None,
-                                              offline_configuration=None,
-                                              source_location=None,
-                                              target_location=None,
-                                              no_wait=False):
-    if scope is not None:
-        instance.properties.scope = scope
-    if source_sql_connection is not None:
-        instance.properties.source_sql_connection = source_sql_connection
-    if source_database_name is not None:
-        instance.properties.source_database_name = source_database_name
-    if migration_service is not None:
-        instance.properties.migration_service = migration_service
-    if migration_operation_id is not None:
-        instance.properties.migration_operation_id = migration_operation_id
-    if target_db_collation is not None:
-        instance.properties.target_database_collation = target_db_collation
-    if provisioning_error is not None:
-        instance.properties.provisioning_error = provisioning_error
-    if offline_configuration is not None:
-        instance.properties.offline_configuration = offline_configuration
-    if source_location is not None:
-        instance.properties.backup_configuration.source_location = source_location
-    if target_location is not None:
-        instance.properties.backup_configuration.target_location = target_location
-    return instance
 
 
 def datamigration_sql_managed_instance_cancel(client,
@@ -205,44 +166,6 @@ def datamigration_sql_vm_create(client,
                        sql_virtual_machine_name=sql_vm_name,
                        target_db_name=target_db_name,
                        parameters=parameters)
-
-
-def datamigration_sql_vm_update(instance,
-                                resource_group_name,
-                                sql_vm_name,
-                                target_db_name,
-                                scope=None,
-                                source_sql_connection=None,
-                                source_database_name=None,
-                                migration_service=None,
-                                migration_operation_id=None,
-                                target_db_collation=None,
-                                provisioning_error=None,
-                                offline_configuration=None,
-                                source_location=None,
-                                target_location=None,
-                                no_wait=False):
-    if scope is not None:
-        instance.properties.scope = scope
-    if source_sql_connection is not None:
-        instance.properties.source_sql_connection = source_sql_connection
-    if source_database_name is not None:
-        instance.properties.source_database_name = source_database_name
-    if migration_service is not None:
-        instance.properties.migration_service = migration_service
-    if migration_operation_id is not None:
-        instance.properties.migration_operation_id = migration_operation_id
-    if target_db_collation is not None:
-        instance.properties.target_database_collation = target_db_collation
-    if provisioning_error is not None:
-        instance.properties.provisioning_error = provisioning_error
-    if offline_configuration is not None:
-        instance.properties.offline_configuration = offline_configuration
-    if source_location is not None:
-        instance.properties.backup_configuration.source_location = source_location
-    if target_location is not None:
-        instance.properties.backup_configuration.target_location = target_location
-    return instance
 
 
 def datamigration_sql_vm_cancel(client,
