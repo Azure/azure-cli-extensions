@@ -198,7 +198,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 # Dibabling cluster-connect if private link is getting enabled
                 if enable_private_link == "true":
-                    disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood)
+                    disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
                 return cc_response
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
@@ -803,7 +803,7 @@ def patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
         return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster_patch=cc)
-    except CloudError as e:
+    except Exception as e:
         utils.arm_exception_handler(e, consts.Update_ConnectedCluster_Fault_Type, 'Unable to update connected cluster resource')
 
 
@@ -811,7 +811,7 @@ def patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_
     try:
         return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster_patch=cc)
-    except CloudError as e:
+    except Exception as e:
         utils.arm_exception_handler(e, consts.Update_ConnectedCluster_Fault_Type, 'Unable to update connected cluster resource')
 
 
@@ -839,7 +839,7 @@ def update_connectedk8s(client, resource_group_name, cluster_name, tags=None, en
 
 
 def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
+                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -872,21 +872,15 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
     # Set preview client if private link properties are provided.
     if enable_private_link:
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
-    
+
     # Patching the connected cluster ARM resource
     patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait)
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and not enable_private_link:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
-
-    # # If any of the agent update params are passed, update the arc-agents
-    # if https_proxy != "" or http_proxy != "" or no_proxy != "" or proxy_cert != "" or disable_proxy or auto_upgrade or enable_private_link == "true":
-
-    #     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
-    #         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -986,6 +980,12 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    if enable_private_link == "true":
+        # Disable cluster-connect
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
+        # Disable custom location
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
@@ -1524,7 +1524,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood):
+def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location):
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
@@ -1542,12 +1542,10 @@ def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube
         agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
 
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
-
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
