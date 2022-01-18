@@ -13,6 +13,7 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag
 )
 
+from .vendored_sdks.databricks.models import PublicNetworkAccess, RequiredNsgRules
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from ._validators import validate_encryption_values, validate_network_id, validate_managed_resource_group
 
@@ -31,6 +32,9 @@ def load_arguments(self, _):
         c.argument('prepare_encryption', action='store_true', help='Flag to enable the Managed Identity for managed storage account to prepare for CMK encryption.')
         c.argument('require_infrastructure_encryption', action='store_true', help='Flag to enable the DBFS root file system with secondary layer of encryption with platform managed keys for data at rest.')
         c.argument('enable_no_public_ip', action='store_true', help='Flag to enable the no public ip feature.')
+        c.argument('public_network_access', arg_type=get_enum_type(PublicNetworkAccess), help='The configuration to set whether network access from public internet to the endpoints are allowed.')
+        c.argument('required_nsg_rules', options_list='--required-nsg-rules', arg_type=get_enum_type(RequiredNsgRules),
+                   help='The type of Nsg rule for internal use only.')
 
     with self.argument_context('databricks workspace update') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], id_part='name', help='The name of the workspace.')
