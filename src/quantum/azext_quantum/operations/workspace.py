@@ -177,9 +177,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     # return quantum_workspace
     #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> New code...
     template_path = os.path.join(os.path.dirname(
         __file__), 'templates', 'create-workspace-and-assign-role.json')
+        #__file__), 'templates', 'create-workspace.json')
     with open(template_path, 'r') as template_file_fd:
         template = json.load(template_file_fd)
 
@@ -187,7 +187,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'quantumWorkspaceName': workspace_name,
         'location': location,
         'tags': {},
-        'providers': [{"providerId": "Microsoft", "providerSku": "Basic"}],     #<<<<< Parse this from provider_sku_list
+        'providers': [{"providerId": "Microsoft", "providerSku": "Basic"}],     # TODO: Parse this from provider_sku_list
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
         'storageAccountLocation': location,
@@ -201,39 +201,32 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'parameters': parameters
     }
 
-    # credentials = ServicePrincipalCredentials(
-    #         client_id=os.environ['AZURE_CLIENT_ID'],
-    #         secret=os.environ['AZURE_CLIENT_SECRET'],
-    #         tenant=os.environ['AZURE_TENANT_ID']
-    #     )
-
-    # from azure.identity import DefaultAzureCredential
-    # credentials = DefaultAzureCredential()
-
-    from azure.identity import AzureCliCredential
-    credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
-
-    #>>>>> Similar code from azure-cli-extensions\src\db-up\azext_db_up\_client_factory.py
-    # from os import getenv
-    # client_id = getenv(CLIENT_ID)
-    # if client_id:
-    #     from azure.common.credentials import ServicePrincipalCredentials
-    #     credentials = ServicePrincipalCredentials(
-    #         client_id=client_id,
-    #         secret=getenv(CLIENT_SECRET),
-    #         tenant=getenv(TENANT_ID))
-    # else:
-    #     from msrest.authentication import Authentication    # pylint: disable=import-error
-    #     credentials = Authentication()
+    from os import getenv
+    client_id = getenv('AZURE_CLIENT_ID')
+    if client_id:
+        credentials = ServicePrincipalCredentials(          # Use service principal creds during automated execution 
+            client_id=client_id,
+            secret=getenv('AZURE_CLIENT_SECRET'),
+            tenant=getenv('AZURE_TENANT_ID')
+        )
+    else:
+        from azure.identity import AzureCliCredential
+        credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
  
     arm_client = ResourceManagementClient(credentials, info.subscription)
-
+    
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        "Microsoft.Quantum",
-        deployment_properties
+        "Microsoft.Quantum-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
+        {'properties': deployment_properties}
     )
-    deployment_async_operation.wait()
+
+    # Show progress indicator dots
+    while not deployment_async_operation.done():
+        print('.', end='', flush=True)
+        time.sleep(POLLING_TIME_DURATION)
+    print()
+    quantum_workspace = deployment_async_operation.result()
     return quantum_workspace
 
 

@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "quantumWorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Quantum Workspace Name"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Datacenter Location"
+            }
+        },
+        "tags": {
+            "type": "object",
+            "metadata": {
+                "description": "One or more Tags for this workspace"
+            }
+        },
+            "providers": {
+            "type": "array",
+            "metadata": {
+                "description": "A list of Providers for this workspace"
+            }
+        },
+        "storageAccountId": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage Account path"
+            }
+        }
+},
+    "functions": [],
+    "variables": {},
+    "resources": [{
+        "type": "Microsoft.Quantum/workspaces",
+        "apiVersion": "2019-11-04-preview",
+        "name": "[parameters('quantumWorkspaceName')]",
+        "location": "[parameters('location')]",
+        "tags": "[parameters('tags')]",
+        "identity": {
+            "type": "SystemAssigned"
+        },
+        "properties": {
+            "providers": "[parameters('providers')]",
+            "storageAccount": "[parameters('storageAccountId')]"
+        }
+    }],
+    "outputs": {}
+}
