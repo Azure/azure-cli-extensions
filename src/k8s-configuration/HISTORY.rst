@@ -5,8 +5,10 @@ Release History
 
 1.4.1
 ++++++++++++++++++
-* Prepend bucket parameters with "bucket" keyword
-* Fix some help text
+* [BREAKING CHANGE] `--access-key` changed to `--bucket-access-key`
+* [BREAKING CHANGE] `--secret-key` changed to `--bucket-secret-key`
+* [BREAKING CHANGE] `--insecure` changed to `--bucket-insecure`
+* Fix help text for bucket parameters
 
 1.4.0
 ++++++++++++++++++
