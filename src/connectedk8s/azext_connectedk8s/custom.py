@@ -817,9 +817,9 @@ def patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_
 
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
-        sdk_no_wait(no_wait, client.begin_delete,
-                    resource_group_name=resource_group_name,
-                    cluster_name=cluster_name)
+        return sdk_no_wait(no_wait, client.begin_delete,
+                           resource_group_name=resource_group_name,
+                           cluster_name=cluster_name)
     except Exception as e:
         utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
@@ -827,7 +827,7 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
 def update_connectedk8s(client, resource_group_name, cluster_name, tags=None, enable_private_link=None, private_link_scope_resource_id=None, no_wait=False):
     cc = generate_patch_payload(tags, enable_private_link, private_link_scope_resource_id)
     if enable_private_link:
-        return patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_wait)
+        return patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_wait).result()
     return patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
 
@@ -874,7 +874,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
-    patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait).result()
+    patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait)
 
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and not enable_private_link:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
@@ -1544,7 +1544,7 @@ def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube
         registry_path = reg_path_array[0] + ":" + agent_version
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
