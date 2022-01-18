@@ -5,9 +5,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
-import string
-import random
-from subprocess import STARTF_USESTDHANDLES
 import time
 
 # Env setup_scenario
