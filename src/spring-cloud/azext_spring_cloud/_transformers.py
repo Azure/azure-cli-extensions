@@ -83,13 +83,19 @@ def transform_spring_cloud_certificate_output(result):
         result = [result]
 
     for item in result:
-        item['Certificate Name'] = item['properties']['keyVaultCertName']
+        item['Certificate Name'] = item['name']
         item['Thumbprint'] = item['properties']['thumbprint']
         item['Activate Date'] = item['properties']['activateDate'].split("T")[0]
-        item['Certificate Version'] = item['properties']['certVersion']
         item['DNS Names'] = item['properties']['dnsNames']
         item['Expiration Date'] = item['properties']['expirationDate'].split("T")[0]
-        item['Key Vault Uri'] = item['properties']['vaultUri']
+        if item['properties'].get('certVersion'):
+            item['Certificate Version'] = item['properties']['certVersion']
+        else:
+            item['Certificate Version'] = ""
+        if item['properties'].get('vaultUri'):
+            item['Key Vault Uri'] = item['properties']['vaultUri']
+        else:
+            item['Key Vault Uri'] = ""
 
     return result if is_list else result[0]
 
