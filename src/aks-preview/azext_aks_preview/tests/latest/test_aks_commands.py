@@ -2769,7 +2769,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
     def test_aks_enable_utlra_ssd(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -2956,7 +2956,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2', preserve_default_location=True)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_outbound_ips(self, resource_group, resource_group_location):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
