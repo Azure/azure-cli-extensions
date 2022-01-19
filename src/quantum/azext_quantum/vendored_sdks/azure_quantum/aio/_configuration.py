@@ -57,7 +57,7 @@ class QuantumClientConfiguration(Configuration):
         self.resource_group_name = resource_group_name
         self.workspace_name = workspace_name
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://quantum.microsoft.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'quantum-client/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'quantum/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
