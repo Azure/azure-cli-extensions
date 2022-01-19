@@ -53,12 +53,13 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
+
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("This operation might take a while...\n")
 
-    # Setting subscription id and Tenant Id
+    # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
     account = Profile().get_subscription(subscription_id)
     onboarding_tenant_id = account['homeTenantId']
