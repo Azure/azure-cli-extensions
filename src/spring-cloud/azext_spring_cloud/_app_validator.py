@@ -22,49 +22,44 @@ NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use
 
 def fulfill_deployment_param(cmd, namespace):
     client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
-    if not namespace.name or not namespace.service or not namespace.resource_group:
+    name = _get_app_name_from_namespace(namespace)
+    if not name or not namespace.service or not namespace.resource_group:
         return
     if namespace.deployment:
-        namespace.deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
+        namespace.deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, name, namespace.deployment)
     else:
-        namespace.deployment = _ensure_active_deployment_exist_and_get(client, namespace.resource_group, namespace.service, namespace.name)
+        namespace.deployment = _ensure_active_deployment_exist_and_get(client, namespace.resource_group, namespace.service, name)
 
 
 def fulfill_deployment_param_or_warning(cmd, namespace):
     client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
-    if not namespace.name or not namespace.service or not namespace.resource_group:
+    name = _get_app_name_from_namespace(namespace)
+    if not name or not namespace.service or not namespace.resource_group:
         return
     if namespace.deployment:
-        namespace.deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
+        namespace.deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, name, namespace.deployment)
     else:
-        namespace.deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
+        namespace.deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, name)
         if not namespace.deployment:
             logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
 
 def active_deployment_exist(cmd, namespace):
-    if not namespace.name or not namespace.service or not namespace.resource_group:
+    name = _get_app_name_from_namespace(namespace)
+    if not name or not namespace.service or not namespace.resource_group:
         return
     client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
-    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
+    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, name)
     if not deployment:
         raise InvalidArgumentValueError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
 
 def active_deployment_exist_or_warning(cmd, namespace):
-    if not namespace.name or not namespace.service or not namespace.resource_group:
+    name = _get_app_name_from_namespace(namespace)
+    if not name or not namespace.service or not namespace.resource_group:
         return
     client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
-    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.name)
-    if not deployment:
-        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-
-
-def active_deployment_exist_under_app_or_warning(cmd, namespace):
-    if not namespace.app or not namespace.service or not namespace.resource_group:
-        return
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
-    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, namespace.app)
+    deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, name)
     if not deployment:
         logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
@@ -127,3 +122,11 @@ def validate_cpu(namespace):
 
 def validate_memory(namespace):
     namespace.memory = validate_memory_value(namespace.memory)
+
+
+def _get_app_name_from_namespace(namespace):
+    if hasattr(namespace, 'app'):
+        return namespace.app
+    elif hasattr(namespace, 'name'):
+        return namespace.name
+    return None

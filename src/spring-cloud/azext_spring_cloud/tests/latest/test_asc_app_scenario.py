@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import tempfile
 
 from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, record_only)
@@ -249,3 +250,20 @@ class I2aTLSTest(ScenarioTest):
         self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls false', checks=[
             self.check('properties.enableEndToEndTls', False)
         ])
+
+
+@record_only()
+class GenerateDumpTest(ScenarioTest):
+    def test_generate_deployment_dump(self):
+        file_path = os.path.join(tempfile.gettempdir(), 'dumpfile.txt')
+        self.kwargs.update({
+            'app': 'test-app-dump',
+            'deployment': 'default',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+            'path': file_path
+        })
+        result = self.cmd('spring-cloud app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
+        self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
+        self.assertTrue(self.kwargs['instance'])
+        self.cmd('spring-cloud app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
