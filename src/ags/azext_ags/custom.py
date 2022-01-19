@@ -75,22 +75,23 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None):
                           grafana_name=grafana_name, show_home_dashboard=None)
 
 
-def create_dashboard(cmd, grafana_name, dashboard_definition, resource_group_name):
-    dashboard_definition = _try_load_file_content(dashboard_definition)
+def create_dashboard(cmd, grafana_name, definition, resource_group_name=None):
+    definition = _try_load_file_content(definition)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
-                             json.loads(dashboard_definition))
+                             json.loads(definition))
     return json.loads(response.content)
 
 
-def update_dashboard(cmd, resource_group_name, grafana_name, dashboard_definition):
-    return create_dashboard(cmd, grafana_name, dashboard_definition, resource_group_name)
+def update_dashboard(cmd, grafana_name, definition, resource_group_name=None):
+    return create_dashboard(cmd, grafana_name, definition, resource_group_name)
 
 
-def delete_dashboard(cmd, grafana_name, uid, resource_group_name):
+def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None):
     _send_request(cmd, resource_group_name, grafana_name, "delete", "/api/dashboards/uid/" + uid)
 
 
 def create_data_source(cmd, grafana_name, definition, resource_group_name=None):
+    definition = _try_load_file_content(definition)
     payload = json.loads(definition)
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/datasources", payload)
     return json.loads(response.content)
@@ -111,6 +112,7 @@ def list_data_sources(cmd, grafana_name, resource_group_name=None):
 
 
 def update_data_source(cmd, grafana_name, data_source, definition, resource_group_name=None):
+    definition = _try_load_file_content(definition)
     data = _find_data_source(cmd, resource_group_name, grafana_name, data_source)
     response = _send_request(cmd, resource_group_name, grafana_name, "put", "/api/datasources/" + str(data['id']),
                              json.loads(definition))

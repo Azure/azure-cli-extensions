@@ -36,7 +36,7 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("grafana dashboard") as c:
-        c.argument("dashboard_definition", help="The complete dashboard model in json string, or a path to a file with such json string")
+        c.argument("definition", help="The complete dashboard model in json string, or a path to a file with such json string")
 
     with self.argument_context("grafana dashboard show") as c:
         c.argument("show_home_dashboard", arg_type=get_three_state_flag())
