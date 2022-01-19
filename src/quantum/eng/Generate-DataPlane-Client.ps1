@@ -3,67 +3,67 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-$PackageName = "azure-quantum-_client"
-$Namespace = "azure.quantum._client"
-$SwaggerTagVersion = "package-2021-11-01-preview"
-$OutputFolder = "../azext_quantum/vendored_sdks/azure_quantum/"
+<#
+.SYNOPSIS
+(Re)Generate the underlying Azure Quantum Python data-Plane client for the CLI based on the latest published Swagger.
+.DESCRIPTION
+(Re)Generate the underlying Azure Quantum Python data-Plane client for the CLI based on the latest published Swagger.
+.PARAMETER SwaggerRepoUrl
+The URL of the git repo that contains the Swagger and AutoRest ReadMe.md configurations (defaults to "https://github.com/Azure/azure-rest-api-specs")
+.PARAMETER SwaggerRepoBranch
+The name of the swagger repo branch (defaults to "main")
+.PARAMETER SwaggerTagVersion
+The Swagger version to be used (defaults to "", which will use the default tag from the main ReadMe.md)
 
-$SpecsRepo = "https://github.com/Azure/azure-rest-api-specs.git"
-$SpecsBranch = "main"
-$SpecsCommitId = ""
-$PathAllowList = ("specification/quantum")
+.EXAMPLE
+./eng/Generate-DataPlane-Client.ps1
 
-$TempFolder = Join-Path $PSScriptRoot "../temp/"
-$SpecsFolder = Join-Path $TempFolder  "/specs/"
+# Regenerate the data-plane client using the latest published Swagger from the official repo
 
-$PackageVersion = $env:PYTHON_VERSION 
-if ([string]::IsNullOrEmpty($PackageVersion)) {
-    $VersionFilePath = Join-Path $PSScriptRoot "../azure/quantum/version.py"
-    if (Test-Path $VersionFilePath) {
-        $VersionFileContent = Get-Content -Path $VersionFilePath
-        $PackageVersion = [regex]::Match($VersionFileContent, '__version__\s*=\s*"(?<version>[^"]+)"').Groups["version"]?.Value
-    }
-}
-if ([string]::IsNullOrEmpty($PackageVersion)) {
-    $PackageVersion = "0.0.0.1"
-}
+.EXAMPLE
+./eng/Generate-DataPlane-Client.ps1 -SwaggerRepoBranch "feature/quantum/update-clients"
 
-# Check-out specs repo to get the latest swagger API Definition file
-$CheckoutScript = Join-Path $PSScriptRoot "./Checkout-Repo.ps1" 
-&$CheckoutScript -RepoUrl $SpecsRepo -TargetFolder $SpecsFolder -PathAllowList $PathAllowList -BranchName $SpecsBranch -CommitId $SpecsCommitId -Force | Write-Verbose
+# Regenerate the data-plane client using the Swagger from the official repo, but from a feature branch
 
-# Delete the old generated client in the temp folder
-$TempGeneratedClientFolder = Join-Path $TempFolder "generated/_client/"
-if (Test-Path $TempGeneratedClientFolder) {
-    Remove-Item $TempGeneratedClientFolder -Recurse | Write-Verbose
-}
-New-Item -Path $TempGeneratedClientFolder -ItemType directory
+.EXAMPLE
+./eng/Generate-DataPlane-Client.ps1 -SwaggerTagVersion "package-2019-11-04-preview"
 
-$AutoRestConfig = Join-Path $SpecsFolder "specification/quantum/data-plane/readme.md"
+# Regenerate the data-plane client using the an older version of the Swagger
 
-[System.Environment]::SetEnvironmentVariable('python-sdks-folder', $TempGeneratedClientFolder)
+#>
 
-# Make sure we have the latest AutoRest
+[CmdletBinding()]
+Param (
+    [string] $SwaggerRepoUrl = "https://github.com/Azure/azure-rest-api-specs",
+    [string] $SwaggerRepoBranch = "main",
+    [string] $SwaggerTagVersion
+)
+
+$OutputFolder = Join-Path $PSScriptRoot "../azext_quantum/vendored_sdks/azure_quantum/"
+
+$AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md"
+
+Write-Verbose "Installing latest AutoRest client"
 npm install -g autorest@latest | Write-Verbose
 
-# Generate the client in a temp folder
-autorest $AutoRestConfig `
-    --verbose `
-    --python `
-    --tag=$SwaggerTagVersion `
-    --package-name=$PackageName `
-    --package-version=$PackageVersion `
-    --namespace=$Namespace `
-    --no-namespace-folders=true `
-    --add-credential `
-    --credential-scopes="https://quantum.microsoft.com/.default" `
-    --python-mode=custom `
-    --output-folder=$TempGeneratedClientFolder `
-    | Write-Verbose
-
-# Delete the old generated client and copy the new one there
-$AzureQuantumClient_Folder =  Join-Path $PSScriptRoot $OutputFolder
-if (Test-Path $AzureQuantumClient_Folder) {
-    Remove-Item $AzureQuantumClient_Folder -Recurse | Write-Verbose
+if ([string]::IsNullOrEmpty($SwaggerTagVersion))
+{
+    Write-Verbose "Generating the client based on:`nConfig: $AutoRestConfig"
+    autorest $AutoRestConfig `
+        --verbose `
+        --python `
+        --python-mode=cli `
+        --output-folder=$OutputFolder `
+        | Write-Verbose
 }
-Copy-Item $TempGeneratedClientFolder $AzureQuantumClient_Folder -Recurse -Force | Write-Verbose
+else
+{
+    Write-Verbose "Generating the client based on:`nConfig: $AutoRestConfig`nTag: $SwaggerTagVersion"
+    autorest $AutoRestConfig `
+        --verbose `
+        --python `
+        --python-mode=cli `
+        --tag=$SwaggerTagVersion `
+        --output-folder=$OutputFolder `
+        | Write-Verbose
+}
