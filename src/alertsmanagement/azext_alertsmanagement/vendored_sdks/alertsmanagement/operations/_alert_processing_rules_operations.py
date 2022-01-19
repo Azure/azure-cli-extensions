@@ -298,13 +298,7 @@ class AlertProcessingRulesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        print ("----------------------------------------")
-        from pprint import pprint
-        pprint (alert_processing_rule)
-        print ("----------------------------------------")
         body_content = self._serialize.body(alert_processing_rule, 'AlertProcessingRule')
-        pprint(body_content)
-        print ("----------------------------------------")
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)

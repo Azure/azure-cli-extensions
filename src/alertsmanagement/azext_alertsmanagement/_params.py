@@ -31,16 +31,16 @@ def load_arguments(self, _):
     with self.argument_context('monitor alert-processing-rule create') as c:
         c.argument('processing_rule_name', processing_rule_name)
         c.argument('rule_type', arg_type=get_enum_type(ActionType), help='Indicate type of the alert processing rule')
-        c.argument('action_groups',nargs='+', help='List of ARM IDs (space-delimited) of action groups to add. A use of this argument requires that rule-type is AddActionGroups')
+        c.argument('action_groups',nargs='+', help='List of resource ids (space-delimited) of action groups to add. A use of this argument requires that rule-type is AddActionGroups')
         c.argument('description', nargs='+', help='Description of the alert processing rule')
-        c.argument('scopes', nargs='+', required=True, help='List of ARM IDs (space-delimited) of the given scopes type which will be the target of the given processing rule.')
-        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given alert processing rule is enabled or disabled (values are True and False). Default True.')
+        c.argument('scopes', nargs='+', required=True, help='List of resource IDs (space-delimited) for scope. The rule will apply to alerts that fired on resources within that scope.')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given alert processing rule is enabled or disabled (default is enabled).')
         c.argument('tags', tags_type)
         c.argument('filter_severity', nargs='+', arg_group='Filter', validator = validate_severity, help='Filter alerts by severity <Sev0, Sev1, Sev2, Sev3, Sev4>')
         c.argument('filter_monitor_service', nargs='+', arg_group='Filter', validator = validate_monitor_service, help='Filter alerts by monitor service')
         c.argument('filter_monitor_condition', nargs='+', arg_group='Filter', validator = validate_monitor_condition, help='Filter alerts by monitor condition')
         c.argument('filter_alert_rule_name', nargs='+', arg_group='Filter', validator = validate_alert_rule_name, help='Filter alerts by alert rule name')
-        c.argument('filter_alert_rule_id', nargs='+', arg_group='Filter', validator = validate_alert_rule_id, help='Filter alerts by alert ID')
+        c.argument('filter_alert_rule_id', nargs='+',  arg_group='Filter', validator = validate_alert_rule_id, help='Filter alerts by alert ID')
         c.argument('filter_alert_rule_description', nargs='+', validator = validate_alert_rule_description, arg_group='Filter', help='Filter alerts by alert rule description')
         c.argument('filter_alert_context', nargs='+', arg_group='Filter', validator = validate_alert_context, help='Filter alerts by alert context (payload)')
         c.argument('filter_signal_type', nargs='+', arg_group='Filter', validator = validate_signal_type, help='Filter alerts by signal type')
@@ -50,20 +50,14 @@ def load_arguments(self, _):
         c.argument('schedule_start_datetime', arg_group='Schedule', help='Start date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator = validate_datetime_format)
         c.argument('schedule_end_datetime', arg_group='Schedule', help='End date for the rule. Format: \'YYYY-MM-DD hh:mm:ss\'', validator = validate_datetime_format)
         c.argument('schedule_recurrence_type', arg_group='Schedule First Recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly']), help='Specifies when the processing rule should be applied')
-        c.argument('schedule_recurrence_start_time', arg_group='Schedule First Recurrence', help='Start time for the rule. Format: \'hh:mm:ss\'', validator = validate_time_format)
-        c.argument('schedule_recurrence_end_time', arg_group='Schedule First Recurrence', help='End time for the rule. Format: \'hh:mm:ss\'', validator = validate_time_format)
+        c.argument('schedule_recurrence_start_time', arg_group='Schedule First Recurrence', help='Start time for each recurrence. Format: \'hh:mm:ss\'', validator = validate_time_format)
+        c.argument('schedule_recurrence_end_time', arg_group='Schedule First Recurrence', help='End time for each recurrence. Format: \'hh:mm:ss\'', validator = validate_time_format)
         c.argument('schedule_time_zone', arg_group='Schedule', help='schedule time zone')
-        c.argument('schedule_recurrence', nargs='+', arg_group='Schedule First Recurrence',
-                           help='List of recurrence pattern values, delimited by space. If --schedule-recurrence-type is '
-                                'Weekly, allowed values range from Sunday to Saturday. If --schedule-recurrence-type is Monthly, allowed values range from '
-                                '1 to 31, stands for day of month')
+        c.argument('schedule_recurrence', nargs='+', arg_group='Schedule First Recurrence')
         c.argument('schedule_recurrence_2_type', arg_group='Schedule Second Recurrence', arg_type=get_enum_type(['Daily', 'Weekly', 'Monthly']), help='Specifies when the processing rule should be applied. Default to Always')
-        c.argument('schedule_recurrence_2_start_time', arg_group='Schedule Second Recurrence', help='Start time for enabling the rule. Format: hh:mm:ss', validator = validate_time_format)
-        c.argument('schedule_recurrence_2_end_time', arg_group='Schedule Second Recurrence', help='End time for disabling the rule. Format: hh:mm:ss', validator = validate_time_format)
-        c.argument('schedule_recurrence_2', nargs='+', arg_group='Schedule Second Recurrence',
-                           help='List of recurrence pattern values, delimited by space. If --schedule-recurrence-type is '
-                                'Weekly, allowed values range from Sunday to Saturday. If --schedule-recurrence-type is Monthly, allowed values range from '
-                                '1 to 31, stands for day of month')
+        c.argument('schedule_recurrence_2_start_time', arg_group='Schedule Second Recurrence', help='Start time for each recurrence. Format: hh:mm:ss', validator = validate_time_format)
+        c.argument('schedule_recurrence_2_end_time', arg_group='Schedule Second Recurrence', help='End time for each recurrence. Format: hh:mm:ss', validator = validate_time_format)
+        c.argument('schedule_recurrence_2', nargs='+', arg_group='Schedule Second Recurrence')
 
     with self.argument_context('monitor alert-processing-rule update') as c:
         c.argument('processing_rule_name', processing_rule_name)

@@ -20,7 +20,8 @@ class AlertsScenarioTest(ScenarioTest):
         subs_id = self.get_subscription_id()
         rg_id = '/subscriptions/{}/resourceGroups/{}'.format(subs_id, resource_group)
         self.kwargs.update({
-            'rg_id': rg_id
+            'rg_id': rg_id,
+            'subs_id': subs_id
         })
         self.cmd('az monitor alert-processing-rule create '
                  '--resource-group {rg} '
@@ -56,7 +57,7 @@ class AlertsScenarioTest(ScenarioTest):
                  '--name test2 '
                  '--scopes {rg_id} '
                  '--rule-type AddActionGroups '
-                 '--action-groups "/subscriptions/dd91de05-d791-4ceb-b6dc-988682dc7d72/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application insights smart detection" '
+                 '--action-groups "/subscriptions/{subs_id}/resourcegroups/amp-common/providers/microsoft.insights/actiongroups/application insights smart detection" '
                  '--schedule-recurrence-type Weekly '
                  '--schedule-recurrence Sunday Saturday '
                  '--schedule-start-datetime \'2018-12-09 06:00:00\' '
