@@ -53,21 +53,22 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
+def get_subscription(cmd):
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    return profile.get_subscription()
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("This operation might take a while...\n")
 
-    # Setting subscription id
+    # Setting subscription id and Tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
+    account = Profile().get_subscription(subscription_id)
+    onboarding_tenant_id = account['homeTenantId']
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
-
-    # Fetching Tenant Id
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
 
     # Checking provider registration status
     utils.check_provider_registrations(cmd.cli_ctx)
@@ -693,7 +694,8 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
                                            message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
 
-    subscription_id = get_subscription_id(cmd.cli_ctx)
+    subscription = get_subscription(cmd)
+    subscription_id = subscription["id"]
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
             configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
@@ -1718,11 +1720,10 @@ def client_side_proxy_wrapper(cmd,
     # if service account token is not passed
     if token is None:
         # Identifying type of logged in entity
-        account = get_subscription_id(cmd.cli_ctx)
-        account = Profile().get_subscription(account)
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        account = Profile().get_subscription(subscription_id)
         user_type = account['user']['type']
-
-        tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
+        tenantId = account['homeTenantId']
 
         if user_type == 'user':
             dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
