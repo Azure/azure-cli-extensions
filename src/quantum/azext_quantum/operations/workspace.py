@@ -121,7 +121,9 @@ def _add_quantum_providers(cmd, workspace, providers):
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
         workspace.providers.append(p)
-
+    #>>>>>
+    #return providers_selected
+    #<<<<<
 
 def _create_role_assignment(cmd, quantum_workspace):
     from azure.cli.command_modules.role.custom import create_role_assignment
@@ -177,9 +179,26 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     # return quantum_workspace
     #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+    # Until the skip_role_assignment flag is deprecated, envoke the old code to create a workspace without
+    # doing a role assignment 
+    if skip_role_assignment:
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+        while not poller.done():
+            time.sleep(POLLING_TIME_DURATION)
+        quantum_workspace = poller.result()
+        return quantum_workspace
+
+    # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account  
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+    validated_providers = []
+    for provider in quantum_workspace.providers:
+        # p = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
+        # validated_providers.append(p)
+        validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
+
     template_path = os.path.join(os.path.dirname(
         __file__), 'templates', 'create-workspace-and-assign-role.json')
-        #__file__), 'templates', 'create-workspace.json')
     with open(template_path, 'r') as template_file_fd:
         template = json.load(template_file_fd)
 
@@ -187,7 +206,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'quantumWorkspaceName': workspace_name,
         'location': location,
         'tags': {},
-        'providers': [{"providerId": "Microsoft", "providerSku": "Basic"}],     # TODO: Parse this from provider_sku_list
+        'providers': validated_providers,
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
         'storageAccountLocation': location,
@@ -204,10 +223,11 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     from os import getenv
     client_id = getenv('AZURE_CLIENT_ID')
     if client_id:
-        credentials = ServicePrincipalCredentials(          # Use service principal creds during automated execution 
+        from azure.identity import ClientSecretCredential
+        credentials = ClientSecretCredential(               # Use service principal creds during automated execution 
+            tenant_id=getenv('AZURE_TENANT_ID'),
             client_id=client_id,
-            secret=getenv('AZURE_CLIENT_SECRET'),
-            tenant=getenv('AZURE_TENANT_ID')
+            client_secret=getenv('AZURE_CLIENT_SECRET')
         )
     else:
         from azure.identity import AzureCliCredential
