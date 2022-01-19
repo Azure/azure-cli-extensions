@@ -14,7 +14,6 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.mgmt.core.exceptions import ARMErrorFormat
 from msrest import Serializer
 
 from .. import models as _models
@@ -71,7 +70,7 @@ class StorageOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.quantum.models
+    :type models: ~azure.quantum._client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -97,10 +96,10 @@ class StorageOperations(object):
         workspace. The SAS URL can be used to upload job input and/or download job output.
 
         :param blob_details: The details (name and container) of the blob to store or download data.
-        :type blob_details: ~azure.quantum.models.BlobDetails
+        :type blob_details: ~azure.quantum._client.models.BlobDetails
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SasUriResponse, or the result of cls(response)
-        :rtype: ~azure.quantum.models.SasUriResponse
+        :rtype: ~azure.quantum._client.models.SasUriResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SasUriResponse"]
@@ -130,7 +129,7 @@ class StorageOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('SasUriResponse', pipeline_response)
 

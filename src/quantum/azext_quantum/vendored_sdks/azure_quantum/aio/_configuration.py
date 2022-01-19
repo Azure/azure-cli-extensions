@@ -10,7 +10,6 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
-from azure.mgmt.core.policies import ARMHttpLoggingPolicy, AsyncARMChallengeAuthenticationPolicy
 
 from .._version import VERSION
 
@@ -58,7 +57,7 @@ class QuantumClientConfiguration(Configuration):
         self.resource_group_name = resource_group_name
         self.workspace_name = workspace_name
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://quantum.microsoft.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'quantum/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'quantum-_client/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
@@ -69,10 +68,10 @@ class QuantumClientConfiguration(Configuration):
         self.headers_policy = kwargs.get('headers_policy') or policies.HeadersPolicy(**kwargs)
         self.proxy_policy = kwargs.get('proxy_policy') or policies.ProxyPolicy(**kwargs)
         self.logging_policy = kwargs.get('logging_policy') or policies.NetworkTraceLoggingPolicy(**kwargs)
-        self.http_logging_policy = kwargs.get('http_logging_policy') or ARMHttpLoggingPolicy(**kwargs)
+        self.http_logging_policy = kwargs.get('http_logging_policy') or policies.HttpLoggingPolicy(**kwargs)
         self.retry_policy = kwargs.get('retry_policy') or policies.AsyncRetryPolicy(**kwargs)
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
-            self.authentication_policy = AsyncARMChallengeAuthenticationPolicy(self.credential, *self.credential_scopes, **kwargs)
+            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)

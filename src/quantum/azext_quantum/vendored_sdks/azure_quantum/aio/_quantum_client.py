@@ -9,8 +9,8 @@
 from copy import deepcopy
 from typing import Any, Awaitable, Optional, TYPE_CHECKING
 
+from azure.core import AsyncPipelineClient
 from azure.core.rest import AsyncHttpResponse, HttpRequest
-from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
 from .. import models
@@ -25,13 +25,13 @@ class QuantumClient:
     """Azure Quantum REST API client.
 
     :ivar jobs: JobsOperations operations
-    :vartype jobs: azure.quantum.aio.operations.JobsOperations
+    :vartype jobs: azure.quantum._client.aio.operations.JobsOperations
     :ivar providers: ProvidersOperations operations
-    :vartype providers: azure.quantum.aio.operations.ProvidersOperations
+    :vartype providers: azure.quantum._client.aio.operations.ProvidersOperations
     :ivar storage: StorageOperations operations
-    :vartype storage: azure.quantum.aio.operations.StorageOperations
+    :vartype storage: azure.quantum._client.aio.operations.StorageOperations
     :ivar quotas: QuotasOperations operations
-    :vartype quotas: azure.quantum.aio.operations.QuotasOperations
+    :vartype quotas: azure.quantum._client.aio.operations.QuotasOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g.
@@ -55,7 +55,7 @@ class QuantumClient:
         **kwargs: Any
     ) -> None:
         self._config = QuantumClientConfiguration(credential=credential, subscription_id=subscription_id, resource_group_name=resource_group_name, workspace_name=workspace_name, **kwargs)
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)

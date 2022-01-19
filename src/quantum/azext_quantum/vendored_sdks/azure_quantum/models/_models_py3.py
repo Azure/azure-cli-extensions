@@ -53,12 +53,12 @@ class BlobDetails(msrest.serialization.Model):
 
 
 class CostEstimate(msrest.serialization.Model):
-    """A job cost estimate.
+    """The job cost billed by the provider. The final cost on your bill might be slightly different due to added taxes and currency conversion rates.
 
     :ivar currency_code: The currency code.
     :vartype currency_code: str
     :ivar events: List of usage events.
-    :vartype events: list[~azure.quantum.models.UsageEvent]
+    :vartype events: list[~azure.quantum._client.models.UsageEvent]
     :ivar estimated_total: The estimated total.
     :vartype estimated_total: float
     """
@@ -81,7 +81,7 @@ class CostEstimate(msrest.serialization.Model):
         :keyword currency_code: The currency code.
         :paramtype currency_code: str
         :keyword events: List of usage events.
-        :paramtype events: list[~azure.quantum.models.UsageEvent]
+        :paramtype events: list[~azure.quantum._client.models.UsageEvent]
         :keyword estimated_total: The estimated total.
         :paramtype estimated_total: float
         """
@@ -165,7 +165,7 @@ class JobDetails(msrest.serialization.Model):
     :vartype output_data_format: str
     :ivar status: The job status. Possible values include: "Waiting", "Executing", "Succeeded",
      "Failed", "Cancelled".
-    :vartype status: str or ~azure.quantum.models.JobStatus
+    :vartype status: str or ~azure.quantum._client.models.JobStatus
     :ivar creation_time: The creation time of the job.
     :vartype creation_time: ~datetime.datetime
     :ivar begin_execution_time: The time when the job began execution.
@@ -174,10 +174,11 @@ class JobDetails(msrest.serialization.Model):
     :vartype end_execution_time: ~datetime.datetime
     :ivar cancellation_time: The time when a job was successfully cancelled.
     :vartype cancellation_time: ~datetime.datetime
-    :ivar cost_estimate: The job billing data.
-    :vartype cost_estimate: ~azure.quantum.models.CostEstimate
+    :ivar cost_estimate: The job cost billed by the provider. The final cost on your bill might be
+     slightly different due to added taxes and currency conversion rates.
+    :vartype cost_estimate: ~azure.quantum._client.models.CostEstimate
     :ivar error_data: The error data for the job. This is expected only when Status 'Failed'.
-    :vartype error_data: ~azure.quantum.models.ErrorData
+    :vartype error_data: ~azure.quantum._client.models.ErrorData
     :ivar tags: A set of tags. List of user-supplied tags associated with the job.
     :vartype tags: list[str]
     """
@@ -296,7 +297,7 @@ class JobDetailsList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value:
-    :vartype value: list[~azure.quantum.models.JobDetails]
+    :vartype value: list[~azure.quantum._client.models.JobDetails]
     :ivar count: Total records count number.
     :vartype count: long
     :ivar next_link: Link to the next page of results.
@@ -337,7 +338,7 @@ class JsonPatchDocument(msrest.serialization.Model):
 
     :ivar op: Required. The operation to be performed. Possible values include: "add", "remove",
      "replace", "move", "copy", "test".
-    :vartype op: str or ~azure.quantum.models.JsonPatchOperation
+    :vartype op: str or ~azure.quantum._client.models.JsonPatchOperation
     :ivar path: Required. A JSON-Pointer.
     :vartype path: str
     :ivar value: A value to be used in the operation on the path.
@@ -370,7 +371,7 @@ class JsonPatchDocument(msrest.serialization.Model):
         """
         :keyword op: Required. The operation to be performed. Possible values include: "add", "remove",
          "replace", "move", "copy", "test".
-        :paramtype op: str or ~azure.quantum.models.JsonPatchOperation
+        :paramtype op: str or ~azure.quantum._client.models.JsonPatchOperation
         :keyword path: Required. A JSON-Pointer.
         :paramtype path: str
         :keyword value: A value to be used in the operation on the path.
@@ -394,9 +395,9 @@ class ProviderStatus(msrest.serialization.Model):
     :vartype id: str
     :ivar current_availability: Provider availability. Possible values include: "Available",
      "Degraded", "Unavailable".
-    :vartype current_availability: str or ~azure.quantum.models.ProviderAvailability
+    :vartype current_availability: str or ~azure.quantum._client.models.ProviderAvailability
     :ivar targets:
-    :vartype targets: list[~azure.quantum.models.TargetStatus]
+    :vartype targets: list[~azure.quantum._client.models.TargetStatus]
     """
 
     _validation = {
@@ -429,7 +430,7 @@ class ProviderStatusList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value:
-    :vartype value: list[~azure.quantum.models.ProviderStatus]
+    :vartype value: list[~azure.quantum._client.models.ProviderStatus]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -462,7 +463,7 @@ class Quota(msrest.serialization.Model):
     :vartype dimension: str
     :ivar scope: The scope at which the quota is applied. Possible values include: "Workspace",
      "Subscription".
-    :vartype scope: str or ~azure.quantum.models.DimensionScope
+    :vartype scope: str or ~azure.quantum._client.models.DimensionScope
     :ivar provider_id: The unique identifier for the provider.
     :vartype provider_id: str
     :ivar utilization: The amount of the usage that has been applied for the current period.
@@ -475,7 +476,7 @@ class Quota(msrest.serialization.Model):
     :ivar period: The time period in which the quota's underlying meter is accumulated. Based on
      calendar year. 'None' is used for concurrent quotas. Possible values include: "None",
      "Monthly".
-    :vartype period: str or ~azure.quantum.models.MeterPeriod
+    :vartype period: str or ~azure.quantum._client.models.MeterPeriod
     """
 
     _attribute_map = {
@@ -505,7 +506,7 @@ class Quota(msrest.serialization.Model):
         :paramtype dimension: str
         :keyword scope: The scope at which the quota is applied. Possible values include: "Workspace",
          "Subscription".
-        :paramtype scope: str or ~azure.quantum.models.DimensionScope
+        :paramtype scope: str or ~azure.quantum._client.models.DimensionScope
         :keyword provider_id: The unique identifier for the provider.
         :paramtype provider_id: str
         :keyword utilization: The amount of the usage that has been applied for the current period.
@@ -518,7 +519,7 @@ class Quota(msrest.serialization.Model):
         :keyword period: The time period in which the quota's underlying meter is accumulated. Based on
          calendar year. 'None' is used for concurrent quotas. Possible values include: "None",
          "Monthly".
-        :paramtype period: str or ~azure.quantum.models.MeterPeriod
+        :paramtype period: str or ~azure.quantum._client.models.MeterPeriod
         """
         super(Quota, self).__init__(**kwargs)
         self.dimension = dimension
@@ -536,7 +537,7 @@ class QuotaList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value:
-    :vartype value: list[~azure.quantum.models.Quota]
+    :vartype value: list[~azure.quantum._client.models.Quota]
     :ivar next_link: Link to the next page of results.
     :vartype next_link: str
     """
@@ -566,7 +567,7 @@ class RestError(msrest.serialization.Model):
     """Error information returned by the API.
 
     :ivar error: An error response from Azure.
-    :vartype error: ~azure.quantum.models.ErrorData
+    :vartype error: ~azure.quantum._client.models.ErrorData
     """
 
     _attribute_map = {
@@ -581,7 +582,7 @@ class RestError(msrest.serialization.Model):
     ):
         """
         :keyword error: An error response from Azure.
-        :paramtype error: ~azure.quantum.models.ErrorData
+        :paramtype error: ~azure.quantum._client.models.ErrorData
         """
         super(RestError, self).__init__(**kwargs)
         self.error = error
@@ -621,7 +622,7 @@ class TargetStatus(msrest.serialization.Model):
     :vartype id: str
     :ivar current_availability: Target availability. Possible values include: "Available",
      "Degraded", "Unavailable".
-    :vartype current_availability: str or ~azure.quantum.models.TargetAvailability
+    :vartype current_availability: str or ~azure.quantum._client.models.TargetAvailability
     :ivar average_queue_time: Average queue time in seconds.
     :vartype average_queue_time: long
     :ivar status_page: A page with detailed status of the provider.

@@ -15,7 +15,6 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.mgmt.core.exceptions import ARMErrorFormat
 from msrest import Serializer
 
 from .. import models as _models
@@ -204,7 +203,7 @@ class JobsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.quantum.models
+    :type models: ~azure.quantum._client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -229,7 +228,7 @@ class JobsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either JobDetailsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum.models.JobDetailsList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum._client.models.JobDetailsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetailsList"]
@@ -277,7 +276,7 @@ class JobsOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response)
 
             return pipeline_response
 
@@ -300,7 +299,7 @@ class JobsOperations(object):
         :type job_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobDetails, or the result of cls(response)
-        :rtype: ~azure.quantum.models.JobDetails
+        :rtype: ~azure.quantum._client.models.JobDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetails"]
@@ -326,7 +325,7 @@ class JobsOperations(object):
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = self._deserialize('JobDetails', pipeline_response)
 
@@ -351,10 +350,10 @@ class JobsOperations(object):
         :param job_id: Id of the job.
         :type job_id: str
         :param job: The complete metadata of the job to submit.
-        :type job: ~azure.quantum.models.JobDetails
+        :type job: ~azure.quantum._client.models.JobDetails
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobDetails, or the result of cls(response)
-        :rtype: ~azure.quantum.models.JobDetails
+        :rtype: ~azure.quantum._client.models.JobDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.JobDetails"]
@@ -385,7 +384,7 @@ class JobsOperations(object):
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error)
 
         if response.status_code == 200:
             deserialized = self._deserialize('JobDetails', pipeline_response)
@@ -440,7 +439,7 @@ class JobsOperations(object):
         if response.status_code not in [204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -461,10 +460,10 @@ class JobsOperations(object):
         :param job_id: Id of the job.
         :type job_id: str
         :param patch_job: The json patch document containing the patch operations.
-        :type patch_job: list[~azure.quantum.models.JsonPatchDocument]
+        :type patch_job: list[~azure.quantum._client.models.JsonPatchDocument]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: JobDetails, or the result of cls(response)
-        :rtype: ~azure.quantum.models.JobDetails or None
+        :rtype: ~azure.quantum._client.models.JobDetails or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.JobDetails"]]
@@ -495,7 +494,7 @@ class JobsOperations(object):
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error)
 
         deserialized = None
         if response.status_code == 200:
