@@ -36,11 +36,11 @@ def transform_job(result):
         ('Completion time', result['endExecutionTime'])
     ])
 
-    # For backwards compatibility check if the field is present
+    # For backwards compatibility check if the field is present and only display if present
     cost_estimate = result['costEstimate']
     if cost_estimate is not None:
-        amount = cost_estimate.estimated_total
-        currency = cost_estimate.currency_code
+        amount = cost_estimate['estimatedTotal']
+        currency = cost_estimate['currencyCode']
         if (amount is not None) and (currency is not None):
             price = str(amount) + ' ' + currency
             transformed_result['Price estimate'] = price
