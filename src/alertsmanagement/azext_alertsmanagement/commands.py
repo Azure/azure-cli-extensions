@@ -21,7 +21,7 @@ def load_command_table(self, _):
                             is_preview=True) as g:
         g.custom_command('create', 'create_alertsmanagement_processing_rule')
         g.generic_update_command('update', custom_func_name='update_alertsmanagement_processing_rule',
-                                setter_arg_name='alert_processing_rule', getter_name='get_by_name')
+                                 setter_arg_name='alert_processing_rule', getter_name='get_by_name')
         g.custom_command('delete', 'delete_alertsmanagement_processing_rule', confirmation=True)
         g.custom_show_command('show', 'get_alertsmanagement_processing_rule')
         g.custom_command('list', 'list_alertsmanagement_processing_rule')

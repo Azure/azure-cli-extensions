@@ -13,6 +13,7 @@ from knack.util import CLIError
 from datetime import datetime
 from .vendored_sdks.alertsmanagement.models import ActionType
 
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -23,6 +24,7 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
 
 def _transform_condition(condition, name_of_field):
     """
@@ -64,7 +66,7 @@ def _alert_rule_ids(subscription, resource_group, alert_ids):
     for id in alert_ids[1:]:
         if not is_valid_resource_id(id):
             rid = resource_id(subscription=subscription, resource_group=resource_group,
-                            namespace='microsoft.insights', type='alertrules', name=id)
+                              namespace='microsoft.insights', type='alertrules', name=id)
             ids.append(rid)
         ids.append(id)
 
@@ -72,40 +74,38 @@ def _alert_rule_ids(subscription, resource_group, alert_ids):
 
 
 def create_alertsmanagement_processing_rule(cmd, client,
-                                        resource_group_name,
-                                        processing_rule_name,
-                                        rule_type,
-                                        action_groups=None,
-                                        description=None,
-                                        scopes=None,
-                                        enabled=None,
-                                        tags=None,
-                                        filter_severity=None,
-                                        filter_monitor_service=None,
-                                        filter_monitor_condition=None,
-                                        filter_alert_rule_name=None,
-                                        filter_alert_rule_id=None,
-                                        filter_alert_rule_description=None,
-                                        filter_alert_context=None,
-                                        filter_signal_type=None,
-                                        filter_target_resource=None,
-                                        filter_resource_group=None,
-                                        filter_resource_type=None,
-                                        schedule_recurrence_type=None,
-                                        schedule_start_datetime=None,
-                                        schedule_end_datetime=None,
-                                        schedule_recurrence_start_time=None,
-                                        schedule_recurrence_end_time=None,
-                                        schedule_recurrence=None,
-                                        schedule_recurrence_2_type=None,
-                                        schedule_recurrence_2_start_time=None,
-                                        schedule_recurrence_2_end_time=None,
-                                        schedule_recurrence_2=None,
-                                        schedule_time_zone="UTC"):
+                                            resource_group_name,
+                                            processing_rule_name,
+                                            rule_type,
+                                            action_groups=None,
+                                            description=None,
+                                            scopes=None,
+                                            enabled=None,
+                                            tags=None,
+                                            filter_severity=None,
+                                            filter_monitor_service=None,
+                                            filter_monitor_condition=None,
+                                            filter_alert_rule_name=None,
+                                            filter_alert_rule_id=None,
+                                            filter_alert_rule_description=None,
+                                            filter_alert_context=None,
+                                            filter_signal_type=None,
+                                            filter_target_resource=None,
+                                            filter_resource_group=None,
+                                            filter_resource_type=None,
+                                            schedule_recurrence_type=None,
+                                            schedule_start_datetime=None,
+                                            schedule_end_datetime=None,
+                                            schedule_recurrence_start_time=None,
+                                            schedule_recurrence_end_time=None,
+                                            schedule_recurrence=None,
+                                            schedule_recurrence_2_type=None,
+                                            schedule_recurrence_2_start_time=None,
+                                            schedule_recurrence_2_end_time=None,
+                                            schedule_recurrence_2=None,
+                                            schedule_time_zone="UTC"):
     # body = {'location': location, 'tags': tags}
-    body = {
-        'location': 'Global'
-        }
+    body = {'location': 'Global'}
     properties = {}
     if rule_type == ActionType.REMOVE_ALL_ACTION_GROUPS:
         if action_groups is not None:
@@ -138,7 +138,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
     alert_rule_name = _transform_condition(filter_alert_rule_name, 'AlertRuleName')
     alert_rule_ids = None
     if filter_alert_rule_id is not None:
-        alert_rule_ids = _alert_rule_ids(client._config.subscription_id, resource_group_name, filter_alert_rule_id) 
+        alert_rule_ids = _alert_rule_ids(client._config.subscription_id, resource_group_name, filter_alert_rule_id)
         alert_rule_ids = _transform_condition(alert_rule_ids, 'AlertRuleId')
     alert_description = _transform_condition(filter_alert_rule_description, 'Description')
     alert_context = _transform_condition(filter_alert_context, 'AlertContext')
@@ -146,13 +146,13 @@ def create_alertsmanagement_processing_rule(cmd, client,
     resource_filter = _transform_condition(filter_target_resource, 'TargetResource')
     resource_group_filter = _transform_condition(filter_resource_group, 'TargetResourceGroup')
     resource_type_filter = _transform_condition(filter_resource_type, 'TargetResourceType')
-    
+
     # conditions
-    if any ([filter_severity, filter_monitor_service, filter_monitor_condition, filter_alert_rule_name, \
-            filter_alert_rule_id, filter_alert_rule_description, filter_alert_context, filter_signal_type, \
+    if any([filter_severity, filter_monitor_service, filter_monitor_condition, filter_alert_rule_name,
+            filter_alert_rule_id, filter_alert_rule_description, filter_alert_context, filter_signal_type,
             filter_target_resource, filter_resource_group, filter_resource_type]):
-        properties['conditions'] = []    
-        
+        properties['conditions'] = []
+       
     if severity is not None:
         properties['conditions'].append(severity)
     if monitor_service is not None:
@@ -192,8 +192,8 @@ def create_alertsmanagement_processing_rule(cmd, client,
             properties['schedule']['effectiveUntil'] = effective_until
 
         if schedule_time_zone is not None:
-            properties['schedule']['timeZone'] = schedule_time_zone        
-        
+            properties['schedule']['timeZone'] = schedule_time_zone
+
         if schedule_recurrence_type == 'Daily':
             if schedule_recurrence is not None:
                 print(bcolors.WARNING + 'WARNING: schedule-recurrence will be ignored as it can\'t be used while schedule-recurrence-type is set to Daily' + bcolors.ENDC)
@@ -221,24 +221,24 @@ def create_alertsmanagement_processing_rule(cmd, client,
             len(properties['schedule']['recurrences']) < 1:
             print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
             return
-        
+
         if schedule_recurrence_2_type == 'Daily':
             if schedule_recurrence_2 is not None:
                 print(bcolors.WARNING + 'WARNING: schedule-recurrence-2 will be ignored as it can\'t be used while schedule-recurrence-type-2 is set to Daily' + bcolors.ENDC)
 
             second_recurrence = {
-                    'recurrenceType': schedule_recurrence_2_type,
-                    'startTime': schedule_recurrence_2_start_time,
-                    'endTime' : schedule_recurrence_2_end_time
-                    }
+                                'recurrenceType': schedule_recurrence_2_type,
+                                'startTime': schedule_recurrence_2_start_time,
+                                'endTime' : schedule_recurrence_2_end_time
+                                }
         elif schedule_recurrence_2_type in ['Weekly', 'Monthly']:
             type_of_days = 'daysOfWeek' if schedule_recurrence_2_type == 'Weekly' else 'daysOfMonth'
             second_recurrence = {
-                    'recurrenceType': schedule_recurrence_2_type,
-                    'startTime': schedule_recurrence_2_start_time,
-                    'endTime' : schedule_recurrence_2_end_time,
-                    type_of_days: schedule_recurrence_2
-                    }
+                                'recurrenceType': schedule_recurrence_2_type,
+                                'startTime': schedule_recurrence_2_start_time,
+                                'endTime' : schedule_recurrence_2_end_time,
+                                type_of_days: schedule_recurrence_2
+                                }
         
         if second_recurrence is not None:
             properties['schedule']['recurrences'].append(second_recurrence)
@@ -247,7 +247,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
     body['tags'] = tags
 
     return client.create_or_update(resource_group_name=resource_group_name, processing_rule_name=processing_rule_name,
-                                alert_processing_rule=body)
+                                   alert_processing_rule=body)
 
 
 def update_alertsmanagement_processing_rule(instance, client,
@@ -261,19 +261,19 @@ def update_alertsmanagement_processing_rule(instance, client,
 
 
 def delete_alertsmanagement_processing_rule(cmd, client,
-                                        resource_group_name,
-                                        processing_rule_name):
+                                            resource_group_name,
+                                            processing_rule_name):
     return client.delete(resource_group_name=resource_group_name, alert_processing_rule_name=processing_rule_name)
 
 
 def get_alertsmanagement_processing_rule(cmd, client,
-                                     resource_group_name,
-                                     processing_rule_name):
+                                         resource_group_name,
+                                         processing_rule_name):
     return client.get_by_name(resource_group_name=resource_group_name, processing_rule_name=processing_rule_name)
 
 
 def list_alertsmanagement_processing_rule(cmd, client,
-                                      resource_group_name=None):
+                                          resource_group_name=None):
     if resource_group_name is not None:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list_by_subscription()

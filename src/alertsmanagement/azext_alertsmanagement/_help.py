@@ -36,13 +36,13 @@ helps['monitor alert-processing-rule update'] = """
               --enabled False
       - name: "Change tags on an alert processing rule."
         text: |-
-              az monitor alert-processing-rule show 
+              az monitor alert-processing-rule show
               --resource-group myResourceGroup
               --name myRuleName
               --tags key1=value1 key2=value2
       - name: "Change the description's value in an alert processing rule."
         text: |-
-              az monitor alert-processing-rule show 
+              az monitor alert-processing-rule show
               --resource-group myResourceGroup
               --name myRuleName
               --set properties.description="this is a new description"
@@ -57,7 +57,7 @@ helps['monitor alert-processing-rule list'] = """
               az monitor alert-processing-rule list
       - name: List all alert processing rules in a resource group
         text: |-
-              az monitor alert-processing-rule show 
+              az monitor alert-processing-rule show
               --resource-group myResourceGroup
 """
 
@@ -67,12 +67,12 @@ helps['monitor alert-processing-rule show'] = """
     examples:
       - name: Get an alert processing rule by name
         text: |-
-              az monitor alert-processing-rule show 
+              az monitor alert-processing-rule show
               --name myRuleName
               --resource-group myRuleNameResourceGroup
       - name: Get alerts processing rule by ids
         text: |-
-              az monitor alert-processing-rule show 
+              az monitor alert-processing-rule show
               --ids ruleId1 ruleId2
 """
 
@@ -83,7 +83,7 @@ helps['monitor alert-processing-rule create'] = """
       - name: --filter-alert-context
         short-summary: "Filter alerts by alert context (payload)."
         long-summary: |
-            Filter format is <operator> <space-delimited values> where 
+            Filter format is <operator> <space-delimited values> where
             Operator: one of <Equals, NotEquals, Contains, DoesNotContain>
             Values: List of values to match for a given condition
       - name: --schedule-recurrence
@@ -102,15 +102,15 @@ helps['monitor alert-processing-rule create'] = """
     examples:
       - name: Create or update a rule that adds an action group to all alerts in a subscription
         text: |-
-              az monitor alert-processing-rule create 
+              az monitor alert-processing-rule create
               --name 'AddActionGroupToSubscription'
               --rule-type AddActionGroups
               --scopes "/subscriptions/MySubscriptionId"
               --action-groups "/subscriptions/MySubscriptionId/resourcegroups/MyResourceGroup1/providers/microsoft.insights/actiongroups/ActionGroup1"
-              --enabled true 
+              --enabled true
               --resource-group alertscorrelationrg
               --description "Add ActionGroup1 to all alerts in the subscription"
-               
+
       - name: Create or update a rule that adds two action groups to all Sev0 and Sev1 alerts in two resource groups
         text: |-
               az monitor alert-processing-rule create
@@ -121,7 +121,7 @@ helps['monitor alert-processing-rule create'] = """
               --resource-group alertscorrelationrg
               --filter-severity Equals Sev0 Sev1
               --description "Add AGId1 and AGId2 to all Sev0 and Sev1 alerts in these resourceGroups"
-      
+
       - name: Create or update a rule that removes all action groups from alerts on a specific VM during a one-off maintenance window (1800-2000 at a specific date, Pacific Standard Time)
         text: |-
               az monitor alert-processing-rule create
@@ -133,7 +133,7 @@ helps['monitor alert-processing-rule create'] = """
               --schedule-end-datetime '2022-01-02 20:00:00'
               --schedule-time-zone 'Pacific Standard Time'
               --description "Removes all ActionGroups from all Alerts on VMName during the maintenance window"
-              
+
       - name: Create or update a rule that removes all action groups from all alerts in a subscription coming from a specific alert rule
         text: |-
               az monitor alert-processing-rule create
