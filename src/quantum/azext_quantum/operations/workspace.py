@@ -9,7 +9,6 @@ import os.path
 import json
 import time
 
-from azure.common.credentials import ServicePrincipalCredentials
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.models import DeploymentMode
 
@@ -17,7 +16,6 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-#from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
@@ -167,7 +165,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
 
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Old code...
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Old code...
     # _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     # poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
     # while not poller.done():
@@ -176,10 +174,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     # if not skip_role_assignment:
     #     quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
     # return quantum_workspace
-    #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-    # Until the skip_role_assignment flag is deprecated, envoke the old code to create a workspace without
-    # doing a role assignment 
+    # Until the skip_role_assignment flag is deprecated, envoke the old code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -188,7 +185,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         quantum_workspace = poller.result()
         return quantum_workspace
 
-    # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account  
+    # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     validated_providers = []
     for provider in quantum_workspace.providers:
@@ -209,7 +206,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
         'storageAccountLocation': location,
-        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())  
+        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
@@ -219,11 +216,13 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'parameters': parameters
     }
 
+    # >>>>> Replacing the following code with _get_data_credentials()
+    # >>>>> Delete after testing is complete
     # from os import getenv
     # client_id = getenv('AZURE_CLIENT_ID')
     # if client_id:
     #     from azure.identity import ClientSecretCredential
-    #     credentials = ClientSecretCredential(               # Use service principal creds during automated execution 
+    #     credentials = ClientSecretCredential(               # Use service principal creds during automated execution
     #         tenant_id=getenv('AZURE_TENANT_ID'),
     #         client_id=client_id,
     #         client_secret=getenv('AZURE_CLIENT_SECRET')
@@ -232,9 +231,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     #     from azure.identity import AzureCliCredential
     #     credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
     credentials = _get_data_credentials(cmd.cli_ctx, info.subscription)
-    
+
     arm_client = ResourceManagementClient(credentials, info.subscription)
-    
+
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
         "Microsoft.Quantum-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
