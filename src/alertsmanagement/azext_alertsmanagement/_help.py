@@ -80,6 +80,8 @@ helps['monitor alert-processing-rule create'] = """
     type: command
     short-summary: Create an alert processing rule.
     parameters:
+      - name: scopes
+        short-summary: List of resource IDs (space-delimited) for scope. The rule will apply to alerts that fired on resources within that scope.
       - name: --filter-alert-context
         short-summary: "Filter alerts by alert context (payload)."
         long-summary: |

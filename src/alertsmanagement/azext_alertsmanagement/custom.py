@@ -219,18 +219,18 @@ def create_alertsmanagement_processing_rule(cmd, client,
         second_recurrence = None
         if any([schedule_recurrence_2_type, schedule_recurrence_2_start_time, schedule_recurrence_2_end_time, schedule_recurrence_2]) and \
                len(properties['schedule']['recurrences']) < 1:
-               print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
-               return
+            print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
+            return
 
         if schedule_recurrence_2_type == 'Daily':
             if schedule_recurrence_2 is not None:
                 print(bcolors.WARNING + 'WARNING: schedule-recurrence-2 will be ignored as it can\'t be used while schedule-recurrence-type-2 is set to Daily' + bcolors.ENDC)
 
             second_recurrence = {
-                            'recurrenceType': schedule_recurrence_2_type,
-                            'startTime': schedule_recurrence_2_start_time,
-                            'endTime' : schedule_recurrence_2_end_time
-                            }
+                        'recurrenceType': schedule_recurrence_2_type,
+                        'startTime': schedule_recurrence_2_start_time,
+                        'endTime': schedule_recurrence_2_end_time
+                        }
         elif schedule_recurrence_2_type in ['Weekly', 'Monthly']:
             type_of_days = 'daysOfWeek' if schedule_recurrence_2_type == 'Weekly' else 'daysOfMonth'
             second_recurrence = {
@@ -238,7 +238,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                             'startTime': schedule_recurrence_2_start_time,
                             'endTime': schedule_recurrence_2_end_time,
                             type_of_days: schedule_recurrence_2
-                            }
+                        }
 
         if second_recurrence is not None:
             properties['schedule']['recurrences'].append(second_recurrence)
