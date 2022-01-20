@@ -186,17 +186,15 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         return quantum_workspace
 
     # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
+    template_path = os.path.join(os.path.dirname(
+        __file__), 'templates', 'create-workspace-and-assign-role.json')
+    with open(template_path, 'r', encoding='utf8') as template_file_fd:
+        template = json.load(template_file_fd)
+
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     validated_providers = []
     for provider in quantum_workspace.providers:
-        # p = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
-        # validated_providers.append(p)
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
-
-    template_path = os.path.join(os.path.dirname(
-        __file__), 'templates', 'create-workspace-and-assign-role.json')
-    with open(template_path, 'r') as template_file_fd:
-        template = json.load(template_file_fd)
 
     parameters = {
         'quantumWorkspaceName': workspace_name,
