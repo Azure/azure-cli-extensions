@@ -17,7 +17,8 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
+#from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
@@ -121,9 +122,7 @@ def _add_quantum_providers(cmd, workspace, providers):
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
         workspace.providers.append(p)
-    #>>>>>
-    #return providers_selected
-    #<<<<<
+
 
 def _create_role_assignment(cmd, quantum_workspace):
     from azure.cli.command_modules.role.custom import create_role_assignment
@@ -220,19 +219,20 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'parameters': parameters
     }
 
-    from os import getenv
-    client_id = getenv('AZURE_CLIENT_ID')
-    if client_id:
-        from azure.identity import ClientSecretCredential
-        credentials = ClientSecretCredential(               # Use service principal creds during automated execution 
-            tenant_id=getenv('AZURE_TENANT_ID'),
-            client_id=client_id,
-            client_secret=getenv('AZURE_CLIENT_SECRET')
-        )
-    else:
-        from azure.identity import AzureCliCredential
-        credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
- 
+    # from os import getenv
+    # client_id = getenv('AZURE_CLIENT_ID')
+    # if client_id:
+    #     from azure.identity import ClientSecretCredential
+    #     credentials = ClientSecretCredential(               # Use service principal creds during automated execution 
+    #         tenant_id=getenv('AZURE_TENANT_ID'),
+    #         client_id=client_id,
+    #         client_secret=getenv('AZURE_CLIENT_SECRET')
+    #     )
+    # else:
+    #     from azure.identity import AzureCliCredential
+    #     credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
+    credentials = _get_data_credentials(cmd.cli_ctx, info.subscription)
+    
     arm_client = ResourceManagementClient(credentials, info.subscription)
     
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
