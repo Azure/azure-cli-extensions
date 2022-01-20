@@ -27,7 +27,7 @@ def transform_targets(providers):
 
 
 def transform_job(result):
-    result = OrderedDict([
+    transformed_result = OrderedDict([
         ('Name', result['name']),
         ('Id', result['id']),
         ('Status', result['status']),
@@ -35,7 +35,17 @@ def transform_job(result):
         ('Submission time', result['creationTime']),
         ('Completion time', result['endExecutionTime'])
     ])
-    return result
+
+    # For backwards compatibility check if the field is present
+    cost_estimate = result['costEstimate']
+    if cost_estimate is not None:
+        amount = cost_estimate.estimated_total
+        currency = cost_estimate.currency_code
+        if (amount is not None) and (currency is not None):
+            price = str(amount) + ' ' + currency
+            transformed_result['Price estimate'] = price
+
+    return transformed_result
 
 
 def transform_jobs(results):
