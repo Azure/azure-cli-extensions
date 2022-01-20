@@ -66,6 +66,7 @@ def validate_builder_resource(namespace):
     if namespace.builder_json is None and namespace.builder_file is None:
         raise ClientRequestError("--builder-json or --builder-file is required.")
 
+
 def validate_build_pool_size(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
         if namespace.build_pool_size is None:
