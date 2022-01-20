@@ -158,7 +158,7 @@ helps['monitor alert-processing-rule create'] = """
               --schedule-recurrence-end-time "04:00:00"
               --schedule-recurrence Sunday Saturday
               --description "Remove all ActionGroups from all Virtual machine Alerts during the recurring maintenance"
-      
+
       - name: Create or update a rule that removes all action groups outside business hours (Mon-Fri 09:00-17:00, Eastern Standard Time)
         text: |-
               az monitor alert-processing-rule create
@@ -175,12 +175,12 @@ helps['monitor alert-processing-rule create'] = """
               --description "Remove all ActionGroups outside business hours"
 """
 
-helps['alertsmanagement alert-processing-rule update'] = """
+helps['monitor alert-processing-rule update'] = """
     type: command
     short-summary: Enable, disable, or update tags for an alert processing rule.
     examples:
       - name: PatchAlertProcessingRule
         text: |-
-               az alertsmanagement alert-processing-rule update --name "WeeklySuppression" --enabled false --tags \
+               az monitor alert-processing-rule update --name "WeeklySuppression" --enabled false --tags \
 key1="value1" key2="value2" --resource-group "alertscorrelationrg"
 """

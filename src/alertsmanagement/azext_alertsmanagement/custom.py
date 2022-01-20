@@ -152,7 +152,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
             filter_alert_rule_id, filter_alert_rule_description, filter_alert_context, filter_signal_type,
             filter_target_resource, filter_resource_group, filter_resource_type]):
         properties['conditions'] = []
-       
+
     if severity is not None:
         properties['conditions'].append(severity)
     if monitor_service is not None:
@@ -165,7 +165,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
         properties['conditions'].append(alert_rule_ids)
     if alert_description is not None:
         properties['conditions'].append(alert_description)
-    if  alert_context is not None:
+    if alert_context is not None:
         properties['conditions'].append(alert_context)
     if signal_type is not None:
         properties['conditions'].append(signal_type)
@@ -202,7 +202,7 @@ def create_alertsmanagement_processing_rule(cmd, client,
                 {
                     'recurrenceType': schedule_recurrence_type,
                     'startTime': schedule_recurrence_start_time,
-                    'endTime' : schedule_recurrence_end_time
+                    'endTime': schedule_recurrence_end_time
                 }
             ]
         elif schedule_recurrence_type in ['Weekly', 'Monthly']:
@@ -211,35 +211,35 @@ def create_alertsmanagement_processing_rule(cmd, client,
                 {
                     'recurrenceType': schedule_recurrence_type,
                     'startTime': schedule_recurrence_start_time,
-                    'endTime' : schedule_recurrence_end_time,
+                    'endTime': schedule_recurrence_end_time,
                     type_of_days: schedule_recurrence
                 }
             ]
 
         second_recurrence = None
         if any([schedule_recurrence_2_type, schedule_recurrence_2_start_time, schedule_recurrence_2_end_time, schedule_recurrence_2]) and \
-            len(properties['schedule']['recurrences']) < 1:
-            print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
-            return
+               len(properties['schedule']['recurrences']) < 1:
+               print(bcolors.FAIL + "second recurrence can't be used before using the first recurrence argument" + bcolors.ENDC)
+               return
 
         if schedule_recurrence_2_type == 'Daily':
             if schedule_recurrence_2 is not None:
                 print(bcolors.WARNING + 'WARNING: schedule-recurrence-2 will be ignored as it can\'t be used while schedule-recurrence-type-2 is set to Daily' + bcolors.ENDC)
 
             second_recurrence = {
-                                'recurrenceType': schedule_recurrence_2_type,
-                                'startTime': schedule_recurrence_2_start_time,
-                                'endTime' : schedule_recurrence_2_end_time
-                                }
+                            'recurrenceType': schedule_recurrence_2_type,
+                            'startTime': schedule_recurrence_2_start_time,
+                            'endTime' : schedule_recurrence_2_end_time
+                            }
         elif schedule_recurrence_2_type in ['Weekly', 'Monthly']:
             type_of_days = 'daysOfWeek' if schedule_recurrence_2_type == 'Weekly' else 'daysOfMonth'
             second_recurrence = {
-                                'recurrenceType': schedule_recurrence_2_type,
-                                'startTime': schedule_recurrence_2_start_time,
-                                'endTime' : schedule_recurrence_2_end_time,
-                                type_of_days: schedule_recurrence_2
-                                }
-        
+                            'recurrenceType': schedule_recurrence_2_type,
+                            'startTime': schedule_recurrence_2_start_time,
+                            'endTime': schedule_recurrence_2_end_time,
+                            type_of_days: schedule_recurrence_2
+                            }
+
         if second_recurrence is not None:
             properties['schedule']['recurrences'].append(second_recurrence)
 
@@ -251,8 +251,8 @@ def create_alertsmanagement_processing_rule(cmd, client,
 
 
 def update_alertsmanagement_processing_rule(instance, client,
-                                        tags=None,
-                                        enabled=None):
+                                            tags=None,
+                                            enabled=None):
     if tags is not None:
         instance.tags = tags
     if enabled is not None:
