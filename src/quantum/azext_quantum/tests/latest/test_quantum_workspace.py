@@ -70,6 +70,21 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("name", test_workspace_temp),
             self.check("provisioningState", "Deleting")
             ])
+
+            # Repeat the tests without the "--skip-role-assignment" parameter
+            test_workspace_temp = get_test_workspace_random_name()
+
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Succeeded")  # Status is "Succeeded" since we are linking the storage account this time.
+            ])
+
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
         else:
             self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
