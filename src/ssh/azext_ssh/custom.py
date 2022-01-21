@@ -63,11 +63,16 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     keys_folder = None
     if not public_key_file:
         keys_folder = os.path.dirname(cert_path)
-        logger.warning("The generated SSH keys are stored at %s. Please delete SSH keys when the certificate "
-                       "is no longer being used.", keys_folder)
+        print(f"The generated SSH keys are saved in {keys_folder}. Please delete SSH keys when the certificate "
+              "is no longer being used.")
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
-    print(cert_file + "\n")
+    try:
+        cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file)[1]
+        print(f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time.")
+    except Exception as e:
+        logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
+        print(cert_file + "\n")
 
 
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip,
