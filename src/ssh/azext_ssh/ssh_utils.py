@@ -87,6 +87,7 @@ def get_ssh_cert_principals(cert_file):
             continue
         if in_principal:
             principals.append(line.strip())
+            
 
     return principals
 
