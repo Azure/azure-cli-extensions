@@ -195,7 +195,7 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
     else:
         time_from = right_now - datetime.timedelta(hours=1)
     time_from_epoch = time.mktime(time_from.timetuple()) * 1000
-    
+
     if time_to:
         time_to = parser.parse(time_to)
     else:
@@ -257,7 +257,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     profile = Profile(cli_ctx=cmd.cli_ctx)
     # this might be a cross tenant scenario, so pass subscription to get_raw_token
     subscription = get_subscription_id(cmd.cli_ctx)
-    ags_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3" 
+    ags_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3"
                            if "-ppe." in cmd.cli_ctx.cloud.endpoints.active_directory
                            else "ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")
     creds, _, _ = profile.get_raw_token(subscription=subscription,
@@ -270,10 +270,10 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
 
     # TODO: handle re-try on 429
     response = requests.request(http_method,
-                               url=endpoint + path,
-                               headers=headers,
-                               json=body,
-                               verify=(not should_disable_connection_verify()))
+                                url=endpoint + path,
+                                headers=headers,
+                                json=body,
+                                verify=(not should_disable_connection_verify()))
     if response.status_code >= 400:
         if raise_for_error_status:
             logger.warning(str(response.content))

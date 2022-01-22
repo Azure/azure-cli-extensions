@@ -52,7 +52,7 @@ helps['grafana data-source create'] = """
     type: command
     short-summary: Create a data source.
     examples:
-        - name: create a data source using Managed Service Identity 
+        - name: create a data source using Managed Service Identity
           text: |
             az grafana data-source create --definition '{
               "access": "proxy",
@@ -68,7 +68,7 @@ helps['grafana data-source create'] = """
               "type": "geneva-datasource",
               "withCredentials": false
             }'
-        - name: create a data source using Service Principal 
+        - name: create a data source using Service Principal
           text: |
             az grafana data-source create --definition '{
               "access": "proxy",
@@ -87,6 +87,24 @@ helps['grafana data-source create'] = """
               "name": "Geneva Datasource using Service principal",
               "type": "geneva-datasource"
             }'
+        - name: create a data source of Azure SQL
+          text: |
+            az grafana data-source create --definition '{
+              "access": "proxy",
+              "database": "mySqlDB",
+              "jsonData": {
+                "authenticationType": "SQL Server Authentication",
+                "encrypt": "false"
+              },
+              "secureJsonFields": {
+                "password": true
+              },
+              "name": "Microsoft SQL Server",
+              "password": "verySecretPasssword!",
+              "type": "mssql",
+              "url": "mySqlServer.database.windows.net",
+              "user": "testuser1"
+            }'
 """
 
 
@@ -94,7 +112,7 @@ helps['grafana data-source update'] = """
     type: command
     short-summary: Update a data source.
     examples:
-        - name: update a data source's credentials (make sure either set "version" to the latest version to bump to a new version, or omit it to overwrite the existing version)
+        - name: update a data source's credentials (make sure either set "version" to the latest version, or omit it to overwrite the existing version)
           text: |
             az grafana data-source create --data-source "Geneva Datasource" --definition '{
               "access": "proxy",
@@ -146,7 +164,19 @@ helps['grafana dashboard create'] = """
     examples:
         - name: Create a dashboard with definition in a json file. For quick start, clone from the output of "az grafana dashboard show", remove "id" and "uid", and apply changes.
           text: |
-            az grafana dashboard create -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\\temp\\dashboard.json
+            az grafana dashboard create -g MyResourceGroup -n MyGrafana --definition '{
+              "dashboard": {
+                "annotations": {
+                    ...
+                },
+                "panels": {
+                    ...
+                }
+                "title": "TestDashboard"
+              },
+              "folderId": <folder id or skip to default to "General">,
+              "message": "Create a new test dashboard"
+            }'
 """
 
 helps['grafana dashboard update'] = """
@@ -156,7 +186,7 @@ helps['grafana dashboard update'] = """
         - name: Update a dashboard with definition in a json file. For quick start, get existing configuration from "az grafana dashboard show", and apply changes.
                 "version" field need to be updated, and "overwrite" field should be true.
           text: |
-            az grafana dashboard update -g MyResourceGroup -n MyGrafana --dashboard-definition @c:\\temp\\dashboard.json
+            az grafana dashboard update -g MyResourceGroup -n MyGrafana --definition @c:\\temp\\dashboard.json
 """
 
 helps['grafana dashboard list'] = """
@@ -238,4 +268,3 @@ helps['grafana user show'] = """
     type: command
     short-summary: show detail of a user.
 """
-

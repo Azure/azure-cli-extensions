@@ -16,6 +16,7 @@ class AgsCommandsLoader(AzCommandsLoader):
         ags_custom = CliCommandType(
             operations_tmpl='azext_ags.custom#{}',
             client_factory=cf_ags)
+        # pylint: disable=super-with-arguments
         super(AgsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                 custom_command_type=ags_custom)
 

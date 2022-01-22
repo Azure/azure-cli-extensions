@@ -29,9 +29,3 @@ def process_missing_resource_group_parameter(cmd, namespace):
             raise CLIError(("Not able to find the Grafana workspace: '{}'. Please "
                             "correct the name, or provide resource group name, or set CLI "
                             "subscription the workspace belongs to").format(namespace.grafana_name))
-
-
-def process_leading_hyphen(cmd, namespace):  # TODO: find a common solution
-    if namespace.uid:
-        namespace.uid=namespace.uid.lstrip()
-

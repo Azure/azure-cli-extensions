@@ -7,9 +7,9 @@
 def load_arguments(self, _):
 
     from knack.arguments import CLIArgumentType
-    from azure.cli.core.commands.parameters import tags_type, get_three_state_flag, resource_group_name_type
+    from azure.cli.core.commands.parameters import tags_type, get_three_state_flag
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
-    from ._validators import process_missing_resource_group_parameter, process_leading_hyphen
+    from ._validators import process_missing_resource_group_parameter
 
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
                                         help="Name of the Azure Managed Dashboard for Grafana.",
@@ -19,12 +19,6 @@ def load_arguments(self, _):
         c.argument("tags", tags_type)
         c.argument("location", validator=get_default_location_from_resource_group)
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=process_missing_resource_group_parameter)
-        c.argument("uid", options_list=["--unique-identifier", "--uid"],
-                   help=("The unique identifier (uid) of a dashboard can be used for uniquely identifying a dashboard or data source "
-                         "between multiple Grafana installs. It’s automatically generated if not provided on creating. "
-                         "The uid allows having consistent URLs for accessing dashboards or data sources when syncing "
-                         "between multiple Grafana installs. For uid with leading hyphen, please prepend whitespace to workaround https://bugs.python.org/issue9334"),
-                   validator=process_leading_hyphen)
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
 
@@ -36,6 +30,7 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("grafana dashboard") as c:
+        c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
         c.argument("definition", help="The complete dashboard model in json string, or a path to a file with such json string")
 
     with self.argument_context("grafana dashboard show") as c:
