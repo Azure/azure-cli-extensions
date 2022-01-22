@@ -204,8 +204,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
         'storageAccountLocation': location,
-        # >>>>>'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
-        'storageAccountDeploymentName': workspace_name
+        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
@@ -235,8 +234,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        "Microsoft.Quantum-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
-        # >>>>>workspace_name,     # testsdk uses workspace name for deployment name in assert query
+        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py  
         {'properties': deployment_properties}
     )
 
