@@ -234,7 +234,8 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        "Microsoft.Quantum-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
+        # >>>>>"Microsoft.Quantum-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
+        workspace_name,     # testsdk uses workspace name for deployment name in assert query
         {'properties': deployment_properties}
     )
 
