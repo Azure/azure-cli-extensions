@@ -92,5 +92,5 @@ class AlertsScenarioTest(ScenarioTest):
         self.cmd('az monitor alert-processing-rule list -g {rg}',
                  checks=self.check('[0].name', 'test1'))
 
-        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test1')
-        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test2')
+        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test1 --yes')
+        self.cmd('az monitor alert-processing-rule delete -g {rg} -n test2 --yes')
