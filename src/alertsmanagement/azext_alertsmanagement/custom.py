@@ -230,15 +230,15 @@ def create_alertsmanagement_processing_rule(cmd, client,
                 'recurrenceType': schedule_recurrence_2_type,
                 'startTime': schedule_recurrence_2_start_time,
                 'endTime': schedule_recurrence_2_end_time
-                }
+            }
         elif schedule_recurrence_2_type in ['Weekly', 'Monthly']:
             type_of_days = 'daysOfWeek' if schedule_recurrence_2_type == 'Weekly' else 'daysOfMonth'
             second_recurrence = {
-                    'recurrenceType': schedule_recurrence_2_type,
-                    'startTime': schedule_recurrence_2_start_time,
-                    'endTime': schedule_recurrence_2_end_time,
-                    type_of_days: schedule_recurrence_2
-                    }
+                'recurrenceType': schedule_recurrence_2_type,
+                'startTime': schedule_recurrence_2_start_time,
+                'endTime': schedule_recurrence_2_end_time,
+                type_of_days: schedule_recurrence_2
+            }
 
         if second_recurrence is not None:
             properties['schedule']['recurrences'].append(second_recurrence)

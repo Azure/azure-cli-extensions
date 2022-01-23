@@ -57,7 +57,7 @@ helps['monitor alert-processing-rule list'] = """
               az monitor alert-processing-rule list
       - name: List all alert processing rules in a resource group
         text: |-
-              az monitor alert-processing-rule show --resource-group myResourceGroup
+              az monitor alert-processing-rule list --resource-group myResourceGroup
 """
 
 helps['monitor alert-processing-rule show'] = """
