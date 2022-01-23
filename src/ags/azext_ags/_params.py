@@ -25,8 +25,8 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
-        c.argument("skip_system_assigned_identity", arg_type=get_three_state_flag(), help="Do not enable system assignment identity")
-        c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignment for managed identity and current login users")
+        c.argument("skip_system_assigned_identity", arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
+        c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
 
     with self.argument_context("grafana delete") as c:
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
