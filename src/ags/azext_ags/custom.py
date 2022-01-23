@@ -6,29 +6,103 @@
 import json
 import requests
 
+from msrestazure.azure_exceptions import CloudError
+
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.profiles import ResourceType
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
 
 logger = get_logger(__name__)
 
 
+grafana_endpoints = {}
+
+
 def create_grafana(cmd, resource_group_name, grafana_name,
-                   enable_system_assigned_identity=True, location=None):
+                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False):
+    from azure.cli.core.commands.arm import resolve_role_id
+    from azure.cli.core.commands import LongRunningOperation
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
     resource = {
         "sku": {
             "name": "standard"
         },
         "location": location,
-        "identity": {"type": "SystemAssigned"} if enable_system_assigned_identity else None
+        "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"}
     }
-    return client.resources.begin_create_or_update(resource_group_name, "Microsoft.Dashboard", "",
-                                                   "grafana", grafana_name, "2021-09-01-preview", resource)
+    poller = client.resources.begin_create_or_update(resource_group_name, "Microsoft.Dashboard", "",
+                                                     "grafana", grafana_name, "2021-09-01-preview", resource)
+
+    if skip_role_assignments:
+        return poller
+    resource = LongRunningOperation(cmd.cli_ctx)(poller)
+
+    logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
+                   "managed identity and current CLI user", grafana_name)
+
+    subscription_scope = '/subscriptions/' + client._config.subscription_id
+
+    user_principal_id = _get_login_account_principal_id(cmd.cli_ctx)
+    grafana_admin_role_id = resolve_role_id(cmd.cli_ctx, "Grafana Admin", subscription_scope)
+    _create_role_assignment(cmd.cli_ctx, user_principal_id, grafana_admin_role_id, resource.id)
+
+    if resource.identity:
+        monitoring_reader_role_id = resolve_role_id(cmd.cli_ctx, "Monitoring Reader", subscription_scope)
+        _create_role_assignment(cmd.cli_ctx, resource.identity.principal_id, monitoring_reader_role_id,
+                                subscription_scope)
+
+    return resource
+
+
+def _get_login_account_principal_id(cli_ctx):
+    from azure.cli.core._profile import Profile
+    from azure.graphrbac import GraphRbacManagementClient
+    profile = Profile(cli_ctx=cli_ctx)
+    cred, _, tenant_id = profile.get_login_credentials(
+        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
+    client = GraphRbacManagementClient(cred, tenant_id,
+                                       base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
+    assignee = profile.get_current_account_user()
+    result = list(client.users.list(filter="userPrincipalName eq '{}'".format(assignee)))
+    if not result:
+        result = list(client.service_principals.list(
+            filter="servicePrincipalNames/any(c:c eq '{}')".format(assignee)))
+    if not result:
+        raise CLIError(("Failed to retrieve principal id for '{}', which is needed to create a "
+                        "role assignment").format(assignee))
+    return result[0].object_id
+
+
+def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
+    import time
+    import uuid
+    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                             'RoleAssignmentCreateParameters', mod='models',
+                                             operation_group='role_assignments')
+    parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id, principal_id=principal_id)
+
+    logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
+    retry_times = 36
+    assignment_name = uuid.uuid4()
+    for retry_time in range(0, retry_times):
+        try:
+            assignments_client.create(scope=scope, role_assignment_name=assignment_name,
+                                      parameters=parameters)
+            break
+        except CloudError as ex:
+            if 'role assignment already exists' in ex.message:
+                logger.info('Role assignment already exists')
+                break
+            if retry_time < retry_times and ' does not exist in the directory ' in ex.message:
+                time.sleep(5)
+                logger.warning('Retrying role assignment creation: %s/%s', retry_time + 1,
+                               retry_times)
+                continue
+            raise
 
 
 def list_grafana(cmd, resource_group_name=None):
@@ -58,32 +132,31 @@ def delete_grafana(cmd, grafana_name, yes=False, resource_group_name=None):
                                          "", "grafana", grafana_name, "2021-09-01-preview")
 
 
-def show_dashboard(cmd, grafana_name, uid=None, show_home_dashboard=None, resource_group_name=None):
-    if uid:
-        path = "/api/dashboards/uid/" + uid
-    elif show_home_dashboard:
-        path = "/api/dashboards/home"
-    else:
-        path = "/api/search"
-
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", path)
+def show_dashboard(cmd, grafana_name, uid, resource_group_name=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/dashboards/uid/" + uid)
     return json.loads(response.content)
 
 
 def list_dashboards(cmd, grafana_name, resource_group_name=None):
-    return show_dashboard(cmd, resource_group_name=resource_group_name,
-                          grafana_name=grafana_name, show_home_dashboard=None)
-
-
-def create_dashboard(cmd, grafana_name, definition, resource_group_name=None):
-    definition = _try_load_file_content(definition)
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
-                             json.loads(definition))
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/search?type=dash-db")
     return json.loads(response.content)
 
 
-def update_dashboard(cmd, grafana_name, definition, resource_group_name=None):
-    return create_dashboard(cmd, grafana_name, definition, resource_group_name)
+def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None):
+    definition = _try_load_file_content(definition)
+    data = json.loads(definition)
+    if title:
+        data['dashboard']['title'] = title
+    if folder:
+        folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
+        data['folderId'] = folder["id"]
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
+                             data)
+    return json.loads(response.content)
+
+
+def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None):
+    return create_dashboard(cmd, grafana_name, definition, folder=folder, resource_group_name=resource_group_name)
 
 
 def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None):
@@ -158,8 +231,19 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder):
     if response.status_code >= 400 or not json.loads(response.content)['uid']:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
                                  raise_for_error_status=False)
-    if response.status_code >= 400:
-        raise CLIError("Not found. Ex: {}".format(response.status_code))
+        if response.status_code >= 400:
+            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders")
+            if response.status_code >= 400:
+                raise CLIError("Not found. Ex: {}".format(response.status_code))
+            result = json.loads(response.content)
+            result = [f for f in result if f["title"] == folder]
+            if len(result) == 0:
+                raise CLIError("Not found. Ex: {}".format(response.status_code))
+            if len(result) > 1:
+                raise CLIError(("More than one folder has the same title of '{}'. Please use other "
+                                "unique identifiers").format(folder))
+            return result[0]
+
     return json.loads(response.content)
 
 
@@ -184,7 +268,8 @@ def show_user(cmd, grafana_name, user, resource_group_name=None):
 
 
 def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=None,
-                      max_data_points=100, internal_ms=1000, conditions=None, resource_group_name=None):
+                      max_data_points=100, internal_ms=1000, query_format=None,
+                      conditions=None, resource_group_name=None):
     import datetime
     import time
     from dateutil import parser
@@ -194,13 +279,13 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
         time_from = parser.parse(time_from)
     else:
         time_from = right_now - datetime.timedelta(hours=1)
-    time_from_epoch = time.mktime(time_from.timetuple()) * 1000
+    time_from_epoch = str(time.mktime(time_from.timetuple()) * 1000)
 
     if time_to:
         time_to = parser.parse(time_to)
     else:
         time_to = right_now
-    time_to_epoch = time.mktime(time_to.timetuple()) * 1000
+    time_to_epoch = str(time.mktime(time_to.timetuple()) * 1000)
 
     data_source_id = _find_data_source(cmd, resource_group_name, grafana_name, data_source)["id"]
 
@@ -211,16 +296,17 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
             "intervalMs": internal_ms,
             "maxDataPoints": max_data_points,
             "datasourceId": data_source_id,
-            "format": "time_series"
+            "format": query_format or "time_series",
+            "refId": "A"
         }]
     }
 
     if conditions:
-        for c in json.loads(conditions):
+        for c in conditions:
             k, v = c.split("=", 1)
-            data["queries"][k] = v
+            data["queries"][0][k] = v
 
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/tsdb/query")
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/ds/query", data)
     return json.loads(response.content)
 
 
@@ -250,8 +336,11 @@ def _try_load_file_content(file_content):
 
 
 def _send_request(cmd, resource_group_name, grafana_name, http_method, path, body=None, raise_for_error_status=True):
-    grafana = show_grafana(cmd, grafana_name, resource_group_name)
-    endpoint = grafana.properties["endpoint"]
+    endpoint = grafana_endpoints.get(grafana_name)
+    if not endpoint:
+        grafana = show_grafana(cmd, grafana_name, resource_group_name)
+        endpoint = grafana.properties["endpoint"]
+        grafana_endpoints[grafana_name] = endpoint
 
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)

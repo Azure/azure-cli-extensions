@@ -21,10 +21,12 @@ def load_arguments(self, _):
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=process_missing_resource_group_parameter)
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
+        c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
 
     with self.argument_context("grafana create") as c:
-        c.argument("enable_system_assigned_identity", arg_type=get_three_state_flag())
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
+        c.argument("skip_system_assigned_identity", arg_type=get_three_state_flag(), help="Do not enable system assignment identity")
+        c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignment for managed identity and current login users")
 
     with self.argument_context("grafana delete") as c:
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
@@ -32,12 +34,10 @@ def load_arguments(self, _):
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
         c.argument("definition", help="The complete dashboard model in json string, or a path to a file with such json string")
-
-    with self.argument_context("grafana dashboard show") as c:
-        c.argument("show_home_dashboard", arg_type=get_three_state_flag())
+        c.argument("title", help="title of a dashboard")
 
     with self.argument_context("grafana data-source") as c:
-        c.argument("data_source", help="id, name, uid which can identify a data source")
+        c.argument("data_source", help="name, id, uid which can identify a data source. CLI will search in the order of name, id, and uid, till finds a match")
         c.argument("definition", help="json string with data source definition, or a path to a file with such content")
 
     with self.argument_context("grafana data-source query") as c:
@@ -49,7 +49,6 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana folder") as c:
         c.argument("title", help="title of the folder")
-        c.argument("folder", help="id, uid which can identify a folder")
 
     with self.argument_context("grafana user") as c:
         c.argument("user", help="user login name or email")

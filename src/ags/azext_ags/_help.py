@@ -91,19 +91,18 @@ helps['grafana data-source create'] = """
           text: |
             az grafana data-source create --definition '{
               "access": "proxy",
-              "database": "mySqlDB",
+              "database": "testdb",
               "jsonData": {
                 "authenticationType": "SQL Server Authentication",
                 "encrypt": "false"
               },
-              "secureJsonFields": {
-                "password": true
+              "secureJsonData": {
+                "password": "verySecretPassword"
               },
               "name": "Microsoft SQL Server",
-              "password": "verySecretPasssword!",
               "type": "mssql",
-              "url": "mySqlServer.database.windows.net",
-              "user": "testuser1"
+              "url": "testsql.database.windows.net",
+              "user": "admin1"
             }'
 """
 
@@ -164,7 +163,7 @@ helps['grafana dashboard create'] = """
     examples:
         - name: Create a dashboard with definition in a json file. For quick start, clone from the output of "az grafana dashboard show", remove "id" and "uid", and apply changes.
           text: |
-            az grafana dashboard create -g MyResourceGroup -n MyGrafana --definition '{
+            az grafana dashboard create -g MyResourceGroup -n MyGrafana --title "My dashboard" --folder folder1 --definition '{
               "dashboard": {
                 "annotations": {
                     ...
@@ -172,9 +171,7 @@ helps['grafana dashboard create'] = """
                 "panels": {
                     ...
                 }
-                "title": "TestDashboard"
               },
-              "folderId": <folder id or skip to default to "General">,
               "message": "Create a new test dashboard"
             }'
 """
