@@ -350,7 +350,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
                            if "-ppe." in cmd.cli_ctx.cloud.endpoints.active_directory
                            else "ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")
     creds, _, _ = profile.get_raw_token(subscription=subscription,
-                                        resource=ags_first_party_app + "/.default")
+                                        resource=ags_first_party_app)
 
     headers = {
         "content-type": "application/json",
