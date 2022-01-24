@@ -104,7 +104,7 @@ def validate_config_file_path(path):
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
     try:
-        if not configJson['action'].lower() == "assess":
+        if not configJson['action'].strip().lower() == "assess":
             raise FileOperationError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
     except KeyError as e:
         raise FileOperationError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
@@ -139,12 +139,19 @@ def datamigration_register_ir(auth_key,
         raise UnclassifiedUserFault("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     validate_input(auth_key)
     if ir_path is not None:
+        validate_ir_extension(ir_path)
         if not os.path.exists(ir_path):
             raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {ir_path}. Please provide a valid Integration Runtime MSI path")
         install_gateway(ir_path)
 
     register_ir(auth_key)
 
+def validate_ir_extension(ir_path):
+    if ir_path is not None:
+        ir_extension = os.path.splitext(ir_path)[1]
+        if (".msi" != ir_extension):
+            raise InvalidArgumentValueError(f"Invalid Integration Runtime Extension. Please provide a valid Integration Runtime MSI path")
+    
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check whether the command is run as admin.
