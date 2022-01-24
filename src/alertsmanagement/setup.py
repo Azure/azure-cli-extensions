@@ -47,7 +47,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Github:qwordy',
     author_email='fey@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/alertsmanagement',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/alertsmanagement',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

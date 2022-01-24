@@ -46,7 +46,7 @@ setup(
     description='Microsoft Azure Command-Line Tools Cosmosdb-preview Extension',
     author='Kalyan khandrika',
     author_email='kakhandr@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cosmosdb-preview',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
