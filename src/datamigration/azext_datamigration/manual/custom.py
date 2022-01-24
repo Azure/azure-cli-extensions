@@ -189,7 +189,12 @@ def check_whether_gateway_installed(name):
         except FileNotFoundError:
             pass
 
-    return False
+    # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there)
+    try:
+        diaCmdPath = get_cmd_file_path_static()
+        return True
+    except (FileNotFoundError, IndexError):
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -246,5 +251,38 @@ def get_cmd_file_path():
         accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
 
         return accessValue
-    except FileNotFoundError as e:
-        raise FileOperationError("Failed: No installed IR found. Please install Integration Runtime and re-run this command") from e
+    except FileNotFoundError:
+        try:
+            diaCmdPath = get_cmd_file_path_static()
+            return diaCmdPath
+        except FileNotFoundError as e:
+            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command") from e
+        except IndexError as e:
+            raise FileOperationError("IR is not properly installed. Please re-install it and re-run this command") from e
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to get DiaCmdPath with Static Paths. This function assumes that IR is always installed in program files
+# -----------------------------------------------------------------------------------------------------------------
+def get_cmd_file_path_static():
+
+    # Base folder is taken as Program files or Program files (x86).
+    baseFolderX64 = os.path.join(r"C:\Program Files", "Microsoft Integration Runtime")
+    baseFolderX86 = os.path.join(r"C:\Program Files (x86)", "Microsoft Integration Runtime")
+    if os.path.exists(baseFolderX86):
+        baseFolder = baseFolderX86
+    else:
+        baseFolder = baseFolderX64
+
+    # Add the latest version to baseFolder path.
+    listDir = os.listdir(baseFolder)
+    listDir.sort(reverse=True)
+    versionFolder = os.path.join(baseFolder, listDir[0])
+
+    # Create diaCmd default path and check if it is valid or not.
+    diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
+
+    if not os.path.exists(diaCmdPath):
+        raise FileNotFoundError("The system cannot find the path specified: {diaCmdPath}")
+
+    return diaCmdPath
