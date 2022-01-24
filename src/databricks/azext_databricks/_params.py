@@ -13,12 +13,12 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag
 )
 
-from .vendored_sdks.databricks.models import PublicNetworkAccess, RequiredNsgRules
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from ._validators import validate_encryption_values, validate_network_id, validate_managed_resource_group
 
 
 def load_arguments(self, _):
+    from .vendored_sdks.databricks.models import PublicNetworkAccess, RequiredNsgRules
 
     with self.argument_context('databricks workspace create') as c:
         c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace.')
