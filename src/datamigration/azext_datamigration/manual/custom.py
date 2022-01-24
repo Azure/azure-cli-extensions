@@ -139,9 +139,6 @@ def datamigration_register_ir(auth_key,
         raise UnclassifiedUserFault("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
     validate_input(auth_key)
     if ir_path is not None:
-        validate_ir_extension(ir_path)
-        if not os.path.exists(ir_path):
-            raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {ir_path}. Please provide a valid Integration Runtime MSI path")
         install_gateway(ir_path)
 
     register_ir(auth_key)
@@ -172,7 +169,7 @@ def is_user_admin():
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Helper function to validate key input. More checks to be added here using regex.
+# Helper function to validate key input.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
     if key == "":
@@ -220,6 +217,11 @@ def install_gateway(path):
     if check_whether_gateway_installed("Microsoft Integration Runtime"):
         print("Microsoft Integration Runtime is already installed")
         return
+
+    validate_ir_extension(path)
+
+    if not os.path.exists(path):
+        raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {path}. Please provide a valid Integration Runtime MSI path")
 
     print("Start Integration Runtime installation")
 
