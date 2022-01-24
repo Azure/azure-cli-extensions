@@ -192,7 +192,10 @@ def check_whether_gateway_installed(name):
     # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there)
     try:
         diaCmdPath = get_cmd_file_path_static()
-        return True
+        if os.path.exists(diaCmdPath):
+            return True
+        else:
+            return False
     except (FileNotFoundError, IndexError):
         return False
 
@@ -283,6 +286,6 @@ def get_cmd_file_path_static():
     diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
 
     if not os.path.exists(diaCmdPath):
-        raise FileNotFoundError("The system cannot find the path specified: {diaCmdPath}")
+        raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
 
     return diaCmdPath
