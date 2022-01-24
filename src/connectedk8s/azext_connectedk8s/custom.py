@@ -1719,7 +1719,7 @@ def client_side_proxy_wrapper(cmd,
         subscription_id = get_subscription_id(cmd.cli_ctx)
         account = Profile().get_subscription(subscription_id)
         user_type = account['user']['type']
-        tenantId = account['homeTenantId']
+        tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':
             dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
