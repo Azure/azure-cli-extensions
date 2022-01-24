@@ -1,0 +1,22 @@
+name: $(Date:yyyyMMdd)$(Rev:.r-)-CleanUp
+
+trigger: none
+
+pool:
+  name: 1ES-AKS-Elastic-DevInfra-Auto-TearDown-Pool
+
+variables:
+  - group: azcli-aks-tool
+  - name: LIVE_TEST_BASE_DIR
+    value: "src/aks-preview/azcli_aks_live_test"
+
+jobs:
+- job: CleanUp
+  timeoutInMinutes: 60
+  displayName: "Clean Up"
+  steps:
+    - bash: |
+        $(LIVE_TEST_BASE_DIR)/scripts/clean_up.sh
+      env:
+        AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
+      displayName: "Clean up outdated resource groups"

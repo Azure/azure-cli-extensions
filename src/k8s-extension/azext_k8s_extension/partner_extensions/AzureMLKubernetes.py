@@ -10,6 +10,7 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
+from azext_k8s_extension.utils import get_cluster_rp_api_version
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models
@@ -80,9 +81,13 @@ class AzureMLKubernetes(DefaultExtension):
         self.privateEndpointILB = 'privateEndpointILB'
         self.privateEndpointNodeport = 'privateEndpointNodeport'
         self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
+        self.SSL_SECRET = 'sslSecret'
 
         # constants for existing AKS to AMLARC migration
         self.IS_AKS_MIGRATION = 'isAKSMigration'
+
+        # constants for others in Spec
+        self.installNvidiaDevicePlugin = 'installNvidiaDevicePlugin'
 
         # reference mapping
         self.reference_mapping = {
@@ -104,11 +109,11 @@ class AzureMLKubernetes(DefaultExtension):
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
         # validate the config
-        self.__validate_config(configuration_settings, configuration_protected_settings)
+        self.__validate_config(configuration_settings, configuration_protected_settings, release_namespace)
 
         # get the arc's location
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        cluster_rp, parent_api_version = _get_cluster_rp_api_version(cluster_type)
+        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}' \
             '/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         cluster_location = ''
@@ -165,8 +170,82 @@ class AzureMLKubernetes(DefaultExtension):
         user_confirmation_factory(cmd, yes)
 
     def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version, configuration_settings,
-               configuration_protected_settings):
+               configuration_protected_settings, yes=False):
         self.__normalize_config(configuration_settings, configuration_protected_settings)
+
+        # Prompt message to ask customer to confirm again
+        if len(configuration_settings) > 0:
+            impactScenario = ""
+            messageBody = ""
+            disableTraining = False
+            disableInference = False
+            disableNvidiaDevicePlugin = False
+            hasAllowInsecureConnections = False
+            hasPrivateEndpointNodeport = False
+            hasPrivateEndpointILB = False
+            hasNodeSelector = False
+            enableLogAnalyticsWS = False
+
+            enableTraining = _get_value_from_config_protected_config(self.ENABLE_TRAINING, configuration_settings, configuration_protected_settings)
+            if enableTraining is not None:
+                disableTraining = str(enableTraining).lower() == 'false'
+                if disableTraining:
+                    messageBody = messageBody + "enableTraining from True to False,\n"
+
+            enableInference = _get_value_from_config_protected_config(self.ENABLE_INFERENCE, configuration_settings, configuration_protected_settings)
+            if enableInference is not None:
+                disableInference = str(enableInference).lower() == 'false'
+                if disableInference:
+                    messageBody = messageBody + "enableInference from True to False,\n"
+
+            installNvidiaDevicePlugin = _get_value_from_config_protected_config(self.installNvidiaDevicePlugin, configuration_settings, configuration_protected_settings)
+            if installNvidiaDevicePlugin is not None:
+                disableNvidiaDevicePlugin = str(installNvidiaDevicePlugin).lower() == 'false'
+                if disableNvidiaDevicePlugin:
+                    messageBody = messageBody + "installNvidiaDevicePlugin from True to False if Nvidia GPU is used,\n"
+
+            allowInsecureConnections = _get_value_from_config_protected_config(self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
+            if allowInsecureConnections is not None:
+                hasAllowInsecureConnections = True
+                messageBody = messageBody + "allowInsecureConnections\n"
+
+            privateEndpointNodeport = _get_value_from_config_protected_config(self.privateEndpointNodeport, configuration_settings, configuration_protected_settings)
+            if privateEndpointNodeport is not None:
+                hasPrivateEndpointNodeport = True
+                messageBody = messageBody + "privateEndpointNodeport\n"
+
+            privateEndpointILB = _get_value_from_config_protected_config(self.privateEndpointILB, configuration_settings, configuration_protected_settings)
+            if privateEndpointILB is not None:
+                hasPrivateEndpointILB = True
+                messageBody = messageBody + "privateEndpointILB\n"
+
+            hasNodeSelector = _check_nodeselector_existed(configuration_settings, configuration_protected_settings)
+            if hasNodeSelector:
+                messageBody = messageBody + "nodeSelector. Update operation can't remove an existed node selector, but can update or add new ones.\n"
+
+            logAnalyticsWS = _get_value_from_config_protected_config(self.LOG_ANALYTICS_WS_ENABLED, configuration_settings, configuration_protected_settings)
+            if logAnalyticsWS is not None:
+                enableLogAnalyticsWS = str(logAnalyticsWS).lower() == 'true'
+                if enableLogAnalyticsWS:
+                    messageBody = messageBody + "To update logAnalyticsWS from False to True, please provide all original configurationProtectedSettings. Otherwise, those settings would be considered obsolete and deleted.\n"
+
+            if disableTraining or disableNvidiaDevicePlugin or hasNodeSelector:
+                impactScenario = "jobs"
+
+            if disableInference or disableNvidiaDevicePlugin or hasAllowInsecureConnections or hasPrivateEndpointNodeport or hasPrivateEndpointILB or hasNodeSelector:
+                if impactScenario == "":
+                    impactScenario = "online endpoints and deployments"
+                else:
+                    impactScenario = impactScenario + ", online endpoints and deployments"
+
+            if impactScenario != "":
+                message = ("\nThe following configuration update will IMPACT your active Machine Learning " + impactScenario +
+                           ". It will be the safe update if the cluster doesn't have active Machine Learning " + impactScenario + ".\n\n" + messageBody + "\nProceed?")
+                user_confirmation_factory(cmd, yes, message=message)
+            else:
+                if enableLogAnalyticsWS:
+                    message = "\n" + messageBody + "\nProceed?"
+                    user_confirmation_factory(cmd, yes, message=message)
 
         if len(configuration_protected_settings) > 0:
             subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -207,7 +286,7 @@ class AzureMLKubernetes(DefaultExtension):
             if self.sslKeyPemFile in configuration_protected_settings and \
                     self.sslCertPemFile in configuration_protected_settings:
                 logger.info(f"Both {self.sslKeyPemFile} and {self.sslCertPemFile} are set, update ssl key.")
-                self.__set_inference_ssl_from_file(configuration_protected_settings)
+                self.__set_inference_ssl_from_file(configuration_protected_settings, self.sslCertPemFile, self.sslKeyPemFile)
 
         return PatchExtension(auto_upgrade_minor_version=auto_upgrade_minor_version,
                               release_train=release_train,
@@ -240,7 +319,7 @@ class AzureMLKubernetes(DefaultExtension):
             logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
 
-    def __validate_config(self, configuration_settings, configuration_protected_settings):
+    def __validate_config(self, configuration_settings, configuration_protected_settings, release_namespace):
         # perform basic validation of the input config
         config_keys = configuration_settings.keys()
         config_protected_keys = configuration_protected_settings.keys()
@@ -261,12 +340,12 @@ class AzureMLKubernetes(DefaultExtension):
 
         if enable_inference:
             logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
-            self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
+            self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings, release_namespace)
             self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
-                "Please create Microsoft.AzureML.Kubernetes extension, either "
-                "for Machine Learning training or inference by specifying "
+                "To create Microsoft.AzureML.Kubernetes extension, either "
+                "enable Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'")
 
         configuration_settings[self.ENABLE_TRAINING] = configuration_settings.get(self.ENABLE_TRAINING, enable_training)
@@ -275,7 +354,7 @@ class AzureMLKubernetes(DefaultExtension):
         configuration_protected_settings.pop(self.ENABLE_TRAINING, None)
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
-    def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
+    def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings, release_namespace):
         isTestCluster = _get_value_from_config_protected_config(
             self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
         isTestCluster = str(isTestCluster).lower() == 'false'
@@ -289,16 +368,20 @@ class AzureMLKubernetes(DefaultExtension):
         if isAKSMigration:
             configuration_settings['scoringFe.namespace'] = "default"
             configuration_settings[self.IS_AKS_MIGRATION] = "true"
+        sslSecret = _get_value_from_config_protected_config(
+            self.SSL_SECRET, configuration_settings, configuration_protected_settings)
         feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
         feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
         allowInsecureConnections = _get_value_from_config_protected_config(
             self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
         allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
-        if (not feSslCertFile or not feSslKeyFile) and not allowInsecureConnections:
+        sslEnabled = (feSslCertFile and feSslKeyFile) or sslSecret
+        if not sslEnabled and not allowInsecureConnections:
             raise InvalidArgumentValueError(
-                "Provide ssl certificate and key. "
-                "Otherwise explicitly allow insecure connection by specifying "
-                "'--configuration-settings allowInsecureConnections=true'")
+                "To enable HTTPs endpoint, "
+                "either provide sslCertPemFile and sslKeyPemFile to config protected settings, "
+                f"or provide sslSecret (kubernetes secret name) containing both ssl cert and ssl key under {release_namespace} namespace. "
+                "Otherwise, to enable HTTP endpoint, explicitly set allowInsecureConnections=true.")
 
         feIsNodePort = _get_value_from_config_protected_config(
             self.privateEndpointNodeport, configuration_settings, configuration_protected_settings)
@@ -317,16 +400,17 @@ class AzureMLKubernetes(DefaultExtension):
             logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
 
-    def __set_inference_ssl_from_file(self, configuration_protected_settings):
+    def __set_inference_ssl_from_secret(self, configuration_settings, fe_ssl_secret):
+        configuration_settings['scoringFe.sslSecret'] = fe_ssl_secret
+
+    def __set_inference_ssl_from_file(self, configuration_protected_settings, fe_ssl_cert_file, fe_ssl_key_file):
         import base64
-        feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
-        feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
-        with open(feSslCertFile) as f:
+        with open(fe_ssl_cert_file) as f:
             cert_data = f.read()
             cert_data_bytes = cert_data.encode("ascii")
             ssl_cert = base64.b64encode(cert_data_bytes).decode()
             configuration_protected_settings['scoringFe.sslCert'] = ssl_cert
-        with open(feSslKeyFile) as f:
+        with open(fe_ssl_key_file) as f:
             key_data = f.read()
             key_data_bytes = key_data.encode("ascii")
             ssl_key = base64.b64encode(key_data_bytes).decode()
@@ -337,7 +421,16 @@ class AzureMLKubernetes(DefaultExtension):
             self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
         allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
         if not allowInsecureConnections:
-            self.__set_inference_ssl_from_file(configuration_protected_settings)
+            fe_ssl_secret = _get_value_from_config_protected_config(
+                self.SSL_SECRET, configuration_settings, configuration_protected_settings)
+            fe_ssl_cert_file = configuration_protected_settings.get(self.sslCertPemFile)
+            fe_ssl_key_file = configuration_protected_settings.get(self.sslKeyPemFile)
+
+            # always take ssl key/cert first, then secret if key/cert file is not provided
+            if fe_ssl_cert_file and fe_ssl_key_file:
+                self.__set_inference_ssl_from_file(configuration_protected_settings, fe_ssl_cert_file, fe_ssl_key_file)
+            else:
+                self.__set_inference_ssl_from_secret(configuration_settings, fe_ssl_secret)
         else:
             logger.warning(
                 'SSL is not enabled. Allowing insecure connections to the deployed services.')
@@ -543,18 +636,12 @@ def _get_value_from_config_protected_config(key, config, protected_config):
     return protected_config.get(key)
 
 
-def _get_cluster_rp_api_version(cluster_type) -> Tuple[str, str]:
-    rp = ''
-    parent_api_version = ''
-    if cluster_type.lower() == 'connectedclusters':
-        rp = 'Microsoft.Kubernetes'
-        parent_api_version = '2020-01-01-preview'
-    elif cluster_type.lower() == 'appliances':
-        rp = 'Microsoft.ResourceConnector'
-        parent_api_version = '2020-09-15-privatepreview'
-    elif cluster_type.lower() == '' or cluster_type.lower() == 'managedclusters':
-        rp = 'Microsoft.ContainerService'
-        parent_api_version = '2021-05-01'
-    else:
-        raise InvalidArgumentValueError("Error! Cluster type '{}' is not supported".format(cluster_type))
-    return rp, parent_api_version
+def _check_nodeselector_existed(configuration_settings, configuration_protected_settings):
+    config_keys = configuration_settings.keys()
+    config_protected_keys = configuration_protected_settings.keys()
+    all_keys = set(config_keys) | set(config_protected_keys)
+    if all_keys:
+        for key in all_keys:
+            if "nodeSelector" in key:
+                return True
+    return False

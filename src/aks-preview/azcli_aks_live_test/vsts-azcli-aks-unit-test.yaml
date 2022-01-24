@@ -3,7 +3,7 @@ name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mod
 trigger: none
 
 pool:
-  name: 1ES-AKS-Elastic-DevInfra-Normal-Pool
+  name: 1ES-AKS-Elastic-DevInfra-Auto-TearDown-Pool
 
 pr:
   branches:
@@ -59,13 +59,9 @@ jobs:
       condition: succeeded()
       displayName: "Set up Virtual Environment"
     - bash: |
-        docker exec $(ContainerName) /opt/scripts/test_cli_unit.sh
-      condition: and(succeeded(), in(variables['COVERAGE'], 'cli', 'all'))
-      displayName: Perform Unit Test for CLI
-    - bash: |
-        docker exec $(ContainerName) /opt/scripts/test_ext_unit.sh
-      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
-      displayName: Perform Unit Test for EXT
+        docker exec $(ContainerName) /opt/scripts/test_unit.sh $(COVERAGE)
+      condition: succeeded()
+      displayName: Perform Unit Test
     - task: CopyFiles@2
       inputs:
         contents: 'reports/**'
