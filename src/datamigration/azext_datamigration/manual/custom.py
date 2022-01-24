@@ -146,12 +146,17 @@ def datamigration_register_ir(auth_key,
 
     register_ir(auth_key)
 
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check IR path Extension
+# -----------------------------------------------------------------------------------------------------------------
 def validate_ir_extension(ir_path):
+
     if ir_path is not None:
         ir_extension = os.path.splitext(ir_path)[1]
-        if (".msi" != ir_extension):
-            raise InvalidArgumentValueError(f"Invalid Integration Runtime Extension. Please provide a valid Integration Runtime MSI path")
-    
+        if ir_extension != ".msi":
+            raise InvalidArgumentValueError("Invalid Integration Runtime Extension. Please provide a valid Integration Runtime MSI path.")
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check whether the command is run as admin.
