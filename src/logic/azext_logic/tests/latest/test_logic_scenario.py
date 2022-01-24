@@ -4,10 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
 from azure.cli.testsdk import JMESPathCheck
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
