@@ -101,7 +101,14 @@ helps['monitor alert-processing-rule create'] = """
     examples:
       - name: Create or update a rule that adds an action group to all alerts in a subscription
         text: |-
-              az monitor alert-processing-rule create --name 'AddActionGroupToSubscription' --rule-type AddActionGroups --scopes "/subscriptions/MySubscriptionId" --action-groups "/subscriptions/MySubscriptionId/resourcegroups/MyResourceGroup1/providers/microsoft.insights/actiongroups/ActionGroup1" --enabled true --resource-group alertscorrelationrg --description "Add ActionGroup1 to all alerts in the subscription"
+              az monitor alert-processing-rule create 
+              --name 'AddActionGroupToSubscription'
+              --rule-type AddActionGroups
+              --scopes "/subscriptions/MySubscriptionId"
+              --action-groups "/subscriptions/MySubscriptionId/resourcegroups/MyResourceGroup1/providers/microsoft.insights/actiongroups/ActionGroup1"
+              --enabled true
+              --resource-group alertscorrelationrg
+              --description "Add ActionGroup1 to all alerts in the subscription"
 
       - name: Create or update a rule that adds two action groups to all Sev0 and Sev1 alerts in two resource groups
         text: |-
