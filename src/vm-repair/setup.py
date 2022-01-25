@@ -37,7 +37,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='caiddev@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/vm-repair',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     package_data={
