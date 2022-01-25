@@ -7,7 +7,7 @@ There 2 ways to use it
 
 The test script below should explain command flows. Everything is under “az grafana”. Using “az grafana -h” should guide you through easily
 
-```baah
+```bash
     #!/bin/bash
 
     set -e
@@ -48,6 +48,6 @@ The test script below should explain command flows. Everything is under “az gr
 
 Notes:
 1.	I didn’t strictly follow the APIs; rather do what are needed for users to set up managed Grafana instances during infra built out. Do let me know any coverage gap
-2.	Dashboard provisioning is the hard part as Grafana doesn’t have strong schema for potential scaffolding through CLI, though GL folks mentioned they are improving. So current commands provide the bare minimum by letting you provide a json model. Realistically you can use “show” command or capture payload in the browser and use it as baseline to apply you change. 
+2.	Dashboard provisioning is the hard part as Grafana doesn’t have strong schema to support scaffolding through CLI, though it is being improved. So current commands provide the bare minimum by letting you provide a json model. Realistically, you can use “show” command or capture payload in the browser and use it as baseline to apply you change. 
 3.	The “uid” of Grafana artifact exposes a CLI bug that the leading “-” will break the command parser. For now, either follow the workaround mentioned above by using "=" between arg and parameter, or use other identifier such as id or name which CLI supports
 4.	Grafana list/show commands output a few empty fields. This will be fixed through Grafana Python SDK which will be ready in March
