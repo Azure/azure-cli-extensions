@@ -3196,7 +3196,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool delete nodepool1 label
         self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels ', checks=[
-            self.check('nodeLabels.label1', 'value2')
+            self.check('nodeLabels.label1', None)
         ])
 
         # nodepool show
