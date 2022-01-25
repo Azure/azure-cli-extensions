@@ -3132,7 +3132,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool1_name = "nodepool1"
         nodepool2_name = "nodepool2"
-        nodepool3_name = "nodepool3"
         tags = "key1=value1"
         new_tags = "key2=value2"
         labels = "label1=value1"
@@ -3148,7 +3147,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'labels': labels,
             'nodepool1_name': nodepool1_name,
             'nodepool2_name': nodepool2_name,
-            'nodepool3_name': nodepool3_name
         })
 
         # create
@@ -3185,6 +3183,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             os.close(fd)
             os.remove(temp_path)
 
+        # nodepool update nodepool1 label
         self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels {labels}', checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -3195,14 +3194,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('[0].nodeLabels.label1', 'value1'),
         ])
 
-        # nodepool update nodepool2 label
-        self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels label1=value2', checks=[
+        # nodepool delete nodepool1 label
+        self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels ', checks=[
             self.check('nodeLabels.label1', 'value2')
         ])
 
         # nodepool show
         self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name}', checks=[
-            self.check('nodeLabels.label1', 'value2')
+            self.check('nodeLabels.label1', None)
         ])
 
 
@@ -3250,10 +3249,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--nodepool-labels label1=value11'
+                     '--nodepool-labels '
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].nodeLabels.label1', 'value11'),
+            self.check('agentPoolProfiles[0].nodeLabels.label1', None),
             self.check('agentPoolProfiles[0].nodeLabels.label2', None),
         ])
 
