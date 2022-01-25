@@ -1950,7 +1950,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         is_default = (
             self.context.get_cluster_autoscaler_profile() is None and
             self.context.get_api_server_authorized_ip_ranges() is None and
-            self.context.nodepool_labels is None
+            self.context.get_nodepool_labels() is None
         )
 
         if not is_changed and is_default:
