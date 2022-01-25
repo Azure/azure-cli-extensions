@@ -19,6 +19,10 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Path to folder on Windows OS that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided or if executables can\'t be found in the provided folder.'
+                   'Ignored if not on Windows OS.')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
@@ -37,6 +41,9 @@ def load_arguments(self, _):
                    help='Folder where new generated keys will be stored.')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Path to folder that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided or if executables can\'t be found in the provided folder.')
 
     with self.argument_context('ssh cert') as c:
         c.argument('cert_path', options_list=['--file', '-f'],

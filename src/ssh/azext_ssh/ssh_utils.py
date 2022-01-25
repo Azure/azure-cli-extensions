@@ -20,7 +20,7 @@ CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
 CLEANUP_AWAIT_TERMINATION_IN_SECONDS = 30
 
 
-def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file, delete_keys, delete_cert):
+def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file, ssh_client_folder, delete_keys, delete_cert):
 
     ssh_arg_list = []
     if ssh_args:
@@ -41,7 +41,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
                                      log_file, True))
         cleanup_process.start()
 
-    command = [_get_ssh_path(), _get_host(username, ip)]
+    command = [_get_ssh_path(ssh_client_folder=ssh_client_folder), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
 
     logger.debug("Running ssh command %s", ' '.join(command))
@@ -64,20 +64,22 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def create_ssh_keyfile(private_key_file):
-    command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
+def create_ssh_keyfile(private_key_file, ssh_client_folder):
+    sshkeygen_path = _get_ssh_path("ssh-keygen", ssh_client_folder)
+    command = [sshkeygen_path, "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
-def get_ssh_cert_info(cert_file):
-    command = [_get_ssh_path("ssh-keygen"), "-L", "-f", cert_file]
+def get_ssh_cert_info(cert_file, ssh_client_folder):
+    sshkeygen_path = _get_ssh_path("ssh-keygen", ssh_client_folder)
+    command = [sshkeygen_path, "-L", "-f", cert_file]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
 
 
-def get_ssh_cert_principals(cert_file):
-    info = get_ssh_cert_info(cert_file)
+def get_ssh_cert_principals(cert_file, ssh_client_folder):
+    info = get_ssh_cert_info(cert_file, ssh_client_folder)
     principals = []
     in_principal = False
     for line in info:
@@ -87,23 +89,22 @@ def get_ssh_cert_principals(cert_file):
             in_principal = True
             continue
         if in_principal:
-            principals.append(line.strip())
-            
+            principals.append(line.strip())    
 
     return principals
 
 
-def _get_ssh_cert_validity(cert_file):
+def _get_ssh_cert_validity(cert_file, ssh_client_folder):
     if cert_file:
-        info = get_ssh_cert_info(cert_file)
+        info = get_ssh_cert_info(cert_file, ssh_client_folder)
         for line in info:
             if "Valid:" in line:
                 return line.strip()
     return None
 
 
-def get_certificate_start_and_end_times(cert_file):
-    validity_str = _get_ssh_cert_validity(cert_file)
+def get_certificate_start_and_end_times(cert_file, ssh_client_folder):
+    validity_str = _get_ssh_cert_validity(cert_file, ssh_client_folder)
     times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
         times = validity_str.replace("Valid: from ", "").split(" to ")
@@ -114,7 +115,7 @@ def get_certificate_start_and_end_times(cert_file):
 
 
 def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
-                     ip, username, cert_file, private_key_file, delete_keys, delete_cert):
+                     ip, username, cert_file, private_key_file, ssh_client_folder, delete_keys, delete_cert):
 
     if delete_keys or delete_cert:
         # Warn users to delete credentials once config file is no longer being used.
@@ -127,7 +128,7 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
 
         expiration = None
         try:
-            expiration = get_certificate_start_and_end_times(cert_file)[1]
+            expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
@@ -168,27 +169,56 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
     else:
         mode = 'a'
 
-    with open(config_path, mode) as f:
+    with open(config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
 
-def _get_ssh_path(ssh_command="ssh"):
+def _get_ssh_path(ssh_command="ssh", ssh_client_folder=None):
+    
+    if ssh_client_folder:
+        ssh_path = os.path.join(ssh_client_folder, ssh_command)
+        if platform.system() == 'Windows':
+            ssh_path = ssh_path + '.exe'
+        if os.path.isfile(ssh_path):
+            logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+            return ssh_path
+
     ssh_path = ssh_command
 
     if platform.system() == 'Windows':
-        arch_data = platform.architecture()
-        is_32bit = arch_data[0] == '32bit'
-        sys_path = 'SysNative' if is_32bit else 'System32'
+        # If OS architecture is 64bit and python architecture is 32bit,
+        # look for System32 under SysNative folder.
+        machine = platform.machine()
+        os_architecture = None
+        # python interpreter architecture
+        platform_architecture = platform.architecture()[0]
+        sys_path = None
+        
+        if machine.endswith('64'):
+            os_architecture = '64bit'
+        elif machine.endswith('86'):
+            os_architecture = '32bit'
+        elif machine == '':
+            raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
+        else:
+            raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
+        
+        if os_architecture == "64bit":
+            sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
+        else:
+            sys_path = 'System32'
+        
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
         ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
-        logger.debug("Platform architecture: %s", str(arch_data))
+        logger.debug("Platform architecture: %s", str(platform.architecture()[0]))
+        logger.debug("OS architecture: %s", os_architecture)
         logger.debug("System Root: %s", system_root)
-        logger.debug("Attempting to run ssh from path %s", ssh_path)
+        logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
 
         if not os.path.isfile(ssh_path):
             raise azclierror.UnclassifiedUserFault(
-                "Could not find " + ssh_command + ".exe.",
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
                 "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse")
 
     return ssh_path

@@ -1,5 +1,13 @@
 Release History
 ===============
+1.0.1
+-----
+* Added --ssh-client-folder
+* Fixed bug of when there are spaces in the paths
+* Abs path for config
+* Show error messages from the ssh log
+* Fix bug with config not being able to write non english characters
+
 1.0.0
 -----
 * Delete all keys and certificates created during execution of ssh vm.

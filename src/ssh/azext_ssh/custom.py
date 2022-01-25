@@ -21,23 +21,25 @@ logger = log.get_logger(__name__)
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_args=None):
+           ssh_client_folder=None, ssh_args=None):
     _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
     credentials_folder = None
     op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args)
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip,
-               local_user, cert_file, credentials_folder, op_call)
+               local_user, cert_file, credentials_folder, ssh_client_folder, op_call)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
-               local_user=None, cert_file=None, port=None, credentials_folder=None):
+               local_user=None, cert_file=None, port=None, credentials_folder=None, ssh_client_folder=None):
     _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
     # If user provides their own key pair, certificate will be written in the same folder as public key.
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
 
+    config_path = os.path.abspath(config_path)
+    
     op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name, overwrite, port)
     # Default credential location
     if not credentials_folder:
@@ -51,10 +53,10 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
 
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip,
-               local_user, cert_file, credentials_folder, op_call)
+               local_user, cert_file, credentials_folder, ssh_client_folder, op_call)
 
 
-def ssh_cert(cmd, cert_path=None, public_key_file=None):
+def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
@@ -65,10 +67,11 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
         keys_folder = os.path.dirname(cert_path)
         print(f"The generated SSH keys are saved in {keys_folder}. Please delete SSH keys when the certificate "
               "is no longer being used.")
-    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
-    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
+
+    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
+    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
     try:
-        cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file)[1]
+        cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
         print(f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time.")
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
@@ -76,7 +79,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
 
 
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip,
-               username, cert_file, credentials_folder, op_call):
+               username, cert_file, credentials_folder, ssh_client_folder, op_call):
     # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
     ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name, use_private_ip)
 
@@ -94,13 +97,14 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
         delete_cert = True
         public_key_file, private_key_file, delete_keys = _check_or_create_public_private_files(public_key_file,
                                                                                                private_key_file,
-                                                                                               credentials_folder)
-        cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
+                                                                                               credentials_folder,
+                                                                                               ssh_client_folder)
+        cert_file, username = _get_and_write_certificate(cmd, public_key_file, None, ssh_client_folder)
 
-    op_call(ssh_ip, username, cert_file, private_key_file, delete_keys, delete_cert)
+    op_call(ssh_ip, username, cert_file, private_key_file, ssh_client_folder, delete_keys, delete_cert)
 
 
-def _get_and_write_certificate(cmd, public_key_file, cert_file):
+def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
     cloudtoscope = {
         "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
         "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
@@ -131,7 +135,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
         cert_file = public_key_file + "-aadcert.pub"
     _write_cert_file(certificate, cert_file)
     # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
-    username = ssh_utils.get_ssh_cert_principals(cert_file)[0]
+    username = ssh_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
     return cert_file, username.lower()
 
 
@@ -177,7 +181,7 @@ def _assert_args(resource_group, vm_name, ssh_ip, cert_file, username):
         raise azclierror.FileOperationError(f"Certificate file {cert_file} not found")
 
 
-def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder):
+def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, ssh_client_folder=None):
     delete_keys = False
     # If nothing is passed, then create a directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
@@ -194,7 +198,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
                 os.makedirs(credentials_folder)
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
         private_key_file = os.path.join(credentials_folder, "id_rsa")
-        ssh_utils.create_ssh_keyfile(private_key_file)
+        ssh_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
 
     if not public_key_file:
         if private_key_file:
