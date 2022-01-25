@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DataMigrationManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/datamigration',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/datamigration',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
