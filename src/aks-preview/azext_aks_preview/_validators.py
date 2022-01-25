@@ -325,7 +325,6 @@ def validate_nodepool_labels(namespace):
         labels = namespace.nodepool_labels
     else:
         labels = namespace.labels
-    
     if labels is None:
         return
 

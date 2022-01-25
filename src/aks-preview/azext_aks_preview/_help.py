@@ -1098,7 +1098,7 @@ helps['aks nodepool update'] = """
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --labels
-          type: list
+          type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
