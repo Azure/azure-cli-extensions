@@ -7,7 +7,6 @@
 import requests
 import re
 import os
-import shlex
 
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -16,39 +15,34 @@ from requests.auth import HTTPBasicAuth
 import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
+from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
+from ._utils import (get_portal_uri)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
-from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
-from .vendored_sdks.appplatform.v2021_09_01_preview import models as models_20210901preview
+from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
-from .vendored_sdks.appplatform.v2021_09_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
-)
 from knack.log import get_logger
-from .azure_storage_file import FileService
-from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.util import get_file_json, sdk_no_wait
+from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
-from ._utils import _get_sku_name
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
-from threading import Timer
 import sys
 import json
 import base64
 from collections import defaultdict
+from ._log_stream import LogStream
+from ._build_service import _update_default_build_agent_pool
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -62,60 +56,22 @@ DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deplo
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None,
-                        vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
-                        service_runtime_network_resource_group=None, app_network_resource_group=None,
-                        app_insights_key=None, app_insights=None, sampling_rate=None,
-                        disable_app_insights=None, enable_java_agent=None,
-                        sku='Standard', tags=None, no_wait=False):
-    """
-    If app_insights_key, app_insights and disable_app_insights are all None,
-    will still create an application insights and enable application insights.
-    :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
-    :param app_insights: application insights name or its resource id
-    :param app_insights_key: Connection string or Instrumentation key
-    """
-    # TODO (jiec) Deco this method when we deco parameter "--enable-java-agent"
-    _warn_enable_java_agent(enable_java_agent)
-
-    if location is None:
-        location = _get_rg_location(cmd.cli_ctx, resource_group)
-    properties = models.ClusterResourceProperties()
-
-    if service_runtime_subnet or app_subnet or reserved_cidr_range:
-        properties.network_profile = models.NetworkProfile(
-            service_runtime_subnet_id=service_runtime_subnet,
-            app_subnet_id=app_subnet,
-            service_cidr=reserved_cidr_range,
-            app_network_resource_group=app_network_resource_group,
-            service_runtime_network_resource_group=service_runtime_network_resource_group
-        )
-
-    full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-
-    resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
-
-    poller = client.services.begin_create_or_update(
-        resource_group, name, resource)
-    logger.warning(" - Creating Service ..")
-    while poller.done() is False:
-        sleep(5)
-
-    _update_application_insights_asc_create(cmd, resource_group, name, location,
-                                            app_insights_key, app_insights, sampling_rate,
-                                            disable_app_insights, no_wait)
-    return poller
-
-
-def _warn_enable_java_agent(enable_java_agent):
+def _warn_enable_java_agent(enable_java_agent, **_):
     if enable_java_agent is not None:
         logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                     "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
 
 
-def _update_application_insights_asc_create(cmd, resource_group, name, location,
-                                            app_insights_key, app_insights, sampling_rate,
-                                            disable_app_insights, no_wait):
+def _update_application_insights_asc_create(cmd,
+                                            resource_group,
+                                            name,
+                                            location,
+                                            app_insights_key=None,
+                                            app_insights=None,
+                                            sampling_rate=None,
+                                            disable_app_insights=None,
+                                            no_wait=None,
+                                            **_):
     monitoring_setting_resource = models.MonitoringSettingResource()
     if disable_app_insights is not True:
         client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
@@ -130,28 +86,31 @@ def _update_application_insights_asc_create(cmd, resource_group, name, location,
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_app_insights=None, sku=None, tags=None, no_wait=False):
+                        disable_app_insights=None, sku=None, tags=None, build_pool_size=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
     :param app_insights_key: Connection string or Instrumentation key
     """
-    updated_resource = models.ServiceResource()
+    updated_resource = models_20220101preview.ServiceResource()
     update_service_tags = False
     update_service_sku = False
 
     # update service sku
     if sku is not None:
-        full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
-        updated_resource.sku = full_sku
+        updated_resource.sku = sku
         update_service_sku = True
 
     resource = client.services.get(resource_group, name)
     location = resource.location
-    updated_resource_properties = models.ClusterResourceProperties()
+    updated_resource_properties = models_20220101preview.ClusterResourceProperties()
+    updated_resource_properties.zone_redundant = None
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
+
+    _update_default_build_agent_pool(
+        cmd, client, resource_group, name, build_pool_size)
 
     # update service tags
     if tags is not None:
@@ -207,7 +166,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
 
 def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
     logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group, service_name=name)
+    return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 
 def spring_cloud_start(cmd, client, resource_group, name, no_wait=False):
@@ -251,17 +210,11 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
     if not keys.enabled:
         return None
     if app:
-        if deployment is None:
-            deployment = client.apps.get(
-                resource_group, name, app).properties.active_deployment_name
-        if deployment:
-            client.deployments.get(resource_group, name, app, deployment)
-            keys.primary_test_endpoint = "{}/{}/{}/".format(
-                keys.primary_test_endpoint, app, deployment)
-            keys.secondary_test_endpoint = "{}/{}/{}/".format(
-                keys.secondary_test_endpoint, app, deployment)
-        else:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+        deployment_resource = deployment_get(cmd, client, resource_group, name, app, deployment) \
+            if deployment else app_get(cmd, client, resource_group, name, app).properties.active_deployment
+        if deployment_resource:
+            keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment_resource.name)
+            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment_resource.name)
     return keys
 
 
@@ -278,17 +231,15 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   mount_path,
                                   mount_options=None,
                                   read_only=None):
-    client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-
-    storage_resource = client_0901_preview.storages.get(resource_group, service, storage_name)
-    app = client_0901_preview.apps.get(resource_group, service, name)
+    storage_resource = client.storages.get(resource_group, service, storage_name)
+    app = client.apps.get(resource_group, service, name)
 
     custom_persistent_disks = []
     if app.properties.custom_persistent_disks:
         for disk in app.properties.custom_persistent_disks:
             custom_persistent_disks.append(disk)
 
-    custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+    custom_persistent_disk_properties = models_20220101preview.AzureFileVolume(
         type=persistent_storage_type,
         share_name=share_name,
         mount_path=mount_path,
@@ -296,7 +247,7 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         read_only=read_only)
 
     custom_persistent_disks.append(
-        models_20210901preview.CustomPersistentDiskResource(
+        models_20220101preview.CustomPersistentDiskResource(
             storage_id=storage_resource.id,
             custom_persistent_disk_properties=custom_persistent_disk_properties))
 
@@ -309,264 +260,6 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     app_updated = client.apps.get(resource_group, service, name)
-    return app_updated
-
-
-def app_create(cmd, client, resource_group, service, name,
-               assign_endpoint=None,
-               cpu=None,
-               memory=None,
-               instance_count=None,
-               disable_probe=None,
-               runtime_version=None,
-               jvm_options=None,
-               env=None,
-               enable_persistent_storage=None,
-               assign_identity=None,
-               persistent_storage=None,
-               loaded_public_certificate_file=None):
-    cpu = validate_cpu(cpu)
-    memory = validate_memory(memory)
-    apps = _get_all_apps(client, resource_group, service)
-    if name in apps:
-        raise CLIError("App '{}' already exists.".format(name))
-    logger.warning("[1/4] Creating app with name '{}'".format(name))
-    properties = models_20210901preview.AppResourceProperties()
-    properties.temporary_disk = models_20210901preview.TemporaryDisk(
-        size_in_gb=5, mount_path="/tmp")
-
-    resource = client.services.get(resource_group, service)
-
-    _validate_instance_count(resource.sku.tier, instance_count)
-
-    if enable_persistent_storage:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(
-            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
-    else:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(
-            size_in_gb=0, mount_path="/persistent")
-
-    if persistent_storage:
-        client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-        data = get_file_json(persistent_storage, throw_on_empty=False)
-        custom_persistent_disks = []
-
-        if data:
-            if not data.get('customPersistentDisks'):
-                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
-            for item in data['customPersistentDisks']:
-                invalidProperties = not item.get('storageName') or \
-                    not item.get('customPersistentDiskProperties').get('type') or \
-                    not item.get('customPersistentDiskProperties').get('shareName') or \
-                    not item.get('customPersistentDiskProperties').get('mountPath')
-                if invalidProperties:
-                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
-                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
-                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
-                    type=item['customPersistentDiskProperties']['type'],
-                    share_name=item['customPersistentDiskProperties']['shareName'],
-                    mount_path=item['customPersistentDiskProperties']['mountPath'],
-                    mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                    read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
-
-                custom_persistent_disks.append(
-                    models_20210901preview.CustomPersistentDiskResource(
-                        storage_id=storage_resource.id,
-                        custom_persistent_disk_properties=custom_persistent_disk_properties))
-        properties.custom_persistent_disks = custom_persistent_disks
-
-    if loaded_public_certificate_file is not None:
-        data = get_file_json(loaded_public_certificate_file)
-        if data:
-            if not data.get('loadedCertificates'):
-                raise FileOperationError("loadedCertificates must be provided in the json file")
-            loaded_certificates = []
-            for item in data['loadedCertificates']:
-                invalidProperties = not item.get('certificateName') or not item.get('loadTrustStore')
-                if invalidProperties:
-                    raise FileOperationError("certificateName, loadTrustStore must be provided in the json file")
-                certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-                loaded_certificates.append(models_20210901preview.
-                                           LoadedCertificate(resource_id=certificate_resource.id,
-                                                             load_trust_store=item['loadTrustStore']))
-            properties.loaded_certificates = loaded_certificates
-
-    app_resource = models_20210901preview.AppResource()
-    app_resource.properties = properties
-    app_resource.location = resource.location
-    if assign_identity is True:
-        app_resource.identity = models_20210901preview.ManagedIdentityProperties(type="systemassigned")
-
-    poller = client.apps.begin_create_or_update(
-        resource_group, service, name, app_resource)
-    while poller.done() is False:
-        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-
-    # create default deployment
-    logger.warning(
-        "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version,
-                                                                       instance_count, disable_probe)
-    poller = client.deployments.begin_create_or_update(resource_group,
-                                                       service,
-                                                       name,
-                                                       DEFAULT_DEPLOYMENT_NAME,
-                                                       default_deployment_resource)
-
-    logger.warning("[3/4] Setting default deployment to production")
-
-    properties.active_deployment_name = DEFAULT_DEPLOYMENT_NAME
-    properties.public = assign_endpoint
-
-    app_resource.location = resource.location
-
-    app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
-    logger.warning(
-        "[4/4] Updating app '{}' (this operation can take a while to complete)".format(name))
-    while not poller.done() or not app_poller.done():
-        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-
-    active_deployment = client.deployments.get(
-        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
-    app = client.apps.get(resource_group, service, name)
-    app.properties.active_deployment = active_deployment
-    logger.warning("App create succeeded")
-    return app
-
-
-def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count, disable_probe=None):
-    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
-    container_probe_settings = None
-    if disable_probe is not None:
-        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
-
-    deployment_settings = models_20210901preview.DeploymentSettings(
-        resource_requests=resource_requests,
-        environment_variables=env,
-        jvm_options=jvm_options,
-        net_core_main_entry_path=None,
-        runtime_version=runtime_version,
-        container_probe_settings=container_probe_settings)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-
-    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
-
-    user_source_info = models_20210601preview.UserSourceInfo(
-        relative_path='<default>', type=file_type)
-    properties = models_20210901preview.DeploymentResourceProperties(
-        deployment_settings=deployment_settings,
-        source=user_source_info)
-
-    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
-    return deployment_resource
-
-
-def app_update(cmd, client, resource_group, service, name,
-               assign_endpoint=None,
-               deployment=None,
-               runtime_version=None,
-               jvm_options=None,
-               main_entry=None,
-               env=None,
-               disable_probe=None,
-               enable_persistent_storage=None,
-               https_only=None,
-               enable_end_to_end_tls=None,
-               persistent_storage=None,
-               loaded_public_certificate_file=None):
-    resource = client.services.get(resource_group, service)
-    location = resource.location
-
-    properties = models_20210901preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
-                                                              enable_end_to_end_tls=enable_end_to_end_tls)
-    if enable_persistent_storage is True:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(
-            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
-    if enable_persistent_storage is False:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
-
-    if persistent_storage:
-        client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-        data = get_file_json(persistent_storage, throw_on_empty=False)
-        custom_persistent_disks = []
-
-        if data:
-            if not data.get('customPersistentDisks'):
-                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
-            for item in data['customPersistentDisks']:
-                invalidProperties = not item.get('storageName') or \
-                    not item.get('customPersistentDiskProperties').get('type') or \
-                    not item.get('customPersistentDiskProperties').get('shareName') or \
-                    not item.get('customPersistentDiskProperties').get('mountPath')
-                if invalidProperties:
-                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
-                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
-                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
-                    type=item['customPersistentDiskProperties']['type'],
-                    share_name=item['customPersistentDiskProperties']['shareName'],
-                    mount_path=item['customPersistentDiskProperties']['mountPath'],
-                    mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                    read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
-
-                custom_persistent_disks.append(
-                    models_20210901preview.CustomPersistentDiskResource(
-                        storage_id=storage_resource.id,
-                        custom_persistent_disk_properties=custom_persistent_disk_properties))
-        properties.custom_persistent_disks = custom_persistent_disks
-    if loaded_public_certificate_file is not None:
-        data = get_file_json(loaded_public_certificate_file)
-        if data:
-            if not data.get('loadedCertificates'):
-                raise CLIError("loadedCertificates must be provided in the json file")
-            loaded_certificates = []
-            for item in data['loadedCertificates']:
-                invalidProperties = not item.get('certificateName') or not item.get('loadTrustStore')
-                if invalidProperties:
-                    raise CLIError("certificateName, loadTrustStore must be provided in the json file")
-                certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-                loaded_certificates.append(models_20210901preview.
-                                           LoadedCertificate(resource_id=certificate_resource.id,
-                                                             load_trust_store=item['loadTrustStore']))
-            properties.loaded_certificates = loaded_certificates
-
-    app_resource = models_20210901preview.AppResource()
-    app_resource.properties = properties
-    app_resource.location = location
-
-    logger.warning("[1/2] updating app '{}'".format(name))
-    poller = client.apps.begin_update(
-        resource_group, service, name, app_resource)
-    while poller.done() is False:
-        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-
-    app_updated = client.apps.get(resource_group, service, name)
-
-    logger.warning("[2/2] Updating deployment '{}'".format(deployment.name))
-    container_probe_settings = None
-    if disable_probe is not None:
-        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
-
-    deployment_settings = models_20210901preview.DeploymentSettings(
-        environment_variables=env,
-        jvm_options=jvm_options,
-        net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,
-        container_probe_settings=container_probe_settings)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-    properties = models_20210901preview.DeploymentResourceProperties(
-        deployment_settings=deployment_settings)
-    deployment_resource = models.DeploymentResource(properties=properties)
-    poller = client.deployments.begin_update(
-        resource_group, service, name, deployment.name, deployment_resource)
-    while poller.done() is False:
-        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-
-    deployment = client.deployments.get(
-        resource_group, service, name, deployment.name)
-    app_updated.properties.active_deployment = deployment
     return app_updated
 
 
@@ -636,83 +329,6 @@ def app_get(cmd, client,
     return app
 
 
-def app_deploy(cmd, client, resource_group, service, name,
-               version=None,
-               deployment=None,
-               disable_validation=None,
-               artifact_path=None,
-               source_path=None,
-               target_module=None,
-               runtime_version=None,
-               jvm_options=None,
-               main_entry=None,
-               env=None,
-               disable_probe=None,
-               container_image=None,
-               container_registry=None,
-               registry_username=None,
-               registry_password=None,
-               container_command=None,
-               container_args=None,
-               no_wait=False):
-    logger.warning(LOG_RUNNING_PROMPT)
-
-    old_deployment = client.deployments.get(resource_group, service, name, deployment.name)
-
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path, container_image)
-    if file_type == 'Container':
-        if old_deployment.properties.source and old_deployment.properties.source.type == 'Container':
-            return _app_deploy_container(client, resource_group, service, name, deployment.name,
-                                         None,
-                                         None,
-                                         None,
-                                         env,
-                                         disable_probe,
-                                         container_image,
-                                         container_registry,
-                                         registry_username,
-                                         registry_password,
-                                         container_command,
-                                         container_args,
-                                         no_wait,
-                                         True)
-        else:
-            return _app_deploy_container(client, resource_group, service, name, deployment.name,
-                                         old_deployment.properties.deployment_settings.resource_requests.cpu,
-                                         old_deployment.properties.deployment_settings.resource_requests.memory,
-                                         old_deployment.sku.capacity,
-                                         env,
-                                         disable_probe,
-                                         container_image,
-                                         container_registry,
-                                         registry_username,
-                                         registry_password,
-                                         container_command,
-                                         container_args,
-                                         no_wait,
-                                         False)
-    else:
-        return _app_deploy(client,
-                           resource_group,
-                           service,
-                           name,
-                           deployment,
-                           version,
-                           file_path,
-                           runtime_version,
-                           jvm_options,
-                           None,
-                           None,
-                           None,
-                           env,
-                           disable_probe,
-                           main_entry,
-                           target_module,
-                           no_wait,
-                           file_type,
-                           True)
-
-
 def app_scale(cmd, client, resource_group, service, name,
               deployment=None,
               cpu=None,
@@ -725,20 +341,18 @@ def app_scale(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+    resource_requests = models_20220101preview.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20210601preview.DeploymentSettings(resource_requests=resource_requests)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-    properties = models_20210601preview.DeploymentResourceProperties(
+    deployment_settings = models_20220101preview.DeploymentSettings(resource_requests=resource_requests)
+    properties = models_20220101preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
+    sku = models_20220101preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    deployment_resource = models_20220101preview.DeploymentResource(properties=properties, sku=sku)
     return sdk_no_wait(no_wait, client.deployments.begin_update,
                        resource_group, service, name, deployment.name, deployment_resource)
 
 
-def app_get_build_log(cmd, client, resource_group, service, name, deployment):
+def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment.properties.source.type != "Source":
         raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
     return stream_logs(client.deployments, resource_group, service, name, deployment.name)
@@ -759,18 +373,12 @@ def app_tail_log(cmd, client, resource_group, service, name,
             return None
         instance = instances[0].name
 
-    test_keys = client.services.list_test_keys(resource_group, service)
-    primary_key = test_keys.primary_key
-    if not primary_key:
+    log_stream = LogStream(client, resource_group, service)
+    if not log_stream:
         raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
 
-    # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
-    test_url = test_keys.primary_test_endpoint
-    base_url = test_url.replace('.test.', '.')
-    base_url = re.sub('https://.+?\@', '', base_url)
-
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
-        base_url, name, instance)
+        log_stream.base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
@@ -782,7 +390,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, format_json, exceptions))
+        streaming_url, "primary", log_stream.primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -794,9 +402,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 
 def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
-    app_resource = models_20210601preview.AppResource()
-    identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
-    properties = models_20210601preview.AppResourceProperties()
+    app_resource = models_20220101preview.AppResource()
+    identity = models_20220101preview.ManagedIdentityProperties(type="systemassigned")
+    properties = models_20220101preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -838,9 +446,9 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
 
 
 def app_identity_remove(cmd, client, resource_group, service, name):
-    app_resource = models_20210601preview.AppResource()
-    identity = models_20210601preview.ManagedIdentityProperties(type="none")
-    properties = models_20210601preview.AppResourceProperties()
+    app_resource = models_20220101preview.AppResource()
+    identity = models_20220101preview.ManagedIdentityProperties(type="none")
+    properties = models_20220101preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -856,40 +464,17 @@ def app_identity_show(cmd, client, resource_group, service, name):
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
-    deployments = _get_all_deployments(client, resource_group, service, name)
-    active_deployment = client.apps.get(
-        resource_group, service, name).properties.active_deployment_name
-    if deployment == active_deployment:
-        raise CLIError("Deployment '" + deployment +
-                       "' is already the production deployment")
-    if deployment not in deployments:
-        raise CLIError("Deployment '" + deployment +
-                       "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
-    properties = models_20210601preview.AppResourceProperties(
-        active_deployment_name=deployment)
-
-    resource = client.services.get(resource_group, service)
-    location = resource.location
-
-    app_resource = models_20210601preview.AppResource()
-    app_resource.properties = properties
-    app_resource.location = location
-
-    return client.apps.begin_update(resource_group, service, name, app_resource)
+    active_deployment_collection = models_20220101preview.ActiveDeploymentCollection(
+        active_deployment_names=[deployment]
+    )
+    return client.apps.begin_set_active_deployments(resource_group, service, name, active_deployment_collection)
 
 
 def app_unset_deployment(cmd, client, resource_group, service, name):
-    # It's designed to use empty string for active_deployment_name to unset active deployment
-    properties = models_20210601preview.AppResourceProperties(active_deployment_name="")
-
-    resource = client.services.get(resource_group, service)
-    location = resource.location
-
-    app_resource = models_20210601preview.AppResource()
-    app_resource.properties = properties
-    app_resource.location = location
-
-    return client.apps.begin_update(resource_group, service, name, app_resource)
+    active_deployment_collection = models_20220101preview.ActiveDeploymentCollection(
+        active_deployment_names=[]
+    )
+    return client.apps.begin_set_active_deployments(resource_group, service, name, active_deployment_collection)
 
 
 def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
@@ -906,7 +491,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
         if loaded_certificate.resource_id == certificate_resource.id:
             raise ClientRequestError("This certificate has already been loaded.")
 
-    loaded_certificates.append(models_20210901preview.
+    loaded_certificates.append(models_20220101preview.
                                LoadedCertificate(resource_id=certificate_resource_id,
                                                  load_trust_store=load_trust_store))
 
@@ -920,90 +505,6 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
 
     app_updated = client.apps.get(resource_group, service, name)
     return app_updated
-
-
-def deployment_create(cmd, client, resource_group, service, app, name,
-                      skip_clone_settings=False,
-                      version=None,
-                      artifact_path=None,
-                      source_path=None,
-                      disable_validation=None,
-                      target_module=None,
-                      runtime_version=None,
-                      jvm_options=None,
-                      main_entry=None,
-                      cpu=None,
-                      memory=None,
-                      instance_count=None,
-                      env=None,
-                      disable_probe=None,
-                      container_image=None,
-                      container_registry=None,
-                      registry_username=None,
-                      registry_password=None,
-                      container_command=None,
-                      container_args=None,
-                      no_wait=False):
-    cpu = validate_cpu(cpu)
-    memory = validate_memory(memory)
-    logger.warning(LOG_RUNNING_PROMPT)
-    deployments = _get_all_deployments(client, resource_group, service, app)
-    if name in deployments:
-        raise CLIError("Deployment " + name + " already exists")
-
-    resource = client.services.get(resource_group, service)
-    _validate_instance_count(resource.sku.tier, instance_count)
-
-    if not skip_clone_settings:
-        active_deployment_name = client.apps.get(
-            resource_group, service, app).properties.active_deployment_name
-        if not active_deployment_name:
-            logger.warning("No production deployment found, use --skip-clone-settings to skip copying settings from "
-                           "production deployment.")
-        else:
-            active_deployment = client.deployments.get(
-                resource_group, service, app, active_deployment_name)
-            if active_deployment:
-                cpu = cpu or active_deployment.properties.deployment_settings.resource_requests.cpu
-                memory = memory or active_deployment.properties.deployment_settings.resource_requests.memory
-                instance_count = instance_count or active_deployment.sku.capacity
-                jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
-                env = env or active_deployment.properties.deployment_settings.environment_variables
-                if active_deployment.properties.deployment_settings.container_probe_settings is not None:
-                    disable_probe = disable_probe or active_deployment.properties.deployment_settings.container_probe_settings.disable_probe
-    else:
-        cpu = cpu or "1"
-        memory = memory or "1Gi"
-        instance_count = instance_count or 1
-
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path, container_image)
-    if file_type == 'Container':
-        return _app_deploy_container(client, resource_group, service, app, name,
-                                     cpu,
-                                     memory,
-                                     instance_count,
-                                     env,
-                                     disable_probe,
-                                     container_image,
-                                     container_registry,
-                                     registry_username,
-                                     registry_password,
-                                     container_command,
-                                     container_args,
-                                     no_wait)
-    else:
-        return _app_deploy(client, resource_group, service, app, name, version, file_path,
-                           runtime_version,
-                           jvm_options,
-                           cpu,
-                           memory,
-                           instance_count,
-                           env,
-                           disable_probe,
-                           main_entry,
-                           target_module,
-                           no_wait,
-                           file_type)
 
 
 def _validate_instance_count(sku, instance_count=None):
@@ -1024,21 +525,21 @@ def deployment_list(cmd, client, resource_group, service, app):
 
 
 def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
-    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Heap dump is triggered.")
     return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
                                     deployment=None):
-    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Thread dump is triggered.")
     return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
                          deployment=None):
-    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
+    diagnostic_parameters = models_20220101preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
                                                                         duration=duration)
     logger.info("JFR is triggered.")
     return client.deployments.begin_start_jfr(resource_group, service, app, deployment.name, diagnostic_parameters)
@@ -1049,10 +550,9 @@ def deployment_get(cmd, client, resource_group, service, app, name):
 
 
 def deployment_delete(cmd, client, resource_group, service, app, name, no_wait=False):
-    active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
-    if active_deployment_name == name:
+    deployment = client.deployments.get(resource_group, service, app, name)
+    if deployment.properties.active:
         logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
-    client.deployments.get(resource_group, service, app, name)
     return sdk_no_wait(no_wait, client.deployments.begin_delete, resource_group, service, app, name)
 
 
@@ -1501,197 +1001,6 @@ def _get_redis_primary_key(cli_ctx, resource_id):
     return keys.primary_key
 
 
-def _get_all_deployments(client, resource_group, service, app):
-    deployments = []
-    deployments_resource = client.deployments.list(
-        resource_group, service, app)
-    deployments = list(deployments_resource)
-    deployments = (deployment.name for deployment in deployments)
-    return deployments
-
-
-def _get_all_apps(client, resource_group, service):
-    apps = []
-    apps_resource = client.apps.list(resource_group, service)
-    apps = list(apps_resource)
-    apps = (app.name for app in apps)
-    return apps
-
-
-# pylint: disable=too-many-locals, no-member
-def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
-                instance_count,
-                env,
-                disable_probe=None,
-                main_entry=None,
-                target_module=None,
-                no_wait=False,
-                file_type=None,
-                update=False):
-    if file_type is None:
-        # update means command is az spring-cloud app deploy xxx
-        if update:
-            raise RequiredArgumentMissingError(
-                "One of the following arguments are required: '--artifact-path' or '--source-path'")
-        # if command is az spring-cloud app deployment create xxx, create default deployment
-        else:
-            logger.warning(
-                "Creating default deployment without artifact/source folder. Please specify the --artifact-path/--source-path argument explicitly if needed.")
-            default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options,
-                                                                               runtime_version, instance_count, disable_probe)
-            return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                               resource_group, service, app, name, default_deployment_resource)
-    upload_url = None
-    relative_path = None
-    logger.warning("file_type is {}".format(file_type))
-    logger.warning("[1/3] Requesting for upload URL")
-    try:
-        response = client.apps.get_resource_upload_url(resource_group, service, app)
-        upload_url = response.upload_url
-        relative_path = response.relative_path
-    except (AttributeError, HttpResponseError) as e:
-        raise CLIError(
-            "Failed to get a SAS URL to upload context. Error: {}".format(e.message))
-
-    resource_requests = None
-    if cpu is not None or memory is not None:
-        resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
-
-    container_probe_settings = None
-    if disable_probe is not None:
-        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
-
-    deployment_settings = models_20210901preview.DeploymentSettings(
-        resource_requests=resource_requests,
-        environment_variables=env,
-        jvm_options=jvm_options,
-        net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,
-        container_probe_settings=container_probe_settings)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    user_source_info = models_20210601preview.UserSourceInfo(
-        version=version,
-        relative_path=relative_path,
-        type=file_type,
-        artifact_selector=target_module)
-    properties = models_20210601preview.DeploymentResourceProperties(
-        deployment_settings=deployment_settings,
-        source=user_source_info)
-    # upload file
-    if not upload_url:
-        raise CLIError("Failed to get a SAS URL to upload context.")
-    account_name, endpoint_suffix, share_name, relative_name, sas_token = get_azure_files_info(upload_url)
-    logger.warning("[2/3] Uploading package to blob")
-    file_service = FileService(account_name, sas_token=sas_token, endpoint_suffix=endpoint_suffix)
-    file_service.create_file_from_path(share_name, None, relative_name, path)
-
-    if file_type == "Source" and not no_wait:
-        def get_log_url():
-            try:
-                log_file_url_response = client.deployments.get_log_file_url(
-                    resource_group_name=resource_group,
-                    service_name=service,
-                    app_name=app,
-                    deployment_name=name)
-                if not log_file_url_response:
-                    return None
-                return log_file_url_response.url
-            except HttpResponseError:
-                return None
-
-        def get_logs_loop():
-            log_url = None
-            while not log_url or log_url == old_log_url:
-                log_url = get_log_url()
-                sleep(10)
-
-            logger.warning("Trying to fetch build logs")
-            stream_logs(client.deployments, resource_group, service,
-                        app, name, logger_level_func=print)
-
-        old_log_url = get_log_url()
-
-        timer = Timer(3, get_logs_loop)
-        timer.daemon = True
-        timer.start()
-
-    # create deployment
-    logger.warning(
-        "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
-    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
-    if update:
-        return sdk_no_wait(no_wait, client.deployments.begin_update,
-                           resource_group, service, app, name, deployment_resource)
-
-    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                       resource_group, service, app, name, deployment_resource)
-
-
-# pylint: disable=too-many-locals, no-member
-def _app_deploy_container(client, resource_group, service, app, name, cpu, memory,
-                          instance_count,
-                          env,
-                          disable_probe,
-                          container_image,
-                          container_registry,
-                          registry_username,
-                          registry_password,
-                          container_command,
-                          container_args,
-                          no_wait=False,
-                          update=False):
-
-    resource_requests = None
-    if cpu is not None or memory is not None:
-        resource_requests = models_20210901preview.ResourceRequests(cpu=cpu, memory=memory)
-    if container_command is not None:
-        container_command = shlex.split(container_command)
-    if container_args is not None:
-        container_args = shlex.split(container_args)
-
-    container_probe_settings = None
-    if disable_probe is not None:
-        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
-
-    deployment_settings = models_20210901preview.DeploymentSettings(
-        resource_requests=resource_requests,
-        environment_variables=env,
-        container_probe_settings=container_probe_settings)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-    sku = models_20210901preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    image_registry_credential = models_20210901preview.ImageRegistryCredential(
-        username=registry_username,
-        password=registry_password    # [SuppressMessage("Microsoft.Security", "CS001:SecretInline", Justification="false positive")]
-    ) if registry_username is not None and registry_password is not None else None
-    custom_container = models_20210901preview.CustomContainer(
-        server=container_registry,
-        container_image=container_image,
-        command=container_command,
-        args=container_args,
-        image_registry_credential=image_registry_credential,
-    )
-    user_source_info = models_20210901preview.UserSourceInfo(
-        type='Container',
-        custom_container=custom_container)
-    properties = models_20210901preview.DeploymentResourceProperties(
-        deployment_settings=deployment_settings,
-        source=user_source_info)
-
-    # create deployment
-    logger.warning(
-        "Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
-    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
-    if update:
-        return sdk_no_wait(no_wait, client.deployments.begin_update,
-                           resource_group, service, app, name, deployment_resource)
-
-    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
-                       resource_group, service, app, name, deployment_resource)
-
-
 # pylint: disable=bare-except, too-many-statements
 def _get_app_log(url, user_name, password, format_json, exceptions):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
@@ -1815,13 +1124,13 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
 
 def storage_callback(pipeline_response, deserialized, headers):
-    return models_20210901preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
+    return models_20220101preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
 
 def storage_add(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
-        properties = models_20210901preview.StorageAccount(
+        properties = models_20220101preview.StorageAccount(
             storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
@@ -1830,7 +1139,7 @@ def storage_add(client, resource_group, service, name, storage_type, account_nam
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        storage_resource=models_20220101preview.StorageResource(properties=properties),
         cls=storage_callback)
 
 
@@ -1850,7 +1159,7 @@ def storage_remove(client, resource_group, service, name):
 def storage_update(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
-        properties = models_20210901preview.StorageAccount(
+        properties = models_20220101preview.StorageAccount(
             storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
@@ -1859,7 +1168,7 @@ def storage_update(client, resource_group, service, name, storage_type, account_
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        storage_resource=models_20220101preview.StorageResource(properties=properties),
         cls=storage_callback)
 
 
@@ -1891,7 +1200,7 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
     if vault_uri is not None:
         if only_public_cert is None:
             only_public_cert = False
-        properties = models_20210901preview.KeyVaultCertificateProperties(
+        properties = models_20220101preview.KeyVaultCertificateProperties(
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
@@ -1906,15 +1215,15 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             except Exception:
                 raise FileOperationError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
         else:
-            raise FileOperationError("public_certificate_file %s could not be found", public_certificate_file)
-        properties = models_20210901preview.ContentCertificateProperties(
+            raise FileOperationError("public_certificate_file {} could not be found".format(public_certificate_file))
+        properties = models_20220101preview.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
         )
-    certificate_resource = models_20210901preview.CertificateResource(properties=properties)
+    certificate_resource = models_20220101preview.CertificateResource(properties=properties)
 
     def callback(pipeline_response, deserialized, headers):
-        return models_20210901preview.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+        return models_20220101preview.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
@@ -1966,7 +1275,7 @@ def certificate_list_reference_app(cmd, client, resource_group, service, name):
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
                 certificate=None,
-                enable_end_to_end_tls=None):
+                enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1974,25 +1283,24 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
-    if enable_end_to_end_tls is not None:
-        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+    if enable_ingress_to_app_tls is not None:
+        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,
                                                         domain_name, custom_domain_resource)
 
 
-def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+def _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls):
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
-    app_resource = models_20201101preview.AppResource()
+    properties = models_20220101preview.AppResourceProperties(enable_end_to_end_tls=enable_ingress_to_app_tls)
+    app_resource = models_20220101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
-    logger.warning("Set end to end tls for app '{}'".format(app))
+    logger.warning("Set ingress to app tls for app '{}'".format(app))
     poller = client.apps.begin_update(
         resource_group, service, app, app_resource)
     return poller.result()
@@ -2009,7 +1317,7 @@ def domain_list(cmd, client, resource_group, service, app):
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
                   certificate=None,
-                  enable_end_to_end_tls=None):
+                  enable_ingress_to_app_tls=None):
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -2017,8 +1325,8 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
-    if enable_end_to_end_tls is not None:
-        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+    if enable_ingress_to_app_tls is not None:
+        _update_app_e2e_tls(cmd, client, resource_group, service, app, enable_ingress_to_app_tls)
 
     custom_domain_resource = models.CustomDomainResource(properties=properties)
     return client.custom_domains.begin_create_or_update(resource_group, service, app,

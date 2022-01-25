@@ -9,7 +9,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 
 
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE, \
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE, \
     CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
@@ -79,7 +79,7 @@ def generic_data_service_factory(cli_ctx, service, name=None, key=None, connecti
 
 
 def storage_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE)
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
 
 
 def blob_data_service_factory(cli_ctx, kwargs):
@@ -135,6 +135,10 @@ def cf_blob_data_gen_update(cli_ctx, kwargs):
 
 def cf_mgmt_file_services(cli_ctx, _):
     return storage_client_factory(cli_ctx).file_services
+
+
+def cf_local_users(cli_ctx, _):
+    return storage_client_factory(cli_ctx).local_users
 
 
 def get_account_url(cli_ctx, account_name, service):

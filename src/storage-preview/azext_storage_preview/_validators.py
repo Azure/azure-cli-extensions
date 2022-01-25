@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access, logging-format-interpolation
 import os
+import argparse
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
@@ -14,7 +15,7 @@ from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
-from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
+from .profiles import CUSTOM_MGMT_STORAGE
 
 logger = get_logger(__name__)
 
@@ -30,7 +31,7 @@ def _query_account_key(cli_ctx, account_name):
     """Query the storage account key. This is used when the customer doesn't offer account key but name."""
     rg, scf = _query_account_rg(cli_ctx, account_name)
     t_storage_account_keys = get_sdk(
-        cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
+        cli_ctx, CUSTOM_MGMT_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
 
     if t_storage_account_keys:
         return scf.storage_accounts.list_keys(rg, account_name).key1
@@ -40,7 +41,7 @@ def _query_account_key(cli_ctx, account_name):
 
 def _query_account_rg(cli_ctx, account_name):
     """Query the storage account's resource group, which the mgmt sdk requires."""
-    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE)
+    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
     acc = next((x for x in scf.storage_accounts.list() if x.name == account_name), None)
     if acc:
         from msrestazure.tools import parse_resource_id
@@ -336,35 +337,23 @@ def validate_encryption_services(cmd, namespace):
     Builds up the encryption services object for storage account operations based on the list of services passed in.
     """
     if namespace.encryption_services:
-        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE,
+        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE,
                                                               'EncryptionServices', 'EncryptionService', mod='models')
         services = {service: t_encryption_service(enabled=True) for service in namespace.encryption_services}
 
         namespace.encryption_services = t_encryption_services(**services)
 
 
-def validate_encryption_source(cmd, namespace):
-    ns = vars(namespace)
-
-    key_name = ns.pop('encryption_key_name', None)
-    key_version = ns.pop('encryption_key_version', None)
-    key_vault_uri = ns.pop('encryption_key_vault', None)
-
-    if namespace.encryption_key_source == 'Microsoft.Keyvault' and not (key_name and key_version and key_vault_uri):
-        raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are required '
+def validate_encryption_source(namespace):
+    if namespace.encryption_key_source == 'Microsoft.Keyvault' and \
+            not (namespace.encryption_key_name and namespace.encryption_key_vault):
+        raise ValueError('--encryption-key-name and --encryption-key-vault are required '
                          'when --encryption-key-source=Microsoft.Keyvault is specified.')
 
-    if key_name or key_version or key_vault_uri:
-        if namespace.encryption_key_source != 'Microsoft.Keyvault':
+    if namespace.encryption_key_name or namespace.encryption_key_version is not None or namespace.encryption_key_vault:
+        if namespace.encryption_key_source and namespace.encryption_key_source != 'Microsoft.Keyvault':
             raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
-                             'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'KeyVaultProperties',
-                                     mod='models')
-        if not KeyVaultProperties:
-            return
-
-        kv_prop = KeyVaultProperties(key_name=key_name, key_version=key_version, key_vault_uri=key_vault_uri)
-        namespace.encryption_key_vault_properties = kv_prop
+                             'applicable without Microsoft.Keyvault key-source.')
 
 
 def get_file_path_validator(default_file_param=None):
@@ -409,6 +398,18 @@ def validate_storage_account(cmd, namespace):
     if "access" in cmd.name:
         if not storage_account_property.is_hns_enabled:
             raise CLIError("You storage account doesn't enable HNS property.")
+
+
+def validate_immutability_arguments(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if not namespace.enable_alw:
+        if any([namespace.immutability_period_since_creation_in_days,
+                namespace.immutability_policy_state, namespace.allow_protected_append_writes is not None]):
+            raise InvalidArgumentValueError("Incorrect usage: To enable account level immutability, "
+                                            "need to specify --enable-alw true. "
+                                            "Cannot set --enable_alw to false and specify "
+                                            "--immutability-period --immutability-state "
+                                            "--allow-append")
 
 
 def validate_subnet(cmd, namespace):
@@ -626,3 +627,45 @@ def process_file_upload_batch_parameters(cmd, namespace):
 
     namespace.source = os.path.realpath(namespace.source)
     namespace.share_name = namespace.destination
+
+
+# pylint: disable=too-few-public-methods
+class PermissionScopeAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.permission_scope:
+            namespace.permission_scope = []
+        PermissionScope = namespace._cmd.get_models('PermissionScope')
+        try:
+            permissions, service, resource_name = '', '', ''
+            for s in values:
+                if "permissions" in s:
+                    permissions = s.split('=')[1]
+                elif "service" in s:
+                    service = s.split('=')[1]
+                elif "resource-name" in s:
+                    resource_name = s.split('=')[1]
+        except (ValueError, TypeError):
+            raise CLIError('usage error: --permission-scope VARIABLE OPERATOR VALUE')
+        namespace.permission_scope.append(PermissionScope(
+            permissions=permissions,
+            service=service,
+            resource_name=resource_name
+        ))
+
+
+# pylint: disable=too-few-public-methods
+class SshPublicKeyAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.ssh_authorized_key:
+            namespace.ssh_authorized_key = []
+        SshPublicKey = namespace._cmd.get_models('SshPublicKey')
+        try:
+            description, key = '', ''
+            for k in values:
+                if "description" in k:
+                    description = k.split('=')[1]
+                elif "key" in k:
+                    key = k.split('=')[1]
+        except (ValueError, TypeError):
+            raise CLIError('usage error: --ssh-authorized-key VARIABLE OPERATOR VALUE')
+        namespace.ssh_authorized_key.append(SshPublicKey(description=description, key=key))
