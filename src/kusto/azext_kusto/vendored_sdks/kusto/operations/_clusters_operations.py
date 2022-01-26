@@ -156,10 +156,7 @@ class ClustersOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            #import jsonpickle
-            #data = jsonpickle.encode(response)
-            #print(data)
-            #raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('Cluster', pipeline_response)
