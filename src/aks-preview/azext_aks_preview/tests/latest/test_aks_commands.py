@@ -3186,16 +3186,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # nodepool list
         self.cmd('aks nodepool list --resource-group={resource_group} --cluster-name={name}', checks=[
             self.check('[0].mode', 'System'),
-            self.check('[0].node_taints[0]', 'key1=value1:NoSchedule'),
+            self.check('[0].nodeTaints[0]', 'key1=value1:NoSchedule'),
         ])
 
         # nodepool delete nodepool1 label
         update_nodepool = self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels ')
-        assert len(update_nodepool["node_taints"]) == 0
+        assert len(update_nodepool["nodeTaints"]) == 0
 
         # nodepool show
         show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name}')
-        assert len(show_nodepool["node_taints"]) == 0
+        assert len(show_nodepool["nodeTaints"]) == 0
 
 
 
