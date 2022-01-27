@@ -3188,7 +3188,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # nodepool delete nodepool1 label
-        self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --node-taints ')
+        self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --node-taints "" ')
 
         # nodepool show
         show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} -o json').get_output_in_json()
