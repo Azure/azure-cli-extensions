@@ -1,7 +1,7 @@
-There 2 ways to use it
+There are 2 ways to get Azure CLI for Grafana
 
-- If you have an existing CLI, install the extension: `az extension add  --source https://github.com/yugangw-msft/azure-cli-extensions/raw/ags/src/ags/dist/ags-0.1.0-py3-none-any.whl`
-- If you have docker, run `docker run -it graazurecli.azurecr.io/azure-cli`
+- If you have an existing Azure CLI, install the extension: `az extension add  --source https://github.com/yugangw-msft/azure-cli-extensions/raw/ags/src/ags/dist/ags-0.1.0-py3-none-any.whl`
+- Or, if you have docker, run `docker run -it graazurecli.azurecr.io/azure-cli`
  
 
 
