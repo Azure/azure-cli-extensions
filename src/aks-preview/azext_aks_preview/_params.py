@@ -282,6 +282,7 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
+        c.argument('node_taints', type=str, validator=validate_taints)
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
