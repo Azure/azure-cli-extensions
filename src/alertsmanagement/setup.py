@@ -8,6 +8,11 @@
 
 from codecs import open
 from setuptools import setup, find_packages
+try:
+    from azure_bdist_wheel import cmdclass
+except ImportError:
+    from distutils import log as logger
+    logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
 VERSION = '0.2.0'
