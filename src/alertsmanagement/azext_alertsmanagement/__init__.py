@@ -27,14 +27,6 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_alertsmanagement.commands import load_command_table
         load_command_table(self, args)
-        try:
-            from azext_alertsmanagement.manual.commands import load_command_table as load_command_table_manual
-            load_command_table_manual(self, args)
-        except ImportError as e:
-            if e.name.endswith('manual.commands'):
-                pass
-            else:
-                raise e
         return self.command_table
 
     def load_arguments(self, command):
