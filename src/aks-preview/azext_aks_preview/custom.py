@@ -1781,9 +1781,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
-    taints_array = []
-
     if node_taints is not None:
+        taints_array = []
         for taint in node_taints.split(','):
             try:
                 taint = taint.strip()
@@ -1791,7 +1790,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
             except ValueError:
                 raise CLIError(
                     'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
-        instance.node_taints=taints_array
+        instance.node_taints = taints_array
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:

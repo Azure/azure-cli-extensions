@@ -3130,7 +3130,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool1_name = "nodepool1"
-        nodepool2_name = "nodepool2"
         taints = "key1=value1:NoSchedule"
         self.kwargs.update({
             'resource_group': resource_group,
@@ -3141,7 +3140,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'taints': taints,
             'nodepool1_name': nodepool1_name,
-            'nodepool2_name': nodepool2_name,
         })
 
         # create
@@ -3190,14 +3188,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # nodepool delete nodepool1 label
-        update_nodepool = self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --labels ').get_output_in_json()
-        assert len(update_nodepool["nodeTaints"]) == 0
+        self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --node-taints ')
 
         # nodepool show
-        show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name}').get_output_in_json()
+        show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} -o json').get_output_in_json()
         assert len(show_nodepool["nodeTaints"]) == 0
-
-
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
