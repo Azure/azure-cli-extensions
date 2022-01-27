@@ -32,14 +32,6 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_alertsmanagement._params import load_arguments
         load_arguments(self, command)
-        try:
-            from azext_alertsmanagement.manual._params import load_arguments as load_arguments_manual
-            load_arguments_manual(self, command)
-        except ImportError as e:
-            if e.name.endswith('manual._params'):
-                pass
-            else:
-                raise e
 
 
 COMMAND_LOADER_CLS = AlertsManagementClientCommandsLoader
