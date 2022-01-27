@@ -43,7 +43,7 @@ def transform_job(result):
         currency = cost_estimate['currencyCode']
         if (amount is not None) and (currency is not None):
             price = str(amount) + ' ' + currency
-            transformed_result['Price estimate'] = price
+            transformed_result['Cost estimate'] = price
 
     return transformed_result
 
