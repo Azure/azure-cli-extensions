@@ -41,6 +41,13 @@ Param (
 
 $OutputFolder = Join-Path $PSScriptRoot "../azext_quantum/vendored_sdks/azure_quantum/"
 
+Write-Verbose "Output folder: $OutputFolder"
+
+Write-Verbose "Deleting previous output folder contents"
+if (Test-Path $OutputFolder) {
+    Remove-Item $OutputFolder -Recurse | Write-Verbose
+}
+
 $AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md"
 
 Write-Verbose "Installing latest AutoRest client"

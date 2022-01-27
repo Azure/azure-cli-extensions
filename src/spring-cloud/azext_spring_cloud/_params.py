@@ -21,7 +21,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app_or_warning,
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._utils import ApiType
@@ -353,7 +353,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
-                   validator=active_deployment_exist_under_app_or_warning)
+                   validator=active_deployment_exist_or_warning)
         c.argument('name', name_type, help='Name of service binding.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
@@ -455,7 +455,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
-        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app_or_warning)
+        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
         c.argument('domain_name', help='Name of custom domain.')
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:

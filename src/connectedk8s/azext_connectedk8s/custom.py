@@ -59,15 +59,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("This operation might take a while...\n")
 
-    # Setting subscription id
+    # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
+    account = Profile().get_subscription(subscription_id)
+    onboarding_tenant_id = account['homeTenantId']
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
-
-    # Fetching Tenant Id
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
 
     # Checking provider registration status
     utils.check_provider_registrations(cmd.cli_ctx)
@@ -1718,10 +1716,9 @@ def client_side_proxy_wrapper(cmd,
     # if service account token is not passed
     if token is None:
         # Identifying type of logged in entity
-        account = get_subscription_id(cmd.cli_ctx)
-        account = Profile().get_subscription(account)
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        account = Profile().get_subscription(subscription_id)
         user_type = account['user']['type']
-
         tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':
