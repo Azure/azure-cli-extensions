@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.12.0
+++++++
+* [2022-01-26] Version intended to work with QDK version v0.22.187631
+* Updated data plane generated client to API version 2021-11-01-preview.
+* Added support for displaying cost estimate for a job when available.
+
+0.11.0
+++++++
+* [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
+* Job result histograms will be left-aligned (not centered) in console output.
+
 0.10.0
 ++++++
 * [2021-11-22] Version intended to work with QDK version v0.20.2111.177148

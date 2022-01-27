@@ -2,6 +2,30 @@
 
 Release History
 ===============
+0.5.51
+* Add currentKubernetesVersion column for az aks show --output table.
+
+0.5.50
+++++++
+* Add support for enabling OIDC issuer with `--enable-oidc-issuer` flag.
+
+0.5.49
+++++++
+* Add support for Alias Minor Version.
+
+0.5.48
+++++++
+* Fix aks update issue with load balancer profile defaults being set when CLI arguments only include outbound IPs or outbound prefixes
+
+0.5.47
+++++++
+* Add support for IPv4/IPv6 dual-stack networking AKS clusters
+* `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
+
+0.5.46
+++++++
+* Update to use 2021-10-01 api-version
+
 0.5.45
 ++++++
 * Remove the snapshot name trimming in `az aks snapshot create` command.
