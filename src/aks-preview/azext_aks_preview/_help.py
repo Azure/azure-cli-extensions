@@ -819,14 +819,14 @@ helps['aks maintenanceconfiguration add'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
@@ -876,14 +876,14 @@ helps['aks maintenanceconfiguration update'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
