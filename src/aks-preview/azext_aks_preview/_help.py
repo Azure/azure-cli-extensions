@@ -1100,6 +1100,9 @@ helps['aks nodepool update'] = """
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
