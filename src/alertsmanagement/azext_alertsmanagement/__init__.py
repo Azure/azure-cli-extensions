@@ -21,8 +21,7 @@ class AlertsManagementClientCommandsLoader(AzCommandsLoader):
         alertsmanagement_custom = CliCommandType(
             operations_tmpl='azext_alertsmanagement.custom#{}',
             client_factory=cf_alertsmanagement_cl)
-        parent = super(AlertsManagementClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=alertsmanagement_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=alertsmanagement_custom)
 
     def load_command_table(self, args):
         from azext_alertsmanagement.commands import load_command_table
