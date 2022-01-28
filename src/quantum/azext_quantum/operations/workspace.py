@@ -25,7 +25,7 @@ from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_fro
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
-
+MAX_POLLS_CREATE_WORKSPACE = 60
 
 class WorkspaceInfo:
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -239,7 +239,13 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     )
 
     # Show progress indicator dots
+    polling_cycles = 0
     while not deployment_async_operation.done():
+        polling_cycles += 1
+        if polling_cycles > MAX_POLLS_CREATE_WORKSPACE:
+            print()
+            raise AzureInternalError(f"Create workspace operation timed out.")
+            
         print('.', end='', flush=True)
         time.sleep(POLLING_TIME_DURATION)
     print()
