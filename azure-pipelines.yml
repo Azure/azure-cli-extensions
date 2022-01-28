@@ -147,6 +147,7 @@ jobs:
         azdev setup -c ../azure-cli -r ./
 
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
+        echo "testing"
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
         AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/verify_linter.py
