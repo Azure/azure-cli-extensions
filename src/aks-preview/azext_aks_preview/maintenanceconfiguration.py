@@ -8,7 +8,6 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import get_file_json
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from msrest import Serializer, Deserializer
 
 logger = get_logger(__name__)
 
