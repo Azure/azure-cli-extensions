@@ -121,6 +121,19 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_net_with_jvm_options(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        deployment.properties.source.jvm_options = 'test-options'
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='NetCore_31', main_entry='test')
+        resource = self.patch_deployment_resource
+        self.assertEqual('NetCoreZip', resource.properties.source.type)
+        self.assertEqual('my-relative-path', resource.properties.source.relative_path)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
+        self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_continous_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -360,7 +373,7 @@ class TestAppUpdate(BasicTest):
         app_update(_get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
-        if kwargs.get('deployment', None):
+        if len(call_args):
             self.assertEqual(1, len(call_args))
             self.assertEqual(5, len(call_args[0][0]))
             self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
@@ -441,6 +454,13 @@ class TestAppUpdate(BasicTest):
         self.assertIsNone(resource.properties.source)
         self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
 
+    def test_steeltoe_app_cannot_set_jvm_options(self):
+        deployment=self._get_deployment()
+        deployment.properties.source.type = 'NetCoreZip'
+        deployment.properties.source.runtime_version = 'NetCore_31'
+        deployment.properties.source.net_core_main_entry_path = 'main-entry'
+        with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
+            self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -524,6 +544,8 @@ class TestAppCreate(BasicTest):
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource
+        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        resource = self.patch_app_resource
         self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
 
     def test_app_with_persistent_storage_basic(self):

@@ -209,9 +209,9 @@ BUCKET_VALID_PARAMS = {
     "bucket_name",
     "sync_interval",
     "timeout",
-    "access_key",
-    "secret_key",
-    "insecure",
+    "bucket_access_key",
+    "bucket_secret_key",
+    "bucket_insecure",
     "local_auth_ref",
 }
 

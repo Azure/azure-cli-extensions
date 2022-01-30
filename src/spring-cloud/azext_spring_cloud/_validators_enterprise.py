@@ -63,6 +63,8 @@ def validate_builder_update(cmd, namespace):
 def validate_builder_resource(namespace):
     if namespace.builder_json is not None and namespace.builder_file is not None:
         raise ClientRequestError("You can only specify either --builder-json or --builder-file.")
+    if namespace.builder_json is None and namespace.builder_file is None:
+        raise ClientRequestError("--builder-json or --builder-file is required.")
 
 
 def validate_build_pool_size(namespace):

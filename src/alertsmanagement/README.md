@@ -1,7 +1,7 @@
 # Azure CLI alertsmanagement Extension
 
 This extension can manage alert related resources. Currently, it supports
-action rule management.
+alert processing rule management.
 
 ### How to use
 Install this extension using the below CLI command
@@ -9,38 +9,38 @@ Install this extension using the below CLI command
 az extension add --name alertsmanagement
 ```
 
-### Action rule
-Action rule documentation: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-action-rules.
+### Alert Processing Rule
+Alert processing rule documentation: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-action-rules.
 
-Create an action rule to suppress notifications for all Sev4 alerts on all VMs within the subscription every weekend.
+Create or update a rule that removes all action groups from alerts on a specific VM during a one-off maintenance window (1800-2000 at a specific date, Pacific Standard Time)
 ```
-az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --severity Equals Sev4 --target-resource-type Equals Microsoft.Compute/VirtualMachines --suppression-recurrence-type Weekly --suppression-recurrence 0 6 --suppression-start-date 12/09/2018 --suppression-end-date 12/18/2018 --suppression-start-time 06:00:00 --suppression-end-time 14:00:00
+az monitor alert-processing-rule create --name 'RemoveActionGroupsMaintenanceWindow' --rule-type RemoveAllActionGroups --scopes "/subscriptions/MySubscriptionId1/resourceGroups/MyResourceGroup1/providers/Microsoft.Compute/virtualMachines/VMName" --resource-group alertscorrelationrg --schedule-start-datetime '2022-01-02 18:00:00' --schedule-end-datetime '2022-01-02 20:00:00' --schedule-time-zone 'Pacific Standard Time' --description "Removes all ActionGroups from all Alerts on VMName during the maintenance window"
 ```
-Create an action rule to suppress notifications for all log alerts generated for Computer-01 in subscription indefinitely as it's going through maintenance.
+Create or update a rule that removes all action groups from all alerts in a subscription coming from a specific alert rule
 ```
-az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --suppression-recurrence-type Always --alert-context Contains Computer-01 --monitor-service Equals "Log Analytics"
+az monitor alert-processing-rule create --name 'RemoveActionGroupsSpecificAlertRule' --rule-type RemoveAllActionGroups --scopes "/subscriptions/MySubscriptionId1" --resource-group alertscorrelationrg --filter-alert-rule-id Equals "/subscriptions/MySubscriptionId1/resourceGroups/MyResourceGroup1/providers/microsoft.insights/activityLogAlerts/RuleName"  --description "Removes all ActionGroups from all Alerts that fire on above AlertRule"
 ```
-Create an action rule to suppress notifications in a resource group
+Create or update a rule that adds two action groups to all Sev0 and Sev1 alerts in two resource groups
 ```
-az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --scope-type ResourceGroup --scope /subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/rg --suppression-recurrence-type Always --alert-context Contains Computer-01 --monitor-service Equals "Log Analytics"
+az monitor alert-processing-rule create --name 'AddActionGroupsBySeverity'--rule-type AddActionGroups --action-groups "/subscriptions/MySubscriptionId/resourcegroups/MyResourceGroup1/providers/microsoft.insights/actiongroups/MyActionGroupId1" "/subscriptions/MySubscriptionId/resourceGroups/MyResourceGroup2/providers/microsoft.insights/actionGroups/MyActionGroup2" --scopes "/subscriptions/MySubscriptionId" --resource-group alertscorrelationrg --filter-severity Equals Sev0 Sev1 --description "Add AGId1 and AGId2 to all Sev0 and Sev1 alerts in these resourceGroups"
 ```
 Update an action rule
 ```
-az monitor action-rule update --resource-group rg --name rule --status Disabled
+az monitor alert-processing-rule update --resource-group myResourceGroup --name myRuleName --enabled False
 ```
 Delete an action rule
 ```
-az monitor action-rule delete --resource-group rg --name rule
+az monitor alert-processing-rule delete --resource-group myResourceGroup --name myRuleName
 ```
 Get an action rule
 ```
-az monitor action-rule show --resource-group rg --name rule
+az monitor alert-processing-rule show --name myRuleName --resource-group myRuleNameResourceGroup
 ```
 List action rules of the subscription
 ```
-az monitor action-rule list
+az monitor alert-processing-rule list
 ```
 List action rules of the resource group
 ```
-az monitor action-rule list --resource-group rg
+az monitor alert-processing-rule show --resource-group myResourceGroup
 ```
