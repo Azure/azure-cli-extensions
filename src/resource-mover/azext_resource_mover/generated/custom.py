@@ -32,12 +32,19 @@ def resource_mover_move_collection_create(client,
                                           source_region=None,
                                           target_region=None):
     body = {}
-    body['tags'] = tags
-    body['location'] = location
-    body['identity'] = identity
+    if tags is not None:
+        body['tags'] = tags
+    if location is not None:
+        body['location'] = location
+    if identity is not None:
+        body['identity'] = identity
     body['properties'] = {}
-    body['properties']['source_region'] = source_region
-    body['properties']['target_region'] = target_region
+    if source_region is not None:
+        body['properties']['source_region'] = source_region
+    if target_region is not None:
+        body['properties']['target_region'] = target_region
+    if len(body['properties']) == 0:
+        del body['properties']
     return client.create(resource_group_name=resource_group_name,
                          move_collection_name=move_collection_name,
                          body=body)
@@ -49,8 +56,10 @@ def resource_mover_move_collection_update(client,
                                           tags=None,
                                           identity=None):
     body = {}
-    body['tags'] = tags
-    body['identity'] = identity
+    if tags is not None:
+        body['tags'] = tags
+    if identity is not None:
+        body['identity'] = identity
     return client.update(resource_group_name=resource_group_name,
                          move_collection_name=move_collection_name,
                          body=body)
@@ -74,9 +83,12 @@ def resource_mover_move_collection_bulk_remove(client,
                                                move_resource_input_type=None,
                                                no_wait=False):
     body = {}
-    body['validate_only'] = validate_only
-    body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    if validate_only is not None:
+        body['validate_only'] = validate_only
+    if move_resources is not None:
+        body['move_resources'] = move_resources
+    if move_resource_input_type is not None:
+        body['move_resource_input_type'] = move_resource_input_type
     return sdk_no_wait(no_wait,
                        client.begin_bulk_remove,
                        resource_group_name=resource_group_name,
@@ -87,14 +99,16 @@ def resource_mover_move_collection_bulk_remove(client,
 def resource_mover_move_collection_commit(client,
                                           resource_group_name,
                                           move_collection_name,
+                                          move_resources,
                                           validate_only=None,
-                                          move_resources=None,
                                           move_resource_input_type=None,
                                           no_wait=False):
     body = {}
-    body['validate_only'] = validate_only
+    if validate_only is not None:
+        body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    if move_resource_input_type is not None:
+        body['move_resource_input_type'] = move_resource_input_type
     return sdk_no_wait(no_wait,
                        client.begin_commit,
                        resource_group_name=resource_group_name,
@@ -105,14 +119,16 @@ def resource_mover_move_collection_commit(client,
 def resource_mover_move_collection_discard(client,
                                            resource_group_name,
                                            move_collection_name,
+                                           move_resources,
                                            validate_only=None,
-                                           move_resources=None,
                                            move_resource_input_type=None,
                                            no_wait=False):
     body = {}
-    body['validate_only'] = validate_only
+    if validate_only is not None:
+        body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    if move_resource_input_type is not None:
+        body['move_resource_input_type'] = move_resource_input_type
     return sdk_no_wait(no_wait,
                        client.begin_discard,
                        resource_group_name=resource_group_name,
@@ -123,14 +139,16 @@ def resource_mover_move_collection_discard(client,
 def resource_mover_move_collection_initiate_move(client,
                                                  resource_group_name,
                                                  move_collection_name,
+                                                 move_resources,
                                                  validate_only=None,
-                                                 move_resources=None,
                                                  move_resource_input_type=None,
                                                  no_wait=False):
     body = {}
-    body['validate_only'] = validate_only
+    if validate_only is not None:
+        body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    if move_resource_input_type is not None:
+        body['move_resource_input_type'] = move_resource_input_type
     return sdk_no_wait(no_wait,
                        client.begin_initiate_move,
                        resource_group_name=resource_group_name,
@@ -150,14 +168,16 @@ def resource_mover_move_collection_list_required_for(client,
 def resource_mover_move_collection_prepare(client,
                                            resource_group_name,
                                            move_collection_name,
+                                           move_resources,
                                            validate_only=None,
-                                           move_resources=None,
                                            move_resource_input_type=None,
                                            no_wait=False):
     body = {}
-    body['validate_only'] = validate_only
+    if validate_only is not None:
+        body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    if move_resource_input_type is not None:
+        body['move_resource_input_type'] = move_resource_input_type
     return sdk_no_wait(no_wait,
                        client.begin_prepare,
                        resource_group_name=resource_group_name,
@@ -216,10 +236,16 @@ def resource_mover_move_resource_add(client,
                                      no_wait=False):
     body = {}
     body['properties'] = {}
-    body['properties']['source_id'] = source_id
-    body['properties']['existing_target_id'] = existing_target_id
-    body['properties']['resource_settings'] = resource_settings
-    body['properties']['depends_on_overrides'] = depends_on_overrides
+    if source_id is not None:
+        body['properties']['source_id'] = source_id
+    if existing_target_id is not None:
+        body['properties']['existing_target_id'] = existing_target_id
+    if resource_settings is not None:
+        body['properties']['resource_settings'] = resource_settings
+    if depends_on_overrides is not None:
+        body['properties']['depends_on_overrides'] = depends_on_overrides
+    if len(body['properties']) == 0:
+        del body['properties']
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,

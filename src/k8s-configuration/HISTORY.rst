@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.4.1
+++++++++++++++++++
+* [BREAKING CHANGE] `--access-key` changed to `--bucket-access-key`
+* [BREAKING CHANGE] `--secret-key` changed to `--bucket-secret-key`
+* [BREAKING CHANGE] `--insecure` changed to `--bucket-insecure`
+* Fix help text for bucket parameters
+
 1.4.0
 ++++++++++++++++++
 * Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations

@@ -10,8 +10,8 @@
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
 |az resource-mover move-collection|MoveCollections|[commands](#CommandsInMoveCollections)|
-|az resource-mover move-resource|MoveResources|[commands](#CommandsInMoveResources)|
 |az resource-mover move-collection|UnresolvedDependencies|[commands](#CommandsInUnresolvedDependencies)|
+|az resource-mover move-resource|MoveResources|[commands](#CommandsInMoveResources)|
 
 ## COMMANDS
 ### <a name="CommandsInMoveCollections">Commands in `az resource-mover move-collection` group</a>
@@ -45,7 +45,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az resource-mover move-collection`
 #### <a name="MoveCollectionsListMoveCollectionsBySubscription">Command `az resource-mover move-collection list`</a>
 
@@ -56,6 +55,7 @@ az resource-mover move-collection list
 ##### <a name="ParametersMoveCollectionsListMoveCollectionsBySubscription">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="MoveCollectionsGet">Command `az resource-mover move-collection show`</a>
 
 ##### <a name="ExamplesMoveCollectionsGet">Example</a>
@@ -143,8 +143,8 @@ Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --validate-
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The Resource Group Name.|resource_group_name|resourceGroupName|
 |**--move-collection-name**|string|The Move Collection Name.|move_collection_name|moveCollectionName|
-|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resources**|array|Gets or sets the list of resource Id's, by default it accepts move resource id's unless the input type is switched via moveResourceInputType property.|move_resources|moveResources|
+|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resource-input-type**|choice|Defines the move resource input type.|move_resource_input_type|moveResourceInputType|
 
 #### <a name="MoveCollectionsDiscard">Command `az resource-mover move-collection discard`</a>
@@ -160,8 +160,8 @@ az resource-mover move-collection discard --move-resources "/subscriptions/subid
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The Resource Group Name.|resource_group_name|resourceGroupName|
 |**--move-collection-name**|string|The Move Collection Name.|move_collection_name|moveCollectionName|
-|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resources**|array|Gets or sets the list of resource Id's, by default it accepts move resource id's unless the input type is switched via moveResourceInputType property.|move_resources|moveResources|
+|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resource-input-type**|choice|Defines the move resource input type.|move_resource_input_type|moveResourceInputType|
 
 #### <a name="MoveCollectionsInitiateMove">Command `az resource-mover move-collection initiate-move`</a>
@@ -177,8 +177,8 @@ rosoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --va
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The Resource Group Name.|resource_group_name|resourceGroupName|
 |**--move-collection-name**|string|The Move Collection Name.|move_collection_name|moveCollectionName|
-|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resources**|array|Gets or sets the list of resource Id's, by default it accepts move resource id's unless the input type is switched via moveResourceInputType property.|move_resources|moveResources|
+|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resource-input-type**|choice|Defines the move resource input type.|move_resource_input_type|moveResourceInputType|
 
 #### <a name="MoveCollectionsListRequiredFor">Command `az resource-mover move-collection list-required-for`</a>
@@ -208,8 +208,8 @@ az resource-mover move-collection prepare --move-resources "/subscriptions/subid
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The Resource Group Name.|resource_group_name|resourceGroupName|
 |**--move-collection-name**|string|The Move Collection Name.|move_collection_name|moveCollectionName|
-|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resources**|array|Gets or sets the list of resource Id's, by default it accepts move resource id's unless the input type is switched via moveResourceInputType property.|move_resources|moveResources|
+|**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resource-input-type**|choice|Defines the move resource input type.|move_resource_input_type|moveResourceInputType|
 
 #### <a name="MoveCollectionsResolveDependencies">Command `az resource-mover move-collection resolve-dependency`</a>
@@ -292,7 +292,8 @@ urceGroups/eastusRG/providers/Microsoft.Network/networkInterfaces/eastusvm140" t
 4ad4-aa72-0e1f4d9c0756/resourceGroups/westusRG/providers/Microsoft.Network/networkInterfaces/eastusvm140" \
 --resource-settings "{\\"resourceType\\":\\"Microsoft.Compute/virtualMachines\\",\\"targetAvailabilitySetId\\":\\"/subs\
 criptions/subid/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/avset1\\",\\"targetAvailabilityZon\
-e\\":\\"2\\",\\"targetResourceName\\":\\"westusvm1\\",\\"targetVmSize\\":null}" --source-id \
+e\\":\\"2\\",\\"targetResourceName\\":\\"westusvm1\\",\\"targetVmSize\\":null,\\"userManagedIdentities\\":[\\"/subscrip\
+tions/subid/resourceGroups/eastusRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/umi1\\"]}" --source-id \
 "/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/eastusvm1" \
 --move-collection-name "movecollection1" --name "moveresourcename1" --resource-group "rg1"
 ```

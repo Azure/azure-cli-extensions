@@ -1772,7 +1772,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and not labels):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '

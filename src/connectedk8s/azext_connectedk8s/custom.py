@@ -62,15 +62,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None):
     logger.warning("This operation might take a while...\n")
 
-    # Setting subscription id
+    # Setting subscription id and tenant Id
     subscription_id = get_subscription_id(cmd.cli_ctx)
+    account = Profile().get_subscription(subscription_id)
+    onboarding_tenant_id = account['homeTenantId']
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
-
-    # Fetching Tenant Id
-    graph_client = _graph_client_factory(cmd.cli_ctx)
-    onboarding_tenant_id = graph_client.config.tenant_id
 
     # Checking provider registration status
     utils.check_provider_registrations(cmd.cli_ctx)
@@ -97,8 +95,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Prompt if private link is getting enabled
     if enable_private_link == "true":
-        if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
-            return
+        if os.getenv('SKIP_PROMPT') != "true":
+            if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+                return
 
     # Set preview client if private link properties are provided.
     if enable_private_link:
@@ -866,8 +865,9 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
 
     # Prompt if private link is getting enabled
     if enable_private_link == "true":
-        if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
-            return
+        if os.getenv('SKIP_PROMPT') != "true":
+            if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+                return
 
     # Set preview client if private link properties are provided.
     if enable_private_link:
@@ -1847,10 +1847,9 @@ def client_side_proxy_wrapper(cmd,
     # if service account token is not passed
     if token is None:
         # Identifying type of logged in entity
-        account = get_subscription_id(cmd.cli_ctx)
-        account = Profile().get_subscription(account)
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        account = Profile().get_subscription(subscription_id)
         user_type = account['user']['type']
-
         tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':

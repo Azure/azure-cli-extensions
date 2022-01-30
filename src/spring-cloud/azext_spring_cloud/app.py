@@ -75,6 +75,7 @@ def app_create(cmd, client, resource_group, service, name,
         'enable_temporary_disk': True,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
+        'public': assign_endpoint,
         'loaded_public_certificate_file': loaded_public_certificate_file
     }
     create_deployment_kwargs = {
@@ -88,6 +89,7 @@ def app_create(cmd, client, resource_group, service, name,
         'jvm_options': jvm_options,
     }
     update_app_kwargs = {
+        'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
     }
 
@@ -124,7 +126,7 @@ def app_update(cmd, client, resource_group, service, name,
                # app
                assign_endpoint=None,
                enable_persistent_storage=None,
-               enable_end_to_end_tls=None,
+               enable_ingress_to_app_tls=None,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
@@ -170,7 +172,7 @@ def app_update(cmd, client, resource_group, service, name,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'loaded_public_certificate_file': loaded_public_certificate_file,
-        'enable_end_to_end_tls': enable_end_to_end_tls,
+        'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
     }
 
@@ -186,12 +188,13 @@ def app_update(cmd, client, resource_group, service, name,
                              .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
+    deployment_factory.source_factory.validate_source(**deployment_kwargs, **basic_kwargs)
     deployment_resource = deployment_factory.format_resource(**deployment_kwargs, **basic_kwargs)
 
     pollers = [
         client.apps.begin_update(resource_group, service, name, app_resource)
     ]
-    if deployment_kwargs:
+    if deployment:
         pollers.append(client.deployments.begin_update(resource_group,
                                                        service,
                                                        name,

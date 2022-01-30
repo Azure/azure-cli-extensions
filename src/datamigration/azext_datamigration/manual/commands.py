@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -8,6 +7,19 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
+# pylint: disable=line-too-long
 
-VERSION = "0.2.0rc2"
 
+def load_command_table(self, _):
+
+    with self.command_group(
+        'datamigration get-assessment'
+    ) as g:
+        g.custom_command('', 'datamigration_assessment')
+
+    with self.command_group(
+        'datamigration register-integration-runtime'
+    ) as g:
+        g.custom_command('', 'datamigration_register_ir')

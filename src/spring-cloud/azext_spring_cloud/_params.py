@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
+                          validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
@@ -21,7 +21,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app_or_warning,
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._utils import ApiType
@@ -38,7 +38,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
-sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, help='Name of SKU. Enterprise is still in Preview.')
+sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
                                    help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
                                    arg_group='Source Code deploy')
@@ -59,7 +59,7 @@ def load_arguments(self, _):
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
-        c.argument('sku', arg_type=sku_type, default='Standard')
+        c.argument('sku', arg_type=sku_type, default='Standard', validator=validate_sku)
         c.argument('reserved_cidr_range', arg_group='VNet Injection', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
         c.argument('vnet', arg_group='VNet Injection', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
         c.argument('app_subnet', arg_group='VNet Injection', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
@@ -140,7 +140,7 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring-cloud update') as c:
-        c.argument('sku', arg_type=sku_type)
+        c.argument('sku', arg_type=sku_type, validator=normalize_sku)
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,
@@ -201,7 +201,9 @@ def load_arguments(self, _):
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
         c.argument('persistent_storage', type=str,
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
@@ -351,7 +353,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
-                   validator=active_deployment_exist_under_app_or_warning)
+                   validator=active_deployment_exist_or_warning)
         c.argument('name', name_type, help='Name of service binding.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
@@ -453,16 +455,20 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
-        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app_or_warning)
+        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
         c.argument('domain_name', help='Name of custom domain.')
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
