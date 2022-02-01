@@ -12,6 +12,7 @@ from azext_cosmosdb_preview._client_factory import (
     cf_graph_resources,
     cf_service,
     cf_mongo_db_resources,
+    cf_db_accounts,
     cf_gremlin_resources,
     cf_table_resources,
     cf_restorable_sql_containers,
@@ -23,7 +24,6 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_table_resources
 )
 
-from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
 
 def load_command_table(self, _):
     cosmosdb_graph_resources_sdk = CliCommandType(
@@ -107,10 +107,6 @@ def load_command_table(self, _):
         client_factory=cf_restorable_mongodb_collections)
 
     # restorable gremlin apis
-    cosmosdb_gremlin_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.cosmosdb.operations#GremlinResourcesOperations.{}',
-        client_factory=cf_gremlin_resources)
-
     cosmosdb_restorable_gremlin_databases_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinDatabasesOperations.{}',
         client_factory=cf_restorable_gremlin_databases)
@@ -124,10 +120,6 @@ def load_command_table(self, _):
         client_factory=cf_restorable_gremlin_resources)
 
     # restorable table apis
-    cosmosdb_table_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.cosmosdb.operations#TableResourcesOperations.{}',
-        client_factory=cf_table_resources)
-
     cosmosdb_restorable_tables_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableTablesOperations.{}',
         client_factory=cf_restorable_tables)
@@ -138,11 +130,8 @@ def load_command_table(self, _):
 
     # define commands
     with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
-        g.show_command('show', 'get')
         g.custom_command('restore', 'cli_cosmosdb_restore', is_preview=True)
-        g.custom_command('create', 'cli_cosmosdb_create')
-        g.custom_command('update', 'cli_cosmosdb_update')
-        g.custom_command('list', 'cli_cosmosdb_list')
+        g.custom_command('create', 'cli_cosmosdb_create', is_preview=True)
 
     with self.command_group('cosmosdb sql restorable-container', cosmosdb_restorable_sql_containers_sdk, client_factory=cf_restorable_sql_containers, is_preview=True) as g:
         g.command('list', 'list')
@@ -166,9 +155,17 @@ def load_command_table(self, _):
         g.command('list', 'list')
 
     # Retrieve backup info for gremlin
+    cosmosdb_gremlin_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#GremlinResourcesOperations.{}',
+        client_factory=cf_gremlin_resources)
+
     with self.command_group('cosmosdb gremlin', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
-        g.custom_command('retrieve-latest-backup-time', 'cli_gremlin_retrieve_latest_backup_time')
+        g.custom_command('retrieve-latest-backup-time', 'cli_gremlin_retrieve_latest_backup_time', is_preview=True)
 
     # Retrieve backup info for table
+    cosmosdb_table_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#TableResourcesOperations.{}',
+        client_factory=cf_table_resources)
+
     with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
-        g.custom_command('retrieve-latest-backup-time', 'cli_table_retrieve_latest_backup_time')
+        g.custom_command('retrieve-latest-backup-time', 'cli_table_retrieve_latest_backup_time', is_preview=True)

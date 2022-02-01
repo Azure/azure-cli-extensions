@@ -24,7 +24,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousBackupRestoreLocation,
     Location,
     RestoreParameters,
-    CreateMode
+    CreateMode,
+    DatabaseAccountCreateUpdateParameters
 )
 
 
@@ -480,6 +481,9 @@ def _gen_guid():
     return uuid.uuid4()
 
 
+# create cosmosdb account with gremlin databases and tables to restore
+from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
+
 # pylint: disable=too-many-locals
 def cli_cosmosdb_create(cmd,
                         client,
@@ -567,8 +571,124 @@ def cli_cosmosdb_create(cmd,
                                     backup_retention=backup_retention,
                                     databases_to_restore=databases_to_restore,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
-                                    tables_to_restore = tables_to_restore,
+                                    tables_to_restore=tables_to_restore,
                                     arm_location=resource_group_location)
+
+
+# restore cosmosdb account with gremlin databases and tables to restore
+# pylint: disable=too-many-statements
+def cli_cosmosdb_restore(cmd,
+                         client,
+                         resource_group_name,
+                         account_name,
+                         target_database_account_name,
+                         restore_timestamp,
+                         location,
+                         databases_to_restore=None,
+                         gremlin_databases_to_restore=None,
+                         tables_to_restore=None):
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    target_restorable_account = None
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+
+    # If restore timestamp is timezone aware, get the utcnow as timezone aware as well
+    from datetime import datetime, timezone
+    current_dateTime = datetime.utcnow()
+    if restore_timestamp_datetime_utc.tzinfo is not None and restore_timestamp_datetime_utc.tzinfo.utcoffset(restore_timestamp_datetime_utc) is not None:
+        current_dateTime = datetime.now(timezone.utc)
+
+    # Fail if provided restoretimesamp is greater than current timestamp
+    if restore_timestamp_datetime_utc > current_dateTime:
+        raise CLIError("Restore timestamp {} should be less than current timestamp {}".format(restore_timestamp_datetime_utc, current_dateTime))
+
+    is_source_restorable_account_deleted = False
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    target_restorable_account = account
+                    is_source_restorable_account_deleted = True
+                    break
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    target_restorable_account = account
+                    break
+
+    if target_restorable_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # Validate if source account is empty only for live account restores. For deleted account restores the api will not work
+    if not is_source_restorable_account_deleted:
+        restorable_resources = None
+        api_type = target_restorable_account.api_type.lower()
+        if api_type == "sql":
+            try:
+                from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_sql_resources
+                restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
+                restorable_resources = restorable_sql_resources_client.list(
+                    target_restorable_account.location,
+                    target_restorable_account.name,
+                    location,
+                    restore_timestamp_datetime_utc)
+            except ResourceNotFoundError:
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+        elif api_type == "mongodb":
+            try:
+                from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_mongodb_resources
+                restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
+                restorable_resources = restorable_mongodb_resources_client.list(
+                    target_restorable_account.location,
+                    target_restorable_account.name,
+                    location,
+                    restore_timestamp_datetime_utc)
+            except ResourceNotFoundError:
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+        elif "sql" in api_type and "gremlin" in api_type:
+            try:
+                from azext_cosmosdb_preview._client_factory import cf_restorable_gremlin_resources
+                restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
+                restorable_resources = restorable_gremlin_resources_client.list(
+                    target_restorable_account.location,
+                    target_restorable_account.name,
+                    location,
+                    restore_timestamp_datetime_utc)
+            except ResourceNotFoundError:
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+        elif "sql" in api_type and "table" in api_type:
+            try:
+                from azext_cosmosdb_preview._client_factory import cf_restorable_table_resources
+                restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
+                restorable_resources = restorable_table_resources_client.list(
+                    target_restorable_account.location,
+                    target_restorable_account.name,
+                    location,
+                    restore_timestamp_datetime_utc).table_names
+            except ResourceNotFoundError:
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+        else:
+            raise CLIError("Provided API Type {} is not supported for account {}".format(target_restorable_account.api_type, account_name))
+
+        if restorable_resources is None or not any(restorable_resources):
+            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, location, restore_timestamp_datetime_utc))
+
+    # Trigger restore
+    locations = []
+    locations.append(Location(location_name=location, failover_priority=0))
+
+    return _create_database_account(client,
+                                    resource_group_name=resource_group_name,
+                                    account_name=target_database_account_name,
+                                    locations=locations,
+                                    is_restore_request=True,
+                                    restore_source=target_restorable_account.id,
+                                    restore_timestamp=restore_timestamp_datetime_utc.isoformat(),
+                                    databases_to_restore=databases_to_restore,
+                                    gremlin_databases_to_restore=gremlin_databases_to_restore,
+                                    tables_to_restore=tables_to_restore,
+                                    arm_location=target_restorable_account.location)
 
 
 # pylint: disable=too-many-statements
@@ -706,7 +826,6 @@ def _create_database_account(client,
         if tables_to_restore is not None:
             restore_parameters.tables_to_restore = tables_to_restore
 
-    from azure.mgmt.cosmosdb.models import DatabaseAccountCreateUpdateParameters
     params = DatabaseAccountCreateUpdateParameters(
         location=arm_location,
         locations=locations,
@@ -734,229 +853,14 @@ def _create_database_account(client,
         create_mode=create_mode,
         restore_parameters=restore_parameters
     )
-    print(restore_parameters)
+
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_create.result()
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
 
-# pylint: disable=too-many-branches
-def cli_cosmosdb_update(client,
-                        resource_group_name,
-                        account_name,
-                        locations=None,
-                        tags=None,
-                        default_consistency_level=None,
-                        max_staleness_prefix=None,
-                        max_interval=None,
-                        ip_range_filter=None,
-                        enable_automatic_failover=None,
-                        capabilities=None,
-                        enable_virtual_network=None,
-                        virtual_network_rules=None,
-                        enable_multiple_write_locations=None,
-                        disable_key_based_metadata_write_access=None,
-                        enable_public_network=None,
-                        enable_analytical_storage=None,
-                        backup_interval=None,
-                        backup_retention=None):
-    """Update an existing Azure Cosmos DB database account. """
-    existing = client.get(resource_group_name, account_name)
 
-    update_consistency_policy = False
-    if max_interval is not None or \
-            max_staleness_prefix is not None or \
-            default_consistency_level is not None:
-        update_consistency_policy = True
-
-    if max_staleness_prefix is None:
-        max_staleness_prefix = existing.consistency_policy.max_staleness_prefix
-
-    if max_interval is None:
-        max_interval = existing.consistency_policy.max_interval_in_seconds
-
-    if default_consistency_level is None:
-        default_consistency_level = existing.consistency_policy.default_consistency_level
-
-    consistency_policy = None
-    if update_consistency_policy:
-        consistency_policy = ConsistencyPolicy(default_consistency_level=default_consistency_level,
-                                               max_staleness_prefix=max_staleness_prefix,
-                                               max_interval_in_seconds=max_interval)
-
-    public_network_access = None
-    if enable_public_network is not None:
-        public_network_access = 'Enabled' if enable_public_network else 'Disabled'
-
-    backup_policy = None
-    if backup_interval is not None or backup_retention is not None:
-        if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
-            periodic_mode_properties = PeriodicModeProperties(
-                backup_interval_in_minutes=backup_interval,
-                backup_retention_interval_in_hours=backup_retention
-            )
-            backup_policy = existing.backup_policy
-            backup_policy.periodic_mode_properties = periodic_mode_properties
-        else:
-            raise CLIError(
-                'backup-interval and backup-retention can only be set for accounts with periodic backup policy.')
-
-    params = DatabaseAccountUpdateParameters(
-        locations=locations,
-        tags=tags,
-        consistency_policy=consistency_policy,
-        ip_rules=ip_range_filter,
-        is_virtual_network_filter_enabled=enable_virtual_network,
-        enable_automatic_failover=enable_automatic_failover,
-        capabilities=capabilities,
-        virtual_network_rules=virtual_network_rules,
-        enable_multiple_write_locations=enable_multiple_write_locations,
-        disable_key_based_metadata_write_access=disable_key_based_metadata_write_access,
-        public_network_access=public_network_access,
-        enable_analytical_storage=enable_analytical_storage,
-        backup_policy=backup_policy)
-    async_docdb_update = client.update(resource_group_name, account_name, params)
-    docdb_account = async_docdb_update.result()
-    docdb_account = client.get(resource_group_name, account_name)  # Workaround
-    return docdb_account
-
-
-# pylint: disable=too-many-statements
-def cli_cosmosdb_restore(cmd,
-                         client,
-                         resource_group_name,
-                         account_name,
-                         target_database_account_name,
-                         restore_timestamp,
-                         location,
-                         databases_to_restore=None,
-                         gremlin_databases_to_restore=None,
-                         tables_to_restore=None):
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
-    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
-    restorable_database_accounts = restorable_database_accounts_client.list()
-    restorable_database_accounts_list = list(restorable_database_accounts)
-    target_restorable_account = None
-    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
-
-    # If restore timestamp is timezone aware, get the utcnow as timezone aware as well
-    from datetime import datetime, timezone
-    current_dateTime = datetime.utcnow()
-    if restore_timestamp_datetime_utc.tzinfo is not None and restore_timestamp_datetime_utc.tzinfo.utcoffset(restore_timestamp_datetime_utc) is not None:
-        current_dateTime = datetime.now(timezone.utc)
-
-    # Fail if provided restoretimesamp is greater than current timestamp
-    if restore_timestamp_datetime_utc > current_dateTime:
-        raise CLIError("Restore timestamp {} should be less than current timestamp {}".format(restore_timestamp_datetime_utc, current_dateTime))
-
-    is_source_restorable_account_deleted = False
-    for account in restorable_database_accounts_list:
-        if account.account_name == account_name:
-            if account.deletion_time is not None:
-                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
-                    target_restorable_account = account
-                    is_source_restorable_account_deleted = True
-                    break
-            else:
-                if restore_timestamp_datetime_utc >= account.creation_time:
-                    target_restorable_account = account
-                    break
-
-    if target_restorable_account is None:
-        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
-
-    # Validate if source account is empty only for live account restores. For deleted account restores the api will not work
-    if not is_source_restorable_account_deleted:
-        restorable_resources = None
-        api_type = target_restorable_account.api_type.lower()
-        if api_type == "sql":
-            try:
-                from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_sql_resources
-                restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_sql_resources_client.list(
-                    target_restorable_account.location,
-                    target_restorable_account.name,
-                    location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
-        elif api_type == "mongodb":
-            try:
-                from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_mongodb_resources
-                restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_mongodb_resources_client.list(
-                    target_restorable_account.location,
-                    target_restorable_account.name,
-                    location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
-        elif "sql" in api_type and "gremlin" in api_type:
-            try:
-                from azext_cosmosdb_preview._client_factory import cf_restorable_gremlin_resources
-                restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_gremlin_resources_client.list(
-                    target_restorable_account.location,
-                    target_restorable_account.name,
-                    location,
-                    restore_timestamp_datetime_utc)
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
-        elif "sql" in api_type and "table" in api_type:
-            try:
-                from azext_cosmosdb_preview._client_factory import cf_restorable_table_resources
-                restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
-                restorable_resources = restorable_table_resources_client.list(
-                    target_restorable_account.location,
-                    target_restorable_account.name,
-                    location,
-                    restore_timestamp_datetime_utc).table_names
-            except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
-        else:
-            raise CLIError("Provided API Type {} is not supported for account {}".format(target_restorable_account.api_type, account_name))
-
-        if restorable_resources is None or not any(restorable_resources):
-            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, location, restore_timestamp_datetime_utc))
-
-    # Trigger restore
-    locations = []
-    locations.append(Location(location_name=location, failover_priority=0))
-
-    return _create_database_account(client,
-                                    resource_group_name=resource_group_name,
-                                    account_name=target_database_account_name,
-                                    locations=locations,
-                                    is_restore_request=True,
-                                    restore_source=target_restorable_account.id,
-                                    restore_timestamp=restore_timestamp_datetime_utc.isoformat(),
-                                    databases_to_restore=databases_to_restore,
-                                    gremlin_databases_to_restore=gremlin_databases_to_restore,
-                                    tables_to_restore=tables_to_restore,
-                                    arm_location=target_restorable_account.location)
-
-
-def _convert_to_utc_timestamp(timestamp_string):
-    import dateutil
-    import datetime
-    import dateutil.parser
-    timestamp_datetime = dateutil.parser.parse(timestamp_string)
-    timestamp_datetime_utc = None
-    # Convert to utc only if timezone aware
-    if timestamp_datetime.tzinfo is not None and timestamp_datetime.tzinfo.utcoffset(timestamp_datetime) is not None:
-        timestamp_datetime_utc = timestamp_datetime.astimezone(datetime.timezone.utc)
-    else:
-        timestamp_datetime_utc = timestamp_datetime
-    return timestamp_datetime_utc
-
-
-def cli_cosmosdb_list(client, resource_group_name=None):
-    """ Lists all Azure Cosmos DB database accounts within a given resource group or subscription. """
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name)
-
-    return client.list()
-
+# latest restorable timestamp for gremlin graph and table
 def cli_gremlin_retrieve_latest_backup_time(client,
                                         resource_group_name,
                                         account_name,

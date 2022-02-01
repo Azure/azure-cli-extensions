@@ -30,41 +30,26 @@ def cf_mongo_db_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).mongo_db_resources
 
 
-
 # restorable sql and mongodb resources
 def cf_restorable_sql_databases(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_sql_databases
 
 
+# cosmosdb account
+def cf_db_accounts(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).database_accounts
+
+
+# restorable sql and mongodb resources
 def cf_restorable_sql_containers(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_sql_containers
-
-
-def cf_restorable_sql_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_sql_resources
-
-
-def cf_restorable_mongodb_databases(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_databases
 
 
 def cf_restorable_mongodb_collections(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_collections
 
 
-def cf_restorable_mongodb_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_resources
-
-
-# restorable gremlin and table resources
-def cf_gremlin_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).gremlin_resources
-
-
-def cf_table_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).table_resources
-
-
+# restorable gremlin databases/graphs
 def cf_restorable_gremlin_databases(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_gremlin_databases
 
@@ -77,6 +62,7 @@ def cf_restorable_gremlin_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_gremlin_resources
 
 
+# restorable tables
 def cf_restorable_tables(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_tables
 
