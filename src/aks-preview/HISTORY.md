@@ -20,6 +20,11 @@ Release History
 * Add support for nodepool adding with Capacity Reservation Group.
   * `az aks nodepool add --crg-id`
 
+0.5.53
+++++++
+
+* Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
+
 0.5.52
 ++++++
 * Add yaml template files to package data to fix issue [#148](https://github.com/Azure/aks-periscope/issues/148).
