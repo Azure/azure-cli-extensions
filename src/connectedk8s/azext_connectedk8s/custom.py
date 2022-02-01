@@ -279,7 +279,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Generate request payload
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
-    
+
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
