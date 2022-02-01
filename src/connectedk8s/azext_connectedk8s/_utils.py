@@ -292,7 +292,7 @@ def helm_install_release(put_cc_response, chart_path, subscription_id, kubernete
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
                          enable_custom_locations, custom_locations_oid, helm_client_location, onboarding_timeout="600"):
-    #Proceed with agents installation only if the ARM resource creation has succeeded. This point will be reached only after the LRO is completed.
+    # Proceed with agents installation only if the ARM resource creation has succeeded. This point will be reached only after the LRO is completed.
     if put_cc_response.status() == 'Succeeded':
         cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                             "--set", "global.subscriptionId={}".format(subscription_id),
@@ -327,11 +327,11 @@ def helm_install_release(put_cc_response, chart_path, subscription_id, kubernete
         if https_proxy or http_proxy or no_proxy:
             cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if kube_config:
-           cmd_helm_install.extend(["--kubeconfig", kube_config])
+            cmd_helm_install.extend(["--kubeconfig", kube_config])
         if kube_context:
-           cmd_helm_install.extend(["--kube-context", kube_context])
+            cmd_helm_install.extend(["--kube-context", kube_context])
         if not no_wait:
-           # Change --timeout format for helm client to understand
+            # Change --timeout format for helm client to understand
             onboarding_timeout = onboarding_timeout + "s"
             cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
         response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
