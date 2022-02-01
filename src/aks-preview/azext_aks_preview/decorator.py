@@ -370,6 +370,29 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return gpu_instance_profile
 
+    def get_message_of_the_day(self) -> Union[str, None]:
+        """Obtain the value of message_of_the_day.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        message_of_the_day = self.raw_param.get("message_of_the_day")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile and
+                hasattr(agent_pool_profile, "message_of_the_day") and  # backward compatibility
+                agent_pool_profile.message_of_the_day is not None
+            ):
+                message_of_the_day = agent_pool_profile.message_of_the_day
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return message_of_the_day
+
     def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
         """Obtain the value of kubelet_config.
 
@@ -1587,6 +1610,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.gpu_instance_profile = (
             self.context.get_gpu_instance_profile()
+        )
+        agent_pool_profile.message_of_the_day = (
+            self.context.get_message_of_the_day()
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()

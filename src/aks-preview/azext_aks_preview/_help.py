@@ -404,6 +404,9 @@ helps['aks create'] = """
         - name: --host-group-id
           type: string
           short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+        - name: --message-of-the-day
+          type: string
+          short-summary: Base64-encoded message of the day. Only valid for linux nodes. Will be written to /etc/motd.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1045,6 +1048,9 @@ helps['aks nodepool add'] = """
         - name: --host-group-id
           type: string
           short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+        - name: --message-of-the-day
+          type: string
+          short-summary: Base64-encoded message of the day. Only valid for linux nodes. Will be written to /etc/motd.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

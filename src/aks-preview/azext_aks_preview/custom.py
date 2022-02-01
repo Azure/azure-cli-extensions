@@ -760,6 +760,7 @@ def aks_create(cmd,
                enable_oidc_issuer=False,
                host_group_id=None,
                crg_id=None,
+               message_of_the_day=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1579,6 +1580,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       snapshot_id=None,
                       host_group_id=None,
                       crg_id=None,
+                      message_of_the_day=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1657,6 +1659,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         creation_data=creationData,
         host_group_id=host_group_id,
         capacity_reservation_group_id=crg_id
+        message_of_the_day=message_of_the_day
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:

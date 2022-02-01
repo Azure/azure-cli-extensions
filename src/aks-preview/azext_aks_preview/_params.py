@@ -162,6 +162,7 @@ def load_arguments(self, _):
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
+        c.argument('message_of_the_day', type=str)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -266,6 +267,7 @@ def load_arguments(self, _):
             c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
             c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
             c.argument('crg_id', validator=validate_crg_id, is_preview=True)
+            c.argument('message_of_the_day', type=str)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
