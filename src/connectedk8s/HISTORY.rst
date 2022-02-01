@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.4
+++++++
+
+* Triggering arc agent installation only after the connected cluster resource is provisioned.
+
 1.2.3
 ++++++
 
