@@ -11,9 +11,19 @@ from azext_cosmosdb_preview._client_factory import (
     cf_cassandra_data_center,
     cf_graph_resources,
     cf_service,
-    cf_mongo_db_resources
+    cf_mongo_db_resources,
+    cf_gremlin_resources,
+    cf_table_resources,
+    cf_restorable_sql_containers,
+    cf_restorable_mongodb_collections,
+    cf_restorable_gremlin_databases,
+    cf_restorable_gremlin_graphs,
+    cf_restorable_gremlin_resources,
+    cf_restorable_tables,
+    cf_restorable_table_resources
 )
 
+from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
 
 def load_command_table(self, _):
     cosmosdb_graph_resources_sdk = CliCommandType(
@@ -81,3 +91,84 @@ def load_command_table(self, _):
         g.command('list', 'list_mongo_user_definitions')
         g.show_command('show', 'get_mongo_user_definition')
         g.command('delete', 'begin_delete_mongo_user_definition', confirmation=True)
+
+    # restorable accounts api
+    cosmosdb_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
+        client_factory=cf_db_accounts)
+
+    # restorable sql/mongodb apis
+    cosmosdb_restorable_sql_containers_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlContainersOperations.{}',
+        client_factory=cf_restorable_sql_containers)
+
+    cosmosdb_restorable_mongodb_collections_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbCollectionsOperations.{}',
+        client_factory=cf_restorable_mongodb_collections)
+
+    # restorable gremlin apis
+    cosmosdb_gremlin_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#GremlinResourcesOperations.{}',
+        client_factory=cf_gremlin_resources)
+
+    cosmosdb_restorable_gremlin_databases_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinDatabasesOperations.{}',
+        client_factory=cf_restorable_gremlin_databases)
+
+    cosmosdb_restorable_gremlin_graphs_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinGraphsOperations.{}',
+        client_factory=cf_restorable_gremlin_graphs)
+
+    cosmosdb_restorable_gremlin_resources_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinResourcesOperations.{}',
+        client_factory=cf_restorable_gremlin_resources)
+
+    # restorable table apis
+    cosmosdb_table_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#TableResourcesOperations.{}',
+        client_factory=cf_table_resources)
+
+    cosmosdb_restorable_tables_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableTablesOperations.{}',
+        client_factory=cf_restorable_tables)
+
+    cosmosdb_restorable_table_resources_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableTableResourcesOperations.{}',
+        client_factory=cf_restorable_table_resources)
+
+    # define commands
+    with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
+        g.show_command('show', 'get')
+        g.custom_command('restore', 'cli_cosmosdb_restore', is_preview=True)
+        g.custom_command('create', 'cli_cosmosdb_create')
+        g.custom_command('update', 'cli_cosmosdb_update')
+        g.custom_command('list', 'cli_cosmosdb_list')
+
+    with self.command_group('cosmosdb sql restorable-container', cosmosdb_restorable_sql_containers_sdk, client_factory=cf_restorable_sql_containers, is_preview=True) as g:
+        g.command('list', 'list')
+
+    with self.command_group('cosmosdb mongodb restorable-collection', cosmosdb_restorable_mongodb_collections_sdk, client_factory=cf_restorable_mongodb_collections, is_preview=True) as g:
+        g.command('list', 'list')
+    
+    with self.command_group('cosmosdb gremlin restorable-database', cosmosdb_restorable_gremlin_databases_sdk, client_factory=cf_restorable_gremlin_databases, is_preview=True) as g:
+        g.command('list', 'list')
+
+    with self.command_group('cosmosdb gremlin restorable-graph', cosmosdb_restorable_gremlin_graphs_sdk, client_factory=cf_restorable_gremlin_graphs, is_preview=True) as g:
+        g.command('list', 'list')
+
+    with self.command_group('cosmosdb gremlin restorable-resource', cosmosdb_restorable_gremlin_resources_sdk, client_factory=cf_restorable_gremlin_resources, is_preview=True) as g:
+        g.command('list', 'list')
+
+    with self.command_group('cosmosdb table restorable-table', cosmosdb_restorable_tables_sdk, client_factory=cf_restorable_tables, is_preview=True) as g:
+        g.command('list', 'list')
+
+    with self.command_group('cosmosdb table restorable-resource', cosmosdb_restorable_table_resources_sdk, client_factory=cf_restorable_table_resources, is_preview=True) as g:
+        g.command('list', 'list')
+
+    # Retrieve backup info for gremlin
+    with self.command_group('cosmosdb gremlin', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('retrieve-latest-backup-time', 'cli_gremlin_retrieve_latest_backup_time')
+
+    # Retrieve backup info for table
+    with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('retrieve-latest-backup-time', 'cli_table_retrieve_latest_backup_time')
