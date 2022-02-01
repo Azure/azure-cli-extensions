@@ -295,18 +295,18 @@ def helm_install_release(put_cc_response, chart_path, subscription_id, kubernete
     #Proceed with agents installation only if the ARM resource creation has succeeded. This point will be reached only after the LRO is completed.
     if put_cc_response.status() == 'Succeeded':
         cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
-                        "--set", "global.subscriptionId={}".format(subscription_id),
-                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
-                        "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
-                        "--set", "global.resourceGroupName={}".format(resource_group_name),
-                        "--set", "global.resourceName={}".format(cluster_name),
-                        "--set", "global.location={}".format(location),
-                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
-                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
-                        "--set", "systemDefaultValues.spnOnboarding=false",
-                        "--set", "global.azureEnvironment={}".format(cloud_name),
-                        "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
-                        "--output", "json"]
+                            "--set", "global.subscriptionId={}".format(subscription_id),
+                            "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                            "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
+                            "--set", "global.resourceGroupName={}".format(resource_group_name),
+                            "--set", "global.resourceName={}".format(cluster_name),
+                            "--set", "global.location={}".format(location),
+                            "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                            "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
+                            "--set", "systemDefaultValues.spnOnboarding=false",
+                            "--set", "global.azureEnvironment={}".format(cloud_name),
+                            "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
+                            "--output", "json"]
         # Add custom-locations related params
         if enable_custom_locations:
             cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
