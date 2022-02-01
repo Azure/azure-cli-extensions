@@ -113,6 +113,7 @@ Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindi
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
 Default_Namespace_Does_Not_Exist_Fault_Type = "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
 ClusterConnect_Not_Present_Fault_Type = "cluster-connect-feature-unavailable"
+Cluster_Provisioning_Failed_Fault_Type = "Connected cluster provisioning failed"
 CLIENT_PROXY_VERSION = '1.3.018101'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010

@@ -288,11 +288,13 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
     ensure_namespace_cleanup(configuration)
 
 
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
+def helm_install_release(put_cc_response, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
                          enable_custom_locations, custom_locations_oid, helm_client_location, onboarding_timeout="600"):
-    cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
+    #Proceed with agents installation only if the ARM resource creation has succeeded. This point will be reached only after the LRO is completed.
+    if put_cc_response.status() == 'Succeeded':
+        cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
@@ -305,42 +307,45 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "global.azureEnvironment={}".format(cloud_name),
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
-    # Add custom-locations related params
-    if enable_custom_locations:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
-        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
-    # To set some other helm parameters through file
-    if values_file_provided:
-        cmd_helm_install.extend(["-f", values_file])
-    if disable_auto_upgrade:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
-    if https_proxy:
-        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
-    if http_proxy:
-        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
-    if no_proxy:
-        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
-    if proxy_cert:
-        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
-    if https_proxy or http_proxy or no_proxy:
-        cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
-    if kube_config:
-        cmd_helm_install.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_install.extend(["--kube-context", kube_context])
-    if not no_wait:
-        # Change --timeout format for helm client to understand
-        onboarding_timeout = onboarding_timeout + "s"
-        cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
-    response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
-    _, error_helm_install = response_helm_install.communicate()
-    if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
-                                summary='Unable to install helm release')
-        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
-        raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+        # Add custom-locations related params
+        if enable_custom_locations:
+            cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
+            cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
+        # To set some other helm parameters through file
+        if values_file_provided:
+            cmd_helm_install.extend(["-f", values_file])
+        if disable_auto_upgrade:
+            cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
+        if https_proxy:
+            cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+        if http_proxy:
+            cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+        if no_proxy:
+            cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
+        if proxy_cert:
+            cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        if https_proxy or http_proxy or no_proxy:
+            cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
+        if kube_config:
+           cmd_helm_install.extend(["--kubeconfig", kube_config])
+        if kube_context:
+           cmd_helm_install.extend(["--kube-context", kube_context])
+        if not no_wait:
+           # Change --timeout format for helm client to understand
+            onboarding_timeout = onboarding_timeout + "s"
+            cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+        response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
+        _, error_helm_install = response_helm_install.communicate()
+        if response_helm_install.returncode != 0:
+            if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                        summary='Unable to install helm release')
+                logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
+                raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+    else:
+        telemetry.set_exception(exception='ARM resource creation did not succeed', fault_type=consts.Cluster_Provisioning_Failed_Fault_Type, summary='Connected cluster provisioning failed')
+        raise CLIInternalError("Failed to provision Azure arc-enabled k8s cluster")
 
 
 def flatten(dd, separator='.', prefix=''):

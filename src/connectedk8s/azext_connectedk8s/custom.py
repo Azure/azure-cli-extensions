@@ -279,18 +279,17 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Generate request payload
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
-
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
 
-    # Install azure-arc agents
-    utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
+    # Add arc agent installation as the callback function which'll be called once the LRO has completed(irrespective of the result of LRO)
+    put_cc_response.add_done_callback(lambda x: utils.helm_install_release(put_cc_response, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, helm_client_location, onboarding_timeout)
+                               custom_locations_oid, helm_client_location, onboarding_timeout))
 
     return put_cc_response
 
