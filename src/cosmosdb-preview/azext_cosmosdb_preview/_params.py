@@ -103,7 +103,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Services
-        for scope in [
+    for scope in [
             'cosmosdb service create',
             'cosmosdb service update']:
         with self.argument_context('cosmosdb service') as c:
