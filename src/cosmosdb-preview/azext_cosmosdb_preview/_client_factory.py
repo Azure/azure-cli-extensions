@@ -10,10 +10,6 @@ def cf_cosmosdb_preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CosmosDBManagementClient)
 
 
-def cf_graph_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).graph_resources
-
-
 def cf_service(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).service
 
