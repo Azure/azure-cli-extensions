@@ -13,9 +13,6 @@ from azext_cosmosdb_preview._client_factory import (
     cf_service,
     cf_mongo_db_resources
 )
-from azext_cosmosdb_preview._format import (
-    amc_node_status_table_format
-)
 
 
 def load_command_table(self, _):
@@ -39,15 +36,16 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
         client_factory=cf_mongo_db_resources)
 
-    with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
+    with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update', supports_no_wait=True)
-        g.custom_command('node-status', 'cli_cosmosdb_managed_cassandra_fetch_node_status', table_transformer=amc_node_status_table_format, supports_no_wait=True)
+        g.custom_command('backup list', 'cli_cosmosdb_managed_cassandra_cluster_list_backup', is_preview=True)
+        g.custom_command('backup show', 'cli_cosmosdb_managed_cassandra_cluster_show_backup', is_preview=True)
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
+    with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_datacenter_update', supports_no_wait=True)
         g.command('list', 'list')
