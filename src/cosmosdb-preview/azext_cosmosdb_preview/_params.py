@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
+from azext_cosmosdb_preview.actions import (
+    InvokeCommandArgumentsAddAction)
 from argcomplete.completers import FilesCompleter
 
 from azext_cosmosdb_preview._validators import (
@@ -37,10 +39,6 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 \\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
 }"
 """
-
-from azext_cosmosdb_preview.actions import (
-    InvokeCommandArgumentsAddAction)
-
 
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type

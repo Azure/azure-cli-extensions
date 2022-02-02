@@ -129,7 +129,7 @@ def validate_mongo_role_definition_body(cmd, ns):
         if 'Id' not in mongo_role_definition or not isinstance(mongo_role_definition['Id'], str) or len(mongo_role_definition['Id']) == 0:
             raise InvalidArgumentValueError(
                 'Role creation failed. Invalid Mongo role id. A valid string <DatabaseName>.<RoleName> is expected.')
-        
+
         mongo_role_definition['Id'] = _parse_resource_path(mongo_role_definition['Id'], False, "mongodbRoleDefinitions")
 
         if 'RoleName' not in mongo_role_definition or not isinstance(mongo_role_definition['RoleName'], str) or len(mongo_role_definition['RoleName']) == 0:
@@ -204,7 +204,7 @@ def validate_mongo_user_definition_body(cmd, ns):
                 'User creation failed. Invalid Mongo User ID. A valid string of <DatabaseName>.<Username> is expected.')
 
         mongo_user_definition['Id'] = _parse_resource_path(mongo_user_definition['Id'], False, "mongodbUserDefinitions")
-        
+
         if 'UserName' not in mongo_user_definition or not isinstance(mongo_user_definition['UserName'], str) or len(mongo_user_definition['UserName']) == 0:
             raise InvalidArgumentValueError(
                 'User creation failed. Invalid Mongo User definition user name. A valid string user name is expected.')
