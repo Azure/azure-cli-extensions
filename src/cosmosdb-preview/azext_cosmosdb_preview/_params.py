@@ -40,6 +40,7 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 }"
 """
 
+
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type
     from knack.arguments import CLIArgumentType
