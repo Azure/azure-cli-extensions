@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* Ensure compatibility of 'az webapp create' with CLI version 2.33.0
+
 0.1.2
 ++++++
 * Allow passing custom locations by name if in the same resource group as the app/plan

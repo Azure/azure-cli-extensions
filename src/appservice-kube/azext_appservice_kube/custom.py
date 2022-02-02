@@ -55,7 +55,7 @@ from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMi
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
-                         FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_EXACT_VERSION_DEFAULT,
+                         FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
                          KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND,
                          KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES)
@@ -751,7 +751,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.name)
 
     is_linux = plan_info.reserved
-    node_default_version = NODE_EXACT_VERSION_DEFAULT
     location = plan_info.location
 
     if isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() not in ['F1', 'FREE', 'SHARED', 'D1',
@@ -795,7 +794,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
-    helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
+    helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube), windows=not (is_linux or is_kube))
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -814,7 +813,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
                                "Please invoke 'list-runtimes' to cross check".format(runtime))
-            match['setter'](cmd=cmd, stack=match, site_config=site_config)
+            match.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             if name_validation.name_available:
@@ -845,13 +844,14 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         if not match:
             raise CLIError("Windows runtime '{}' is not supported. "
                            "Please invoke 'az webapp list-runtimes' to cross check".format(runtime))
-        match['setter'](cmd=cmd, stack=match, site_config=site_config)
+        match.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
 
         # portal uses the current_stack propety in metadata to display stack for windows apps
         current_stack = get_current_stack_from_runtime(runtime)
 
     else:  # windows webapp without runtime specified
         if name_validation.name_available:  # If creating new webapp
+            node_default_version = helper.get_default_version("node", is_linux, get_windows_config_version=True)
             site_config.app_settings.append(NameValuePair(name="WEBSITE_NODE_DEFAULT_VERSION",
                                                           value=node_default_version))
 
