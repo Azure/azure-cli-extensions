@@ -6,8 +6,7 @@
 from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.decorators import Completer
 
-# pylint: disable=line-too-long
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ContainerServiceVMSizeTypes
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 
 @Completer
@@ -45,6 +44,12 @@ def get_k8s_versions(cli_ctx, location):
 @Completer
 def get_vm_size_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return the intersection of the VM sizes allowed by the ACS SDK with those returned by the Compute Service."""
+    # load model
+    ContainerServiceVMSizeTypes = cmd.get_models(
+        "ContainerServiceVMSizeTypes",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
 
     location = _get_location(cmd.cli_ctx, namespace)
     result = get_vm_sizes(cmd.cli_ctx, location)

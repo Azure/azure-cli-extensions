@@ -19,6 +19,12 @@ def validate_client_certificates(ns):
         ns.client_certificates = get_certificates(ns.client_certificates)
 
 
+def validate_server_certificates(ns):
+    """ Extracts multiple comma-separated certificates """
+    if ns.server_certificates is not None:
+        ns.server_certificates = get_certificates(ns.server_certificates)
+
+
 def get_certificates(input_certificates):
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Certificate
     certificates = []

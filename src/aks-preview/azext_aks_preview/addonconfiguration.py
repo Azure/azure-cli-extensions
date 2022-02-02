@@ -11,7 +11,7 @@ from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterAddonProfile
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from ._client_factory import cf_resources, cf_resource_groups
 from ._resourcegroup import get_rg_location
 from ._roleassignments import add_role_assignment
@@ -150,6 +150,13 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     addon_profiles = instance.addon_profiles or {}
 
     os_type = 'Linux'
+
+    # load model
+    ManagedClusterAddonProfile = cmd.get_models(
+        "ManagedClusterAddonProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
 
     # for each addons argument
     for addon_arg in addon_args:
