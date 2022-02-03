@@ -36,7 +36,7 @@ from .repair_utils import (
     _get_cloud_init_script,
     _select_distro_linux,
     _check_linux_hyperV_gen,
-    _select_distro_linux_gen2
+    _select_distro_linux_gen2,
     _set_repair_map_url,
     _is_gen2
 )
