@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.52
++++++
+* Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
+
 0.5.51
 * Add currentKubernetesVersion column for az aks show --output table.
 

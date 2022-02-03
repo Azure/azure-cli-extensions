@@ -192,11 +192,11 @@ helps['aks create'] = """
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
-          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+          long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --network-plugin
           type: string
           short-summary: The Kubernetes network plugin to use.
-          long-summary: Specify "azure" for advanced networking configurations. Defaults to "kubenet".
+          long-summary: Specify "azure" for pod VNET IPs, "kubenet" for pod IPs NAT'd to your Node IPs, or "none" for no networking.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
@@ -453,6 +453,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: Create a kubernetes cluster with no CNI installed.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -941,7 +943,7 @@ helps['aks nodepool add'] = """
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
-          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+          long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --node-zones --zones -z
           type: string array
           short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
