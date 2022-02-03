@@ -34,25 +34,17 @@ from .repair_utils import (
     _invoke_run_command,
     _check_hyperV_gen,
     _get_cloud_init_script,
-<<<<<<< HEAD
     _select_distro_linux,
     _check_linux_hyperV_gen,
     _select_distro_linux_gen2
-=======
     _set_repair_map_url,
     _is_gen2
->>>>>>> 248b34cbb2eeb640525e4ab82d36d289781b54e5
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
 
 
-<<<<<<< HEAD
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu'):
-=======
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False):
-
->>>>>>> 248b34cbb2eeb640525e4ab82d36d289781b54e5
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
