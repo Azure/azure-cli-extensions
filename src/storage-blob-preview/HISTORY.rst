@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.6.1
+++++++
+* `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy
+* `az storage blob set-legal-hold`: Configure/Clear blob legal hold
+
 0.6.0
 ++++++
 * Remove `az storage account blob-service-properties` since all the preview arguments are supported in main azure cli

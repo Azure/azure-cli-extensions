@@ -26,6 +26,13 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class AnalyticalStorageSchemaType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describes the types of schema for analytical storage.
+    """
+
+    WELL_DEFINED = "WellDefined"
+    FULL_FIDELITY = "FullFidelity"
+
 class ApiType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enum to indicate the API type of the restorable database account.
     """
@@ -40,11 +47,21 @@ class ApiType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 class AuthenticationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Which authentication method Cassandra should use to authenticate clients. 'None' turns off
     authentication, so should not be used except in emergencies. 'Cassandra' is the default
-    password based authentication. The default is 'Cassandra'.
+    password based authentication. The default is 'Cassandra'. 'Ldap' is in preview.
     """
 
     NONE = "None"
     CASSANDRA = "Cassandra"
+    LDAP = "Ldap"
+
+class BackupPolicyMigrationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describes the status of migration between backup policy types.
+    """
+
+    INVALID = "Invalid"
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
 
 class BackupPolicyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Describes the mode of backups.
@@ -74,6 +91,17 @@ class ConflictResolutionMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
 
     LAST_WRITER_WINS = "LastWriterWins"
     CUSTOM = "Custom"
+
+class ConnectionState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of connection error that occurred.
+    """
+
+    UNKNOWN = "Unknown"
+    OK = "OK"
+    OPERATOR_TO_DATA_CENTER_NETWORK_ERROR = "OperatorToDataCenterNetworkError"
+    DATACENTER_TO_DATACENTER_NETWORK_ERROR = "DatacenterToDatacenterNetworkError"
+    INTERNAL_OPERATOR_TO_DATA_CENTER_CERTIFICATE_ERROR = "InternalOperatorToDataCenterCertificateError"
+    INTERNAL_ERROR = "InternalError"
 
 class ConnectorOffer(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The cassandra connector offer type for the Cosmos DB C* database account.
@@ -105,6 +133,11 @@ class DatabaseAccountKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MONGO_DB = "MongoDB"
     PARSE = "Parse"
 
+class DataTransferComponent(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
+    AZURE_STORAGE = "AzureStorage"
+
 class DataType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The datatype for which the indexing behavior is applied to.
     """
@@ -125,6 +158,14 @@ class DefaultConsistencyLevel(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
     BOUNDED_STALENESS = "BoundedStaleness"
     STRONG = "Strong"
     CONSISTENT_PREFIX = "ConsistentPrefix"
+
+class EnableFullTextQuery(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describe the level of detail with which queries are to be logged.
+    """
+
+    NONE = "None"
+    TRUE = "True"
+    FALSE = "False"
 
 class IndexingMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates the indexing mode.
@@ -162,6 +203,20 @@ class ManagedCassandraProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta,
     FAILED = "Failed"
     CANCELED = "Canceled"
 
+class ManagedCassandraResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of the resource.
+    """
+
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    NONE = "None"
+
+class MongoRoleDefinitionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates whether the Role Definition was built-in or user created.
+    """
+
+    BUILT_IN_ROLE = "BuiltInRole"
+    CUSTOM_ROLE = "CustomRole"
+
 class NetworkAclBypass(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates what services are allowed to bypass firewall checks.
     """
@@ -170,7 +225,7 @@ class NetworkAclBypass(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     AZURE_SERVICES = "AzureServices"
 
 class NodeState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The state of the node in relation to the cluster.
+    """The state of the node in Cassandra ring.
     """
 
     NORMAL = "Normal"
@@ -283,6 +338,8 @@ class ServiceType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     SQL_DEDICATED_GATEWAY = "SqlDedicatedGateway"
     DATA_TRANSFER = "DataTransfer"
+    GRAPH_API_COMPUTE = "GraphAPICompute"
+    MATERIALIZED_VIEWS_BUILDER = "MaterializedViewsBuilder"
 
 class SpatialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates the spatial type of index.

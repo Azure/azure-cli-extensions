@@ -43,6 +43,25 @@ class DiskMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     INDEPENDENT_PERSISTENT = "independent_persistent"
     INDEPENDENT_NONPERSISTENT = "independent_nonpersistent"
 
+class DiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Defines the different types of disks.
+    """
+
+    FLAT = "flat"
+    PMEM = "pmem"
+    RAWPHYSICAL = "rawphysical"
+    RAWVIRTUAL = "rawvirtual"
+    SPARSE = "sparse"
+    SESPARSE = "sesparse"
+    UNKNOWN = "unknown"
+
+class FirmwareType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Firmware type
+    """
+
+    BIOS = "bios"
+    EFI = "efi"
+
 class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of managed service identity.
     """
@@ -58,6 +77,9 @@ class InventoryType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     VIRTUAL_MACHINE = "VirtualMachine"
     VIRTUAL_MACHINE_TEMPLATE = "VirtualMachineTemplate"
     VIRTUAL_NETWORK = "VirtualNetwork"
+    CLUSTER = "Cluster"
+    DATASTORE = "Datastore"
+    HOST = "Host"
 
 class IPAddressAllocationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """IP address allocation method.
@@ -104,6 +126,19 @@ class ProvisioningAction(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UNINSTALL = "uninstall"
     REPAIR = "repair"
 
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The current deployment state of resource.
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    PROVISIONING = "Provisioning"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    ACCEPTED = "Accepted"
+    CREATED = "Created"
+
 class SCSIControllerType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the different types of SCSI controllers.
     """
@@ -119,6 +154,14 @@ class StatusLevelTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     INFO = "Info"
     WARNING = "Warning"
+    ERROR = "Error"
+
+class StatusTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The status of the hybrid machine agent.
+    """
+
+    CONNECTED = "Connected"
+    DISCONNECTED = "Disconnected"
     ERROR = "Error"
 
 class VirtualSCSISharing(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):

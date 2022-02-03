@@ -11,24 +11,26 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_applyupdate_for_resource_group_list
 from .example_steps import step_applyupdate_create
-from .example_steps import step_applyupdate_create2
+from .example_steps import step_applyupdate_create_or_update_parent
 from .example_steps import step_applyupdate_show
 from .example_steps import step_applyupdate_show_parent
 from .example_steps import step_applyupdate_list
 from .example_steps import step_configuration_create
 from .example_steps import step_configuration_show
+from .example_steps import step_configuration_show2
+from .example_steps import step_configuration_show3
 from .example_steps import step_configuration_list
 from .example_steps import step_configuration_update
 from .example_steps import step_assignment_create
-from .example_steps import step_assignment_create2
+from .example_steps import step_assignment_create_or_update_parent
+from .example_steps import step_assignment_show
+from .example_steps import step_assignment_show_parent
 from .example_steps import step_assignment_list
 from .example_steps import step_assignment_list_parent
 from .example_steps import step_assignment_delete
-from .example_steps import step_assignment_delete2
+from .example_steps import step_assignment_delete_parent
 from .example_steps import step_configuration_delete
-from .example_steps import step_configuration_for_resource_group_list
 from .example_steps import step_public_configuration_show
 from .example_steps import step_public_configuration_list
 from .example_steps import step_update_list
@@ -45,59 +47,60 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Env setup_scenario
 @try_manual
-def setup_scenario(test, rg):
+def setup_scenario(test):
     pass
 
 
 # Env cleanup_scenario
 @try_manual
-def cleanup_scenario(test, rg):
+def cleanup_scenario(test):
     pass
 
 
 # Testcase: Scenario
 @try_manual
-def call_scenario(test, rg):
-    setup_scenario(test, rg)
-    step_applyupdate_for_resource_group_list(test, rg, checks=[])
-    step_applyupdate_create(test, rg, checks=[])
-    step_applyupdate_create2(test, rg, checks=[])
-    step_applyupdate_show(test, rg, checks=[])
-    step_applyupdate_show_parent(test, rg, checks=[])
-    step_applyupdate_list(test, rg, checks=[])
-    step_configuration_create(test, rg, checks=[])
-    step_configuration_show(test, rg, checks=[])
-    step_configuration_list(test, rg, checks=[])
-    step_configuration_update(test, rg, checks=[])
-    step_assignment_create(test, rg, checks=[
-        test.check("maintenanceConfigurationId", "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Micros"
-                   "oft.Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration2}", case_sensitive=False),
-        test.check("name", "{myConfigurationAssignment2}", case_sensitive=False),
-    ])
-    step_assignment_create2(test, rg, checks=[
+def call_scenario(test):
+    setup_scenario(test)
+    step_applyupdate_create(test, checks=[])
+    step_applyupdate_create_or_update_parent(test, checks=[])
+    step_applyupdate_show(test, checks=[])
+    step_applyupdate_show_parent(test, checks=[])
+    step_applyupdate_list(test, checks=[])
+    step_configuration_create(test, checks=[])
+    step_configuration_show(test, checks=[])
+    step_configuration_show2(test, checks=[])
+    step_configuration_show3(test, checks=[])
+    step_configuration_list(test, checks=[])
+    step_configuration_update(test, checks=[])
+    step_assignment_create(test, checks=[
         test.check("maintenanceConfigurationId", "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Micros"
                    "oft.Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}", case_sensitive=False),
         test.check("name", "{myConfigurationAssignment}", case_sensitive=False),
     ])
-    step_assignment_list(test, rg, checks=[
+    step_assignment_create_or_update_parent(test, checks=[])
+    step_assignment_show(test, checks=[
+        test.check("maintenanceConfigurationId", "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Micros"
+                   "oft.Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}", case_sensitive=False),
+        test.check("name", "{myConfigurationAssignment}", case_sensitive=False),
+    ])
+    step_assignment_show_parent(test, checks=[])
+    step_assignment_list(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_assignment_list_parent(test, rg, checks=[])
-    step_assignment_delete(test, rg, checks=[])
-    step_assignment_delete2(test, rg, checks=[])
-    step_configuration_delete(test, rg, checks=[])
-    step_configuration_for_resource_group_list(test, rg, checks=[])
-    step_public_configuration_show(test, rg, checks=[])
-    step_public_configuration_list(test, rg, checks=[])
-    step_update_list(test, rg, checks=[])
-    step_update_list_parent(test, rg, checks=[])
-    cleanup_scenario(test, rg)
+    step_assignment_list_parent(test, checks=[])
+    step_assignment_delete(test, checks=[])
+    step_assignment_delete_parent(test, checks=[])
+    step_configuration_delete(test, checks=[])
+    step_public_configuration_show(test, checks=[])
+    step_public_configuration_list(test, checks=[])
+    step_update_list(test, checks=[])
+    step_update_list_parent(test, checks=[])
+    cleanup_scenario(test)
 
 
 # Test class for Scenario
 @try_manual
 class MaintenanceScenarioTest(ScenarioTest):
-
     def __init__(self, *args, **kwargs):
         super(MaintenanceScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
@@ -114,8 +117,8 @@ class MaintenanceScenarioTest(ScenarioTest):
             'HSProbeSettings': '{"protocol": "https", "port": "80", "requestPath": "/"}'
         })
 
-    @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
     def test_maintenance_Scenario(self, rg):
-        call_scenario(self, rg)
+        call_scenario(self)
         calc_coverage(__file__)
         raise_if()

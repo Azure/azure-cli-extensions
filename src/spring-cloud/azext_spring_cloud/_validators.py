@@ -12,14 +12,14 @@ import zipfile
 from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.azclierror import InvalidArgumentValueError
-from ._utils import _get_file_type
-from msrestazure.tools import is_valid_resource_id
-from msrestazure.tools import parse_resource_id
-from msrestazure.tools import resource_id
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
+from knack.validators import DefaultStr
+from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id
+from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
-from ._utils import ApiType
-from ._utils import _get_rg_location
+from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from .vendored_sdks.appplatform.v2020_07_01 import models
 
 logger = get_logger(__name__)
 
@@ -40,11 +40,56 @@ def validate_location(namespace):
                                       for piece in location_slice])
 
 
-def validate_sku(namespace):
-    if namespace.sku is not None:
-        namespace.sku = namespace.sku.upper()
-        if namespace.sku not in ['BASIC', 'STANDARD']:
-            raise InvalidArgumentValueError("The pricing tier only accepts value [Basic, Standard]")
+def validate_sku(cmd, namespace):
+    if not namespace.sku:
+        return
+    if namespace.sku.lower() == 'enterprise':
+        _validate_saas_provider(cmd, namespace)
+        _validate_terms(cmd, namespace)
+    else:
+        _check_tanzu_components_not_enable(cmd, namespace)
+    normalize_sku(cmd, namespace)
+
+
+def normalize_sku(cmd, namespace):
+    if namespace.sku:
+        namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+
+
+def _validate_saas_provider(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import ResourceType
+    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).providers
+    if client.get('Microsoft.SaaS').registration_state != 'Registered':
+        raise InvalidArgumentValueError('Microsoft.SaaS resource provider is not registered.\n'
+                                        'Run "az provider register -n Microsoft.SaaS" to register.')
+
+
+def _validate_terms(cmd, namespace):
+    from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    client = get_mgmt_service_client(cmd.cli_ctx, MarketplaceOrderingAgreements).marketplace_agreements
+    term = client.get(offer_type="virtualmachine",
+                      publisher_id='vmware-inc',
+                      offer_id='azure-spring-cloud-vmware-tanzu-2',
+                      plan_id='tanzu-asc-ent-mtr')
+    if not term.accepted:
+        raise InvalidArgumentValueError('Terms for Azure Spring Cloud Enterprise is not accepted.\n'
+                                        'Run "az term accept --publisher vmware-inc '
+                                        '--product azure-spring-cloud-vmware-tanzu-2 '
+                                        '--plan tanzu-asc-ent-mtr" to accept the term.')
+
+
+def _check_tanzu_components_not_enable(cmd, namespace):
+    suffix = 'can only be used for Azure Spring Cloud Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
+    if namespace.enable_application_configuration_service:
+        raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_service_registry:
+        raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
+    if namespace.enable_gateway:
+        raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
+    if namespace.enable_api_portal:
+        raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
@@ -155,34 +200,60 @@ def validate_jvm_options(namespace):
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
 
-def validate_tracing_parameters(namespace):
-    if namespace.disable_app_insights and namespace.disable_distributed_tracing:
-        raise InvalidArgumentValueError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
+def validate_tracing_parameters_asc_create(namespace):
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
+            and namespace.disable_app_insights:
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
+            "can not be set with '--disable-app-insights'.")
+    _validate_app_insights_parameters(namespace)
+
+
+def validate_tracing_parameters_asc_update(namespace):
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                                        "can not be set with '--disable-app-insights'.")
-    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_distributed_tracing:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                                        "can not be set with '--disable-distributed-tracing'.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' "
+            "can not be set with '--disable-app-insights'.")
     if namespace.app_insights and namespace.app_insights_key:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' can not be empty.")
 
 
 def validate_java_agent_parameters(namespace):
+    """TODO (jiec) Deco this function when 'enable-java-agent' is decommissioned.
+    """
     if namespace.disable_app_insights and namespace.enable_java_agent:
-        raise InvalidArgumentValueError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
+            "can not be set at the same time.")
 
 
 def validate_app_insights_parameters(namespace):
-    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
-                                        "can not be set with '--disable'.")
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
+            and namespace.disable:
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
+            "can not be set with '--disable'.")
+    if not namespace.app_insights \
+            and not namespace.app_insights_key \
+            and namespace.sampling_rate is None \
+            and not namespace.disable:
+        raise InvalidArgumentValueError("Invalid value: nothing is updated for application insights.")
+    _validate_app_insights_parameters(namespace)
+
+
+def _validate_app_insights_parameters(namespace):
     if namespace.app_insights and namespace.app_insights_key:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
-    if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
-        raise InvalidArgumentValueError("Sampling Rate must be in the range [0,100].")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.app_insights == "":
+        raise InvalidArgumentValueError("Invalid value: '--app-insights' can not be empty.")
+    if namespace.app_insights_key == "":
+        raise InvalidArgumentValueError("Invalid value: '--app-insights-key' can not be empty.")
+    if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
+        raise InvalidArgumentValueError("Invalid value: Sampling Rate must be in the range [0,100].")
 
 
 def validate_vnet(cmd, namespace):
@@ -403,7 +474,7 @@ def validate_vnet_required_parameters(namespace):
        not namespace.reserved_cidr_range and \
        not namespace.vnet:
         return
-    if namespace.sku and namespace.sku.lower() == 'basic':
+    if namespace.sku and _parse_sku_name(namespace.sku) == 'basic':
         raise InvalidArgumentValueError('Virtual Network Injection is not supported for Basic tier.')
     if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
@@ -416,6 +487,14 @@ def validate_node_resource_group(namespace):
     _validate_resource_group_name(namespace.service_runtime_network_resource_group,
                                   'service-runtime-network-resource-group')
     _validate_resource_group_name(namespace.app_network_resource_group, 'app-network-resource-group')
+
+
+def _parse_sku_name(sku):
+    if not sku:
+        return 'standard'
+    if type(sku) is str or type(sku) is DefaultStr:
+        return sku.lower()
+    return sku.tier.lower()
 
 
 def _validate_resource_group_name(name, message_name):

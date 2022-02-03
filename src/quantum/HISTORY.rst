@@ -3,6 +3,36 @@
 Release History
 ===============
 
+0.12.0
+++++++
+* [2022-01-26] Version intended to work with QDK version v0.22.187631
+* Updated data plane generated client to API version 2021-11-01-preview.
+* Added support for displaying cost estimate for a job when available.
+
+0.11.0
+++++++
+* [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
+* Job result histograms will be left-aligned (not centered) in console output.
+
+0.10.0
+++++++
+* [2021-11-22] Version intended to work with QDK version v0.20.2111.177148
+* Fixed issue where the update prompt shows during test automation and should be suppressed.
+
+0.9.0
+++++++
+* [2021-10-25] Version intended to work with QDK version v0.20.2110.171573
+* Aligned the extension tests with the Azure Quantum E2E test infrastructure.
+* Replaced deprecated CLIError class with new error types.
+* Appended 'CLI' to UserAgent to distinguish Azure Quantum calls from different clients.
+
+0.8.0
+++++++
+* [2021-09-27] Version intended to work with QDK version v0.19.2109.165653
+* Users will receive recommendation at most once a day, to update the az quantum extension if the version installed is out-of-date.
+* Added parameter `--job-params` to job submission commands to pass additional metadata.
+* Fixed trimming issue in processing the output of some jobs.
+
 0.7.0
 ++++++
 * [2021-08-31] Version intended to work with QDK version v0.18.2108.160310
