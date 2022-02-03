@@ -31,3 +31,15 @@ helps['containerapp env show'] = """
       text: |
           az containerapp env show -n MyContainerappEnvironment -g MyResourceGroup
 """
+
+helps['containerapp env list'] = """
+    type: command
+    short-summary: List Containerapp environments by subscription or resource group.
+    examples:
+    - name: List Containerapp Environments by subscription.
+      text: |
+          az containerapp env list
+    - name: List Containerapp Environments by resource group.
+      text: |
+          az containerapp env list -g MyResourceGroup
+"""
