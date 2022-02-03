@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_containerapp._client_factory import cf_containerapp
+from azext_containerapp._client_factory import cf_containerapp, ex_handler_factory
 
 
 def load_command_table(self, _):
@@ -18,12 +18,11 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp') as g:
         g.custom_command('create', 'create_containerapp')
-        # g.command('delete', 'delete')
-        g.custom_command('list', 'list_containerapp')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_containerapp')
 
 
-    with self.command_group('containerapp', is_preview=True):
-        pass
-
+    with self.command_group('containerapp env') as g:
+        g.custom_command('show', 'show_kube_environment')
+        # g.custom_command('list', 'list_kube_environments')
+        # g.custom_command('create', 'create_kube_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        # g.custom_command('update', 'update_kube_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        # g.command('delete', 'delete_kube_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())

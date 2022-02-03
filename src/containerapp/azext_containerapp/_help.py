@@ -17,22 +17,17 @@ helps['containerapp create'] = """
     short-summary: Create a Containerapp.
 """
 
-helps['containerapp list'] = """
-    type: command
-    short-summary: List Containerapps.
+# Environment Commands
+helps['containerapp env'] = """
+    type: group
+    short-summary: Commands to manage Containerapps environments.
 """
 
-# helps['containerapp delete'] = """
-#     type: command
-#     short-summary: Delete a Containerapp.
-# """
-
-# helps['containerapp show'] = """
-#     type: command
-#     short-summary: Show details of a Containerapp.
-# """
-
-# helps['containerapp update'] = """
-#     type: command
-#     short-summary: Update a Containerapp.
-# """
+helps['containerapp env show'] = """
+    type: command
+    short-summary: Show details of a Containerapp environment.
+    examples:
+    - name: Show the details of a Containerapp Environment.
+      text: |
+          az containerapp env show -n MyContainerappEnvironment -g MyResourceGroup
+"""

@@ -3,6 +3,55 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from knack.util import CLIError
+
+
+# pylint: disable=inconsistent-return-statements
+def ex_handler_factory(creating_plan=False, no_throw=False):
+    def _polish_bad_errors(ex):
+        import json
+        from knack.util import CLIError
+        try:
+            content = json.loads(ex.response.content)
+            if 'message' in content:
+                detail = content['message']
+            elif 'Message' in content:
+                detail = content['Message']
+
+            if creating_plan:
+                if 'Requested features are not supported in region' in detail:
+                    detail = ("Plan with linux worker is not supported in current region. For " +
+                              "supported regions, please refer to https://docs.microsoft.com/"
+                              "azure/app-service-web/app-service-linux-intro")
+                elif 'Not enough available reserved instance servers to satisfy' in detail:
+                    detail = ("Plan with Linux worker can only be created in a group " +
+                              "which has never contained a Windows worker, and vice versa. " +
+                              "Please use a new resource group. Original error:" + detail)
+            ex = CLIError(detail)
+        except Exception:  # pylint: disable=broad-except
+            pass
+        if no_throw:
+            return ex
+        raise ex
+    return _polish_bad_errors
+
+
+def handle_raw_exception(e):
+    import json
+
+    stringErr = str(e)
+    if "{" in stringErr and "}" in stringErr:
+        jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
+        jsonError = json.loads(jsonError)
+        if 'error' in jsonError:
+            jsonError = jsonError['error']
+            if 'code' in jsonError and 'message' in jsonError:
+                code = jsonError['code']
+                message = jsonError['message']
+                raise CLIError('({}) {}'.format(code, message))
+    raise e
+
+
 def cf_containerapp(cli_ctx, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
