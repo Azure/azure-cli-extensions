@@ -45,7 +45,10 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
 
     logger.debug("Running ssh command %s", ' '.join(command))
-    subprocess.call(command, shell=platform.system() == 'Windows')
+    connection_status = subprocess.call(command, shell=platform.system() == 'Windows')
+
+    if log_file:
+        _print_error_messages_from_ssh_log(log_file, connection_status)
 
     if delete_keys or delete_cert:
         if cleanup_process.is_alive():
@@ -239,6 +242,15 @@ def _build_args(cert_file, private_key_file, port):
     if cert_file:
         certificate = ["-o", "CertificateFile=\"" + cert_file + "\""]
     return private_key + certificate + port_arg
+
+
+def _print_error_messages_from_ssh_log(log_file, connection_status):
+    with open(log_file, 'r') as log:
+        if "debug1: Authentication succeeded" not in log.read() or connection_status != 0: 
+            for line in log.readlines():
+                if "debug1:" not in line:
+                    print(line)
+        log.close()
 
 
 def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, log_file=None, wait=False):
