@@ -93,6 +93,14 @@ def create_kube_environment(cmd,
         handle_raw_exception(e)
 
 
+def update_kube_environment(cmd,
+                            name,
+                            resource_group_name,
+                            tags=None,
+                            no_wait=False):
+    raise CLIError('Containerapp env update is not yet implemented')
+
+
 def show_kube_environment(cmd, name, resource_group_name):
     try:
         return KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)

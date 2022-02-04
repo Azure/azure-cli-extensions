@@ -35,6 +35,11 @@ helps['containerapp env create'] = """
               --location Canada Central
 """
 
+helps['containerapp env update'] = """
+    type: command
+    short-summary: Update a Containerapp environment. Currently Unsupported.
+"""
+
 helps['containerapp env show'] = """
     type: command
     short-summary: Show details of a Containerapp environment.
