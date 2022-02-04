@@ -21,7 +21,11 @@ logger = log.get_logger(__name__)
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_folder=None, ssh_args=None):
+           ssh_client_folder=None, ssh_args=[]):
+
+    if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
+        ssh_args = ['-v'] + ssh_args
+
     _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
     credentials_folder = None
     op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args)

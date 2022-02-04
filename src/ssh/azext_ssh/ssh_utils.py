@@ -9,6 +9,7 @@ import time
 import multiprocessing as mp
 import datetime
 from azext_ssh import file_utils
+import logging
 
 from knack import log
 from azure.cli.core import azclierror
