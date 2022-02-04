@@ -25,43 +25,898 @@ interactions:
       User-Agent:
       - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
   response:
     body:
-      string: '{"error":{"code":"Failed","message":"The delegate executed asynchronously
-        through TimeoutPolicy did not complete within the timeout."}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","name":"DummyLedgerName","type":"microsoft.confidentialledger/ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"systemData":{"createdBy":"user_admin@billtest856236hotmail.ccsctp.net","createdByType":"User","createdAt":"2022-02-04T22:05:01.9473386Z","lastModifiedBy":"user_admin@billtest856236hotmail.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2022-02-04T22:05:01.9473386Z"},"properties":{"ledgerName":"DummyLedgerName","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"},{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275","provisioningState":"Accepted"}}'
     headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
       cache-control:
       - no-cache
       content-length:
-      - '135'
+      - '1750'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Tue, 04 Jan 2022 18:28:32 GMT
+      - Fri, 04 Feb 2022 22:05:23 GMT
+      etag:
+      - '"3300c452-0000-0700-0000-61fda3230000"'
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-async-operation-timeout:
+      - PT10M
       x-ms-image-digest:
-      - sha256:eb52264e04c28a15db5cc165ad1af3d641dca8487e84f5db6421737d38396193
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
       x-ms-image-tag:
-      - 1.0.01796.263-737d1ad8305f306575229813108842c9bd601f8f
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
       x-ms-machinename:
-      - controlplane-5c55c6df8c-p5dlt
+      - controlplane-5cfd99dcf8-hqnk7
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5B652072C0824573AAE39BF771527F39 Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:05:01Z'
     status:
-      code: 400
-      message: Bad Request
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2022-02-04T22:05:16.8266795Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:05:54 GMT
+      etag:
+      - '"3b00cce6-0000-0700-0000-61fda31d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 31DD8A73D17648FAAB2D447308C2AD65 Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:05:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2022-02-04T22:05:16.8266795Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:06:24 GMT
+      etag:
+      - '"3b00cce6-0000-0700-0000-61fda31d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 756020FC89E64D12B806C8E1424C98B4 Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:06:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Accepted","startTime":"2022-02-04T22:05:16.8266795Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:06:54 GMT
+      etag:
+      - '"3b00cce6-0000-0700-0000-61fda31d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7C7EDA7C37A149DC999E049F389D4E2E Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:06:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"1b51aea3-ed40-4fc5-b8b9-a3eab9511ac5*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Succeeded","startTime":"2022-02-04T22:05:16.8266795Z","endTime":"2022-02-04T22:07:12.8206876Z","properties":{"LedgerName":"DummyLedgerName","LedgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","IdentityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","LedgerStorageAccount":null,"LedgerType":"Public","AadBasedSecurityPrincipals":[{"PrincipalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","TenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","LedgerRoleName":"Administrator"},{"PrincipalId":"85324509-c073-4379-9ddc-e6fde4b4d291","TenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","LedgerRoleName":"Administrator"}],"CertBasedSecurityPrincipals":[{"Cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","LedgerRoleName":"Reader"}],"LedgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1916'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:24 GMT
+      etag:
+      - '"3b006ff0-0000-0700-0000-61fda3910000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B7A6CAC1B64E4815A408D92B66AC417C Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:07:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/Ledgers/DummyLedgerName","name":"DummyLedgerName","type":"Microsoft.ConfidentialLedger/Ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"properties":{"ledgerName":"DummyLedgerName","ledgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","identityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"},{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1623'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:25 GMT
+      etag:
+      - '"3300a454-0000-0700-0000-61fda3910000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-4f29x
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 8A0EFBA6699046B98FBE7106517B70C1 Ref B: WSTEDGE1121 Ref C: 2022-02-04T22:07:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/Ledgers/DummyLedgerName","name":"DummyLedgerName","type":"Microsoft.ConfidentialLedger/Ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"properties":{"ledgerName":"DummyLedgerName","ledgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","identityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"},{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1623'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:26 GMT
+      etag:
+      - '"3300a454-0000-0700-0000-61fda3910000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-4f29x
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 9D4439A14A3540038800D1CDDCC75E4E Ref B: CO1EDGE1417 Ref C: 2022-02-04T22:07:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/Ledgers/DummyLedgerName","name":"DummyLedgerName","type":"Microsoft.ConfidentialLedger/Ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"properties":{"ledgerName":"DummyLedgerName","ledgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","identityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"},{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-4f29x
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 8C3EB609C2604393A6493AFC7D3C04FA Ref B: STBEDGE0217 Ref C: 2022-02-04T22:07:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ConfidentialLedger/ledgers/?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/TestRG2/providers/Microsoft.ConfidentialLedger/Ledgers/testing-new-ledger-92","name":"testing-new-ledger-92","type":"Microsoft.ConfidentialLedger/Ledgers","location":"East
+        US","properties":{"ledgerName":"testing-new-ledger-92","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"4ed0cc8d-80f4-4da4-a4bb-4ad4f08bd5fe"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/TestRG2/providers/Microsoft.ConfidentialLedger/Ledgers/testing-new-ledger-95","name":"testing-new-ledger-95","type":"Microsoft.ConfidentialLedger/Ledgers","location":"East
+        US","properties":{"ledgerName":"testing-new-ledger-95","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"77dc2e31-1309-44be-b2f4-5592f28f2737"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/Ledgers/DummyLedgerName","name":"DummyLedgerName","type":"Microsoft.ConfidentialLedger/Ledgers","location":"EastUS","tags":{"additionalProps1":"additional
+        properties"},"properties":{"ledgerName":"DummyLedgerName","ledgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","identityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"},{"principalId":"85324509-c073-4379-9ddc-e6fde4b4d291","tenantId":"58b662f8-7af2-4f4b-b1e0-8ba0d1c70c00","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-4f29x
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 95B9A36292AF4FF28FD7BF893B4EF5FE Ref B: WSTEDGE1118 Ref C: 2022-02-04T22:07:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"additionProps2": "additional property value", "additionalProps1":
+      "additional properties"}, "location": "EastUS", "properties": {"ledgerType":
+      "Public", "aadBasedSecurityPrincipals": [{"principalId": "34621747-6fc8-4771-a2eb-72f31c461f2e",
+      "tenantId": "bce123b9-2b7b-4975-8360-5ca0b9b1cd08", "ledgerRoleName": "Administrator"}],
+      "certBasedSecurityPrincipals": [{"cert": "-----BEGIN CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+      CERTIFICATE-----", "ledgerRoleName": "Reader"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1051'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --location --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","name":"DummyLedgerName","type":"microsoft.confidentialledger/ledgers","location":"EastUS","etag":"\"3300a454-0000-0700-0000-61fda3910000\"","tags":{"additionProps2":"additional
+        property value","additionalProps1":"additional properties"},"systemData":{"createdBy":"user_admin@billtest856236hotmail.ccsctp.net","createdByType":"User","createdAt":"2022-02-04T22:05:01.9473386Z","lastModifiedBy":"user_admin@billtest856236hotmail.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2022-02-04T22:07:29.3476483Z"},"properties":{"ledgerName":"DummyLedgerName","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275","provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/c2b5cbc6-b9b2-4c15-87da-b74c247ab0be*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1707'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:07:30 GMT
+      etag:
+      - '"3300db54-0000-0700-0000-61fda3a20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT10M
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-gs9lf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: FE939FF630E841FC8DB1DC6820C6F511 Ref B: STBEDGE0122 Ref C: 2022-02-04T22:07:29Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --location --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/c2b5cbc6-b9b2-4c15-87da-b74c247ab0be*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/c2b5cbc6-b9b2-4c15-87da-b74c247ab0be*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"c2b5cbc6-b9b2-4c15-87da-b74c247ab0be*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Succeeded","startTime":"2022-02-04T22:07:30.1061171Z","endTime":"2022-02-04T22:07:32.5539218Z","properties":{"LedgerName":"DummyLedgerName","LedgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","IdentityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","LedgerStorageAccount":null,"LedgerType":"Public","AadBasedSecurityPrincipals":[{"PrincipalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","TenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","LedgerRoleName":"Administrator"}],"CertBasedSecurityPrincipals":[{"Cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","LedgerRoleName":"Reader"}],"LedgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:08:00 GMT
+      etag:
+      - '"3b00e9f1-0000-0700-0000-61fda3a50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2296A52D09D842D9AA92DCE031020975 Ref B: STBEDGE0122 Ref C: 2022-02-04T22:08:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --aad-based-security-principals --cert-based-security-principals
+        --ledger-type --tags --location --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/Ledgers/DummyLedgerName","name":"DummyLedgerName","type":"Microsoft.ConfidentialLedger/Ledgers","location":"EastUS","tags":{"additionProps2":"additional
+        property value","additionalProps1":"additional properties"},"properties":{"ledgerName":"DummyLedgerName","ledgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","identityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","tenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","ledgerRoleName":"Administrator"}],"certBasedSecurityPrincipals":[{"cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","ledgerRoleName":"Reader"}],"ledgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:08:00 GMT
+      etag:
+      - '"3300e354-0000-0700-0000-61fda3a50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-gs9lf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 6C07B854CE0C441EB026B71AE7896AD7 Ref B: STBEDGE0122 Ref C: 2022-02-04T22:08:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName?api-version=2021-05-13-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:08:01 GMT
+      etag:
+      - '"33005355-0000-0700-0000-61fda3c20000"'
+      expires:
+      - '-1'
+      location:
+      - https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT5M
+      x-ms-image-digest:
+      - sha256:980dbacb175140e86475253e6c746dda3db53c1397136f10f2ef5eff4f2d69ec
+      x-ms-image-tag:
+      - 1.0.01861.306-1c5d81140f22d2d967e2cf30caed6fefd53bb378
+      x-ms-machinename:
+      - controlplane-5cfd99dcf8-gs9lf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: AF5437E3CE944C1B869DE9BA0DC5279D Ref B: WSTEDGE0609 Ref C: 2022-02-04T22:08:01Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Deleting","startTime":"2022-02-04T22:08:01.9153214Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:08:31 GMT
+      etag:
+      - '"3b006bf4-0000-0700-0000-61fda3c10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3E10274F172D4A7EAD0E0A73091533D3 Ref B: WSTEDGE0609 Ref C: 2022-02-04T22:08:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Deleting","startTime":"2022-02-04T22:08:01.9153214Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:09:01 GMT
+      etag:
+      - '"3b006bf4-0000-0700-0000-61fda3c10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 90B5E588717446A1885EAC3569C29CEC Ref B: WSTEDGE0609 Ref C: 2022-02-04T22:09:02Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Deleting","startTime":"2022-02-04T22:08:01.9153214Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:09:32 GMT
+      etag:
+      - '"3b006bf4-0000-0700-0000-61fda3c10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8CD2600151EA40208322E6BA7821C2A7 Ref B: WSTEDGE0609 Ref C: 2022-02-04T22:09:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-confidentialledger/unknown Python/3.8.10 (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6?api-version=2021-05-13-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/EASTUS/operationStatuses/fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","name":"fa940e3a-8cc5-4833-b107-f0b58da5085e*0EC68D18D1406194472A8F092A31371E0A6C80F7F3DBF292779D72890C840DD6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ConfidentialLedger/ledgers/DummyLedgerName","status":"Succeeded","startTime":"2022-02-04T22:08:01.9153214Z","endTime":"2022-02-04T22:09:48.7773427Z","properties":{"LedgerName":"DummyLedgerName","LedgerUri":"https://dummyledgername.confidential-ledger-ppe.azure.com","IdentityServiceUri":"https://identity.confidential-ledger-ppe.core.azure.com/ledgerIdentity/dummyledgername","LedgerStorageAccount":null,"LedgerType":"Public","AadBasedSecurityPrincipals":[{"PrincipalId":"34621747-6fc8-4771-a2eb-72f31c461f2e","TenantId":"bce123b9-2b7b-4975-8360-5ca0b9b1cd08","LedgerRoleName":"Administrator"}],"CertBasedSecurityPrincipals":[{"Cert":"-----BEGIN
+        CERTIFICATE-----MIIBsjCCATigAwIBAgIUZWIbyG79TniQLd2UxJuU74tqrKcwCgYIKoZIzj0EAwMwEDEOMAwGA1UEAwwFdXNlcjAwHhcNMjEwMzE2MTgwNjExWhcNMjIwMzE2MTgwNjExWjAQMQ4wDAYDVQQDDAV1c2VyMDB2MBAGByqGSM49AgEGBSuBBAAiA2IABBiWSo/j8EFit7aUMm5lF+lUmCu+IgfnpFD+7QMgLKtxRJ3aGSqgS/GpqcYVGddnODtSarNE/HyGKUFUolLPQ5ybHcouUk0kyfA7XMeSoUA4lBz63Wha8wmXo+NdBRo39qNTMFEwHQYDVR0OBBYEFPtuhrwgGjDFHeUUT4nGsXaZn69KMB8GA1UdIwQYMBaAFPtuhrwgGjDFHeUUT4nGsXaZn69KMA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwMDaAAwZQIxAOnozm2CyqRwSSQLls5r+mUHRGRyXHXwYtM4Dcst/VEZdmS9fqvHRCHbjUlO/+HNfgIwMWZ4FmsjD3wnPxONOm9YdVn/PRD7SsPRPbOjwBiE4EBGaHDsLjYAGDSGi7NJnSkA-----END
+        CERTIFICATE-----","LedgerRoleName":"Reader"}],"LedgerInternalNamespace":"388d25a1-5b23-49e8-a58d-1ef1816c7275"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1778'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 04 Feb 2022 22:10:02 GMT
+      etag:
+      - '"3b00effd-0000-0700-0000-61fda42c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C709140DBBFB49A8AE9B7768086B569F Ref B: WSTEDGE0609 Ref C: 2022-02-04T22:10:02Z'
+    status:
+      code: 200
+      message: OK
 version: 1

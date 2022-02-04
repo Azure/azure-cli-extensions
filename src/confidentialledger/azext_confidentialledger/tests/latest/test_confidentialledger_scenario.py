@@ -61,7 +61,7 @@ def call_scenario(test):
         test.check('length(@)', 1),
     ])
     step_list_by_subscription(test, checks=[
-        test.check('length(@)', 1),
+        test.check('length(@)', 3),
     ])
     step_update(test, create_result.output, checks=[
         test.check("location", "EastUS", case_sensitive=False),

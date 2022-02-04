@@ -115,6 +115,7 @@ def step_update(test, create_output, checks=None):
              f'{cert_based_principals} '
              f'--ledger-type "{ledger_type}" '
              f'--tags {tags} '
+             '--location "EastUS" '
              '--name "{myLedger}" '
              '--resource-group "{rg}"',
              checks=checks)
