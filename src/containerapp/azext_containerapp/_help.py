@@ -40,6 +40,14 @@ helps['containerapp env update'] = """
     short-summary: Update a Containerapp environment. Currently Unsupported.
 """
 
+helps['containerapp env delete'] = """
+    type: command
+    short-summary: Deletes a Containerapp Environment.
+    examples:
+    - name: Delete Containerapp Environment.
+      text: az containerapp env delete -g MyResourceGroup -n MyContainerappEnvironment
+"""
+
 helps['containerapp env show'] = """
     type: command
     short-summary: Show details of a Containerapp environment.

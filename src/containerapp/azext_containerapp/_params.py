@@ -42,5 +42,8 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the kubernetes environment.')
         c.argument('tags', arg_type=tags_type)
 
+    with self.argument_context('containerapp env delete') as c:
+        c.argument('name', name_type, help='Name of the Kubernetes Environment.')
+
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Kubernetes Environment.')

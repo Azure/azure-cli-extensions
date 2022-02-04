@@ -101,6 +101,13 @@ def update_kube_environment(cmd,
     raise CLIError('Containerapp env update is not yet implemented')
 
 
+def delete_kube_environment(cmd, name, resource_group_name):
+    try:
+        return KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
 def show_kube_environment(cmd, name, resource_group_name):
     try:
         return KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
