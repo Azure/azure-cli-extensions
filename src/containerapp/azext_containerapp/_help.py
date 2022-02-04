@@ -23,6 +23,18 @@ helps['containerapp env'] = """
     short-summary: Commands to manage Containerapps environments.
 """
 
+helps['containerapp env create'] = """
+    type: command
+    short-summary: Create a Containerapp environment.
+    examples:
+    - name: Create a Containerapp Environment.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --logs-workspace-id myLogsWorkspaceID \\
+              --logs-workspace-key myLogsWorkspaceKey \\
+              --location Canada Central
+"""
+
 helps['containerapp env show'] = """
     type: command
     short-summary: Show details of a Containerapp environment.

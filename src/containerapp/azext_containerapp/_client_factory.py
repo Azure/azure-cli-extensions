@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
+
 from knack.util import CLIError
 
 
@@ -40,16 +43,31 @@ def handle_raw_exception(e):
     import json
 
     stringErr = str(e)
+
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
         jsonError = json.loads(jsonError)
+
         if 'error' in jsonError:
             jsonError = jsonError['error']
+
             if 'code' in jsonError and 'message' in jsonError:
                 code = jsonError['code']
                 message = jsonError['message']
                 raise CLIError('({}) {}'.format(code, message))
+        elif "Message" in jsonError:
+            message = jsonError["Message"]
+            raise CLIError(message)
     raise e
+
+
+def providers_client_factory(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+
+
+def cf_resource_groups(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                   subscription_id=subscription_id).resource_groups
 
 
 def cf_containerapp(cli_ctx, *_):
