@@ -3,7 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from ast import NotEq
 import json
+import time
+import sys
 
 from sys import api_version
 from azure.cli.core.util import send_raw_request
@@ -12,11 +15,62 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 
 API_VERSION = "2021-03-01"
 NEW_API_VERSION = "2022-01-01-preview"
+POLLING_TIMEOUT = 60 # how many seconds before exiting
+POLLING_SECONDS = 2 # how many seconds between requests
+
+
+class PollingAnimation():
+    def __init__(self):
+        self.tickers = ["/", "|", "\\", "-", "/", "|", "\\", "-"]
+        self.currTicker = 0
+
+    def tick(self):
+        sys.stdout.write('\r')
+        sys.stdout.write(self.tickers[self.currTicker] + " Running ..")
+        sys.stdout.flush()
+        self.currTicker += 1
+        self.currTicker = self.currTicker % len(self.tickers)
+
+    def flush(self):
+        sys.stdout.flush()
+        sys.stdout.write('\r')
+        sys.stdout.write("\033[K")
+
+
+def poll(cmd, request_url, poll_if_status):
+    try:
+        start = time.time()
+        end = time.time() + POLLING_TIMEOUT
+        animation = PollingAnimation()
+
+        animation.tick()
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        while r.status_code in [200, 201] and start < end:
+            time.sleep(POLLING_SECONDS)
+            animation.tick()
+
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            r2 = r.json()
+
+            if not "properties" in r2 or not "provisioningState" in r2["properties"] or not r2["properties"]["provisioningState"].lower() == poll_if_status:
+                break
+            start = time.time()
+
+        animation.flush()
+        return r.json()
+    except Exception as e:
+        animation.flush()
+
+        if poll_if_status == "scheduledfordelete": # Catch "not found" errors if polling for delete
+            return
+
+        raise e
 
 
 class KubeEnvironmentClient():
     @classmethod
-    def create(cls, cmd, resource_group_name, name, kube_environment_envelope):
+    def create(cls, cmd, resource_group_name, name, kube_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -29,10 +83,23 @@ class KubeEnvironmentClient():
             api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(kube_environment_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "waiting")
+
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, name):
+    def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -44,7 +111,20 @@ class KubeEnvironmentClient():
             name,
             api_version)
 
-        send_raw_request(cmd.cli_ctx, "DELETE", request_url)  # API doesn't return JSON for some reason
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            poll(cmd, request_url, "scheduledfordelete")
+        return
 
     @classmethod
     def show(cls, cmd, resource_group_name, name):

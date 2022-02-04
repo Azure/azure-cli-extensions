@@ -7,11 +7,15 @@ from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from knack.util import CLIError
+from knack.log import get_logger
 
 from ._client_factory import handle_raw_exception
 from ._clients import KubeEnvironmentClient, ManagedEnvironmentClient
 from ._models import KubeEnvironment, ContainerAppsConfiguration, AppLogsConfiguration, LogAnalyticsConfiguration
 from ._utils import _validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed
+
+logger = get_logger(__name__)
+
 
 def create_containerapp(cmd, resource_group_name, name, location=None, tags=None):
     raise CLIError('TODO: Implement `containerapp create`')
@@ -86,9 +90,13 @@ def create_kube_environment(cmd,
     kube_def["tags"] = tags
 
     try:
-        return sdk_no_wait(no_wait, KubeEnvironmentClient.create,
-                           cmd=cmd, resource_group_name=resource_group_name,
-                           name=name, kube_environment_envelope=kube_def)
+        r = KubeEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
     except Exception as e:
         handle_raw_exception(e)
 
@@ -101,9 +109,12 @@ def update_kube_environment(cmd,
     raise CLIError('Containerapp env update is not yet implemented')
 
 
-def delete_kube_environment(cmd, name, resource_group_name):
+def delete_kube_environment(cmd, name, resource_group_name, no_wait=False):
     try:
-        return KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name)
+        r = KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+        if not r and not no_wait:
+            logger.warning('Containerapp successfully deleted')
+        return r
     except CLIError as e:
         handle_raw_exception(e)
 
