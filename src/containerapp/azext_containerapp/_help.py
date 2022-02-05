@@ -20,7 +20,7 @@ helps['containerapp create'] = """
 # Environment Commands
 helps['containerapp env'] = """
     type: group
-    short-summary: Commands to manage Containerapps environments.
+    short-summary: Commands to manage Containerapp environments.
 """
 
 helps['containerapp env create'] = """

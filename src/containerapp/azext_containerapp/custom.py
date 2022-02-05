@@ -94,7 +94,7 @@ def create_kube_environment(cmd,
             cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+            logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
     except Exception as e:
@@ -113,7 +113,7 @@ def delete_kube_environment(cmd, name, resource_group_name, no_wait=False):
     try:
         r = KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
         if not r and not no_wait:
-            logger.warning('Containerapp successfully deleted')
+            logger.warning('Containerapp environment successfully deleted')
         return r
     except CLIError as e:
         handle_raw_exception(e)
@@ -155,11 +155,21 @@ def list_managed_environments(cmd, resource_group_name=None):
         if resource_group_name is None:
             managed_envs = ManagedEnvironmentClient.list_by_subscription(cmd=cmd)
         else:
-            managed_envs = ManagedEnvironmentClient.list_by_resource_Group(cmd=cmd, resource_group_name=resource_group_name)
+            managed_envs = ManagedEnvironmentClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
 
         return [e for e in managed_envs if "properties" in e and
             "environmentType" in e["properties"] and
             e["properties"]["environmentType"] and
             e["properties"]["environmentType"].lower() == "managed"]
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
+    try:
+        r = ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+        if not r and not no_wait:
+            logger.warning('Containerapp environment successfully deleted')
+        return r
     except CLIError as e:
         handle_raw_exception(e)
