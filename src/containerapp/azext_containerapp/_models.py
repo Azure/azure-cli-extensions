@@ -34,6 +34,26 @@ KubeEnvironment = {
     "extendedLocation": None
 }
 
+ManagedEnvironment = {
+    "id": None, # readonly
+    "name": None, # readonly
+    "kind": None,
+    "location": None,
+    "tags": None,
+    "properties": {
+        "daprAIInstrumentationKey": None,
+        "vnetConfiguration": {
+            "infrastructureSubnetId": None,
+            "runtimeSubnetId": None,
+            "dockerBridgeCidr": None,
+            "platformReservedCidr": None,
+            "platformReservedDnsIp": None
+        },
+        "internalLoadBalancer": None,
+        "appLogsConfiguration": None
+    }
+}
+
 AppLogsConfiguration = {
     "destination": None,
     "logAnalyticsConfiguration": None

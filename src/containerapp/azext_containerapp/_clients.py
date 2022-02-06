@@ -203,9 +203,67 @@ class KubeEnvironmentClient():
 
 class ManagedEnvironmentClient():
     @classmethod
+    def create(cls, cmd, resource_group_name, name, kube_environment_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(kube_environment_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "waiting")
+
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, name, kube_environment_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(kube_environment_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "waiting")
+
+        return r.json()
+
+    @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = API_VERSION
+        api_version = NEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(

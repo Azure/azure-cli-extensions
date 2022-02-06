@@ -46,7 +46,7 @@ def _ensure_location_allowed(cmd, location, resource_provider):
 
             location_formatted = location.lower().replace(" ", "")
             if location_formatted not in res_locations:
-                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query 'resourceTypes[?resourceType=='containerApps'].locations'`".format(
+                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='containerApps'].locations\"`".format(
                     location, resource_provider))
     except ValidationError as ex:
         raise ex
