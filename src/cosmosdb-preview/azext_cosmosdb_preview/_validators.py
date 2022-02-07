@@ -77,6 +77,7 @@ def _gen_guid():
     import uuid
     return uuid.uuid4()
 
+
 def _parse_resource_path(resource,
                          to_fully_qualified,
                          resource_type=None,
