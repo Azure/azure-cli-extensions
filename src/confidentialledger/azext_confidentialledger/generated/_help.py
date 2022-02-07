@@ -58,7 +58,7 @@ helps['confidentialledger create'] = """
         long-summary: |
             Usage: --cert-based-security-principals cert=XX ledger-role-name=XX
 
-            cert: Base64 encoded public key of the user cert (.pem or .cer)
+            cert: Public key of the user cert (.pem or .cer)
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
             Multiple actions can be specified by using more than one --cert-based-security-principals argument.
@@ -96,7 +96,7 @@ helps['confidentialledger update'] = """
         long-summary: |
             Usage: --cert-based-security-principals cert=XX ledger-role-name=XX
 
-            cert: Base64 encoded public key of the user cert (.pem or .cer)
+            cert: Public key of the user cert (.pem or .cer)
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
             Multiple actions can be specified by using more than one --cert-based-security-principals argument.

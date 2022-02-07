@@ -50,7 +50,7 @@ class AadBasedSecurityPrincipal(msrest.serialization.Model):
 class CertBasedSecurityPrincipal(msrest.serialization.Model):
     """Cert based security principal with Ledger RoleName.
 
-    :param cert: Base64 encoded public key of the user cert (.pem or .cer).
+    :param cert: Public key of the user cert (.pem or .cer).
     :type cert: str
     :param ledger_role_name: LedgerRole associated with the Security Principal of Ledger. Possible
      values include: "Reader", "Contributor", "Administrator".
