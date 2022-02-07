@@ -2,6 +2,16 @@
 
 Release History
 ===============
+1.2.3
+++++++
+
+* Fetching the tenantID from subscription object instead of graphclient
+
+1.2.2
+++++++
+
+* Updated connectedk8s proxy to support mooncake
+
 1.2.1
 ++++++
 

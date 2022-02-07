@@ -4,12 +4,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from __future__ import print_function
-
+import base64
 import binascii
 import datetime
 import errno
-import io
 import json
 import os
 import os.path
@@ -23,114 +21,130 @@ import tempfile
 import threading
 import time
 import uuid
-import base64
 import webbrowser
-import zipfile
-from distutils.version import StrictVersion
 from math import isnan
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from six.moves.urllib.error import URLError  # pylint: disable=import-error
-import requests
-from knack.log import get_logger
-from knack.util import CLIError
-from knack.prompting import prompt_pass, NoTTYException
-
-import yaml  # pylint: disable=import-error
-from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
-from dateutil.parser import parse  # pylint: disable=import-error
-from msrestazure.azure_exceptions import CloudError
 
 import colorama  # pylint: disable=import-error
-from tabulate import tabulate  # pylint: disable=import-error
+import yaml  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
-from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core._profile import Profile
-from azure.graphrbac.models import (ApplicationCreateParameters,
-                                    PasswordCredential,
-                                    KeyCredential,
-                                    ServicePrincipalCreateParameters,
-                                    GetObjectsParameters)
+from azure.cli.core.commands.client_factory import (
+    get_mgmt_service_client,
+    get_subscription_id,
+)
+from azure.cli.core.util import (
+    get_file_json,
+    in_cloud_console,
+    sdk_no_wait,
+    shell_safe_json_parse,
+)
+from azure.graphrbac.models import (
+    ApplicationCreateParameters,
+    KeyCredential,
+    PasswordCredential,
+    ServicePrincipalCreateParameters,
+)
+from dateutil.parser import parse  # pylint: disable=import-error
+from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
+from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_pass
+from knack.util import CLIError
+from msrestazure.azure_exceptions import CloudError
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from tabulate import tabulate  # pylint: disable=import-error
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import (ContainerServiceLinuxProfile,
-                                                                      ManagedClusterWindowsProfile,
-                                                                      ContainerServiceNetworkProfile,
-                                                                      ManagedClusterServicePrincipalProfile,
-                                                                      ContainerServiceSshConfiguration,
-                                                                      ContainerServiceSshPublicKey,
-                                                                      ManagedCluster,
-                                                                      ManagedClusterAADProfile,
-                                                                      ManagedClusterAddonProfile,
-                                                                      ManagedClusterAgentPoolProfile,
-                                                                      AgentPool,
-                                                                      AgentPoolUpgradeSettings,
-                                                                      ContainerServiceStorageProfileTypes,
-                                                                      ManagedClusterIdentity,
-                                                                      ManagedClusterAPIServerAccessProfile,
-                                                                      ManagedClusterSKU,
-                                                                      ManagedServiceIdentityUserAssignedIdentitiesValue,
-                                                                      ManagedClusterAutoUpgradeProfile,
-                                                                      KubeletConfig,
-                                                                      LinuxOSConfig,
-                                                                      ManagedClusterHTTPProxyConfig,
-                                                                      SysctlConfig,
-                                                                      ManagedClusterPodIdentityProfile,
-                                                                      ManagedClusterPodIdentity,
-                                                                      ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity,
-                                                                      WindowsGmsaProfile,
-                                                                      PowerState,
-                                                                      Snapshot,
-                                                                      CreationData)
-from ._client_factory import cf_resource_groups
-from ._client_factory import get_auth_management_client
-from ._client_factory import get_graph_rbac_management_client
-from ._client_factory import get_msi_client
-from ._client_factory import cf_resources
-from ._client_factory import get_resource_by_name
-from ._client_factory import cf_container_registry_service
-from ._client_factory import cf_storage
-from ._client_factory import cf_agent_pools
-from ._client_factory import cf_snapshots
-from ._client_factory import cf_snapshots_client
+
+from ._client_factory import (
+    cf_agent_pools,
+    cf_container_registry_service,
+    cf_snapshots_client,
+    cf_storage,
+    get_auth_management_client,
+    get_graph_rbac_management_client,
+    get_msi_client,
+    get_resource_by_name,
+)
+from ._consts import (
+    ADDONS,
+    ADDONS_DESCRIPTIONS,
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_POLICY_ADDON_NAME,
+    CONST_CONFCOM_ADDON_NAME,
+    CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_INGRESS_APPGW_SUBNET_ID,
+    CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+    CONST_KUBE_DASHBOARD_ADDON_NAME,
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE,
+    CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_SCALE_DOWN_MODE_DELETE,
+    CONST_SCALE_SET_PRIORITY_REGULAR,
+    CONST_SCALE_SET_PRIORITY_SPOT,
+    CONST_SECRET_ROTATION_ENABLED,
+    CONST_SPOT_EVICTION_POLICY_DELETE,
+    CONST_VIRTUAL_NODE_ADDON_NAME,
+    CONST_VIRTUAL_NODE_SUBNET_NAME,
+)
+from ._helpers import (
+    _trim_fqdn_name_containing_hcp,
+)
+from ._podidentity import (
+    _ensure_managed_identity_operator_permission,
+    _ensure_pod_identity_addon_is_enabled,
+    _fill_defaults_for_pod_identity_profile,
+    _update_addon_pod_identity,
+)
 from ._resourcegroup import get_rg_location
-
-from ._roleassignments import add_role_assignment, create_role_assignment, build_role_scope, resolve_role_id, \
-    resolve_object_id
-
-from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
-                       _set_outbound_type, _parse_comma_separated_list,
-                       _trim_fqdn_name_containing_hcp)
-from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
-                            update_load_balancer_profile, create_load_balancer_profile)
-from ._natgateway import (create_nat_gateway_profile, update_nat_gateway_profile, is_nat_gateway_profile_provided)
-from ._consts import CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME
-from ._consts import CONST_MONITORING_ADDON_NAME
-from ._consts import CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
-from ._consts import CONST_MONITORING_USING_AAD_MSI_AUTH
-from ._consts import CONST_VIRTUAL_NODE_ADDON_NAME
-from ._consts import CONST_VIRTUAL_NODE_SUBNET_NAME
-from ._consts import CONST_AZURE_POLICY_ADDON_NAME
-from ._consts import CONST_KUBE_DASHBOARD_ADDON_NAME
-from ._consts import CONST_INGRESS_APPGW_ADDON_NAME
-from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
-from ._consts import CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_SUBNET_ID
-from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
-from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
-from ._consts import CONST_SCALE_DOWN_MODE_DELETE
-from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
-from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL
-from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
-from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
-from ._consts import ADDONS, ADDONS_DESCRIPTIONS
-from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
-from .addonconfiguration import update_addons, enable_addons, ensure_default_log_analytics_workspace_for_monitoring, \
-    sanitize_loganalytics_ws_resource_id, ensure_container_insights_for_monitoring, add_monitoring_role_assignment, \
-    add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
+from ._roleassignments import (
+    add_role_assignment,
+    build_role_scope,
+    create_role_assignment,
+    resolve_object_id,
+    resolve_role_id,
+)
+from .addonconfiguration import (
+    add_ingress_appgw_addon_role_assignment,
+    add_monitoring_role_assignment,
+    add_virtual_node_role_assignment,
+    enable_addons,
+    ensure_container_insights_for_monitoring,
+    ensure_default_log_analytics_workspace_for_monitoring,
+    sanitize_loganalytics_ws_resource_id,
+)
+from .maintenanceconfiguration import (
+    aks_maintenanceconfiguration_update_internal,
+)
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import (
+    AgentPool,
+    AgentPoolUpgradeSettings,
+    ContainerServiceStorageProfileTypes,
+    CreationData,
+    KubeletConfig,
+    LinuxOSConfig,
+    ManagedClusterAddonProfile,
+    ManagedClusterHTTPProxyConfig,
+    ManagedClusterPodIdentity,
+    ManagedClusterPodIdentityException,
+    PowerState,
+    Snapshot,
+    SysctlConfig,
+    UserAssignedIdentity,
+)
 
 logger = get_logger(__name__)
 
@@ -504,20 +518,6 @@ def _get_user_assigned_identity(cli_ctx, resource_id):
         "Cannot parse identity name from provided resource id {}.".format(resource_id))
 
 
-def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
-    return _get_user_assigned_identity(cli_ctx, resource_id).client_id
-
-
-def _get_user_assigned_identity_object_id(cli_ctx, resource_id):
-    return _get_user_assigned_identity(cli_ctx, resource_id).principal_id
-
-
-def _update_dict(dict1, dict2):
-    cp = dict1.copy()
-    cp.update(dict2)
-    return cp
-
-
 _re_snapshot_resource_id = re.compile(
     r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)',
     flags=re.IGNORECASE)
@@ -757,17 +757,20 @@ def aks_create(cmd,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                snapshot_id=None,
+               enable_oidc_issuer=False,
                yes=False):
-    # get all the original parameters and save them as a dictionary
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
-    # decorator pattern
-    from .decorator import AKSPreviewCreateDecorator
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azure.cli.command_modules.acs.decorator import AKSParamDict
+    from .decorator import AKSPreviewCreateDecorator
+
+    # decorator pattern
     aks_create_decorator = AKSPreviewCreateDecorator(
         cmd=cmd,
         client=client,
-        raw_parameters=raw_parameters,
+        raw_parameters=AKSParamDict(raw_parameters),
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
     try:
@@ -831,420 +834,30 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_azure_rbac=False,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
-               gmsa_root_domain_name=None):
-    update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
-    update_acr = attach_acr is not None or detach_acr is not None
-    update_pod_security = enable_pod_security_policy or disable_pod_security_policy
-    update_lb_profile = is_load_balancer_profile_provided(load_balancer_managed_outbound_ip_count,
-                                                          load_balancer_managed_outbound_ipv6_count,
-                                                          load_balancer_outbound_ips,
-                                                          load_balancer_outbound_ip_prefixes,
-                                                          load_balancer_outbound_ports,
-                                                          load_balancer_idle_timeout)
-    update_natgw_profile = is_nat_gateway_profile_provided(nat_gateway_managed_outbound_ip_count, nat_gateway_idle_timeout)
-    update_aad_profile = not (
-        aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
-    # pylint: disable=too-many-boolean-expressions
-    if not update_autoscaler and \
-       cluster_autoscaler_profile is None and \
-       not update_acr and \
-       not update_lb_profile \
-       and api_server_authorized_ip_ranges is None and \
-       not update_pod_security and \
-       not update_lb_profile and \
-       not update_natgw_profile and \
-       not uptime_sla and \
-       not no_uptime_sla and \
-       not enable_aad and \
-       not update_aad_profile and  \
-       not enable_ahub and  \
-       not disable_ahub and \
-       not auto_upgrade_channel and \
-       not enable_managed_identity and \
-       not assign_identity and \
-       not enable_pod_identity and \
-       not disable_pod_identity and \
-       not enable_secret_rotation and \
-       not disable_secret_rotation and \
-       not rotation_poll_interval and \
-       not tags and \
-       not windows_admin_password and \
-       not enable_local_accounts and \
-       not disable_local_accounts and \
-       not enable_public_fqdn and \
-       not disable_public_fqdn and \
-       not enable_windows_gmsa and \
-       not nodepool_labels:
-        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                       '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler" or '
-                       '"--cluster-autoscaler-profile" or '
-                       '"--enable-pod-security-policy" or '
-                       '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges" or '
-                       '"--attach-acr" or '
-                       '"--detach-acr" or '
-                       '"--uptime-sla" or '
-                       '"--no-uptime-sla" or '
-                       '"--load-balancer-managed-outbound-ip-count" or '
-                       '"--load-balancer-outbound-ips" or '
-                       '"--load-balancer-outbound-ip-prefixes" or '
-                       '"--nat-gateway-managed-outbound-ip-count" or '
-                       '"--nat-gateway-idle-timeout" or '
-                       '"--enable-aad" or '
-                       '"--aad-tenant-id" or '
-                       '"--aad-admin-group-object-ids" or '
-                       '"--enable-ahub" or '
-                       '"--disable-ahub" or '
-                       '"--enable-managed-identity" or '
-                       '"--enable-pod-identity" or '
-                       '"--disable-pod-identity" or '
-                       '"--auto-upgrade-channel" or '
-                       '"--enable-secret-rotation" or '
-                       '"--disable-secret-rotation" or '
-                       '"--rotation-poll-interval" or '
-                       '"--tags" or '
-                       '"--windows-admin-password" or '
-                       '"--enable-azure-rbac" or '
-                       '"--disable-azure-rbac" or '
-                       '"--enable-local-accounts" or '
-                       '"--disable-local-accounts" or '
-                       '"--enable-public-fqdn" or '
-                       '"--disable-public-fqdn"'
-                       '"--enble-windows-gmsa" or '
-                       '"--nodepool-labels"')
-    instance = client.get(resource_group_name, name)
-    _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
+               gmsa_root_domain_name=None,
+               enable_oidc_issuer=False):
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
 
-    if update_autoscaler and len(instance.agent_pool_profiles) > 1:
-        raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
-                       'to update per node pool auto scaler settings')
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azure.cli.command_modules.acs.decorator import AKSParamDict
+    from .decorator import AKSPreviewUpdateDecorator
 
-    if min_count is None or max_count is None:
-        if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specify both min-count and max-count when --enable-cluster-autoscaler or '
-                           '--update-cluster-autoscaler set.')
-
-    if min_count is not None and max_count is not None:
-        if int(min_count) > int(max_count):
-            raise CLIError(
-                'value of min-count should be less than or equal to value of max-count.')
-
-    if enable_cluster_autoscaler:
-        if instance.agent_pool_profiles[0].enable_auto_scaling:
-            logger.warning('Cluster autoscaler is already enabled for this managed cluster.\n'
-                           'Please run "az aks update --update-cluster-autoscaler" '
-                           'if you want to update min-count or max-count.')
-            return None
-        instance.agent_pool_profiles[0].min_count = int(min_count)
-        instance.agent_pool_profiles[0].max_count = int(max_count)
-        instance.agent_pool_profiles[0].enable_auto_scaling = True
-
-    if update_cluster_autoscaler:
-        if not instance.agent_pool_profiles[0].enable_auto_scaling:
-            raise CLIError('Cluster autoscaler is not enabled for this managed cluster.\n'
-                           'Run "az aks update --enable-cluster-autoscaler" '
-                           'to enable cluster with min-count and max-count.')
-        instance.agent_pool_profiles[0].min_count = int(min_count)
-        instance.agent_pool_profiles[0].max_count = int(max_count)
-
-    if disable_cluster_autoscaler:
-        if not instance.agent_pool_profiles[0].enable_auto_scaling:
-            logger.warning(
-                'Cluster autoscaler is already disabled for this managed cluster.')
-            return None
-        instance.agent_pool_profiles[0].enable_auto_scaling = False
-        instance.agent_pool_profiles[0].min_count = None
-        instance.agent_pool_profiles[0].max_count = None
-
-    # if intention is to clear profile
-    if cluster_autoscaler_profile == {}:
-        instance.auto_scaler_profile = {}
-    # else profile is provided, update instance profile if it exists
-    elif cluster_autoscaler_profile:
-        instance.auto_scaler_profile = _update_dict(instance.auto_scaler_profile.__dict__,
-                                                    dict((key.replace("-", "_"), value)
-                                                         for (key, value) in cluster_autoscaler_profile.items())) \
-            if instance.auto_scaler_profile else cluster_autoscaler_profile
-
-    if enable_pod_security_policy and disable_pod_security_policy:
-        raise CLIError('Cannot specify --enable-pod-security-policy and --disable-pod-security-policy '
-                       'at the same time.')
-
-    if enable_pod_security_policy:
-        instance.enable_pod_security_policy = True
-
-    if disable_pod_security_policy:
-        instance.enable_pod_security_policy = False
-
-    if disable_local_accounts and enable_local_accounts:
-        raise CLIError('Cannot specify --disable-local-accounts and --enable-local-accounts '
-                       'at the same time.')
-
-    if disable_local_accounts:
-        instance.disable_local_accounts = True
-
-    if enable_local_accounts:
-        instance.disable_local_accounts = False
-
-    if update_lb_profile:
-        instance.network_profile.load_balancer_profile = update_load_balancer_profile(
-            load_balancer_managed_outbound_ip_count,
-            load_balancer_managed_outbound_ipv6_count,
-            load_balancer_outbound_ips,
-            load_balancer_outbound_ip_prefixes,
-            load_balancer_outbound_ports,
-            load_balancer_idle_timeout,
-            instance.network_profile.load_balancer_profile)
-
-    if update_natgw_profile:
-        from azext_aks_preview.decorator import AKSPreviewModels
-        # store all the models used by nat gateway
-        nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
-        instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
-            nat_gateway_managed_outbound_ip_count,
-            nat_gateway_idle_timeout,
-            instance.network_profile.nat_gateway_profile,
-            models=nat_gateway_models,
-        )
-
-    if attach_acr and detach_acr:
-        raise CLIError(
-            'Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
-
-    if uptime_sla and no_uptime_sla:
-        raise CLIError(
-            'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.')
-
-    if uptime_sla:
-        instance.sku = ManagedClusterSKU(
-            name="Basic",
-            tier="Paid"
-        )
-
-    if no_uptime_sla:
-        instance.sku = ManagedClusterSKU(
-            name="Basic",
-            tier="Free"
-        )
-
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    client_id = ""
-    if _is_msi_cluster(instance):
-        if instance.identity_profile is None or instance.identity_profile["kubeletidentity"] is None:
-            raise CLIError('Unexpected error getting kubelet\'s identity for the cluster. '
-                           'Please do not set --attach-acr or --detach-acr. '
-                           'You can manually grant or revoke permission to the identity named '
-                           '<ClUSTER_NAME>-agentpool in MC_ resource group to access ACR.')
-        client_id = instance.identity_profile["kubeletidentity"].client_id
-    else:
-        client_id = instance.service_principal_profile.client_id
-    if not client_id:
-        raise CLIError('Cannot get the AKS cluster\'s service principal.')
-
-    if attach_acr:
-        _ensure_aks_acr(cmd.cli_ctx,
-                        client_id=client_id,
-                        acr_name_or_id=attach_acr,
-                        subscription_id=subscription_id)
-
-    if detach_acr:
-        _ensure_aks_acr(cmd.cli_ctx,
-                        client_id=client_id,
-                        acr_name_or_id=detach_acr,
-                        subscription_id=subscription_id,
-                        detach=True)
-
-    # empty string is valid as it disables ip whitelisting
-    if api_server_authorized_ip_ranges is not None:
-        instance.api_server_access_profile = \
-            _populate_api_server_access_profile(
-                api_server_authorized_ip_ranges, instance)
-
-    if enable_aad:
-        if instance.aad_profile is not None and instance.aad_profile.managed:
-            raise CLIError(
-                'Cannot specify "--enable-aad" if managed AAD is already enabled')
-        instance.aad_profile = ManagedClusterAADProfile(
-            managed=True
-        )
-    if update_aad_profile:
-        if instance.aad_profile is None or not instance.aad_profile.managed:
-            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
-                           ' if managed AAD is not enabled')
-        if aad_tenant_id is not None:
-            instance.aad_profile.tenant_id = aad_tenant_id
-        if aad_admin_group_object_ids is not None:
-            # ids -> i_ds due to track 2 naming issue
-            instance.aad_profile.admin_group_object_i_ds = _parse_comma_separated_list(
-                aad_admin_group_object_ids)
-        if enable_azure_rbac and disable_azure_rbac:
-            raise CLIError(
-                'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
-        if enable_azure_rbac:
-            instance.aad_profile.enable_azure_rbac = True
-        if disable_azure_rbac:
-            instance.aad_profile.enable_azure_rbac = False
-
-    if enable_ahub and disable_ahub:
-        raise CLIError(
-            'Cannot specify "--enable-ahub" and "--disable-ahub" at the same time')
-
-    if enable_ahub:
-        instance.windows_profile.license_type = 'Windows_Server'
-    if disable_ahub:
-        instance.windows_profile.license_type = 'None'
-
-    if enable_public_fqdn and disable_public_fqdn:
-        raise MutuallyExclusiveArgumentError(
-            'Cannot specify "--enable-public-fqdn" and "--disable-public-fqdn" at the same time')
-    is_private_cluster = instance.api_server_access_profile is not None and instance.api_server_access_profile.enable_private_cluster
-    if enable_public_fqdn:
-        if not is_private_cluster:
-            raise ArgumentUsageError('--enable-public-fqdn can only be used for private cluster')
-        instance.api_server_access_profile.enable_private_cluster_public_fqdn = True
-    if disable_public_fqdn:
-        if not is_private_cluster:
-            raise ArgumentUsageError('--disable-public-fqdn can only be used for private cluster')
-        if instance.api_server_access_profile.private_dns_zone.lower() == CONST_PRIVATE_DNS_ZONE_NONE:
-            raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
-        instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
-
-    if auto_upgrade_channel is not None:
-        if instance.auto_upgrade_profile is None:
-            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
-        instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
-
-    if not enable_managed_identity and assign_identity:
-        raise CLIError(
-            '--assign-identity can only be specified when --enable-managed-identity is specified')
-
-    current_identity_type = "spn"
-    if instance.identity is not None:
-        current_identity_type = instance.identity.type.casefold()
-
-    goal_identity_type = current_identity_type
-    if enable_managed_identity:
-        if not assign_identity:
-            goal_identity_type = "systemassigned"
-        else:
-            goal_identity_type = "userassigned"
-
-    if current_identity_type != goal_identity_type:
-        from knack.prompting import prompt_y_n
-        msg = ""
-        if current_identity_type == "spn":
-            msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
-                   'After updating, your cluster\'s control plane and addon pods will switch to use managed identity, but kubelet '
-                   'will KEEP USING SERVICE PRINCIPAL until you upgrade your agentpool.\n '
-                   'Are you sure you want to perform this operation?').format(goal_identity_type)
-        else:
-            msg = ('Your cluster is already using {} managed identity, and you are going to update the cluster to use {} managed identity. \n'
-                   'Are you sure you want to perform this operation?').format(current_identity_type, goal_identity_type)
-        if not yes and not prompt_y_n(msg, default="n"):
-            return None
-        if goal_identity_type == "systemassigned":
-            instance.identity = ManagedClusterIdentity(
-                type="SystemAssigned"
-            )
-        elif goal_identity_type == "userassigned":
-            user_assigned_identity = {
-                assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
-            }
-            instance.identity = ManagedClusterIdentity(
-                type="UserAssigned",
-                user_assigned_identities=user_assigned_identity
-            )
-
-    if enable_pod_identity:
-        if not _is_pod_identity_addon_enabled(instance):
-            # we only rebuild the pod identity profile if it's disabled before
-            _update_addon_pod_identity(
-                instance, enable=True,
-                allow_kubenet_consent=enable_pod_identity_with_kubenet,
-            )
-
-    if disable_pod_identity:
-        _update_addon_pod_identity(instance, enable=False)
-
-    azure_keyvault_secrets_provider_addon_profile = None
-    monitoring_addon_enabled = False
-    ingress_appgw_addon_enabled = False
-    virtual_node_addon_enabled = False
-
-    if instance.addon_profiles is not None:
-        azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
-        azure_keyvault_secrets_provider_enabled = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in instance.addon_profiles and \
-            instance.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled
-        monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-        ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
-            instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-        virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
-            instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux'].enabled
-
-    if enable_secret_rotation:
-        if not azure_keyvault_secrets_provider_enabled:
-            raise ArgumentUsageError(
-                '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
-        azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
-
-    if disable_secret_rotation:
-        if not azure_keyvault_secrets_provider_enabled:
-            raise ArgumentUsageError(
-                '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
-        azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
-    if rotation_poll_interval is not None:
-        if not azure_keyvault_secrets_provider_enabled:
-            raise ArgumentUsageError(
-                '--rotation-poll-interval can only be specified when azure-keyvault-secrets-provider is enabled')
-        azure_keyvault_secrets_provider_addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
-
-    if tags:
-        instance.tags = tags
-
-    if nodepool_labels is not None:
-        for agent_profile in instance.agent_pool_profiles:
-            agent_profile.node_labels = nodepool_labels
-
-    if windows_admin_password:
-        instance.windows_profile.admin_password = windows_admin_password
-
-    if enable_windows_gmsa:
-        instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
-        if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
-            instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
-            instance.windows_profile.gmsa_profile.root_domain_name = gmsa_root_domain_name
-        elif gmsa_dns_server is None and gmsa_root_domain_name is None:
-            msg = ('Please assure that you have set the DNS server in the vnet used by the cluster when not specifying --gmsa-dns-server and --gmsa-root-domain-name')
-            from knack.prompting import prompt_y_n
-            if not yes and not prompt_y_n(msg, default="n"):
-                return None
-        else:
-            raise ArgumentUsageError(
-                'You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time.')
-    else:
-        if gmsa_dns_server is not None or gmsa_root_domain_name is not None:
-            raise ArgumentUsageError(
-                'You only can set --gmsa-dns-server and --gmsa-root-domain-name when setting --enable-windows-gmsa.')
-
-    headers = get_aks_custom_headers(aks_custom_headers)
-
-    return _put_managed_cluster_ensuring_permission(cmd,
-                                                    client,
-                                                    subscription_id,
-                                                    resource_group_name,
-                                                    name,
-                                                    instance,
-                                                    monitoring_addon_enabled,
-                                                    ingress_appgw_addon_enabled,
-                                                    virtual_node_addon_enabled,
-                                                    False,
-                                                    instance.agent_pool_profiles[0].vnet_subnet_id,
-                                                    _is_msi_cluster(instance),
-                                                    attach_acr,
-                                                    headers,
-                                                    no_wait)
+    # decorator pattern
+    aks_update_decorator = AKSPreviewUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=AKSParamDict(raw_parameters),
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+    try:
+        # update mc profile
+        mc = aks_update_decorator.update_mc_preview_profile()
+    except DecoratorEarlyExitException:
+        # exit gracefully
+        return None
+    # send request to update the real managed cluster
+    return aks_update_decorator.update_mc_preview(mc)
 
 
 # pylint: disable=unused-argument
@@ -1344,7 +957,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
             raise CLIError(
                 "A storage account must be specified, since there isn't one in the diagnostic settings.")
 
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    from msrestazure.tools import (is_valid_resource_id, parse_resource_id,
+                                   resource_id)
     if storage_account_id is None:
         if not is_valid_resource_id(storage_account):
             storage_account_id = resource_id(
@@ -1853,6 +1467,7 @@ def _ensure_aks_acr(cli_ctx,
                     subscription_id,    # pylint: disable=unused-argument
                     detach=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
+
     # Check if the ACR exists by resource ID.
     if is_valid_resource_id(acr_name_or_id):
         try:
@@ -2152,18 +1767,31 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          labels=None,
+                         node_taints=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and not labels):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    if node_taints is not None:
+        taints_array = []
+        if node_taints != '':
+            for taint in node_taints.split(','):
+                try:
+                    taint = taint.strip()
+                    taints_array.append(taint)
+                except ValueError:
+                    raise InvalidArgumentValueError(
+                        'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
+        instance.node_taints = taints_array
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
@@ -3134,132 +2762,6 @@ def _get_http_proxy_config(file_path):
     return config_object
 
 
-def _is_pod_identity_addon_enabled(instance):
-    if not instance:
-        return False
-    if not instance.pod_identity_profile:
-        return False
-    return bool(instance.pod_identity_profile.enabled)
-
-
-def _ensure_pod_identity_addon_is_enabled(instance):
-    if not _is_pod_identity_addon_enabled(instance):
-        raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
-                       'To enable, run "az aks update --enable-pod-identity')
-
-
-def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, customer_consent):
-    if not network_profile or not network_profile.network_plugin:
-        # invalid data
-        return
-    if network_profile.network_plugin.lower() != 'kubenet':
-        # not kubenet, no need to check
-        return
-
-    if customer_consent is None:
-        # no set this time, read from previous value
-        customer_consent = bool(
-            pod_identity_profile.allow_network_plugin_kubenet)
-
-    if not customer_consent:
-        raise CLIError(
-            '--enable-pod-identity-with-kubenet is required for enabling pod identity addon when using Kubenet network plugin')
-    pod_identity_profile.allow_network_plugin_kubenet = True
-
-
-def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
-    if not pod_identity_exceptions:
-        return
-
-    for exc in pod_identity_exceptions:
-        if exc.pod_labels is None:
-            # in previous version, we accidentally allowed user to specify empty pod labels,
-            # which will be converted to `None` in response. This behavior will break the extension
-            # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
-            # before sending to the server side.
-            exc.pod_labels = dict()
-
-
-def _fill_defaults_for_pod_identity_profile(pod_identity_profile):
-    if not pod_identity_profile:
-        return
-
-    _fill_defaults_for_pod_identity_exceptions(pod_identity_profile.user_assigned_identity_exceptions)
-
-
-def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
-    if not enable:
-        # when disable, remove previous saved value
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=False)
-        return
-
-    _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions)
-
-    if not instance.pod_identity_profile:
-        # not set before
-        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=enable,
-            user_assigned_identities=pod_identities,
-            user_assigned_identity_exceptions=pod_identity_exceptions,
-        )
-
-    _ensure_pod_identity_kubenet_consent(
-        instance.network_profile, instance.pod_identity_profile, allow_kubenet_consent)
-
-    instance.pod_identity_profile.enabled = enable
-    instance.pod_identity_profile.user_assigned_identities = pod_identities or []
-    instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
-
-
-def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
-    cluster_identity_object_id = None
-    if instance.identity.type.lower() == 'userassigned':
-        for identity in instance.identity.user_assigned_identities.values():
-            cluster_identity_object_id = identity.principal_id
-            break
-    elif instance.identity.type.lower() == 'systemassigned':
-        cluster_identity_object_id = instance.identity.principal_id
-    else:
-        raise CLIError('unsupported identity type: {}'.format(
-            instance.identity.type))
-    if cluster_identity_object_id is None:
-        raise CLIError('unable to resolve cluster identity')
-
-    factory = get_auth_management_client(cli_ctx, scope)
-    assignments_client = factory.role_assignments
-    cluster_identity_object_id = cluster_identity_object_id.lower()
-    scope = scope.lower()
-
-    # list all assignments of the target identity (scope) that assigned to the cluster identity
-    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
-    for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
-        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
-            continue
-
-        # sanity checks to make sure we see the correct assignments
-        if i.principal_id.lower() != cluster_identity_object_id:
-            # assignedTo() should return the assignment to cluster identity
-            continue
-        if not scope.startswith(i.scope.lower()):
-            # atScope() should return the assignments in subscription / resource group / resource level
-            continue
-
-        # already assigned
-        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
-        return
-
-    if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
-                               is_service_principal=False, scope=scope):
-        raise CLIError(
-            'Could not grant Managed Identity Operator permission for cluster')
-
-    # need more time to propogate this assignment...
-    print()
-    print('Wait 30 seconds for identity role assignment propagation.')
-    time.sleep(30)
-
-
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
                          binding_selector=None,
@@ -3288,10 +2790,15 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
         pod_identity.binding_selector = binding_selector
     pod_identities.append(pod_identity)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3312,10 +2819,15 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
                 continue
             pod_identities.append(pod_identity)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3339,10 +2851,15 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
         name=exc_name, namespace=exc_namespace, pod_labels=pod_labels)
     pod_identity_exceptions.append(exc)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3362,10 +2879,15 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
                 continue
             pod_identity_exceptions.append(exc)
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
@@ -3393,10 +2915,15 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
         raise CLIError(
             'pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
 
+    from azext_aks_preview.decorator import AKSPreviewModels
+
+    # store all the models used by pod identity
+    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
+        models=pod_identity_models
     )
 
     # send the managed cluster represeentation to update the pod identity addon
