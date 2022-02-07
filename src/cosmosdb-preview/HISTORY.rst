@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.13.0
+++++++
+* Remove support for Graph Resources.
+
 0.12.0
 ++++++
 * Modify parameter names for Ldap support in Managed Instance for Apache Cassandra.
