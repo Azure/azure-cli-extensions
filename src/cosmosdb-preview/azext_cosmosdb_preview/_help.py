@@ -234,6 +234,11 @@ type: command
 short-summary: Return if the given cosmosdb graph resource exist.
 """
 
+helps['cosmosdb mongodb role'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Mongo role resources.
+"""
+
 helps['cosmosdb mongodb role definition'] = """
 type: group
 short-summary: Manage Azure Cosmos DB Mongo role definitions.
