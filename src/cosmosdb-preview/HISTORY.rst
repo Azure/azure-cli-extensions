@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.13.0
+++++++
+* Create and manage Role Definitions and User Definitions for enforcing data plane RBAC on Cosmos DB MongoDB accounts
+
+0.12.0
+++++++
+* Modify parameter names for Ldap support in Managed Instance for Apache Cassandra.
+
 0.11.0
 ++++++
 * Add Ldap support for Managed Instance for Apache Cassandra.

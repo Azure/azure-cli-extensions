@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['resource-mover'] = '''
+    type: group
+    short-summary: Manage Resource Mover Service API
+'''
+
 helps['resource-mover move-collection'] = """
     type: group
     short-summary: Manage move collection with resource mover
@@ -240,9 +245,10 @@ dependent resource.
 target-id="/subscriptions/c4488a3f-a7f7-4ad4-aa72-0e1f4d9c0756/resourceGroups/westusRG/providers/Microsoft.Network/netw\
 orkInterfaces/eastusvm140" --resource-settings "{\\"resourceType\\":\\"Microsoft.Compute/virtualMachines\\",\\"targetAv\
 ailabilitySetId\\":\\"/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/avset1\
-\\",\\"targetAvailabilityZone\\":\\"2\\",\\"targetResourceName\\":\\"westusvm1\\",\\"targetVmSize\\":null}" \
---source-id "/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/eastusvm1" \
---move-collection-name "movecollection1" --name "moveresourcename1" --resource-group "rg1"
+\\",\\"targetAvailabilityZone\\":\\"2\\",\\"targetResourceName\\":\\"westusvm1\\",\\"targetVmSize\\":null,\\"userManage\
+dIdentities\\":[\\"/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.ManagedIdentity/userAssignedIdentit\
+ies/umi1\\"]}" --source-id "/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/ea\
+stusvm1" --move-collection-name "movecollection1" --name "moveresourcename1" --resource-group "rg1"
 """
 
 helps['resource-mover move-resource wait'] = """
