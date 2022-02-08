@@ -186,6 +186,12 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
+        self.cmd(
+            'network manager security-admin-config rule-collection delete --configuration-name {config_name} --network-manager-name {manager_name} --resource-group {rg} --rule-collection-name {collection_name} --yes')
+        self.cmd(
+            'az network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} --resource-group {rg} --yes')
+        self.cmd('network manager group delete --name {group_name} --network-manager-name {manager_name} --resource-group {rg} --yes')
+        self.cmd('network manager delete --name {manager_name} --resource-group {rg} --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
