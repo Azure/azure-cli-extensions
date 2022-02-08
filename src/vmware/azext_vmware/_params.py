@@ -125,7 +125,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware datastore disk-pool-volume create') as c:
         c.argument('target_id', help='Azure resource ID of the iSCSI target.')
-        c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
+        c.argument('mount_option', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
         c.argument('path', help='Device path.')
 
     with self.argument_context('vmware addon') as c:
