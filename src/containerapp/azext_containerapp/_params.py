@@ -43,11 +43,11 @@ def load_arguments(self, _):
         c.argument('internal_only', options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId and appSubnetResourceId if enabling this property')
 
     with self.argument_context('containerapp env update') as c:
-        c.argument('name', name_type, help='Name of the kubernetes environment.')
+        c.argument('name', name_type, help='Name of the managed environment.')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('containerapp env delete') as c:
-        c.argument('name', name_type, help='Name of the Kubernetes Environment.')
+        c.argument('name', name_type, help='Name of the managed Environment.')
 
     with self.argument_context('containerapp env show') as c:
-        c.argument('name', name_type, help='Name of the Kubernetes Environment.')
+        c.argument('name', name_type, help='Name of the managed Environment.')
