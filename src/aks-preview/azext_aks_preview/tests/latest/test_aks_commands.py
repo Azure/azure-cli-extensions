@@ -2973,17 +2973,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_init_pip = 'network public-ip create -g {resource_group} -n {init_pip_name} --sku Standard'
-        init_pip = self.cmd(create_init_pip, checks=[
-            self.check('publicIp.provisioningState', 'Succeeded')
+        # workaround for replay failure in CI
+        self.cmd(create_init_pip)
+        get_init_pip = 'network public-ip show -g {resource_group} -n {init_pip_name}'
+        init_pip = self.cmd(get_init_pip, checks=[
+            self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()
 
         create_update_pip = 'network public-ip create -g {resource_group} -n {update_pip_name} --sku Standard'
-        update_pip = self.cmd(create_update_pip, checks=[
-            self.check('publicIp.provisioningState', 'Succeeded')
+        # workaround for replay failure in CI
+        self.cmd(create_update_pip)
+        get_update_pip = 'network public-ip show -g {resource_group} -n {update_pip_name}'
+        update_pip = self.cmd(get_update_pip, checks=[
+            self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()
 
-        init_pip_id = init_pip['publicIp']['id']
-        update_pip_id = update_pip['publicIp']['id']
+        init_pip_id = init_pip['id']
+        update_pip_id = update_pip['id']
 
         assert init_pip_id is not None
         assert update_pip_id is not None
