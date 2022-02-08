@@ -2,11 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, too-many-statements
 
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ClusterResource,
     ClusterResourceProperties,
@@ -21,11 +22,22 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoRoleDefinitionCreateUpdateParameters,
     MongoUserDefinitionCreateUpdateParameters,
     DatabaseAccountKind,
-    ContinuousBackupRestoreLocation,
+    ContinuousBackupRestoreLocation
+)
+
+from azure.mgmt.cosmosdb.models import (
     Location,
     RestoreParameters,
     CreateMode,
-    DatabaseAccountCreateUpdateParameters
+    DatabaseAccountCreateUpdateParameters,
+    ConsistencyPolicy,
+    ResourceIdentityType,
+    ManagedServiceIdentity,
+    PeriodicModeBackupPolicy,
+    PeriodicModeProperties,
+    AnalyticalStorageConfiguration,
+    ContinuousModeBackupPolicy,
+    Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
 )
 
 

@@ -138,7 +138,7 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb restorable-collection', cosmosdb_restorable_mongodb_collections_sdk, client_factory=cf_restorable_mongodb_collections, is_preview=True) as g:
         g.command('list', 'list')
-    
+
     with self.command_group('cosmosdb gremlin restorable-database', cosmosdb_restorable_gremlin_databases_sdk, client_factory=cf_restorable_gremlin_databases, is_preview=True) as g:
         g.command('list', 'list')
 

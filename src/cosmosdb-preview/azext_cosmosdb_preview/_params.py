@@ -46,6 +46,8 @@ class BackupPolicyTypes(str, Enum):
     continuous = "Continuous"
 
 def load_arguments(self, _):
+    from knack.arguments import CLIArgumentType
+    account_name_type = CLIArgumentType(options_list=['--account-name', '-a'], help="Cosmosdb account name.")
     from azure.cli.core.commands.parameters import tags_type, get_enum_type, get_three_state_flag, get_datetime_type, get_location_type
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion
     from azext_cosmosdb_preview._validators import (validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
@@ -159,6 +161,7 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None)
         c.argument('mongo_user_definition_id', options_list=['--id', '-i'], validator=validate_mongo_user_definition_id, help="Unique ID for the Mongo User Definition.")
         c.argument('mongo_user_definition_body', options_list=['--body', '-b'], validator=validate_mongo_user_definition_body, completer=FilesCompleter(), help="User Definition body with Id (Optional for create), UserName, Password, DatabaseName, CustomData, Mechanisms, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-user_definition-body-file.json or " + MONGO_USER_DEFINITION_EXAMPLE)
+
     from azext_cosmosdb_preview.actions import (
         CreateLocation, CreateDatabaseRestoreResource, CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource)
 
@@ -259,7 +262,6 @@ def load_arguments(self, _):
 
     # Retrive Gremlin Graph Backup Info
     from knack.arguments import CLIArgumentType
-    account_name_type = CLIArgumentType(options_list=['--account-name', '-a'], help="Cosmosdb account name.")
     database_name_type = CLIArgumentType(options_list=['--database-name', '-d'], help='Database name.')
     with self.argument_context('cosmosdb gremlin retrieve-latest-backup-time') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
@@ -272,3 +274,4 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
         c.argument('location', options_list=['--location', '-l'], help="Location of the account", required=True)
+

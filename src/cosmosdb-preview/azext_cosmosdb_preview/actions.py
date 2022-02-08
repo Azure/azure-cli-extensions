@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, too-many-statements
 
 import argparse
 
@@ -16,6 +17,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
 logger = get_logger(__name__)
 
 
+# pylint: disable=protected-access, too-few-public-methods
 class CreateDatabaseRestoreResource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if namespace.databases_to_restore is None:
@@ -49,6 +51,7 @@ class CreateDatabaseRestoreResource(argparse._AppendAction):
         namespace.databases_to_restore.append(database_restore_resource)
 
 
+# pylint: disable=protected-access, too-few-public-methods
 class CreateGremlinDatabaseRestoreResource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if namespace.gremlin_databases_to_restore is None:
@@ -82,6 +85,7 @@ class CreateGremlinDatabaseRestoreResource(argparse._AppendAction):
         namespace.gremlin_databases_to_restore.append(gremlin_database_restore_resource)
 
 
+# pylint: disable=protected-access, too-few-public-methods
 class CreateTableRestoreResource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if namespace.tables_to_restore is None:
