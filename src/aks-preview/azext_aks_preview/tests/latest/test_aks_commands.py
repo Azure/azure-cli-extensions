@@ -3130,7 +3130,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool1_name = "nodepool1"
-        taints = "key1=value1:NoSchedule"
+        taints = "key1=value1:PreferNoSchedule"
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -3184,7 +3184,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # nodepool list
         self.cmd('aks nodepool list --resource-group={resource_group} --cluster-name={name}', checks=[
             self.check('[0].mode', 'System'),
-            self.check('[0].nodeTaints[0]', 'key1=value1:NoSchedule'),
+            self.check('[0].nodeTaints[0]', 'key1=value1:PreferNoSchedule'),
         ])
 
         # nodepool delete nodepool1 label
