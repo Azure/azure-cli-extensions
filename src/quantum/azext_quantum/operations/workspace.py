@@ -165,18 +165,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
 
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Old code...
-    # _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
-    # poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-    # while not poller.done():
-    #     time.sleep(POLLING_TIME_DURATION)
-    # quantum_workspace = poller.result()
-    # if not skip_role_assignment:
-    #     quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
-    # return quantum_workspace
-    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-    # Until the skip_role_assignment flag is deprecated, envoke the old code to create a workspace without doing a role assignment
+    # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -214,22 +203,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'parameters': parameters
     }
 
-    # >>>>> Replacing the following code with _get_data_credentials()
-    # >>>>> Delete after testing is complete
-    # from os import getenv
-    # client_id = getenv('AZURE_CLIENT_ID')
-    # if client_id:
-    #     from azure.identity import ClientSecretCredential
-    #     credentials = ClientSecretCredential(               # Use service principal creds during automated execution
-    #         tenant_id=getenv('AZURE_TENANT_ID'),
-    #         client_id=client_id,
-    #         client_secret=getenv('AZURE_CLIENT_SECRET')
-    #     )
-    # else:
-    #     from azure.identity import AzureCliCredential
-    #     credentials = AzureCliCredential()                  # Requires user to have previously logged in with "az login"
     credentials = _get_data_credentials(cmd.cli_ctx, info.subscription)
-
     arm_client = ResourceManagementClient(credentials, info.subscription)
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
@@ -244,7 +218,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         polling_cycles += 1
         if polling_cycles > MAX_POLLS_CREATE_WORKSPACE:
             print()
-            raise AzureInternalError(f"Create workspace operation timed out.")
+            raise AzureInternalError(f"Create quantum workspace operation timed out.")
             
         print('.', end='', flush=True)
         time.sleep(POLLING_TIME_DURATION)
