@@ -113,39 +113,40 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
-        # init nat gateway models
-        self.init_nat_gateway_models()
-        # holder for pod identity related models
-        self.__pod_identity_models = None
         self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
             "ManagedClusterOIDCIssuerProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+         # holder for nat gateway related models
+        self.__nat_gateway_models = None
+        # holder for pod identity related models
+        self.__pod_identity_models = None
 
-    # TODO: convert this to @property
-    def init_nat_gateway_models(self) -> None:
-        """Initialize models used by nat gateway.
+    @property
+    def nat_gateway_models(self) -> SimpleNamespace:
+        """Get nat gateway related models.
 
-        The models are stored in a dictionary, the key is the model name and the value is the model type.
+        The models are stored in a SimpleNamespace object, could be accessed by the dot operator like
+        `nat_gateway_models.ManagedClusterNATGatewayProfile`.
 
-        :return: None
+        :return: SimpleNamespace
         """
-        nat_gateway_models = {}
-        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
-            "ManagedClusterNATGatewayProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
-            "ManagedClusterManagedOutboundIPProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        self.nat_gateway_models = nat_gateway_models
-        # Note: Uncomment the followings to add these models as class attributes.
-        # for model_name, model_type in nat_gateway_models.items():
-        #     setattr(self, model_name, model_type)
+        if self.__nat_gateway_models is None:
+            nat_gateway_models = {}
+            nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+                "ManagedClusterNATGatewayProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+                "ManagedClusterManagedOutboundIPProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            self.__nat_gateway_models = SimpleNamespace(**nat_gateway_models)
+        return self.__nat_gateway_models
+
 
     @property
     def pod_identity_models(self) -> SimpleNamespace:
