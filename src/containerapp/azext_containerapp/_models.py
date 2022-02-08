@@ -63,3 +63,11 @@ LogAnalyticsConfiguration = {
     "customerId": None,
     "sharedKey": None
 }
+
+VnetConfiguration = {
+    "infrastructureSubnetId": None,
+    "runtimeSubnetId": None,
+    "dockerBridgeCidr": None,
+    "platformReservedCidr": None,
+    "platformReservedDnsIp": None
+}

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from platform import platform
 from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
@@ -11,7 +12,7 @@ from knack.log import get_logger
 
 from ._client_factory import handle_raw_exception
 from ._clients import KubeEnvironmentClient, ManagedEnvironmentClient
-from ._models import ManagedEnvironment, KubeEnvironment, ContainerAppsConfiguration, AppLogsConfiguration, LogAnalyticsConfiguration
+from ._models import ManagedEnvironment, VnetConfiguration, KubeEnvironment, ContainerAppsConfiguration, AppLogsConfiguration, LogAnalyticsConfiguration
 from ._utils import _validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed
 
 logger = get_logger(__name__)
@@ -108,6 +109,13 @@ def create_managed_environment(cmd,
                               logs_key,
                               logs_destination="log-analytics",
                               location=None,
+                              instrumentation_key=None,
+                              infrastructure_subnet_resource_id=None,
+                              app_subnet_resource_id=None,
+                              docker_bridge_cidr=None,
+                              platform_reserved_cidr=None,
+                              platform_reserved_dns_ip=None,
+                              internal_only=False,
                               tags=None,
                               no_wait=False):
 
@@ -129,6 +137,38 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
+
+    if instrumentation_key is not None:
+        managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
+
+    if infrastructure_subnet_resource_id or app_subnet_resource_id or docker_bridge_cidr or platform_reserved_cidr or platform_reserved_dns_ip:
+        vnet_config_def = VnetConfiguration
+
+        if infrastructure_subnet_resource_id is not None:
+            if not app_subnet_resource_id:
+                raise ValidationError('App subnet resource ID needs to be supplied with controlplane subnet resource ID.')
+            vnet_config_def["infrastructureSubnetId"] = infrastructure_subnet_resource_id
+
+        if app_subnet_resource_id is not None:
+            if not infrastructure_subnet_resource_id:
+                raise ValidationError('Infrastructure subnet resource ID needs to be supplied with app subnet resource ID.')
+            vnet_config_def["runtimeSubnetId"] = app_subnet_resource_id
+
+        if docker_bridge_cidr is not None:
+            vnet_config_def["dockerBridgeCidr"] = docker_bridge_cidr
+
+        if platform_reserved_cidr is not None:
+            vnet_config_def["platformReservedCidr"] = platform_reserved_cidr
+
+        if platform_reserved_dns_ip is not None:
+            vnet_config_def["platformReservedCidr"] = platform_reserved_dns_ip
+
+        managed_env_def["properties"]["vnetConfiguration"] = vnet_config_def
+
+    if internal_only:
+        if not infrastructure_subnet_resource_id or not app_subnet_resource_id:
+            raise ValidationError('Infrastructure subnet resource ID and App subnet resource ID need to be supplied for internal only environments.')
+        managed_env_def["properties"]["internalLoadBalancerEnabled"] = True
 
     try:
         r = ManagedEnvironmentClient.create(
