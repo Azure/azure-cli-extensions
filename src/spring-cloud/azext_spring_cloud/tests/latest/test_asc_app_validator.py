@@ -7,7 +7,7 @@ from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
 from azure.core.exceptions import ResourceNotFoundError
-from ..._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+from ..._app_validator import (fulfill_deployment_param, active_deployment_exist,
                                validate_cpu, validate_memory, validate_deloyment_create_path, validate_deloy_path)
 
 
@@ -196,6 +196,21 @@ class TestFulfillDeploymentParameter(unittest.TestCase):
         client_factory_mock.return_value = client
 
         ns = Namespace(name='app1', service='asc1', resource_group='rg1', deployment=None)
+        fulfill_deployment_param(_get_test_cmd(), ns)
+        self.assertEqual('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
+                          ns.deployment.id)
+        self.assertTrue(ns.deployment.properties.active)
+
+    @mock.patch('azext_spring_cloud._app_validator.cf_spring_cloud_20220101preview', autospec=True)
+    def test_deployment_with_active_deployment_for_app_parameter(self, client_factory_mock):
+        client = mock.MagicMock()
+        client.deployments.list.return_value = [
+            _get_deployment('rg1', 'asc1', 'app1', 'green1', False),
+            _get_deployment('rg1', 'asc1', 'app1', 'default', True),
+        ]
+        client_factory_mock.return_value = client
+
+        ns = Namespace(app='app1', service='asc1', resource_group='rg1', deployment=None)
         fulfill_deployment_param(_get_test_cmd(), ns)
         self.assertEqual('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.AppPlatform/Spring/asc1/apps/app1/deployments/default',
                           ns.deployment.id)

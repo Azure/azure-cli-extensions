@@ -60,7 +60,7 @@ def _parse_item_resource_id(addon, key, secondary):
     if not resource_id:
         return None
     resource_dict = parse_resource_id(resource_id)
-    return resource_dict.get('name', '')
+    return resource_dict.get('resource_name', '')
 
 
 def transform_spring_cloud_deployment_output(result):
@@ -83,13 +83,13 @@ def transform_spring_cloud_certificate_output(result):
         result = [result]
 
     for item in result:
-        item['Certificate Name'] = item['properties']['keyVaultCertName']
+        item['Certificate Name'] = item['name']
         item['Thumbprint'] = item['properties']['thumbprint']
         item['Activate Date'] = item['properties']['activateDate'].split("T")[0]
-        item['Certificate Version'] = item['properties']['certVersion']
         item['DNS Names'] = item['properties']['dnsNames']
         item['Expiration Date'] = item['properties']['expirationDate'].split("T")[0]
-        item['Key Vault Uri'] = item['properties']['vaultUri']
+        item['Certificate Version'] = item['properties'].get('certVersion', "")
+        item['Key Vault Uri'] = item['properties'].get('vaultUri', "")
 
     return result if is_list else result[0]
 

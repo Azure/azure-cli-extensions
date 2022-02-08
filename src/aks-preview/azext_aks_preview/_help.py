@@ -825,14 +825,14 @@ helps['aks maintenanceconfiguration add'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
@@ -882,14 +882,14 @@ helps['aks maintenanceconfiguration update'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
@@ -983,7 +983,7 @@ helps['aks nodepool add'] = """
           short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
-          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
+          short-summary: The node taints for the node pool.
         - name: --priority
           type: string
           short-summary: The priority of the node pool.
@@ -1112,6 +1112,9 @@ helps['aks nodepool update'] = """
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

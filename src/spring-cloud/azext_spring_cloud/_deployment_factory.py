@@ -9,6 +9,10 @@ from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_source_factory import source_selector
 
 
+APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
+APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "configFilePatterns"
+
+
 class DefaultDeployment:
     def __init__(self, **kwargs):
         self.source_factory = source_selector(**kwargs)
@@ -32,7 +36,8 @@ class DefaultDeployment:
         return models.DeploymentSettings(
             resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
-            environment_variables=self._get_env(**kwargs)
+            environment_variables=self._get_env(**kwargs),
+            addon_configs=self._get_addon_configs(**kwargs)
         )
 
     def _format_container_probe(self, disable_probe=None, **_):
@@ -50,8 +55,18 @@ class DefaultDeployment:
             memory=memory
         )
 
-    def _get_env(self, env, **_):
+    def _get_env(self, env=None, **_):
         return env
+
+    def _get_addon_configs(self, config_file_patterns=None, **_):
+        if config_file_patterns is not None:
+            addon_configs = {
+                APPLICATION_CONFIGURATION_SERVICE_NAME: {
+                    APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
+                }
+            }
+            return addon_configs
+        return None
 
     def format_source(self, **kwargs):
         return self.source_factory.format_source(**kwargs)
@@ -113,10 +128,18 @@ def deployment_settings_options_from_resource(original):
         'instance_count': original.sku.capacity,
         'sku': original.sku,
         'env': original.properties.deployment_settings.environment_variables,
+        'config_file_patterns': _get_origin_config_file_patterns(original.properties.deployment_settings.addon_configs)
     }
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
     return options
+
+
+def _get_origin_config_file_patterns(origin_addon_configs):
+    if origin_addon_configs:
+        acs_addon = origin_addon_configs.get(APPLICATION_CONFIGURATION_SERVICE_NAME)
+        return acs_addon.get(APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN) if acs_addon is not None else None
+    return None
 
 
 def deployment_source_options_from_resource(original):

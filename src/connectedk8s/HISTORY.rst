@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.3
+++++++
+
+* Fetching the tenantID from subscription object instead of graphclient
+
 1.2.2
 ++++++
 

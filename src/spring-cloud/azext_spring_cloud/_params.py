@@ -9,20 +9,28 @@ from azure.cli.core.commands.parameters import get_enum_type, get_three_state_fl
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
+                          validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._validators_enterprise import (only_support_enterprise,
-                                     validate_git_uri, validate_acs_patterns,
-                                     validate_routes)
-from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app,
+from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
+                                     validate_builder_update, validate_build_pool_size,
+                                     validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
+                                     validate_routes, validate_gateway_instance_count,
+                                     validate_api_portal_instance_count,
+                                     validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
+                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_memory)
+                             validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._utils import ApiType
 
+
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2022_01_01_preview.models \
+    import _app_platform_management_client_enums as v20220101_preview_AppPlatformEnums
+from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -30,7 +38,7 @@ env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
-sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), validator=validate_sku, help='Name of SKU. Enterprise is still in Preview.')
+sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
                                    help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
                                    arg_group='Source Code deploy')
@@ -51,7 +59,7 @@ def load_arguments(self, _):
     # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
-        c.argument('sku', arg_type=sku_type, default='Standard')
+        c.argument('sku', arg_type=sku_type, default='Standard', validator=validate_sku)
         c.argument('reserved_cidr_range', arg_group='VNet Injection', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
         c.argument('vnet', arg_group='VNet Injection', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
         c.argument('app_subnet', arg_group='VNet Injection', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
@@ -92,9 +100,47 @@ def load_arguments(self, _):
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
+        c.argument('build_pool_size',
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   validator=validate_build_pool_size,
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Size of build agent pool. See aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('enable_application_configuration_service',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-application-configuration-service', '--enable-acs'],
+                   help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('enable_service_registry',
+                   action='store_true',
+                   is_preview=True,
+                   options_list=['--enable-service-registry', '--enable-sr'],
+                   help='(Enterprise Tier Only) Enable Service Registry.')
+        c.argument('enable_gateway',
+                   arg_group="Spring Cloud Gateway",
+                   action='store_true',
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Enable Spring Cloud Gateway.')
+        c.argument('gateway_instance_count',
+                   arg_group="Spring Cloud Gateway",
+                   type=int,
+                   validator=validate_gateway_instance_count,
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Number of Spring Cloud Gateway instances.')
+        c.argument('enable_api_portal',
+                   arg_group="API portal",
+                   action='store_true',
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Enable API portal.')
+        c.argument('api_portal_instance_count',
+                   arg_group="API portal",
+                   type=int,
+                   validator=validate_api_portal_instance_count,
+                   is_preview=True,
+                   options_list=['--api-portal-instance-count', '--ap-instance'],
+                   help='(Enterprise Tier Only) Number of API portal instances.')
 
     with self.argument_context('spring-cloud update') as c:
-        c.argument('sku', arg_type=sku_type)
+        c.argument('sku', arg_type=sku_type, validator=normalize_sku)
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,
@@ -118,6 +164,10 @@ def load_arguments(self, _):
                    deprecate_info=c.deprecate(target='az spring-cloud update --disable-app-insights',
                                               redirect='az spring-cloud app-insights update --disable',
                                               hide=True))
+        c.argument('build_pool_size',
+                   arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
+                   is_preview=True,
+                   help='(Enterprise Tier Only) Size of build agent pool. See aka.ms/azure-spring-cloud-build-service-docs for size info.')
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
@@ -151,11 +201,16 @@ def load_arguments(self, _):
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
         c.argument('persistent_storage', type=str,
                    help='A json file path for the persistent storages to be mounted to the app')
         c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
                    help='A json file path indicates the certificates which would be loaded to app')
+        c.argument('deployment', options_list=['--deployment', '-d'],
+                   help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
+                   validator=fulfill_deployment_param_or_warning)
 
     with self.argument_context('spring-cloud app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -168,16 +223,16 @@ def load_arguments(self, _):
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
 
-    for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
+    for scope in ['spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
                 '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=fulfill_deployment_param)
-            c.argument('main_entry', options_list=[
-                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
-    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']:
-        with self.argument_context(scope) as c:
-            c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+    with self.argument_context('spring-cloud app unset-deployment') as c:
+        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+
+    with self.argument_context('spring-cloud app identity') as c:
+        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
@@ -212,12 +267,21 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
-            c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
+            c.argument('runtime_version', arg_type=get_enum_type(SupportedRuntimeValue),
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
+            c.argument('main_entry', options_list=[
+                '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
+
+    for scope in ['update', 'deployment create', 'deploy']:
+        with self.argument_context('spring-cloud app {}'.format(scope)) as c:
+            c.argument('config_file_patterns',
+                       help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
+                            "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+                       validator=validate_config_file_patterns, is_preview=True)
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
@@ -289,7 +353,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
-                   validator=active_deployment_exist_under_app)
+                   validator=active_deployment_exist_or_warning)
         c.argument('name', name_type, help='Name of service binding.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
@@ -391,16 +455,20 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
-        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app)
+        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
         c.argument('domain_name', help='Name of custom domain.')
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
-        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
+                   help='If true, enable ingress to app tls',
+                   options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
@@ -418,6 +486,24 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
+
+    with self.argument_context('spring-cloud build-service builder') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['create', 'update']:
+        with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
+            c.argument('builder_json', help="The JSON array of builder.", validator=validate_builder_resource)
+            c.argument('builder_file', help="The file path of JSON array of builder.", validator=validate_builder_resource)
+
+    with self.argument_context('spring-cloud build-service builder create') as c:
+        c.argument('name', help="The builder name.", validator=validate_builder_create)
+
+    with self.argument_context('spring-cloud build-service builder update') as c:
+        c.argument('name', help="The builder name.", validator=validate_builder_update)
+
+    for scope in ['show', 'delete']:
+        with self.argument_context('spring-cloud build-service builder {}'.format(scope)) as c:
+            c.argument('name', help="The builder name.")
 
     for scope in ['application-configuration-service', 'service-registry',
                   'gateway', 'api-portal']:
@@ -500,3 +586,39 @@ def load_arguments(self, _):
             c.argument('app_name', type=str, help="The Azure Spring Cloud app name to configure the route.")
             c.argument('routes_json', type=str, help="The JSON array of API routes.", validator=validate_routes)
             c.argument('routes_file', type=str, help="The file path of JSON array of API routes.", validator=validate_routes)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_not_exist)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create',
+                  'spring-cloud build-service builder buildpack-binding set']:
+        with self.argument_context(scope) as c:
+            c.argument('type',
+                       arg_type=get_enum_type(v20220101_preview_AppPlatformEnums.BindingType),
+                       help='Required type for buildpack binding.')
+            c.argument('properties',
+                       help='Non-sensitive properties for launchProperties. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for launchProperties. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_buildpack_binding_secrets)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding set',
+                  'spring-cloud build-service builder buildpack-binding show',
+                  'spring-cloud build-service builder buildpack-binding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for buildpack binding.', validator=validate_buildpack_binding_exist)
+
+    for scope in ['spring-cloud build-service builder buildpack-binding create',
+                  'spring-cloud build-service builder buildpack-binding set',
+                  'spring-cloud build-service builder buildpack-binding list',
+                  'spring-cloud build-service builder buildpack-binding show',
+                  'spring-cloud build-service builder buildpack-binding delete']:
+        with self.argument_context(scope) as c:
+            c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
