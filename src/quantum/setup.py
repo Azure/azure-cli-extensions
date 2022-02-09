@@ -53,6 +53,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_quantum': ['azext_metadata.json'], 'azext_quantum': ['operations/templates/create-workspace-and-assign-role.json']},
+    package_data={'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json']},
 )
-

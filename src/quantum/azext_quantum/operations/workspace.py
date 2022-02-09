@@ -27,6 +27,7 @@ POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 60
 
+
 class WorkspaceInfo:
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
@@ -208,7 +209,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py  
+        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py
         {'properties': deployment_properties}
     )
 
@@ -218,8 +219,8 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         polling_cycles += 1
         if polling_cycles > MAX_POLLS_CREATE_WORKSPACE:
             print()
-            raise AzureInternalError(f"Create quantum workspace operation timed out.")
-            
+            raise AzureInternalError("Create quantum workspace operation timed out.")
+
         print('.', end='', flush=True)
         time.sleep(POLLING_TIME_DURATION)
     print()
