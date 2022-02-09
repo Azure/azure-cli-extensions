@@ -22,14 +22,14 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoRoleDefinitionCreateUpdateParameters,
     MongoUserDefinitionCreateUpdateParameters,
     DatabaseAccountKind,
-    ContinuousBackupRestoreLocation
+    ContinuousBackupRestoreLocation,
+    DatabaseAccountCreateUpdateParameters,
+    RestoreParameters
 )
 
 from azure.mgmt.cosmosdb.models import (
     Location,
-    RestoreParameters,
     CreateMode,
-    DatabaseAccountCreateUpdateParameters,
     ConsistencyPolicy,
     ResourceIdentityType,
     ManagedServiceIdentity,

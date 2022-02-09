@@ -92,12 +92,12 @@ def load_command_table(self, _):
         g.show_command('show', 'get_mongo_user_definition')
         g.command('delete', 'begin_delete_mongo_user_definition', confirmation=True)
 
-    # restorable accounts api
+    # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
         client_factory=cf_db_accounts)
 
-    # restorable sql/mongodb apis
+    # restorable sql/mongodb apis sdk
     cosmosdb_restorable_sql_containers_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlContainersOperations.{}',
         client_factory=cf_restorable_sql_containers)
@@ -106,7 +106,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbCollectionsOperations.{}',
         client_factory=cf_restorable_mongodb_collections)
 
-    # restorable gremlin apis
+    # restorable gremlin apis sdk
     cosmosdb_restorable_gremlin_databases_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinDatabasesOperations.{}',
         client_factory=cf_restorable_gremlin_databases)
@@ -119,7 +119,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableGremlinResourcesOperations.{}',
         client_factory=cf_restorable_gremlin_resources)
 
-    # restorable table apis
+    # restorable table apis sdk
     cosmosdb_restorable_tables_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableTablesOperations.{}',
         client_factory=cf_restorable_tables)
@@ -129,6 +129,7 @@ def load_command_table(self, _):
         client_factory=cf_restorable_table_resources)
 
     # define commands
+    # Restorable apis for sql,mongodb,gremlin and table
     with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
         g.custom_command('restore', 'cli_cosmosdb_restore', is_preview=True)
         g.custom_command('create', 'cli_cosmosdb_create', is_preview=True)
