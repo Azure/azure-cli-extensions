@@ -1767,18 +1767,31 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          labels=None,
+                         node_taints=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    if node_taints is not None:
+        taints_array = []
+        if node_taints != '':
+            for taint in node_taints.split(','):
+                try:
+                    taint = taint.strip()
+                    taints_array.append(taint)
+                except ValueError:
+                    raise InvalidArgumentValueError(
+                        'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
+        instance.node_taints = taints_array
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:

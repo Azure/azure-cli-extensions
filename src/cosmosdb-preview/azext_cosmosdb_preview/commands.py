@@ -10,7 +10,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_cassandra_cluster,
     cf_cassandra_data_center,
     cf_graph_resources,
-    cf_service
+    cf_service,
+    cf_mongo_db_resources
 )
 
 
@@ -30,6 +31,10 @@ def load_command_table(self, _):
     cosmosdb_managed_cassandra_datacenter_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraDataCentersOperations.{}',
         client_factory=cf_cassandra_data_center)
+
+    cosmosdb_rbac_mongo_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
+        client_factory=cf_mongo_db_resources)
 
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
@@ -60,3 +65,19 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('cosmosdb mongodb role definition', cosmosdb_rbac_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongo_role_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_mongo_role_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongo_role_definition_exists')
+        g.command('list', 'list_mongo_role_definitions')
+        g.show_command('show', 'get_mongo_role_definition')
+        g.command('delete', 'begin_delete_mongo_role_definition', confirmation=True)
+
+    with self.command_group('cosmosdb mongodb user definition', cosmosdb_rbac_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongo_user_definition_create')
+        g.custom_command('update', 'cli_cosmosdb_mongo_user_definition_update')
+        g.custom_command('exists', 'cli_cosmosdb_mongo_user_definition_exists')
+        g.command('list', 'list_mongo_user_definitions')
+        g.show_command('show', 'get_mongo_user_definition')
+        g.command('delete', 'begin_delete_mongo_user_definition', confirmation=True)

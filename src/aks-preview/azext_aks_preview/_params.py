@@ -244,7 +244,7 @@ def load_arguments(self, _):
             c.argument('enable_fips_image', action='store_true')
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
             c.argument('scale_down_mode', arg_type=get_enum_type([CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]))
-            c.argument('node_taints', type=str, validator=validate_taints)
+            c.argument('node_taints', validator=validate_taints)
             c.argument('priority', arg_type=get_enum_type([CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT]), validator=validate_priority)
             c.argument('eviction_policy', arg_type=get_enum_type([CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]), validator=validate_eviction_policy)
             c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
@@ -282,6 +282,7 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
+        c.argument('node_taints', validator=validate_taints)
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
