@@ -43,10 +43,10 @@ def step_create(test, checks=None):
 def step_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az confidentialledger show '
-             '--name "{myLedger}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    return test.cmd('az confidentialledger show '
+                              '--name "{myLedger}" '
+                              '--resource-group "{rg}"',
+                               checks=checks)
 
 
 # EXAMPLE: /Ledger/get/ConfidentialLedgerList
