@@ -5,7 +5,7 @@ Release History
 
 0.1.3
 ++++++
-* Ensure compatibility of 'az webapp create' with CLI version 2.33.0
+* Ensure compatibility of 'az webapp create' with CLI version 2.34.0
 
 0.1.2
 ++++++
