@@ -43,14 +43,14 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    create_result = step_create(test, checks=[
+    step_create(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
         test.check("name", "{myLedger}", case_sensitive=False),
         test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
         test.check("properties.ledgerType", "Public", case_sensitive=False),
         test.check("tags.additionalProps1", "additional properties", case_sensitive=False),
     ])
-    step_show(test, checks=[
+    create_result = step_show(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
         test.check("name", "{myLedger}", case_sensitive=False),
         test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
