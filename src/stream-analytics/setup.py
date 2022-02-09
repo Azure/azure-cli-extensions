@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 try:
     from azext_stream_analytics.manual.version import VERSION
 except ImportError:
@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='stream-analytics',
+    name='stream_analytics',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools StreamAnalyticsManagementClient Extension',
     author='Microsoft Corporation',
