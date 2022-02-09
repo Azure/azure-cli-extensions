@@ -72,7 +72,7 @@ def step_account_update(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /DataSetMappings/put/DataSetMappings_SqlDWDataSetToAdlsGen2File_Create
+## EXAMPLE: /DataSetMappings/put/DataSetMappings_SqlDWDataSetToAdlsGen2File_Create
 @try_manual
 def step_data_set_mapping_create(test, checks=None):
     if checks is None:
@@ -88,7 +88,7 @@ def step_data_set_mapping_create(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /DataSetMappings/get/DataSetMappings_ListByShareSubscription
+## EXAMPLE: /DataSetMappings/get/DataSetMappings_ListByShareSubscription
 @try_manual
 def step_data_set_mapping_list(test, checks=None):
     if checks is None:
@@ -138,7 +138,7 @@ def step_list(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Shares/post/Shares_ListSynchronizationDetails
+## EXAMPLE: /Shares/post/Shares_ListSynchronizationDetails
 @try_manual
 def step_list_synchronization_detail(test, checks=None):
     if checks is None:
@@ -151,7 +151,7 @@ def step_list_synchronization_detail(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Shares/post/Shares_ListSynchronizations
+## EXAMPLE: /Shares/post/Shares_ListSynchronizations
 @try_manual
 def step_list_synchronization(test, checks=None):
     if checks is None:
@@ -201,7 +201,7 @@ def step_data_set_delete(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Invitations/put/Invitations_Create
+## EXAMPLE: /Invitations/put/Invitations_Create
 @try_manual
 def step_invitation_create(test, checks=None):
     if checks is None:
@@ -216,7 +216,7 @@ def step_invitation_create(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Invitations/get/Invitations_Get
+## EXAMPLE: /Invitations/get/Invitations_Get
 @try_manual
 def step_invitation_show(test, checks=None):
     if checks is None:
@@ -229,7 +229,7 @@ def step_invitation_show(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Invitations/get/Invitations_ListByShare
+## EXAMPLE: /Invitations/get/Invitations_ListByShare
 @try_manual
 def step_invitation_list(test, checks=None):
     if checks is None:
@@ -241,7 +241,7 @@ def step_invitation_list(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Invitations/delete/Invitations_Delete
+## EXAMPLE: /Invitations/delete/Invitations_Delete
 @try_manual
 def step_invitation_delete(test, checks=None):
     if checks is None:
@@ -254,7 +254,7 @@ def step_invitation_delete(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ProviderShareSubscriptions/get/ProviderShareSubscriptions_GetByShare
+## EXAMPLE: /ProviderShareSubscriptions/get/ProviderShareSubscriptions_GetByShare
 @try_manual
 def step_provider_share_subscription_show(test, checks=None):
     if checks is None:
@@ -267,7 +267,7 @@ def step_provider_share_subscription_show(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ProviderShareSubscriptions/get/ProviderShareSubscriptions_ListByShare
+## EXAMPLE: /ProviderShareSubscriptions/get/ProviderShareSubscriptions_ListByShare
 @try_manual
 def step_provider_share_subscription_list(test, checks=None):
     if checks is None:
@@ -279,7 +279,7 @@ def step_provider_share_subscription_list(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Adjust
+## EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Adjust
 @try_manual
 def step_provider_share_subscription_adjust(test, checks=None):
     if checks is None:
@@ -293,7 +293,7 @@ def step_provider_share_subscription_adjust(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Reinstate
+## EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Reinstate
 @try_manual
 def step_provider_share_subscription_reinstate(test, checks=None):
     if checks is None:
@@ -307,7 +307,7 @@ def step_provider_share_subscription_reinstate(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Revoke
+## EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Revoke
 @try_manual
 def step_provider_share_subscription_revoke(test, checks=None):
     if checks is None:
@@ -320,7 +320,7 @@ def step_provider_share_subscription_revoke(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/put/ShareSubscriptions_Create
+## EXAMPLE: /ShareSubscriptions/put/ShareSubscriptions_Create
 @try_manual
 def step_share_subscription_create(test, checks=None):
     if checks is None:
@@ -335,7 +335,7 @@ def step_share_subscription_create(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/get/ShareSubscriptions_Get
+## EXAMPLE: /ShareSubscriptions/get/ShareSubscriptions_Get
 @try_manual
 def step_share_subscription_show(test, checks=None):
     if checks is None:
@@ -347,7 +347,7 @@ def step_share_subscription_show(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/get/ShareSubscriptions_ListByAccount
+## EXAMPLE: /ShareSubscriptions/get/ShareSubscriptions_ListByAccount
 @try_manual
 def step_share_subscription_list(test, checks=None):
     if checks is None:
@@ -358,7 +358,7 @@ def step_share_subscription_list(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_CancelSynchronization
+## EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_CancelSynchronization
 @try_manual
 def step_share_subscription_cancel_synchronization(test, checks=None):
     if checks is None:
@@ -371,7 +371,7 @@ def step_share_subscription_cancel_synchronization(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSourceShareSynchronizationSettings
+## EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSourceShareSynchronizationSettings
 @try_manual
 def step_share_subscription_list2(test, checks=None):
     if checks is None:
@@ -383,7 +383,7 @@ def step_share_subscription_list2(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSynchronizationDetails
+## EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSynchronizationDetails
 @try_manual
 def step_share_subscription_list3(test, checks=None):
     if checks is None:
@@ -396,7 +396,7 @@ def step_share_subscription_list3(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSynchronizations
+## EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSynchronizations
 @try_manual
 def step_share_subscription_list_synchronization(test, checks=None):
     if checks is None:
@@ -408,7 +408,7 @@ def step_share_subscription_list_synchronization(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_Synchronize
+## EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_Synchronize
 @try_manual
 def step_share_subscription_synchronize(test, checks=None):
     if checks is None:
@@ -421,7 +421,7 @@ def step_share_subscription_synchronize(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /ShareSubscriptions/delete/ShareSubscriptions_Delete
+## EXAMPLE: /ShareSubscriptions/delete/ShareSubscriptions_Delete
 @try_manual
 def step_share_subscription_delete(test, checks=None):
     if checks is None:
