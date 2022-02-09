@@ -841,11 +841,6 @@ helps['stream-analytics private-endpoint create'] = """
 LinkServices/testPls\\",\\"groupIds\\":[\\"groupIdFromResource\\"]}]" --name "testpe" --resource-group "sjrg"
 """
 
-helps['stream-analytics private-endpoint update'] = """
-    type: command
-    short-summary: "Update a Stream Analytics Private Endpoint or replaces an already existing Private Endpoint."
-"""
-
 helps['stream-analytics private-endpoint delete'] = """
     type: command
     short-summary: "Delete the specified private endpoint."
