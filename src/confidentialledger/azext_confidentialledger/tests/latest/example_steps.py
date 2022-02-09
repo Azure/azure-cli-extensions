@@ -8,8 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import json
-
 from .. import try_manual
 
 
@@ -73,11 +71,9 @@ def step_list_by_subscription(test, checks=None):
 
 # EXAMPLE: /Ledger/patch/ConfidentialLedgerUpdate
 @try_manual
-def step_update(test, create_output, checks=None):
+def step_update(test, create_output_json, checks=None):
     if checks is None:
         checks = []
-
-    create_output_json = json.loads(create_output)
 
     aad_based_principals = ""
     for aad_principal in create_output_json["properties"]["aadBasedSecurityPrincipals"]:

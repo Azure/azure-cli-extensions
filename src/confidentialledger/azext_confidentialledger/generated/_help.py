@@ -43,7 +43,7 @@ helps['confidentialledger create'] = """
     type: command
     short-summary: "Creates a  Confidential Ledger with the specified ledger parameters."
     parameters:
-      - name: --aad-based-security-principals
+      - name: --aad-based-security-principals --aad-based-users
         short-summary: "Array of all AAD based Security Principals."
         long-summary: |
             Usage: --aad-based-security-principals principal-id=XX tenant-id=XX ledger-role-name=XX
@@ -53,7 +53,7 @@ helps['confidentialledger create'] = """
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
             Multiple actions can be specified by using more than one --aad-based-security-principals argument.
-      - name: --cert-based-security-principals
+      - name: --cert-based-security-principals --cert-based-users
         short-summary: "Array of all cert based Security Principals."
         long-summary: |
             Usage: --cert-based-security-principals cert=XX ledger-role-name=XX
@@ -81,7 +81,7 @@ helps['confidentialledger update'] = """
     type: command
     short-summary: "Updates properties of Confidential Ledger."
     parameters:
-      - name: --aad-based-security-principals
+      - name: --aad-based-security-principals --aad-based-users
         short-summary: "Array of all AAD based Security Principals."
         long-summary: |
             Usage: --aad-based-security-principals principal-id=XX tenant-id=XX ledger-role-name=XX
@@ -91,7 +91,7 @@ helps['confidentialledger update'] = """
             ledger-role-name: LedgerRole associated with the Security Principal of Ledger
 
             Multiple actions can be specified by using more than one --aad-based-security-principals argument.
-      - name: --cert-based-security-principals
+      - name: --cert-based-security-principals --cert-based-users
         short-summary: "Array of all cert based Security Principals."
         long-summary: |
             Usage: --cert-based-security-principals cert=XX ledger-role-name=XX

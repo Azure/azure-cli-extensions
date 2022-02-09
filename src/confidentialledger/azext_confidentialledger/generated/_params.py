@@ -44,10 +44,10 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('ledger_type', arg_type=get_enum_type(['Unknown', 'Public', 'Private']), help='Type of Confidential '
                    'Ledger')
-        c.argument('aad_based_security_principals', action=AddAadBasedSecurityPrincipals, nargs='+', help='Array of '
-                   'all AAD based Security Principals.')
-        c.argument('cert_based_security_principals', action=AddCertBasedSecurityPrincipals, nargs='+', help='Array of '
-                   'all cert based Security Principals.')
+        c.argument('aad_based_security_principals', options_list=['--aad-based-security-principals', '--aad-based-users'], action=AddAadBasedSecurityPrincipals, nargs='+', help='Array of '
+                   'all AAD-based Security Principals.')
+        c.argument('cert_based_security_principals', options_list=['--cert-based-security-principals', '--cert-based-users'], action=AddCertBasedSecurityPrincipals, nargs='+', help='Array of '
+                   'all certificate-based Security Principals.')
 
     with self.argument_context('confidentialledger update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -58,10 +58,10 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('ledger_type', arg_type=get_enum_type(['Unknown', 'Public', 'Private']), help='Type of Confidential '
                    'Ledger')
-        c.argument('aad_based_security_principals', action=AddAadBasedSecurityPrincipals, nargs='+', help='Array of '
-                   'all AAD based Security Principals.')
-        c.argument('cert_based_security_principals', action=AddCertBasedSecurityPrincipals, nargs='+', help='Array of '
-                   'all cert based Security Principals.')
+        c.argument('aad_based_security_principals', options_list=['--aad-based-security-principals', '--aad-based-users'], action=AddAadBasedSecurityPrincipals, nargs='+', help='Array of '
+                   'all AAD-based Security Principals.')
+        c.argument('cert_based_security_principals', options_list=['--cert-based-security-principals', '--cert-based-users'], action=AddCertBasedSecurityPrincipals, nargs='+', help='Array of '
+                   'all certificate-based Security Principals.')
 
     with self.argument_context('confidentialledger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
