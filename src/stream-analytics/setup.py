@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='stream_analytics',
+    name='stream-analytics',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools StreamAnalyticsManagementClient Extension',
     author='Microsoft Corporation',
