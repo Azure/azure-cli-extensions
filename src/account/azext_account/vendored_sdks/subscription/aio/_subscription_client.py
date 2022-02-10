@@ -7,39 +7,40 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Awaitable, Optional, TYPE_CHECKING
 
-from azure.core.rest import HttpRequest, HttpResponse
-from azure.mgmt.core import ARMPipelineClient
+from azure.core.rest import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
-from . import models
+from .. import models
 from ._configuration import SubscriptionClientConfiguration
 from .operations import AliasOperations, BillingAccountOperations, Operations, SubscriptionOperations, SubscriptionPolicyOperations, SubscriptionsOperations, TenantsOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 class SubscriptionClient:
     """The subscription client.
 
     :ivar subscriptions: SubscriptionsOperations operations
-    :vartype subscriptions: azure.mgmt.subscription.operations.SubscriptionsOperations
+    :vartype subscriptions: azure.mgmt.subscription.aio.operations.SubscriptionsOperations
     :ivar tenants: TenantsOperations operations
-    :vartype tenants: azure.mgmt.subscription.operations.TenantsOperations
+    :vartype tenants: azure.mgmt.subscription.aio.operations.TenantsOperations
     :ivar subscription: SubscriptionOperations operations
-    :vartype subscription: azure.mgmt.subscription.operations.SubscriptionOperations
+    :vartype subscription: azure.mgmt.subscription.aio.operations.SubscriptionOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.subscription.operations.Operations
+    :vartype operations: azure.mgmt.subscription.aio.operations.Operations
     :ivar alias: AliasOperations operations
-    :vartype alias: azure.mgmt.subscription.operations.AliasOperations
+    :vartype alias: azure.mgmt.subscription.aio.operations.AliasOperations
     :ivar subscription_policy: SubscriptionPolicyOperations operations
-    :vartype subscription_policy: azure.mgmt.subscription.operations.SubscriptionPolicyOperations
+    :vartype subscription_policy:
+     azure.mgmt.subscription.aio.operations.SubscriptionPolicyOperations
     :ivar billing_account: BillingAccountOperations operations
-    :vartype billing_account: azure.mgmt.subscription.operations.BillingAccountOperations
+    :vartype billing_account: azure.mgmt.subscription.aio.operations.BillingAccountOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param base_url: Service URL. Default value is 'https://management.azure.com'.
     :type base_url: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -48,12 +49,12 @@ class SubscriptionClient:
 
     def __init__(
         self,
-        credential: "TokenCredential",
+        credential: "AsyncTokenCredential",
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
         self._config = SubscriptionClientConfiguration(credential=credential, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -70,16 +71,16 @@ class SubscriptionClient:
 
     def _send_request(
         self,
-        request,  # type: HttpRequest
+        request: HttpRequest,
         **kwargs: Any
-    ) -> HttpResponse:
+    ) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
         >>> request = HttpRequest("GET", "https://www.example.org/")
         <HttpRequest [GET], url: 'https://www.example.org/'>
-        >>> response = client._send_request(request)
-        <HttpResponse: 200 OK>
+        >>> response = await client._send_request(request)
+        <AsyncHttpResponse: 200 OK>
 
         For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
 
@@ -87,22 +88,19 @@ class SubscriptionClient:
         :type request: ~azure.core.rest.HttpRequest
         :keyword bool stream: Whether the response payload will be streamed. Defaults to False.
         :return: The response of your network call. Does not do error handling on your response.
-        :rtype: ~azure.core.rest.HttpResponse
+        :rtype: ~azure.core.rest.AsyncHttpResponse
         """
 
         request_copy = deepcopy(request)
         request_copy.url = self._client.format_url(request_copy.url)
         return self._client.send_request(request_copy, **kwargs)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> SubscriptionClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "SubscriptionClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
++++++
+* Update SDK
+
 0.2.1
 +++++
 * az account alias create: add --reseller-id
