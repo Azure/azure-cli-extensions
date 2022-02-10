@@ -8,28 +8,28 @@
 from codecs import open as open1
 from setuptools import setup, find_packages
 
-VERSION = "0.5.51"
+VERSION = "0.5.52"
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
-    'Intended Audience :: Developers',
-    'Intended Audience :: System Administrators',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'License :: OSI Approved :: MIT License',
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: MIT License",
 ]
 
 DEPENDENCIES = []
 
-with open1('README.md', 'r', encoding='utf-8') as f:
+with open1("README.md", "r", encoding="utf-8") as f:
     README = f.read()
-with open1('HISTORY.md', 'r', encoding='utf-8') as f:
+with open1("HISTORY.md", "r", encoding="utf-8") as f:
     HISTORY = f.read()
 
 setup(
-    name='aks-preview',
+    name="aks-preview",
     version=VERSION,
     description='Provides a preview for upcoming AKS features',
     long_description=README + '\n\n' + HISTORY,
@@ -39,6 +39,8 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_aks_preview': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES
+    package_data={
+        "azext_aks_preview": ["azext_metadata.json", "deploymentyaml/*.yaml"]
+    },
+    install_requires=DEPENDENCIES,
 )

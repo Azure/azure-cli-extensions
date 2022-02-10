@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
++ Add rdbms-module to cloud shell
+
 1.0.0
 ++++++
 + GA release for 'az postgres flexible-server connect' and 'az postgres flexible-server execute' commands.

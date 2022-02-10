@@ -2,7 +2,18 @@
 
 Release History
 ===============
+
+0.5.52
+++++++
+
+* Add yaml template files to package data to fix issue [#148](https://github.com/Azure/aks-periscope/issues/148).
+* Add support for using empty string to remove existing nodepool label by `az aks update --nodepool-labels` or `az aks nodepool update --labels`.
+* Add support for using empty string to remove existing node taints by `az nodepool update --node-taints`.
+* Correct the option for time control in `maintenanceconfiguration` series commands to `hourSlot`.
+* GA (General Availability) for the snapshot feature.
+
 0.5.51
+++++++
 * Add currentKubernetesVersion column for az aks show --output table.
 
 0.5.50

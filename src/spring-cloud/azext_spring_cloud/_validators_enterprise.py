@@ -63,6 +63,8 @@ def validate_builder_update(cmd, namespace):
 def validate_builder_resource(namespace):
     if namespace.builder_json is not None and namespace.builder_file is not None:
         raise ClientRequestError("You can only specify either --builder-json or --builder-file.")
+    if namespace.builder_json is None and namespace.builder_file is None:
+        raise ClientRequestError("--builder-json or --builder-file is required.")
 
 
 def validate_build_pool_size(namespace):
@@ -136,12 +138,12 @@ def validate_api_portal_update(namespace):
 
 
 def _validate_sso(namespace):
-    all_provided = namespace.scope and namespace.client_id and namespace.client_secret and namespace.issuer_uri
+    all_provided = namespace.scope is not None and namespace.client_id is not None and namespace.client_secret is not None and namespace.issuer_uri is not None
     none_provided = namespace.scope is None and namespace.client_id is None and namespace.client_secret is None and namespace.issuer_uri is None
     if not all_provided and not none_provided:
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
-    if namespace.scope:
-        namespace.scope = namespace.scope.split(",")
+    if namespace.scope is not None:
+        namespace.scope = namespace.scope.split(",") if namespace.scope else []
 
 
 def validate_routes(namespace):

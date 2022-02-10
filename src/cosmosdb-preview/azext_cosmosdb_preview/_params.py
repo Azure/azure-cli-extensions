@@ -4,20 +4,48 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
+from azext_cosmosdb_preview.actions import (
+    InvokeCommandArgumentsAddAction)
+from argcomplete.completers import FilesCompleter
 
 from azext_cosmosdb_preview._validators import (
     validate_gossip_certificates,
     validate_client_certificates,
     validate_server_certificates,
     validate_seednodes,
-    validate_node_count)
+    validate_node_count,
+    validate_mongo_role_definition_body,
+    validate_mongo_role_definition_id,
+    validate_mongo_user_definition_body,
+    validate_mongo_user_definition_id)
 
-from azext_cosmosdb_preview.actions import (
-    InvokeCommandArgumentsAddAction)
+MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyRWRole\\",
+\\"Type\\": \\"CustomRole\\"
+\\"DatabaseName\\": \\"MyDb\\",
+\\"Privileges\\": [ {\\"Resource\\": {\\"Db\\": \\"MyDB\\",\\"Collection\\": \\"MyCol\\"},\\"Actions\\": [\\"insert\\",\\"find\\"]}],
+\\"Roles\\": [ {\\"Role\\": \\"myInheritedRole\\",\\"Db\\": \\"MyTestDb\\"}]
+}"
+"""
+
+MONGO_USER_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"UserName\\": \\"MyUserName\\",
+\\"Password\\": \\"MyPass\\",
+\\"CustomData\\": \\"MyCustomData\\",
+\\"Mechanisms\\": \\"SCRAM-SHA-256\\"
+\\"DatabaseName\\": \\"MyDb\\",
+\\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
+}"
+"""
 
 
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type, get_enum_type, get_three_state_flag
+    from knack.arguments import CLIArgumentType
+
+    account_name_type = CLIArgumentType(options_list=['--account-name', '-a'], help="Cosmosdb account name.")
 
     # Managed Cassandra Cluster
     for scope in [
@@ -116,3 +144,15 @@ def load_arguments(self, _):
             c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
             c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
             c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
+
+    # Mongo role definition
+    with self.argument_context('cosmosdb mongodb role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('mongo_role_definition_id', options_list=['--id', '-i'], validator=validate_mongo_role_definition_id, help="Unique ID for the Mongo Role Definition.")
+        c.argument('mongo_role_definition_body', options_list=['--body', '-b'], validator=validate_mongo_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), DatabaseName, Privileges, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-role_definition-body-file.json or " + MONGO_ROLE_DEFINITION_EXAMPLE)
+
+    # Mongo user definition
+    with self.argument_context('cosmosdb mongodb user definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('mongo_user_definition_id', options_list=['--id', '-i'], validator=validate_mongo_user_definition_id, help="Unique ID for the Mongo User Definition.")
+        c.argument('mongo_user_definition_body', options_list=['--body', '-b'], validator=validate_mongo_user_definition_body, completer=FilesCompleter(), help="User Definition body with Id (Optional for create), UserName, Password, DatabaseName, CustomData, Mechanisms, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-user_definition-body-file.json or " + MONGO_USER_DEFINITION_EXAMPLE)
