@@ -63,7 +63,8 @@ def call_scenario(test):
     step_list_by_subscription(test, checks=[
         test.check('length(@)', 3),
     ])
-    step_update(test, create_result.get_output_in_json(), checks=[
+    step_update(test, create_result.get_output_in_json(), checks=[])
+    step_show(test, checks=[
         test.check("location", "EastUS", case_sensitive=False),
         test.check("name", "{myLedger}", case_sensitive=False),
         test.check("properties.ledgerName", "{myLedger}", case_sensitive=False),
