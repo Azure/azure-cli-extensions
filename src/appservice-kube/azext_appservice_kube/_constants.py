@@ -11,8 +11,8 @@ KUBE_CONTAINER_APP_KIND = 'linux,kubernetes,app,container'
 KUBE_FUNCTION_APP_KIND = 'linux,kubernetes,functionapp'
 KUBE_FUNCTION_CONTAINER_APP_KIND = 'linux,kubernetes,functionapp,container'
 
-LINUX_RUNTIMES = ['dotnet', 'node', 'python', 'java']
-WINDOWS_RUNTIMES = ['dotnet', 'node', 'java', 'powershell']
+LINUX_RUNTIMES = ['dotnet', 'node', 'python', 'java', 'powershell', 'dotnet-isolated']
+WINDOWS_RUNTIMES = ['dotnet', 'node', 'java', 'powershell', 'dotnet-isolated']
 
 NODE_VERSION_DEFAULT = "10.14"
 NODE_VERSION_NEWER = "12-lts"
@@ -32,7 +32,7 @@ NETCORE_VERSIONS = ['1.0', '1.1', '2.1', '2.2']
 DOTNET_VERSIONS = ['3.5', '4.7']
 
 LINUX_SKU_DEFAULT = "P1V2"
-FUNCTIONS_VERSIONS = ['2', '3']
+FUNCTIONS_VERSIONS = ['2', '3', '4']
 
 # functions version : default node version
 FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION = {
