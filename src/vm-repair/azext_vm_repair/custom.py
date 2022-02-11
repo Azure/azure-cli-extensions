@@ -64,7 +64,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
-            #os_image_urn = "UbuntuLTS"
+            # os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
             hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
             if hyperV_generation_linux == 'V2':
