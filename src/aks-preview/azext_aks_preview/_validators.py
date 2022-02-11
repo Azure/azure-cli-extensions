@@ -517,3 +517,9 @@ def validate_snapshot_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")
+
+def validate_hostgroup_id(namespace):
+    if namespace.hostgroup_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.hostgroup_id):
+            raise InvalidArgumentValueError("--hostgroup-id is not a valid Azure resource ID.")

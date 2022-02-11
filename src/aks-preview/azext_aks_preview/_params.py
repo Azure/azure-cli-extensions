@@ -263,6 +263,7 @@ def load_arguments(self, _):
             c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
             c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
             c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
+            c.argument('hostgroup_id', type=str, validator=validate_hostgroup_id)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

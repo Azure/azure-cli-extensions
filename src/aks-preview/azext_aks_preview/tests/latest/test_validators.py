@@ -138,6 +138,15 @@ class TestSubnetId(unittest.TestCase):
     def test_empty_vnet_subnet_id(self):
         validators._validate_subnet_id("", "something")
 
+class TestHostGroupId(unnittest.TestCase):
+    def test_invalid_hostgroup_id(self):
+        invalid_host_group_id = "dummy host group id"
+        err = ("--hostgroup-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators._validate_hostgroup_id(invalid_host_group_id, "--hostgroup-id")
+        self.assertEqual(str(cm.exception), err)
+
 
 class MaxSurgeNamespace:
     def __init__(self, max_surge):

@@ -1575,6 +1575,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       workload_runtime=None,
                       gpu_instance_profile=None,
                       snapshot_id=None,
+                      host_group_id=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1650,7 +1651,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         mode=mode,
         workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile,
-        creation_data=creationData
+        creation_data=creationData,
+        host_group_id=host_group_id
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:

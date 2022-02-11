@@ -1026,6 +1026,9 @@ helps['aks nodepool add'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to create this nodepool.
+        - name: --host-group
+          type: string
+          short-summary: The fully qualified resource id of Dedicated Host Group to associate this nodepool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
