@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
@@ -63,6 +63,21 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
             self.check("name", test_workspace_temp),
             self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
+            ])
+
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
+
+            # Repeat the tests without the "--skip-role-assignment" parameter
+            test_workspace_temp = get_test_workspace_random_name()
+
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            # >>>>>self.check("provisioningState", "Succeeded")  # Status is "Succeeded" since we are linking the storage account this time.
             ])
 
             # delete

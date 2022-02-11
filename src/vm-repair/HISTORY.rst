@@ -2,6 +2,14 @@
 Release History
 ===============
 
+0.4.1
+++++++
+Fixing bug in preview parameter
+
+0.4.0
+++++++
+Fixing issue in disk copy, removing floating point in disk name.
+
 0.3.9
 ++++++
 Add support for preview flag and fix Gen2 bug

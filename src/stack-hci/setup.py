@@ -47,7 +47,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AzureStackHCIClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/stack-hci',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/stack-hci',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

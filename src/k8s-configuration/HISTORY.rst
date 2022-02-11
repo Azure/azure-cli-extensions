@@ -3,6 +3,22 @@
 Release History
 ===============
 
+1.4.1
+++++++++++++++++++
+* [BREAKING CHANGE] `--access-key` changed to `--bucket-access-key`
+* [BREAKING CHANGE] `--secret-key` changed to `--bucket-secret-key`
+* [BREAKING CHANGE] `--insecure` changed to `--bucket-insecure`
+* Fix help text for bucket parameters
+
+1.4.0
+++++++++++++++++++
+* Add `--kind bucket` for creation of S3 bucket as source for fluxConfigurations
+
+1.3.0
+++++++++++++++++++
+* Add `deployed-object` command group for showing deployed Flux objects from configuration
+* Show extension error when `microsoft.flux` extension is in a failed state
+
 1.2.0
 ++++++++++++++++++
 * Add Flux v2 support with command subgroups

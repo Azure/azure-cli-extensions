@@ -43,7 +43,7 @@ setup(
     description='Microsoft Azure Command-Line Tools Acrtransfer Extension',
     author='Microsoft Corporation',
     author_email='KraterDev@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/acrtransfer',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/acrtransfer',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

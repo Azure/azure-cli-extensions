@@ -27,7 +27,7 @@ def transform_targets(providers):
 
 
 def transform_job(result):
-    result = OrderedDict([
+    transformed_result = OrderedDict([
         ('Name', result['name']),
         ('Id', result['id']),
         ('Status', result['status']),
@@ -35,7 +35,17 @@ def transform_job(result):
         ('Submission time', result['creationTime']),
         ('Completion time', result['endExecutionTime'])
     ])
-    return result
+
+    # For backwards compatibility check if the field is present and only display if present
+    cost_estimate = result['costEstimate']
+    if cost_estimate is not None:
+        amount = cost_estimate['estimatedTotal']
+        currency = cost_estimate['currencyCode']
+        if (amount is not None) and (currency is not None):
+            price = str(amount) + ' ' + currency
+            transformed_result['Cost estimate'] = price
+
+    return transformed_result
 
 
 def transform_jobs(results):
@@ -64,7 +74,7 @@ def transform_output(results):
         return OrderedDict([
             ('Result', key),
             ('Frequency', f"{value:10.8f}"),
-            ('', f"\u007C{barra:^20}\u007C")
+            ('', f"\u007C{barra:<20}\u007C")
         ])
 
     if 'Histogram' in results:
