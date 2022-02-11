@@ -12,7 +12,7 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient
 from ._models import (ManagedEnvironment, VnetConfiguration, AppLogsConfiguration, LogAnalyticsConfiguration,
                      Ingress, Configuration, Template, RegistryCredentials, ContainerApp, Dapr, ContainerResources, Scale, Container)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
@@ -57,7 +57,7 @@ def create_containerapp(cmd,
 
     if yaml:
         # TODO: Implement yaml
-        return
+        raise CLIError("--yaml is not yet implemented")
 
     if image_name is None:
         raise RequiredArgumentMissingError('Usage error: --image is required if not using --yaml')
@@ -153,13 +153,22 @@ def create_containerapp(cmd,
     template_def["dapr"] = dapr_def
 
     containerapp_def = ContainerApp
-    container_def["location"] = location
+    containerapp_def["location"] = location
     containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
-    container_def["tags"] = tags
+    containerapp_def["tags"] = tags
 
-    # TODO: Call create with nowait poller
+    try:
+        r = ContainerAppClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=containerapp_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def create_managed_environment(cmd,
@@ -235,7 +244,7 @@ def create_managed_environment(cmd,
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+            logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
     except Exception as e:
@@ -259,7 +268,7 @@ def update_managed_environment(cmd,
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp environment update in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+            logger.warning('Containerapp environment update in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
     except Exception as e:
