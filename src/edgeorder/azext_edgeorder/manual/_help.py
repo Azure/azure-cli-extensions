@@ -15,12 +15,12 @@ helps['edgeorder'] = '''
 
 helps['edgeorder address'] = """
     type: group
-    short-summary:  sub group address
+    short-summary: Manage address with Edge Order
 """
 
 helps['edgeorder address show'] = """
     type: command
-    short-summary: "Gets information about the specified address."
+    short-summary: "Get information about the specified address."
     examples:
       - name: GetAddressByName
         text: |-
@@ -29,27 +29,27 @@ helps['edgeorder address show'] = """
 
 helps['edgeorder order'] = """
     type: group
-    short-summary:  sub group order
+    short-summary: Manage order with Edge Order
 """
 
 helps['edgeorder order show'] = """
     type: command
-    short-summary: "Gets an order."
+    short-summary: "Get an order."
     examples:
       - name: GetOrderByName
         text: |-
-               az edgeorder order show --location "%7B%7B%7Blocation%7D%7D" --name "TestOrderItemName901" \
+               az edgeorder order show --location "TestLocation" --name "TestOrderItemName901" \
 --resource-group "TestRG"
 """
 
 helps['edgeorder order-item'] = """
     type: group
-    short-summary:  sub group order-item
+    short-summary: Manage order item with Edge Order
 """
 
 helps['edgeorder order-item show'] = """
     type: command
-    short-summary: "Gets an order item."
+    short-summary: "Get an order item."
     examples:
       - name: GetOrderItemByName
         text: |-
@@ -58,7 +58,7 @@ helps['edgeorder order-item show'] = """
 
 helps['edgeorder address create'] = """
     type: command
-    short-summary: "Creates a new address with the specified parameters. Existing address can be updated with this \
+    short-summary: "Create a new address with the specified parameters. Existing address can be updated with this \
 API."
     parameters:
       - name: --shipping-address
@@ -90,7 +90,7 @@ state-or-province=XX country=XX postal-code=XX zip-extended-code=XX company-name
     examples:
       - name: CreateAddress
         text: |-
-               az edgeorder address create --name "TestMSAddressName" --location "westus" --contact-details \
+               az edgeorder address create --name "TestMSAddressName" --location "eastus" --contact-details \
 contact-name="Petr Cech" email-list="testemail@microsoft.com" phone="1234567890" phone-extension="" --shipping-address \
 address-type="None" city="San Francisco" company-name="Microsoft" country="US" postal-code="94107" \
 state-or-province="CA" street-address1="16 TOWNSEND ST" street-address2="UNIT 1" --resource-group "TestRG"
@@ -98,12 +98,12 @@ state-or-province="CA" street-address1="16 TOWNSEND ST" street-address2="UNIT 1"
 
 helps['edgeorder order-item create'] = """
     type: command
-    short-summary: "Creates an order item. Existing order item cannot be updated with this api and should instead be \
+    short-summary: "Create an order item. Existing order item cannot be updated with this api and should instead be \
 updated with the Update order item API."
     examples:
       - name: CreateOrderItem
         text: |-
-               az edgeorder order-item create --name "TestOrderItemName01" --resource "{\\"location\\":\\"westus\\",\\"\
+               az edgeorder order-item create --name "TestOrderItemName01" --resource "{\\"location\\":\\"eastus\\",\\"\
 tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\
 \\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetai\
 ls\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStac\
@@ -113,12 +113,12 @@ oft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"ship
 sidential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\
 \\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT \
 1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGrou\
-ps/TestRG/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\\"}" --resource-group "TestRG"
+ps/TestRG/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}" --resource-group "TestRG"
 """
 
 helps['edgeorder address update'] = """
     type: command
-    short-summary: "Updates the properties of an existing address."
+    short-summary: "Update the properties of an existing address."
     parameters:
       - name: --shipping-address
         short-summary: "Shipping details for the address"
@@ -158,7 +158,7 @@ WhatElse="Web Series Added" Work="Engineering" --resource-group "TestRG"
 
 helps['edgeorder order-item update'] = """
     type: command
-    short-summary: "Updates the properties of an existing order item."
+    short-summary: "Update the properties of an existing order item."
     parameters:
       - name: --notif-preferences
         short-summary: "Notification preferences."
@@ -224,7 +224,7 @@ preferred-shipment-type="CustomerManaged" --tags ant="insect" pigeon="bird" tige
 
 helps['edgeorder address delete'] = """
     type: command
-    short-summary: "Deletes an address."
+    short-summary: "Delete an address."
     examples:
       - name: DeleteAddressByName
         text: |-
@@ -233,7 +233,7 @@ helps['edgeorder address delete'] = """
 
 helps['edgeorder order-item delete'] = """
     type: command
-    short-summary: "Deletes an order item."
+    short-summary: "Delete an order item."
     examples:
       - name: DeleteOrderItemByName
         text: |-
@@ -242,7 +242,7 @@ helps['edgeorder order-item delete'] = """
 
 helps['edgeorder address rg-list'] = """
     type: command
-    short-summary: "Lists all the addresses available under the given resource group."
+    short-summary: "List all the addresses available under the given resource group."
     examples:
       - name: ListAddressesAtResourceGroupLevel
         text: |-
@@ -251,7 +251,7 @@ helps['edgeorder address rg-list'] = """
 
 helps['edgeorder address sub-list'] = """
     type: command
-    short-summary: "Lists all the addresses available under the subscription."
+    short-summary: "List all the addresses available under the subscription."
     examples:
       - name: ListAddressesAtSubscriptionLevel
         text: |-
@@ -320,7 +320,7 @@ helps['edgeorder list-operation'] = """
 
 helps['edgeorder order rg-list'] = """
     type: command
-    short-summary: "Lists order at resource group level."
+    short-summary: "List order at resource group level."
     examples:
       - name: ListOrderAtResourceGroupLevel
         text: |-
@@ -329,7 +329,7 @@ helps['edgeorder order rg-list'] = """
 
 helps['edgeorder order sub-list'] = """
     type: command
-    short-summary: "Lists order at subscription level."
+    short-summary: "List order at subscription level."
     examples:
       - name: ListOrderAtSubscriptionLevel
         text: |-
@@ -385,7 +385,7 @@ returned"
 
 helps['edgeorder order-item rg-list'] = """
     type: command
-    short-summary: "Lists order item at resource group level."
+    short-summary: "List order item at resource group level."
     examples:
       - name: ListOrderItemsAtResourceGroupLevel
         text: |-
@@ -394,7 +394,7 @@ helps['edgeorder order-item rg-list'] = """
 
 helps['edgeorder order-item sub-list'] = """
     type: command
-    short-summary: "Lists order item at subscription level."
+    short-summary: "List order item at subscription level."
     examples:
       - name: ListOrderItemsAtSubscriptionLevel
         text: |-

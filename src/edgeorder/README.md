@@ -8,105 +8,104 @@ az extension add --name edgeorder
 ```
 
 ### Included Features ###
-#### edgeorder ####
-##### Create-address #####
+##### Create an address #####
 ```
-az edgeorder create-address --address-name "TestMSAddressName" --location "westus" \
+az edgeorder address create --name "TestMSAddressName" --location "eastus" \
     --contact-details contact-name="Petr Cech" email-list="testemail@microsoft.com" phone="1234567890" phone-extension="" \
     --shipping-address address-type="None" city="San Francisco" company-name="Microsoft" country="US" postal-code="94107" state-or-province="CA" street-address1="16 TOWNSEND ST" street-address2="UNIT 1" \
     --resource-group "TestRG" 
 ```
-##### Create-order-item #####
+##### Create an order item #####
 ```
-az edgeorder create-order-item --order-item-name "TestOrderItemName01" \
-    --order-item-resource "{\\"location\\":\\"westus\\",\\"tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetails\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStackEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}},\\"addressDetails\\":{\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"164 TOWNSEND ST\\",\\"emailList\\":[\\"ssemmail@microsoft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"shippingAddress\\":{\\"addressType\\":\\"Residential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT 1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGroups/TestRG/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\\"}" \
+az edgeorder order-item create --name "TestOrderItemName01" \
+    --resource "{\\"location\\":\\"westus\\",\\"tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetails\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStackEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}},\\"addressDetails\\":{\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"164 TOWNSEND ST\\",\\"emailList\\":[\\"ssemmail@microsoft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"shippingAddress\\":{\\"addressType\\":\\"Residential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT 1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGroups/TestRG/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\\"}" \
     --resource-group "TestRG" 
 ```
-##### Cancel-order-item #####
+##### Cancel an order item #####
 ```
-az edgeorder cancel-order-item --reason "Order cancelled" --order-item-name "TestOrderItemName1" \
+az edgeorder order-item cancel --reason "Order cancelled" --name "TestOrderItemName1" \
     --resource-group "TestRG" 
 ```
-##### List-address-at-resource-group-level #####
+##### List addresses at resource group level #####
 ```
-az edgeorder list-address-at-resource-group-level --resource-group "TestRG"
+az edgeorder address rg-list --resource-group "TestRG"
 ```
-##### List-address-at-subscription-level #####
+##### List addresses at subscription level #####
 ```
-az edgeorder list-address-at-subscription-level
+az edgeorder address sub-list
 ```
-##### List-configuration #####
+##### List configurations #####
 ```
-az edgeorder list-configuration \
+az edgeorder list-config \
     --configuration-filters "[{\\"filterableProperty\\":[{\\"type\\":\\"ShipToCountries\\",\\"supportedValues\\":[\\"US\\"]}],\\"hierarchyInformation\\":{\\"productFamilyName\\":\\"AzureStackEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}]" 
 ```
-##### List-operation #####
+##### List operations #####
 ```
 az edgeorder list-operation
 ```
-##### List-order-at-resource-group-level #####
+##### List orders at resource group level #####
 ```
-az edgeorder list-order-at-resource-group-level --resource-group "TestRG"
+az edgeorder order rg-list --resource-group "TestRG"
 ```
-##### List-order-at-subscription-level #####
+##### List orders at subscription level #####
 ```
-az edgeorder list-order-at-subscription-level
+az edgeorder order sub-list
 ```
-##### List-order-item-at-resource-group-level #####
+##### List order items at resource group level #####
 ```
-az edgeorder list-order-item-at-resource-group-level --resource-group "TestRG"
+az edgeorder order-item rg-list --resource-group "TestRG"
 ```
-##### List-order-item-at-subscription-level #####
+##### List order items at subscription level #####
 ```
-az edgeorder list-order-item-at-subscription-level
+az edgeorder order-item sub-list
 ```
-##### List-product-family #####
+##### List product families #####
 ```
-az edgeorder list-product-family \
+az edgeorder list-family \
     --filterable-properties azurestackedge={"type":"ShipToCountries","supportedValues":["US"]} 
 ```
-##### List-product-family-metadata #####
+##### List product family metadata #####
 ```
-az edgeorder list-product-family-metadata
+az edgeorder list-metadata
 ```
-##### Return-order-item #####
+##### Return an order item #####
 ```
-az edgeorder return-order-item --order-item-name "TestOrderName1" --resource-group "TestRG" \
+az edgeorder order-item return --name "TestOrderName1" --resource-group "TestRG" \
     --return-reason "Order returned" 
 ```
-##### Show-address #####
+##### Show an address #####
 ```
-az edgeorder show-address --address-name "TestMSAddressName" --resource-group "TestRG"
+az edgeorder address show --name "TestMSAddressName" --resource-group "TestRG"
 ```
-##### Show-order #####
+##### Show an order #####
 ```
-az edgeorder show-order --location "%7B%7B%7Blocation%7D%7D" --order-name "TestOrderItemName901" \
+az edgeorder order show --location "location" --name "TestOrderItemName901" \
     --resource-group "TestRG" 
 ```
-##### Show-order-item #####
+##### Show an order item #####
 ```
-az edgeorder show-order-item --order-item-name "TestOrderItemName01" --resource-group "TestRG"
+az edgeorder order-item show --name "TestOrderItemName01" --resource-group "TestRG"
 ```
-##### Update-address #####
+##### Update an address #####
 ```
-az edgeorder update-address --address-name "TestAddressName2" \
+az edgeorder address update --name "TestAddressName2" \
     --contact-details contact-name="Petr Cech" email-list="ssemcr@microsoft.com" phone="1234567890" phone-extension="" \
     --shipping-address address-type="None" city="San Francisco" company-name="Microsoft" country="US" postal-code="94107" state-or-province="CA" street-address1="16 TOWNSEND STT" street-address2="UNIT 1" \
     --tags Hobby="Web Series Added" Name="Smile-Updated" WhatElse="Web Series Added" Work="Engineering" \
     --resource-group "TestRG" 
 ```
-##### Update-order-item #####
+##### Update an order item #####
 ```
-az edgeorder update-order-item --order-item-name "TestOrderItemName01" \
+az edgeorder order-item update --name "TestOrderItemName01" \
     --contact-details contact-name="Updated contact name" email-list="testemail@microsoft.com" phone="2222200000" \
     --transport-preferences preferred-shipment-type="CustomerManaged" --tags ant="insect" pigeon="bird" tiger="animal" \
     --resource-group "TestRG" 
 ```
-##### Delete-address #####
+##### Delete an address #####
 ```
-az edgeorder delete-address --address-name "TestAddressName1" --resource-group "TestRG"
+az edgeorder address delete --name "TestAddressName1" --resource-group "TestRG"
 ```
-##### Delete-order-item #####
+##### Delete an order item #####
 ```
-az edgeorder delete-order-item --order-item-name "TestOrderItemName01" --resource-group "TestRG"
+az edgeorder order-item delete --name "TestOrderItemName01" --resource-group "TestRG"
 ```
