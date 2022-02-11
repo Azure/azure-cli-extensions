@@ -113,39 +113,39 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
-        # init nat gateway models
-        self.init_nat_gateway_models()
-        # holder for pod identity related models
-        self.__pod_identity_models = None
         self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
             "ManagedClusterOIDCIssuerProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        # holder for nat gateway related models
+        self.__nat_gateway_models = None
+        # holder for pod identity related models
+        self.__pod_identity_models = None
 
-    # TODO: convert this to @property
-    def init_nat_gateway_models(self) -> None:
-        """Initialize models used by nat gateway.
+    @property
+    def nat_gateway_models(self) -> SimpleNamespace:
+        """Get nat gateway related models.
 
-        The models are stored in a dictionary, the key is the model name and the value is the model type.
+        The models are stored in a SimpleNamespace object, could be accessed by the dot operator like
+        `nat_gateway_models.ManagedClusterNATGatewayProfile`.
 
-        :return: None
+        :return: SimpleNamespace
         """
-        nat_gateway_models = {}
-        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
-            "ManagedClusterNATGatewayProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
-            "ManagedClusterManagedOutboundIPProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        self.nat_gateway_models = nat_gateway_models
-        # Note: Uncomment the followings to add these models as class attributes.
-        # for model_name, model_type in nat_gateway_models.items():
-        #     setattr(self, model_name, model_type)
+        if self.__nat_gateway_models is None:
+            nat_gateway_models = {}
+            nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+                "ManagedClusterNATGatewayProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+                "ManagedClusterManagedOutboundIPProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            self.__nat_gateway_models = SimpleNamespace(**nat_gateway_models)
+        return self.__nat_gateway_models
 
     @property
     def pod_identity_models(self) -> SimpleNamespace:
@@ -243,16 +243,15 @@ class AKSPreviewContext(AKSContext):
                     "when setting --enable-windows-gmsa."
                 )
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
-    def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+    def _get_vm_set_type(self, read_only: bool = False) -> Union[str, None]:
         """Internal function to dynamically obtain the value of vm_set_type according to the context.
 
         Note: Inherited and extended in aks-preview to add support for the deprecated option --enable-vmss.
 
         :return: string or None
         """
-        vm_set_type = super()._get_vm_set_type(read_only, **kwargs)
+        vm_set_type = super()._get_vm_set_type(read_only)
 
         # TODO: Remove the below section when we deprecate the --enable-vmss flag, kept for back-compatibility only.
         # read the original value passed by the command
@@ -620,10 +619,9 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_disable_pod_security_policy(enable_validation=True)
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
-        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+        self, enable_validation: bool = False, read_only: bool = False
     ) -> bool:
         """Internal function to obtain the value of enable_managed_identity.
 
@@ -634,7 +632,7 @@ class AKSPreviewContext(AKSContext):
 
         :return: bool
         """
-        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only, **kwargs)
+        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only)
         # additional validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
@@ -890,10 +888,9 @@ class AKSPreviewContext(AKSContext):
         return no_wait
 
     # TOOD: may remove this function after the fix for the internal function get merged and released
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_workspace_resource_id(
-        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+        self, enable_validation: bool = False, read_only: bool = False
     ) -> Union[str, None]:  # pragma: no cover
         """Internal function to dynamically obtain the value of workspace_resource_id according to the context.
 
@@ -1083,14 +1080,12 @@ class AKSPreviewContext(AKSContext):
 
         return count_ipv6
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
         read_only: bool = False,
         load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
-        **kwargs,
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
