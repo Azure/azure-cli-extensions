@@ -536,3 +536,150 @@ def load_arguments(self, _):
         c.argument('flag', type=str, help='Default rule flag.')
         c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
         c.ignore('user_rule')
+
+    with self.argument_context('network manager connection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+                   type=str, help='The name of the network manager connection.')
+        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('description', type=str, help='A description of the scope connection.')
+
+    with self.argument_context('network manager connection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+                   type=str, help='The name of the network manager connection.', id_part='name')
+        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('description', type=str, help='A description of the scope connection.')
+        c.ignore('parameters')
+
+    with self.argument_context('network manager connection list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager connection show') as c:
+        c.argument('resource_group_name',resource_group_name_type)
+        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+                   type=str, help='The name of the network manager connection.', id_part='name')
+
+    with self.argument_context('network manager connection delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+                   type=str, help='The name of the network manager connection.', id_part='name')
+
+    with self.argument_context('network manager connection management-group create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', type=str, help='The name of the network manager connection.')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('description', type=str, help='A description of the scope connection.')
+
+    with self.argument_context('network manager connection management-group update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', type=str,
+                   help='The name of the network manager connection.', id_part='name')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('description', type=str, help='A description of the scope connection.')
+        c.ignore('parameters')
+
+    with self.argument_context('network manager connection management-group list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager connection management-group show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', type=str,
+                   help='The name of the network manager connection.', id_part='name')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+
+    with self.argument_context('network manager connection management-group delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', type=str,
+                   help='The name of the network manager connection.', id_part='name')
+        c.argument('management_group_id', type=str,
+                   help='The management group id which uniquely identify the microsoft azure management group')
+
+    with self.argument_context('network manager scope connection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager')
+        c.argument('scope_connection_name', type=str, help='The name of the network manager scope connection.')
+        c.argument('tenant_id', type=str, help='The id of tenant')
+        c.argument('description', type=str, help='A description of the scope connection.')
+
+    with self.argument_context('network manager scope connection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager', id_part='name')
+        c.argument('scope_connection_name', type=str, help='The name of the network manager scope connection.',
+                   id_part='child_name_1')
+        c.argument('tenant_id', type=str, help='The id of tenant')
+        c.argument('description', type=str, help='A description of the scope connection.')
+        c.ignore('parameters')
+
+    with self.argument_context('network manager scope connection list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str,help='The name of the network manager', id_part=None)
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager scope connection show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager', id_part='name')
+        c.argument('scope_connection_name', type=str, help='The name of the network manager scope connection.',
+                   id_part='child_name_1')
+
+    with self.argument_context('network manager scope connection delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager', id_part='name')
+        c.argument('scope_connection_name', type=str, help='The name of the network manager scope connection.',
+                   id_part='child_name_1')
+
+    with self.argument_context('network manager group static-member create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_group_name', type=str, help='The name of the network group.')
+        c.argument('static_member_name', type=str, help='The name of the static member.')
+
+    with self.argument_context('network manager group static-member update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_group_name', type=str, help='The name of the network group.')
+        c.argument('static_member_name', type=str, help='The name of the static member.')
+        c.ignore('parameters')
+
+    with self.argument_context('network manager group static-member list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_group_name', type=str, help='The name of the network group.')
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager group static-member show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_group_name', type=str, help='The name of the network group.')
+        c.argument('static_member_name', type=str, help='The name of the static member.')
+
+    with self.argument_context('network manager group static-member delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_group_name', type=str, help='The name of the network group.')
+        c.argument('static_member_name', type=str, help='The name of the static member.')

@@ -964,3 +964,212 @@ def network_manager_vnet_security_perimeter_delete(client,
 def network_manager_perimeter_associable_resource_type_list(client,
                                                             location):
     return client.get(location=location)
+
+
+def network_manager_collection_list(client,
+                                    resource_group_name,
+                                    top=None,
+                                    skip_token=None):
+    return client.list(resource_group_name=resource_group_name,
+                       top=top,
+                       skip_token=skip_token)
+
+
+def network_manager_collection_create(client,
+                                      resource_group_name,
+                                      network_manager_connection_name,
+                                      network_manager_id,
+                                      description=None):
+    parameters={}
+    parameters['description']=description
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   network_manager_connection_name=network_manager_connection_name,
+                                   network_manager_id=network_manager_id,
+                                   parameters=parameters)
+
+
+def network_manager_collection_update(instance,
+                                      resource_group_name,
+                                      network_manager_connection_name,
+                                      network_manager_id,
+                                      description=None):
+    if description is not None:
+        instance.description=description
+    return instance
+
+
+def network_manager_collection_show(client,
+                                    resource_group_name,
+                                    network_manager_connection_name):
+    return client.get(resource_group_name=resource_group_name,
+                      network_manager_connection_name=network_manager_connection_name)
+
+
+def network_manager_collection_delete(client,
+                                      resource_group_name,
+                                      network_manager_connection_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         network_manager_connection_name=network_manager_connection_name)
+
+
+def network_manager_connection_management_group_list(client,
+                                                     resource_group_name,
+                                                     management_group_id,
+                                                     top=None,
+                                                     skip_token=None):
+    return client.list(resource_group_name=resource_group_name,
+                       management_group_id=management_group_id,
+                       top=top,
+                       skip_token=skip_token)
+
+
+def network_manager_connection_management_group_create(client,
+                                                       resource_group_name,
+                                                       network_manager_connection_name,
+                                                       management_group_id,
+                                                       description=None):
+    parameters={}
+    parameters['description']=description
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   network_manager_connection_name=network_manager_connection_name,
+                                   management_group_id=management_group_id,
+                                   parameters=parameters)
+
+
+def network_manager_connection_management_group_update(instance,
+                                                       resource_group_name,
+                                                       network_manager_connection_name,
+                                                       management_group_id,
+                                                       description=None):
+    if description is not None:
+        instance.description=description
+    return instance
+
+
+def network_manager_connection_management_group_show(client,
+                                                     resource_group_name,
+                                                     network_manager_connection_name,
+                                                     management_group_id):
+    return client.get(resource_group_name=resource_group_name,
+                      network_manager_connection_name=network_manager_connection_name,
+                      management_group_id=management_group_id)
+
+
+def network_manager_connection_management_group_delete(client,
+                                                       resource_group_name,
+                                                       network_manager_connection_name,
+                                                       management_group_id):
+    return client.delete(resource_group_name=resource_group_name,
+                         network_manager_connection_name=network_manager_connection_name,
+                         management_group_id=management_group_id)
+
+
+def network_manager_scope_collection_list(client,
+                                          resource_group_name,
+                                          network_manager_name,
+                                          top=None,
+                                          skip_token=None):
+    return client.list(resource_group_name=resource_group_name,
+                       network_manager_name=network_manager_name,
+                       top=top,
+                       skip_token=skip_token)
+
+
+def network_manager_scope_collection_create(client,
+                                            resource_group_name,
+                                            network_manager_name,
+                                            scope_connection_name,
+                                            tenant_id,
+                                            description=None):
+    parameters={}
+    parameters['description']=description
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   network_manager_name=network_manager_name,
+                                   scope_connection_name=scope_connection_name,
+                                   tenant_id=tenant_id,
+                                   parameters=parameters)
+
+
+def network_manager_scope_collection_update(instance,
+                                            resource_group_name,
+                                            network_manager_name,
+                                            scope_connection_name,
+                                            tenant_id,
+                                            description=None):
+    if description is not None:
+        instance.description=description
+    return instance
+
+
+def network_manager_scope_collection_show(client,
+                                          resource_group_name,
+                                          network_manager_name,
+                                          scope_connection_name):
+    return client.get(resource_group_name=resource_group_name,
+                      network_manager_name=network_manager_name,
+                      scope_connection_name=scope_connection_name)
+
+
+def network_manager_scope_collection_delete(client,
+                                            resource_group_name,
+                                            network_manager_name,
+                                            scope_connection_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         network_manager_name=network_manager_name,
+                         scope_connection_name=scope_connection_name)
+
+
+def network_manager_group_static_member_list(client,
+                                             resource_group_name,
+                                             network_manager_name,
+                                             network_group_name,
+                                             top=None,
+                                             skip_token=None):
+    return client.list(resource_group_name=resource_group_name,
+                       network_manager_name=network_manager_name,
+                       network_group_name=network_group_name,
+                       top=top,
+                       skip_token=skip_token)
+
+
+def network_manager_group_static_member_create(client,
+                                               resource_group_name,
+                                               network_manager_name,
+                                               network_group_name,
+                                               static_member_name):
+    parameters={}
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   network_manager_name=network_manager_name,
+                                   network_group_name=network_group_name,
+                                   static_member_name=static_member_name,
+                                   parameters=parameters)
+
+
+def network_manager_group_static_member_update(instance,
+                                               resource_group_name,
+                                               network_manager_name,
+                                               network_group_name,
+                                               static_member_name):
+    return instance
+
+
+def network_manager_group_static_member_show(client,
+                                             resource_group_name,
+                                             network_manager_name,
+                                             network_group_name,
+                                             static_member_name):
+    return client.get(resource_group_name=resource_group_name,
+                      network_manager_name=network_manager_name,
+                      network_group_name=network_group_name,
+                      static_member_name=static_member_name)
+
+
+def network_manager_group_static_member_delete(client,
+                                               resource_group_name,
+                                               network_manager_name,
+                                               network_group_name,
+                                               static_member_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         network_manager_name=network_manager_name,
+                         network_group_name=network_group_name,
+                         static_member_name=static_member_name)

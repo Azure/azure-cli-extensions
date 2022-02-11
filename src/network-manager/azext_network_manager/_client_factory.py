@@ -81,3 +81,19 @@ def cf_userrulecollection(cli_ctx, *_):
 
 def cf_userrule(cli_ctx, *_):
     return cf_network_cl(cli_ctx).user_rules
+
+
+def cf_scopecollection(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).scope_collections
+
+
+def cf_staticmembers(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).static_members
+
+
+def cf_subscriptionconnection(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).subscription_network_manager_connections
+
+
+def cf_managementgroupconnection(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).management_group_network_manager_connections
