@@ -71,6 +71,14 @@ helps['containerapp create'] = """
               -- yaml "C:/path/to/yaml/file.yml"
 """
 
+helps['containerapp delete'] = """
+    type: command
+    short-summary: Delete a Containerapp.
+    examples:
+    - name: Delete a Containerapp.
+      text: az containerapp delete -g MyResourceGroup -n MyContainerapp
+"""
+
 helps['containerapp show'] = """
     type: command
     short-summary: Show details of a Containerapp.

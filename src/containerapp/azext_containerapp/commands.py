@@ -5,7 +5,24 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import cf_containerapp, ex_handler_factory
+
+
+def transform_containerapp_output(app):
+    props = ['name', 'location', 'resourceGroup', 'provisioningState']
+    result = {k: app[k] for k in app if k in props}
+
+    try:
+        result['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
+    except Exception:
+        result['fqdn'] = None
+
+    return result
+
+
+def transform_containerapp_list_output(apps):
+    return [transform_containerapp_output(a) for a in apps]
 
 
 def load_command_table(self, _):
@@ -17,9 +34,10 @@ def load_command_table(self, _):
 
 
     with self.command_group('containerapp') as g:
-        g.custom_command('show', 'show_containerapp')
-        g.custom_command('list', 'list_containerapp')
+        g.custom_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
+        g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
 
 
     with self.command_group('containerapp env') as g:

@@ -195,6 +195,18 @@ def list_containerapp(cmd, resource_group_name=None):
         handle_raw_exception(e)
 
 
+def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        r = ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+        if not r and not no_wait:
+            logger.warning('Containerapp successfully deleted')
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
 def create_managed_environment(cmd,
                               name,
                               resource_group_name,
