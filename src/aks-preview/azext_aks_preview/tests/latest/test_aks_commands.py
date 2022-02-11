@@ -2894,21 +2894,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
     def test_aks_create_dualstack_with_default_network(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
+        _, create_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'k8s_version': create_version,
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.21.2 ' \
+                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
 
         self.cmd(create_cmd, checks=[
