@@ -92,7 +92,7 @@ def create_containerapp(cmd,
     if target_port is not None and ingress is not None:
         ingress_def = Ingress
         ingress_def["external"] = external_ingress
-        ingress_def["target_port"] = target_port
+        ingress_def["targetPort"] = target_port
         ingress_def["transport"] = transport
 
     secrets_def = None
@@ -148,7 +148,7 @@ def create_containerapp(cmd,
         dapr_def["appProtocol"] = dapr_app_protocol
 
     template_def = Template
-    template_def["container"] = [container_def]
+    template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
     template_def["dapr"] = dapr_def
 
@@ -161,13 +161,37 @@ def create_containerapp(cmd,
 
     try:
         r = ContainerAppClient.create(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=containerapp_def, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
     except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_containerapp(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_containerapp(cmd, resource_group_name=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        containerapps = []
+        if resource_group_name is None:
+            containerapps = ContainerAppClient.list_by_subscription(cmd=cmd)
+        else:
+            containerapps = ContainerAppClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
+
+        return containerapps
+    except CLIError as e:
         handle_raw_exception(e)
 
 

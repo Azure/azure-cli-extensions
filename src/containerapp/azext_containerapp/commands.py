@@ -17,7 +17,9 @@ def load_command_table(self, _):
 
 
     with self.command_group('containerapp') as g:
-        g.custom_command('create', 'create_containerapp')
+        g.custom_command('show', 'show_containerapp')
+        g.custom_command('list', 'list_containerapp')
+        g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
 
 
     with self.command_group('containerapp env') as g:
