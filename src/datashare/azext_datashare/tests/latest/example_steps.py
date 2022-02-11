@@ -216,7 +216,7 @@ def step_invitation_create(test, checks=None):
              checks=checks)
 
 
-## EXAMPLE: /Invitations/get/Invitations_Get
+# EXAMPLE: /Invitations/get/Invitations_Get
 @try_manual
 def step_invitation_show(test, checks=None):
     if checks is None:
@@ -229,7 +229,7 @@ def step_invitation_show(test, checks=None):
              checks=checks)
 
 
-## EXAMPLE: /Invitations/get/Invitations_ListByShare
+# EXAMPLE: /Invitations/get/Invitations_ListByShare
 @try_manual
 def step_invitation_list(test, checks=None):
     if checks is None:
@@ -241,7 +241,7 @@ def step_invitation_list(test, checks=None):
              checks=checks)
 
 
-## EXAMPLE: /Invitations/delete/Invitations_Delete
+# EXAMPLE: /Invitations/delete/Invitations_Delete
 @try_manual
 def step_invitation_delete(test, checks=None):
     if checks is None:

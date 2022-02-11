@@ -239,6 +239,21 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('[0].resourceGroup', '{ProviderResourceGroup}'),
                          self.check('[0].synchronizationTime', '2022-02-02T04:47:52+00:00')])
 
+        # EXAMPLE: /Shares/post/Shares_ListSynchronizations
+        self.cmd('az datashare list-synchronization '
+                 '--account-name "{ProviderAccount}" '
+                 '--resource-group "{ProviderResourceGroup}" '
+                 '--share-name "{ProviderShare}"',
+                 checks=[])
+
+        # EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_ListSynchronizationDetails
+        # self.cmd('az datashare list-synchronization-detail '
+        #          '--account-name "{ProviderAccount}" '
+        #          '--resource-group "{ProviderResourceGroup}" '
+        #          '--share-name "{ProviderShare}" '
+        #          '--synchronization-id "7d0536a6-3fa5-43de-b152-3d07c4f6b2bb"',
+        #          checks=[])
+
         # EXAMPLE: /Invitations/put/Invitations_Create
         self.cmd('az datashare invitation create '
                  '--account-name "{ProviderAccount}" '
@@ -271,6 +286,20 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('name', '{ProviderInvitation}'),
                          self.check('resourceGroup', '{ProviderResourceGroup}'),
                          self.check('targetEmail', '{ConsumerEmail}')])
+
+        # EXAMPLE: /ConsumerInvitations/post/ConsumerInvitations_RejectInvitation
+        # self.cmd('az datashare consumer-invitation reject-invitation '
+        #          '--invitation-id "dfbbc788-19eb-4607-a5a1-c74181bfff03" '
+        #          '--location "East US 2"',
+        #          checks=[])
+
+        # EXAMPLE: /Invitations/delete/Invitations_Delete
+        # self.cmd('az datashare invitation delete -y '
+        #          '--account-name "{ProviderAccount}" '
+        #          '--name "{ProviderInvitation}" '
+        #          '--resource-group "{ProviderResourceGroup}" '
+        #          '--share-name "{ProviderShare}"',
+        #           checks=[])
 
         # Consumer commands
 
@@ -309,15 +338,6 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--name "{ConsumerAccount}" '
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--created '
-                 '--subscription "{ConsumerSubscription}"',
-                 checks=[])
-
-        # EXAMPLE: /ShareSubscriptions/delete/ShareSubscriptions_Delete
-        self.cmd('az datashare share-subscription delete '
-                 '--account-name "{ConsumerAccount}" '
-                 '--resource-group "{ConsumerResourceGroup}" '
-                 '--name "{ConsumerShareSubscription}" '
-                 '--yes '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
 
@@ -516,6 +536,15 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('name', '{ConsumerShareSubscription}'),
                          self.check('shareSubscriptionObjectId', '{ProviderShareSubscriptionObjectId}')])
 
+        # EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Adjust
+        # self.cmd('az datashare provider-share-subscription adjust '
+        #         '--account-name "{ProviderAccount}" '
+        #         '--expiration-date "2022-02-02T04:47:52" '
+        #         '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
+        #         '--resource-group "{ProviderResourceGroup}" '
+        #         '--share-name "{ProviderShare}"',
+        #         checks=[])
+
         # EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Revoke
         self.cmd('az datashare provider-share-subscription revoke '
                  '--account-name "{ProviderAccount}" '
@@ -539,6 +568,18 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                          self.check('shareSubscriptionStatus', 'Active'),
                          self.check('name', '{ConsumerShareSubscription}'),
                          self.check('shareSubscriptionObjectId', '{ProviderShareSubscriptionObjectId}')])
+
+        # EXAMPLE: /EmailRegistrations/post/EmailRegistrations_RegisterEmail
+        # self.cmd('az datashare email-registration register-email '
+        #         '--location "East US 2"',
+        #         checks=[])
+
+        # EXAMPLE: /EmailRegistrations/post/EmailRegistrations_ActivateEmail
+        # self.cmd('az datashare email-registration activate-email '
+        #      '--activation-code "djsfhakj2lekowd3wepfklpwe9lpflcd" '
+        #      '--location "East US 2"',
+        #      checks=[])
+
         # Clean up
 
         # EXAMPLE: /ShareSubscriptions/post/ShareSubscriptions_CancelSynchronization
@@ -582,6 +623,15 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--resource-group "{ConsumerResourceGroup}" '
                  '--share-subscription-name "{ConsumerShareSubscription}" '
                  '--name "{ConsumerTrigger}" '
+                 '--yes '
+                 '--subscription "{ConsumerSubscription}"',
+                 checks=[])
+
+        # EXAMPLE: /ShareSubscriptions/delete/ShareSubscriptions_Delete
+        self.cmd('az datashare share-subscription delete '
+                 '--account-name "{ConsumerAccount}" '
+                 '--resource-group "{ConsumerResourceGroup}" '
+                 '--name "{ConsumerShareSubscription}" '
                  '--yes '
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
