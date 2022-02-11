@@ -227,6 +227,7 @@ def validate_message_of_the_day(namespace):
         if namespace.os_type is not None and namespace.os_type != "Linux":
             raise CLIError('--message-of-the-day can only be set for linux nodepools')
 
+
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
