@@ -146,144 +146,53 @@ helps['datashare data-set show'] = """
 helps['datashare data-set create'] = """
     type: command
     short-summary: "Create a DataSet."
-    parameters:
-      - name: --adls-gen1-file-data-set
-        short-summary: "An ADLS Gen 1 file data set."
-        long-summary: |
-            Usage: --adls-gen1-file-data-set account-name=XX file-name=XX folder-path=XX resource-group=XX \
-subscription-id=XX kind=XX
-
-            account-name: Required. The ADLS account name.
-            file-name: Required. The file name in the ADLS account.
-            folder-path: Required. The folder path within the ADLS account.
-            resource-group: Required. Resource group of ADLS account.
-            subscription-id: Required. Subscription id of ADLS account.
-            kind: Required. Kind of data set.
-      - name: --adls-gen1-folder-data-set
-        short-summary: "An ADLS Gen 1 folder data set."
-        long-summary: |
-            Usage: --adls-gen1-folder-data-set account-name=XX folder-path=XX resource-group=XX subscription-id=XX \
-kind=XX
-
-            account-name: Required. The ADLS account name.
-            folder-path: Required. The folder path within the ADLS account.
-            resource-group: Required. Resource group of ADLS account.
-            subscription-id: Required. Subscription id of ADLS account.
-            kind: Required. Kind of data set.
-      - name: --adls-gen2-file-data-set
-        short-summary: "An ADLS Gen 2 file data set."
-        long-summary: |
-            Usage: --adls-gen2-file-data-set file-path=XX file-system=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            file-path: Required. File path within the file system.
-            file-system: Required. File system to which the file belongs.
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --adls-gen2-file-system-data-set
-        short-summary: "An ADLS Gen 2 file system data set."
-        long-summary: |
-            Usage: --adls-gen2-file-system-data-set file-system=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            file-system: Required. The file system name.
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --adls-gen2-folder-data-set
-        short-summary: "An ADLS Gen 2 folder data set."
-        long-summary: |
-            Usage: --adls-gen2-folder-data-set file-system=XX folder-path=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            file-system: Required. File system to which the folder belongs.
-            folder-path: Required. Folder path within the file system.
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --blob-container-data-set
-        short-summary: "An Azure storage blob container data set."
-        long-summary: |
-            Usage: --blob-container-data-set container-name=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            container-name: Required. BLOB Container name.
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --blob-data-set
-        short-summary: "An Azure storage blob data set."
-        long-summary: |
-            Usage: --blob-data-set container-name=XX file-path=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            container-name: Required. Container that has the file path.
-            file-path: Required. File path within the source data set
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --blob-folder-data-set
-        short-summary: "An Azure storage blob folder data set."
-        long-summary: |
-            Usage: --blob-folder-data-set container-name=XX prefix=XX resource-group=XX storage-account-name=XX \
-subscription-id=XX kind=XX
-
-            container-name: Required. Container that has the file path.
-            prefix: Required. Prefix for blob folder
-            resource-group: Required. Resource group of storage account
-            storage-account-name: Required. Storage account name of the source data set
-            subscription-id: Required. Subscription id of storage account
-            kind: Required. Kind of data set.
-      - name: --kusto-cluster-data-set
-        short-summary: "A kusto cluster data set."
-        long-summary: |
-            Usage: --kusto-cluster-data-set kusto-cluster-resource-id=XX kind=XX
-
-            kusto-cluster-resource-id: Required. Resource id of the kusto cluster.
-            kind: Required. Kind of data set.
-      - name: --kusto-database-data-set
-        short-summary: "A kusto database data set."
-        long-summary: |
-            Usage: --kusto-database-data-set kusto-database-resource-id=XX kind=XX
-
-            kusto-database-resource-id: Required. Resource id of the kusto database.
-            kind: Required. Kind of data set.
-      - name: --sqldb-table-data-set
-        short-summary: "A SQL DB table data set."
-        long-summary: |
-            Usage: --sqldb-table-data-set database-name=XX schema-name=XX sql-server-resource-id=XX table-name=XX \
-kind=XX
-
-            database-name: Database name of the source data set
-            schema-name: Schema of the table. Default value is dbo.
-            sql-server-resource-id: Resource id of SQL server
-            table-name: SQL DB table name.
-            kind: Required. Kind of data set.
-      - name: --sqldw-table-data-set
-        short-summary: "A SQL DW table data set."
-        long-summary: |
-            Usage: --sqldw-table-data-set data-warehouse-name=XX schema-name=XX sql-server-resource-id=XX \
-table-name=XX kind=XX
-
-            data-warehouse-name: DataWarehouse name of the source data set
-            schema-name: Schema of the table. Default value is dbo.
-            sql-server-resource-id: Resource id of SQL server
-            table-name: SQL DW table name.
-            kind: Required. Kind of data set.
-      - name: --synapse-workspace-sql-pool-table-data-set
-        short-summary: "A Synapse Workspace Sql Pool Table data set."
-        long-summary: |
-            Usage: --synapse-workspace-sql-pool-table-data-set synapse-workspace-sql-pool-table-resource-id=XX kind=XX
-
-            synapse-workspace-sql-pool-table-resource-id: Required. Resource id of the Synapse Workspace SQL Pool \
-Table
-            kind: Required. Kind of data set.
+    examples:
+      - name: DataSets_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"Blob\\",\\"properties\
+\\":{\\"containerName\\":\\"C1\\",\\"filePath\\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageA\
+ccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}" --name "Dataset1" \
+--resource-group "SampleResourceGroup" --share-name "Share1"
+      - name: DataSets_KustoCluster_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoCluster\\",\\"pro\
+perties\\":{\\"kustoClusterResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleRe\
+sourceGroup/providers/Microsoft.Kusto/clusters/Cluster1\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" \
+--share-name "Share1"
+      - name: DataSets_KustoDatabase_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoDatabase\\",\\"pr\
+operties\\":{\\"kustoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/Sample\
+ResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\"}}" --name "Dataset1" --resource-group \
+"SampleResourceGroup" --share-name "Share1"
+      - name: DataSets_KustoTable_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoTable\\",\\"prope\
+rties\\":{\\"kustoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleRes\
+ourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\",\\"tableLevelSharingProperties\\":{\\"ext\
+ernalTablesToExclude\\":[\\"test11\\",\\"test12\\"],\\"externalTablesToInclude\\":[\\"test9\\",\\"test10\\"],\\"materia\
+lizedViewsToExclude\\":[\\"test7\\",\\"test8\\"],\\"materializedViewsToInclude\\":[\\"test5\\",\\"test6\\"],\\"tablesTo\
+Exclude\\":[\\"test3\\",\\"test4\\"],\\"tablesToInclude\\":[\\"test1\\",\\"test2\\"]}}}" --name "Dataset1" \
+--resource-group "SampleResourceGroup" --share-name "Share1"
+      - name: DataSets_SqlDBTable_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"SqlDBTable\\",\\"prope\
+rties\\":{\\"databaseName\\":\\"SqlDB1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8d\
+fd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableNa\
+me\\":\\"Table1\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+      - name: DataSets_SqlDWTable_Create
+        text: |-
+               az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"SqlDWTable\\",\\"prope\
+rties\\":{\\"dataWarehouseName\\":\\"DataWarehouse1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscri\
+ptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\
+\\",\\"tableName\\":\\"Table1\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+      - name: DataSets_SynapseWorkspaceSqlPoolTable_Create
+        text: |-
+               az datashare data-set create --account-name "sourceAccount" --data-set "{\\"kind\\":\\"SynapseWorkspaceS\
+qlPoolTable\\",\\"properties\\":{\\"synapseWorkspaceSqlPoolTableResourceId\\":\\"/subscriptions/0f3dcfc3-18f8-4099-b381\
+-8353e19d43a7/resourceGroups/SampleResourceGroup/providers/Microsoft.Synapse/workspaces/ExampleWorkspace/sqlPools/Examp\
+leSqlPool/schemas/dbo/tables/table1\\"}}" --name "dataset1" --resource-group "SampleResourceGroup" --share-name \
+"share1"
 """
 
 helps['datashare data-set delete'] = """
@@ -425,6 +334,14 @@ storage-account-name=XX subscription-id=XX kind=XX
         short-summary: "A Kusto database data set mapping"
         long-summary: |
             Usage: --kusto-database-data-set-mapping data-set-id=XX kusto-cluster-resource-id=XX kind=XX
+
+            data-set-id: Required. The id of the source data set.
+            kusto-cluster-resource-id: Required. Resource id of the sink kusto cluster.
+            kind: Required. Kind of data set mapping.
+      - name: --kusto-table-data-set-mapping
+        short-summary: "A Kusto database data set mapping"
+        long-summary: |
+            Usage: --kusto-table-data-set-mapping data-set-id=XX kusto-cluster-resource-id=XX kind=XX
 
             data-set-id: Required. The id of the source data set.
             kusto-cluster-resource-id: Required. Resource id of the sink kusto cluster.

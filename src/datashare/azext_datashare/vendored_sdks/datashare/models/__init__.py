@@ -44,6 +44,8 @@ try:
     from ._models_py3 import KustoClusterDataSetMapping
     from ._models_py3 import KustoDatabaseDataSet
     from ._models_py3 import KustoDatabaseDataSetMapping
+    from ._models_py3 import KustoTableDataSet
+    from ._models_py3 import KustoTableDataSetMapping
     from ._models_py3 import OperationList
     from ._models_py3 import OperationMetaLogSpecification
     from ._models_py3 import OperationMetaMetricSpecification
@@ -79,6 +81,7 @@ try:
     from ._models_py3 import SynchronizationSettingList
     from ._models_py3 import Synchronize
     from ._models_py3 import SystemData
+    from ._models_py3 import TableLevelSharingProperties
     from ._models_py3 import Trigger
     from ._models_py3 import TriggerList
 except (SyntaxError, ImportError):
@@ -119,6 +122,8 @@ except (SyntaxError, ImportError):
     from ._models import KustoClusterDataSetMapping  # type: ignore
     from ._models import KustoDatabaseDataSet  # type: ignore
     from ._models import KustoDatabaseDataSetMapping  # type: ignore
+    from ._models import KustoTableDataSet  # type: ignore
+    from ._models import KustoTableDataSetMapping  # type: ignore
     from ._models import OperationList  # type: ignore
     from ._models import OperationMetaLogSpecification  # type: ignore
     from ._models import OperationMetaMetricSpecification  # type: ignore
@@ -154,6 +159,7 @@ except (SyntaxError, ImportError):
     from ._models import SynchronizationSettingList  # type: ignore
     from ._models import Synchronize  # type: ignore
     from ._models import SystemData  # type: ignore
+    from ._models import TableLevelSharingProperties  # type: ignore
     from ._models import Trigger  # type: ignore
     from ._models import TriggerList  # type: ignore
 
@@ -218,6 +224,8 @@ __all__ = [
     'KustoClusterDataSetMapping',
     'KustoDatabaseDataSet',
     'KustoDatabaseDataSetMapping',
+    'KustoTableDataSet',
+    'KustoTableDataSetMapping',
     'OperationList',
     'OperationMetaLogSpecification',
     'OperationMetaMetricSpecification',
@@ -253,6 +261,7 @@ __all__ = [
     'SynchronizationSettingList',
     'Synchronize',
     'SystemData',
+    'TableLevelSharingProperties',
     'Trigger',
     'TriggerList',
     'CreatedByType',

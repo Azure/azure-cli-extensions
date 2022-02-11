@@ -72,34 +72,6 @@ def step_account_update(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /DataSetMappings/put/DataSetMappings_SqlDWDataSetToAdlsGen2File_Create
-@try_manual
-def step_data_set_mapping_create(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az datashare data-set-mapping create '
-             '--account-name "{myAccount}" '
-             '--adls-gen2-file-data-set-mapping data-set-id="a08f184b-0567-4b11-ba22-a1199336d226" file-path="file21" '
-             'file-system="fileSystem" output-type="Csv" resource-group="{rg}" storage-account-name="storage2" '
-             'subscription-id="433a8dfd-e5d5-4e77-ad86-90acdc75eb1a" '
-             '--name "{myDataSetMapping}" '
-             '--resource-group "{rg}" '
-             '--share-subscription-name "{myShareSubscription}"',
-             checks=checks)
-
-
-# EXAMPLE: /DataSetMappings/get/DataSetMappings_ListByShareSubscription
-@try_manual
-def step_data_set_mapping_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az datashare data-set-mapping list '
-             '--account-name "{myAccount}" '
-             '--resource-group "{rg}" '
-             '--share-subscription-name "{myShareSubscription}"',
-             checks=checks)
-
-
 # EXAMPLE: /Shares/put/Shares_Create
 @try_manual
 def step_create(test, checks=None):
@@ -138,7 +110,7 @@ def step_list(test, checks=None):
              checks=checks)
 
 
-## EXAMPLE: /Shares/post/Shares_ListSynchronizationDetails
+# EXAMPLE: /Shares/post/Shares_ListSynchronizationDetails
 @try_manual
 def step_list_synchronization_detail(test, checks=None):
     if checks is None:
@@ -160,6 +132,120 @@ def step_list_synchronization(test, checks=None):
              '--account-name "{myAccount}" '
              '--resource-group "{rg}" '
              '--name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_Create
+@try_manual
+def step_data_set_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"Blob\\",\\"properties\\":{{\\"containerName\\":\\"C1\\",\\"filePath\\":\\"fil'
+             'e21\\",\\"resourceGroup\\":\\"{rg}\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433'
+             'a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_KustoCluster_Create
+@try_manual
+def step_data_set_create2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"KustoCluster\\",\\"properties\\":{{\\"kustoClusterResourceId\\":\\"/subscript'
+             'ions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/clusters/Cluster1\\"}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_KustoDatabase_Create
+@try_manual
+def step_data_set_create3(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"KustoDatabase\\",\\"properties\\":{{\\"kustoDatabaseResourceId\\":\\"/subscri'
+             'ptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/clusters/Cluster1/databases/Databa'
+             'se1\\"}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_KustoTable_Create
+@try_manual
+def step_data_set_create4(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"KustoTable\\",\\"properties\\":{{\\"kustoDatabaseResourceId\\":\\"/subscripti'
+             'ons/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1'
+             '\\",\\"tableLevelSharingProperties\\":{{\\"externalTablesToExclude\\":[\\"test11\\",\\"test12\\"],\\"exte'
+             'rnalTablesToInclude\\":[\\"test9\\",\\"test10\\"],\\"materializedViewsToExclude\\":[\\"test7\\",\\"test8'
+             '\\"],\\"materializedViewsToInclude\\":[\\"test5\\",\\"test6\\"],\\"tablesToExclude\\":[\\"test3\\",\\"tes'
+             't4\\"],\\"tablesToInclude\\":[\\"test1\\",\\"test2\\"]}}}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_SqlDBTable_Create
+@try_manual
+def step_data_set_create5(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{{\\"databaseName\\":\\"SqlDB1\\",\\"schemaNam'
+             'e\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg}/provider'
+             's/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_SqlDWTable_Create
+@try_manual
+def step_data_set_create6(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount}" '
+             '--data-set "{{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{{\\"dataWarehouseName\\":\\"DataWarehouse1\\"'
+             ',\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/'
+             '{rg}/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}}}" '
+             '--name "{myDataSet}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSets/put/DataSets_SynapseWorkspaceSqlPoolTable_Create
+@try_manual
+def step_data_set_create7(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set create '
+             '--account-name "{myAccount2}" '
+             '--data-set "{{\\"kind\\":\\"SynapseWorkspaceSqlPoolTable\\",\\"properties\\":{{\\"synapseWorkspaceSqlPool'
+             'TableResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Synapse/wo'
+             'rkspaces/ExampleWorkspace/sqlPools/ExampleSqlPool/schemas/dbo/tables/table1\\"}}}}" '
+             '--name "{myDataSet2}" '
+             '--resource-group "{rg}" '
+             '--share-name "{myShare2}"',
              checks=checks)
 
 
@@ -198,6 +284,27 @@ def step_data_set_delete(test, checks=None):
              '--name "{myDataSet}" '
              '--resource-group "{rg}" '
              '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /EmailRegistrations/post/EmailRegistrations_ActivateEmail
+@try_manual
+def step_email_registration_activate_email(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare email-registration activate-email '
+             '--activation-code "djsfhakj2lekowd3wepfklpwe9lpflcd" '
+             '--location "East US 2"',
+             checks=checks)
+
+
+# EXAMPLE: /EmailRegistrations/post/EmailRegistrations_RegisterEmail
+@try_manual
+def step_email_registration_register_email(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare email-registration register-email '
+             '--location "East US 2"',
              checks=checks)
 
 
@@ -279,7 +386,7 @@ def step_provider_share_subscription_list(test, checks=None):
              checks=checks)
 
 
-## EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Adjust
+# EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Adjust
 @try_manual
 def step_provider_share_subscription_adjust(test, checks=None):
     if checks is None:
@@ -317,6 +424,18 @@ def step_provider_share_subscription_revoke(test, checks=None):
              '--provider-share-subscription-id "4256e2cf-0f82-4865-961b-12f83333f487" '
              '--resource-group "{rg}" '
              '--share-name "{myShare}"',
+             checks=checks)
+
+
+# EXAMPLE: /Shares/delete/Shares_Delete
+@try_manual
+def step_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare delete -y '
+             '--account-name "{myAccount}" '
+             '--resource-group "{rg}" '
+             '--name "{myShare}"',
              checks=checks)
 
 
@@ -593,6 +712,22 @@ def step_consumer_source_data_set_list(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /DataSetMappings/put/DataSetMappings_SqlDWDataSetToAdlsGen2File_Create
+@try_manual
+def step_data_set_mapping_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set-mapping create '
+             '--account-name "{myAccount}" '
+             '--adls-gen2-file-data-set-mapping data-set-id="a08f184b-0567-4b11-ba22-a1199336d226" file-path="file21" '
+             'file-system="fileSystem" output-type="Csv" resource-group="{rg}" storage-account-name="storage2" '
+             'subscription-id="433a8dfd-e5d5-4e77-ad86-90acdc75eb1a" '
+             '--name "{myDataSetMapping}" '
+             '--resource-group "{rg}" '
+             '--share-subscription-name "{myShareSubscription}"',
+             checks=checks)
+
+
 # EXAMPLE: /DataSetMappings/get/DataSetMappings_Get
 @try_manual
 def step_data_set_mapping_show(test, checks=None):
@@ -601,6 +736,18 @@ def step_data_set_mapping_show(test, checks=None):
     test.cmd('az datashare data-set-mapping show '
              '--account-name "{myAccount}" '
              '--name "{myDataSetMapping}" '
+             '--resource-group "{rg}" '
+             '--share-subscription-name "{myShareSubscription}"',
+             checks=checks)
+
+
+# EXAMPLE: /DataSetMappings/get/DataSetMappings_ListByShareSubscription
+@try_manual
+def step_data_set_mapping_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datashare data-set-mapping list '
+             '--account-name "{myAccount}" '
              '--resource-group "{rg}" '
              '--share-subscription-name "{myShareSubscription}"',
              checks=checks)
@@ -616,37 +763,4 @@ def step_data_set_mapping_delete(test, checks=None):
              '--name "{myDataSetMapping}" '
              '--resource-group "{rg}" '
              '--share-subscription-name "{myShareSubscription}"',
-             checks=checks)
-
-
-# EXAMPLE: /EmailRegistrations/post/EmailRegistrations_ActivateEmail
-@try_manual
-def step_email_registration_activate_email(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az datashare email-registration activate-email '
-             '--activation-code "djsfhakj2lekowd3wepfklpwe9lpflcd" '
-             '--location "East US 2"',
-             checks=checks)
-
-
-# EXAMPLE: /EmailRegistrations/post/EmailRegistrations_RegisterEmail
-@try_manual
-def step_email_registration_register_email(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az datashare email-registration register-email '
-             '--location "East US 2"',
-             checks=checks)
-
-
-# EXAMPLE: /Shares/delete/Shares_Delete
-@try_manual
-def step_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az datashare delete -y '
-             '--account-name "{myAccount}" '
-             '--resource-group "{rg}" '
-             '--name "{myShare}"',
              checks=checks)

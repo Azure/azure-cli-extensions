@@ -125,59 +125,7 @@ def datashare_data_set_create(client,
                               account_name,
                               share_name,
                               data_set_name,
-                              adls_gen1_file_data_set=None,
-                              adls_gen1_folder_data_set=None,
-                              adls_gen2_file_data_set=None,
-                              adls_gen2_file_system_data_set=None,
-                              adls_gen2_folder_data_set=None,
-                              blob_container_data_set=None,
-                              blob_data_set=None,
-                              blob_folder_data_set=None,
-                              kusto_cluster_data_set=None,
-                              kusto_database_data_set=None,
-                              sqldb_table_data_set=None,
-                              sqldw_table_data_set=None,
-                              synapse_workspace_sql_pool_table_data_set=None):
-    all_data_set = []
-    if adls_gen1_file_data_set is not None:
-        all_data_set.append(adls_gen1_file_data_set)
-    if adls_gen1_folder_data_set is not None:
-        all_data_set.append(adls_gen1_folder_data_set)
-    if adls_gen2_file_data_set is not None:
-        all_data_set.append(adls_gen2_file_data_set)
-    if adls_gen2_file_system_data_set is not None:
-        all_data_set.append(adls_gen2_file_system_data_set)
-    if adls_gen2_folder_data_set is not None:
-        all_data_set.append(adls_gen2_folder_data_set)
-    if blob_container_data_set is not None:
-        all_data_set.append(blob_container_data_set)
-    if blob_data_set is not None:
-        all_data_set.append(blob_data_set)
-    if blob_folder_data_set is not None:
-        all_data_set.append(blob_folder_data_set)
-    if kusto_cluster_data_set is not None:
-        all_data_set.append(kusto_cluster_data_set)
-    if kusto_database_data_set is not None:
-        all_data_set.append(kusto_database_data_set)
-    if sqldb_table_data_set is not None:
-        all_data_set.append(sqldb_table_data_set)
-    if sqldw_table_data_set is not None:
-        all_data_set.append(sqldw_table_data_set)
-    if synapse_workspace_sql_pool_table_data_set is not None:
-        all_data_set.append(synapse_workspace_sql_pool_table_data_set)
-    if len(all_data_set) > 1:
-        raise CLIError('at most one of  adls_gen1_file_data_set, adls_gen1_folder_data_set, adls_gen2_file_data_set, '
-                       'adls_gen2_file_system_data_set, adls_gen2_folder_data_set, blob_container_data_set, '
-                       'blob_data_set, blob_folder_data_set, kusto_cluster_data_set, kusto_database_data_set, '
-                       'sqldb_table_data_set, sqldw_table_data_set, synapse_workspace_sql_pool_table_data_set is '
-                       'needed for data_set!')
-    if len(all_data_set) != 1:
-        raise CLIError('data_set is required. but none of adls_gen1_file_data_set, adls_gen1_folder_data_set, '
-                       'adls_gen2_file_data_set, adls_gen2_file_system_data_set, adls_gen2_folder_data_set, '
-                       'blob_container_data_set, blob_data_set, blob_folder_data_set, kusto_cluster_data_set, '
-                       'kusto_database_data_set, sqldb_table_data_set, sqldw_table_data_set, '
-                       'synapse_workspace_sql_pool_table_data_set is provided!')
-    data_set = all_data_set[0] if len(all_data_set) == 1 else None
+                              data_set):
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
                          share_name=share_name,
@@ -238,6 +186,7 @@ def datashare_data_set_mapping_create(client,
                                       blob_folder_data_set_mapping=None,
                                       kusto_cluster_data_set_mapping=None,
                                       kusto_database_data_set_mapping=None,
+                                      kusto_table_data_set_mapping=None,
                                       sqldb_table_data_set_mapping=None,
                                       sqldw_table_data_set_mapping=None,
                                       synapse_workspace_sql_pool_table_data_set_mapping=None):
@@ -258,6 +207,8 @@ def datashare_data_set_mapping_create(client,
         all_data_set_mapping.append(kusto_cluster_data_set_mapping)
     if kusto_database_data_set_mapping is not None:
         all_data_set_mapping.append(kusto_database_data_set_mapping)
+    if kusto_table_data_set_mapping is not None:
+        all_data_set_mapping.append(kusto_table_data_set_mapping)
     if sqldb_table_data_set_mapping is not None:
         all_data_set_mapping.append(sqldb_table_data_set_mapping)
     if sqldw_table_data_set_mapping is not None:
@@ -268,14 +219,15 @@ def datashare_data_set_mapping_create(client,
         raise CLIError('at most one of  adls_gen2_file_data_set_mapping, adls_gen2_file_system_data_set_mapping, '
                        'adls_gen2_folder_data_set_mapping, blob_container_data_set_mapping, blob_data_set_mapping, '
                        'blob_folder_data_set_mapping, kusto_cluster_data_set_mapping, kusto_database_data_set_mapping, '
-                       'sqldb_table_data_set_mapping, sqldw_table_data_set_mapping, synapse_workspace_sql_pool_table_da'
-                       'ta_set_mapping is needed for data_set_mapping!')
+                       'kusto_table_data_set_mapping, sqldb_table_data_set_mapping, sqldw_table_data_set_mapping, '
+                       'synapse_workspace_sql_pool_table_data_set_mapping is needed for data_set_mapping!')
     if len(all_data_set_mapping) != 1:
         raise CLIError('data_set_mapping is required. but none of adls_gen2_file_data_set_mapping, '
                        'adls_gen2_file_system_data_set_mapping, adls_gen2_folder_data_set_mapping, '
                        'blob_container_data_set_mapping, blob_data_set_mapping, blob_folder_data_set_mapping, '
-                       'kusto_cluster_data_set_mapping, kusto_database_data_set_mapping, sqldb_table_data_set_mapping, '
-                       'sqldw_table_data_set_mapping, synapse_workspace_sql_pool_table_data_set_mapping is provided!')
+                       'kusto_cluster_data_set_mapping, kusto_database_data_set_mapping, kusto_table_data_set_mapping, '
+                       'sqldb_table_data_set_mapping, sqldw_table_data_set_mapping, synapse_workspace_sql_pool_table_da'
+                       'ta_set_mapping is provided!')
     data_set_mapping = all_data_set_mapping[0] if len(all_data_set_mapping) == 1 else None
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,

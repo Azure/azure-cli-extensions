@@ -16,7 +16,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_datashare_provider_rg'[:12], location='eastus', key='ProviderResourceGroup')
     @StorageAccountPreparer(name_prefix='clitestdatashareprovidersa'[:12], location='eastus', key='ProviderStorageAccount')
     @AllowLargeResponse()
-    def test_datashare(self, resource_group, storage_account):
+    def test_datashare_azcli(self, resource_group, storage_account):
 
         self.kwargs.update({
             'SubscriptionId': self.get_subscription_id(),
@@ -171,9 +171,10 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--account-name {ProviderStorageAccount} '
                  '--name {ProviderContainer}')
 
+        # EXAMPLE: /DataSets/put/DataSets_Create
         self.cmd('az datashare data-set create '
                  '--account-name "{ProviderAccount}" '
-                 '--blob-container-data-set container-name={ProviderContainer} storage-account-name={ProviderStorageAccount} subscription-id={SubscriptionId} resource-group={ProviderResourceGroup} '
+                 '--data-set "{{\\"kind\\":\\"Container\\",\\"properties\\":{{\\"containerName\\":\\"{ProviderContainer}\\",\\"filePath\\":\\"2019.png\\",\\"resourceGroup\\":\\"{ProviderResourceGroup}\\",\\"storageAccountName\\":\\"{ProviderStorageAccount}\\",\\"subscriptionId\\":\\"{SubscriptionId}\\"}}}}" '
                  '--name "{ProviderDataset}" '
                  '--resource-group "{ProviderResourceGroup}" '
                  '--share-name "{ProviderShare}"',
@@ -546,28 +547,28 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
         #         checks=[])
 
         # EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Revoke
-        self.cmd('az datashare provider-share-subscription revoke '
-                 '--account-name "{ProviderAccount}" '
-                 '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
-                 '--resource-group "{ProviderResourceGroup}" '
-                 '--share-name "{ProviderShare}"',
-                 checks=[self.check('status', 'Succeeded')])
+        # self.cmd('az datashare provider-share-subscription revoke '
+        #          '--account-name "{ProviderAccount}" '
+        #          '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
+        #          '--resource-group "{ProviderResourceGroup}" '
+        #          '--share-name "{ProviderShare}"',
+        #          checks=[self.check('status', 'Succeeded')])
 
-        if self.is_live or self.in_recording:
-            import time
-            time.sleep(5)
+        # if self.is_live or self.in_recording:
+        #     import time
+        #     time.sleep(5)
 
         # EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Reinstate
-        self.cmd('az datashare provider-share-subscription reinstate '
-                 '--account-name "{ProviderAccount}" '
-                 '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
-                 '--resource-group "{ProviderResourceGroup}" '
-                 '--share-name "{ProviderShare}"',
-                 checks=[self.check('consumerEmail', '{ConsumerEmail}'),
-                         self.check('providerEmail', '{ProviderEmail}'),
-                         self.check('shareSubscriptionStatus', 'Active'),
-                         self.check('name', '{ConsumerShareSubscription}'),
-                         self.check('shareSubscriptionObjectId', '{ProviderShareSubscriptionObjectId}')])
+        # self.cmd('az datashare provider-share-subscription reinstate '
+        #          '--account-name "{ProviderAccount}" '
+        #          '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
+        #          '--resource-group "{ProviderResourceGroup}" '
+        #          '--share-name "{ProviderShare}"',
+        #          checks=[self.check('consumerEmail', '{ConsumerEmail}'),
+        #                  self.check('providerEmail', '{ProviderEmail}'),
+        #                  self.check('shareSubscriptionStatus', 'Active'),
+        #                  self.check('name', '{ConsumerShareSubscription}'),
+        #                  self.check('shareSubscriptionObjectId', '{ProviderShareSubscriptionObjectId}')])
 
         # EXAMPLE: /EmailRegistrations/post/EmailRegistrations_RegisterEmail
         # self.cmd('az datashare email-registration register-email '

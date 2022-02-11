@@ -16,21 +16,11 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
 from azext_datashare.action import (
-    AddAdlsGen1FileDataSet,
-    AddAdlsGen1FolderDataSet,
-    AddAdlsGen2FileDataSet,
-    AddAdlsGen2FileSystemDataSet,
-    AddAdlsGen2FolderDataSet,
-    AddBlobContainerDataSet,
-    AddBlobDataSet,
-    AddBlobFolderDataSet,
-    AddKustoClusterDataSet,
-    AddKustoDatabaseDataSet,
-    AddSqldbTableDataSet,
-    AddSqldwTableDataSet,
-    AddSynapseWorkspaceSqlPoolTableDataSet,
     AddAdlsGen2FileDataSetMapping,
     AddAdlsGen2FileSystemDataSetMapping,
     AddAdlsGen2FolderDataSetMapping,
@@ -39,6 +29,7 @@ from azext_datashare.action import (
     AddBlobFolderDataSetMapping,
     AddKustoClusterDataSetMapping,
     AddKustoDatabaseDataSetMapping,
+    AddKustoTableDataSetMapping,
     AddSqldbTableDataSetMapping,
     AddSqldwTableDataSetMapping,
     AddSynapseWorkspaceSqlPoolTableDataSetMapping,
@@ -114,32 +105,8 @@ def load_arguments(self, _):
         c.argument('share_name', type=str, help='The name of the share to add the data set to.')
         c.argument('data_set_name', options_list=['--name', '-n', '--data-set-name'], type=str, help='The name of the '
                    'dataSet.')
-        c.argument('adls_gen1_file_data_set', action=AddAdlsGen1FileDataSet, nargs='+', help='An ADLS Gen 1 file data '
-                   'set.', arg_group='DataSet')
-        c.argument('adls_gen1_folder_data_set', action=AddAdlsGen1FolderDataSet, nargs='+', help='An ADLS Gen 1 folder '
-                   'data set.', arg_group='DataSet')
-        c.argument('adls_gen2_file_data_set', action=AddAdlsGen2FileDataSet, nargs='+', help='An ADLS Gen 2 file data '
-                   'set.', arg_group='DataSet')
-        c.argument('adls_gen2_file_system_data_set', action=AddAdlsGen2FileSystemDataSet, nargs='+', help='An ADLS Gen '
-                   '2 file system data set.', arg_group='DataSet')
-        c.argument('adls_gen2_folder_data_set', action=AddAdlsGen2FolderDataSet, nargs='+', help='An ADLS Gen 2 folder '
-                   'data set.', arg_group='DataSet')
-        c.argument('blob_container_data_set', action=AddBlobContainerDataSet, nargs='+', help='An Azure storage blob '
-                   'container data set.', arg_group='DataSet')
-        c.argument('blob_data_set', action=AddBlobDataSet, nargs='+', help='An Azure storage blob data set.',
-                   arg_group='DataSet')
-        c.argument('blob_folder_data_set', action=AddBlobFolderDataSet, nargs='+', help='An Azure storage blob folder '
-                   'data set.', arg_group='DataSet')
-        c.argument('kusto_cluster_data_set', action=AddKustoClusterDataSet, nargs='+',
-                   help='A kusto cluster data set.', arg_group='DataSet')
-        c.argument('kusto_database_data_set', action=AddKustoDatabaseDataSet, nargs='+', help='A kusto database data '
-                   'set.', arg_group='DataSet')
-        c.argument('sqldb_table_data_set', action=AddSqldbTableDataSet, nargs='+', help='A SQL DB table data set.',
-                   arg_group='DataSet')
-        c.argument('sqldw_table_data_set', action=AddSqldwTableDataSet, nargs='+', help='A SQL DW table data set.',
-                   arg_group='DataSet')
-        c.argument('synapse_workspace_sql_pool_table_data_set', action=AddSynapseWorkspaceSqlPoolTableDataSet,
-                   nargs='+', help='A Synapse Workspace Sql Pool Table data set.', arg_group='DataSet')
+        c.argument('data_set', type=validate_file_or_dict, help='The new data set information. Expected value: '
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datashare data-set delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -193,6 +160,8 @@ def load_arguments(self, _):
         c.argument('kusto_cluster_data_set_mapping', action=AddKustoClusterDataSetMapping, nargs='+', help='A Kusto '
                    'cluster data set mapping', arg_group='DataSetMapping')
         c.argument('kusto_database_data_set_mapping', action=AddKustoDatabaseDataSetMapping, nargs='+', help='A Kusto '
+                   'database data set mapping', arg_group='DataSetMapping')
+        c.argument('kusto_table_data_set_mapping', action=AddKustoTableDataSetMapping, nargs='+', help='A Kusto '
                    'database data set mapping', arg_group='DataSetMapping')
         c.argument('sqldb_table_data_set_mapping', action=AddSqldbTableDataSetMapping, nargs='+', help='A SQL DB Table '
                    'data set mapping.', arg_group='DataSetMapping')

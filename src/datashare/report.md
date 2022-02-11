@@ -60,7 +60,7 @@
 |---------|------------|--------|-----------|
 |[az datashare data-set list](#DataSetsListByShare)|ListByShare|[Parameters](#ParametersDataSetsListByShare)|[Example](#ExamplesDataSetsListByShare)|
 |[az datashare data-set show](#DataSetsGet)|Get|[Parameters](#ParametersDataSetsGet)|[Example](#ExamplesDataSetsGet)|
-|[az datashare data-set create](#DataSetsCreate)|Create|[Parameters](#ParametersDataSetsCreate)|Not Found|
+|[az datashare data-set create](#DataSetsCreate)|Create|[Parameters](#ParametersDataSetsCreate)|[Example](#ExamplesDataSetsCreate)|
 |[az datashare data-set delete](#DataSetsDelete)|Delete|[Parameters](#ParametersDataSetsDelete)|[Example](#ExamplesDataSetsDelete)|
 
 ### <a name="CommandsInDataSetMappings">Commands in `az datashare data-set-mapping` group</a>
@@ -389,7 +389,40 @@ az datashare data-set show --account-name "Account1" --name "Dataset1" --resourc
 
 #### <a name="DataSetsCreate">Command `az datashare data-set create`</a>
 
-
+##### <a name="ExamplesDataSetsCreate">Example</a>
+```
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containe\
+rName\\":\\"C1\\",\\"filePath\\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\\
+"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}" --name "Dataset1" --resource-group \
+"SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoCluster\\",\\"properties\\":{\\"\
+kustoClusterResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/pro\
+viders/Microsoft.Kusto/clusters/Cluster1\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" --share-name \
+"Share1"
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoDatabase\\",\\"properties\\":{\\\
+"kustoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/p\
+roviders/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\"}}" --name "Dataset1" --resource-group \
+"SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"KustoTable\\",\\"properties\\":{\\"ku\
+stoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/prov\
+iders/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\",\\"tableLevelSharingProperties\\":{\\"externalTablesToEx\
+clude\\":[\\"test11\\",\\"test12\\"],\\"externalTablesToInclude\\":[\\"test9\\",\\"test10\\"],\\"materializedViewsToExc\
+lude\\":[\\"test7\\",\\"test8\\"],\\"materializedViewsToInclude\\":[\\"test5\\",\\"test6\\"],\\"tablesToExclude\\":[\\"\
+test3\\",\\"test4\\"],\\"tablesToInclude\\":[\\"test1\\",\\"test2\\"]}}}" --name "Dataset1" --resource-group \
+"SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"da\
+tabaseName\\":\\"SqlDB1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad\
+86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\
+\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "Account1" --data-set "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"da\
+taWarehouseName\\":\\"DataWarehouse1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd\
+-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\
+\\":\\"Table1\\"}}" --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "sourceAccount" --data-set "{\\"kind\\":\\"SynapseWorkspaceSqlPoolTable\\",\
+\\"properties\\":{\\"synapseWorkspaceSqlPoolTableResourceId\\":\\"/subscriptions/0f3dcfc3-18f8-4099-b381-8353e19d43a7/r\
+esourceGroups/SampleResourceGroup/providers/Microsoft.Synapse/workspaces/ExampleWorkspace/sqlPools/ExampleSqlPool/schem\
+as/dbo/tables/table1\\"}}" --name "dataset1" --resource-group "SampleResourceGroup" --share-name "share1"
+```
 ##### <a name="ParametersDataSetsCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -397,19 +430,7 @@ az datashare data-set show --account-name "Account1" --name "Dataset1" --resourc
 |**--account-name**|string|The name of the share account.|account_name|accountName|
 |**--share-name**|string|The name of the share to add the data set to.|share_name|shareName|
 |**--data-set-name**|string|The name of the dataSet.|data_set_name|dataSetName|
-|**--adls-gen1-file-data-set**|object|An ADLS Gen 1 file data set.|adls_gen1_file_data_set|ADLSGen1FileDataSet|
-|**--adls-gen1-folder-data-set**|object|An ADLS Gen 1 folder data set.|adls_gen1_folder_data_set|ADLSGen1FolderDataSet|
-|**--adls-gen2-file-data-set**|object|An ADLS Gen 2 file data set.|adls_gen2_file_data_set|ADLSGen2FileDataSet|
-|**--adls-gen2-file-system-data-set**|object|An ADLS Gen 2 file system data set.|adls_gen2_file_system_data_set|ADLSGen2FileSystemDataSet|
-|**--adls-gen2-folder-data-set**|object|An ADLS Gen 2 folder data set.|adls_gen2_folder_data_set|ADLSGen2FolderDataSet|
-|**--blob-container-data-set**|object|An Azure storage blob container data set.|blob_container_data_set|BlobContainerDataSet|
-|**--blob-data-set**|object|An Azure storage blob data set.|blob_data_set|BlobDataSet|
-|**--blob-folder-data-set**|object|An Azure storage blob folder data set.|blob_folder_data_set|BlobFolderDataSet|
-|**--kusto-cluster-data-set**|object|A kusto cluster data set.|kusto_cluster_data_set|KustoClusterDataSet|
-|**--kusto-database-data-set**|object|A kusto database data set.|kusto_database_data_set|KustoDatabaseDataSet|
-|**--sqldb-table-data-set**|object|A SQL DB table data set.|sqldb_table_data_set|SqlDBTableDataSet|
-|**--sqldw-table-data-set**|object|A SQL DW table data set.|sqldw_table_data_set|SqlDWTableDataSet|
-|**--synapse-workspace-sql-pool-table-data-set**|object|A Synapse Workspace Sql Pool Table data set.|synapse_workspace_sql_pool_table_data_set|SynapseWorkspaceSqlPoolTableDataSet|
+|**--data-set**|object|The new data set information.|data_set|dataSet|
 
 #### <a name="DataSetsDelete">Command `az datashare data-set delete`</a>
 
@@ -483,6 +504,7 @@ b1a" --name "DatasetMapping1" --resource-group "SampleResourceGroup" --share-sub
 |**--blob-folder-data-set-mapping**|object|A Blob folder data set mapping.|blob_folder_data_set_mapping|BlobFolderDataSetMapping|
 |**--kusto-cluster-data-set-mapping**|object|A Kusto cluster data set mapping|kusto_cluster_data_set_mapping|KustoClusterDataSetMapping|
 |**--kusto-database-data-set-mapping**|object|A Kusto database data set mapping|kusto_database_data_set_mapping|KustoDatabaseDataSetMapping|
+|**--kusto-table-data-set-mapping**|object|A Kusto database data set mapping|kusto_table_data_set_mapping|KustoTableDataSetMapping|
 |**--sqldb-table-data-set-mapping**|object|A SQL DB Table data set mapping.|sqldb_table_data_set_mapping|SqlDBTableDataSetMapping|
 |**--sqldw-table-data-set-mapping**|object|A SQL DW Table data set mapping.|sqldw_table_data_set_mapping|SqlDWTableDataSetMapping|
 |**--synapse-workspace-sql-pool-table-data-set-mapping**|object|A Synapse Workspace Sql Pool Table data set mapping|synapse_workspace_sql_pool_table_data_set_mapping|SynapseWorkspaceSqlPoolTableDataSetMapping|

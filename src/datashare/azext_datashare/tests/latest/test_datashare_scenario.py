@@ -16,16 +16,23 @@ from .example_steps import step_account_show
 from .example_steps import step_account_list
 from .example_steps import step_account_list2
 from .example_steps import step_account_update
-from .example_steps import step_data_set_mapping_create
-from .example_steps import step_data_set_mapping_list
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_list
 from .example_steps import step_list_synchronization_detail
 from .example_steps import step_list_synchronization
+from .example_steps import step_data_set_create
+from .example_steps import step_data_set_create2
+from .example_steps import step_data_set_create3
+from .example_steps import step_data_set_create4
+from .example_steps import step_data_set_create5
+from .example_steps import step_data_set_create6
+from .example_steps import step_data_set_create7
 from .example_steps import step_data_set_show
 from .example_steps import step_data_set_list
 from .example_steps import step_data_set_delete
+from .example_steps import step_email_registration_activate_email
+from .example_steps import step_email_registration_register_email
 from .example_steps import step_invitation_create
 from .example_steps import step_invitation_show
 from .example_steps import step_invitation_list
@@ -35,6 +42,7 @@ from .example_steps import step_provider_share_subscription_list
 from .example_steps import step_provider_share_subscription_adjust
 from .example_steps import step_provider_share_subscription_reinstate
 from .example_steps import step_provider_share_subscription_revoke
+from .example_steps import step_delete
 from .example_steps import step_share_subscription_create
 from .example_steps import step_share_subscription_show
 from .example_steps import step_share_subscription_list
@@ -57,11 +65,10 @@ from .example_steps import step_consumer_invitation_show
 from .example_steps import step_consumer_invitation_list_invitation
 from .example_steps import step_consumer_invitation_reject_invitation
 from .example_steps import step_consumer_source_data_set_list
+from .example_steps import step_data_set_mapping_create
 from .example_steps import step_data_set_mapping_show
+from .example_steps import step_data_set_mapping_list
 from .example_steps import step_data_set_mapping_delete
-from .example_steps import step_email_registration_activate_email
-from .example_steps import step_email_registration_register_email
-from .example_steps import step_delete
 from .. import (
     try_manual,
     raise_if,
@@ -93,7 +100,6 @@ def call_scenario(test):
         test.check("tags.tag1", "Red", case_sensitive=False),
         test.check("tags.tag2", "White", case_sensitive=False),
         test.check("name", "{myAccount}", case_sensitive=False),
-        test.check("resource-group", '{rg}'),
     ])
     step_account_show(test, checks=[
         test.check("location", "West US 2", case_sensitive=False),
@@ -113,12 +119,6 @@ def call_scenario(test):
         test.check("tags.tag2", "White", case_sensitive=False),
         test.check("name", "{myAccount}", case_sensitive=False),
     ])
-    step_data_set_mapping_create(test, checks=[
-        test.check("name", "{myDataSetMapping}", case_sensitive=False),
-    ])
-    step_data_set_mapping_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
     step_create(test, checks=[
         test.check("description", "share description", case_sensitive=False),
         test.check("shareKind", "CopyBased", case_sensitive=False),
@@ -136,9 +136,24 @@ def call_scenario(test):
     ])
     step_list_synchronization_detail(test, checks=[])
     step_list_synchronization(test, checks=[])
-    step_data_set_show(test, checks=[])
-    step_data_set_list(test, checks=[])
+    step_data_set_create(test, checks=[])
+    step_data_set_create2(test, checks=[])
+    step_data_set_create3(test, checks=[])
+    step_data_set_create4(test, checks=[])
+    step_data_set_create5(test, checks=[])
+    step_data_set_create6(test, checks=[])
+    step_data_set_create7(test, checks=[
+        test.check("name", "{myDataSet2}", case_sensitive=False),
+    ])
+    step_data_set_show(test, checks=[
+        test.check("name", "{myDataSet}", case_sensitive=False),
+    ])
+    step_data_set_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
     step_data_set_delete(test, checks=[])
+    step_email_registration_activate_email(test, checks=[])
+    step_email_registration_register_email(test, checks=[])
     step_invitation_create(test, checks=[
         test.check("expirationDate", "2020-08-26T22:33:24.5785265Z", case_sensitive=False),
         test.check("targetEmail", "receiver@microsoft.com", case_sensitive=False),
@@ -158,6 +173,7 @@ def call_scenario(test):
     step_provider_share_subscription_adjust(test, checks=[])
     step_provider_share_subscription_reinstate(test, checks=[])
     step_provider_share_subscription_revoke(test, checks=[])
+    step_delete(test, checks=[])
     step_share_subscription_create(test, checks=[
         test.check("expirationDate", "2020-08-26T22:33:24.5785265Z", case_sensitive=False),
         test.check("sourceShareLocation", "eastus2", case_sensitive=False),
@@ -198,13 +214,16 @@ def call_scenario(test):
     step_consumer_invitation_list_invitation(test, checks=[])
     step_consumer_invitation_reject_invitation(test, checks=[])
     step_consumer_source_data_set_list(test, checks=[])
+    step_data_set_mapping_create(test, checks=[
+        test.check("name", "{myDataSetMapping}", case_sensitive=False),
+    ])
     step_data_set_mapping_show(test, checks=[
         test.check("name", "{myDataSetMapping}", case_sensitive=False),
     ])
+    step_data_set_mapping_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
     step_data_set_mapping_delete(test, checks=[])
-    step_email_registration_activate_email(test, checks=[])
-    step_email_registration_register_email(test, checks=[])
-    step_delete(test, checks=[])
     cleanup_scenario(test)
 
 
@@ -214,8 +233,14 @@ class DatashareScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DatashareScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
-            'myAccount': 'cli_test_account',
+            'subscription_id': self.get_subscription_id()
+        })
+
+        self.kwargs.update({
+            'myAccount': 'Account1',
+            'myAccount2': 'sourceAccount',
             'myShare': 'Share1',
+            'myShare2': 'share1',
             'myShareSubscription': 'ShareSubscription1',
             'myShareSubscription2': 'ShareSub1',
             'myShareSubscription3': 'Share1',
@@ -223,11 +248,12 @@ class DatashareScenarioTest(ScenarioTest):
             'mySynchronizationSetting2': 'Dataset1',
             'myTrigger': 'Trigger1',
             'myDataSet': 'Dataset1',
+            'myDataSet2': 'dataset1',
             'myDataSetMapping': 'DatasetMapping1',
             'myInvitation': 'Invitation1',
         })
 
-    @ResourceGroupPreparer(name_prefix='clitestdatashare_TestResourceGroup'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitestdatashare_SampleResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_datashare_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)

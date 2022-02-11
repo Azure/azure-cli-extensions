@@ -47,14 +47,56 @@ az datashare consumer-invitation reject-invitation --invitation-id "dfbbc788-19e
     --location "East US 2" 
 ```
 #### datashare data-set ####
-##### List #####
+##### Create #####
 ```
-az datashare data-set list --account-name "Account1" --resource-group "SampleResourceGroup" --share-name "Share1"
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"Blob\\",\\"properties\\":{\\"containerName\\":\\"C1\\",\\"filePath\\":\\"file21\\",\\"resourceGroup\\":\\"SampleResourceGroup\\",\\"storageAccountName\\":\\"storage2\\",\\"subscriptionId\\":\\"433a8dfd-e5d5-4e77-ad86-90acdc75eb1a\\"}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"KustoCluster\\",\\"properties\\":{\\"kustoClusterResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1\\"}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"KustoDatabase\\",\\"properties\\":{\\"kustoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\"}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"KustoTable\\",\\"properties\\":{\\"kustoDatabaseResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Kusto/clusters/Cluster1/databases/Database1\\",\\"tableLevelSharingProperties\\":{\\"externalTablesToExclude\\":[\\"test11\\",\\"test12\\"],\\"externalTablesToInclude\\":[\\"test9\\",\\"test10\\"],\\"materializedViewsToExclude\\":[\\"test7\\",\\"test8\\"],\\"materializedViewsToInclude\\":[\\"test5\\",\\"test6\\"],\\"tablesToExclude\\":[\\"test3\\",\\"test4\\"],\\"tablesToInclude\\":[\\"test1\\",\\"test2\\"]}}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"SqlDBTable\\",\\"properties\\":{\\"databaseName\\":\\"SqlDB1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "Account1" \
+    --data-set "{\\"kind\\":\\"SqlDWTable\\",\\"properties\\":{\\"dataWarehouseName\\":\\"DataWarehouse1\\",\\"schemaName\\":\\"dbo\\",\\"sqlServerResourceId\\":\\"/subscriptions/433a8dfd-e5d5-4e77-ad86-90acdc75eb1a/resourceGroups/SampleResourceGroup/providers/Microsoft.Sql/servers/Server1\\",\\"tableName\\":\\"Table1\\"}}" \
+    --name "Dataset1" --resource-group "SampleResourceGroup" --share-name "Share1" 
+```
+##### Create #####
+```
+az datashare data-set create --account-name "sourceAccount" \
+    --data-set "{\\"kind\\":\\"SynapseWorkspaceSqlPoolTable\\",\\"properties\\":{\\"synapseWorkspaceSqlPoolTableResourceId\\":\\"/subscriptions/0f3dcfc3-18f8-4099-b381-8353e19d43a7/resourceGroups/SampleResourceGroup/providers/Microsoft.Synapse/workspaces/ExampleWorkspace/sqlPools/ExampleSqlPool/schemas/dbo/tables/table1\\"}}" \
+    --name "dataset1" --resource-group "SampleResourceGroup" --share-name "share1" 
 ```
 ##### Show #####
 ```
 az datashare data-set show --account-name "Account1" --name "Dataset1" --resource-group "SampleResourceGroup" \
     --share-name "Share1" 
+```
+##### List #####
+```
+az datashare data-set list --account-name "Account1" --resource-group "SampleResourceGroup" --share-name "Share1"
 ```
 ##### Delete #####
 ```

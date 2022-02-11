@@ -216,7 +216,7 @@ class DataSet(ProxyDto):
     """A DataSet data transfer object.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AdlsGen1FileDataSet, AdlsGen1FolderDataSet, AdlsGen2FileDataSet, AdlsGen2FileSystemDataSet, AdlsGen2FolderDataSet, BlobDataSet, BlobFolderDataSet, BlobContainerDataSet, KustoClusterDataSet, KustoDatabaseDataSet, SqlDbTableDataSet, SqlDwTableDataSet, SynapseWorkspaceSqlPoolTableDataSet.
+    sub-classes are: AdlsGen1FileDataSet, AdlsGen1FolderDataSet, AdlsGen2FileDataSet, AdlsGen2FileSystemDataSet, AdlsGen2FolderDataSet, BlobDataSet, BlobFolderDataSet, BlobContainerDataSet, KustoClusterDataSet, KustoDatabaseDataSet, KustoTableDataSet, SqlDbTableDataSet, SqlDwTableDataSet, SynapseWorkspaceSqlPoolTableDataSet.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -232,8 +232,8 @@ class DataSet(ProxyDto):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     """
 
@@ -254,7 +254,7 @@ class DataSet(ProxyDto):
     }
 
     _subtype_map = {
-        'kind': {'AdlsGen1File': 'AdlsGen1FileDataSet', 'AdlsGen1Folder': 'AdlsGen1FolderDataSet', 'AdlsGen2File': 'AdlsGen2FileDataSet', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSet', 'AdlsGen2Folder': 'AdlsGen2FolderDataSet', 'Blob': 'BlobDataSet', 'BlobFolder': 'BlobFolderDataSet', 'Container': 'BlobContainerDataSet', 'KustoCluster': 'KustoClusterDataSet', 'KustoDatabase': 'KustoDatabaseDataSet', 'SqlDBTable': 'SqlDbTableDataSet', 'SqlDWTable': 'SqlDwTableDataSet', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSet'}
+        'kind': {'AdlsGen1File': 'AdlsGen1FileDataSet', 'AdlsGen1Folder': 'AdlsGen1FolderDataSet', 'AdlsGen2File': 'AdlsGen2FileDataSet', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSet', 'AdlsGen2Folder': 'AdlsGen2FolderDataSet', 'Blob': 'BlobDataSet', 'BlobFolder': 'BlobFolderDataSet', 'Container': 'BlobContainerDataSet', 'KustoCluster': 'KustoClusterDataSet', 'KustoDatabase': 'KustoDatabaseDataSet', 'KustoTable': 'KustoTableDataSet', 'SqlDBTable': 'SqlDbTableDataSet', 'SqlDWTable': 'SqlDwTableDataSet', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSet'}
     }
 
     def __init__(
@@ -282,8 +282,8 @@ class AdlsGen1FileDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param account_name: Required. The ADLS account name.
     :type account_name: str
@@ -358,8 +358,8 @@ class AdlsGen1FolderDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param account_name: Required. The ADLS account name.
     :type account_name: str
@@ -429,8 +429,8 @@ class AdlsGen2FileDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -492,7 +492,7 @@ class DataSetMapping(ProxyDto):
     """A data set mapping data transfer object.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AdlsGen2FileDataSetMapping, AdlsGen2FileSystemDataSetMapping, AdlsGen2FolderDataSetMapping, BlobDataSetMapping, BlobFolderDataSetMapping, BlobContainerDataSetMapping, KustoClusterDataSetMapping, KustoDatabaseDataSetMapping, SqlDbTableDataSetMapping, SqlDwTableDataSetMapping, SynapseWorkspaceSqlPoolTableDataSetMapping.
+    sub-classes are: AdlsGen2FileDataSetMapping, AdlsGen2FileSystemDataSetMapping, AdlsGen2FolderDataSetMapping, BlobDataSetMapping, BlobFolderDataSetMapping, BlobContainerDataSetMapping, KustoClusterDataSetMapping, KustoDatabaseDataSetMapping, KustoTableDataSetMapping, SqlDbTableDataSetMapping, SqlDwTableDataSetMapping, SynapseWorkspaceSqlPoolTableDataSetMapping.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -508,7 +508,7 @@ class DataSetMapping(ProxyDto):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     """
@@ -530,7 +530,7 @@ class DataSetMapping(ProxyDto):
     }
 
     _subtype_map = {
-        'kind': {'AdlsGen2File': 'AdlsGen2FileDataSetMapping', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSetMapping', 'AdlsGen2Folder': 'AdlsGen2FolderDataSetMapping', 'Blob': 'BlobDataSetMapping', 'BlobFolder': 'BlobFolderDataSetMapping', 'Container': 'BlobContainerDataSetMapping', 'KustoCluster': 'KustoClusterDataSetMapping', 'KustoDatabase': 'KustoDatabaseDataSetMapping', 'SqlDBTable': 'SqlDbTableDataSetMapping', 'SqlDWTable': 'SqlDwTableDataSetMapping', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSetMapping'}
+        'kind': {'AdlsGen2File': 'AdlsGen2FileDataSetMapping', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSetMapping', 'AdlsGen2Folder': 'AdlsGen2FolderDataSetMapping', 'Blob': 'BlobDataSetMapping', 'BlobFolder': 'BlobFolderDataSetMapping', 'Container': 'BlobContainerDataSetMapping', 'KustoCluster': 'KustoClusterDataSetMapping', 'KustoDatabase': 'KustoDatabaseDataSetMapping', 'KustoTable': 'KustoTableDataSetMapping', 'SqlDBTable': 'SqlDbTableDataSetMapping', 'SqlDWTable': 'SqlDwTableDataSetMapping', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSetMapping'}
     }
 
     def __init__(
@@ -558,7 +558,7 @@ class AdlsGen2FileDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -650,8 +650,8 @@ class AdlsGen2FileSystemDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -721,7 +721,7 @@ class AdlsGen2FileSystemDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -804,8 +804,8 @@ class AdlsGen2FolderDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -880,7 +880,7 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -968,8 +968,8 @@ class BlobContainerDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param container_name: Required. BLOB Container name.
     :type container_name: str
@@ -1039,7 +1039,7 @@ class BlobContainerDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param container_name: Required. BLOB Container name.
@@ -1122,8 +1122,8 @@ class BlobDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
@@ -1198,7 +1198,7 @@ class BlobDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param container_name: Required. Container that has the file path.
@@ -1290,8 +1290,8 @@ class BlobFolderDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
@@ -1366,7 +1366,7 @@ class BlobFolderDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param container_name: Required. Container that has the file path.
@@ -1604,7 +1604,7 @@ class ConsumerSourceDataSet(ProxyDto):
     :vartype data_set_path: str
     :ivar data_set_type: Type of data set. Possible values include: "Blob", "Container",
      "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File", "AdlsGen1Folder",
-     "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :vartype data_set_type: str or ~azure.mgmt.datashare.models.DataSetType
     """
@@ -2028,8 +2028,8 @@ class KustoClusterDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -2095,7 +2095,7 @@ class KustoClusterDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -2168,8 +2168,8 @@ class KustoDatabaseDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -2235,7 +2235,7 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -2284,6 +2284,152 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
     ):
         super(KustoDatabaseDataSetMapping, self).__init__(**kwargs)
         self.kind = 'KustoDatabase'  # type: str
+        self.data_set_id = kwargs['data_set_id']
+        self.data_set_mapping_status = None
+        self.kusto_cluster_resource_id = kwargs['kusto_cluster_resource_id']
+        self.location = None
+        self.provisioning_state = None
+
+
+class KustoTableDataSet(DataSet):
+    """A kusto table data set.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource id of the azure resource.
+    :vartype id: str
+    :ivar name: Name of the azure resource.
+    :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~azure.mgmt.datashare.models.SystemData
+    :ivar type: Type of the azure resource.
+    :vartype type: str
+    :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
+    :ivar data_set_id: Unique id for identifying a data set resource.
+    :vartype data_set_id: str
+    :param kusto_database_resource_id: Required. Resource id of the kusto database.
+    :type kusto_database_resource_id: str
+    :ivar location: Location of the kusto cluster.
+    :vartype location: str
+    :ivar provisioning_state: Provisioning state of the kusto table data set. Possible values
+     include: "Succeeded", "Creating", "Deleting", "Moving", "Failed".
+    :vartype provisioning_state: str or ~azure.mgmt.datashare.models.ProvisioningState
+    :param table_level_sharing_properties: Required. Table level sharing properties for kusto
+     database.
+    :type table_level_sharing_properties: ~azure.mgmt.datashare.models.TableLevelSharingProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'system_data': {'readonly': True},
+        'type': {'readonly': True},
+        'kind': {'required': True},
+        'data_set_id': {'readonly': True},
+        'kusto_database_resource_id': {'required': True},
+        'location': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'table_level_sharing_properties': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
+        'kusto_database_resource_id': {'key': 'properties.kustoDatabaseResourceId', 'type': 'str'},
+        'location': {'key': 'properties.location', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'table_level_sharing_properties': {'key': 'properties.tableLevelSharingProperties', 'type': 'TableLevelSharingProperties'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(KustoTableDataSet, self).__init__(**kwargs)
+        self.kind = 'KustoTable'  # type: str
+        self.data_set_id = None
+        self.kusto_database_resource_id = kwargs['kusto_database_resource_id']
+        self.location = None
+        self.provisioning_state = None
+        self.table_level_sharing_properties = kwargs['table_level_sharing_properties']
+
+
+class KustoTableDataSetMapping(DataSetMapping):
+    """A Kusto database data set mapping.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource id of the azure resource.
+    :vartype id: str
+    :ivar name: Name of the azure resource.
+    :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~azure.mgmt.datashare.models.SystemData
+    :ivar type: Type of the azure resource.
+    :vartype type: str
+    :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
+    :param data_set_id: Required. The id of the source data set.
+    :type data_set_id: str
+    :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
+     include: "Ok", "Broken".
+    :vartype data_set_mapping_status: str or ~azure.mgmt.datashare.models.DataSetMappingStatus
+    :param kusto_cluster_resource_id: Required. Resource id of the sink kusto cluster.
+    :type kusto_cluster_resource_id: str
+    :ivar location: Location of the sink kusto cluster.
+    :vartype location: str
+    :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
+    :vartype provisioning_state: str or ~azure.mgmt.datashare.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'system_data': {'readonly': True},
+        'type': {'readonly': True},
+        'kind': {'required': True},
+        'data_set_id': {'required': True},
+        'data_set_mapping_status': {'readonly': True},
+        'kusto_cluster_resource_id': {'required': True},
+        'location': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
+        'data_set_mapping_status': {'key': 'properties.dataSetMappingStatus', 'type': 'str'},
+        'kusto_cluster_resource_id': {'key': 'properties.kustoClusterResourceId', 'type': 'str'},
+        'location': {'key': 'properties.location', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(KustoTableDataSetMapping, self).__init__(**kwargs)
+        self.kind = 'KustoTable'  # type: str
         self.data_set_id = kwargs['data_set_id']
         self.data_set_mapping_status = None
         self.kusto_cluster_resource_id = kwargs['kusto_cluster_resource_id']
@@ -3437,8 +3583,8 @@ class SqlDbTableDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :param database_name: Database name of the source data set.
     :type database_name: str
@@ -3504,7 +3650,7 @@ class SqlDbTableDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param database_name: Required. DatabaseName name of the sink data set.
@@ -3587,8 +3733,8 @@ class SqlDwTableDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -3654,7 +3800,7 @@ class SqlDwTableDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -3737,8 +3883,8 @@ class SynapseWorkspaceSqlPoolTableDataSet(DataSet):
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
      "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
-     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
-     "SynapseWorkspaceSqlPoolTable".
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable",
+     "SqlDWTable", "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
@@ -3794,7 +3940,7 @@ class SynapseWorkspaceSqlPoolTableDataSetMapping(DataSetMapping):
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
      include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
-     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :type kind: str or ~azure.mgmt.datashare.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
@@ -3855,7 +4001,7 @@ class SynchronizationDetails(msrest.serialization.Model):
     :vartype data_set_id: str
     :ivar data_set_type: Type of the data set. Possible values include: "Blob", "Container",
      "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File", "AdlsGen1Folder",
-     "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "AdlsGen1File", "KustoCluster", "KustoDatabase", "KustoTable", "SqlDBTable", "SqlDWTable",
      "SynapseWorkspaceSqlPoolTable".
     :vartype data_set_type: str or ~azure.mgmt.datashare.models.DataSetType
     :ivar duration_ms: Duration of data set level copy.
@@ -4061,6 +4207,54 @@ class SystemData(msrest.serialization.Model):
         self.last_modified_at = kwargs.get('last_modified_at', None)
         self.last_modified_by = kwargs.get('last_modified_by', None)
         self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+
+
+class TableLevelSharingProperties(msrest.serialization.Model):
+    """Table level sharing properties dto for kusto data set properties.
+
+    :param external_tables_to_exclude: External tables to be excluded in the data set.
+    :type external_tables_to_exclude: list[str]
+    :param external_tables_to_include: External tables to be included in the data set.
+    :type external_tables_to_include: list[str]
+    :param materialized_views_to_exclude: Materialized views to be excluded in the data set.
+    :type materialized_views_to_exclude: list[str]
+    :param materialized_views_to_include: Materialized views to be included in the data set.
+    :type materialized_views_to_include: list[str]
+    :param tables_to_exclude: Tables to be excluded in the data set.
+    :type tables_to_exclude: list[str]
+    :param tables_to_include: Tables to be included in the data set.
+    :type tables_to_include: list[str]
+    """
+
+    _validation = {
+        'external_tables_to_exclude': {'unique': True},
+        'external_tables_to_include': {'unique': True},
+        'materialized_views_to_exclude': {'unique': True},
+        'materialized_views_to_include': {'unique': True},
+        'tables_to_exclude': {'unique': True},
+        'tables_to_include': {'unique': True},
+    }
+
+    _attribute_map = {
+        'external_tables_to_exclude': {'key': 'externalTablesToExclude', 'type': '[str]'},
+        'external_tables_to_include': {'key': 'externalTablesToInclude', 'type': '[str]'},
+        'materialized_views_to_exclude': {'key': 'materializedViewsToExclude', 'type': '[str]'},
+        'materialized_views_to_include': {'key': 'materializedViewsToInclude', 'type': '[str]'},
+        'tables_to_exclude': {'key': 'tablesToExclude', 'type': '[str]'},
+        'tables_to_include': {'key': 'tablesToInclude', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(TableLevelSharingProperties, self).__init__(**kwargs)
+        self.external_tables_to_exclude = kwargs.get('external_tables_to_exclude', None)
+        self.external_tables_to_include = kwargs.get('external_tables_to_include', None)
+        self.materialized_views_to_exclude = kwargs.get('materialized_views_to_exclude', None)
+        self.materialized_views_to_include = kwargs.get('materialized_views_to_include', None)
+        self.tables_to_exclude = kwargs.get('tables_to_exclude', None)
+        self.tables_to_include = kwargs.get('tables_to_include', None)
 
 
 class TriggerList(msrest.serialization.Model):
