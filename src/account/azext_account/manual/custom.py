@@ -25,8 +25,15 @@ def account_alias_create(client,
                          subscription_id=None,
                          reseller_id=None,
                          no_wait=False):
-    body = {'properties': {'display_name': display_name, 'workload': workload, 'billing_scope': billing_scope,
-                           'subscription_id': subscription_id, 'reseller_id': reseller_id}}
+    body = {
+        'properties': {
+            'display_name': display_name,
+            'workload': workload,
+            'billing_scope': billing_scope,
+            'subscription_id': subscription_id,
+            'reseller_id': reseller_id
+        }
+    }
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        alias_name=alias_name,
