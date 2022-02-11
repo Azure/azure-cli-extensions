@@ -11,27 +11,27 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_create_address
-from .example_steps import step_create_order_item
-from .example_steps import step_show_address
-from .example_steps import step_show_order
-from .example_steps import step_show_order_item
-from .example_steps import step_list_address_at_resource_group_level
-from .example_steps import step_list_address_at_subscription_level
+from .example_steps import step_address_create
+from .example_steps import step_order_item_create
+from .example_steps import step_address_show
+from .example_steps import step_order_show
+from .example_steps import step_order_item_show
+from .example_steps import step_address_rg_list
+from .example_steps import step_address_sub_list
 from .example_steps import step_list_operation
-from .example_steps import step_list_order_at_resource_group_level
-from .example_steps import step_list_order_at_subscription_level
-from .example_steps import step_list_order_item_at_resource_group_level
-from .example_steps import step_list_order_item_at_subscription_level
-from .example_steps import step_update_address
-from .example_steps import step_update_order_item
-from .example_steps import step_cancel_order_item
-from .example_steps import step_list_configuration
-from .example_steps import step_list_product_family
-from .example_steps import step_list_product_family_metadata
-from .example_steps import step_return_order_item
-from .example_steps import step_delete_address
-from .example_steps import step_delete_order_item
+from .example_steps import step_order_rg_list
+from .example_steps import step_order_sub_list
+from .example_steps import step_order_item_rg_list
+from .example_steps import step_order_item_sub_list
+from .example_steps import step_address_update
+from .example_steps import step_order_item_update
+from .example_steps import step_order_item_cancel
+from .example_steps import step_list_config
+from .example_steps import step_list_family
+from .example_steps import step_list_metadata
+from .example_steps import step_order_item_return
+from .example_steps import step_address_delete
+from .example_steps import step_order_item_delete
 from .. import (
     try_manual,
     raise_if,
@@ -58,27 +58,27 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    step_create_address(test, checks=[])
-    step_create_order_item(test, checks=[])
-    step_show_address(test, checks=[])
-    step_show_order(test, checks=[])
-    step_show_order_item(test, checks=[])
-    step_list_address_at_resource_group_level(test, checks=[])
-    step_list_address_at_subscription_level(test, checks=[])
+    step_address_create(test, checks=[])
+    step_order_item_create(test, checks=[])
+    step_address_show(test, checks=[])
+    step_order_show(test, checks=[])
+    step_order_item_show(test, checks=[])
+    step_address_rg_list(test, checks=[])
+    step_address_sub_list(test, checks=[])
     step_list_operation(test, checks=[])
-    step_list_order_at_resource_group_level(test, checks=[])
-    step_list_order_at_subscription_level(test, checks=[])
-    step_list_order_item_at_resource_group_level(test, checks=[])
-    step_list_order_item_at_subscription_level(test, checks=[])
-    step_update_address(test, checks=[])
-    step_update_order_item(test, checks=[])
-    step_cancel_order_item(test, checks=[])
-    step_list_configuration(test, checks=[])
-    step_list_product_family(test, checks=[])
-    step_list_product_family_metadata(test, checks=[])
-    step_return_order_item(test, checks=[])
-    step_delete_address(test, checks=[])
-    step_delete_order_item(test, checks=[])
+    step_order_rg_list(test, checks=[])
+    step_order_sub_list(test, checks=[])
+    step_order_item_rg_list(test, checks=[])
+    step_order_item_sub_list(test, checks=[])
+    step_address_update(test, checks=[])
+    step_order_item_update(test, checks=[])
+    step_order_item_cancel(test, checks=[])
+    step_list_config(test, checks=[])
+    step_list_family(test, checks=[])
+    step_list_metadata(test, checks=[])
+    step_order_item_return(test, checks=[])
+    step_address_delete(test, checks=[])
+    step_order_item_delete(test, checks=[])
     cleanup_scenario(test)
 
 

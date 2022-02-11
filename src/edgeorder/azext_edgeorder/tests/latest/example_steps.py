@@ -14,12 +14,12 @@ from .. import try_manual
 
 # EXAMPLE: /edgeorder/put/CreateAddress
 @try_manual
-def step_create_address(test, checks=None):
+def step_address_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder create-address '
-             '--address-name "TestMSAddressName" '
-             '--location "eastus" '
+    test.cmd('az edgeorder address create '
+             '--name "TestMSAddressName" '
+             '--location "westus" '
              '--contact-details contact-name="Petr Cech" email-list="testemail@microsoft.com" phone="1234567890" '
              'phone-extension="" '
              '--shipping-address address-type="None" city="San Francisco" company-name="Microsoft" country="US" '
@@ -30,77 +30,77 @@ def step_create_address(test, checks=None):
 
 # EXAMPLE: /edgeorder/put/CreateOrderItem
 @try_manual
-def step_create_order_item(test, checks=None):
+def step_order_item_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder create-order-item '
-             '--order-item-name "TestOrderItemName01" '
-             '--order-item-resource "{{\\"location\\":\\"eastus\\",\\"tags\\":{{\\"carrot\\":\\"vegetable\\",\\"mango\\'
-             '":\\"fruit\\"}},\\"orderItemDetails\\":{{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{{\\"transp'
-             'ortPreferences\\":{{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}}}},\\"productDetails\\":{{\\"hier'
-             'archyInformation\\":{{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureSta'
-             'ckEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}}}}},\\"a'
-             'ddressDetails\\":{{\\"forwardAddress\\":{{\\"contactDetails\\":{{\\"contactName\\":\\"164 TOWNSEND '
+    test.cmd('az edgeorder order-item create '
+             '--name "TestOrderItemName01" '
+             '--resource "{{\\"location\\":\\"westus\\",\\"tags\\":{{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit'
+             '\\"}},\\"orderItemDetails\\":{{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{{\\"transportPrefere'
+             'nces\\":{{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}}}},\\"productDetails\\":{{\\"hierarchyInfor'
+             'mation\\":{{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStackEdge\\",'
+             '\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}}}}},\\"addressDeta'
+             'ils\\":{{\\"forwardAddress\\":{{\\"contactDetails\\":{{\\"contactName\\":\\"164 TOWNSEND '
              'ST\\",\\"emailList\\":[\\"ssemmail@microsoft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"321313'
              '1190\\"}},\\"shippingAddress\\":{{\\"addressType\\":\\"Residential\\",\\"city\\":\\"San '
              'Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"sta'
              'teOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT '
              '1\\",\\"zipExtendedCode\\":\\"1\\"}}}}}},\\"orderId\\":\\"/subscriptions/{subscription_id}/resourceGroups'
-             '/{rg}/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}}" '
+             '/{rg}/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\\"}}" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/GetAddressByName
 @try_manual
-def step_show_address(test, checks=None):
+def step_address_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder show-address '
-             '--address-name "TestMSAddressName" '
+    test.cmd('az edgeorder address show '
+             '--name "TestMSAddressName" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/GetOrderByName
 @try_manual
-def step_show_order(test, checks=None):
+def step_order_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder show-order '
+    test.cmd('az edgeorder order show '
              '--location "%7B%7B%7Blocation%7D%7D" '
-             '--order-name "TestOrderItemName901" '
+             '--name "TestOrderItemName901" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/GetOrderItemByName
 @try_manual
-def step_show_order_item(test, checks=None):
+def step_order_item_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder show-order-item '
-             '--order-item-name "TestOrderItemName01" '
+    test.cmd('az edgeorder order-item show '
+             '--name "TestOrderItemName01" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/ListAddressesAtResourceGroupLevel
 @try_manual
-def step_list_address_at_resource_group_level(test, checks=None):
+def step_address_rg_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-address-at-resource-group-level '
+    test.cmd('az edgeorder address rg-list '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/ListAddressesAtSubscriptionLevel
 @try_manual
-def step_list_address_at_subscription_level(test, checks=None):
+def step_address_sub_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-address-at-subscription-level',
+    test.cmd('az edgeorder address sub-list',
              checks=checks)
 
 
@@ -115,49 +115,49 @@ def step_list_operation(test, checks=None):
 
 # EXAMPLE: /edgeorder/get/ListOrderAtResourceGroupLevel
 @try_manual
-def step_list_order_at_resource_group_level(test, checks=None):
+def step_order_rg_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-order-at-resource-group-level '
+    test.cmd('az edgeorder order rg-list '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/ListOrderAtSubscriptionLevel
 @try_manual
-def step_list_order_at_subscription_level(test, checks=None):
+def step_order_sub_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-order-at-subscription-level',
+    test.cmd('az edgeorder order sub-list',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/ListOrderItemsAtResourceGroupLevel
 @try_manual
-def step_list_order_item_at_resource_group_level(test, checks=None):
+def step_order_item_rg_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-order-item-at-resource-group-level '
+    test.cmd('az edgeorder order-item rg-list '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/get/ListOrderItemsAtSubscriptionLevel
 @try_manual
-def step_list_order_item_at_subscription_level(test, checks=None):
+def step_order_item_sub_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-order-item-at-subscription-level',
+    test.cmd('az edgeorder order-item sub-list',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/patch/UpdateAddress
 @try_manual
-def step_update_address(test, checks=None):
+def step_address_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder update-address '
-             '--address-name "TestAddressName2" '
+    test.cmd('az edgeorder address update '
+             '--name "TestAddressName2" '
              '--contact-details contact-name="Petr Cech" email-list="ssemcr@microsoft.com" phone="1234567890" '
              'phone-extension="" '
              '--shipping-address address-type="None" city="San Francisco" company-name="Microsoft" country="US" '
@@ -169,11 +169,11 @@ def step_update_address(test, checks=None):
 
 # EXAMPLE: /edgeorder/patch/UpdateOrderItem
 @try_manual
-def step_update_order_item(test, checks=None):
+def step_order_item_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder update-order-item '
-             '--order-item-name "TestOrderItemName01" '
+    test.cmd('az edgeorder order-item update '
+             '--name "TestOrderItemName01" '
              '--contact-details contact-name="Updated contact name" email-list="testemail@microsoft.com" '
              'phone="2222200000" '
              '--transport-preferences preferred-shipment-type="CustomerManaged" '
@@ -184,22 +184,22 @@ def step_update_order_item(test, checks=None):
 
 # EXAMPLE: /edgeorder/post/CancelOrderItem
 @try_manual
-def step_cancel_order_item(test, checks=None):
+def step_order_item_cancel(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder cancel-order-item '
+    test.cmd('az edgeorder order-item cancel '
              '--reason "Order cancelled" '
-             '--order-item-name "TestOrderItemName1" '
+             '--name "TestOrderItemName1" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/post/ListConfigurations
 @try_manual
-def step_list_configuration(test, checks=None):
+def step_list_config(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-configuration '
+    test.cmd('az edgeorder list-config '
              '--configuration-filters "[{{\\"filterableProperty\\":[{{\\"type\\":\\"ShipToCountries\\",\\"supportedValu'
              'es\\":[\\"US\\"]}}],\\"hierarchyInformation\\":{{\\"productFamilyName\\":\\"AzureStackEdge\\",\\"productL'
              'ineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}}}]"',
@@ -208,30 +208,30 @@ def step_list_configuration(test, checks=None):
 
 # EXAMPLE: /edgeorder/post/ListProductFamilies
 @try_manual
-def step_list_product_family(test, checks=None):
+def step_list_family(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-product-family '
+    test.cmd('az edgeorder list-family '
              '--filterable-properties azurestackedge={{"type":"ShipToCountries","supportedValues":["US"]}}',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/post/ListProductFamiliesMetadata
 @try_manual
-def step_list_product_family_metadata(test, checks=None):
+def step_list_metadata(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder list-product-family-metadata',
+    test.cmd('az edgeorder list-metadata',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/post/ReturnOrderItem
 @try_manual
-def step_return_order_item(test, checks=None):
+def step_order_item_return(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder return-order-item '
-             '--order-item-name "TestOrderName1" '
+    test.cmd('az edgeorder order-item return '
+             '--name "TestOrderName1" '
              '--resource-group "{rg}" '
              '--return-reason "Order returned"',
              checks=checks)
@@ -239,21 +239,21 @@ def step_return_order_item(test, checks=None):
 
 # EXAMPLE: /edgeorder/delete/DeleteAddressByName
 @try_manual
-def step_delete_address(test, checks=None):
+def step_address_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder delete-address '
-             '--address-name "TestAddressName1" '
+    test.cmd('az edgeorder address delete '
+             '--name "TestAddressName1" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /edgeorder/delete/DeleteOrderItemByName
 @try_manual
-def step_delete_order_item(test, checks=None):
+def step_order_item_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az edgeorder delete-order-item '
-             '--order-item-name "TestOrderItemName01" '
+    test.cmd('az edgeorder order-item delete '
+             '--name "TestOrderItemName01" '
              '--resource-group "{rg}"',
              checks=checks)

@@ -21,7 +21,7 @@ class EdgeOrderManagementClientCommandsLoader(AzCommandsLoader):
         edgeorder_custom = CliCommandType(
             operations_tmpl='azext_edgeorder.custom#{}',
             client_factory=cf_edgeorder_cl)
-        parent = super(EdgeOrderManagementClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=edgeorder_custom)
 
     def load_command_table(self, args):
