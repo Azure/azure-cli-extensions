@@ -30,7 +30,7 @@ def load_arguments(self, _):
         c.argument('yaml', help='Path to a .yaml file with the configuration of a containerapp. All other parameters will be ignored')
 
     # Container
-    with self.argument_context('containerapp create', arg_group='Container') as c:
+    with self.argument_context('containerapp create', arg_group='Container (Creates new revision)') as c:
         c.argument('image_name', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag. If there are multiple containers, please use --yaml instead.")
         c.argument('cpu', type=float, validator=validate_cpu, options_list=['--cpu'], help="Required CPU in cores, e.g. 0.5")
         c.argument('memory', type=str, validator=validate_memory, options_list=['--memory'], help="Required memory, e.g. 1.0Gi")
@@ -39,9 +39,17 @@ def load_arguments(self, _):
         c.argument('args', type=str, options_list=['--args'], help="A list of container startup command argument(s). Comma-separated values e.g. '-c, mycommand'. If there are multiple containers, please use --yaml instead.")
 
     # Scale
-    with self.argument_context('containerapp create', arg_group='Scale') as c:
+    with self.argument_context('containerapp create', arg_group='Scale (Creates new revision)') as c:
         c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of containerapp replicas.")
         c.argument('max_replicas', type=int, options_list=['--max-replicas'], help="The maximum number of containerapp replicas.")
+
+    # Dapr
+    with self.argument_context('containerapp create', arg_group='Dapr (Creates new revision)') as c:
+        c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag())
+        c.argument('dapr_app_port', type=int, options_list=['--dapr-app-port'], help="Tells Dapr the port your application is listening on.")
+        c.argument('dapr_app_id', type=str, options_list=['--dapr-app-id'], help="The Dapr application identifier.")
+        c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), options_list=['--dapr-app-protocol'], help="Tells Dapr which protocol your application is using.")
+        c.argument('dapr_components', options_list=['--dapr-components'], help="The name of a yaml file containing a list of dapr components.")
 
     # Configuration
     with self.argument_context('containerapp create', arg_group='Configuration') as c:
@@ -56,14 +64,6 @@ def load_arguments(self, _):
         c.argument('ingress', options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="Ingress type that allows either internal or external+internal ingress traffic to the Containerapp.")
         c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
-
-    # Dapr
-    with self.argument_context('containerapp create', arg_group='Dapr') as c:
-        c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag())
-        c.argument('dapr_app_port', type=int, options_list=['--dapr-app-port'], help="Tells Dapr the port your application is listening on.")
-        c.argument('dapr_app_id', type=str, options_list=['--dapr-app-id'], help="The Dapr application identifier.")
-        c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), options_list=['--dapr-app-protocol'], help="Tells Dapr which protocol your application is using.")
-        c.argument('dapr_components', options_list=['--dapr-components'], help="The name of a yaml file containing a list of dapr components.")
 
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type)
