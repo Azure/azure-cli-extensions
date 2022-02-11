@@ -1,0 +1,218 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"shippingAddress": {"streetAddress1":
+      "16 TOWNSEND ST", "streetAddress2": "UNIT 1", "city": "San Francisco", "stateOrProvince":
+      "CA", "country": "US", "postalCode": "94107", "companyName": "Microsoft", "addressType":
+      "None"}, "contactDetails": {"contactName": "Petr Cech", "phone": "1234567890",
+      "phoneExtension": "", "emailList": ["testemail@microsoft.com"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder create-address
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '399'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --address-name --location --contact-details --shipping-address --resource-group
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/addresses/TestMSAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 10 Feb 2022 08:46:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/ea415dac-65e3-428a-86f5-3a2fb53b306f?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder create-address
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --address-name --location --contact-details --shipping-address --resource-group
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/ea415dac-65e3-428a-86f5-3a2fb53b306f?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 10 Feb 2022 08:46:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/addresses/TestMSAddressName?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder create-address
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --address-name --location --contact-details --shipping-address --resource-group
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/addresses/TestMSAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"shippingAddress\": {\r\n      \"streetAddress1\":
+        \"16 TOWNSEND ST\",\r\n      \"streetAddress2\": \"UNIT 1\",\r\n      \"city\":
+        \"San Francisco\",\r\n      \"stateOrProvince\": \"CA\",\r\n      \"country\":
+        \"US\",\r\n      \"postalCode\": \"94107\",\r\n      \"companyName\": \"Microsoft\",\r\n
+        \     \"addressType\": \"None\"\r\n    },\r\n    \"contactDetails\": {\r\n
+        \     \"contactName\": \"Petr Cech\",\r\n      \"phone\": \"1234567890\",\r\n
+        \     \"phoneExtension\": \"\",\r\n      \"emailList\": [\r\n        \"testemail@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"addressValidationStatus\": \"Valid\"\r\n  },\r\n
+        \ \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-10T08:46:10.2588205+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-10T08:46:10.2588205+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestMSAddressName\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/addresses/TestMSAddressName\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/addresses\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1121'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Feb 2022 08:46:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"carrot": "vegetable", "mango": "fruit"}, "location": "eastus",
+      "properties": {"orderItemDetails": {"productDetails": {"hierarchyInformation":
+      {"productFamilyName": "AzureStackEdge", "productLineName": "AzureStackEdge",
+      "productName": "AzureStackEdgeGPU", "configurationName": "AzureStackEdgeGPU"}},
+      "orderItemType": "Purchase", "preferences": {"transportPreferences": {"preferredShipmentType":
+      "MicrosoftManaged"}}}, "addressDetails": {"forwardAddress": {"shippingAddress":
+      {"streetAddress1": "16 TOWNSEND ST", "streetAddress2": "UNIT 1", "city": "San
+      Francisco", "stateOrProvince": "CA", "country": "US", "postalCode": "94107",
+      "zipExtendedCode": "1", "companyName": "Microsoft", "addressType": "Residential"},
+      "contactDetails": {"contactName": "164 TOWNSEND ST", "phone": "3213131190",
+      "emailList": ["ssemmail@microsoft.com", "vishwamdir@microsoft.com"]}}}, "orderId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder create-order-item
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1040'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --order-item-name --order-item-resource --resource-group
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.EdgeOrder/orderItems/TestOrderItemName01?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"ProductConfigServiceErrorHierarchyInfoInvalid\",\r\n
+        \   \"message\": \"The Hierarchy information is not valid.\\r\\nMake sure
+        that the hierarchy information is valid.\",\r\n    \"details\": [\r\n      null\r\n
+        \   ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '235'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Feb 2022 08:46:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
