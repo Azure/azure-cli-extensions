@@ -118,7 +118,7 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
-         # holder for nat gateway related models
+        # holder for nat gateway related models
         self.__nat_gateway_models = None
         # holder for pod identity related models
         self.__pod_identity_models = None
@@ -146,7 +146,6 @@ class AKSPreviewModels(AKSModels):
             )
             self.__nat_gateway_models = SimpleNamespace(**nat_gateway_models)
         return self.__nat_gateway_models
-
 
     @property
     def pod_identity_models(self) -> SimpleNamespace:
