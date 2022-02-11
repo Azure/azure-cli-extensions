@@ -13,14 +13,11 @@ VnetConfiguration = {
 }
 
 ManagedEnvironment = {
-    "id": None, # readonly
-    "name": None, # readonly
-    "kind": None,
     "location": None,
     "tags": None,
     "properties": {
         "daprAIInstrumentationKey": None,
-        "vnetConfiguration": VnetConfiguration,
+        "vnetConfiguration": None, # VnetConfiguration
         "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None
     }
@@ -34,4 +31,152 @@ AppLogsConfiguration = {
 LogAnalyticsConfiguration = {
     "customerId": None,
     "sharedKey": None
+}
+
+# Containerapp
+
+Dapr = {
+    "enabled": False,
+    "appId": None,
+    "appProtocol": None,
+    "appPort": None
+}
+
+EnvironmentVar = {
+    "name": None,
+    "value": None,
+    "secretRef": None
+}
+
+ContainerResources = {
+    "cpu": None,
+    "memory": None
+}
+
+VolumeMount = {
+    "volumeName": None,
+    "mountPath": None
+}
+
+Container = {
+    "image": None,
+    "name": None,
+    "command": None,
+    "args": None,
+    "env": None, # [EnvironmentVar]
+    "resources": None, # ContainerResources
+    "volumeMounts": None, # [VolumeMount]
+}
+
+Volume = {
+    "name": None,
+    "storageType": "EmptyDir", # AzureFile or EmptyDir
+    "storageName": None # None for EmptyDir, otherwise name of storage resource
+}
+
+ScaleRuleAuth = {
+    "secretRef": None,
+    "triggerParameter": None
+}
+
+QueueScaleRule = {
+    "queueName": None,
+    "queueLength": None,
+    "auth": None # ScaleRuleAuth
+}
+
+CustomScaleRule = {
+    "type": None,
+    "metadata": {},
+    "auth": None # ScaleRuleAuth
+}
+
+HttpScaleRule = {
+    "metadata": {},
+    "auth": None # ScaleRuleAuth
+}
+
+ScaleRule = {
+    "name": None,
+    "azureQueue": None, # QueueScaleRule
+    "customScaleRule": None, # CustomScaleRule
+    "httpScaleRule": None, # HttpScaleRule
+}
+
+Secret = {
+    "name": None,
+    "value": None
+}
+
+Scale = {
+    "minReplicas": None,
+    "maxReplicas": None,
+    "rules": [] # list of ScaleRule
+}
+
+TrafficWeight = {
+    "revisionName": None,
+    "weight": None,
+    "latestRevision": False
+}
+
+BindingType = {
+
+}
+
+CustomDomain = {
+    "name": None,
+    "bindingType": None, # BindingType
+    "certificateId": None
+}
+
+Ingress = {
+    "fqdn": None,
+    "external": False,
+    "targetPort": None,
+    "transport": None, # 'auto', 'http', 'http2'
+    "traffic": None, # TrafficWeight
+    "customDomains": None, # [CustomDomain]
+    "allowInsecure": None
+}
+
+RegistryCredentials = {
+    "server": None,
+    "username": None,
+    "passwordSecretRef": None
+}
+
+Template = {
+    "revisionSuffix": None,
+    "containers": None, # [Container]
+    "scale": Scale,
+    "dapr": Dapr,
+    "volumes": None # [Volume]
+}
+
+Configuration = {
+    "secrets": None, # [Secret]
+    "activeRevisionsMode": None, # 'multiple' or 'single'
+    "ingress": None, # Ingress
+    "registries": None # [RegistryCredentials]
+}
+
+UserAssignedIdentity = {
+
+}
+
+ManagedServiceIdentity = {
+    "type": None, # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None # {string: UserAssignedIdentity}
+}
+
+ContainerApp = {
+    "location": None,
+    "identity": None, # ManagedServiceIdentity
+    "properties": {
+        "managedEnvironmentId": None,
+        "configuration": None, # Configuration
+        "template": None # Template
+    },
+    "tags": None
 }
