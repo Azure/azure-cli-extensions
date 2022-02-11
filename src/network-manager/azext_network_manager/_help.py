@@ -895,7 +895,7 @@ helps['network manager scope connection delete'] = """
 """
 
 
-helps['network manager group static-members'] = """
+helps['network manager group static-member'] = """
     type: group
     short-summary: Manage static members with network
 """
