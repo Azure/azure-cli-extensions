@@ -54,11 +54,12 @@ class ConfigSession():
     def get_config_text(self):
         lines = [""]
         if self.resource_group_name and self.vm_name:
-            lines.append(self._get_rg_and_vm_entry())
+            lines = lines + self._get_rg_and_vm_entry()
         # default to all hosts for config
         if not self.ip:
             self.ip = "*"
-        lines.append(self._get_ip_entry())
+        lines = lines + self._get_ip_entry()
+        return lines
 
     def _get_rg_and_vm_entry(self):
         lines = []
