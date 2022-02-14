@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from platform import platform
+from turtle import update
 from azure.cli.core.azclierror import (RequiredArgumentMissingError, ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
@@ -110,7 +111,7 @@ def create_containerapp(cmd,
         registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
 
     config_def = Configuration
-    config_def["secrets"] = None # TODO: Uncomment secrets_def
+    config_def["secrets"] = secrets_def
     config_def["activeRevisionsMode"] = revisions_mode
     config_def["ingress"] = ingress_def
     config_def["registries"] = [registries_def]
@@ -343,6 +344,73 @@ def update_containerapp(cmd,
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+def scale_containerapp(cmd, name, resource_group_name, min_replicas=None, max_replicas=None, no_wait=False):
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    shouldWork = False # TODO: Should only setting minReplicas and maxReplicas in the body work? Or do we have to do a GET on the containerapp, add in secrets, then modify minReplicas and maxReplicas
+    if shouldWork:
+        updated_containerapp_def = {
+            "location": containerapp_def["location"],
+            "properties": {
+                "template": {
+                    "scale": None
+                }
+            }
+        }
+
+        if "scale" not in containerapp_def["properties"]["template"]:
+            updated_containerapp_def["properties"]["template"]["scale"] = {}
+        else:
+            updated_containerapp_def["properties"]["template"]["scale"] = containerapp_def["properties"]["template"]["scale"]
+
+        if min_replicas is not None:
+            updated_containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
+
+        if max_replicas is not None:
+            updated_containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
+
+        try:
+            r = ContainerAppClient.create_or_update(
+                cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=updated_containerapp_def, no_wait=no_wait)
+
+            if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+                logger.warning('Containerapp scale in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+            return r
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        if "scale" not in containerapp_def["properties"]["template"]:
+            containerapp_def["properties"]["template"]["scale"] = {}
+
+        if min_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
+
+        if max_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
+
+        del containerapp_def["properties"]["configuration"]["registries"]
+        del containerapp_def["properties"]["configuration"]["secrets"]
+
+        try:
+            r = ContainerAppClient.create_or_update(
+                cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+            if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+                logger.warning('Containerapp scale in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+            return r
+        except Exception as e:
+            handle_raw_exception(e)
 
 
 def show_containerapp(cmd, name, resource_group_name):

@@ -109,6 +109,14 @@ helps['containerapp delete'] = """
       text: az containerapp delete -g MyResourceGroup -n MyContainerapp
 """
 
+helps['containerapp scale'] = """
+    type: command
+    short-summary: Set the min and max replicas for a Containerapp.
+    examples:
+    - name: Scale a Containerapp.
+      text: az containerapp scale -g MyResourceGroup -n MyContainerapp --min-replicas 1 --max-replicas 2
+"""
+
 helps['containerapp show'] = """
     type: command
     short-summary: Show details of a Containerapp.

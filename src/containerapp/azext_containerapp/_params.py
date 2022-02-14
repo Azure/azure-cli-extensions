@@ -66,6 +66,10 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
 
+    with self.argument_context('containerapp scale') as c:
+        c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of containerapp replicas.")
+        c.argument('max_replicas', type=int, options_list=['--max-replicas'], help="The maximum number of containerapp replicas.")
+
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type, help='Name of the containerapp environment')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
