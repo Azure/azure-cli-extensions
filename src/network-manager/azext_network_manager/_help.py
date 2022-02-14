@@ -802,7 +802,7 @@ helps['network manager connection management-group list'] = """
     examples:
       - name: List management-group connections in a network manager
         text: |-
-               az network manager connection management-group list --management-group-id "testManagementGroupId" /
+               az network manager connection management-group list --management-group-id "testManagementGroupId" \
 --resource-group "rg1"
 """
 

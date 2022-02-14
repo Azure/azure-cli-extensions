@@ -15,7 +15,7 @@ from azext_network_manager._client_factory import (
     cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus, cf_effectivevirtualnetwork,
     cf_activeconnectivityconfiguration, cf_connectivityconfiguration, cf_networkgroup, cf_userrule,
     cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration,
-    cf_securityuserconfiguration,cf_activesecurityadminrule, cf_activesecurityuserrule,
+    cf_securityuserconfiguration, cf_activesecurityadminrule, cf_activesecurityuserrule,
     cf_effectiveconnectivityconfiguration, cf_effectivesecurityadminrule, cf_scopecollection, cf_staticmembers,
     cf_subscriptionconnection, cf_managementgroupconnection)
 
@@ -67,7 +67,7 @@ def load_command_table(self, _):
     )
 
     network_scopecollection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._scope_collections_operations#ScopeCollectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._scope_connections_operations#ScopeConnectionsOperations.{}',
         client_factory=cf_scopecollection
     )
 
@@ -77,7 +77,7 @@ def load_command_table(self, _):
     )
 
     network_subscriptionconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._subscription_network_manager_connections_operations#SubscriptionNetworkManagerCollectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._subscription_network_manager_connections_operations#SubscriptionNetworkManagerConnectionsOperations.{}',
         client_factory=cf_subscriptionconnection
     )
 
@@ -185,4 +185,4 @@ def load_command_table(self, _):
         g.custom_command('list', 'network_manager_group_static_member_list')
         g.custom_show_command('show', 'network_manager_group_static_member_show')
         g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)
-        
+
