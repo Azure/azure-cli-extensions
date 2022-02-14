@@ -61,6 +61,8 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
+    else:
+        credentials_folder = os.path.abspath(credentials_folder)
 
     _do_ssh_op(cmd, config_session, credentials_folder, op_call)
 
