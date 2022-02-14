@@ -51,7 +51,7 @@ setup(
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='k8connect@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/connectedk8s',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/connectedk8s',
     long_description=README + '\n\n' + HISTORY,
     long_description_content_type="text/markdown",
     license='MIT',
