@@ -63,7 +63,7 @@ class TestValidateIPRanges(unittest.TestCase):
 
 
 class Namespace:
-    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None, host_group_id=None):
+    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
         self.kubernetes_version = kubernetes_version

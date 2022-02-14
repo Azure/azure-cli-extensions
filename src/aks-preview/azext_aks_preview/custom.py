@@ -1622,7 +1622,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             node_vm_size = "Standard_DS2_v2"
 
     if max_surge:
-        upgradeSettings.max_surge = max_surge 
+        upgradeSettings.max_surge = max_surge
 
     agent_pool = AgentPool(
         name=nodepool_name,
