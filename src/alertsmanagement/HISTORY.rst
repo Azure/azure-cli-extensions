@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.1
+++++++
+Fixed help file text and an error loading the help files of all methods
+
 0.2.0
 ++++++
 This version supports the new alert processing rule API (changed from action rule) and is breaking  old versions.

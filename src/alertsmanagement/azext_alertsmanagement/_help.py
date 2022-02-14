@@ -63,7 +63,7 @@ helps['monitor alert-processing-rule list'] = """
 
 helps['monitor alert-processing-rule show'] = """
     type: command
-    short-summary: Get an alert processing rule rule.
+    short-summary: Get an alert processing rule.
     examples:
       - name: Get an alert processing rule by name
         text: |-

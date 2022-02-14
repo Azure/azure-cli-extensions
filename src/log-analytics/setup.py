@@ -39,7 +39,7 @@ setup(
     license='MIT',
     author='Ace Eldeib',
     author_email='aleldeib@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/log-analytics',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/log-analytics',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_loganalytics': ['azext_metadata.json']},

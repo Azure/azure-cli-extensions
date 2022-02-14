@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DNC Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dnc',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/dnc',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -16,7 +16,6 @@ from .recording_processors import KeyReplacer
 from .custom_preparers import AKSCustomResourceGroupPreparer
 
 
-
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
@@ -31,7 +30,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         versions = self.cmd(
-            "az aks get-versions -l westus2 --query 'orchestrators[].orchestratorVersion'").get_output_in_json()
+            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
         # sort by semantic version, from newest to oldest
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         upgrade_version = versions[0]
@@ -2894,21 +2893,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
     def test_aks_create_dualstack_with_default_network(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
+        _, create_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'k8s_version': create_version,
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.21.2 ' \
+                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
 
         self.cmd(create_cmd, checks=[
@@ -2973,17 +2970,23 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_init_pip = 'network public-ip create -g {resource_group} -n {init_pip_name} --sku Standard'
-        init_pip = self.cmd(create_init_pip, checks=[
-            self.check('publicIp.provisioningState', 'Succeeded')
+        # workaround for replay failure in CI
+        self.cmd(create_init_pip)
+        get_init_pip = 'network public-ip show -g {resource_group} -n {init_pip_name}'
+        init_pip = self.cmd(get_init_pip, checks=[
+            self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()
 
         create_update_pip = 'network public-ip create -g {resource_group} -n {update_pip_name} --sku Standard'
-        update_pip = self.cmd(create_update_pip, checks=[
-            self.check('publicIp.provisioningState', 'Succeeded')
+        # workaround for replay failure in CI
+        self.cmd(create_update_pip)
+        get_update_pip = 'network public-ip show -g {resource_group} -n {update_pip_name}'
+        update_pip = self.cmd(get_update_pip, checks=[
+            self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()
 
-        init_pip_id = init_pip['publicIp']['id']
-        update_pip_id = update_pip['publicIp']['id']
+        init_pip_id = init_pip['id']
+        update_pip_id = update_pip['id']
 
         assert init_pip_id is not None
         assert update_pip_id is not None
@@ -3018,15 +3021,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
     def test_aks_create_and_update_ipv6_count(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
+        _, create_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'k8s_version': create_version,
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
@@ -3035,7 +3036,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--pod-cidr 172.126.0.0/16 --service-cidr 172.56.0.0/16 --dns-service-ip 172.56.0.10 ' \
                      '--pod-cidrs 172.126.0.0/16,2001:abcd:1234::/64 --service-cidrs 172.56.0.0/16,2001:ffff::/108 ' \
                      '--ip-families IPv4,IPv6 --load-balancer-managed-outbound-ipv6-count 2 ' \
-                     '--network-plugin kubenet --ssh-key-value={ssh_key_value} --kubernetes-version 1.21.2 ' \
+                     '--network-plugin kubenet --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3130,7 +3131,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool1_name = "nodepool1"
-        taints = "key1=value1:NoSchedule"
+        taints = "key1=value1:PreferNoSchedule"
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -3184,7 +3185,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # nodepool list
         self.cmd('aks nodepool list --resource-group={resource_group} --cluster-name={name}', checks=[
             self.check('[0].mode', 'System'),
-            self.check('[0].nodeTaints[0]', 'key1=value1:NoSchedule'),
+            self.check('[0].nodeTaints[0]', 'key1=value1:PreferNoSchedule'),
         ])
 
         # nodepool delete nodepool1 label
@@ -3192,7 +3193,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool show
         show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} -o json').get_output_in_json()
-        assert len(show_nodepool["nodeTaints"]) == 0
+        # TODO/xinyue: temp fix for the assertion, but we need to decide whether to put an empty list or a list with one empty string when trying to delete node taints
+        assert show_nodepool["nodeTaints"] == []
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')

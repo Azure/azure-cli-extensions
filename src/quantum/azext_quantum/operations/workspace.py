@@ -5,13 +5,18 @@
 
 # pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension
 
+import os.path
+import json
 import time
+
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.resource.resources.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
@@ -20,6 +25,7 @@ from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_fro
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
+MAX_POLLS_CREATE_WORKSPACE = 60
 
 
 class WorkspaceInfo:
@@ -159,13 +165,66 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+
+    # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
+    if skip_role_assignment:
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+        while not poller.done():
+            time.sleep(POLLING_TIME_DURATION)
+        quantum_workspace = poller.result()
+        return quantum_workspace
+
+    # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
+    template_path = os.path.join(os.path.dirname(
+        __file__), 'templates', 'create-workspace-and-assign-role.json')
+    with open(template_path, 'r', encoding='utf8') as template_file_fd:
+        template = json.load(template_file_fd)
+
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
-    poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-    while not poller.done():
+    validated_providers = []
+    for provider in quantum_workspace.providers:
+        validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
+
+    parameters = {
+        'quantumWorkspaceName': workspace_name,
+        'location': location,
+        'tags': {},
+        'providers': validated_providers,
+        'storageAccountName': storage_account,
+        'storageAccountId': _get_storage_account_path(info, storage_account),
+        'storageAccountLocation': location,
+        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
+    }
+    parameters = {k: {'value': v} for k, v in parameters.items()}
+
+    deployment_properties = {
+        'mode': DeploymentMode.incremental,
+        'template': template,
+        'parameters': parameters
+    }
+
+    credentials = _get_data_credentials(cmd.cli_ctx, info.subscription)
+    arm_client = ResourceManagementClient(credentials, info.subscription)
+
+    deployment_async_operation = arm_client.deployments.begin_create_or_update(
+        info.resource_group,
+        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py
+        {'properties': deployment_properties}
+    )
+
+    # Show progress indicator dots
+    polling_cycles = 0
+    while not deployment_async_operation.done():
+        polling_cycles += 1
+        if polling_cycles > MAX_POLLS_CREATE_WORKSPACE:
+            print()
+            raise AzureInternalError("Create quantum workspace operation timed out.")
+
+        print('.', end='', flush=True)
         time.sleep(POLLING_TIME_DURATION)
-    quantum_workspace = poller.result()
-    if not skip_role_assignment:
-        quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
+    print()
+    quantum_workspace = deployment_async_operation.result()
     return quantum_workspace
 
 
