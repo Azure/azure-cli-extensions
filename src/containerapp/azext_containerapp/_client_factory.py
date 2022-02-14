@@ -58,6 +58,9 @@ def handle_raw_exception(e):
         elif "Message" in jsonError:
             message = jsonError["Message"]
             raise CLIError(message)
+        elif "message" in jsonError:
+            message = jsonError["message"]
+            raise CLIError(message)
     raise e
 
 

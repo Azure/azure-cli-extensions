@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
-                         validate_registry_user, validate_registry_pass, validate_target_port)
+                         validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
 
 def load_arguments(self, _):
 
@@ -24,27 +24,28 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
-    with self.argument_context('containerapp create') as c:
+    with self.argument_context('containerapp') as c:
         c.argument('tags', arg_type=tags_type)
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment', '-e'], help="Name or resource ID of the containerapp's environment.")
         c.argument('yaml', help='Path to a .yaml file with the configuration of a containerapp. All other parameters will be ignored')
 
     # Container
-    with self.argument_context('containerapp create', arg_group='Container (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Container (Creates new revision)') as c:
         c.argument('image_name', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag. If there are multiple containers, please use --yaml instead.")
         c.argument('cpu', type=float, validator=validate_cpu, options_list=['--cpu'], help="Required CPU in cores, e.g. 0.5")
         c.argument('memory', type=str, validator=validate_memory, options_list=['--memory'], help="Required memory, e.g. 1.0Gi")
         c.argument('env_vars', type=str, options_list=['--environment-variables', '-v'], help="A list of environment variable(s) for the containerapp. Comma-separated values in 'key=value' format. If there are multiple containers, please use --yaml instead.")
         c.argument('startup_command', type=str, options_list=['--command'], help="A list of supported commands on the container app that will executed during container startup. Comma-separated values e.g. '/bin/queue'. If there are multiple containers, please use --yaml instead.")
         c.argument('args', type=str, options_list=['--args'], help="A list of container startup command argument(s). Comma-separated values e.g. '-c, mycommand'. If there are multiple containers, please use --yaml instead.")
+        c.argument('revision_suffix', type=str, options_list=['--revision-suffix'], help='User friendly suffix that is appended to the revision name')
 
     # Scale
-    with self.argument_context('containerapp create', arg_group='Scale (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Scale (Creates new revision)') as c:
         c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of containerapp replicas.")
         c.argument('max_replicas', type=int, options_list=['--max-replicas'], help="The maximum number of containerapp replicas.")
 
     # Dapr
-    with self.argument_context('containerapp create', arg_group='Dapr (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Dapr (Creates new revision)') as c:
         c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag())
         c.argument('dapr_app_port', type=int, options_list=['--dapr-app-port'], help="Tells Dapr the port your application is listening on.")
         c.argument('dapr_app_id', type=str, options_list=['--dapr-app-id'], help="The Dapr application identifier.")
@@ -52,7 +53,7 @@ def load_arguments(self, _):
         c.argument('dapr_components', options_list=['--dapr-components'], help="The name of a yaml file containing a list of dapr components.")
 
     # Configuration
-    with self.argument_context('containerapp create', arg_group='Configuration') as c:
+    with self.argument_context('containerapp', arg_group='Configuration') as c:
         c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple']), options_list=['--revisions-mode'], help="The active revisions mode for the containerapp.")
         c.argument('registry_server', type=str, validator=validate_registry_server, options_list=['--registry-login-server'], help="The url of the registry, e.g. myregistry.azurecr.io")
         c.argument('registry_pass', type=str, validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in container image registry server. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
@@ -60,13 +61,13 @@ def load_arguments(self, _):
         c.argument('secrets', type=str, options_list=['--secrets', '-s'], help="A list of secret(s) for the containerapp. Comma-separated values in 'key=value' format.")
 
     # Ingress
-    with self.argument_context('containerapp create', arg_group='Ingress') as c:
-        c.argument('ingress', options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="Ingress type that allows either internal or external+internal ingress traffic to the Containerapp.")
+    with self.argument_context('containerapp', arg_group='Ingress') as c:
+        c.argument('ingress', validator=validate_ingress, options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="Ingress type that allows either internal or external+internal ingress traffic to the Containerapp.")
         c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
 
     with self.argument_context('containerapp env') as c:
-        c.argument('name', name_type)
+        c.argument('name', name_type, help='Name of the containerapp environment')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: Canada Central, North Europe')
         c.argument('logs_destination', options_list=['--logs-dest'])

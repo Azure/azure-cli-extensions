@@ -111,7 +111,7 @@ def parse_secret_flags(secret_string):
     return secret_var_def
 
 
-def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_server, registry_pass):
+def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_server, registry_pass, update_existing_secret=False):
     if registry_pass.startswith("secretref:"):
         # If user passed in registry password using a secret
 
@@ -135,9 +135,11 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
             for secret in secrets_list:
                 if secret['name'].lower() == registry_secret_name.lower():
                     if secret['value'].lower() != registry_pass.lower():
-                        raise ValidationError('Found secret with name \"{}\" but value does not equal the supplied registry password.'.format(registry_secret_name))
-                    else:
-                        return registry_secret_name
+                        if update_existing_secret:
+                            secret['value'] = registry_pass
+                        else:
+                            raise ValidationError('Found secret with name \"{}\" but value does not equal the supplied registry password.'.format(registry_secret_name))
+                    return registry_secret_name
 
             logger.warning('Adding registry password as a secret with name \"{}\"'.format(registry_secret_name))
             secrets_list.append({

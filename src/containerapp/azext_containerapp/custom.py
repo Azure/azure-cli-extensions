@@ -101,19 +101,19 @@ def create_containerapp(cmd,
 
     registries_def = None
     if registry_server is not None:
-        credentials_def = RegistryCredentials
-        credentials_def["server"] = registry_server
-        credentials_def["username"] = registry_user
+        registries_def = RegistryCredentials
+        registries_def["server"] = registry_server
+        registries_def["username"] = registry_user
 
         if secrets_def is None:
             secrets_def = []
-        credentials_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
+        registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
 
     config_def = Configuration
-    config_def["secrets"] = secrets_def
+    config_def["secrets"] = None # TODO: Uncomment secrets_def
     config_def["activeRevisionsMode"] = revisions_mode
     config_def["ingress"] = ingress_def
-    config_def["registries"] = registries_def
+    config_def["registries"] = [registries_def]
 
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
@@ -160,11 +160,185 @@ def create_containerapp(cmd,
     containerapp_def["tags"] = tags
 
     try:
-        r = ContainerAppClient.create(
+        r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_containerapp(cmd,
+                        name,
+                        resource_group_name,
+                        yaml=None,
+                        image_name=None,
+                        min_replicas=None,
+                        max_replicas=None,
+                        ingress=None,
+                        target_port=None,
+                        transport=None,
+                        # traffic_weights=None,
+                        revisions_mode=None,
+                        secrets=None,
+                        env_vars=None,
+                        cpu=None,
+                        memory=None,
+                        registry_server=None,
+                        registry_user=None,
+                        registry_pass=None,
+                        dapr_enabled=None,
+                        dapr_app_port=None,
+                        dapr_app_id=None,
+                        dapr_app_protocol=None,
+                        # dapr_components=None,
+                        revision_suffix=None,
+                        startup_command=None,
+                        args=None,
+                        tags=None,
+                        no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if yaml:
+        # TODO: Implement yaml
+        raise CLIError("--yaml is not yet implemented")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    update_map = {}
+    update_map['secrets'] = secrets is not None
+    update_map['ingress'] = ingress or target_port or transport
+    update_map['registries'] = registry_server or registry_user or registry_pass
+    update_map['scale'] = min_replicas or max_replicas
+    update_map['container'] = image_name or env_vars or cpu or memory or startup_command or args
+    update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
+    update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
+
+    if update_map['container'] and len(containerapp_def['properties']['template']['containers']) > 1:
+        raise CLIError("Usage error: trying to update image, environment variables, resources claims on a multicontainer containerapp. Please use --yaml or ARM templates for multicontainer containerapp update")
+
+    if tags:
+        containerapp_def['tags'] = tags
+
+    if revision_suffix is not None:
+        containerapp_def["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    # Containers
+    if image_name is not None:
+        containerapp_def["properties"]["template"]["containers"][0]["image"] = image_name
+    if env_vars is not None:
+        containerapp_def["properties"]["template"]["containers"][0]["env"] = parse_env_var_flags(env_vars)
+    if startup_command is not None:
+        containerapp_def["properties"]["template"]["containers"][0]["command"] = parse_list_of_strings(startup_command)
+    if args is not None:
+        containerapp_def["properties"]["template"]["containers"][0]["args"] = parse_list_of_strings(startup_command)
+    if cpu is not None or memory is not None:
+        resources = containerapp_def["properties"]["template"]["containers"][0]["resources"]
+        if resources:
+            if cpu is not None:
+                resources["cpu"] = cpu
+            if memory is not None:
+                resources["memory"] = memory
+        else:
+            resources = containerapp_def["properties"]["template"]["containers"][0]["resources"] = {
+                "cpu": cpu,
+                "memory": memory
+            }
+
+    # Scale
+    if update_map["scale"]:
+        if "scale" not in containerapp_def["properties"]["template"]:
+            containerapp_def["properties"]["template"]["scale"] = {}
+        if min_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
+
+    # Dapr
+    if update_map["dapr"]:
+        if "dapr" not in containerapp_def["properties"]["template"]:
+            containerapp_def["properties"]["template"]["dapr"] = {}
+        if dapr_enabled is not None:
+            containerapp_def["properties"]["template"]["dapr"]["daprEnabled"] = dapr_enabled
+        if dapr_app_id is not None:
+            containerapp_def["properties"]["template"]["dapr"]["appId"] = dapr_app_id
+        if dapr_app_port is not None:
+            containerapp_def["properties"]["template"]["dapr"]["appPort"] = dapr_app_port
+        if dapr_app_protocol is not None:
+            containerapp_def["properties"]["template"]["dapr"]["appProtocol"] = dapr_app_protocol
+
+    # Configuration
+    if revisions_mode is not None:
+        containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = revisions_mode
+
+    if update_map["ingress"]:
+        external_ingress = None
+        if ingress is not None:
+            if ingress.lower() == "internal":
+                external_ingress = False
+            elif ingress.lower() == "external":
+                external_ingress = True
+        containerapp_def["properties"]["configuration"]["external"] = external_ingress
+
+        if target_port is not None:
+            containerapp_def["properties"]["configuration"]["targetPort"] = target_port
+
+        config = containerapp_def["properties"]["configuration"]
+        if (config["targetPort"] is not None and config["external"] is None) or (config["targetPort"] is None and config["external"] is not None):
+            raise ValidationError("Usage error: must specify --target-port with --ingress")
+
+        if transport is not None:
+            containerapp_def["properties"]["configuration"]["transport"] = transport
+
+    # TODO: Need list_secrets API to do secrets before registries
+
+    if update_map["registries"]:
+        registries_def = None
+        registry = None
+
+        if "registries" not in containerapp_def["properties"]["configuration"]:
+            containerapp_def["properties"]["configuration"]["registries"] = []
+
+        registries_def = containerapp_def["properties"]["configuration"]["registries"]
+
+        if len(registries_def) == 0: # Adding new registry
+            if not(registry_server is not None and registry_user is not None and registry_pass is not None):
+                raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required when adding a registry")
+
+            registry = RegistryCredentials
+            registry["server"] = registry_server
+            registry["username"] = registry_user
+            registries_def.append(registry)
+        elif len(registries_def) == 1: # Modifying single registry
+            if registry_server is not None:
+                registries_def[0]["server"] = registry_server
+            if registry_user is not None:
+                registries_def[0]["username"] = registry_user
+        else: # Multiple registries
+            raise ValidationError("Usage error: trying to update image, environment variables, resources claims on a multicontainer containerapp. Please use --yaml or ARM templates for multicontainer containerapp update")
+
+        if "secrets" not in containerapp_def["properties"]["configuration"]:
+            containerapp_def["properties"]["configuration"]["secrets"] = []
+        secrets_def = containerapp_def["properties"]["configuration"]["secrets"]
+
+        registries_def[0]["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, update_existing_secret=True)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
     except Exception as e:

@@ -57,18 +57,48 @@ helps['containerapp create'] = """
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8 \\
               --query properties.configuration.ingress.fqdn
-    - name: Create a Containerapp with dapr components
-      text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
-              --image MyContainerImage -e MyContainerappEnv \\
-              --enable-dapr --dapr-app-port myAppPort \\
-              --dapr-app-id myAppID \\
-              --dapr-components PathToDaprComponentsFile \\
-              --query properties.configuration.ingress.fqdn
     - name: Create a Containerapp using a YAML configuration. Example YAML configuration - https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples
       text: |
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               -- yaml "C:/path/to/yaml/file.yml"
+"""
+
+helps['containerapp update'] = """
+    type: command
+    short-summary: Update a Containerapp.
+    examples:
+    - name: Update a Containerapp's container image
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --image MyNewContainerImage
+    - name: Update a Containerapp with secrets and environment variables
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --secrets mysecret=secretfoo,anothersecret=secretbar
+              --environment-variables myenvvar=foo,anotherenvvar=secretref:mysecretname
+    - name: Update a Containerapp's ingress setting to internal
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --ingress internal
+    - name: Update a Containerapp using an image from a private registry
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --image MyNewContainerImage \\
+              --secrets mypassword=verysecurepassword \\
+              --registry-login-server MyRegistryServerAddress \\
+              --registry-username MyUser \\
+              --registry-password mypassword
+    - name: Update a Containerapp using a specified startup command and arguments
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image MyContainerImage \\
+              --command "/bin/sh"
+              --args "-c", "while true; do echo hello; sleep 10;done"
+    - name: Update a Containerapp with a minimum resource and replica requirements
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --cpu 0.5 --memory 1.0Gi \\
+              --min-replicas 4 --max-replicas 8
 """
 
 helps['containerapp delete'] = """

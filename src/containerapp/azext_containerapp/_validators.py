@@ -33,9 +33,6 @@ def validate_memory(namespace):
     memory = namespace.memory
 
     if memory is not None:
-        if namespace.cpu is None:
-            raise RequiredArgumentMissingError('Usage error: --cpu required if specifying --memory')
-
         valid = False
 
         if memory.endswith("Gi"):
@@ -45,8 +42,7 @@ def validate_memory(namespace):
             raise ValidationError("Usage error: --memory must be a number ending with \"Gi\"")
 
 def validate_cpu(namespace):
-    if namespace.cpu is not None and namespace.memory is None:
-        raise RequiredArgumentMissingError('Usage error: --memory required if specifying --cpu')
+    return
 
 def validate_managed_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -62,21 +58,31 @@ def validate_managed_env_name_or_id(cmd, namespace):
             )
 
 def validate_registry_server(namespace):
-    if namespace.registry_server:
-        if not namespace.registry_user or not namespace.registry_pass:
-            raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
+    if "create" in namespace.command.lower():
+        if namespace.registry_server:
+            if not namespace.registry_user or not namespace.registry_pass:
+                raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
 
 def validate_registry_user(namespace):
-    if namespace.registry_user:
-        if not namespace.registry_server or not namespace.registry_pass:
-            raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
+    if "create" in namespace.command.lower():
+        if namespace.registry_user:
+            if not namespace.registry_server or not namespace.registry_pass:
+                raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
 
 def validate_registry_pass(namespace):
-    if namespace.registry_pass:
-        if not namespace.registry_user or not namespace.registry_server:
-            raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
+    if "create" in namespace.command.lower():
+        if namespace.registry_pass:
+            if not namespace.registry_user or not namespace.registry_server:
+                raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required together")
 
 def validate_target_port(namespace):
-    if namespace.target_port:
-        if not namespace.ingress:
-            raise ValidationError("Usage error: must specify --ingress with --target-port")
+    if "create" in namespace.command.lower():
+        if namespace.target_port:
+            if not namespace.ingress:
+                raise ValidationError("Usage error: must specify --ingress with --target-port")
+
+def validate_ingress(namespace):
+    if "create" in namespace.command.lower():
+        if namespace.ingress:
+            if not namespace.target_port:
+                raise ValidationError("Usage error: must specify --target-port with --ingress")
