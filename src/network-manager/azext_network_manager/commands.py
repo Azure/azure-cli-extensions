@@ -185,3 +185,4 @@ def load_command_table(self, _):
         g.custom_command('list', 'network_manager_group_static_member_list')
         g.custom_show_command('show', 'network_manager_group_static_member_show')
         g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)
+        
