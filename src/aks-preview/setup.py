@@ -8,7 +8,7 @@
 from codecs import open as open1
 from setuptools import setup, find_packages
 
-VERSION = "0.5.51"
+VERSION = "0.5.53"
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -31,12 +31,12 @@ with open1("HISTORY.md", "r", encoding="utf-8") as f:
 setup(
     name="aks-preview",
     version=VERSION,
-    description="Provides a preview for upcoming AKS features",
-    long_description=README + "\n\n" + HISTORY,
-    license="MIT",
-    author="Microsoft Corporation",
-    author_email="azpycli@microsoft.com",
-    url="https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview",
+    description='Provides a preview for upcoming AKS features',
+    long_description=README + '\n\n' + HISTORY,
+    license='MIT',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={

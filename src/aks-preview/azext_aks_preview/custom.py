@@ -129,7 +129,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -758,6 +758,7 @@ def aks_create(cmd,
                gmsa_root_domain_name=None,
                snapshot_id=None,
                enable_oidc_issuer=False,
+               host_group_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1621,7 +1622,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             node_vm_size = "Standard_DS2_v2"
 
     if max_surge:
-        upgradeSettings.max_surge = max_surge
+        upgradeSettings.max_surge = max_surge 
 
     agent_pool = AgentPool(
         name=nodepool_name,

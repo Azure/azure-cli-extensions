@@ -62,58 +62,8 @@ class TestValidateIPRanges(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
-class TestClusterAutoscalerParamsValidators(unittest.TestCase):
-    def test_empty_key_empty_value(self):
-        cluster_autoscaler_profile = ["="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_non_empty_key_empty_value(self):
-        cluster_autoscaler_profile = ["scan-interval="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-
-        validators.validate_cluster_autoscaler_profile(namespace)
-
-    def test_two_empty_keys_empty_value(self):
-        cluster_autoscaler_profile = ["=", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_one_empty_key_in_pair_one_non_empty(self):
-        cluster_autoscaler_profile = ["scan-interval=20s", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_invalid_key(self):
-        cluster_autoscaler_profile = ["bad-key=val"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Invalid key specified for cluster-autoscaler-profile: bad-key"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_valid_parameters(self):
-        cluster_autoscaler_profile = ["scan-interval=20s", "scale-down-delay-after-add=15m"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-
-        validators.validate_cluster_autoscaler_profile(namespace)
-
-
 class Namespace:
-    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None):
+    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None, host_group_id=None):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
         self.kubernetes_version = kubernetes_version
@@ -137,15 +87,6 @@ class TestSubnetId(unittest.TestCase):
 
     def test_empty_vnet_subnet_id(self):
         validators._validate_subnet_id("", "something")
-
-class TestHostGroupId(unnittest.TestCase):
-    def test_invalid_hostgroup_id(self):
-        invalid_host_group_id = "dummy host group id"
-        err = ("--hostgroup-id is not a valid Azure resource ID.")
-
-        with self.assertRaises(CLIError) as cm:
-            validators._validate_hostgroup_id(invalid_host_group_id, "--hostgroup-id")
-        self.assertEqual(str(cm.exception), err)
 
 
 class MaxSurgeNamespace:
@@ -347,6 +288,20 @@ class TestValidateKubernetesVersion(unittest.TestCase):
             validators.validate_k8s_version(namespace)
         self.assertEqual(str(cm.exception), err)
 
+class HostGroupIDNamespace:
+
+    def __init__(self, host_group_id):
+        self.host_group_id = host_group_id
+
+class TestValidateHostGroupID(unittest.TestCase):
+    def test_invalid_host_group_id(self):
+        invalid_host_group_id = "dummy group id"
+        namespace = HostGroupIDNamespace(host_group_id=invalid_host_group_id)
+        err = ("--host-group-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_host_group_id(namespace)
+        self.assertEqual(str(cm.exception), err)
 
 if __name__ == "__main__":
     unittest.main()
