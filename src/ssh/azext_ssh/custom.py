@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import functools
 import os
 import hashlib
 import json
@@ -19,12 +18,13 @@ from . import ssh_info
 
 logger = log.get_logger(__name__)
 
+
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_folder=None, ssh_args=[]):
+           ssh_client_folder=None, ssh_args=None):
 
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
-        ssh_args = ['-v'] + ssh_args
+        ssh_args = ['-v'] if not ssh_args else ['-v'] + ssh_args
 
     _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
     credentials_folder = None
@@ -32,7 +32,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
                                       private_key_file, use_private_ip, local_user, cert_file, port,
                                       ssh_client_folder, ssh_args)
-
     _do_ssh_op(cmd, ssh_session, credentials_folder, op_call)
 
 
@@ -83,14 +82,17 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     keys_folder = None
     if not public_key_file:
         keys_folder = os.path.dirname(cert_path)
-        logger.warning(f"The generated SSH keys are saved in {keys_folder}. Please delete SSH keys when the certificate "
-                       "is no longer being used.")
 
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
+
+    if keys_folder:
+        logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
+                       "Please delete once this certificate is no longer being used.", keys_folder)
+
     try:
         cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
-        logger.warning(f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time.")
+        logger.warning("Generated SSH certificate %s is valid until %s in local time.", cert_file, cert_expiration)
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
         print(cert_file + "\n")
@@ -104,7 +106,7 @@ def _do_ssh_op(cmd, op_info, credentials_folder, op_call):
     if not op_info.ip:
         if not op_info.use_private_ip:
             raise azclierror.ResourceNotFoundError(f"VM '{op_info.vm_name}' does not have a public "
-                                                    "IP address to SSH to")
+                                                   "IP address to SSH to")
 
         raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
 
@@ -242,7 +244,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
 
 
 def _write_cert_file(certificate_contents, cert_file):
-    with open(cert_file, 'w') as f:
+    with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
 
     return cert_file
@@ -252,7 +254,7 @@ def _get_modulus_exponent(public_key_file):
     if not os.path.isfile(public_key_file):
         raise azclierror.FileOperationError(f"Public key file '{public_key_file}' was not found")
 
-    with open(public_key_file, 'r') as f:
+    with open(public_key_file, 'r', encoding='utf-8') as f:
         public_key_text = f.read()
 
     parser = rsa_parser.RSAParser()

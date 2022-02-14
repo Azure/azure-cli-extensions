@@ -9,7 +9,6 @@ import time
 import multiprocessing as mp
 import datetime
 from azext_ssh import file_utils
-import logging
 
 from knack import log
 from azure.cli.core import azclierror
@@ -38,8 +37,8 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
             log_file = os.path.join(log_file_dir, log_file_name)
             ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
         # Create a new process that will wait until the connection is established and then delete keys.
-        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file,
-                                     ssh_info.public_key_file, log_file, True))
+        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, ssh_info.cert_file,
+                                     ssh_info.private_key_file, ssh_info.public_key_file, log_file, True))
         cleanup_process.start()
 
     command = [_get_ssh_client_path(ssh_client_folder=ssh_info.ssh_client_folder), ssh_info.get_host()]
@@ -87,9 +86,10 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
         if expiration:
-            logger.warning(f"The generated certificate {config_info.cert_file} is valid until {expiration} in local time.")
-        logger.warning(f"{path_to_delete} contains sensitive information{items_to_delete}. "
-                       "Please delete it once you no longer this config file.")
+            logger.warning("The generated certificate %s is valid until %s in local time.",
+                           config_info.cert_file, expiration)
+        logger.warning("%s contains sensitive information%s. Please delete it once you no longer this config file.",
+                       path_to_delete, items_to_delete)
 
     config_text = config_info.get_config_text()
 
@@ -127,7 +127,7 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
             in_principal = True
             continue
         if in_principal:
-            principals.append(line.strip())    
+            principals.append(line.strip())
 
     return principals
 
@@ -153,12 +153,12 @@ def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
 
 
 def _print_error_messages_from_ssh_log(log_file, connection_status):
-    with open(log_file, 'r') as log:
-        if "debug1: Authentication succeeded" not in log.read() or connection_status != 0: 
-            for line in log.readlines():
+    with open(log_file, 'r', encoding='utf-8') as ssh_log:
+        if "debug1: Authentication succeeded" not in ssh_log.read() or connection_status != 0:
+            for line in ssh_log.readlines():
                 if "debug1:" not in line:
                     print(line)
-        log.close()
+        ssh_log.close()
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
@@ -219,7 +219,7 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, lo
         while (time.time() - t0) < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(CLEANUP_TIME_INTERVAL_IN_SECONDS)
             try:
-                with open(log_file, 'r') as ssh_client_log:
+                with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
                     match = "debug1: Authentication succeeded" in ssh_client_log.read()
                     ssh_client_log.close()
             except:

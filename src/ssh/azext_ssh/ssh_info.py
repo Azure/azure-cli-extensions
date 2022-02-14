@@ -1,5 +1,6 @@
 import os
 
+
 class SSHSession():
 
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file,
