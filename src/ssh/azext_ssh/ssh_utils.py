@@ -21,11 +21,11 @@ CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
 CLEANUP_AWAIT_TERMINATION_IN_SECONDS = 30
 
 
-def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file, ssh_client_folder, delete_keys, delete_cert):
+def start_ssh_connection(ssh_info, delete_keys, delete_cert):
 
     ssh_arg_list = []
-    if ssh_args:
-        ssh_arg_list = ssh_args
+    if ssh_info.ssh_args:
+        ssh_arg_list = ssh_info.ssh_args
 
     log_file = None
     if delete_keys or delete_cert:
@@ -33,17 +33,17 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
             # If the user either provides his own client log file (-E) or
             # wants the client log messages to be printed to the console (-vvv/-vv/-v),
             # we should not use the log files to check for connection success.
-            log_file_dir = os.path.dirname(cert_file)
+            log_file_dir = os.path.dirname(ssh_info.cert_file)
             log_file_name = 'ssh_client_log_' + str(os.getpid())
             log_file = os.path.join(log_file_dir, log_file_name)
             ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
         # Create a new process that will wait until the connection is established and then delete keys.
-        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, cert_file, private_key_file,
-                                     log_file, True))
+        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file,
+                                     ssh_info.public_key_file, log_file, True))
         cleanup_process.start()
 
-    command = [_get_ssh_path(ssh_client_folder=ssh_client_folder), _get_host(username, ip)]
-    command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
+    command = [_get_ssh_client_path(ssh_client_folder=ssh_info.ssh_client_folder), ssh_info.get_host()]
+    command = command + ssh_info.build_args() + ssh_arg_list
 
     logger.debug("Running ssh command %s", ' '.join(command))
     connection_status = subprocess.call(command, shell=platform.system() == 'Windows')
@@ -60,29 +60,63 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
                 time.sleep(1)
 
         # Make sure all files have been properly removed.
-        _do_cleanup(delete_keys, delete_cert, cert_file, private_key_file)
+        _do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file, ssh_info.public_key_file)
         if log_file:
             file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
         if delete_keys:
-            temp_dir = os.path.dirname(cert_file)
+            temp_dir = os.path.dirname(ssh_info.cert_file)
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def create_ssh_keyfile(private_key_file, ssh_client_folder):
-    sshkeygen_path = _get_ssh_path("ssh-keygen", ssh_client_folder)
+def write_ssh_config(config_info, delete_keys, delete_cert):
+
+    if delete_keys or delete_cert:
+        # Warn users to delete credentials once config file is no longer being used.
+        # If user provided keys, only ask them to delete the certificate.
+        path_to_delete = os.path.dirname(config_info.cert_file)
+        items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
+        if not delete_keys:
+            path_to_delete = config_info.cert_file
+            items_to_delete = ""
+
+        expiration = None
+        try:
+            expiration = get_certificate_start_and_end_times(config_info.cert_file, config_info.ssh_client_folder)[1]
+            expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
+        except Exception as e:
+            logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
+
+        if expiration:
+            logger.warning(f"The generated certificate {config_info.cert_file} is valid until {expiration} in local time.")
+        logger.warning(f"{path_to_delete} contains sensitive information{items_to_delete}. "
+                       "Please delete it once you no longer this config file.")
+
+    config_text = config_info.get_config_text()
+
+    if config_info.overwrite:
+        mode = 'w'
+    else:
+        mode = 'a'
+
+    with open(config_info.config_path, mode, encoding='utf-8') as f:
+        f.write('\n'.join(config_text))
+
+
+def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
+    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
-def get_ssh_cert_info(cert_file, ssh_client_folder):
-    sshkeygen_path = _get_ssh_path("ssh-keygen", ssh_client_folder)
+def get_ssh_cert_info(cert_file, ssh_client_folder=None):
+    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
     command = [sshkeygen_path, "-L", "-f", cert_file]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
 
 
-def get_ssh_cert_principals(cert_file, ssh_client_folder):
+def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     info = get_ssh_cert_info(cert_file, ssh_client_folder)
     principals = []
     in_principal = False
@@ -98,7 +132,7 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder):
     return principals
 
 
-def _get_ssh_cert_validity(cert_file, ssh_client_folder):
+def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
     if cert_file:
         info = get_ssh_cert_info(cert_file, ssh_client_folder)
         for line in info:
@@ -107,7 +141,7 @@ def _get_ssh_cert_validity(cert_file, ssh_client_folder):
     return None
 
 
-def get_certificate_start_and_end_times(cert_file, ssh_client_folder):
+def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
     validity_str = _get_ssh_cert_validity(cert_file, ssh_client_folder)
     times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
@@ -118,67 +152,16 @@ def get_certificate_start_and_end_times(cert_file, ssh_client_folder):
     return times
 
 
-def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
-                     ip, username, cert_file, private_key_file, ssh_client_folder, delete_keys, delete_cert):
-
-    if delete_keys or delete_cert:
-        # Warn users to delete credentials once config file is no longer being used.
-        # If user provided keys, only ask them to delete the certificate.
-        path_to_delete = os.path.dirname(cert_file)
-        items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
-        if not delete_keys:
-            path_to_delete = cert_file
-            items_to_delete = ""
-
-        expiration = None
-        try:
-            expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
-            expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-        except Exception as e:
-            logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
-
-        if expiration:
-            print(f"The generated certificate {cert_file} is valid until {expiration} in local time.")
-        print(f"{path_to_delete} contains sensitive information{items_to_delete}. "
-              "Please delete it once you no longer this config file.")
-
-    lines = [""]
-
-    if resource_group and vm_name:
-        lines.append("Host " + resource_group + "-" + vm_name)
-        lines.append("\tUser " + username)
-        lines.append("\tHostName " + ip)
-        if cert_file:
-            lines.append("\tCertificateFile \"" + cert_file + "\"")
-        if private_key_file:
-            lines.append("\tIdentityFile \"" + private_key_file + "\"")
-        if port:
-            lines.append("\tPort " + port)
-
-    # default to all hosts for config
-    if not ip:
-        ip = "*"
-
-    lines.append("Host " + ip)
-    lines.append("\tUser " + username)
-    if cert_file:
-        lines.append("\tCertificateFile \"" + cert_file + "\"")
-    if private_key_file:
-        lines.append("\tIdentityFile \"" + private_key_file + "\"")
-    if port:
-        lines.append("\tPort " + port)
-
-    if overwrite:
-        mode = 'w'
-    else:
-        mode = 'a'
-
-    with open(config_path, mode, encoding='utf-8') as f:
-        f.write('\n'.join(lines))
+def _print_error_messages_from_ssh_log(log_file, connection_status):
+    with open(log_file, 'r') as log:
+        if "debug1: Authentication succeeded" not in log.read() or connection_status != 0: 
+            for line in log.readlines():
+                if "debug1:" not in line:
+                    print(line)
+        log.close()
 
 
-def _get_ssh_path(ssh_command="ssh", ssh_client_folder=None):
-    
+def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
@@ -197,7 +180,7 @@ def _get_ssh_path(ssh_command="ssh", ssh_client_folder=None):
         # python interpreter architecture
         platform_architecture = platform.architecture()[0]
         sys_path = None
-        
+
         if machine.endswith('64'):
             os_architecture = '64bit'
         elif machine.endswith('86'):
@@ -206,12 +189,12 @@ def _get_ssh_path(ssh_command="ssh", ssh_client_folder=None):
             raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
         else:
             raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
-        
+
         if os_architecture == "64bit":
             sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
         else:
             sys_path = 'System32'
-        
+
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
         ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
@@ -228,33 +211,7 @@ def _get_ssh_path(ssh_command="ssh", ssh_client_folder=None):
     return ssh_path
 
 
-def _get_host(username, ip):
-    return username + "@" + ip
-
-
-def _build_args(cert_file, private_key_file, port):
-    private_key = []
-    port_arg = []
-    certificate = []
-    if private_key_file:
-        private_key = ["-i", private_key_file]
-    if port:
-        port_arg = ["-p", port]
-    if cert_file:
-        certificate = ["-o", "CertificateFile=\"" + cert_file + "\""]
-    return private_key + certificate + port_arg
-
-
-def _print_error_messages_from_ssh_log(log_file, connection_status):
-    with open(log_file, 'r') as log:
-        if "debug1: Authentication succeeded" not in log.read() or connection_status != 0: 
-            for line in log.readlines():
-                if "debug1:" not in line:
-                    print(line)
-        log.close()
-
-
-def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, log_file=None, wait=False):
+def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
     # if there is a log file, use it to check for the connection success
     if log_file:
         t0 = time.time()
@@ -273,10 +230,9 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, log_file=None,
         # if we are not checking the logs, but still want to wait for connection before deleting files
         time.sleep(CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS)
 
-    # TO DO: Once arc changes are merged, delete relay information as well
     if delete_keys and private_key:
-        public_key = private_key + '.pub'
         file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
+    if delete_keys and public_key:
         file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
     if delete_cert and cert_file:
         file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)
