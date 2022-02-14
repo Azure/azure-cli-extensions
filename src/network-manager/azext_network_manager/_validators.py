@@ -7,3 +7,15 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+from azure.cli.core.commands.client_factory import get_subscription_id
+
+
+def validate_network_manager(cmd, namespace):
+    from msrestazure.tools import is_valid_resource_id, resource_id
+    if namespace.network_manager and not is_valid_resource_id(namespace.network_manager):
+        namespace.network_manager = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            name=namespace.network_manager,
+            namespace='Microsoft.Network',
+            type='networkManagers')

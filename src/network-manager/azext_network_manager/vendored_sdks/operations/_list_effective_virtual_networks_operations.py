@@ -26,10 +26,11 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
-def build_list_request(
+def build_by_network_group_request(
     subscription_id: str,
     resource_group_name: str,
     network_manager_name: str,
+    network_group_name: str,
     *,
     json: JSONType = None,
     content: Any = None,
@@ -40,11 +41,12 @@ def build_list_request(
     api_version = "2021-05-01-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/listDeploymentStatus')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/listEffectiveVirtualNetworks')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
         "networkManagerName": _SERIALIZER.url("network_manager_name", network_manager_name, 'str'),
+        "networkGroupName": _SERIALIZER.url("network_group_name", network_group_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -69,8 +71,8 @@ def build_list_request(
         **kwargs
     )
 
-class NetworkManagerDeploymentStatusOperations(object):
-    """NetworkManagerDeploymentStatusOperations operations.
+class ListEffectiveVirtualNetworksOperations(object):
+    """ListEffectiveVirtualNetworksOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -92,28 +94,30 @@ class NetworkManagerDeploymentStatusOperations(object):
         self._config = config
 
     @distributed_trace
-    def list(
+    def by_network_group(
         self,
         resource_group_name: str,
         network_manager_name: str,
-        parameters: "_models.NetworkManagerDeploymentStatusParameter",
+        network_group_name: str,
+        parameters: "_models.QueryRequestOptions",
         **kwargs: Any
-    ) -> "_models.NetworkManagerDeploymentStatusListResult":
-        """Post to List of Network Manager Deployment Status.
+    ) -> "_models.EffectiveVirtualNetworksListResult":
+        """Lists all effective virtual networks by specified network group.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which Managed Network deployment status is.
-        :type parameters:
-         ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerDeploymentStatusParameter
+        :param network_group_name: The name of the network group.
+        :type network_group_name: str
+        :param parameters: Parameters supplied to list correct page.
+        :type parameters: ~azure.mgmt.network.v2021_05_01_preview.models.QueryRequestOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManagerDeploymentStatusListResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerDeploymentStatusListResult
+        :return: EffectiveVirtualNetworksListResult, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveVirtualNetworksListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerDeploymentStatusListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.EffectiveVirtualNetworksListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -121,15 +125,16 @@ class NetworkManagerDeploymentStatusOperations(object):
 
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(parameters, 'NetworkManagerDeploymentStatusParameter')
+        _json = self._serialize.body(parameters, 'QueryRequestOptions')
 
-        request = build_list_request(
+        request = build_by_network_group_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             network_manager_name=network_manager_name,
+            network_group_name=network_group_name,
             content_type=content_type,
             json=_json,
-            template_url=self.list.metadata['url'],
+            template_url=self.by_network_group.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -141,12 +146,12 @@ class NetworkManagerDeploymentStatusOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('NetworkManagerDeploymentStatusListResult', pipeline_response)
+        deserialized = self._deserialize('EffectiveVirtualNetworksListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/listDeploymentStatus'}  # type: ignore
+    by_network_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/listEffectiveVirtualNetworks'}  # type: ignore
 

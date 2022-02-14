@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-
+from azext_network_manager._validators import validate_network_manager
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,
@@ -258,6 +258,8 @@ def load_arguments(self, _):
         c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.', id_part='name')
         c.argument('network_group_name', options_list=['--name', '-n', '--network-group-name'], type=str, help='The '
                    'name of the network group to get.', id_part='child_name_1')
+        c.argument('force', options_list=['--force-delete', '-f'], arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
 
     with self.argument_context('network manager security-user-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -354,6 +356,10 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
+        c.argument('force', options_list=['--force-delete', '-f'], arg_type=get_three_state_flag(),
+                   help='Deletes the resource even if it is part of a deployed configuration.')
+        c.argument('recursive', options_list=['--recursive-delete', '-f'], arg_type=get_three_state_flag(),
+                   help='Deletes the resource recursively.')
 
     with self.argument_context('network manager security-admin-config rule-collection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -539,16 +545,16 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
                    type=str, help='The name of the network manager connection.')
-        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('network_manager_id', type=str, help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
 
     with self.argument_context('network manager connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', ' --network-manager-connection-name'],
                    type=str, help='The name of the network manager connection.', id_part='name')
-        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('network_manager_id', type=str, help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
         c.ignore('parameters')
 
@@ -561,13 +567,13 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     with self.argument_context('network manager connection show') as c:
-        c.argument('resource_group_name',resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name','-n','--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection management-group create') as c:
@@ -575,7 +581,7 @@ def load_arguments(self, _):
         c.argument('network_manager_connection_name', type=str, help='The name of the network manager connection.')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('network_manager_id', type=str, help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
 
     with self.argument_context('network manager connection management-group update') as c:
@@ -584,7 +590,7 @@ def load_arguments(self, _):
                    help='The name of the network manager connection.', id_part='name')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('network_manager_id', type=str, help='The id of the network manager')
+        c.argument('network_manager_id', type=str, help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
         c.ignore('parameters')
 
@@ -630,7 +636,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager scope connection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str,help='The name of the network manager', id_part=None)
+        c.argument('network_manager_name', type=str, help='The name of the network manager', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '

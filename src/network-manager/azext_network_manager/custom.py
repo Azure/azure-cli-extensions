@@ -397,10 +397,12 @@ def network_manager_group_update(instance,
 def network_manager_group_delete(client,
                                  resource_group_name,
                                  network_manager_name,
-                                 network_group_name):
+                                 network_group_name,
+                                 force):
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
-                         network_group_name=network_group_name)
+                         network_group_name=network_group_name,
+                         force=force)
 
 
 def network_manager_security_user_config_list(client,
@@ -524,10 +526,14 @@ def network_manager_security_admin_config_update(instance,
 def network_manager_security_admin_config_delete(client,
                                                  resource_group_name,
                                                  network_manager_name,
-                                                 configuration_name):
+                                                 configuration_name,
+                                                 force,
+                                                 recursive):
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
-                         configuration_name=configuration_name)
+                         configuration_name=configuration_name,
+                         force=force,
+                         recursive=recursive)
 
 
 def network_manager_admin_rule_collection_list(client,
@@ -980,8 +986,8 @@ def network_manager_collection_create(client,
                                       network_manager_connection_name,
                                       network_manager_id,
                                       description=None):
-    parameters={}
-    parameters['description']=description
+    parameters = {}
+    parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_connection_name=network_manager_connection_name,
                                    network_manager_id=network_manager_id,
@@ -991,10 +997,9 @@ def network_manager_collection_create(client,
 def network_manager_collection_update(instance,
                                       resource_group_name,
                                       network_manager_connection_name,
-                                      network_manager_id,
                                       description=None):
     if description is not None:
-        instance.description=description
+        instance.description = description
     return instance
 
 
@@ -1028,8 +1033,8 @@ def network_manager_connection_management_group_create(client,
                                                        network_manager_connection_name,
                                                        management_group_id,
                                                        description=None):
-    parameters={}
-    parameters['description']=description
+    parameters = {}
+    parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_connection_name=network_manager_connection_name,
                                    management_group_id=management_group_id,
@@ -1042,7 +1047,7 @@ def network_manager_connection_management_group_update(instance,
                                                        management_group_id,
                                                        description=None):
     if description is not None:
-        instance.description=description
+        instance.description = description
     return instance
 
 
@@ -1081,8 +1086,8 @@ def network_manager_scope_collection_create(client,
                                             scope_connection_name,
                                             tenant_id,
                                             description=None):
-    parameters={}
-    parameters['description']=description
+    parameters = {}
+    parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    scope_connection_name=scope_connection_name,
@@ -1094,10 +1099,9 @@ def network_manager_scope_collection_update(instance,
                                             resource_group_name,
                                             network_manager_name,
                                             scope_connection_name,
-                                            tenant_id,
                                             description=None):
     if description is not None:
-        instance.description=description
+        instance.description = description
     return instance
 
 
@@ -1137,7 +1141,7 @@ def network_manager_group_static_member_create(client,
                                                network_manager_name,
                                                network_group_name,
                                                static_member_name):
-    parameters={}
+    parameters = {}
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    network_group_name=network_group_name,
