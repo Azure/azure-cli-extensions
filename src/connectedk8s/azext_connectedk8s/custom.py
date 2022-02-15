@@ -801,7 +801,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
-    if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
+    if (https_proxy or http_proxy or no_proxy) and disable_proxy:
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
@@ -914,6 +914,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        cmd_helm_upgrade.extend(["--set", "global.isCustomCert={}".format(True)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

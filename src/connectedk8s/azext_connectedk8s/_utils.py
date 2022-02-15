@@ -322,6 +322,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
     if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        cmd_helm_install.extend(["--set", "global.isCustomCert={}".format(True)])
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if kube_config:

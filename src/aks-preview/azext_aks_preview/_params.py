@@ -16,9 +16,9 @@ from knack.arguments import CLIArgumentType
 from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list, get_ossku_completion_list)
 from ._validators import (
-    validate_cluster_autoscaler_profile, validate_create_parameters, validate_k8s_version, validate_linux_host_name,
+    validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_snapshot_id,
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_snapshot_id, validate_crg_id,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
@@ -32,7 +32,8 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
     CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL, \
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI
-from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G
+from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, \
+    CONST_GPU_INSTANCE_PROFILE_MIG7_G
 
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
 gpu_instance_profiles = [CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G]
@@ -111,8 +112,7 @@ def load_arguments(self, _):
         c.argument('enable_fips_image', action='store_true')
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('uptime_sla', action='store_true')
-        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
-        c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
+        c.argument('cluster_autoscaler_profile', nargs='+')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.')
@@ -160,13 +160,13 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
+        c.argument('crg_id', validator=validate_crg_id, is_preview=True)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
         c.argument('disable_cluster_autoscaler', options_list=["--disable-cluster-autoscaler", "-d"], action='store_true')
         c.argument('update_cluster_autoscaler', options_list=["--update-cluster-autoscaler", "-u"], action='store_true')
-        # TODO: remove validator after cli 2.32.0 release, will be handled by decorator pattern
-        c.argument('cluster_autoscaler_profile', nargs='+', validator=validate_cluster_autoscaler_profile)
+        c.argument('cluster_autoscaler_profile', nargs='+')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('uptime_sla', action='store_true')
@@ -244,7 +244,7 @@ def load_arguments(self, _):
             c.argument('enable_fips_image', action='store_true')
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
             c.argument('scale_down_mode', arg_type=get_enum_type([CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]))
-            c.argument('node_taints', type=str, validator=validate_taints)
+            c.argument('node_taints', validator=validate_taints)
             c.argument('priority', arg_type=get_enum_type([CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT]), validator=validate_priority)
             c.argument('eviction_policy', arg_type=get_enum_type([CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]), validator=validate_eviction_policy)
             c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
@@ -263,6 +263,7 @@ def load_arguments(self, _):
             c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
             c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
             c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
+            c.argument('crg_id', validator=validate_crg_id, is_preview=True)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -282,6 +283,7 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
+        c.argument('node_taints', validator=validate_taints)
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
