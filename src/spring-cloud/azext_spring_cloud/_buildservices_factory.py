@@ -76,22 +76,19 @@ class BuildService:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
     def _get_build_env(self, target_module, runtime_version):
-        if target_module is not None:
-            if(runtime_version == SupportedRuntimeValue.JAVA8):
-                env = {"BP_JVM_VERSION": "8.*", "BP_MAVEN_BUILT_MODULE": target_module}
-            elif(runtime_version == SupportedRuntimeValue.JAVA11):
-                env = {"BP_JVM_VERSION": "11.*", "BP_MAVEN_BUILT_MODULE": target_module}
-            elif(runtime_version == SupportedRuntimeValue.JAVA17):
-                env = {"BP_JVM_VERSION": "17.*", "BP_MAVEN_BUILT_MODULE": target_module}
-            else:
-                env = {"BP_MAVEN_BUILT_MODULE": target_module}
-        else:
-            if(runtime_version == SupportedRuntimeValue.JAVA8):
-                env = {"BP_JVM_VERSION": "8.*"}
-            elif(runtime_version == SupportedRuntimeValue.JAVA11):
-                env = {"BP_JVM_VERSION": "11.*"}
-            elif(runtime_version == SupportedRuntimeValue.JAVA17):
-                env = {"BP_JVM_VERSION": "17.*"}
+        if all(x is None for x in [target_module, runtime_version]):
+            return None
+        env = {}
+        if target_module:
+            env['BP_MAVEN_BUILT_MODULE'] = target_module
+        
+        runtime_version_table = {
+            SupportedRuntimeValue.JAVA8: '8.*',
+            SupportedRuntimeValue.JAVA11: '11.*',
+            SupportedRuntimeValue.JAVA17: '17.*'
+        }
+        if runtime_version:
+            env['BP_JVM_VERSION'] = runtime_version_table.get(runtime_version, '11.*')
         return env
 
     def _wait_build_finished(self, build_result_id):
