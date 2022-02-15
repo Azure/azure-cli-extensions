@@ -493,7 +493,7 @@ def create_managed_environment(cmd,
 
         if infrastructure_subnet_resource_id is not None:
             if not app_subnet_resource_id:
-                raise ValidationError('App subnet resource ID needs to be supplied with controlplane subnet resource ID.')
+                raise ValidationError('App subnet resource ID needs to be supplied with infrastructure subnet resource ID.')
             vnet_config_def["infrastructureSubnetId"] = infrastructure_subnet_resource_id
 
         if app_subnet_resource_id is not None:

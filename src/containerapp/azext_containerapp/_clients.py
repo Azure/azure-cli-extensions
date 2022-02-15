@@ -261,7 +261,7 @@ class ManagedEnvironmentClient():
         return r.json()
 
     @classmethod
-    def update(cls, cmd, resource_group_name, name, kube_environment_envelope, no_wait=False):
+    def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -273,7 +273,7 @@ class ManagedEnvironmentClient():
             name,
             api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(kube_environment_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
             return r.json()
@@ -335,7 +335,7 @@ class ManagedEnvironmentClient():
 
     @classmethod
     def list_by_subscription(cls, cmd, formatter=lambda x: x):
-        kube_list = []
+        env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
@@ -347,23 +347,23 @@ class ManagedEnvironmentClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
-        for kube in j["value"]:
-            formatted = formatter(kube)
-            kube_list.append(formatted)
+        for env in j["value"]:
+            formatted = formatter(env)
+            env_list.append(formatted)
 
         while j.get("nextLink") is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
-            for kube in j["value"]:
-                formatted = formatter(kube)
-                kube_list.append(formatted)
+            for env in j["value"]:
+                formatted = formatter(env)
+                env_list.append(formatted)
 
-        return kube_list
+        return env_list
 
     @classmethod
     def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x: x):
-        kube_list = []
+        env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
@@ -377,16 +377,16 @@ class ManagedEnvironmentClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
-        for kube in j["value"]:
-            formatted = formatter(kube)
-            kube_list.append(formatted)
+        for env in j["value"]:
+            formatted = formatter(env)
+            env_list.append(formatted)
 
         while j.get("nextLink") is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
-            for kube in j["value"]:
-                formatted = formatter(kube)
-                kube_list.append(formatted)
+            for env in j["value"]:
+                formatted = formatter(env)
+                env_list.append(formatted)
 
-        return kube_list
+        return env_list

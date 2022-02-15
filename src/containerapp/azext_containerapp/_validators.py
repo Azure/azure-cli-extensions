@@ -42,7 +42,12 @@ def validate_memory(namespace):
             raise ValidationError("Usage error: --memory must be a number ending with \"Gi\"")
 
 def validate_cpu(namespace):
-    return
+    if namespace.cpu:
+        cpu = namespace.cpu
+        try:
+            float(cpu)
+        except ValueError:
+            raise ValidationError("Usage error: --cpu must be a number eg. \"0.5\"")
 
 def validate_managed_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id

@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
-                         validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+                          validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
 
 def load_arguments(self, _):
 
@@ -74,21 +74,21 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the containerapp environment')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: Canada Central, North Europe')
-        c.argument('logs_destination', options_list=['--logs-dest'])
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Log analytics workspace ID')
-        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log analytics workspace key')
+        c.argument('logs_destination', type=str, options_list=['--logs-dest'])
+        c.argument('logs_customer_id', type=str, options_list=['--logs-workspace-id'], help='Log analytics workspace ID')
+        c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log analytics workspace key')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
         c.argument('instrumentation_key', options_list=['--instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
-        c.argument('infrastructure_subnet_resource_id', options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components. This subnet must be in the same VNET as the subnet defined in appSubnetResourceId.')
-        c.argument('app_subnet_resource_id', options_list=['--app-subnet-resource-id'], help='Resource ID of a subnet that Container App containers are injected into. This subnet must be in the same VNET as the subnet defined in infrastructureSubnetResourceId.')
-        c.argument('docker_bridge_cidr', options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
-        c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
-        c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
-        c.argument('internal_only', options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId and appSubnetResourceId if enabling this property')
+        c.argument('infrastructure_subnet_resource_id', type=str, options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components. This subnet must be in the same VNET as the subnet defined in appSubnetResourceId.')
+        c.argument('app_subnet_resource_id', type=str, options_list=['--app-subnet-resource-id'], help='Resource ID of a subnet that Container App containers are injected into. This subnet must be in the same VNET as the subnet defined in infrastructureSubnetResourceId.')
+        c.argument('docker_bridge_cidr', type=str, options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
+        c.argument('platform_reserved_cidr', type=str, options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
+        c.argument('platform_reserved_dns_ip', type=str, options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
+        c.argument('internal_only', arg_type=get_three_state_flag(),  options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId and appSubnetResourceId if enabling this property')
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the managed environment.')

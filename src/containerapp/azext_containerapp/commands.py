@@ -26,13 +26,6 @@ def transform_containerapp_list_output(apps):
 
 
 def load_command_table(self, _):
-
-    # TODO: Add command type here
-    # containerapp_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_containerapp)
-
-
     with self.command_group('containerapp') as g:
         g.custom_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)

@@ -63,8 +63,8 @@ def parse_env_var_flags(env_string, is_update_containerapp=False):
     env_pairs = {}
 
     for pair in env_pair_strings:
-        key_val = pair.split('=')
-        if len(key_val) is not 2:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
             if is_update_containerapp:
                 raise ValidationError("Environment variables must be in the format \"<key>=<value>,<key>=secretref:<value>,...\". If you are updating a Containerapp, did you pass in the flag \"--environment\"? Updating a containerapp environment is not supported, please re-run the command without this flag.")
             raise ValidationError("Environment variables must be in the format \"<key>=<value>,<key>=secretref:<value>,...\".")
@@ -75,7 +75,7 @@ def parse_env_var_flags(env_string, is_update_containerapp=False):
 
     env_var_def = []
     for key, value in env_pairs.items():
-        if len(value) is 2:
+        if len(value) == 2:
             env_var_def.append({
                 "name": key,
                 "secretRef": value[1]
@@ -95,7 +95,7 @@ def parse_secret_flags(secret_string):
 
     for pair in secret_pair_strings:
         key_val = pair.split('=', 1)
-        if len(key_val) is not 2:
+        if len(key_val) != 2:
             raise ValidationError("--secrets: must be in format \"<key>=<value>,<key>=<value>,...\"")
         if key_val[0] in secret_pairs:
             raise ValidationError("--secrets: duplicate secret {secret} found, secret names must be unique.".format(secret = key_val[0]))
