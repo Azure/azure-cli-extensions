@@ -3417,7 +3417,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--node-vm-size {vm_size} ' \
                      '--nodepool-name {node_pool_name} -c 1 ' \
                      '--enable-managed-identity ' \
-                     '--assign-identity {identity} '\
+                     '--assign-identity {identity} ' \
                      '--crg-id={crg_id} ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[

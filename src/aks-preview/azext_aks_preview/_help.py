@@ -457,8 +457,8 @@ helps['aks create'] = """
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
         - name: create a kubernetes cluster with a Capacity Reservation Group(CRG) ID.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --node-vm-size <Reserved VM size> --assign-identity <CRG-identity-resource-id>
-           --enable-managed-identity --crg-id "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --node-vm-size <Reserved-VM-size> --assign-identity <CRG-identity-resource-id> 
+          --enable-managed-identity --crg-id "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -1047,8 +1047,8 @@ helps['aks nodepool add'] = """
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
         - name: create a nodepool with a Capacity Reservation Group(CRG) ID.
-          text: az aks nodepool add -g MyResourceGroup -n <MyNodePool> --cluster-name <MyManagedCluster> --node-vm-size <Reserved VM size>
-          --crg-id "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
+          text: az aks nodepool add -g MyResourceGroup -n <MyNodePool> --cluster-name <MyManagedCluster> --node-vm-size <Reserved-VM-size> --crg-id 
+          "/subscriptions/<SubID>/resourceGroups/<ResourceGroupName>/providers/Microsoft.ContainerService/CapacityReservationGroups/<MyCRGID>"
 """
 
 helps['aks nodepool scale'] = """
