@@ -1037,8 +1037,8 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
         # no matching runtime for os
         os_string = "linux" if is_linux else "windows"
         supported_runtimes = list(map(lambda x: x[KEYS.NAME], runtime_stacks_json))
-        raise CLIError("usage error: Currently supported runtimes (--runtime) in {} function apps are: {}."
-                       .format(os_string, ', '.join(supported_runtimes)))
+        raise ValidationError("usage error: Currently supported runtimes (--runtime) in {} function apps are: {}."
+                              .format(os_string, ', '.join(supported_runtimes)))
 
     runtime_version_json = _get_matching_runtime_version_json_functionapp(runtime_json,
                                                                           functions_version,
@@ -1051,20 +1051,21 @@ def create_functionapp(cmd, resource_group_name, name, storage_account, plan=Non
                                                                                           functions_version)))
         if runtime_version:
             if runtime == 'dotnet':
-                raise CLIError('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined '
-                               'by --functions-version. Dotnet version {} is not supported by Functions version {}.'
-                               .format(runtime_version, functions_version))
-            raise CLIError('--runtime-version {} is not supported for the selected --runtime {} and '
-                           '--functions-version {}. Supported versions are: {}.'
-                           .format(runtime_version,
-                                   runtime,
-                                   functions_version,
-                                   ', '.join(supported_runtime_versions)))
+                raise ArgumentUsageError('--runtime-version is not supported for --runtime dotnet. Dotnet version is '
+                                         'determined by --functions-version. Dotnet version {} '
+                                         'is not supported by Functions version {}.'
+                                         .format(runtime_version, functions_version))
+            raise ArgumentUsageError('--runtime-version {} is not supported for the selected --runtime {} and '
+                                     '--functions-version {}. Supported versions are: {}.'
+                                     .format(runtime_version,
+                                             runtime,
+                                             functions_version,
+                                             ', '.join(supported_runtime_versions)))
 
         # if runtime_version was not specified, then that runtime is not supported for that functions version
-        raise CLIError('no supported --runtime-version found for the selected --runtime {} and '
-                       '--functions-version {}'
-                       .format(runtime, functions_version))
+        raise ArgumentUsageError('no supported --runtime-version found for the selected --runtime {} and '
+                                 '--functions-version {}'
+                                 .format(runtime, functions_version))
 
     if runtime == 'dotnet':
         logger.warning('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined by '
