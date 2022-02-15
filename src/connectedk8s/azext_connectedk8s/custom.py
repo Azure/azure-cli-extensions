@@ -879,9 +879,25 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
+    cmd_helm_values = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace]
+    if kube_config:
+        cmd_helm_values.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_values.extend(["--kube-context", kube_context])
+    cmd_helm_values.extend([">", "userValues.txt"])
+
+    response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
+    _, error_helm_get_values = response_helm_values_get.communicate()
+    if response_helm_values_get.returncode != 0:
+        if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                summary='Error while doing helm get values azure-arc')
+        raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
+
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--reuse-values",
-                        "--wait", "--output", "json"]
+                        "-f",
+                        "userValues.txt", "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
     if auto_upgrade is not None:
