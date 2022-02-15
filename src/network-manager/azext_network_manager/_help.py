@@ -322,7 +322,7 @@ helps['network manager group delete'] = """
       - name: Delete Azure Virtual Network Manager Group
         text: |-
                az network manager group delete --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
---resource-group "rg1"
+--resource-group "rg1" --force
 """
 
 helps['network manager group list-effect-vnet'] = """
@@ -436,7 +436,7 @@ helps['network manager security-admin-config delete'] = """
       - name: Delete network manager security admin Configuration
         text: |-
                az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
+--network-manager-name "testNetworkManager" --resource-group "rg1" --force
 """
 
 helps['network manager security-admin-config rule-collection'] = """
@@ -761,7 +761,7 @@ helps['network manager connection show'] = """
     examples:
       - name: Get network manager connection
         text: |-
-               az network manager connection show --network-manager-connection-name "testNetworkManagerConnection" \
+               az network manager connection show --connection-name "testNetworkManagerConnection" \
 --resource-group "rg1"
 """
 
@@ -772,7 +772,7 @@ helps['network manager connection create'] = """
       - name: Create network manager connection
         text: |-
                az network manager connection create --network-manager-id "myTestNetworkManagerId" \
---network-manager-connection-name "testNetworkManagerConnection" --resource-group "rg1" --description "A sample policy"
+--connection-name "testNetworkManagerConnection" --resource-group "rg1" --description "A sample policy"
 """
 
 helps['network manager connection update'] = """
@@ -786,10 +786,9 @@ helps['network manager connection delete'] = """
     examples:
       - name: Delete network manager connection
         text: |-
-               az network manager connection delete --network-manager-connection-name "testNetworkManagerConnection" \
+               az network manager connection delete --connection-name "testNetworkManagerConnection" \
 --resource-group "rg1"
 """
-
 
 helps['network manager connection management-group'] = """
     type: group
@@ -813,7 +812,7 @@ helps['network manager connection management-group show'] = """
       - name: Get network manager connection management-group
         text: |-
                az network manager connection management-group show --management-group-id "testManagementGroupId" \
---network-manager-connection-name "testNetworkManagerConnection" --resource-group "rg1"
+--connection-name "testNetworkManagerConnection" --resource-group "rg1"
 """
 
 helps['network manager connection management-group create'] = """
@@ -823,8 +822,8 @@ helps['network manager connection management-group create'] = """
       - name: Create network manager connection management-group
         text: |-
                az network manager connection management-group create --management-group-id "testManagementGroupId" \
---network-manager-connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager-id \
-"testNetworkManagerId" --description "A sample policy"
+--connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
+--description "A sample policy"
 """
 
 helps['network manager connection management-group update'] = """
@@ -839,61 +838,59 @@ helps['network manager connection management-group delete'] = """
       - name: Delete network manager connection management-group
         text: |-
                az network manager connection management-group delete --management-group-id "testManagementGroupId" \
---network-manager-connection-name "testNetworkManagerConnection" --resource-group "rg1"
+--connection-name "testNetworkManagerConnection" --resource-group "rg1"
 """
 
-
-helps['network manager scope connection'] = """
+helps['network manager scope-connection'] = """
     type: group
     short-summary: Manage scope connection with network
 """
 
-helps['network manager scope connection list'] = """
+helps['network manager scope-connection list'] = """
     type: command
     short-summary: "List all scope connections created by this network manager."
     examples:
       - name: List scope connections in a network manager
         text: |-
-               az network manager scope connection list --network-manager-name "testNetworkManager" --resource-group \
+               az network manager scope-connection list --network-manager-name "testNetworkManager" --resource-group \
 "rg1"
 """
 
-helps['network manager scope connection show'] = """
+helps['network manager scope-connection show'] = """
     type: command
     short-summary: "Get specified scope connection created by this Network Manager."
     examples:
-      - name: Get network manager scope connection
+      - name: Get network manager scope-connection
         text: |-
-               az network manager scope connection show --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection show --scope-connection-name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager scope connection create'] = """
+helps['network manager scope-connection create'] = """
     type: command
     short-summary: "Creates scope connection from Network Manager."
     examples:
-      - name: Create network manager scope connection
+      - name: Create network manager scope-connection
         text: |-
-               az network manager scope connection create --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection create --scope-connection-name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
 --tenant-id "testTenantId"
 """
 
-helps['network manager scope connection update'] = """
+helps['network manager scope-connection update'] = """
     type: command
     short-summary: "Update scope connection from Network Manager."
 """
 
-helps['network manager scope connection delete'] = """
+helps['network manager scope-connection delete'] = """
     type: command
     short-summary: "Delete the pending scope connection created by this network manager."
     examples:
       - name: Delete network manager scope connection
         text: |-
-               az network manager scope connection delete --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection delete --scope-connection-name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
-
 
 helps['network manager group static-member'] = """
     type: group

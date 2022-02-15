@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
+from knack.util import CLIError
 
 from ._client_factory import (
     cf_networkmanagercommit,
@@ -527,8 +528,10 @@ def network_manager_security_admin_config_delete(client,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
-                                                 force,
-                                                 recursive):
+                                                 force=None,
+                                                 recursive=None):
+    if force is not None and recursive is not None:
+        raise CLIError('force and recursive cannot be selected at the same time')
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name,
@@ -972,7 +975,7 @@ def network_manager_perimeter_associable_resource_type_list(client,
     return client.get(location=location)
 
 
-def network_manager_collection_list(client,
+def network_manager_connection_list(client,
                                     resource_group_name,
                                     top=None,
                                     skip_token=None):
@@ -981,40 +984,40 @@ def network_manager_collection_list(client,
                        skip_token=skip_token)
 
 
-def network_manager_collection_create(client,
+def network_manager_connection_create(client,
                                       resource_group_name,
-                                      network_manager_connection,
+                                      connection_name,
                                       network_manager_id,
                                       description=None):
     parameters = {}
+    parameters['network_manager_id'] = network_manager_id
     parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_connection_name=network_manager_connection,
-                                   network_manager_id=network_manager_id,
+                                   network_manager_connection_name=connection_name,
                                    parameters=parameters)
 
 
-def network_manager_collection_update(instance,
+def network_manager_connection_update(instance,
                                       resource_group_name,
-                                      network_manager_connection,
+                                      connection_name,
                                       description=None):
     if description is not None:
         instance.description = description
     return instance
 
 
-def network_manager_collection_show(client,
+def network_manager_connection_show(client,
                                     resource_group_name,
-                                    network_manager_connection):
+                                    connection_name):
     return client.get(resource_group_name=resource_group_name,
-                      network_manager_connection_name=network_manager_connection)
+                      network_manager_connection_name=connection_name)
 
 
-def network_manager_collection_delete(client,
+def network_manager_connection_delete(client,
                                       resource_group_name,
-                                      network_manager_connection):
+                                      connection_name):
     return client.delete(resource_group_name=resource_group_name,
-                         network_manager_connection_name=network_manager_connection)
+                         network_manager_connection_name=connection_name)
 
 
 def network_manager_connection_management_group_list(client,
@@ -1030,46 +1033,50 @@ def network_manager_connection_management_group_list(client,
 
 def network_manager_connection_management_group_create(client,
                                                        resource_group_name,
-                                                       network_manager_connection,
+                                                       connection_name,
                                                        management_group_id,
+                                                       network_manager_id,
                                                        description=None):
     parameters = {}
     parameters['description'] = description
+    parameters['network_manager_id'] = network_manager_id
     return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_connection_name=network_manager_connection,
+                                   network_manager_connection_name=connection_name,
                                    management_group_id=management_group_id,
                                    parameters=parameters)
 
 
 def network_manager_connection_management_group_update(instance,
                                                        resource_group_name,
-                                                       network_manager_connection,
+                                                       connection_name,
                                                        management_group_id,
                                                        description=None):
     if description is not None:
         instance.description = description
+    if management_group_id is not None:
+        instance.management_group_id = management_group_id
     return instance
 
 
 def network_manager_connection_management_group_show(client,
                                                      resource_group_name,
-                                                     network_manager_connection,
+                                                     connection_name,
                                                      management_group_id):
     return client.get(resource_group_name=resource_group_name,
-                      network_manager_connection_name=network_manager_connection,
+                      network_manager_connection_name=connection_name,
                       management_group_id=management_group_id)
 
 
 def network_manager_connection_management_group_delete(client,
                                                        resource_group_name,
-                                                       network_manager_connection,
+                                                       connection_name,
                                                        management_group_id):
     return client.delete(resource_group_name=resource_group_name,
-                         network_manager_connection_name=network_manager_connection,
+                         network_manager_connection_name=connection_name,
                          management_group_id=management_group_id)
 
 
-def network_manager_scope_collection_list(client,
+def network_manager_scope_connection_list(client,
                                           resource_group_name,
                                           network_manager_name,
                                           top=None,
@@ -1080,7 +1087,7 @@ def network_manager_scope_collection_list(client,
                        skip_token=skip_token)
 
 
-def network_manager_scope_collection_create(client,
+def network_manager_scope_connection_create(client,
                                             resource_group_name,
                                             network_manager_name,
                                             scope_connection_name,
@@ -1095,7 +1102,7 @@ def network_manager_scope_collection_create(client,
                                    parameters=parameters)
 
 
-def network_manager_scope_collection_update(instance,
+def network_manager_scope_connection_update(instance,
                                             resource_group_name,
                                             network_manager_name,
                                             scope_connection_name,
@@ -1105,7 +1112,7 @@ def network_manager_scope_collection_update(instance,
     return instance
 
 
-def network_manager_scope_collection_show(client,
+def network_manager_scope_connection_show(client,
                                           resource_group_name,
                                           network_manager_name,
                                           scope_connection_name):
@@ -1114,7 +1121,7 @@ def network_manager_scope_collection_show(client,
                       scope_connection_name=scope_connection_name)
 
 
-def network_manager_scope_collection_delete(client,
+def network_manager_scope_connection_delete(client,
                                             resource_group_name,
                                             network_manager_name,
                                             scope_connection_name):
