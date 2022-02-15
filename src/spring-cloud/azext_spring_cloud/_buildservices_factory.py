@@ -64,7 +64,7 @@ class BuildService:
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env = self._get_build_env(target_module, runtime_version))
+            env=self._get_build_env(target_module, runtime_version))
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
@@ -75,7 +75,6 @@ class BuildService:
         except (AttributeError, CloudError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
-   
     def _get_build_env(self, target_module, runtime_version):
         if target_module is not None:
             if(runtime_version == SupportedRuntimeValue.JAVA8):
@@ -94,7 +93,6 @@ class BuildService:
             elif(runtime_version == SupportedRuntimeValue.JAVA17):
                 env = {"BP_JVM_VERSION": "17.*"}
         return env
-
 
     def _wait_build_finished(self, build_result_id):
         '''
