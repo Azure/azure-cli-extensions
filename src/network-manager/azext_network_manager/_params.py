@@ -544,7 +544,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
+        c.argument('network_manager_connection', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.')
         c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
@@ -552,7 +552,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
+        c.argument('network_manager_connection', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
         c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
@@ -569,17 +569,17 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
+        c.argument('network_manager_connection', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
+        c.argument('network_manager_connection', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection management-group create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', type=str, help='The name of the network manager connection.')
+        c.argument('network_manager_connection', type=str, help='The name of the network manager connection.')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
         c.argument('network_manager_id', options_list=['--network-manager'], type=str,
@@ -588,7 +588,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection management-group update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', type=str,
+        c.argument('network_manager_connection', type=str,
                    help='The name of the network manager connection.', id_part='name')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
@@ -609,14 +609,14 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection management-group show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', type=str,
+        c.argument('network_manager_connection', type=str,
                    help='The name of the network manager connection.', id_part='name')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
 
     with self.argument_context('network manager connection management-group delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', type=str,
+        c.argument('network_manager_connection', type=str,
                    help='The name of the network manager connection.', id_part='name')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')

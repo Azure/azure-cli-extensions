@@ -890,7 +890,7 @@ helps['network manager scope connection delete'] = """
     examples:
       - name: Delete network manager scope connection
         text: |-
-               az nnetwork manager scope connection delete --scope-connection-name "TestScopeConnect" \
+               az network manager scope connection delete --scope-connection-name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
@@ -906,8 +906,8 @@ helps['network manager group static-member list'] = """
     examples:
       - name: List static member in a network manager
         text: |-
-               az network manager group static-member list --network-manager-name "testNetworkManager" --resource-group \
-"rg1" --network-group-name "testNetworkManagerGroup"
+               az network manager group static-member list --network-manager-name "testNetworkManager" \
+--resource-group "rg1" --network-group-name "testNetworkManagerGroup"
 """
 
 helps['network manager group static-member show'] = """
