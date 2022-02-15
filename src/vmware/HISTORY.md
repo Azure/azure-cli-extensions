@@ -1,5 +1,34 @@
 # Release History
 
+## 4.0.2 (2022-02)
+
+- Update `az vmware datastore disk-pool-volume create` to only accept one argument for --mount-option
+
+## 4.0.1 (2021-11)
+
+- Fix publishing extension
+
+## 4.0.0 (2021-11)
+
+- Add `az vmware placement-policy` command group
+- Add `az vmware vm` command group
+- Updated `az vmware private-cloud create` with new Identity parameter
+- Updated `az vmware private-cloud update` with new Identity parameter
+- Add `az vmware private-cloud add-availability-zone`
+- Add `az vmware private-cloud delete-availability-zone`
+- Add `az vmware private-cloud add-cmk-encryption`
+- Add `az vmware private-cloud delete-cmk-encryption`
+- Add `az vmware private-cloud list-admin-credentials`
+- Add `az vmware private-cloud add-identity-source`
+- Add `az vmware private-cloud delete-identity-source`
+- Add `az vmware private-cloud identity` command group
+- Deprecate `az vmware private-cloud listadmincredentials`
+- Deprecate `az vmware private-cloud addidentitysource`
+- Deprecate `az vmware private-cloud deleteidentitysource`
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware private-cloud rotate-vcenter-password`
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware private-cloud rotate-nsxt-password`
+- [BREAKING CHANGE] Add confirmation prompt to all delete commands
+
 ## 3.2.0 (2021-10)
 
 - Add `az vmware workload-network dhcp` command group

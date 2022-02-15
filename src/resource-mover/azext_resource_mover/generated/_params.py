@@ -156,7 +156,7 @@ def load_arguments(self, _):
         c.argument('source_id', type=str, help='Gets or sets the Source ARM Id of the resource.')
         c.argument('existing_target_id', type=str, help='Gets or sets the existing target ARM Id of the resource.')
         c.argument('resource_settings', type=validate_file_or_dict, help='Gets or sets the resource settings. Expected '
-                   'value: json-string/@json-file.')
+                   'value: json-string/json-file/@json-file.')
         c.argument('depends_on_overrides', action=AddDependsOnOverrides, nargs='+', help='Gets or sets the move '
                    'resource dependencies overrides.')
 

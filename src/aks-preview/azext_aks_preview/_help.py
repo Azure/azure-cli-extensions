@@ -134,6 +134,10 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer managed outbound IP count.
           long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-managed-outbound-ipv6-count
+          type: int
+          short-summary: Load balancer managed outbound IPv6 IP count.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
@@ -212,6 +216,18 @@ helps['aks create'] = """
           type: string
           short-summary: A CIDR notation IP range from which to assign service cluster IPs.
           long-summary: This range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
+        - name: --service-cidrs
+          type: string
+          short-summary: A comma separated list of CIDR notation IP ranges from which to assign service cluster IPs.
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
+        - name: --pod-cidrs
+          type: string
+          short-summary: A comma separated list of CIDR notation IP ranges from which to assign pod IPs when kubenet is used.
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --ip-families
+          type: string
+          short-summary: A comma separated list of IP versions to use for cluster networking.
+          long-summary: Each IP version should be in the format IPvN. For example, IPv4.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -379,6 +395,12 @@ helps['aks create'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to create this cluster.
+        - name: --enable-oidc-issuer
+          type: bool
+          short-summary: (PREVIEW) Enable OIDC issuer.
+        - name: --crg-id
+          type: string
+          short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -434,6 +456,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: create a kubernetes cluster with a Capacity Reservation Group(CRG) ID.
+          text: az aks create -g MyResourceGroup -n MyMC --kubernetes-version 1.20.9 --node-vm-size VMSize --assign-identity CRG-RG-ID --enable-managed-identity --crg-id "subscriptions/SubID/resourceGroups/RGName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -498,6 +522,10 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer managed outbound IP count.
           long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+        - name: --load-balancer-managed-outbound-ipv6-count
+          type: int
+          short-summary: Load balancer managed outbound IPv6 IP count.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only. If updated, it will wipe off the existing setting on Load balancer managed outbound IPv6 count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
@@ -632,6 +660,9 @@ helps['aks update'] = """
           long-summary: |-
              You do not need to set this if you have set DNS server in the VNET used by the cluster.
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --enable-oidc-issuer
+          type: bool
+          short-summary: (PREVIEW) Enable OIDC issuer.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -793,14 +824,14 @@ helps['aks maintenanceconfiguration add'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
@@ -850,14 +881,14 @@ helps['aks maintenanceconfiguration update'] = """
                       "timeInWeek": [
                         {
                           "day": "Tuesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             2
                           ]
                         },
                         {
                           "day": "Wednesday",
-                          "hour_slots": [
+                          "hourSlots": [
                             1,
                             6
                           ]
@@ -951,7 +982,7 @@ helps['aks nodepool add'] = """
           short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
-          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
+          short-summary: The node taints for the node pool.
         - name: --priority
           type: string
           short-summary: The priority of the node pool.
@@ -969,7 +1000,7 @@ helps['aks nodepool add'] = """
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --labels
           type: string
-          short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
+          short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -1000,6 +1031,9 @@ helps['aks nodepool add'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to create this nodepool.
+        - name: --crg-id
+          type: string
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1011,6 +1045,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: create a nodepool with a Capacity Reservation Group(CRG) ID.
+          text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
 """
 
 helps['aks nodepool scale'] = """
@@ -1071,6 +1107,12 @@ helps['aks nodepool update'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --labels
+          type: string
+          short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

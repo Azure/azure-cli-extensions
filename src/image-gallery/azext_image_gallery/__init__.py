@@ -16,16 +16,16 @@ class ImageGalleryCommandsLoader(AzCommandsLoader):
         image_gallery_custom = CliCommandType(
             operations_tmpl='azext_image_gallery.custom#{}',
             client_factory=cf_galleries)
-        super(ImageGalleryCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=image_gallery_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=image_gallery_custom)
 
     def load_command_table(self, args):
-        super(ImageGalleryCommandsLoader, self).load_command_table(args)
+        super().load_command_table(args)
         from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        super(ImageGalleryCommandsLoader, self).load_arguments(command)
+        super().load_arguments(command)
         from ._params import load_arguments
         load_arguments(self, command)
 

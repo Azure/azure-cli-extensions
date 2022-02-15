@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.0
+++++++
+* Update API version to 2021-08-01
+
 0.4.0
 ++++++
 * Add `--skip-query-validation` parameter

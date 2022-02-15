@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.2
++++++++++++++++
+* Add new command `az sig create` to support create a gallery with community sharing info
+* Add new command `az sig share enable-community` to support allow to share galleries with the public community
+
 0.1.1
 +++++++++++++++
 * Add new command `az sig image-definition list-community` to support list image definition in community gallery
