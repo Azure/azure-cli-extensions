@@ -4,8 +4,9 @@ Release History
 ===============
 0.5.53
 ++++++
-* Add support for Capacity Reservation Group.
+* Add support for cluster creating with Capacity Reservation Group.
   * `az aks create --crg-id`
+* Add support for nodepool adding with Capacity Reservation Group.
   * `az aks nodepool add --crg-id`
 
 0.5.52
