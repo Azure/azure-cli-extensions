@@ -544,17 +544,17 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.')
-        c.argument('network_manager_id',  options_list=['--network-manager'], type=str,
+        c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
 
     with self.argument_context('network manager connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
-        c.argument('network_manager_id',  options_list=['--network-manager'], type=str,
+        c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
         c.ignore('parameters')
@@ -569,12 +569,12 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--network-manager-connection-name'],
+        c.argument('network_manager_connection_name', options_list=['--name', '-n'],
                    type=str, help='The name of the network manager connection.', id_part='name')
 
     with self.argument_context('network manager connection management-group create') as c:
@@ -582,7 +582,7 @@ def load_arguments(self, _):
         c.argument('network_manager_connection_name', type=str, help='The name of the network manager connection.')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('network_manager_id',  options_list=['--network-manager'], type=str,
+        c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
 
@@ -592,7 +592,7 @@ def load_arguments(self, _):
                    help='The name of the network manager connection.', id_part='name')
         c.argument('management_group_id', type=str,
                    help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('network_manager_id',  options_list=['--network-manager'], type=str,
+        c.argument('network_manager_id', options_list=['--network-manager'], type=str,
                    help='the name or id of the network manager.', validator=validate_network_manager)
         c.argument('description', type=str, help='A description of the scope connection.')
         c.ignore('parameters')
