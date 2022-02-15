@@ -81,7 +81,7 @@ class BuildService:
         env = {}
         if target_module:
             env['BP_MAVEN_BUILT_MODULE'] = target_module
-        
+
         runtime_version_table = {
             SupportedRuntimeValue.JAVA8: '8.*',
             SupportedRuntimeValue.JAVA11: '11.*',
