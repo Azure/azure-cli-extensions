@@ -884,9 +884,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_values.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_values.extend(["--kube-context", kube_context])
-    cmd_helm_values.extend([">", "userValues.txt"])
-
-    response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
+    
+    existing_user_values = open('userValues.txt', 'w+')
+    response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
     _, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
         if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
@@ -894,7 +894,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                 summary='Error while doing helm get values azure-arc')
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
-
+    
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
                         "userValues.txt", "--wait", "--output", "json"]
@@ -925,8 +925,15 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
+        try:
+           os.remove(existing_user_values.name)
+        except OSError:
+           pass
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
-
+    try:
+        os.remove(existing_user_values.name)
+    except OSError:
+        pass
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
 
 
