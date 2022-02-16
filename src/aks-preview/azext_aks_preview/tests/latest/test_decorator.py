@@ -1680,6 +1680,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             gpu_instance_profile=None,
             kubelet_config=None,
             creation_data=None,
+            host_group_id=None,
             capacity_reservation_group_id=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
@@ -1788,6 +1789,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 source_resource_id="test_snapshot_id"
             ),
             capacity_reservation_group_id="test_crg_id",
+            host_group_id="test_host_group_id",
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
