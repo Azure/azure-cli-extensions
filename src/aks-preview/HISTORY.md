@@ -2,11 +2,28 @@
 
 Release History
 ===============
-0.5.52
+
+0.5.54
 +++++
 * Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
 
+0.5.53
+++++++
+* Add support for cluster creating with Capacity Reservation Group.
+  * `az aks create --crg-id`
+* Add support for nodepool adding with Capacity Reservation Group.
+  * `az aks nodepool add --crg-id`
+
+0.5.52
+++++++
+* Add yaml template files to package data to fix issue [#148](https://github.com/Azure/aks-periscope/issues/148).
+* Add support for using empty string to remove existing nodepool label by `az aks update --nodepool-labels` or `az aks nodepool update --labels`.
+* Add support for using empty string to remove existing node taints by `az nodepool update --node-taints`.
+* Correct the option for time control in `maintenanceconfiguration` series commands to `hourSlot`.
+* GA (General Availability) for the snapshot feature.
+
 0.5.51
+++++++
 * Add currentKubernetesVersion column for az aks show --output table.
 
 0.5.50

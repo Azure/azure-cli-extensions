@@ -17,8 +17,6 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import ManagedClusterPropertiesAutoScalerProfile
-
 from ._helpers import (_fuzzy_match)
 
 from ._consts import ADDONS
@@ -289,35 +287,6 @@ def validate_nodepool_tags(ns):
         ns.nodepool_tags = tags_dict
 
 
-def validate_cluster_autoscaler_profile(namespace):
-    """ Validates that cluster autoscaler profile is acceptable by:
-        1. Extracting the key[=value] format to map
-        2. Validating that the key isn't empty and that the key is valid
-        Empty strings pass validation
-    """
-    _extract_cluster_autoscaler_params(namespace)
-    if namespace.cluster_autoscaler_profile is not None:
-        for key in namespace.cluster_autoscaler_profile.keys():
-            _validate_cluster_autoscaler_key(key)
-
-
-def _validate_cluster_autoscaler_key(key):
-    if not key:
-        raise CLIError('Empty key specified for cluster-autoscaler-profile')
-    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
-    if key not in valid_keys:
-        raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
-
-
-def _extract_cluster_autoscaler_params(namespace):
-    """ Extracts multiple space-separated cluster autoscaler parameters in key[=value] format """
-    if isinstance(namespace.cluster_autoscaler_profile, list):
-        params_dict = {}
-        for item in namespace.cluster_autoscaler_profile:
-            params_dict.update(validate_tag(item))
-        namespace.cluster_autoscaler_profile = params_dict
-
-
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
@@ -517,3 +486,10 @@ def validate_snapshot_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")
+
+
+def validate_crg_id(namespace):
+    if namespace.crg_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.crg_id):
+            raise InvalidArgumentValueError("--crg-id is not a valid Azure resource ID.")
