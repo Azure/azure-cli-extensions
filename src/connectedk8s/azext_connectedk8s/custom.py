@@ -886,16 +886,15 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_values.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_values.extend(["--kube-context", kube_context])
-    
+
     if(operating_system == 'Windows'):
-        user_values_filepath_string = f'.azure\\userValues.txt'
+        user_values_filepath_string = r'.azure\\userValues.txt'
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
-        user_values_filepath_string = f'.azure/userValues.txt'
+        user_values_filepath_string = r'.azure/userValues.txt'
     else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
         raise ClientRequestError(f'The {operating_system} platform is not currently supported.')
-    
     user_values_location = os.path.expanduser(os.path.join('~', user_values_filepath_string))
     existing_user_values = open(user_values_location, 'w+')
     response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
@@ -941,7 +940,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         try:
            os.remove(user_values_location)
         except OSError:
-           pass
+            pass
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
     try:
         os.remove(user_values_location)
