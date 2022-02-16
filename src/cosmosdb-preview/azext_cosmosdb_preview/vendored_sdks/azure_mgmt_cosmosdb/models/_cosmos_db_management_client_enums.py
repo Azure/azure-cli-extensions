@@ -121,7 +121,8 @@ class DatabaseAccountKind(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 class DataTransferComponent(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
     COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
-    AZURE_STORAGE = "AzureStorage"
+    COSMOS_DB_SQL = "CosmosDBSql"
+    AZURE_BLOB_STORAGE = "AzureBlobStorage"
 
 class DataType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The datatype for which the indexing behavior is applied to.

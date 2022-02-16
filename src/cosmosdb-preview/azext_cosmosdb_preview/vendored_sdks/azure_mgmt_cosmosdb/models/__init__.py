@@ -68,6 +68,7 @@ from ._models_py3 import ContinuousBackupRestoreLocation
 from ._models_py3 import ContinuousModeBackupPolicy
 from ._models_py3 import CorsPolicy
 from ._models_py3 import CosmosCassandraDataTransferDataSourceSink
+from ._models_py3 import CosmosSqlDataTransferDataSourceSink
 from ._models_py3 import CreateJobRequest
 from ._models_py3 import CreateUpdateOptions
 from ._models_py3 import DataCenterResource
@@ -222,7 +223,7 @@ from ._models_py3 import RestorableSqlDatabasesListResult
 from ._models_py3 import RestorableSqlResourcesListResult
 from ._models_py3 import RestorableTableGetResult
 from ._models_py3 import RestorableTablePropertiesResource
-from ._models_py3 import RestorableTableResourcesGetResult
+from ._models_py3 import RestorableTableResourcesListResult
 from ._models_py3 import RestorableTablesListResult
 from ._models_py3 import RestoreParameters
 from ._models_py3 import Role
@@ -395,6 +396,7 @@ __all__ = [
     'ContinuousModeBackupPolicy',
     'CorsPolicy',
     'CosmosCassandraDataTransferDataSourceSink',
+    'CosmosSqlDataTransferDataSourceSink',
     'CreateJobRequest',
     'CreateUpdateOptions',
     'DataCenterResource',
@@ -549,7 +551,7 @@ __all__ = [
     'RestorableSqlResourcesListResult',
     'RestorableTableGetResult',
     'RestorableTablePropertiesResource',
-    'RestorableTableResourcesGetResult',
+    'RestorableTableResourcesListResult',
     'RestorableTablesListResult',
     'RestoreParameters',
     'Role',

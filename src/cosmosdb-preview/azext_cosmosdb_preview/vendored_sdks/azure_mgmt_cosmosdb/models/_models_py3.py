@@ -350,12 +350,12 @@ class DataTransferDataSourceSink(msrest.serialization.Model):
     """Base class for all DataTransfer source/sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AzureBlobDataTransferDataSourceSink, CosmosCassandraDataTransferDataSourceSink.
+    sub-classes are: AzureBlobDataTransferDataSourceSink, CosmosCassandraDataTransferDataSourceSink, CosmosSqlDataTransferDataSourceSink.
 
     All required parameters must be populated in order to send to Azure.
 
     :ivar component: Required. Constant filled by server. Possible values include:
-     "CosmosDBCassandra", "AzureStorage". Default value: "CosmosDBCassandra".
+     "CosmosDBCassandra", "CosmosDBSql", "AzureBlobStorage". Default value: "CosmosDBCassandra".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     """
 
@@ -368,7 +368,7 @@ class DataTransferDataSourceSink(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'component': {'AzureBlobStorage': 'AzureBlobDataTransferDataSourceSink', 'CosmosDBCassandra': 'CosmosCassandraDataTransferDataSourceSink'}
+        'component': {'AzureBlobStorage': 'AzureBlobDataTransferDataSourceSink', 'CosmosDBCassandra': 'CosmosCassandraDataTransferDataSourceSink', 'CosmosDBSql': 'CosmosSqlDataTransferDataSourceSink'}
     }
 
     def __init__(
@@ -387,7 +387,7 @@ class AzureBlobDataTransferDataSourceSink(DataTransferDataSourceSink):
     All required parameters must be populated in order to send to Azure.
 
     :ivar component: Required. Constant filled by server. Possible values include:
-     "CosmosDBCassandra", "AzureStorage". Default value: "CosmosDBCassandra".
+     "CosmosDBCassandra", "CosmosDBSql", "AzureBlobStorage". Default value: "CosmosDBCassandra".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar container_name: Required.
     :vartype container_name: str
@@ -3170,7 +3170,7 @@ class CosmosCassandraDataTransferDataSourceSink(DataTransferDataSourceSink):
     All required parameters must be populated in order to send to Azure.
 
     :ivar component: Required. Constant filled by server. Possible values include:
-     "CosmosDBCassandra", "AzureStorage". Default value: "CosmosDBCassandra".
+     "CosmosDBCassandra", "CosmosDBSql", "AzureBlobStorage". Default value: "CosmosDBCassandra".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar keyspace_name: Required.
     :vartype keyspace_name: str
@@ -3207,6 +3207,51 @@ class CosmosCassandraDataTransferDataSourceSink(DataTransferDataSourceSink):
         self.component = 'CosmosDBCassandra'  # type: str
         self.keyspace_name = keyspace_name
         self.table_name = table_name
+
+
+class CosmosSqlDataTransferDataSourceSink(DataTransferDataSourceSink):
+    """A CosmosDB Cassandra API data source/sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar component: Required. Constant filled by server. Possible values include:
+     "CosmosDBCassandra", "CosmosDBSql", "AzureBlobStorage". Default value: "CosmosDBCassandra".
+    :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
+    :ivar database_name: Required.
+    :vartype database_name: str
+    :ivar container_name: Required.
+    :vartype container_name: str
+    """
+
+    _validation = {
+        'component': {'required': True},
+        'database_name': {'required': True},
+        'container_name': {'required': True},
+    }
+
+    _attribute_map = {
+        'component': {'key': 'component', 'type': 'str'},
+        'database_name': {'key': 'databaseName', 'type': 'str'},
+        'container_name': {'key': 'containerName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        database_name: str,
+        container_name: str,
+        **kwargs
+    ):
+        """
+        :keyword database_name: Required.
+        :paramtype database_name: str
+        :keyword container_name: Required.
+        :paramtype container_name: str
+        """
+        super(CosmosSqlDataTransferDataSourceSink, self).__init__(**kwargs)
+        self.component = 'CosmosDBSql'  # type: str
+        self.database_name = database_name
+        self.container_name = container_name
 
 
 class CreateJobRequest(ARMProxyResource):
@@ -3420,6 +3465,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
     :ivar capacity: The object that represents all properties related to capacity enforcement on an
      account.
     :vartype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+    :ivar enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+     Cosmos DB account.
+    :vartype enable_materialized_views: bool
     """
 
     _validation = {
@@ -3466,6 +3514,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         'disable_local_auth': {'key': 'properties.disableLocalAuth', 'type': 'bool'},
         'restore_parameters': {'key': 'properties.restoreParameters', 'type': 'RestoreParameters'},
         'capacity': {'key': 'properties.capacity', 'type': 'Capacity'},
+        'enable_materialized_views': {'key': 'properties.enableMaterializedViews', 'type': 'bool'},
     }
 
     database_account_offer_type = "Standard"
@@ -3504,6 +3553,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         disable_local_auth: Optional[bool] = None,
         restore_parameters: Optional["RestoreParameters"] = None,
         capacity: Optional["Capacity"] = None,
+        enable_materialized_views: Optional[bool] = None,
         **kwargs
     ):
         """
@@ -3594,6 +3644,9 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         :keyword capacity: The object that represents all properties related to capacity enforcement on
          an account.
         :paramtype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+        :keyword enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+         Cosmos DB account.
+        :paramtype enable_materialized_views: bool
         """
         super(DatabaseAccountCreateUpdateParameters, self).__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -3624,6 +3677,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         self.disable_local_auth = disable_local_auth
         self.restore_parameters = restore_parameters
         self.capacity = capacity
+        self.enable_materialized_views = enable_materialized_views
 
 
 class DatabaseAccountGetResults(ARMResourceProperties):
@@ -3752,6 +3806,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):
     :ivar capacity: The object that represents all properties related to capacity enforcement on an
      account.
     :vartype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+    :ivar enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+     Cosmos DB account.
+    :vartype enable_materialized_views: bool
     """
 
     _validation = {
@@ -3814,6 +3871,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         'diagnostic_log_settings': {'key': 'properties.diagnosticLogSettings', 'type': 'DiagnosticLogSettings'},
         'disable_local_auth': {'key': 'properties.disableLocalAuth', 'type': 'bool'},
         'capacity': {'key': 'properties.capacity', 'type': 'Capacity'},
+        'enable_materialized_views': {'key': 'properties.enableMaterializedViews', 'type': 'bool'},
     }
 
     def __init__(
@@ -3849,6 +3907,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         diagnostic_log_settings: Optional["DiagnosticLogSettings"] = None,
         disable_local_auth: Optional[bool] = None,
         capacity: Optional["Capacity"] = None,
+        enable_materialized_views: Optional[bool] = None,
         **kwargs
     ):
         """
@@ -3936,6 +3995,9 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         :keyword capacity: The object that represents all properties related to capacity enforcement on
          an account.
         :paramtype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+        :keyword enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+         Cosmos DB account.
+        :paramtype enable_materialized_views: bool
         """
         super(DatabaseAccountGetResults, self).__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.kind = kind
@@ -3975,6 +4037,7 @@ class DatabaseAccountGetResults(ARMResourceProperties):
         self.diagnostic_log_settings = diagnostic_log_settings
         self.disable_local_auth = disable_local_auth
         self.capacity = capacity
+        self.enable_materialized_views = enable_materialized_views
 
 
 class DatabaseAccountListConnectionStringsResult(msrest.serialization.Model):
@@ -4218,6 +4281,9 @@ class DatabaseAccountUpdateParameters(msrest.serialization.Model):
     :ivar capacity: The object that represents all properties related to capacity enforcement on an
      account.
     :vartype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+    :ivar enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+     Cosmos DB account.
+    :vartype enable_materialized_views: bool
     """
 
     _attribute_map = {
@@ -4249,6 +4315,7 @@ class DatabaseAccountUpdateParameters(msrest.serialization.Model):
         'diagnostic_log_settings': {'key': 'properties.diagnosticLogSettings', 'type': 'DiagnosticLogSettings'},
         'disable_local_auth': {'key': 'properties.disableLocalAuth', 'type': 'bool'},
         'capacity': {'key': 'properties.capacity', 'type': 'Capacity'},
+        'enable_materialized_views': {'key': 'properties.enableMaterializedViews', 'type': 'bool'},
     }
 
     def __init__(
@@ -4282,6 +4349,7 @@ class DatabaseAccountUpdateParameters(msrest.serialization.Model):
         diagnostic_log_settings: Optional["DiagnosticLogSettings"] = None,
         disable_local_auth: Optional[bool] = None,
         capacity: Optional["Capacity"] = None,
+        enable_materialized_views: Optional[bool] = None,
         **kwargs
     ):
         """
@@ -4364,6 +4432,9 @@ class DatabaseAccountUpdateParameters(msrest.serialization.Model):
         :keyword capacity: The object that represents all properties related to capacity enforcement on
          an account.
         :paramtype capacity: ~azure.mgmt.cosmosdb.models.Capacity
+        :keyword enable_materialized_views: Flag to indicate whether to enable MaterializedViews on the
+         Cosmos DB account.
+        :paramtype enable_materialized_views: bool
         """
         super(DatabaseAccountUpdateParameters, self).__init__(**kwargs)
         self.tags = tags
@@ -4394,6 +4465,7 @@ class DatabaseAccountUpdateParameters(msrest.serialization.Model):
         self.diagnostic_log_settings = diagnostic_log_settings
         self.disable_local_auth = disable_local_auth
         self.capacity = capacity
+        self.enable_materialized_views = enable_materialized_views
 
 
 class DatabaseRestoreResource(msrest.serialization.Model):
@@ -10947,21 +11019,21 @@ class RestorableTablePropertiesResource(msrest.serialization.Model):
         self.owner_resource_id = None
 
 
-class RestorableTableResourcesGetResult(msrest.serialization.Model):
-    """The Get operation response, that contains the restorable Table names.
+class RestorableTableResourcesListResult(msrest.serialization.Model):
+    """List of restorable table names.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar table_names:
-    :vartype table_names: list[str]
+    :ivar value: List of restorable table names.
+    :vartype value: list[str]
     """
 
     _validation = {
-        'table_names': {'readonly': True},
+        'value': {'readonly': True},
     }
 
     _attribute_map = {
-        'table_names': {'key': 'tableNames', 'type': '[str]'},
+        'value': {'key': 'value', 'type': '[str]'},
     }
 
     def __init__(
@@ -10970,8 +11042,8 @@ class RestorableTableResourcesGetResult(msrest.serialization.Model):
     ):
         """
         """
-        super(RestorableTableResourcesGetResult, self).__init__(**kwargs)
-        self.table_names = None
+        super(RestorableTableResourcesListResult, self).__init__(**kwargs)
+        self.value = None
 
 
 class RestorableTablesListResult(msrest.serialization.Model):
