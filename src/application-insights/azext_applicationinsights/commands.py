@@ -15,7 +15,8 @@ from azext_applicationinsights._client_factory import (
     cf_api_key,
     cf_component_billing,
     cf_component_linked_storage_accounts,
-    cf_export_configuration
+    cf_export_configuration,
+    cf_web_tests
 )
 
 
@@ -80,6 +81,16 @@ def load_command_table(self, _):
         client_factory=cf_export_configuration
     )
 
+    web_tests_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.web_tests_operations#WebTestsOperations.{}',
+        client_factory=cf_web_tests
+    )
+
+    web_tests_custom_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.custom#{}',
+        client_factory=cf_web_tests
+    )
+
     with self.command_group('monitor app-insights component', command_type=components_sdk, custom_command_type=components_custom_sdk) as g:
         g.custom_command('create', 'create_or_update_component')
         g.custom_command('update', 'update_component')
@@ -120,3 +131,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_export_configuration')
         g.custom_command('update', 'update_export_configuration')
         g.custom_command('delete', 'delete_export_configuration', confirmation=True)
+
+    with self.command_group('monitor app-insights web-test', command_type=web_tests_sdk, custom_command_type=web_tests_custom_sdk) as g:
+        g.command('list', 'list')
+        g.custom_show_command('show', 'get_web_test')
+        g.custom_command('create', 'create_web_test')
+        g.custom_command('update', 'update_web_test')
+        g.custom_command('delete', 'delete_web_test')
