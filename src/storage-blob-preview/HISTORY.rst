@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.7.0
+++++++
+* `az storage blob download`: Support OAuth for managed disk sas uri
+
 0.6.1
 ++++++
 * `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy
