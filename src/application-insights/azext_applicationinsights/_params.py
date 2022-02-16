@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long, too-many-statements
 from azext_applicationinsights.action import (
-    AddRuleDefinitions,
     AddLocations,
     AddContentValidation,
     AddHeaders
