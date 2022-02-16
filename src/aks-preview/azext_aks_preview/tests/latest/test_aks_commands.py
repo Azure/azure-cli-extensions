@@ -3461,4 +3461,5 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'none'),
         ])
