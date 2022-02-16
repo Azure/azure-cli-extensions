@@ -36,7 +36,7 @@ setup(
     author_email='sisirap@microsoft.com',
     contributor='Purva Vasudeo',
     contributor_email='t-puvasu@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/webapp',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/webapp',
     classifiers=CLASSIFIERS,
     package_data={'azext_webapp': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),

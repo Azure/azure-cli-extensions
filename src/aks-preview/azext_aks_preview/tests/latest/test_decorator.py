@@ -94,13 +94,11 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         self.assertEqual(models.CreationData, getattr(module, "CreationData"))
         # nat gateway models
         self.assertEqual(
-            models.nat_gateway_models.get("ManagedClusterNATGatewayProfile"),
+            models.nat_gateway_models.ManagedClusterNATGatewayProfile,
             getattr(module, "ManagedClusterNATGatewayProfile"),
         )
         self.assertEqual(
-            models.nat_gateway_models.get(
-                "ManagedClusterManagedOutboundIPProfile"
-            ),
+            models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile,
             getattr(module, "ManagedClusterManagedOutboundIPProfile"),
         )
         # pod identity models
@@ -715,12 +713,8 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertEqual(
             ctx_1.get_nat_gateway_managed_outbound_ip_count(), None
         )
-        nat_gateway_profile = self.models.nat_gateway_models.get(
-            "ManagedClusterNATGatewayProfile"
-        )(
-            managed_outbound_ip_profile=self.models.nat_gateway_models.get(
-                "ManagedClusterManagedOutboundIPProfile"
-            )(count=10)
+        nat_gateway_profile = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(count=10)
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
             nat_gateway_profile=nat_gateway_profile
@@ -741,9 +735,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), None)
-        nat_gateway_profile = self.models.nat_gateway_models.get(
-            "ManagedClusterNATGatewayProfile"
-        )(
+        nat_gateway_profile = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
             idle_timeout_in_minutes=20,
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
@@ -1564,6 +1556,31 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
+    def test_get_crg_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": "test_crg_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_crg_id(), "test_crg_id")
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": ""},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_crg_id(), "")
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"crg_id": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_crg_id(), None)
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -1605,6 +1622,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "gpu_instance_profile": None,
                 "kubelet_config": None,
                 "snapshot_id": None,
+                "crg_id": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1643,6 +1661,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             gpu_instance_profile=None,
             kubelet_config=None,
             creation_data=None,
+            capacity_reservation_group_id=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
@@ -1679,6 +1698,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "kubelet_config": _get_test_data_file("kubeletconfig.json"),
                 "linux_os_config": _get_test_data_file("linuxosconfig.json"),
                 "snapshot_id": "test_snapshot_id",
+                "crg_id": "test_crg_id",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1747,6 +1767,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             creation_data=self.models.CreationData(
                 source_resource_id="test_snapshot_id"
             ),
+            capacity_reservation_group_id="test_crg_id",
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
@@ -1893,12 +1914,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_mc_2 = dec_2.set_up_network_profile(mc_2)
 
-        nat_gateway_profile_2 = self.models.nat_gateway_models.get(
-            "ManagedClusterNATGatewayProfile"
-        )(
-            managed_outbound_ip_profile=self.models.nat_gateway_models.get(
-                "ManagedClusterManagedOutboundIPProfile"
-            )(count=10),
+        nat_gateway_profile_2 = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(count=10),
             idle_timeout_in_minutes=20,
         )
         network_profile_2 = self.models.ContainerServiceNetworkProfile(
@@ -3146,9 +3163,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                nat_gateway_profile=self.models.nat_gateway_models.get(
-                    "ManagedClusterNATGatewayProfile"
-                )(),
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(),
             ),
         )
         dec_1.context.attach_mc(mc_1)
@@ -3157,9 +3172,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                nat_gateway_profile=self.models.nat_gateway_models.get(
-                    "ManagedClusterNATGatewayProfile"
-                )(),
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(),
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
@@ -3193,12 +3206,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                nat_gateway_profile=self.models.nat_gateway_models.get(
-                    "ManagedClusterNATGatewayProfile"
-                )(
-                    managed_outbound_ip_profile=self.models.nat_gateway_models.get(
-                        "ManagedClusterManagedOutboundIPProfile"
-                    )(
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
+                    managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                         count=10
                     ),
                     idle_timeout_in_minutes=20,
@@ -3211,12 +3220,8 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_3 = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                nat_gateway_profile=self.models.nat_gateway_models.get(
-                    "ManagedClusterNATGatewayProfile"
-                )(
-                    managed_outbound_ip_profile=self.models.nat_gateway_models.get(
-                        "ManagedClusterManagedOutboundIPProfile"
-                    )(
+                nat_gateway_profile=self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
+                    managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                         count=5
                     ),
                     idle_timeout_in_minutes=30,

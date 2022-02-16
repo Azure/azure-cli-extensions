@@ -32,7 +32,7 @@ setup(
     license='MIT',
     author='Tamir Kamara',
     author_email='tamir.kamara@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/image-copy',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/image-copy',
     classifiers=CLASSIFIERS,
     package_data={'azext_imagecopy': ['azext_metadata.json']},
     packages=find_packages(),

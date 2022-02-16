@@ -23,7 +23,8 @@ from azure.cli.core.commands.validators import (
 from azext_stream_analytics.action import (
     AddIdentity,
     AddTransformation,
-    AddJobStorageAccount
+    AddJobStorageAccount,
+    AddSku
 )
 
 
@@ -42,7 +43,8 @@ def load_arguments(self, _):
                    'when this parameter is absent. The default set is all streaming job properties other than '
                    '\'inputs\', \'transformation\', \'outputs\', and \'functions\'.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
 
     with self.argument_context('stream-analytics job create') as c:
         c.argument('if_match', type=str, help='The ETag of the streaming job. Omit this value to always overwrite the '
@@ -52,7 +54,8 @@ def load_arguments(self, _):
                    'prevent updating an existing record set. Other values will result in a 412 Pre-condition Failed '
                    'response.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -113,7 +116,8 @@ def load_arguments(self, _):
                    'current record set. Specify the last-seen ETag value to prevent accidentally overwriting '
                    'concurrent changes.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -171,17 +175,20 @@ def load_arguments(self, _):
 
     with self.argument_context('stream-analytics job delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
 
     with self.argument_context('stream-analytics job scale') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
         c.argument('streaming_units', type=int, help='Specifies the number of streaming units that the streaming job '
                    'will scale to.')
 
     with self.argument_context('stream-analytics job start') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
         c.argument('output_start_mode', arg_type=get_enum_type(['JobStartTime', 'CustomTime', 'LastOutputEventTime']),
                    help='Value may be JobStartTime, CustomTime, or LastOutputEventTime to indicate whether the '
                    'starting point of the output event stream should start whenever the job is started, start at a '
@@ -194,7 +201,8 @@ def load_arguments(self, _):
 
     with self.argument_context('stream-analytics job stop') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
 
     with self.argument_context('stream-analytics job wait') as c:
         c.argument('expand', type=str, help='The $expand OData query parameter. This is a comma-separated list of '
@@ -202,7 +210,8 @@ def load_arguments(self, _):
                    'when this parameter is absent. The default set is all streaming job properties other than '
                    '\'inputs\', \'transformation\', \'outputs\', and \'functions\'.')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('job_name', options_list=['--name', '-n', '--job-name'], type=str, help='The name of the streaming job.')
+        c.argument('job_name', options_list=['--job-name', '--name', '-n'], type=str, help='The name of the streaming '
+                   'job.')
 
     with self.argument_context('stream-analytics input list') as c:
         c.argument('select', type=str, help='The $select OData query parameter. This is a comma-separated list of '
@@ -214,7 +223,8 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics input show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
 
     with self.argument_context('stream-analytics input create') as c:
         c.argument('if_match', type=str, help='The ETag of the input. Omit this value to always overwrite the current '
@@ -223,7 +233,9 @@ def load_arguments(self, _):
                    'updating an existing input. Other values will result in a 412 Pre-condition Failed response.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with an input. '
                    'Required on PUT (CreateOrReplace) requests. Expected value: json-string/json-file/@json-file.')
 
@@ -232,26 +244,32 @@ def load_arguments(self, _):
                    'input. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with an input. '
                    'Required on PUT (CreateOrReplace) requests. Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('stream-analytics input delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
 
     with self.argument_context('stream-analytics input test') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with an input. '
                    'Required on PUT (CreateOrReplace) requests. Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('stream-analytics input wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('input_name', options_list=['--name', '-n', '--input-name'], type=str, help='The name of the input.')
+        c.argument('input_name', options_list=['--input-name', '--name', '-n'], type=str,
+                   help='The name of the input.')
 
     with self.argument_context('stream-analytics output list') as c:
         c.argument('select', type=str, help='The $select OData query parameter. This is a comma-separated list of '
@@ -263,7 +281,8 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics output show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('output_name', options_list=['--name', '-n', '--output-name'], type=str, help='The name of the output.')
+        c.argument('output_name', options_list=['--output-name', '--name', '-n'], type=str, help='The name of the '
+                   'output.')
 
     with self.argument_context('stream-analytics output create') as c:
         c.argument('if_match', type=str, help='The ETag of the output. Omit this value to always overwrite the current '
@@ -272,7 +291,9 @@ def load_arguments(self, _):
                    'updating an existing output. Other values will result in a 412 Pre-condition Failed response.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('output_name', options_list=['--name', '-n', '--output-name'], type=str, help='The name of the output.')
+        c.argument('output_name', options_list=['--output-name', '--name', '-n'], type=str, help='The name of the '
+                   'output.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('datasource', type=validate_file_or_dict, help='Describes the data source that output will be '
                    'written to. Required on PUT (CreateOrReplace) requests. Expected value: '
                    'json-string/json-file/@json-file.')
@@ -287,7 +308,9 @@ def load_arguments(self, _):
                    'output. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('output_name', options_list=['--name', '-n', '--output-name'], type=str, help='The name of the output.')
+        c.argument('output_name', options_list=['--output-name', '--name', '-n'], type=str, help='The name of the '
+                   'output.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('datasource', type=validate_file_or_dict, help='Describes the data source that output will be '
                    'written to. Required on PUT (CreateOrReplace) requests. Expected value: '
                    'json-string/json-file/@json-file.')
@@ -306,7 +329,9 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics output test') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('output_name', options_list=['--name', '-n', '--output-name'], type=str, help='The name of the output.')
+        c.argument('output_name', options_list=['--output-name', '--name', '-n'], type=str, help='The name of the '
+                   'output.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('datasource', type=validate_file_or_dict, help='Describes the data source that output will be '
                    'written to. Required on PUT (CreateOrReplace) requests. Expected value: '
                    'json-string/json-file/@json-file.')
@@ -319,7 +344,8 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics output wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('output_name', options_list=['--name', '-n', '--output-name'], type=str, help='The name of the output.')
+        c.argument('output_name', options_list=['--output-name', '--name', '-n'], type=str, help='The name of the '
+                   'output.')
 
     with self.argument_context('stream-analytics transformation show') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -336,8 +362,9 @@ def load_arguments(self, _):
                    'Failed response.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('transformation_name', options_list=['--name', '-n', '--transformation-name'], type=str, help='The name of '
-                   'the transformation.')
+        c.argument('transformation_name', options_list=['--transformation-name', '--name', '-n'], type=str, help='The '
+                   'name of the transformation.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('streaming_units', type=int, help='Specifies the number of streaming units that the streaming job '
                    'uses.')
         c.argument('valid_streaming_units', nargs='+', help='Specifies the valid streaming units a streaming job can '
@@ -352,8 +379,9 @@ def load_arguments(self, _):
                    'concurrent changes.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('transformation_name', options_list=['--name', '-n', '--transformation-name'], type=str, help='The name of '
-                   'the transformation.')
+        c.argument('transformation_name', options_list=['--transformation-name', '--name', '-n'], type=str, help='The '
+                   'name of the transformation.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('streaming_units', type=int, help='Specifies the number of streaming units that the streaming job '
                    'uses.')
         c.argument('valid_streaming_units', nargs='+', help='Specifies the valid streaming units a streaming job can '
@@ -383,8 +411,9 @@ def load_arguments(self, _):
                    'updating an existing function. Other values will result in a 412 Pre-condition Failed response.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('function_name', options_list=['--name', '-n', '--function-name'], type=str,
-                   help='The name of the function.')
+        c.argument('function_name', options_list=['--function-name', '--name', '-n'], type=str, help='The name of the '
+                   'function.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with a function. '
                    'Expected value: json-string/json-file/@json-file.')
 
@@ -394,8 +423,9 @@ def load_arguments(self, _):
                    'changes.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('function_name', options_list=['--name', '-n', '--function-name'], type=str,
-                   help='The name of the function.')
+        c.argument('function_name', options_list=['--function-name', '--name', '-n'], type=str, help='The name of the '
+                   'function.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with a function. '
                    'Expected value: json-string/json-file/@json-file.')
 
@@ -408,8 +438,9 @@ def load_arguments(self, _):
     with self.argument_context('stream-analytics function test') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('job_name', type=str, help='The name of the streaming job.')
-        c.argument('function_name', options_list=['--name', '-n', '--function-name'], type=str,
-                   help='The name of the function.')
+        c.argument('function_name', options_list=['--function-name', '--name', '-n'], type=str, help='The name of the '
+                   'function.')
+        # c.argument('name', type=str, help='Resource name')
         c.argument('properties', type=validate_file_or_dict, help='The properties that are associated with a function. '
                    'Expected value: json-string/json-file/@json-file.')
 
@@ -421,3 +452,105 @@ def load_arguments(self, _):
 
     with self.argument_context('stream-analytics subscription inspect') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+
+    with self.argument_context('stream-analytics cluster list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('stream-analytics cluster show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.', id_part='name')
+
+    with self.argument_context('stream-analytics cluster create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.')
+        c.argument('if_match', type=str, help='The ETag of the resource. Omit this value to always overwrite the '
+                   'current record set. Specify the last-seen ETag value to prevent accidentally overwriting '
+                   'concurrent changes.')
+        c.argument('if_none_match', type=str, help='Set to \'*\' to allow a new resource to be created, but to prevent '
+                   'updating an existing record set. Other values will result in a 412 Pre-condition Failed response.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('sku', action=AddSku, nargs='+', help='The SKU of the cluster. This determines the size/capacity of '
+                   'the cluster. Required on PUT (CreateOrUpdate) requests.')
+
+    with self.argument_context('stream-analytics cluster update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.', id_part='name')
+        c.argument('if_match', type=str, help='The ETag of the resource. Omit this value to always overwrite the '
+                   'current record set. Specify the last-seen ETag value to prevent accidentally overwriting '
+                   'concurrent changes.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('sku', action=AddSku, nargs='+', help='The SKU of the cluster. This determines the size/capacity of '
+                   'the cluster. Required on PUT (CreateOrUpdate) requests.')
+
+    with self.argument_context('stream-analytics cluster delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.', id_part='name')
+
+    with self.argument_context('stream-analytics cluster list-streaming-job') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.')
+
+    with self.argument_context('stream-analytics cluster wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'cluster.', id_part='name')
+
+    with self.argument_context('stream-analytics private-endpoint list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.')
+
+    with self.argument_context('stream-analytics private-endpoint show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('private_endpoint_name', options_list=['--name', '-n', '--private-endpoint-name'], type=str,
+                   help='The name of the private endpoint.', id_part='child_name_1')
+
+    with self.argument_context('stream-analytics private-endpoint create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.')
+        c.argument('private_endpoint_name', options_list=['--name', '-n', '--private-endpoint-name'], type=str,
+                   help='The name of the private endpoint.')
+        c.argument('if_match', type=str, help='The ETag of the resource. Omit this value to always overwrite the '
+                   'current record set. Specify the last-seen ETag value to prevent accidentally overwriting '
+                   'concurrent changes.')
+        c.argument('if_none_match', type=str, help='Set to \'*\' to allow a new resource to be created, but to prevent '
+                   'updating an existing record set. Other values will result in a 412 Pre-condition Failed response.')
+        c.argument('manual_private_link_service_connections', options_list=['--connections'], type=validate_file_or_dict, help='A list of connections '
+                   'to the remote resource. Immutable after it is set. Expected value: json-string/json-file/@json-file'
+                   '.')
+
+    with self.argument_context('stream-analytics private-endpoint update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('private_endpoint_name', options_list=['--name', '-n', '--private-endpoint-name'], type=str,
+                   help='The name of the private endpoint.', id_part='child_name_1')
+        c.argument('if_match', type=str, help='The ETag of the resource. Omit this value to always overwrite the '
+                   'current record set. Specify the last-seen ETag value to prevent accidentally overwriting '
+                   'concurrent changes.')
+        c.argument('if_none_match', type=str, help='Set to \'*\' to allow a new resource to be created, but to prevent '
+                   'updating an existing record set. Other values will result in a 412 Pre-condition Failed response.')
+        c.argument('manual_private_link_service_connections', options_list=['--connections'], type=validate_file_or_dict, help='A list of connections '
+                   'to the remote resource. Immutable after it is set. Expected value: json-string/json-file/@json-file'
+                   '.')
+        c.ignore('private_endpoint')
+
+    with self.argument_context('stream-analytics private-endpoint delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('private_endpoint_name', options_list=['--name', '-n', '--private-endpoint-name'], type=str,
+                   help='The name of the private endpoint.', id_part='child_name_1')
+
+    with self.argument_context('stream-analytics private-endpoint wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the cluster.', id_part='name')
+        c.argument('private_endpoint_name', options_list=['--name', '-n', '--private-endpoint-name'], type=str,
+                   help='The name of the private endpoint.', id_part='child_name_1')

@@ -47,7 +47,7 @@ setup(
     long_description='Support for managing Azure Functions resources and configs.',
     author='Graham Zuber',
     author_email='grzuber@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/functionapp',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/functionapp',
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
