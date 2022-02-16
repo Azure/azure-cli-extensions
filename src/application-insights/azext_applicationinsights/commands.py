@@ -81,6 +81,11 @@ def load_command_table(self, _):
         client_factory=cf_export_configuration
     )
 
+    web_test_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.web_tests_operations#WebTestsOperations.{}',
+        client_factory=cf_web_test
+    )
+
     web_test_custom_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.custom#{}',
         client_factory=cf_web_test
@@ -127,7 +132,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_export_configuration')
         g.custom_command('delete', 'delete_export_configuration', confirmation=True)
 
-    with self.command_group('monitor app-insights web-test', custom_command_type=web_test_custom_sdk) as g:
+    with self.command_group('monitor app-insights web-test', command_type=web_test_sdk, custom_command_type=web_test_custom_sdk) as g:
         g.custom_command('list', 'list_web_tests')
         g.custom_show_command('show', 'get_web_test')
         g.custom_command('create', 'create_web_test')
