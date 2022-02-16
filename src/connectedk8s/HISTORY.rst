@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.4
+++++++
+
+* Custom cert changes, using "userValues.txt" for existing values in update command instead of --reuse-values
+
 1.2.3
 ++++++
 
