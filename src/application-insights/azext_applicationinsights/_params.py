@@ -121,7 +121,7 @@ def load_arguments(self, _):
             c.argument('export_id', options_list=['--id'],
                        help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
 
-    with self.argument_context('application-insights web-test') as c:
+    with self.argument_context('monitor app-insights web-test') as c:
         c.argument('web_test_name', options_list=['--name', '-n', '--web-test-name'], type=str, help='The name of the Application Insights WebTest resource.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False, validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -148,5 +148,5 @@ def load_arguments(self, _):
         c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.', arg_group='Request')
         c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.', arg_group='Configuration')
 
-    with self.argument_context('application-insights web-test list') as c:
+    with self.argument_context('monitor app-insights web-test list') as c:
         c.argument('component_name', type=str, help='The name of the Application Insights component resource.')

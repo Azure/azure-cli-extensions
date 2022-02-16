@@ -363,3 +363,159 @@ helps['monitor app-insights component continues-export delete'] = """
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid
 """
+
+helps['monitor app-insights web-test'] = """
+    type: group
+    short-summary: Manage web test with application insights
+"""
+
+helps['monitor app-insights web-test list'] = """
+    type: command
+    short-summary: "Get all Application Insights web tests defined for the specified component. And Get all \
+Application Insights web tests defined within a specified resource group. And Get all Application Insights web test \
+alerts definitions within a subscription."
+    examples:
+      - name: webTestListByComponent
+        text: |-
+               az monitor app-insights web-test list --component-name "my-component" --resource-group \
+"my-resource-group"
+      - name: webTestListByResourceGroup
+        text: |-
+               az monitor app-insights web-test list --resource-group "my-resource-group"
+      - name: webTestList
+        text: |-
+               az monitor app-insights web-test list
+"""
+
+helps['monitor app-insights web-test show'] = """
+    type: command
+    short-summary: "Get a specific Application Insights web test definition."
+    examples:
+      - name: webTestGet
+        text: |-
+               az monitor app-insights web-test show --resource-group "my-resource-group" --name \
+"my-webtest-01-mywebservice"
+"""
+
+helps['monitor app-insights web-test create'] = """
+    type: command
+    short-summary: "Create an Application Insights web test definition."
+    parameters:
+      - name: --locations
+        short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
+your application."
+        long-summary: |
+            Usage: --locations location=XX
+
+            location: Location ID for the WebTest to run from.
+
+            Multiple actions can be specified by using more than one --locations argument.
+      - name: --content-validation
+        short-summary: "The collection of content validation properties"
+        long-summary: |
+            Usage: --content-validation content-match=XX ignore-case=XX pass-if-text-found=XX
+
+            content-match: Content to look for in the return of the WebTest.  Must not be null or empty.
+            ignore-case: When set, this value makes the ContentMatch validation case insensitive.
+            pass-if-text-found: When true, validation will pass if there is a match for the ContentMatch string.  If \
+false, validation will fail if there is a match
+      - name: --headers
+        short-summary: "List of headers and their values to add to the WebTest call."
+        long-summary: |
+            Usage: --headers header-field-name=XX header-field-value=XX
+
+            header-field-name: The name of the header.
+            header-field-value: The value of the header.
+
+            Multiple actions can be specified by using more than one --headers argument.
+    examples:
+      - name: webTestCreate
+        text: |-
+               az monitor app-insights web-test create --kind "ping" --location "South Central US" --web-test \
+"<WebTest Name=\\"my-webtest\\" Id=\\"678ddf96-1ab8-44c8-9274-123456789abc\\" Enabled=\\"True\\" \
+CssProjectStructure=\\"\\" CssIteration=\\"\\" Timeout=\\"120\\" WorkItemIds=\\"\\" xmlns=\\"http://microsoft.com/schem\
+as/VisualStudio/TeamTest/2010\\" Description=\\"\\" CredentialUserName=\\"\\" CredentialPassword=\\"\\" \
+PreAuthenticate=\\"True\\" Proxy=\\"default\\" StopOnError=\\"False\\" RecordedResultFile=\\"\\" ResultsLocale=\\"\\" \
+><Items><Request Method=\\"GET\\" Guid=\\"a4162485-9114-fcfc-e086-123456789abc\\" Version=\\"1.1\\" \
+Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"120\\" ParseDependentRequests=\\"True\\" \
+FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
+ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
+/></Items></WebTest>" --description "Ping web test alert for mytestwebapp" --enabled true --frequency 900 \
+--web-test-kind "ping" --locations Id="us-fl-mia-edge" --web-test-properties-name-web-test-name \
+"my-webtest-my-component" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
+--resource-group "my-resource-group" --name "my-webtest-my-component"
+      - name: webTestCreateBasic
+        text: |-
+               az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
+alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "basic" --locations Id="us-fl-mia-edge" \
+--web-test-properties-name-web-test-name "my-webtest-my-component" --parse-dependent-requests true --request-url \
+"https://www.bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
+--expected-http-status-code 200 --ssl-check true --resource-group "my-resource-group" --name "my-webtest-my-component"
+      - name: webTestCreateStandard
+        text: |-
+               az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
+alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "standard" --locations Id="us-fl-mia-edge" \
+--web-test-properties-name-web-test-name "my-webtest-my-component" --headers key="Content-Language" value="de-DE" \
+--headers key="Accept-Language" value="de-DE" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
+"https://bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
+--ssl-cert-remaining-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
+"my-webtest-my-component"
+"""
+
+helps['monitor app-insights web-test update'] = """
+    type: command
+    short-summary: "Update an Application Insights web test definition."
+    parameters:
+      - name: --locations
+        short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
+your application."
+        long-summary: |
+            Usage: --locations location=XX
+
+            location: Location ID for the WebTest to run from.
+
+            Multiple actions can be specified by using more than one --locations argument.
+      - name: --content-validation
+        short-summary: "The collection of content validation properties"
+        long-summary: |
+            Usage: --content-validation content-match=XX ignore-case=XX pass-if-text-found=XX
+
+            content-match: Content to look for in the return of the WebTest.  Must not be null or empty.
+            ignore-case: When set, this value makes the ContentMatch validation case insensitive.
+            pass-if-text-found: When true, validation will pass if there is a match for the ContentMatch string.  If \
+false, validation will fail if there is a match
+      - name: --headers
+        short-summary: "List of headers and their values to add to the WebTest call."
+        long-summary: |
+            Usage: --headers header-field-name=XX header-field-value=XX
+
+            header-field-name: The name of the header.
+            header-field-value: The value of the header.
+
+            Multiple actions can be specified by using more than one --headers argument.
+    examples:
+      - name: webTestUpdate
+        text: |-
+               az monitor app-insights web-test update --kind "ping" --location "South Central US" --web-test \
+"<WebTest Name=\\"my-webtest\\" Id=\\"678ddf96-1ab8-44c8-9274-123456789abc\\" Enabled=\\"True\\" \
+CssProjectStructure=\\"\\" CssIteration=\\"\\" Timeout=\\"30\\" WorkItemIds=\\"\\" xmlns=\\"http://microsoft.com/schema\
+s/VisualStudio/TeamTest/2010\\" Description=\\"\\" CredentialUserName=\\"\\" CredentialPassword=\\"\\" \
+PreAuthenticate=\\"True\\" Proxy=\\"default\\" StopOnError=\\"False\\" RecordedResultFile=\\"\\" ResultsLocale=\\"\\" \
+><Items><Request Method=\\"GET\\" Guid=\\"a4162485-9114-fcfc-e086-123456789abc\\" Version=\\"1.1\\" \
+Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"30\\" ParseDependentRequests=\\"True\\" \
+FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
+ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
+/></Items></WebTest>" --frequency 600 --web-test-kind "ping" --locations Id="us-fl-mia-edge" --locations \
+Id="apac-hk-hkn-azr" --web-test-properties-name-web-test-name "my-webtest-my-component" --synthetic-monitor-id \
+"my-webtest-my-component" --timeout 30 --resource-group "my-resource-group" --name "my-webtest-my-component"
+"""
+
+helps['monitor app-insights web-test delete'] = """
+    type: command
+    short-summary: "Deletes an Application Insights web test."
+    examples:
+      - name: webTestDelete
+        text: |-
+               az monitor app-insights web-test delete --resource-group "my-resource-group" --name \
+"my-webtest-01-mywebservice"
+"""
