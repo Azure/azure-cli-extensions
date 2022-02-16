@@ -1,0 +1,433 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --contact-details --shipping-address
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_edgeorder_000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001","name":"cli_test_edgeorder_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2022-02-15T09:09:49Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Feb 2022 09:09:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"shippingAddress": {"streetAddress1":
+      "16 TOWNSEND ST", "streetAddress2": "UNIT 1", "city": "San Francisco", "stateOrProvince":
+      "CA", "country": "US", "postalCode": "94107", "companyName": "Microsoft", "addressType":
+      "None"}, "contactDetails": {"contactName": "Petr Cech", "phone": "1234567890",
+      "phoneExtension": "", "emailList": ["testemail@microsoft.com"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '399'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --contact-details --shipping-address
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Feb 2022 09:09:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/ac30508b-87bb-408c-b8b4-4152a660d75a?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --contact-details --shipping-address
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/locations/eastus/operationResults/ac30508b-87bb-408c-b8b4-4152a660d75a?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Feb 2022 09:10:09 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name --contact-details --shipping-address
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"shippingAddress\": {\r\n      \"streetAddress1\":
+        \"16 TOWNSEND ST\",\r\n      \"streetAddress2\": \"UNIT 1\",\r\n      \"city\":
+        \"San Francisco\",\r\n      \"stateOrProvince\": \"CA\",\r\n      \"country\":
+        \"US\",\r\n      \"postalCode\": \"94107\",\r\n      \"companyName\": \"Microsoft\",\r\n
+        \     \"addressType\": \"None\"\r\n    },\r\n    \"contactDetails\": {\r\n
+        \     \"contactName\": \"Petr Cech\",\r\n      \"phone\": \"1234567890\",\r\n
+        \     \"phoneExtension\": \"\",\r\n      \"emailList\": [\r\n        \"testemail@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"addressValidationStatus\": \"Valid\"\r\n  },\r\n
+        \ \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-15T09:09:57.4534323+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-15T09:09:57.4534323+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestAddressName\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/addresses\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Feb 2022 09:10:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"shippingAddress\": {\r\n      \"streetAddress1\":
+        \"16 TOWNSEND ST\",\r\n      \"streetAddress2\": \"UNIT 1\",\r\n      \"city\":
+        \"San Francisco\",\r\n      \"stateOrProvince\": \"CA\",\r\n      \"country\":
+        \"US\",\r\n      \"postalCode\": \"94107\",\r\n      \"companyName\": \"Microsoft\",\r\n
+        \     \"addressType\": \"None\"\r\n    },\r\n    \"contactDetails\": {\r\n
+        \     \"contactName\": \"Petr Cech\",\r\n      \"phone\": \"1234567890\",\r\n
+        \     \"phoneExtension\": \"\",\r\n      \"emailList\": [\r\n        \"testemail@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"addressValidationStatus\": \"Valid\"\r\n  },\r\n
+        \ \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-15T09:09:57.4534323+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-15T09:09:57.4534323+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestAddressName\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/addresses\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1129'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Feb 2022 09:10:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"shippingAddress": {"streetAddress1": "16 TOWNSEND ST",
+      "streetAddress2": "UNIT 1", "city": "San Francisco", "stateOrProvince": "CA",
+      "country": "US", "postalCode": "94107", "companyName": "Microsoft", "addressType":
+      "None"}, "contactDetails": {"contactName": "Petr Cech", "phone": "1234567890",
+      "phoneExtension": "", "emailList": ["ssemcr@microsoft.com"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '374'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --contact-details --shipping-address
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"shippingAddress\": {\r\n      \"streetAddress1\":
+        \"16 TOWNSEND ST\",\r\n      \"streetAddress2\": \"UNIT 1\",\r\n      \"city\":
+        \"San Francisco\",\r\n      \"stateOrProvince\": \"CA\",\r\n      \"country\":
+        \"US\",\r\n      \"postalCode\": \"94107\",\r\n      \"companyName\": \"Microsoft\",\r\n
+        \     \"addressType\": \"None\"\r\n    },\r\n    \"contactDetails\": {\r\n
+        \     \"contactName\": \"Petr Cech\",\r\n      \"phone\": \"1234567890\",\r\n
+        \     \"phoneExtension\": \"\",\r\n      \"emailList\": [\r\n        \"ssemcr@microsoft.com\"\r\n
+        \     ]\r\n    },\r\n    \"addressValidationStatus\": \"Valid\"\r\n  },\r\n
+        \ \"systemData\": {\r\n    \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2022-02-15T09:09:57.4534323+00:00\",\r\n
+        \   \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2022-02-15T09:10:22.8871424+00:00\"\r\n
+        \ },\r\n  \"location\": \"eastus\",\r\n  \"tags\": {},\r\n  \"name\": \"TestAddressName\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName\",\r\n
+        \ \"type\": \"Microsoft.EdgeOrder/addresses\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1126'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Feb 2022 09:10:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address rg-list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"shippingAddress\":
+        {\r\n          \"streetAddress1\": \"16 TOWNSEND ST\",\r\n          \"streetAddress2\":
+        \"UNIT 1\",\r\n          \"city\": \"San Francisco\",\r\n          \"stateOrProvince\":
+        \"CA\",\r\n          \"country\": \"US\",\r\n          \"postalCode\": \"94107\",\r\n
+        \         \"companyName\": \"Microsoft\",\r\n          \"addressType\": \"None\"\r\n
+        \       },\r\n        \"contactDetails\": {\r\n          \"contactName\":
+        \"Petr Cech\",\r\n          \"phone\": \"1234567890\",\r\n          \"phoneExtension\":
+        \"\",\r\n          \"emailList\": [\r\n            \"ssemcr@microsoft.com\"\r\n
+        \         ]\r\n        },\r\n        \"addressValidationStatus\": \"Valid\"\r\n
+        \     },\r\n      \"systemData\": {\r\n        \"createdBy\": \"ethanyang@microsoft.com\",\r\n
+        \       \"createdByType\": \"User\",\r\n        \"createdAt\": \"2022-02-15T09:09:57.4534323+00:00\",\r\n
+        \       \"lastModifiedBy\": \"ethanyang@microsoft.com\",\r\n        \"lastModifiedByType\":
+        \"User\",\r\n        \"lastModifiedAt\": \"2022-02-15T09:10:22.8871424+00:00\"\r\n
+        \     },\r\n      \"location\": \"eastus\",\r\n      \"tags\": {},\r\n      \"name\":
+        \"TestAddressName\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName\",\r\n
+        \     \"type\": \"Microsoft.EdgeOrder/addresses\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1295'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Feb 2022 09:10:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder address delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_edgeorder_000001/providers/Microsoft.EdgeOrder/addresses/TestAddressName?api-version=2021-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Feb 2022 09:10:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 200
+      message: OK
+version: 1
