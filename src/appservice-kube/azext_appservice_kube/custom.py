@@ -45,8 +45,7 @@ from azure.cli.command_modules.appservice.custom import (
     update_app_settings,
     list_hostnames,
     _convert_camel_to_snake_case,
-    _get_content_share_name
-    )
+    _get_content_share_name)
 from azure.cli.command_modules.appservice._constants import FUNCTIONS_STACKS_API_KEYS, FUNCTIONS_NO_V2_REGIONS
 from azure.cli.command_modules.appservice.utils import retryable_method
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
