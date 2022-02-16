@@ -1655,7 +1655,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile,
         creation_data=creationData,
-        host_group_id=host_group_id
+        host_group_id=host_group_id,
         capacity_reservation_group_id=crg_id
     )
 
