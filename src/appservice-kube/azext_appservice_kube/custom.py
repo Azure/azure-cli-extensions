@@ -12,7 +12,7 @@ import json
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object
+from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object, get_file_json
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
@@ -44,12 +44,9 @@ from azure.cli.command_modules.appservice.custom import (
     delete_app_settings,
     update_app_settings,
     list_hostnames,
-    _get_matching_runtime_json_functionapp,
-    _get_matching_runtime_version_json_functionapp,
-    _get_supported_runtime_versions_functionapp,
     _convert_camel_to_snake_case,
-    _get_content_share_name,
-    _load_runtime_stacks_json_functionapp)
+    _get_content_share_name
+    )
 from azure.cli.command_modules.appservice._constants import FUNCTIONS_STACKS_API_KEYS, FUNCTIONS_NO_V2_REGIONS
 from azure.cli.command_modules.appservice.utils import retryable_method
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -65,7 +62,8 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_EXACT_VERSION_DEFAULT,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
                          KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND,
-                         KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES)
+                         KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES, FUNCTIONS_STACKS_API_JSON_PATHS,
+                         FUNCTIONS_WINDOWS_RUNTIME_VERSION_REGEX, FUNCTIONS_LINUX_RUNTIME_VERSION_REGEX)
 
 from ._utils import (_normalize_sku, get_sku_name, _generic_site_operation,
                      _get_location_from_resource_group, _validate_asp_sku)
@@ -1838,3 +1836,69 @@ def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot
     SslState = cmd.get_models('SslState')
     return _update_ssl_binding(cmd, resource_group_name, name,
                                certificate_thumbprint, SslState.disabled, slot)
+
+
+def _load_runtime_stacks_json_functionapp(is_linux):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    if is_linux:
+        return get_file_json(FUNCTIONS_STACKS_API_JSON_PATHS['linux'])[KEYS.VALUE]
+    return get_file_json(FUNCTIONS_STACKS_API_JSON_PATHS['windows'])[KEYS.VALUE]
+
+
+def _get_matching_runtime_json_functionapp(stacks_json, runtime):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    matching_runtime_json = list(filter(lambda x: x[KEYS.NAME] == runtime, stacks_json))
+    if matching_runtime_json:
+        return matching_runtime_json[0]
+    return None
+
+
+def _get_matching_runtime_version_json_functionapp(runtime_json, functions_version, runtime_version, is_linux):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    extension_version = _get_extension_version_functionapp(functions_version)
+    if runtime_version:
+        for runtime_version_json in runtime_json[KEYS.PROPERTIES][KEYS.MAJOR_VERSIONS]:
+            if (runtime_version_json[KEYS.DISPLAY_VERSION] == runtime_version and
+                    extension_version in runtime_version_json[KEYS.SUPPORTED_EXTENSION_VERSIONS]):
+                return runtime_version_json
+        return None
+
+    # find the matching default runtime version
+    supported_versions_list = _get_supported_runtime_versions_functionapp(runtime_json, functions_version)
+    default_version_json = {}
+    default_version = 0.0
+    for current_runtime_version_json in supported_versions_list:
+        if current_runtime_version_json[KEYS.IS_DEFAULT]:
+            current_version = _get_runtime_version_functionapp(current_runtime_version_json[KEYS.RUNTIME_VERSION],
+                                                               is_linux)
+            if not default_version_json or default_version < current_version:
+                default_version_json = current_runtime_version_json
+                default_version = current_version
+    return default_version_json
+
+
+def _get_supported_runtime_versions_functionapp(runtime_json, functions_version):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    extension_version = _get_extension_version_functionapp(functions_version)
+    supported_versions_list = []
+
+    for runtime_version_json in runtime_json[KEYS.PROPERTIES][KEYS.MAJOR_VERSIONS]:
+        if extension_version in runtime_version_json[KEYS.SUPPORTED_EXTENSION_VERSIONS]:
+            supported_versions_list.append(runtime_version_json)
+    return supported_versions_list
+
+
+def _get_runtime_version_functionapp(version_string, is_linux):
+    import re
+    windows_match = re.fullmatch(FUNCTIONS_WINDOWS_RUNTIME_VERSION_REGEX, version_string)
+    if windows_match:
+        return float(windows_match.group(1))
+
+    linux_match = re.fullmatch(FUNCTIONS_LINUX_RUNTIME_VERSION_REGEX, version_string)
+    if linux_match:
+        return float(linux_match.group(1))
+
+    try:
+        return float(version_string)
+    except ValueError:
+        return 0

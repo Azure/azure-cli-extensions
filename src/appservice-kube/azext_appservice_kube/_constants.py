@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
 
 KUBE_DEFAULT_SKU = "K1"
 KUBE_ASP_KIND = "linux,kubernetes"
@@ -82,3 +84,12 @@ OS_TYPES = ['Windows', 'Linux']
 CONTAINER_APPSETTING_NAMES = ['DOCKER_REGISTRY_SERVER_URL', 'DOCKER_REGISTRY_SERVER_USERNAME',
                               'DOCKER_REGISTRY_SERVER_PASSWORD', "WEBSITES_ENABLE_APP_SERVICE_STORAGE"]
 APPSETTINGS_TO_MASK = ['DOCKER_REGISTRY_SERVER_PASSWORD']
+
+
+FUNCTIONS_STACKS_API_JSON_PATHS = {
+    'windows': os.path.abspath(os.path.join(os.path.abspath(__file__), '../resources/WindowsFunctionsStacks.json')),
+    'linux': os.path.abspath(os.path.join(os.path.abspath(__file__), '../resources/LinuxFunctionsStacks.json'))
+}
+
+FUNCTIONS_LINUX_RUNTIME_VERSION_REGEX = r"^.*\|(.*)$"
+FUNCTIONS_WINDOWS_RUNTIME_VERSION_REGEX = r"^~(.*)$"
