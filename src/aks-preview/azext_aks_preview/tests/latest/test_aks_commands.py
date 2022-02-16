@@ -3451,14 +3451,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys()
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --network-plugin=none ' \
-                     '--ssh-key-value={ssh_key_value} -o json'
+                     '--location={location} --ssh-key-value={ssh_key_value} -o json'
+        
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
-          
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])          
