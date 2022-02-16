@@ -581,7 +581,39 @@ class TagsResource(msrest.serialization.Model):
         self.tags = tags
 
 
-class WebtestsResource(msrest.serialization.Model):
+class HeaderField(msrest.serialization.Model):
+    """A header to add to the WebTest.
+
+    :ivar header_field_name: The name of the header.
+    :vartype header_field_name: str
+    :ivar header_field_value: The value of the header.
+    :vartype header_field_value: str
+    """
+
+    _attribute_map = {
+        'header_field_name': {'key': 'key', 'type': 'str'},
+        'header_field_value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        header_field_name: Optional[str] = None,
+        header_field_value: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword header_field_name: The name of the header.
+        :paramtype header_field_name: str
+        :keyword header_field_value: The value of the header.
+        :paramtype header_field_value: str
+        """
+        super(HeaderField, self).__init__(**kwargs)
+        self.header_field_name = header_field_name
+        self.header_field_value = header_field_value
+
+
+class WebTestsResource(msrest.serialization.Model):
     """An azure resource object.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -628,7 +660,7 @@ class WebtestsResource(msrest.serialization.Model):
         :keyword tags: A set of tags. Resource tags.
         :paramtype tags: dict[str, str]
         """
-        super(WebtestsResource, self).__init__(**kwargs)
+        super(WebTestsResource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
@@ -636,7 +668,7 @@ class WebtestsResource(msrest.serialization.Model):
         self.tags = tags
 
 
-class WebTest(WebtestsResource):
+class WebTest(WebTestsResource):
     """An Application Insights WebTest definition.
 
     Variables are only populated by the server, and will be ignored when sending a request.

@@ -55,5 +55,5 @@ def cf_export_configuration(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).export_configurations
 
 
-def cf_web_tests(cli_ctx, _):
+def cf_web_test(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).web_tests_operations

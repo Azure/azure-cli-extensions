@@ -25,7 +25,7 @@ try:
     from ._models_py3 import WebTestPropertiesRequest
     from ._models_py3 import WebTestPropertiesValidationRules
     from ._models_py3 import WebTestPropertiesValidationRulesContentValidation
-    from ._models_py3 import WebtestsResource
+    from ._models_py3 import WebTestsResource
 except (SyntaxError, ImportError):
     from ._models import ApplicationInsightsComponent  # type: ignore
     from ._models import ApplicationInsightsComponentListResult  # type: ignore
@@ -69,7 +69,7 @@ __all__ = [
     'WebTestPropertiesRequest',
     'WebTestPropertiesValidationRules',
     'WebTestPropertiesValidationRulesContentValidation',
-    'WebtestsResource',
+    'WebTestsResource',
     'ApplicationType',
     'FlowType',
     'IngestionMode',

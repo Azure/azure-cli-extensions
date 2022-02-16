@@ -4,7 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-statements
+from azext_applicationinsights.action import (
+    AddRuleDefinitions,
+    AddLocations,
+    AddContentValidation,
+    AddHeaders
+)
 from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.command_modules.monitor.actions import get_period_type
 from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account, validate_app_service
 
@@ -114,3 +121,33 @@ def load_arguments(self, _):
         with self.argument_context('monitor app-insights component continues-export {}'.format(scope)) as c:
             c.argument('export_id', options_list=['--id'],
                        help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
+
+    with self.argument_context('application-insights web-test') as c:
+        c.argument('web_test_name', options_list=['--name', '-n', '--web-test-name'], type=str, help='The name of the Application Insights WebTest resource.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False, validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('kind', arg_type=get_enum_type(['ping', 'multistep']), help='The kind of WebTest that this web test watches. Choices are ping and multistep.')
+        c.argument('synthetic_monitor_id', type=str, help='Unique ID of this WebTest. This is typically the same value as the Name field.')
+        c.argument('web_test_properties_name_web_test_name', type=str, help='User defined name if this WebTest.')
+        c.argument('description', type=str, help='User defined description for this WebTest.')
+        c.argument('enabled', arg_type=get_three_state_flag(), help='Is the test actively being monitored.')
+        c.argument('frequency', type=int, help='Interval in seconds between test runs for this WebTest. Default value is 300.')
+        c.argument('timeout', type=int, help='Seconds until this WebTest will timeout and fail. Default value is 30.')
+        c.argument('web_test_kind', arg_type=get_enum_type(['ping', 'multistep', 'basic', 'standard']), help='The kind of web test this is, valid choices are ping, multistep, basic, and standard.')
+        c.argument('retry_enabled', arg_type=get_three_state_flag(), help='Allow for retries should this WebTest fail.')
+        c.argument('locations', action=AddLocations, nargs='+', help='A list of where to physically run the tests from to give global coverage for accessibility of your application.')
+        c.argument('content_validation', action=AddContentValidation, nargs='+', help='The collection of content validation properties', arg_group='Validation Rules')
+        c.argument('ssl_check', arg_type=get_three_state_flag(), help='Checks to see if the SSL cert is still valid.', arg_group='Validation Rules')
+        c.argument('ssl_cert_remaining_lifetime_check', type=int, help='A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.', arg_group='Validation Rules')
+        c.argument('expected_http_status_code', type=int, help='Validate that the WebTest returns the http status code provided.', arg_group='Validation Rules')
+        c.argument('ignore_https_status_code', arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.', arg_group='Validation Rules')
+        c.argument('request_url', type=str, help='Url location to test.', arg_group='Request')
+        c.argument('headers', action=AddHeaders, nargs='+', help='List of headers and their values to add to the WebTest call.', arg_group='Request')
+        c.argument('http_verb', type=str, help='Http verb to use for this web test.', arg_group='Request')
+        c.argument('request_body', type=str, help='Base64 encoded string body to send with this web test.', arg_group='Request')
+        c.argument('parse_dependent_requests', arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.', arg_group='Request')
+        c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.', arg_group='Request')
+        c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.', arg_group='Configuration')
+
+    with self.argument_context('application-insights web-test list') as c:
+        c.argument('component_name', type=str, help='The name of the Application Insights component resource.')
