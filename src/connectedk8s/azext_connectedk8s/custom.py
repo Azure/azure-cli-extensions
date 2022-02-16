@@ -895,7 +895,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
         raise ClientRequestError(f'The {operating_system} platform is not currently supported.')
-
     user_values_location = os.path.expanduser(os.path.join('~', user_values_filepath_string))
     existing_user_values = open(user_values_location, 'w+')
     response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
@@ -939,7 +938,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         try:
-            os.remove(user_values_location)
+           os.remove(user_values_location)
         except OSError:
             pass
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
