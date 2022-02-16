@@ -777,6 +777,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
+    # Fetch OS details
+    operating_system = platform.system()
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -885,7 +887,17 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if kube_context:
         cmd_helm_values.extend(["--kube-context", kube_context])
     
-    existing_user_values = open('userValues.txt', 'w+')
+    if(operating_system == 'Windows'):
+        user_values_filepath_string = f'.azure\\userValues.txt'
+    elif(operating_system == 'Linux' or operating_system == 'Darwin'):
+        user_values_filepath_string = f'.azure/userValues.txt'
+    else:
+        telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
+                                summary=f'{operating_system} is not supported yet')
+        raise ClientRequestError(f'The {operating_system} platform is not currently supported.')
+    
+    user_values_location = os.path.expanduser(os.path.join('~', user_values_filepath_string))
+    existing_user_values = open(user_values_location, 'w+')
     response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
     _, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
@@ -897,7 +909,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
-                        "userValues.txt", "--wait", "--output", "json"]
+                        user_values_location, "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
     if auto_upgrade is not None:
@@ -927,12 +939,12 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         try:
-           os.remove(existing_user_values.name)
+           os.remove(user_values_location)
         except OSError:
            pass
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
     try:
-        os.remove(existing_user_values.name)
+        os.remove(user_values_location)
     except OSError:
         pass
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
