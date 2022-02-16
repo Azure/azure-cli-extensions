@@ -5,7 +5,10 @@ Release History
 
 0.5.53
 ++++++
-* Add preview support for agentpools provisioned on Azure Dedicated Host Group. Requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview" for setting agentpool property "host-group-id".
+* Add --host-group-id to `az aks create` and `az aks nodepool add` commands to support Azure Dedicated Host Group, which requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview"
+  * `az aks create --host-group-id`
+  * `az aks nodepool add --host-group-id`
+
 
 0.5.52
 ++++++

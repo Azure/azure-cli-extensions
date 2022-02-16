@@ -1249,6 +1249,24 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # test cache
         self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
 
+    def test_get_host_group_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"host_group_id": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_host_group_id(), None)
+        # custom
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"host_group_id": "test_host_group_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_host_group_id(), "test_host_group_id")
+
     def test_get_kubernetes_version(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -1597,6 +1615,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "gpu_instance_profile": None,
                 "kubelet_config": None,
                 "snapshot_id": None,
+                "host_group_id": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1671,6 +1690,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "kubelet_config": _get_test_data_file("kubeletconfig.json"),
                 "linux_os_config": _get_test_data_file("linuxosconfig.json"),
                 "snapshot_id": "test_snapshot_id",
+                "host_group_id": "test_host_group_id",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
