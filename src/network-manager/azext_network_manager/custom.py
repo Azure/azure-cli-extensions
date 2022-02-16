@@ -986,20 +986,18 @@ def network_manager_connection_list(client,
 
 def network_manager_connection_create(client,
                                       resource_group_name,
-                                      connection_name,
+                                      network_manager_connection_name,
                                       network_manager_id,
                                       description=None):
     parameters = {}
     parameters['network_manager_id'] = network_manager_id
     parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_connection_name=connection_name,
+                                   network_manager_connection_name=network_manager_connection_name,
                                    parameters=parameters)
 
 
 def network_manager_connection_update(instance,
-                                      resource_group_name,
-                                      connection_name,
                                       description=None):
     if description is not None:
         instance.description = description
@@ -1008,19 +1006,19 @@ def network_manager_connection_update(instance,
 
 def network_manager_connection_show(client,
                                     resource_group_name,
-                                    connection_name):
+                                    network_manager_connection_name):
     return client.get(resource_group_name=resource_group_name,
-                      network_manager_connection_name=connection_name)
+                      network_manager_connection_name=network_manager_connection_name)
 
 
 def network_manager_connection_delete(client,
                                       resource_group_name,
-                                      connection_name):
+                                      network_manager_connection_name):
     return client.delete(resource_group_name=resource_group_name,
-                         network_manager_connection_name=connection_name)
+                         network_manager_connection_name=network_manager_connection_name)
 
 
-def network_manager_connection_management_group_list(client,
+def network_manager_management_group_connection_list(client,
                                                      resource_group_name,
                                                      management_group_id,
                                                      top=None,
@@ -1031,9 +1029,9 @@ def network_manager_connection_management_group_list(client,
                        skip_token=skip_token)
 
 
-def network_manager_connection_management_group_create(client,
+def network_manager_management_group_connection_create(client,
                                                        resource_group_name,
-                                                       connection_name,
+                                                       network_manager_connection_name,
                                                        management_group_id,
                                                        network_manager_id,
                                                        description=None):
@@ -1041,14 +1039,12 @@ def network_manager_connection_management_group_create(client,
     parameters['description'] = description
     parameters['network_manager_id'] = network_manager_id
     return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_connection_name=connection_name,
+                                   network_manager_connection_name=network_manager_connection_name,
                                    management_group_id=management_group_id,
                                    parameters=parameters)
 
 
-def network_manager_connection_management_group_update(instance,
-                                                       resource_group_name,
-                                                       connection_name,
+def network_manager_management_group_connection_update(instance,
                                                        management_group_id,
                                                        description=None):
     if description is not None:
@@ -1058,21 +1054,21 @@ def network_manager_connection_management_group_update(instance,
     return instance
 
 
-def network_manager_connection_management_group_show(client,
+def network_manager_management_group_connection_show(client,
                                                      resource_group_name,
-                                                     connection_name,
+                                                     network_manager_connection_name,
                                                      management_group_id):
     return client.get(resource_group_name=resource_group_name,
-                      network_manager_connection_name=connection_name,
+                      network_manager_connection_name=network_manager_connection_name,
                       management_group_id=management_group_id)
 
 
-def network_manager_connection_management_group_delete(client,
+def network_manager_management_group_connection_delete(client,
                                                        resource_group_name,
-                                                       connection_name,
+                                                       network_manager_connection_name,
                                                        management_group_id):
     return client.delete(resource_group_name=resource_group_name,
-                         network_manager_connection_name=connection_name,
+                         network_manager_connection_name=network_manager_connection_name,
                          management_group_id=management_group_id)
 
 
@@ -1094,21 +1090,21 @@ def network_manager_scope_connection_create(client,
                                             tenant_id,
                                             description=None):
     parameters = {}
+    parameters['tenant_id'] = tenant_id
     parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    scope_connection_name=scope_connection_name,
-                                   tenant_id=tenant_id,
                                    parameters=parameters)
 
 
 def network_manager_scope_connection_update(instance,
-                                            resource_group_name,
-                                            network_manager_name,
-                                            scope_connection_name,
+                                            tenant_id,
                                             description=None):
     if description is not None:
         instance.description = description
+    if tenant_id is not None:
+        instance.tenant_id = tenant_id
     return instance
 
 
@@ -1156,11 +1152,7 @@ def network_manager_group_static_member_create(client,
                                    parameters=parameters)
 
 
-def network_manager_group_static_member_update(instance,
-                                               resource_group_name,
-                                               network_manager_name,
-                                               network_group_name,
-                                               static_member_name):
+def network_manager_group_static_member_update(instance):
     return instance
 
 
