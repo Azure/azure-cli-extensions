@@ -7,7 +7,6 @@ import importlib
 import unittest
 from unittest.mock import Mock, patch
 
-import requests
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._consts import (
@@ -714,7 +713,9 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_1.get_nat_gateway_managed_outbound_ip_count(), None
         )
         nat_gateway_profile = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
-            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(count=10)
+            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
+                count=10
+            )
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
             nat_gateway_profile=nat_gateway_profile
@@ -735,8 +736,10 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), None)
-        nat_gateway_profile = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
-            idle_timeout_in_minutes=20,
+        nat_gateway_profile = (
+            self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
+                idle_timeout_in_minutes=20,
+            )
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
             nat_gateway_profile=nat_gateway_profile
@@ -1258,14 +1261,25 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_host_group_id(), None)
+        agent_pool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", host_group_id="test_mc_host_group_id"
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile_1]
+        )
+        ctx_1.attach_mc(mc_1)
+        self.assertEqual(
+            ctx_1.get_host_group_id(), "test_mc_host_group_id"
+        )
+
         # custom
-        ctx_1 = AKSPreviewContext(
+        ctx_2 = AKSPreviewContext(
             self.cmd,
             {"host_group_id": "test_host_group_id"},
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_host_group_id(), "test_host_group_id")
+        self.assertEqual(ctx_2.get_host_group_id(), "test_host_group_id")
 
     def test_get_kubernetes_version(self):
         # default
@@ -1542,34 +1556,54 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             )
 
     def test_get_oidc_issuer_profile__create_not_set(self):
-        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE
+        )
         self.assertIsNone(ctx.get_oidc_issuer_profile())
 
     def test_get_oidc_issuer_profile__create_enable(self):
-        ctx = AKSPreviewContext(self.cmd, {
-            "enable_oidc_issuer": True,
-        }, self.models, decorator_mode=DecoratorMode.CREATE)
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_oidc_issuer": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
         profile = ctx.get_oidc_issuer_profile()
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
     def test_get_oidc_issuer_profile__update_not_set(self):
-        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE)
-        ctx.attach_mc(self.models.ManagedCluster(location='test_location'))
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         self.assertIsNone(ctx.get_oidc_issuer_profile())
 
-    def test_get_oidc_issuer_profile__update_not_set_with_previous_profile(self):
-        ctx = AKSPreviewContext(self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE)
-        mc = self.models.ManagedCluster(location='test_location')
-        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True, issuer_url='https://issuer-url')
-        ctx.attach_mc(self.models.ManagedCluster(location='test_location'))
+    def test_get_oidc_issuer_profile__update_not_set_with_previous_profile(
+        self,
+    ):
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
+            enabled=True
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         self.assertIsNone(ctx.get_oidc_issuer_profile())
 
     def test_get_oidc_issuer_profile__update_enable(self):
-        ctx = AKSPreviewContext(self.cmd, {
-            "enable_oidc_issuer": True,
-        }, self.models, decorator_mode=DecoratorMode.UPDATE)
-        ctx.attach_mc(self.models.ManagedCluster(location='test_location'))
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_oidc_issuer": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         profile = ctx.get_oidc_issuer_profile()
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
@@ -1599,6 +1633,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_crg_id(), None)
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -1937,7 +1972,9 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_2 = dec_2.set_up_network_profile(mc_2)
 
         nat_gateway_profile_2 = self.models.nat_gateway_models.ManagedClusterNATGatewayProfile(
-            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(count=10),
+            managed_outbound_ip_profile=self.models.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
+                count=10
+            ),
             idle_timeout_in_minutes=20,
         )
         network_profile_2 = self.models.ContainerServiceNetworkProfile(
@@ -2458,26 +2495,40 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_oidc_issuer_profile__default_value(self):
-        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
         mc = self.models.ManagedCluster(location="test_location")
         updated_mc = dec.set_up_oidc_issuer_profile(mc)
         self.assertIsNone(updated_mc.oidc_issuer_profile)
 
     def test_set_up_oidc_issuer_profile__enabled(self):
-        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {
-            "enable_oidc_issuer": True,
-        }, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_oidc_issuer": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
         mc = self.models.ManagedCluster(location="test_location")
         updated_mc = dec.set_up_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
     def test_set_up_oidc_issuer_profile__enabled_mc_enabled(self):
-        dec = AKSPreviewCreateDecorator(self.cmd, self.client, {
-            "enable_oidc_issuer": True,
-        }, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_oidc_issuer": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
         mc = self.models.ManagedCluster(location="test_location")
-        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True, issuer_url='https://issuer-url')
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
+            enabled=True
+        )
         updated_mc = dec.set_up_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
@@ -2654,7 +2705,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
 
         # return mc
         with patch(
-            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc", return_value=mc_1
+            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc",
+            return_value=mc_1,
         ), patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
         ):
@@ -3461,24 +3513,35 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
     def test_update_oidc_issuer_profile__default_value(self):
-        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
         mc = self.models.ManagedCluster(location="test_location")
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
         self.assertIsNone(updated_mc.oidc_issuer_profile)
 
     def test_update_oidc_issuer_profile__default_value_mc_enabled(self):
-        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
         mc = self.models.ManagedCluster(location="test_location")
-        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True, issuer_url='https://issuer-url')
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
+            enabled=True
+        )
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
         self.assertIsNone(updated_mc.oidc_issuer_profile)
 
     def test_update_oidc_issuer_profile__enabled(self):
-        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {
-            "enable_oidc_issuer": True,
-        }, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_oidc_issuer": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
         mc = self.models.ManagedCluster(location="test_location")
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
@@ -3486,11 +3549,18 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
     def test_update_oidc_issuer_profile__enabled_mc_enabled(self):
-        dec = AKSPreviewUpdateDecorator(self.cmd, self.client, {
-            "enable_oidc_issuer": True,
-        }, CUSTOM_MGMT_AKS_PREVIEW)
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_oidc_issuer": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
         mc = self.models.ManagedCluster(location="test_location")
-        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True, issuer_url='https://issuer-url')
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
+            enabled=True
+        )
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
@@ -3701,3 +3771,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             {},
             False,
         )
+
+
+if __name__ == "__main__":
+    unittest.main()
