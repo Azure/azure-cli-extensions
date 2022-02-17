@@ -127,7 +127,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('kind', arg_type=get_enum_type(['ping', 'multistep']), help='The kind of WebTest that this web test watches. Choices are ping and multistep.')
         c.argument('synthetic_monitor_id', type=str, help='Unique ID of this WebTest. This is typically the same value as the Name field.')
-        c.argument('web_test_properties_name_web_test_name', type=str, help='User defined name if this WebTest.')
+        c.argument('web_test_properties_name_web_test_name', options_list=['--defined-web-test-name'], type=str, help='User defined name if this WebTest.')
         c.argument('description', type=str, help='User defined description for this WebTest.')
         c.argument('enabled', arg_type=get_three_state_flag(), help='Is the test actively being monitored.')
         c.argument('frequency', type=int, help='Interval in seconds between test runs for this WebTest. Default value is 300.')
@@ -141,15 +141,15 @@ def load_arguments(self, _):
         c.argument('headers', action=AddHeaders, nargs='+', help='List of headers and their values to add to the WebTest call.')
         c.argument('http_verb', type=str, help='Http verb to use for this web test.')
         c.argument('request_body', type=str, help='Base64 encoded string body to send with this web test.')
-        c.argument('parse_dependent_requests', arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.')
+        c.argument('parse_dependent_requests', options_list=['--parse-requests'], arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.')
         c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.')
 
     with self.argument_context('monitor app-insights web-test', arg_group="Validation Rules") as c:
         c.argument('content_validation', action=AddContentValidation, nargs='+', help='The collection of content validation properties')
         c.argument('ssl_check', arg_type=get_three_state_flag(), help='Checks to see if the SSL cert is still valid.')
-        c.argument('ssl_cert_remaining_lifetime_check', type=int, help='A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.')
-        c.argument('expected_http_status_code', type=int, help='Validate that the WebTest returns the http status code provided.')
-        c.argument('ignore_https_status_code', arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.')
+        c.argument('ssl_cert_remaining_lifetime_check', options_list=['--ssl-lifetime-check'], type=int, help='A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.')
+        c.argument('expected_http_status_code', options_list=['--expected-status-code'], type=int, help='Validate that the WebTest returns the http status code provided.')
+        c.argument('ignore_https_status_code', options_list=['--ignore-status-code'], arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.')
 
     with self.argument_context('monitor app-insights web-test', arg_group="Configuration") as c:
         c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.')

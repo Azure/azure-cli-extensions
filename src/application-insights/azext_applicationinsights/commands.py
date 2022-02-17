@@ -83,7 +83,7 @@ def load_command_table(self, _):
     )
 
     web_test_sdk = CliCommandType(
-        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.web_tests_operations#WebTestsOperations.{}',
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.operations#WebTestsOperations.{}',
         client_factory=cf_web_test
     )
 

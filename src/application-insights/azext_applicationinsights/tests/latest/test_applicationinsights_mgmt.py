@@ -395,7 +395,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             "app_name": "test-app",
             "name": "test-webtest",
             "kind": "standard",
-            "location_id": "us-fl-mia-edge",
+            "location_id1": "us-fl-mia-edge",
+            "location_id2": "apac-hk-hkn-azr",
             "http_verb": "POST",
             "request_body": "SGVsbG8gd29ybGQ=",
             "request_url": "https://www.bing.com"
@@ -407,26 +408,27 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         self.cmd(
             "monitor app-insights web-test create -n {name} -l {loc} -g {rg} "
-            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id} --web-test-properties-name-web-test-name {name} "
+            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id1} --defined-web-test-name {name} "
             "--http-verb {http_verb} --request-body {request_body} --request-url {request_url} --retry-enabled true --synthetic-monitor-id {name} --timeout 120 "
-            "--ssl-cert-remaining-lifetime-check 100 --ssl-check true --tags {tag}=Resource",
+            "--ssl-lifetime-check 100 --ssl-check true --tags {tag}=Resource",
             checks=[
                 self.check("webTestName", "{name}"),
                 self.check("type", "microsoft.insights/webtests")
             ]
         )
         self.cmd(
-            "monitor app-insights web-test list -g {rg} --component-name {app-name}",
+            "monitor app-insights web-test list -g {rg} --component-name {app_name}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("@[0].webTestName", "{name}")
             ]
         )
+        self.cmd("monitor app-insights web-test update -n {name} -l {loc} -g {rg} --locations Id={location_id2}")
         self.cmd(
-            "monitor app-insights web-test update -g {rg} ",
+            "monitor app-insights web-test show -n {name} -g {rg}",
+            checks=[
+                self.check("locations[0].location", "{location_id2}"),
+                self.check("webTestName", "{name}")
+            ]
         )
-
-
-
-
-
+        self.cmd("monitor app-insights web-test delete -n {name} -g {rg} --yes")

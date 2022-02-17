@@ -485,6 +485,7 @@ def create_web_test(client,
                                    web_test_definition=web_test_definition)
 
 
+# pylint: disable=unused-argument
 def update_web_test(instance,
                     resource_group_name,
                     web_test_name,

@@ -441,7 +441,7 @@ Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"120
 FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
 ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
 /></Items></WebTest>" --description "Ping web test alert for mytestwebapp" --enabled true --frequency 900 \
---web-test-kind "ping" --locations Id="us-fl-mia-edge" --web-test-properties-name-web-test-name \
+--web-test-kind "ping" --locations Id="us-fl-mia-edge" --defined-web-test-name \
 "my-webtest-my-component" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
 --resource-group "my-resource-group" --name "my-webtest-my-component"
       - name: webTestCreateBasic
@@ -450,14 +450,14 @@ ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\"
 alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "basic" --locations Id="us-fl-mia-edge" \
 --web-test-properties-name-web-test-name "my-webtest-my-component" --parse-dependent-requests true --request-url \
 "https://www.bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
---expected-http-status-code 200 --ssl-check true --resource-group "my-resource-group" --name "my-webtest-my-component"
+--expected-status-code 200 --ssl-check true --resource-group "my-resource-group" --name "my-webtest-my-component"
       - name: webTestCreateStandard
         text: |-
                az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
 alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "standard" --locations Id="us-fl-mia-edge" \
---web-test-properties-name-web-test-name "my-webtest-my-component" key="Accept-Language" value="de-DE" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
+--defined-web-test-name "my-webtest-my-component" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
 "https://bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
---ssl-cert-remaining-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
+--ssl-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
 "my-webtest-my-component"
 """
 
@@ -505,7 +505,7 @@ Url=\\"http://my-component.azurewebsites.net\\" ThinkTime=\\"0\\" Timeout=\\"30\
 FollowRedirects=\\"True\\" RecordResult=\\"True\\" Cache=\\"False\\" ResponseTimeGoal=\\"0\\" Encoding=\\"utf-8\\" \
 ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\" IgnoreHttpStatusCode=\\"False\\" \
 /></Items></WebTest>" --frequency 600 --web-test-kind "ping" --locations Id="us-fl-mia-edge" --locations \
-Id="apac-hk-hkn-azr" --web-test-properties-name-web-test-name "my-webtest-my-component" --synthetic-monitor-id \
+Id="apac-hk-hkn-azr" --defined-web-test-name "my-webtest-my-component" --synthetic-monitor-id \
 "my-webtest-my-component" --timeout 30 --resource-group "my-resource-group" --name "my-webtest-my-component"
 """
 
