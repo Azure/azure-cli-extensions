@@ -20,7 +20,7 @@ def load_arguments(self, _):
         c.argument('overwrite', help='Enable this parameter to overwrite the existing assessment report')
     
     with self.argument_context('datamigration performance-data-collection') as c:
-        c.argument('connection_string', type=str, help='SQL Server Connection Strings')
+        c.argument('connection_string', nargs='+', help='SQL Server Connection Strings')
         c.argument('output_folder', type=str, help='Output folder to store performance data')
         c.argument('perf_query_interval', type=int, help='Interval at which to query performance data, in seconds. (Default: 30)')
         c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds. (Default: 3600)')

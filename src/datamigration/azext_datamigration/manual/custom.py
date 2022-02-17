@@ -72,6 +72,7 @@ def datamigration_performance_data_collection(connection_string=None,
             raise MutuallyExclusiveArgumentError("Both sql_connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
         if connection_string is not None:
+            connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
             parameterList = {
                 "--sqlConnectionStrings" : connection_string,
                 "--outputFolder" : output_folder,
