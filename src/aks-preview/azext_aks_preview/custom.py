@@ -758,6 +758,7 @@ def aks_create(cmd,
                gmsa_root_domain_name=None,
                snapshot_id=None,
                enable_oidc_issuer=False,
+               host_group_id=None,
                crg_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
@@ -1576,6 +1577,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       workload_runtime=None,
                       gpu_instance_profile=None,
                       snapshot_id=None,
+                      host_group_id=None,
                       crg_id=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
@@ -1653,6 +1655,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile,
         creation_data=creationData,
+        host_group_id=host_group_id,
         capacity_reservation_group_id=crg_id
     )
 

@@ -1350,6 +1350,24 @@ class AKSPreviewContext(AKSContext):
             self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
         return snapshot
 
+    def get_host_group_id(self) -> Union[str, None]:
+        return self._get_host_group_id()
+
+    def _get_host_group_id(self) -> Union[str, None]:
+        raw_value = self.raw_param.get("host_group_id")
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.host_group_id
+        if value_obtained_from_mc is not None:
+            host_group_id = value_obtained_from_mc
+        else:
+            host_group_id = raw_value
+        return host_group_id
+
     def _get_kubernetes_version(self, read_only: bool = False) -> str:
         """Internal function to dynamically obtain the value of kubernetes_version according to the context.
 
@@ -1581,6 +1599,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 source_resource_id=snapshot_id
             )
         agent_pool_profile.creation_data = creation_data
+        agent_pool_profile.host_group_id = self.context.get_host_group_id()
         agent_pool_profile.capacity_reservation_group_id = self.context.get_crg_id()
 
         mc.agent_pool_profiles = [agent_pool_profile]
