@@ -7,7 +7,7 @@ import os
 import unittest
 
 from knack.util import CLIError
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
@@ -15,10 +15,11 @@ from dateutil import parser
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class Cosmosdb_previewScenarioTest(ScenarioTest):
+class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_using_create', parameter_name_for_location='location')
-    def test_cosmosdb_gremlin_account_restore_using_create(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_using_create', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_gremlin_account_restore_using_create(self, resource_group):
         graph = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
@@ -26,7 +27,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': self.create_random_name(prefix='cli', length=15),
             'graph': graph,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
@@ -56,8 +57,9 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_command', parameter_name_for_location='location')
-    def test_cosmosdb_gremlin_account_restore_command(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_command', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_gremlin_account_restore_command(self, resource_group):
         graph = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
@@ -65,7 +67,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': self.create_random_name(prefix='cli', length=15),
             'graph': graph,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
@@ -96,8 +98,9 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_restorable_commands', parameter_name_for_location='location')
-    def test_cosmosdb_gremlin_restorable_commands(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_restorable_commands', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_gremlin_restorable_commands(self, resource_group):
         graph = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
 
@@ -106,7 +109,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'graph': graph,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
@@ -116,7 +119,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         })
 
         self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}')
-        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {graph} -p /pk ').get_output_in_json()
         restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
 
         restorable_databases = self.cmd('az cosmosdb gremlin restorable-database list --location {loc} --instance-id {ins_id}').get_output_in_json()
@@ -127,7 +130,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             'db_rid': restorable_databases[0]['resource']['ownerResourceId']
         })
 
-        restorable_containers = self.cmd('az cosmosdb gremlin restorable-container list --location {loc} --instance-id {ins_id} --database-rid {db_rid}').get_output_in_json()
+        restorable_containers = self.cmd('az cosmosdb gremlin restorable-graph list --location {loc} --instance-id {ins_id} --database-rid {db_rid}').get_output_in_json()
         assert len(restorable_containers) == 1
         assert restorable_containers[0]['resource']['ownerId'] == graph
 
@@ -144,23 +147,24 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         restorable_resources = self.cmd('az cosmosdb gremlin restorable-resource list --restore-location {loc} -l {loc} --instance-id {ins_id} --restore-timestamp {rts}').get_output_in_json()
         assert len(restorable_resources) == 1
         assert restorable_resources[0]['databaseName'] == db_name
-        assert len(restorable_resources[0]['collectionNames']) == 1
-        assert restorable_resources[0]['collectionNames'][0] == graph
+        assert len(restorable_resources[0]['graphNames']) == 1
+        assert restorable_resources[0]['graphNames'][0] == graph
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', parameter_name_for_location='location')
-    def test_cosmosdb_table_account_restore_using_create(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_table_account_restore_using_create(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
-        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table} -p /pk ').get_output_in_json()
+        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table}').get_output_in_json()
 
         restorable_accounts_list = self.cmd('az cosmosdb restorable-database-account list').get_output_in_json()
         restorable_database_account = next(acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
@@ -184,15 +188,16 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', parameter_name_for_location='location')
-    def test_cosmosdb_table_account_restore_command(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_table_account_restore_command(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
@@ -201,7 +206,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             'ins_id': account['instanceId']
         })
 
-        self.cmd('az cosmosdb table create -g {rg} -a {acc} -d {db_name} -n {graph} -p /pk ').get_output_in_json()
+        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table}').get_output_in_json()
         restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
 
         account_creation_time = restorable_database_account['creationTime']
@@ -222,14 +227,15 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restorable_commands', parameter_name_for_location='location')
-    def test_cosmosdb_table_restorable_commands(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restorable_commands', location='eastus2')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_table_restorable_commands(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': location
+            'loc': 'eastus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
@@ -243,14 +249,6 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table} --throughput {throughput}').get_output_in_json()
 
         restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
-
-        restorable_databases = self.cmd('az cosmosdb mongodb restorable-database list --location {loc} --instance-id {ins_id}').get_output_in_json()
-        assert len(restorable_databases) == 1
-        restorable_databases[0]['resource']['ownerId'] == table
-
-        self.kwargs.update({
-            'db_rid': restorable_databases[0]['resource']['ownerResourceId']
-        })
 
         restorable_containers = self.cmd('az cosmosdb table restorable-table list --location {loc} --instance-id {ins_id}').get_output_in_json()
         assert len(restorable_containers) == 1
@@ -268,24 +266,20 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
 
         restorable_resources = self.cmd('az cosmosdb table restorable-resource list --restore-location {loc} -l {loc} --instance-id {ins_id} --restore-timestamp {rts}').get_output_in_json()
         assert len(restorable_resources) == 1
-        assert len(restorable_resources[0]['tableNames']) == 1
-        assert restorable_resources[0]['tableNames'][0] == table
+        assert len(restorable_resources) == 1
+        assert restorable_resources[0] == table
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_backupinfo', parameter_name_for_location='location')
-    def test_cosmosdb_sql_container_backupinfo(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_backupinfo', location='eastus2')
+    def test_cosmosdb_sql_container_backupinfo(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        new_default_ttl1 = 2000
-        new_default_ttl2 = 5000
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'col': col,
-            'loc': location,
-            'nttl1': new_default_ttl1,
-            'nttl2': new_default_ttl2,
+            'loc': 'eastus2'
         })
 
         # This should fail as account doesn't exist
@@ -341,21 +335,17 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert new_backup_time2 >= backup_time
         assert new_backup_time2 >= new_backup_time
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection_backupinfo', parameter_name_for_location='location')
-    def test_cosmosdb_mongodb_collection_backupinfo(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection_backupinfo', location='eastus2')
+    def test_cosmosdb_mongodb_collection_backupinfo(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        new_default_ttl1 = 2000
-        new_default_ttl2 = 5000
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'col': col,
-            'loc': location,
-            'nttl1': new_default_ttl1,
-            'nttl2': new_default_ttl2,
+            'loc': 'eastus2',
             'shard_key': "theShardKey",
             'throughput': "1000"
         })
@@ -413,21 +403,16 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert new_backup_time2 >= backup_time
         assert new_backup_time2 >= new_backup_time
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph_backupinfo', parameter_name_for_location='location')
-    def test_cosmosdb_gremlin_graph_backupinfo(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph_backupinfo', location='eastus2')
+    def test_cosmosdb_gremlin_graph_backupinfo(self, resource_group):
         graph = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
-        new_default_ttl1 = 2000
-        new_default_ttl2 = 5000
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
-            'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': db_name,
             'graph': graph,
-            'loc': location,
-            'nttl1': new_default_ttl1,
-            'nttl2': new_default_ttl2,
+            'loc': 'eastus2'
         })
 
         # This should fail as account doesn't exist
@@ -446,7 +431,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
 
         # Create container
-        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {graph} -p /pk ').get_output_in_json()
 
         backup_info = self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}').get_output_in_json()
         print(backup_info)
@@ -457,7 +442,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         backup_time = parser.parse(backup_info['continuousBackupInformation']['latestRestorableTimestamp'])
 
         # Update container
-        # container_update = self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {col} --ttl {nttl1}').get_output_in_json()
+        # container_update = self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {graph} --ttl {nttl1}').get_output_in_json()
         # assert container_update["resource"]["defaultTtl"] == 2000
 
         backup_info = self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}').get_output_in_json()
@@ -470,7 +455,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert new_backup_time >= backup_time
 
         # Update container again
-        # container_update = self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {col} --ttl {nttl2}').get_output_in_json()
+        # container_update = self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {graph} --ttl {nttl2}').get_output_in_json()
         # assert container_update["resource"]["defaultTtl"] == 3000
 
         backup_info = self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}').get_output_in_json()
@@ -483,20 +468,15 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert new_backup_time2 >= backup_time
         assert new_backup_time2 >= new_backup_time
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_backupinfo', parameter_name_for_location='location')
-    def test_cosmosdb_table_backupinfo(self, resource_group, location):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_backupinfo', location='eastus2')
+    def test_cosmosdb_table_backupinfo(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
-        new_default_ttl1 = 2000
-        new_default_ttl2 = 5000
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
-            'col': table,
-            'loc': location,
-            'nttl1': new_default_ttl1,
-            'nttl2': new_default_ttl2,
-            'shard_key': "theShardKey",
+            'table': table,
+            'loc': 'eastus2',
             'throughput': "1000"
         })
 
@@ -507,10 +487,10 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as collection doesn't exist
-        self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
+        self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
 
         # Create collection
-        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table} --shard {shard_key} --throughput {throughput}').get_output_in_json()
+        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table} --throughput {throughput}').get_output_in_json()
 
         backup_info = self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}').get_output_in_json()
         print(backup_info)

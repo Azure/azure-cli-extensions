@@ -17,8 +17,11 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_body,
     validate_mongo_user_definition_id)
 
+from azext_cosmosdb_preview.actions import (
+    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource)
+
 from azure.cli.core.commands.parameters import (
-    tags_type, get_enum_type, get_three_state_flag, get_location_type)
+    tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azure.mgmt.cosmosdb.models import (
     DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
@@ -28,9 +31,6 @@ from azure.cli.command_modules.cosmosdb.actions import (
 
 from azure.cli.command_modules.cosmosdb._validators import (
     validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
-
-from azext_cosmosdb_preview.actions import (
-    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource)
 
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
@@ -53,6 +53,7 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 \\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
 }"
 """
+
 
 def load_arguments(self, _):
     from knack.arguments import CLIArgumentType
@@ -168,6 +169,10 @@ def load_arguments(self, _):
         c.argument('mongo_user_definition_id', options_list=['--id', '-i'], validator=validate_mongo_user_definition_id, help="Unique ID for the Mongo User Definition.")
         c.argument('mongo_user_definition_body', options_list=['--body', '-b'], validator=validate_mongo_user_definition_body, completer=FilesCompleter(), help="User Definition body with Id (Optional for create), UserName, Password, DatabaseName, CustomData, Mechanisms, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-user_definition-body-file.json or " + MONGO_USER_DEFINITION_EXAMPLE)
 
+    with self.argument_context('cosmosdb') as c:
+        c.argument('account_name', arg_type=name_type, help='Name of the Cosmos DB database account', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('database_id', options_list=['--db-name', '-d'], help='Database Name')
+
     # CosmosDB account create with gremlin and tables to restore
     with self.argument_context('cosmosdb create') as c:
         c.argument('account_name', completer=None)
@@ -181,7 +186,7 @@ def load_arguments(self, _):
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True, arg_group='Restore')
 
-    for scope in ['cosmosdb create']:
+    for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
             c.ignore('resource_group_location')
             c.argument('locations', nargs='+', action=CreateLocation)

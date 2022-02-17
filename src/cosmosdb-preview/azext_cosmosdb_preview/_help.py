@@ -391,6 +391,7 @@ examples:
     text: az cosmosdb mongodb user definition update --account-name MyAccount --resource-group MyResourceGroup --body @mongo-user-definition.json
 """
 
+
 # create new account by restoring from a different account
 helps['cosmosdb create'] = """
 type: command

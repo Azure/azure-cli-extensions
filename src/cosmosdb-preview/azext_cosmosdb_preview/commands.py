@@ -133,6 +133,9 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
         g.custom_command('restore', 'cli_cosmosdb_restore', is_preview=True)
         g.custom_command('create', 'cli_cosmosdb_create', is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_update')
+        g.custom_command('list', 'cli_cosmosdb_list')
+        g.show_command('show', 'get')
 
     with self.command_group('cosmosdb sql restorable-container', cosmosdb_restorable_sql_containers_sdk, client_factory=cf_restorable_sql_containers, is_preview=True) as g:
         g.command('list', 'list')
