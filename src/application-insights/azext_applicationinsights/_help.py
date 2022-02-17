@@ -405,9 +405,9 @@ helps['monitor app-insights web-test create'] = """
         short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
 your application."
         long-summary: |
-            Usage: --locations location=XX
+            Usage: --locations Id=XX
 
-            location: Location ID for the WebTest to run from.
+            Id: Location ID for the WebTest to run from.
 
             Multiple actions can be specified by using more than one --locations argument.
       - name: --content-validation
@@ -422,10 +422,10 @@ false, validation will fail if there is a match
       - name: --headers
         short-summary: "List of headers and their values to add to the WebTest call."
         long-summary: |
-            Usage: --headers header-field-name=XX header-field-value=XX
+            Usage: --headers key=XX value=XX
 
-            header-field-name: The name of the header.
-            header-field-value: The value of the header.
+            key: The name of the header.
+            value: The value of the header.
 
             Multiple actions can be specified by using more than one --headers argument.
     examples:
@@ -455,8 +455,7 @@ alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "basic" -
         text: |-
                az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
 alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "standard" --locations Id="us-fl-mia-edge" \
---web-test-properties-name-web-test-name "my-webtest-my-component" --headers key="Content-Language" value="de-DE" \
---headers key="Accept-Language" value="de-DE" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
+--web-test-properties-name-web-test-name "my-webtest-my-component" key="Accept-Language" value="de-DE" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
 "https://bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
 --ssl-cert-remaining-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
 "my-webtest-my-component"
@@ -470,9 +469,9 @@ helps['monitor app-insights web-test update'] = """
         short-summary: "A list of where to physically run the tests from to give global coverage for accessibility of \
 your application."
         long-summary: |
-            Usage: --locations location=XX
+            Usage: --locations Id=XX
 
-            location: Location ID for the WebTest to run from.
+            Id: Location ID for the WebTest to run from.
 
             Multiple actions can be specified by using more than one --locations argument.
       - name: --content-validation
@@ -487,10 +486,10 @@ false, validation will fail if there is a match
       - name: --headers
         short-summary: "List of headers and their values to add to the WebTest call."
         long-summary: |
-            Usage: --headers header-field-name=XX header-field-value=XX
+            Usage: --headers key=XX value=XX
 
-            header-field-name: The name of the header.
-            header-field-value: The value of the header.
+            key: The name of the header.
+            value: The value of the header.
 
             Multiple actions can be specified by using more than one --headers argument.
     examples:

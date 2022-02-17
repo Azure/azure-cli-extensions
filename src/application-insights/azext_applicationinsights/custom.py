@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, protected-access
+# pylint: disable=raise-missing-from
+# pylint: disable=too-many-statements, too-many-locals, too-many-branches
 
 import datetime
 import isodate
@@ -152,9 +154,9 @@ def connect_webapp(cmd, client, resource_group_name, application, app_service, e
 
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
-        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+        raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
-    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -171,9 +173,9 @@ def connect_function(cmd, client, resource_group_name, application, app_service)
     from azure.cli.command_modules.appservice.custom import update_app_settings
     app_insights = client.get(resource_group_name, application)
     if app_insights is None or app_insights.instrumentation_key is None:
-        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+        raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
-    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
     return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 
@@ -299,8 +301,8 @@ def create_export_configuration(cmd, client, application, resource_group_name, r
             break
 
     if not storage_account:
-        raise CLIError("Destination storage account {} does not exist, "
-                       "use 'az storage account list' to get storage account list".format(dest_account))
+        raise CLIError(f"Destination storage account {dest_account} does not exist, "
+                       "use 'az storage account list' to get storage account list")
 
     dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
     dest_address += dest_container + '?' + dest_sas
@@ -352,8 +354,8 @@ def update_export_configuration(cmd, client, application, resource_group_name, e
                 break
 
         if not storage_account:
-            raise CLIError("Destination storage account {} does not exist, "
-                           "use 'az storage account list' to get storage account list".format(dest_account))
+            raise CLIError(f"Destination storage account {dest_account} does not exist, "
+                           "use 'az storage account list' to get storage account list")
 
         dest_address = getattr(storage_account.primary_endpoints, dest_type.lower(), '')
         dest_address += dest_container + '?' + dest_sas
@@ -377,7 +379,7 @@ def delete_export_configuration(client, application, resource_group_name, export
 def list_web_tests(client, component_name=None, resource_group_name=None):
     if component_name is not None and resource_group_name:
         return client.list_by_component(component_name=component_name, resource_group_name=resource_group_name)
-    elif resource_group_name:
+    if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list()
 

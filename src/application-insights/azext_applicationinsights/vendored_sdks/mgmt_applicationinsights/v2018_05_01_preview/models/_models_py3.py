@@ -584,10 +584,10 @@ class TagsResource(msrest.serialization.Model):
 class HeaderField(msrest.serialization.Model):
     """A header to add to the WebTest.
 
-    :ivar header_field_name: The name of the header.
-    :vartype header_field_name: str
-    :ivar header_field_value: The value of the header.
-    :vartype header_field_value: str
+    :param header_field_name: The name of the header.
+    :type header_field_name: str
+    :param header_field_value: The value of the header.
+    :type header_field_value: str
     """
 
     _attribute_map = {
@@ -602,12 +602,6 @@ class HeaderField(msrest.serialization.Model):
         header_field_value: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword header_field_name: The name of the header.
-        :paramtype header_field_name: str
-        :keyword header_field_value: The value of the header.
-        :paramtype header_field_value: str
-        """
         super(HeaderField, self).__init__(**kwargs)
         self.header_field_name = header_field_name
         self.header_field_value = header_field_value
@@ -626,10 +620,10 @@ class WebTestsResource(msrest.serialization.Model):
     :vartype name: str
     :ivar type: Azure resource type.
     :vartype type: str
-    :ivar location: Required. Resource location.
-    :vartype location: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
+    :param location: Required. Resource location.
+    :type location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
     """
 
     _validation = {
@@ -654,12 +648,6 @@ class WebTestsResource(msrest.serialization.Model):
         tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-        """
-        :keyword location: Required. Resource location.
-        :paramtype location: str
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        """
         super(WebTestsResource, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -681,49 +669,49 @@ class WebTest(WebTestsResource):
     :vartype name: str
     :ivar type: Azure resource type.
     :vartype type: str
-    :ivar location: Required. Resource location.
-    :vartype location: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar kind: The kind of WebTest that this web test watches. Choices are ping and multistep.
+    :param location: Required. Resource location.
+    :type location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param kind: The kind of WebTest that this web test watches. Choices are ping and multistep.
      Possible values include: "ping", "multistep". Default value: "ping".
-    :vartype kind: str or ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestKind
-    :ivar synthetic_monitor_id: Unique ID of this WebTest. This is typically the same value as the
+    :type kind: str or ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestKind
+    :param synthetic_monitor_id: Unique ID of this WebTest. This is typically the same value as the
      Name field.
-    :vartype synthetic_monitor_id: str
-    :ivar web_test_name: User defined name if this WebTest.
-    :vartype web_test_name: str
-    :ivar description: User defined description for this WebTest.
-    :vartype description: str
-    :ivar enabled: Is the test actively being monitored.
-    :vartype enabled: bool
-    :ivar frequency: Interval in seconds between test runs for this WebTest. Default value is 300.
-    :vartype frequency: int
-    :ivar timeout: Seconds until this WebTest will timeout and fail. Default value is 30.
-    :vartype timeout: int
-    :ivar web_test_kind: The kind of web test this is, valid choices are ping, multistep, basic,
+    :type synthetic_monitor_id: str
+    :param web_test_name: User defined name if this WebTest.
+    :type web_test_name: str
+    :param description: User defined description for this WebTest.
+    :type description: str
+    :param enabled: Is the test actively being monitored.
+    :type enabled: bool
+    :param frequency: Interval in seconds between test runs for this WebTest. Default value is 300.
+    :type frequency: int
+    :param timeout: Seconds until this WebTest will timeout and fail. Default value is 30.
+    :type timeout: int
+    :param web_test_kind: The kind of web test this is, valid choices are ping, multistep, basic,
      and standard. Possible values include: "ping", "multistep", "basic", "standard". Default value:
      "ping".
-    :vartype web_test_kind: str or
+    :type web_test_kind: str or
      ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestKindEnum
-    :ivar retry_enabled: Allow for retries should this WebTest fail.
-    :vartype retry_enabled: bool
-    :ivar locations: A list of where to physically run the tests from to give global coverage for
+    :param retry_enabled: Allow for retries should this WebTest fail.
+    :type retry_enabled: bool
+    :param locations: A list of where to physically run the tests from to give global coverage for
      accessibility of your application.
-    :vartype locations:
+    :type locations:
      list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestGeolocation]
-    :ivar configuration: An XML configuration specification for a WebTest.
-    :vartype configuration:
+    :param configuration: An XML configuration specification for a WebTest.
+    :type configuration:
      ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesConfiguration
     :ivar provisioning_state: Current state of this component, whether or not is has been
      provisioned within the resource group it is defined. Users cannot change this value but are
      able to read from it. Values will include Succeeded, Deploying, Canceled, and Failed.
     :vartype provisioning_state: str
-    :ivar request: The collection of request properties.
-    :vartype request:
+    :param request: The collection of request properties.
+    :type request:
      ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesRequest
-    :ivar validation_rules: The collection of validation rule properties.
-    :vartype validation_rules:
+    :param validation_rules: The collection of validation rule properties.
+    :type validation_rules:
      ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesValidationRules
     """
 
@@ -777,49 +765,6 @@ class WebTest(WebTestsResource):
         validation_rules: Optional["WebTestPropertiesValidationRules"] = None,
         **kwargs
     ):
-        """
-        :keyword location: Required. Resource location.
-        :paramtype location: str
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword kind: The kind of WebTest that this web test watches. Choices are ping and multistep.
-         Possible values include: "ping", "multistep". Default value: "ping".
-        :paramtype kind: str or ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestKind
-        :keyword synthetic_monitor_id: Unique ID of this WebTest. This is typically the same value as
-         the Name field.
-        :paramtype synthetic_monitor_id: str
-        :keyword web_test_name: User defined name if this WebTest.
-        :paramtype web_test_name: str
-        :keyword description: User defined description for this WebTest.
-        :paramtype description: str
-        :keyword enabled: Is the test actively being monitored.
-        :paramtype enabled: bool
-        :keyword frequency: Interval in seconds between test runs for this WebTest. Default value is
-         300.
-        :paramtype frequency: int
-        :keyword timeout: Seconds until this WebTest will timeout and fail. Default value is 30.
-        :paramtype timeout: int
-        :keyword web_test_kind: The kind of web test this is, valid choices are ping, multistep, basic,
-         and standard. Possible values include: "ping", "multistep", "basic", "standard". Default value:
-         "ping".
-        :paramtype web_test_kind: str or
-         ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestKindEnum
-        :keyword retry_enabled: Allow for retries should this WebTest fail.
-        :paramtype retry_enabled: bool
-        :keyword locations: A list of where to physically run the tests from to give global coverage
-         for accessibility of your application.
-        :paramtype locations:
-         list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestGeolocation]
-        :keyword configuration: An XML configuration specification for a WebTest.
-        :paramtype configuration:
-         ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesConfiguration
-        :keyword request: The collection of request properties.
-        :paramtype request:
-         ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesRequest
-        :keyword validation_rules: The collection of validation rule properties.
-        :paramtype validation_rules:
-         ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesValidationRules
-        """
         super(WebTest, self).__init__(location=location, tags=tags, **kwargs)
         self.kind = kind
         self.synthetic_monitor_id = synthetic_monitor_id
@@ -840,8 +785,8 @@ class WebTest(WebTestsResource):
 class WebTestGeolocation(msrest.serialization.Model):
     """Geo-physical location to run a WebTest from. You must specify one or more locations for the test to run from.
 
-    :ivar location: Location ID for the WebTest to run from.
-    :vartype location: str
+    :param location: Location ID for the WebTest to run from.
+    :type location: str
     """
 
     _attribute_map = {
@@ -854,10 +799,6 @@ class WebTestGeolocation(msrest.serialization.Model):
         location: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword location: Location ID for the WebTest to run from.
-        :paramtype location: str
-        """
         super(WebTestGeolocation, self).__init__(**kwargs)
         self.location = location
 
@@ -867,11 +808,11 @@ class WebTestListResult(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar value: Required. Set of Application Insights WebTest definitions.
-    :vartype value: list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTest]
-    :ivar next_link: The link to get the next part of the returned list of WebTest, should the
+    :param value: Required. Set of Application Insights WebTest definitions.
+    :type value: list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTest]
+    :param next_link: The link to get the next part of the returned list of WebTest, should the
      return set be too large for a single request. May be null.
-    :vartype next_link: str
+    :type next_link: str
     """
 
     _validation = {
@@ -890,13 +831,6 @@ class WebTestListResult(msrest.serialization.Model):
         next_link: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword value: Required. Set of Application Insights WebTest definitions.
-        :paramtype value: list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTest]
-        :keyword next_link: The link to get the next part of the returned list of WebTest, should the
-         return set be too large for a single request. May be null.
-        :paramtype next_link: str
-        """
         super(WebTestListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
@@ -905,8 +839,8 @@ class WebTestListResult(msrest.serialization.Model):
 class WebTestPropertiesConfiguration(msrest.serialization.Model):
     """An XML configuration specification for a WebTest.
 
-    :ivar web_test: The XML specification of a WebTest to run against an application.
-    :vartype web_test: str
+    :param web_test: The XML specification of a WebTest to run against an application.
+    :type web_test: str
     """
 
     _attribute_map = {
@@ -919,10 +853,6 @@ class WebTestPropertiesConfiguration(msrest.serialization.Model):
         web_test: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword web_test: The XML specification of a WebTest to run against an application.
-        :paramtype web_test: str
-        """
         super(WebTestPropertiesConfiguration, self).__init__(**kwargs)
         self.web_test = web_test
 
@@ -930,18 +860,18 @@ class WebTestPropertiesConfiguration(msrest.serialization.Model):
 class WebTestPropertiesRequest(msrest.serialization.Model):
     """The collection of request properties.
 
-    :ivar request_url: Url location to test.
-    :vartype request_url: str
-    :ivar headers: List of headers and their values to add to the WebTest call.
-    :vartype headers: list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.HeaderField]
-    :ivar http_verb: Http verb to use for this web test.
-    :vartype http_verb: str
-    :ivar request_body: Base64 encoded string body to send with this web test.
-    :vartype request_body: str
-    :ivar parse_dependent_requests: Parse Dependent request for this WebTest.
-    :vartype parse_dependent_requests: bool
-    :ivar follow_redirects: Follow redirects for this web test.
-    :vartype follow_redirects: bool
+    :param request_url: Url location to test.
+    :type request_url: str
+    :param headers: List of headers and their values to add to the WebTest call.
+    :type headers: list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.HeaderField]
+    :param http_verb: Http verb to use for this web test.
+    :type http_verb: str
+    :param request_body: Base64 encoded string body to send with this web test.
+    :type request_body: str
+    :param parse_dependent_requests: Parse Dependent request for this WebTest.
+    :type parse_dependent_requests: bool
+    :param follow_redirects: Follow redirects for this web test.
+    :type follow_redirects: bool
     """
 
     _attribute_map = {
@@ -964,21 +894,6 @@ class WebTestPropertiesRequest(msrest.serialization.Model):
         follow_redirects: Optional[bool] = None,
         **kwargs
     ):
-        """
-        :keyword request_url: Url location to test.
-        :paramtype request_url: str
-        :keyword headers: List of headers and their values to add to the WebTest call.
-        :paramtype headers:
-         list[~azure.mgmt.applicationinsights.v2018_05_01_preview.models.HeaderField]
-        :keyword http_verb: Http verb to use for this web test.
-        :paramtype http_verb: str
-        :keyword request_body: Base64 encoded string body to send with this web test.
-        :paramtype request_body: str
-        :keyword parse_dependent_requests: Parse Dependent request for this WebTest.
-        :paramtype parse_dependent_requests: bool
-        :keyword follow_redirects: Follow redirects for this web test.
-        :paramtype follow_redirects: bool
-        """
         super(WebTestPropertiesRequest, self).__init__(**kwargs)
         self.request_url = request_url
         self.headers = headers
@@ -991,19 +906,19 @@ class WebTestPropertiesRequest(msrest.serialization.Model):
 class WebTestPropertiesValidationRules(msrest.serialization.Model):
     """The collection of validation rule properties.
 
-    :ivar content_validation: The collection of content validation properties.
-    :vartype content_validation:
+    :param content_validation: The collection of content validation properties.
+    :type content_validation:
      ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesValidationRulesContentValidation
-    :ivar ssl_check: Checks to see if the SSL cert is still valid.
-    :vartype ssl_check: bool
-    :ivar ssl_cert_remaining_lifetime_check: A number of days to check still remain before the the
+    :param ssl_check: Checks to see if the SSL cert is still valid.
+    :type ssl_check: bool
+    :param ssl_cert_remaining_lifetime_check: A number of days to check still remain before the the
      existing SSL cert expires.  Value must be positive and the SSLCheck must be set to true.
-    :vartype ssl_cert_remaining_lifetime_check: int
-    :ivar expected_http_status_code: Validate that the WebTest returns the http status code
+    :type ssl_cert_remaining_lifetime_check: int
+    :param expected_http_status_code: Validate that the WebTest returns the http status code
      provided.
-    :vartype expected_http_status_code: int
-    :ivar ignore_https_status_code: When set, validation will ignore the status code.
-    :vartype ignore_https_status_code: bool
+    :type expected_http_status_code: int
+    :param ignore_https_status_code: When set, validation will ignore the status code.
+    :type ignore_https_status_code: bool
     """
 
     _attribute_map = {
@@ -1024,21 +939,6 @@ class WebTestPropertiesValidationRules(msrest.serialization.Model):
         ignore_https_status_code: Optional[bool] = None,
         **kwargs
     ):
-        """
-        :keyword content_validation: The collection of content validation properties.
-        :paramtype content_validation:
-         ~azure.mgmt.applicationinsights.v2018_05_01_preview.models.WebTestPropertiesValidationRulesContentValidation
-        :keyword ssl_check: Checks to see if the SSL cert is still valid.
-        :paramtype ssl_check: bool
-        :keyword ssl_cert_remaining_lifetime_check: A number of days to check still remain before the
-         the existing SSL cert expires.  Value must be positive and the SSLCheck must be set to true.
-        :paramtype ssl_cert_remaining_lifetime_check: int
-        :keyword expected_http_status_code: Validate that the WebTest returns the http status code
-         provided.
-        :paramtype expected_http_status_code: int
-        :keyword ignore_https_status_code: When set, validation will ignore the status code.
-        :paramtype ignore_https_status_code: bool
-        """
         super(WebTestPropertiesValidationRules, self).__init__(**kwargs)
         self.content_validation = content_validation
         self.ssl_check = ssl_check
@@ -1050,14 +950,14 @@ class WebTestPropertiesValidationRules(msrest.serialization.Model):
 class WebTestPropertiesValidationRulesContentValidation(msrest.serialization.Model):
     """The collection of content validation properties.
 
-    :ivar content_match: Content to look for in the return of the WebTest.  Must not be null or
+    :param content_match: Content to look for in the return of the WebTest.  Must not be null or
      empty.
-    :vartype content_match: str
-    :ivar ignore_case: When set, this value makes the ContentMatch validation case insensitive.
-    :vartype ignore_case: bool
-    :ivar pass_if_text_found: When true, validation will pass if there is a match for the
+    :type content_match: str
+    :param ignore_case: When set, this value makes the ContentMatch validation case insensitive.
+    :type ignore_case: bool
+    :param pass_if_text_found: When true, validation will pass if there is a match for the
      ContentMatch string.  If false, validation will fail if there is a match.
-    :vartype pass_if_text_found: bool
+    :type pass_if_text_found: bool
     """
 
     _attribute_map = {
@@ -1074,16 +974,6 @@ class WebTestPropertiesValidationRulesContentValidation(msrest.serialization.Mod
         pass_if_text_found: Optional[bool] = None,
         **kwargs
     ):
-        """
-        :keyword content_match: Content to look for in the return of the WebTest.  Must not be null or
-         empty.
-        :paramtype content_match: str
-        :keyword ignore_case: When set, this value makes the ContentMatch validation case insensitive.
-        :paramtype ignore_case: bool
-        :keyword pass_if_text_found: When true, validation will pass if there is a match for the
-         ContentMatch string.  If false, validation will fail if there is a match.
-        :paramtype pass_if_text_found: bool
-        """
         super(WebTestPropertiesValidationRulesContentValidation, self).__init__(**kwargs)
         self.content_match = content_match
         self.ignore_case = ignore_case

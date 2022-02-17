@@ -5,15 +5,18 @@
 
 # pylint: disable=protected-access
 # pylint: disable=no-self-use
+# pylint: disable=raise-missing-from
+# pylint: disable=line-too-long
 import argparse
 from collections import defaultdict
-from knack.util import CLIError
+
+from azure.cli.core.azclierror import ArgumentUsageError
 
 
 class AddLocations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddLocations, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -22,19 +25,19 @@ class AddLocations(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            err_msg = f'usage error: {option_string} [KEY=VALUE ...]'
+            raise ArgumentUsageError(err_msg)
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
 
-            if kl == 'location':
+            if kl == 'id':
                 d['location'] = v[0]
 
             else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter locations. All possible keys are: location'.format(k)
-                )
+                err_msg = f'Unsupported Key {k} is provided for parameter locations. All possible keys are: Id'
+                raise ArgumentUsageError(err_msg)
 
         return d
 
@@ -51,7 +54,8 @@ class AddContentValidation(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            err_msg = f'usage error: {option_string} [KEY=VALUE ...]'
+            raise ArgumentUsageError(err_msg)
         d = {}
         for k in properties:
             kl = k.lower()
@@ -67,10 +71,8 @@ class AddContentValidation(argparse.Action):
                 d['pass_if_text_found'] = v[0]
 
             else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter content-validation. All possible keys are:'
-                    ' content-match, ignore-case, pass-if-text-found'.format(k)
-                )
+                err_msg = f'Unsupported Key {k} is provided for parameter content-validation. All possible keys are: content-match, ignore-case, pass-if-text-found'
+                raise ArgumentUsageError(err_msg)
 
         return d
 
@@ -78,7 +80,7 @@ class AddContentValidation(argparse.Action):
 class AddHeaders(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddHeaders, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -87,22 +89,21 @@ class AddHeaders(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            err_msg = f'usage error: {option_string} [KEY=VALUE ...]'
+            raise ArgumentUsageError(err_msg)
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
 
-            if kl == 'header-field-name':
+            if kl == 'key':
                 d['header_field_name'] = v[0]
 
-            elif kl == 'header-field-value':
+            elif kl == 'value':
                 d['header_field_value'] = v[0]
 
             else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter headers. All possible keys are: header-field-name,'
-                    ' header-field-value'.format(k)
-                )
+                err_msg = f'Unsupported Key {k} is provided for parameter headers. All possible keys are: key, value'
+                raise ArgumentUsageError(err_msg)
 
         return d

@@ -117,7 +117,7 @@ def load_arguments(self, _):
                    help='Set to \'true\' to create a Continuous Export configuration as enabled, otherwise set it to \'false\'.')
 
     for scope in ['update', 'show', 'delete']:
-        with self.argument_context('monitor app-insights component continues-export {}'.format(scope)) as c:
+        with self.argument_context(f'monitor app-insights component continues-export {scope}') as c:
             c.argument('export_id', options_list=['--id'],
                        help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
 
@@ -135,18 +135,24 @@ def load_arguments(self, _):
         c.argument('web_test_kind', arg_type=get_enum_type(['ping', 'multistep', 'basic', 'standard']), help='The kind of web test this is, valid choices are ping, multistep, basic, and standard.')
         c.argument('retry_enabled', arg_type=get_three_state_flag(), help='Allow for retries should this WebTest fail.')
         c.argument('locations', action=AddLocations, nargs='+', help='A list of where to physically run the tests from to give global coverage for accessibility of your application.')
-        c.argument('content_validation', action=AddContentValidation, nargs='+', help='The collection of content validation properties', arg_group='Validation Rules')
-        c.argument('ssl_check', arg_type=get_three_state_flag(), help='Checks to see if the SSL cert is still valid.', arg_group='Validation Rules')
-        c.argument('ssl_cert_remaining_lifetime_check', type=int, help='A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.', arg_group='Validation Rules')
-        c.argument('expected_http_status_code', type=int, help='Validate that the WebTest returns the http status code provided.', arg_group='Validation Rules')
-        c.argument('ignore_https_status_code', arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.', arg_group='Validation Rules')
-        c.argument('request_url', type=str, help='Url location to test.', arg_group='Request')
-        c.argument('headers', action=AddHeaders, nargs='+', help='List of headers and their values to add to the WebTest call.', arg_group='Request')
-        c.argument('http_verb', type=str, help='Http verb to use for this web test.', arg_group='Request')
-        c.argument('request_body', type=str, help='Base64 encoded string body to send with this web test.', arg_group='Request')
-        c.argument('parse_dependent_requests', arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.', arg_group='Request')
-        c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.', arg_group='Request')
-        c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.', arg_group='Configuration')
+
+    with self.argument_context('monitor app-insights web-test', arg_group="Request") as c:
+        c.argument('request_url', type=str, help='Url location to test.')
+        c.argument('headers', action=AddHeaders, nargs='+', help='List of headers and their values to add to the WebTest call.')
+        c.argument('http_verb', type=str, help='Http verb to use for this web test.')
+        c.argument('request_body', type=str, help='Base64 encoded string body to send with this web test.')
+        c.argument('parse_dependent_requests', arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.')
+        c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.')
+
+    with self.argument_context('monitor app-insights web-test', arg_group="Validation Rules") as c:
+        c.argument('content_validation', action=AddContentValidation, nargs='+', help='The collection of content validation properties')
+        c.argument('ssl_check', arg_type=get_three_state_flag(), help='Checks to see if the SSL cert is still valid.')
+        c.argument('ssl_cert_remaining_lifetime_check', type=int, help='A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.')
+        c.argument('expected_http_status_code', type=int, help='Validate that the WebTest returns the http status code provided.')
+        c.argument('ignore_https_status_code', arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.')
+
+    with self.argument_context('monitor app-insights web-test', arg_group="Configuration") as c:
+        c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.')
 
     with self.argument_context('monitor app-insights web-test list') as c:
         c.argument('component_name', type=str, help='The name of the Application Insights component resource.')
