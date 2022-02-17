@@ -12,7 +12,7 @@ import json
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object
+from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object, get_file_json
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
@@ -43,7 +43,10 @@ from azure.cli.command_modules.appservice.custom import (
     assign_identity,
     delete_app_settings,
     update_app_settings,
-    list_hostnames)
+    list_hostnames,
+    _convert_camel_to_snake_case,
+    _get_content_share_name)
+from azure.cli.command_modules.appservice._constants import FUNCTIONS_STACKS_API_KEYS, FUNCTIONS_NO_V2_REGIONS
 from azure.cli.command_modules.appservice.utils import retryable_method
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -58,7 +61,8 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_EXACT_VERSION_DEFAULT,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
                          KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND,
-                         KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES)
+                         KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES, FUNCTIONS_STACKS_API_JSON_PATHS,
+                         FUNCTIONS_WINDOWS_RUNTIME_VERSION_REGEX, FUNCTIONS_LINUX_RUNTIME_VERSION_REGEX)
 
 from ._utils import (_normalize_sku, get_sku_name, _generic_site_operation,
                      _get_location_from_resource_group, _validate_asp_sku)
@@ -923,39 +927,40 @@ def _is_function_kube(custom_location, plan_info, SkuDescription):
             isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU))
 
 
-def create_function(cmd, resource_group_name, name, storage_account, plan=None, custom_location=None,
-                    os_type=None, functions_version=None, runtime=None, runtime_version=None,
-                    consumption_plan_location=None, app_insights=None, app_insights_key=None,
-                    disable_app_insights=None, deployment_source_url=None,
-                    deployment_source_branch='master', deployment_local_git=None,
-                    docker_registry_server_password=None, docker_registry_server_user=None,
-                    deployment_container_image_name=None, tags=None,
-                    min_worker_count=None, max_worker_count=None):
+def create_functionapp(cmd, resource_group_name, name, storage_account, plan=None,
+                       os_type=None, functions_version=None, runtime=None, runtime_version=None,
+                       consumption_plan_location=None, app_insights=None, app_insights_key=None,
+                       disable_app_insights=None, deployment_source_url=None,
+                       deployment_source_branch='master', deployment_local_git=None,
+                       docker_registry_server_password=None, docker_registry_server_user=None,
+                       deployment_container_image_name=None, tags=None, assign_identities=None,
+                       role='Contributor', scope=None,
+                       custom_location=None, min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
-    SkuDescription = cmd.get_models('SkuDescription')
     if functions_version is None:
-        logger.warning("No functions version specified so defaulting to 2. In the future, specifying a version will "
-                       "be required. To create a 2.x function you would pass in the flag `--functions-version 2`")
-        functions_version = '2'
+        logger.warning("No functions version specified so defaulting to 3. In the future, specifying a version will "
+                       "be required. To create a 3.x function you would pass in the flag `--functions-version 3`")
+        functions_version = '3'
     if deployment_source_url and deployment_local_git:
-        raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
-
+        raise MutuallyExclusiveArgumentError('usage error: --deployment-source-url <url> | --deployment-local-git')
     if not plan and not consumption_plan_location and not custom_location:
         raise RequiredArgumentMissingError("Either Plan, Consumption Plan or Custom Location must be specified")
-
     if consumption_plan_location and custom_location:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Custom Location cannot be used together")
-
     if consumption_plan_location and plan:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Plan cannot be used together")
 
-    SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
+    from azure.mgmt.web.models import Site
+    SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
+    disable_app_insights = (disable_app_insights == "true")
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
     site_config = SiteConfig(app_settings=[])
-    functionapp_def = Site(location=None, site_config=site_config, tags=tags)
     client = web_client_factory(cmd.cli_ctx)
+
+    functionapp_def = Site(location=None, site_config=site_config, tags=tags)
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
     plan_info = None
     if runtime is not None:
         runtime = runtime.lower()
@@ -964,7 +969,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         locations = list_consumption_locations(cmd)
         location = next((loc for loc in locations if loc['name'].lower() == consumption_plan_location.lower()), None)
         if location is None:
-            raise CLIError("Location is invalid. Use: az functionapp list-consumption-locations")
+            raise ValidationError("Location is invalid. Use: az functionapp list-consumption-locations")
         functionapp_def.location = consumption_plan_location
         functionapp_def.kind = 'functionapp'
         # if os_type is None, the os type is windows
@@ -980,7 +985,6 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
             create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
                                     name=plan, is_linux=True, hyper_v=False, custom_location=custom_location,
                                     per_site_scaling=True, number_of_workers=1)
-
         if custom_location and plan:
             if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
                 raise ValidationError("Custom location's kube environment "
@@ -996,10 +1000,10 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         else:
             plan_info = client.app_service_plans.get(resource_group_name, plan)
         if not plan_info:
-            raise CLIError("The plan '{}' doesn't exist".format(plan))
+            raise ResourceNotFoundError("The plan '{}' doesn't exist".format(plan))
         location = plan_info.location
         is_linux = plan_info.reserved
-        functionapp_def.server_farm_id = plan_info.id
+        functionapp_def.server_farm_id = plan
         functionapp_def.location = location
 
     is_kube = _is_function_kube(custom_location, plan_info, SkuDescription)
@@ -1011,35 +1015,68 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         if max_worker_count is not None:
             site_config.app_settings.append(NameValuePair(name='K8SE_APP_MAX_INSTANCE_COUNT', value=max_worker_count))
 
+    if functions_version == '2' and functionapp_def.location in FUNCTIONS_NO_V2_REGIONS:
+        raise ValidationError("2.x functions are not supported in this region. To create a 3.x function, "
+                              "pass in the flag '--functions-version 3'")
+
     if is_linux and not runtime and (consumption_plan_location or not deployment_container_image_name):
-        raise CLIError(
+        raise ArgumentUsageError(
             "usage error: --runtime RUNTIME required for linux functions apps without custom image.")
 
-    if runtime:
-        if is_linux and runtime not in LINUX_RUNTIMES:
-            raise CLIError("usage error: Currently supported runtimes (--runtime) in linux function apps are: {}."
-                           .format(', '.join(LINUX_RUNTIMES)))
-        if not is_linux and runtime not in WINDOWS_RUNTIMES:
-            raise CLIError("usage error: Currently supported runtimes (--runtime) in windows function apps are: {}."
-                           .format(', '.join(WINDOWS_RUNTIMES)))
-        site_config.app_settings.append(NameValuePair(name='FUNCTIONS_WORKER_RUNTIME', value=runtime))
+    runtime_stacks_json = _load_runtime_stacks_json_functionapp(is_linux)
 
-    if runtime_version is not None:
-        if runtime is None:
-            raise CLIError('Must specify --runtime to use --runtime-version')
-        allowed_versions = FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS[functions_version][runtime]
-        if runtime_version not in allowed_versions:
+    if runtime is None and runtime_version is not None:
+        raise ArgumentUsageError('Must specify --runtime to use --runtime-version')
+
+    # get the matching runtime stack object
+    runtime_json = _get_matching_runtime_json_functionapp(runtime_stacks_json, runtime if runtime else 'dotnet')
+    if not runtime_json:
+        # no matching runtime for os
+        os_string = "linux" if is_linux else "windows"
+        supported_runtimes = list(map(lambda x: x[KEYS.NAME], runtime_stacks_json))
+        raise ValidationError("usage error: Currently supported runtimes (--runtime) in {} function apps are: {}."
+                              .format(os_string, ', '.join(supported_runtimes)))
+
+    runtime_version_json = _get_matching_runtime_version_json_functionapp(runtime_json,
+                                                                          functions_version,
+                                                                          runtime_version,
+                                                                          is_linux)
+
+    if not runtime_version_json:
+        supported_runtime_versions = list(map(lambda x: x[KEYS.DISPLAY_VERSION],
+                                              _get_supported_runtime_versions_functionapp(runtime_json,
+                                                                                          functions_version)))
+        if runtime_version:
             if runtime == 'dotnet':
-                raise CLIError('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined '
-                               'by --functions-version. Dotnet version {} is not supported by Functions version {}.'
-                               .format(runtime_version, functions_version))
-            raise CLIError('--runtime-version {} is not supported for the selected --runtime {} and '
-                           '--functions-version {}. Supported versions are: {}.'
-                           .format(runtime_version, runtime, functions_version, ', '.join(allowed_versions)))
-        if runtime == 'dotnet':
-            logger.warning('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined by '
-                           '--functions-version. Dotnet version will be %s for this function app.',
-                           FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime])
+                raise ArgumentUsageError('--runtime-version is not supported for --runtime dotnet. Dotnet version is '
+                                         'determined by --functions-version. Dotnet version {} '
+                                         'is not supported by Functions version {}.'
+                                         .format(runtime_version, functions_version))
+            raise ArgumentUsageError('--runtime-version {} is not supported for the selected --runtime {} and '
+                                     '--functions-version {}. Supported versions are: {}.'
+                                     .format(runtime_version,
+                                             runtime,
+                                             functions_version,
+                                             ', '.join(supported_runtime_versions)))
+
+        # if runtime_version was not specified, then that runtime is not supported for that functions version
+        raise ArgumentUsageError('no supported --runtime-version found for the selected --runtime {} and '
+                                 '--functions-version {}'
+                                 .format(runtime, functions_version))
+
+    if runtime == 'dotnet':
+        logger.warning('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined by '
+                       '--functions-version. Dotnet version will be %s for this function app.',
+                       runtime_version_json[KEYS.DISPLAY_VERSION])
+
+    if runtime_version_json[KEYS.IS_DEPRECATED]:
+        logger.warning('%s version %s has been deprecated. In the future, this version will be unavailable. '
+                       'Please update your command to use a more recent version. For a list of supported '
+                       '--runtime-versions, run \"az functionapp create -h\"',
+                       runtime_json[KEYS.PROPERTIES][KEYS.DISPLAY], runtime_version_json[KEYS.DISPLAY_VERSION])
+
+    site_config_json = runtime_version_json[KEYS.SITE_CONFIG_DICT]
+    app_settings_json = runtime_version_json[KEYS.APP_SETTINGS_DICT]
 
     con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
@@ -1091,39 +1128,45 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
                 site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                                                               value='false'))
                 site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
+
+                # clear all runtime specific configs and settings
+                site_config_json = {KEYS.USE_32_BIT_WORKER_PROC: False}
+                app_settings_json = {}
+
+                # ensure that app insights is created if not disabled
+                runtime_version_json[KEYS.APPLICATION_INSIGHTS] = True
             else:
                 site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                                                               value='true'))
-                if runtime not in FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS[functions_version]:
-                    raise CLIError("An appropriate linux image for runtime:'{}', "
-                                   "functions_version: '{}' was not found".format(runtime, functions_version))
-        if deployment_container_image_name is None:
-            site_config.linux_fx_version = _get_linux_fx_functionapp(functions_version, runtime, runtime_version)
     else:
         functionapp_def.kind = 'functionapp'
-        if runtime == "java":
-            site_config.java_version = _get_java_version_functionapp(functions_version, runtime_version)
 
-    # adding appsetting to site to make it a function
+    # set site configs
+    for prop, value in site_config_json.items():
+        snake_case_prop = _convert_camel_to_snake_case(prop)
+        setattr(site_config, snake_case_prop, value)
+
+    # temporary workaround for dotnet-isolated linux consumption apps
+    if is_linux and consumption_plan_location is not None and runtime == 'dotnet-isolated':
+        site_config.linux_fx_version = ''
+
+    # adding app settings
+    for app_setting, value in app_settings_json.items():
+        site_config.app_settings.append(NameValuePair(name=app_setting, value=value))
+
     site_config.app_settings.append(NameValuePair(name='FUNCTIONS_EXTENSION_VERSION',
                                                   value=_get_extension_version_functionapp(functions_version)))
     site_config.app_settings.append(NameValuePair(name='AzureWebJobsStorage', value=con_string))
-    site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
-    site_config.app_settings.append(NameValuePair(name='WEBSITE_NODE_DEFAULT_VERSION',
-                                                  value=_get_website_node_version_functionapp(functions_version,
-                                                                                              runtime,
-                                                                                              runtime_version)))
 
     # If plan is not consumption or elastic premium, we need to set always on
     if consumption_plan_location is None and not is_plan_elastic_premium(cmd, plan_info):
         site_config.always_on = True
 
-    # If plan is elastic premium or windows consumption, we need these app settings
-    is_windows_consumption = consumption_plan_location is not None and not is_linux
-    if is_plan_elastic_premium(cmd, plan_info) or is_windows_consumption:
+    # If plan is elastic premium or consumption, we need these app settings
+    if is_plan_elastic_premium(cmd, plan_info) or consumption_plan_location is not None:
         site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',
                                                       value=con_string))
-        site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=name.lower()))
+        site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=_get_content_share_name(name)))
 
     create_app_insights = False
 
@@ -1134,7 +1177,10 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group_name, app_insights)
         site_config.app_settings.append(NameValuePair(name='APPINSIGHTS_INSTRUMENTATIONKEY',
                                                       value=instrumentation_key))
-    elif not disable_app_insights:
+    elif disable_app_insights or not runtime_version_json[KEYS.APPLICATION_INSIGHTS]:
+        # set up dashboard if no app insights
+        site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
+    elif not disable_app_insights and runtime_version_json[KEYS.APPLICATION_INSIGHTS]:
         create_app_insights = True
 
     poller = client.web_apps.begin_create_or_update(resource_group_name, name, functionapp_def)
@@ -1154,11 +1200,18 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         except Exception:  # pylint: disable=broad-except
             logger.warning('Error while trying to create and configure an Application Insights for the Function App. '
                            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            update_app_settings(cmd, functionapp.resource_group, functionapp.name,
+                                ['AzureWebJobsDashboard={}'.format(con_string)])
 
     if deployment_container_image_name:
         update_container_settings_functionapp(cmd, resource_group_name, name, docker_registry_server_url,
                                               deployment_container_image_name, docker_registry_server_user,
                                               docker_registry_server_password)
+
+    if assign_identities is not None:
+        identity = assign_identity(cmd, resource_group_name, name, assign_identities,
+                                   role, None, scope)
+        functionapp.identity = identity
 
     return functionapp
 
@@ -1782,3 +1835,69 @@ def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot
     SslState = cmd.get_models('SslState')
     return _update_ssl_binding(cmd, resource_group_name, name,
                                certificate_thumbprint, SslState.disabled, slot)
+
+
+def _load_runtime_stacks_json_functionapp(is_linux):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    if is_linux:
+        return get_file_json(FUNCTIONS_STACKS_API_JSON_PATHS['linux'])[KEYS.VALUE]
+    return get_file_json(FUNCTIONS_STACKS_API_JSON_PATHS['windows'])[KEYS.VALUE]
+
+
+def _get_matching_runtime_json_functionapp(stacks_json, runtime):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    matching_runtime_json = list(filter(lambda x: x[KEYS.NAME] == runtime, stacks_json))
+    if matching_runtime_json:
+        return matching_runtime_json[0]
+    return None
+
+
+def _get_matching_runtime_version_json_functionapp(runtime_json, functions_version, runtime_version, is_linux):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    extension_version = _get_extension_version_functionapp(functions_version)
+    if runtime_version:
+        for runtime_version_json in runtime_json[KEYS.PROPERTIES][KEYS.MAJOR_VERSIONS]:
+            if (runtime_version_json[KEYS.DISPLAY_VERSION] == runtime_version and
+                    extension_version in runtime_version_json[KEYS.SUPPORTED_EXTENSION_VERSIONS]):
+                return runtime_version_json
+        return None
+
+    # find the matching default runtime version
+    supported_versions_list = _get_supported_runtime_versions_functionapp(runtime_json, functions_version)
+    default_version_json = {}
+    default_version = 0.0
+    for current_runtime_version_json in supported_versions_list:
+        if current_runtime_version_json[KEYS.IS_DEFAULT]:
+            current_version = _get_runtime_version_functionapp(current_runtime_version_json[KEYS.RUNTIME_VERSION],
+                                                               is_linux)
+            if not default_version_json or default_version < current_version:
+                default_version_json = current_runtime_version_json
+                default_version = current_version
+    return default_version_json
+
+
+def _get_supported_runtime_versions_functionapp(runtime_json, functions_version):
+    KEYS = FUNCTIONS_STACKS_API_KEYS()
+    extension_version = _get_extension_version_functionapp(functions_version)
+    supported_versions_list = []
+
+    for runtime_version_json in runtime_json[KEYS.PROPERTIES][KEYS.MAJOR_VERSIONS]:
+        if extension_version in runtime_version_json[KEYS.SUPPORTED_EXTENSION_VERSIONS]:
+            supported_versions_list.append(runtime_version_json)
+    return supported_versions_list
+
+
+def _get_runtime_version_functionapp(version_string, is_linux):
+    import re
+    windows_match = re.fullmatch(FUNCTIONS_WINDOWS_RUNTIME_VERSION_REGEX, version_string)
+    if windows_match:
+        return float(windows_match.group(1))
+
+    linux_match = re.fullmatch(FUNCTIONS_LINUX_RUNTIME_VERSION_REGEX, version_string)
+    if linux_match:
+        return float(linux_match.group(1))
+
+    try:
+        return float(version_string)
+    except ValueError:
+        return 0
