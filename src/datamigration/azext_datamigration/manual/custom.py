@@ -11,12 +11,12 @@
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
 
-import azext_datamigration.manual.helper as helper
 import os
 import subprocess
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azure.cli.core.azclierror import UnclassifiedUserFault
+from azext_datamigration.manual import helper
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -58,12 +58,12 @@ def datamigration_assessment(connection_string=None,
 # Performance Data Collection Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_performance_data_collection(connection_string=None,
-                             output_folder=None,
-                             perf_query_interval=None,
-                             static_query_interval=None,
-                             number_of_interation=None,
-                             config_file_path=None):
-    
+                                              output_folder=None,
+                                              perf_query_interval=None,
+                                              static_query_interval=None,
+                                              number_of_interation=None,
+                                              config_file_path=None):
+
     try:
 
         defaultOutputFolder, exePath = helper.console_app_setup()
@@ -74,10 +74,10 @@ def datamigration_performance_data_collection(connection_string=None,
         if connection_string is not None:
             connection_string = " ".join(f"\"{i}\"" for i in connection_string)
             parameterList = {
-                "--outputFolder" : output_folder,
-                "--perfQueryIntervalInSec" : perf_query_interval,
-                "--staticQueryIntervalInSec" : static_query_interval,
-                "--numberOfIterations" : number_of_interation 
+                "--outputFolder": output_folder,
+                "--perfQueryIntervalInSec": perf_query_interval,
+                "--staticQueryIntervalInSec": static_query_interval,
+                "--numberOfIterations": number_of_interation
             }
             cmd = f'{exePath} PerfDataCollection --sqlConnectionStrings {connection_string}'
             for param in parameterList:
@@ -103,19 +103,19 @@ def datamigration_performance_data_collection(connection_string=None,
 #  Get SKU Recommendation Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_get_sku_recommendation(output_folder=None,
-                             target_platform=None,
-                             target_sql_instance=None,
-                             target_percentile=None,
-                             scaling_factor=None,
-                             start_time=None,
-                             end_time=None,
-                             overwrite=False,
-                             display_result=False,
-                             elastic_strategy=False,
-                             database_allow_list=None,
-                             database_deny_list=None,
-                             config_file_path=None):
-    
+                                         target_platform=None,
+                                         target_sql_instance=None,
+                                         target_percentile=None,
+                                         scaling_factor=None,
+                                         start_time=None,
+                                         end_time=None,
+                                         overwrite=False,
+                                         display_result=False,
+                                         elastic_strategy=False,
+                                         database_allow_list=None,
+                                         database_deny_list=None,
+                                         config_file_path=None):
+
     try:
         defaultOutputFolder, exePath = helper.console_app_setup()
 
@@ -128,18 +128,18 @@ def datamigration_get_sku_recommendation(output_folder=None,
             subprocess.call(cmd, shell=False)
         else:
             parameterList = {
-                "--outputFolder" : output_folder,
-                "--targetPlatform" : target_platform,
-                "--targetSqlInstance" : target_sql_instance,
-                "--scalingFactor" : scaling_factor,
-                "--targetPercentile" : target_percentile,
-                "--startTime" : start_time,
-                "--endTime" : end_time,
-                "--overwrite" : overwrite,
-                "--displayResult" : display_result,
-                "--elasticStrategy" : elastic_strategy,
-                "--databaseAllowList" : database_allow_list,
-                "--databaseDenyList" : database_deny_list
+                "--outputFolder": output_folder,
+                "--targetPlatform": target_platform,
+                "--targetSqlInstance": target_sql_instance,
+                "--scalingFactor": scaling_factor,
+                "--targetPercentile": target_percentile,
+                "--startTime": start_time,
+                "--endTime": end_time,
+                "--overwrite": overwrite,
+                "--displayResult": display_result,
+                "--elasticStrategy": elastic_strategy,
+                "--databaseAllowList": database_allow_list,
+                "--databaseDenyList": database_deny_list
             }
             cmd = f'{exePath} GetSkuRecommendation'
             for param in parameterList:

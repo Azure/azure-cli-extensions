@@ -18,7 +18,7 @@ def load_command_table(self, _):
         'datamigration get-assessment'
     ) as g:
         g.custom_command('', 'datamigration_assessment')
-    
+
     with self.command_group(
         'datamigration performance-data-collection'
     ) as g:

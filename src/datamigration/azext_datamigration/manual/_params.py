@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 
 def load_arguments(self, _):
@@ -18,7 +19,7 @@ def load_arguments(self, _):
         c.argument('output_folder', type=str, help='Output folder to store assessment report')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
         c.argument('overwrite', help='Enable this parameter to overwrite the existing assessment report')
-    
+
     with self.argument_context('datamigration performance-data-collection') as c:
         c.argument('connection_string', nargs='+', help='SQL Server Connection Strings')
         c.argument('output_folder', type=str, help='Output folder to store performance data')
@@ -26,7 +27,7 @@ def load_arguments(self, _):
         c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds. (Default: 3600)')
         c.argument('number_of_interation', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. (Default: 20, Minimum: 2)')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
-    
+
     with self.argument_context('datamigration get-sku-recommendation') as c:
         c.argument('output_folder', type=str, help='Output folder where performance data of the SQL Server is stored. The value here must be the same as the one used in PerfDataCollection')
         c.argument('target_platform', type=str, help='Target platform for SKU recommendation: either AzureSqlDatabase, AzureSqlManagedInstance, AzureSqlVirtualMachine, or Any. If Any is selected, then SKU recommendations for all three target platforms will be evaluated, and the best fit will be returned. (Default: Any)')
@@ -41,7 +42,6 @@ def load_arguments(self, _):
         c.argument('database_allow_list', nargs='+', help='Space separated list of names of databases to be allowed for SKU recommendation consideration while excluding all others. Only set one of the following or neither: databaseAllowList, databaseDenyList. (Default: null)')
         c.argument('database_deny_list', nargs='+', help='Space separated list of names of databases to not be considered for SKU recommendation. Only set one of the following or neither: databaseAllowList, databaseDenyList. (Default: null)')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
-        
 
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')

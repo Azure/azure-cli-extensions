@@ -42,7 +42,7 @@ helps['datamigration get-sku-recommendation'] = """
     examples:
       - name: Get SKU recommendation for given SQL Server using command line.
         text: |-
-               az datamigration get-sku-recommendation 
+               az datamigration get-sku-recommendation
       - name: Get SKU recommendation for given SQL Server using assessment config file.
         text: |-
                az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"

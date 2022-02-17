@@ -68,6 +68,7 @@ def console_app_setup():
 
     return defaultOutputFolder, exePath
 
+
 # -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to return the default output folder path depending on OS environment.
 # -----------------------------------------------------------------------------------------------------------------
@@ -103,7 +104,7 @@ def check_and_download_console_app(exePath, baseFolder):
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Assessment helper function to check if baseFolder exists, if not create it. 
+# Assessment helper function to check if baseFolder exists, if not create it.
 # -----------------------------------------------------------------------------------------------------------------
 def create_dir_path(baseFolder):
 
