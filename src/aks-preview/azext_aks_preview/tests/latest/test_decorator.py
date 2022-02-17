@@ -1589,7 +1589,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(location="test_location")
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
-            enabled=True, issuer_url="https://issuer-url"
+            enabled=True
         )
         ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         self.assertIsNone(ctx.get_oidc_issuer_profile())
@@ -2527,7 +2527,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(location="test_location")
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
-            enabled=True, issuer_url="https://issuer-url"
+            enabled=True
         )
         updated_mc = dec.set_up_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
@@ -3527,7 +3527,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(location="test_location")
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
-            enabled=True, issuer_url="https://issuer-url"
+            enabled=True
         )
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
@@ -3559,7 +3559,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc = self.models.ManagedCluster(location="test_location")
         mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(
-            enabled=True, issuer_url="https://issuer-url"
+            enabled=True
         )
         dec.context.attach_mc(mc)
         updated_mc = dec.update_oidc_issuer_profile(mc)
