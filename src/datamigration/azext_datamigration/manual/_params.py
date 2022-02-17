@@ -14,11 +14,35 @@
 def load_arguments(self, _):
 
     with self.argument_context('datamigration get-assessment') as c:
-        c.argument('connection_string', nargs='+', help='Sql Server Connection Strings')
+        c.argument('connection_string', nargs='+', help='SQL Server Connection Strings')
         c.argument('output_folder', type=str, help='Output folder to store assessment report')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
         c.argument('overwrite', help='Enable this parameter to overwrite the existing assessment report')
+    
+    with self.argument_context('datamigration performance-data-collection') as c:
+        c.argument('connection_string', type=str, help='SQL Server Connection Strings')
+        c.argument('output_folder', type=str, help='Output folder to store performance data')
+        c.argument('perf_query_interval', type=int, help='Interval at which to query performance data, in seconds. (Default: 30)')
+        c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds. (Default: 3600)')
+        c.argument('number_of_interation', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. (Default: 20, Minimum: 2)')
+        c.argument('config_file_path', type=str, help='Path of the ConfigFile')
+    
+    with self.argument_context('datamigration get-sku-recommendation') as c:
+        c.argument('output_folder', type=str, help='Output folder where performance data of the SQL Server is stored. The value here must be the same as the one used in PerfDataCollection')
+        c.argument('target_platform', type=str, help='Target platform for SKU recommendation: either AzureSqlDatabase, AzureSqlManagedInstance, AzureSqlVirtualMachine, or Any. If Any is selected, then SKU recommendations for all three target platforms will be evaluated, and the best fit will be returned. (Default: Any)')
+        c.argument('target_sql_instance', type=str, help='Name of the SQL instance that SKU recommendation will be targeting. (Default: outputFolder will be scanned for files created by the PerfDataCollection action, and recommendations will be provided for every instance found)')
+        c.argument('target_percentile', type=int, help='Percentile of data points to be used during aggregation of the performance data. Only used for baseline (non-elastic) strategy. (Default: 95)')
+        c.argument('scaling_factor', type=int, help='Scaling (comfort) factor used during SKU recommendation. For example, if it is determined that there is a 4 vCore CPU requirement with a scaling factor of 150%, then the true CPU requirement will be 6 vCores. (Default: 100)')
+        c.argument('start_time', type=str, help='UTC start time of performance data points to consider during aggregation, in YYYY-MM-DD HH:MM format. Only used for baseline (non-elastic) strategy. (Default: all data points collected will be considered)')
+        c.argument('end_time', type=str, help='UTC end time of performance data points to consider during aggregation, in YYYY-MM-DD HH:MM format. Only used for baseline (non-elastic) strategy. (Default: all data points collected will be considered)')
+        c.argument('overwrite', help='Whether or not to overwrite any existing SKU recommendation reports. (Default: true)')
+        c.argument('display_result', help='Whether or not to print the SKU recommendation results to the console. (Default: true)')
+        c.argument('elastic_strategy', help='Whether or not to use the elastic strategy for SKU recommendations based on resource usage profiling. (Default: false)')
+        c.argument('database_allow_list', nargs='+', help='Space separated list of names of databases to be allowed for SKU recommendation consideration while excluding all others. Only set one of the following or neither: databaseAllowList, databaseDenyList. (Default: null)')
+        c.argument('database_deny_list', nargs='+', help='Space separated list of names of databases to not be considered for SKU recommendation. Only set one of the following or neither: databaseAllowList, databaseDenyList. (Default: null)')
+        c.argument('config_file_path', type=str, help='Path of the ConfigFile')
+        
 
     with self.argument_context('datamigration register-integration-runtime') as c:
-        c.argument('auth_key', type=str, help='AuthKey of Sql Migration Service')
+        c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
         c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')

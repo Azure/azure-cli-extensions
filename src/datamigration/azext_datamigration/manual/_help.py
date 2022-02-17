@@ -24,6 +24,30 @@ helps['datamigration get-assessment'] = """
                az datamigration get-assessment --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
+helps['datamigration performance-data-collection'] = """
+    type: command
+    short-summary: Collect performance data for given SQL Server instance(s).
+    examples:
+      - name: Collect performance data of a given SQL Server using connection string.
+        text: |-
+               az datamigration performance-data-collection
+      - name: Collect performance data of a given SQL Server using assessment config file.
+        text: |-
+               az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
+helps['datamigration get-sku-recommendation'] = """
+    type: command
+    short-summary: Gives SKU recommendations for Azure SQL offerings.
+    examples:
+      - name: Get SKU recommendation for given SQL Server using command line.
+        text: |-
+               az datamigration get-sku-recommendation 
+      - name: Get SKU recommendation for given SQL Server using assessment config file.
+        text: |-
+               az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
 helps['datamigration register-integration-runtime'] = """
     type: command
     short-summary: Register Database Migration Service on Integration Runtime
