@@ -35,7 +35,7 @@ def datamigration_assessment(connection_string=None,
             raise MutuallyExclusiveArgumentError("Both connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
         if connection_string is not None:
-            connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
+            connection_string = " ".join(f"\"{i}\"" for i in connection_string)
             cmd = f'{exePath} Assess --sqlConnectionStrings {connection_string} ' if output_folder is None else f'{exePath} Assess --sqlConnectionStrings {connection_string} --outputFolder "{output_folder}" '
             cmd += '--overwrite False' if overwrite is False else ''
             subprocess.call(cmd, shell=False)
@@ -72,15 +72,14 @@ def datamigration_performance_data_collection(connection_string=None,
             raise MutuallyExclusiveArgumentError("Both sql_connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
         if connection_string is not None:
-            connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
+            connection_string = " ".join(f"\"{i}\"" for i in connection_string)
             parameterList = {
-                "--sqlConnectionStrings" : connection_string,
                 "--outputFolder" : output_folder,
                 "--perfQueryIntervalInSec" : perf_query_interval,
                 "--staticQueryIntervalInSec" : static_query_interval,
                 "--numberOfIterations" : number_of_interation 
             }
-            cmd = f'{exePath} PerfDataCollection'
+            cmd = f'{exePath} PerfDataCollection --sqlConnectionStrings {connection_string}'
             for param in parameterList:
                 if parameterList[param] is not None:
                     cmd += f' {param} "{parameterList[param]}"'
@@ -144,8 +143,11 @@ def datamigration_get_sku_recommendation(output_folder=None,
             }
             cmd = f'{exePath} GetSkuRecommendation'
             for param in parameterList:
-                if parameterList[param] is not None:
+                if parameterList[param] is not None and not param.__contains__("List"):
                     cmd += f' {param} "{parameterList[param]}"'
+                elif param.__contains__("List") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
             subprocess.call(cmd, shell=False)
 
         # Printing log file path
