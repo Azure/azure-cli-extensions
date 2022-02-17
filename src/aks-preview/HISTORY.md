@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.5.54
+++++++
+* Add --host-group-id to `az aks create` and `az aks nodepool add` commands to support Azure Dedicated Host Group, which requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview"
+  * `az aks create --host-group-id`
+  * `az aks nodepool add --host-group-id`
+
 0.5.53
 ++++++
 * Add support for cluster creating with Capacity Reservation Group.

@@ -288,6 +288,20 @@ class TestValidateKubernetesVersion(unittest.TestCase):
             validators.validate_k8s_version(namespace)
         self.assertEqual(str(cm.exception), err)
 
+class HostGroupIDNamespace:
+
+    def __init__(self, host_group_id):
+        self.host_group_id = host_group_id
+
+class TestValidateHostGroupID(unittest.TestCase):
+    def test_invalid_host_group_id(self):
+        invalid_host_group_id = "dummy group id"
+        namespace = HostGroupIDNamespace(host_group_id=invalid_host_group_id)
+        err = ("--host-group-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_host_group_id(namespace)
+        self.assertEqual(str(cm.exception), err)
 
 if __name__ == "__main__":
     unittest.main()
