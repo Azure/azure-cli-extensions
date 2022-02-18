@@ -795,7 +795,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
-    helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube), windows=not (is_linux or is_kube))
+    helper = _StackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -810,11 +810,11 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
         if runtime:
             site_config.linux_fx_version = runtime
-            match = helper.resolve(runtime)
+            match = helper.resolve(runtime, linux=True)
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
                                "Please invoke 'list-runtimes' to cross check".format(runtime))
-            match.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
+            helper.get_site_config_setter(match, linux=True)(cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             if name_validation.name_available:
@@ -841,11 +841,11 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             raise CLIError("usage error: --startup-file or --deployment-container-image-name or "
                            "--multicontainer-config-type and --multicontainer-config-file is "
                            "only appliable on linux webapp")
-        match = helper.resolve(runtime)
+        match = helper.resolve(runtime, linux=False)
         if not match:
             raise CLIError("Windows runtime '{}' is not supported. "
                            "Please invoke 'az webapp list-runtimes' to cross check".format(runtime))
-        match.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
+        helper.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
 
         # portal uses the current_stack propety in metadata to display stack for windows apps
         current_stack = get_current_stack_from_runtime(runtime)
