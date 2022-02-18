@@ -58,7 +58,8 @@ def validate_managed_env_name_or_id(cmd, namespace):
             namespace.managed_env = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group_name,
-                namespace='Microsoft.App', type='managedEnvironments',
+                namespace='Microsoft.App',
+                type='managedEnvironments',
                 name=namespace.managed_env
             )
 

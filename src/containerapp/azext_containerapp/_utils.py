@@ -3,12 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from distutils.filelist import findall
 from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
+from msrestazure.tools import parse_resource_id
 from urllib.parse import urlparse
 
-from ._client_factory import providers_client_factory, cf_resource_groups
+from ._clients import ContainerAppClient
+from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 
 logger = get_logger(__name__)
 
@@ -34,7 +37,7 @@ def _validate_subscription_registered(cmd, resource_provider):
         pass
 
 
-def _ensure_location_allowed(cmd, location, resource_provider):
+def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
@@ -43,15 +46,15 @@ def _ensure_location_allowed(cmd, location, resource_provider):
             resource_types = getattr(providers_client.get(resource_provider), 'resource_types', [])
             res_locations = []
             for res in resource_types:
-                if res and getattr(res, 'resource_type', "") == 'containerApps':
+                if res and getattr(res, 'resource_type', "") == resource_type:
                     res_locations = getattr(res, 'locations', [])
 
-            res_locations = [res_loc.lower().replace(" ", "") for res_loc in res_locations if res_loc.strip()]
+            res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
             location_formatted = location.lower().replace(" ", "")
             if location_formatted not in res_locations:
-                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='containerApps'].locations\"`".format(
-                    location, resource_provider))
+                raise ValidationError("Location '{}' is not currently supported. To get list of supported locations, run `az provider show -n {} --query \"resourceTypes[?resourceType=='{}'].locations\"`".format(
+                    location, resource_provider, resource_type))
     except ValidationError as ex:
         raise ex
     except Exception:
@@ -153,3 +156,121 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
 def parse_list_of_strings(comma_separated_string):
     comma_separated = comma_separated_string.split(',')
     return [s.strip() for s in comma_separated]
+
+
+def _get_default_log_analytics_location(cmd):
+    default_location = "eastus"
+    providers_client = None
+    try:
+        providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+        resource_types = getattr(providers_client.get("Microsoft.OperationalInsights"), 'resource_types', [])
+        res_locations = []
+        for res in resource_types:
+            if res and getattr(res, 'resource_type', "") == "workspaces":
+                res_locations = getattr(res, 'locations', [])
+
+        if len(res_locations):
+            location = res_locations[0].lower().replace(" ", "").replace("(", "").replace(")", "")
+            if location:
+                return location
+
+    except Exception:
+        return default_location
+    return default_location
+
+# Generate random 4 character string
+def _new_tiny_guid():
+    import random, string
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
+# Follow same naming convention as Portal
+def _generate_log_analytics_workspace_name(resource_group_name):
+    import re
+    prefix = "workspace"
+    suffix = _new_tiny_guid()
+    alphaNumericRG = resource_group_name
+    alphaNumericRG = re.sub(r'[^0-9a-z]', '', resource_group_name)
+    maxLength = 40
+
+    name = "{}-{}{}".format(
+        prefix,
+        alphaNumericRG,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
+
+
+def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name):
+    if logs_customer_id is None and logs_key is None:
+        logger.warning("No Log Analytics workspace provided.")
+        try:
+            _validate_subscription_registered(cmd, "Microsoft.OperationalInsights")
+            log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
+            log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
+
+            log_analytics_location = location
+            try:
+                _ensure_location_allowed(cmd, log_analytics_location, "Microsoft.OperationalInsights", "workspaces")
+            except Exception:
+                log_analytics_location = _get_default_log_analytics_location(cmd)
+
+            from azure.cli.core.commands import LongRunningOperation
+            from azure.mgmt.loganalytics.models import Workspace
+
+            workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
+            workspace_instance = Workspace(location=log_analytics_location)
+            logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))
+
+            poller = log_analytics_client.begin_create_or_update(resource_group_name, workspace_name, workspace_instance)
+            log_analytics_workspace = LongRunningOperation(cmd.cli_ctx)(poller)
+
+            logs_customer_id = log_analytics_workspace.customer_id
+            logs_key = log_analytics_shared_key_client.get_shared_keys(
+                workspace_name=workspace_name,
+                resource_group_name=resource_group_name).primary_shared_key
+
+        except Exception as ex:
+            raise ValidationError("Unable to generate a Log Analytics workspace. You can use \"az monitor log-analytics workspace create\" to create one and supply --logs-customer-id and --logs-key")
+    elif logs_customer_id is None:
+        raise ValidationError("Usage error: Supply the --logs-customer-id associated with the --logs-key")
+    elif logs_key is None: # Try finding the logs-key
+        log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
+        log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
+
+        log_analytics_name = None
+        log_analytics_rg = None
+        log_analytics = log_analytics_client.list()
+
+        for la in log_analytics:
+            if la.customer_id and la.customer_id.lower() == logs_customer_id.lower():
+                log_analytics_name = la.name
+                parsed_la = parse_resource_id(la.id)
+                log_analytics_rg = parsed_la['resource_group']
+
+        if log_analytics_name is None:
+            raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
+
+        shared_keys = log_analytics_shared_key_client.get_shared_keys(workspace_name=log_analytics_name, resource_group_name=log_analytics_rg)
+
+        if not shared_keys or not shared_keys.primary_shared_key:
+            raise ValidationError('Usage error: Supply the --logs-key associated with the --logs-customer-id')
+
+        logs_key = shared_keys.primary_shared_key
+
+    return logs_customer_id, logs_key
+
+
+def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
+    if "secrets" not in containerapp_def["properties"]["configuration"]:
+        containerapp_def["properties"]["configuration"]["secrets"] = []
+    else:
+        secrets = []
+        try:
+            secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        except Exception as e:
+            handle_raw_exception(e)
+
+        containerapp_def["properties"]["configuration"]["secrets"] = secrets["value"]

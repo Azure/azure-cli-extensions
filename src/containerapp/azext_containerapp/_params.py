@@ -74,10 +74,12 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the containerapp environment')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: Canada Central, North Europe')
-        c.argument('logs_destination', type=str, options_list=['--logs-dest'])
-        c.argument('logs_customer_id', type=str, options_list=['--logs-workspace-id'], help='Log analytics workspace ID')
-        c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log analytics workspace key')
         c.argument('tags', arg_type=tags_type)
+
+    with self.argument_context('containerapp env', arg_group='Log Analytics') as c:
+        c.argument('logs_destination', type=str, options_list=['--logs-dest'])
+        c.argument('logs_customer_id', type=str, options_list=['--logs-workspace-id'], help='Name or resource ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
+        c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
         c.argument('instrumentation_key', options_list=['--instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')

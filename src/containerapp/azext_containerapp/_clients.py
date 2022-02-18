@@ -11,7 +11,9 @@ import sys
 from sys import api_version
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
+from knack.log import get_logger
 
+logger = get_logger(__name__)
 
 API_VERSION = "2021-03-01"
 NEW_API_VERSION = "2022-01-01-preview"
@@ -152,7 +154,14 @@ class ContainerAppClient():
                 resource_group_name,
                 name,
                 api_version)
-            poll(cmd, request_url, "cancelled")
+
+            if r.status_code == 202:
+                from azure.cli.core.azclierror import ResourceNotFoundError
+                try:
+                    poll(cmd, request_url, "cancelled")
+                except ResourceNotFoundError:
+                    pass
+                logger.warning('Containerapp successfully deleted')
         return
 
     @classmethod
@@ -228,6 +237,24 @@ class ContainerAppClient():
                 app_list.append(formatted)
 
         return app_list
+
+    @classmethod
+    def list_secrets(cls, cmd, resource_group_name, name):
+        secrets = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/listSecrets?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=None)
+        return r.json()
 
 
 class ManagedEnvironmentClient():
@@ -314,7 +341,14 @@ class ManagedEnvironmentClient():
                 resource_group_name,
                 name,
                 api_version)
-            poll(cmd, request_url, "scheduledfordelete")
+
+            if r.status_code == 202:
+                from azure.cli.core.azclierror import ResourceNotFoundError
+                try:
+                    poll(cmd, request_url, "scheduledfordelete")
+                except ResourceNotFoundError:
+                    pass
+                logger.warning('Containerapp environment successfully deleted')
         return
 
     @classmethod
