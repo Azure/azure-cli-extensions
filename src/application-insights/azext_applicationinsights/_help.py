@@ -504,7 +504,7 @@ Id="apac-hk-hkn-azr" --defined-web-test-name "my-webtest-my-component" --synthet
 
 helps['monitor app-insights web-test delete'] = """
     type: command
-    short-summary: "Deletes an Application Insights web test."
+    short-summary: "Delete an Application Insights web test."
     examples:
       - name: webTestDelete
         text: |-
