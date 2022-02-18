@@ -589,7 +589,7 @@ helps['spring-cloud app-insights update'] = """
 
 helps['spring-cloud service-registry'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage Service Registry in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage Service Registry in Azure Spring Cloud.
 """
 
 helps['spring-cloud service-registry show'] = """
@@ -657,7 +657,7 @@ helps['spring-cloud build-service builder delete'] = """
 
 helps['spring-cloud application-configuration-service'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Cloud.
 """
 
 helps['spring-cloud application-configuration-service show'] = """
@@ -727,7 +727,7 @@ helps['spring-cloud application-configuration-service unbind'] = """
 
 helps['spring-cloud gateway'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage gateway in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage gateway in Azure Spring Cloud.
 """
 
 helps['spring-cloud gateway clear'] = """
@@ -834,7 +834,7 @@ helps['spring-cloud gateway custom-domain unbind'] = """
 
 helps['spring-cloud api-portal'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage API portal in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage API portal in Azure Spring Cloud.
 """
 
 helps['spring-cloud api-portal clear'] = """
@@ -896,22 +896,22 @@ helps['spring-cloud api-portal custom-domain unbind'] = """
 
 helps['spring-cloud build-service'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage build service in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage build service in Azure Spring Cloud.
 """
 
 helps['spring-cloud build-service builder'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage builder of build service.
+    short-summary: (Enterprise Tier Only) Commands to manage builder of build service.
 """
 
 helps['spring-cloud build-service builder buildpack-binding'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage buildpack-binding of builder.
+    short-summary: (Enterprise Tier Only) Commands to manage buildpack-binding of builder.
 """
 
 helps['spring-cloud build-service builder buildpack-binding create'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Create a buildpack binding.
+    short-summary: (Enterprise Tier Only) Create a buildpack binding.
     examples:
         - name: Create a buildpack binding without properties or secrets.
           text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --service MyCluster --resource-group MyResourceGroup
@@ -925,7 +925,7 @@ helps['spring-cloud build-service builder buildpack-binding create'] = """
 
 helps['spring-cloud build-service builder buildpack-binding set'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Set a buildpack binding.
+    short-summary: (Enterprise Tier Only) Set a buildpack binding.
     examples:
         - name: Set a buildpack binding with properties and secrets.
           text: az spring-cloud build-service builder buildpack-binding set --name first-binding --builder-name first-builder --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
@@ -933,7 +933,7 @@ helps['spring-cloud build-service builder buildpack-binding set'] = """
 
 helps['spring-cloud build-service builder buildpack-binding show'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Show a buildpack binding. The secrets will be masked.
+    short-summary: (Enterprise Tier Only) Show a buildpack binding. The secrets will be masked.
     examples:
         - name: Show a buildpack binding.
           text: az spring-cloud build-service builder buildpack-binding show --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
@@ -941,7 +941,7 @@ helps['spring-cloud build-service builder buildpack-binding show'] = """
 
 helps['spring-cloud build-service builder buildpack-binding list'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
+    short-summary: (Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
     examples:
         - name: List all buildpack binding of a builder.
           text: az spring-cloud build-service builder buildpack-binding list --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
@@ -949,7 +949,7 @@ helps['spring-cloud build-service builder buildpack-binding list'] = """
 
 helps['spring-cloud build-service builder buildpack-binding delete'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Delete a buildpack binding.
+    short-summary: (Enterprise Tier Only) Delete a buildpack binding.
     examples:
         - name: Delete a buildpack binding.
           text: az spring-cloud build-service builder buildpack-binding delete --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup

@@ -282,9 +282,6 @@ def load_command_table(self, _):
         g.custom_command('unbind', 'api_portal_custom_domain_unbind')
         g.custom_command('update', 'api_portal_custom_domain_update')
 
-    with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
-        pass
-
     with self.command_group('spring-cloud build-service builder',
                             custom_command_type=builder_cmd_group,
                             exception_handler=handle_asc_exception, is_preview=True) as g:
@@ -301,3 +298,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
+
+    with self.command_group('spring-cloud build-service', exception_handler=handle_asc_exception, is_preview=True):
+        pass
+
+    with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
+        pass

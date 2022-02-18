@@ -265,7 +265,21 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
-    
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_build_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment=self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='Java_8')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='Java_11')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "11.*"}, resource.properties.env)
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='Java_17')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "17.*"}, resource.properties.env)
+
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()

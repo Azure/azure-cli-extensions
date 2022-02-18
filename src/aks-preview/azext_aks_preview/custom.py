@@ -129,7 +129,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -758,6 +758,8 @@ def aks_create(cmd,
                gmsa_root_domain_name=None,
                snapshot_id=None,
                enable_oidc_issuer=False,
+               host_group_id=None,
+               crg_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1575,6 +1577,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       workload_runtime=None,
                       gpu_instance_profile=None,
                       snapshot_id=None,
+                      host_group_id=None,
+                      crg_id=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1650,7 +1654,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         mode=mode,
         workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile,
-        creation_data=creationData
+        creation_data=creationData,
+        host_group_id=host_group_id,
+        capacity_reservation_group_id=crg_id
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -1767,18 +1773,31 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          labels=None,
+                         node_taints=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    if node_taints is not None:
+        taints_array = []
+        if node_taints != '':
+            for taint in node_taints.split(','):
+                try:
+                    taint = taint.strip()
+                    taints_array.append(taint)
+                except ValueError:
+                    raise InvalidArgumentValueError(
+                        'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
+        instance.node_taints = taints_array
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
