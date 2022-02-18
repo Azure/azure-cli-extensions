@@ -45,17 +45,17 @@ class AvailableOperations(msrest.serialization.Model):
 
 
 class Resource(msrest.serialization.Model):
-    """Common fields that are returned in the response for all Azure Resource Manager resources.
+    """Resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     """
 
@@ -86,13 +86,13 @@ class Catalog(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
@@ -156,13 +156,13 @@ class CatalogItem(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
@@ -622,19 +622,19 @@ class DeploymentHistoryResult(msrest.serialization.Model):
 
 
 class TrackedResource(Resource):
-    """The resource model definition for an Azure Resource Manager tracked top level resource which has 'tags' and a 'location'.
+    """The resource model definition for a ARM tracked top level resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -676,13 +676,13 @@ class DevCenter(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -822,13 +822,13 @@ class Environment(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -1057,13 +1057,13 @@ class EnvironmentType(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
@@ -1356,13 +1356,13 @@ class HealthCheckStatusDetails(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
@@ -1403,6 +1403,36 @@ class HealthCheckStatusDetails(Resource):
         self.start_date_time = None
         self.end_date_time = None
         self.health_checks = None
+
+
+class HealthCheckStatusDetailsListResult(msrest.serialization.Model):
+    """Result of the network health check list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~fidalgo.models.HealthCheckStatusDetails]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[HealthCheckStatusDetails]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(HealthCheckStatusDetailsListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
 
 
 class IdentityProperties(msrest.serialization.Model):
@@ -1489,6 +1519,32 @@ class ImageReference(msrest.serialization.Model):
         self.sku = sku
 
 
+class ImageValidationErrorDetails(msrest.serialization.Model):
+    """Image validation error details.
+
+    :param code: An identifier for the error.
+    :type code: str
+    :param message: A message describing the error.
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        message: Optional[str] = None,
+        **kwargs
+    ):
+        super(ImageValidationErrorDetails, self).__init__(**kwargs)
+        self.code = code
+        self.message = message
+
+
 class MachineDefinition(TrackedResource):
     """Represents a definition for a Developer Machine.
 
@@ -1496,13 +1552,13 @@ class MachineDefinition(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -1514,6 +1570,15 @@ class MachineDefinition(TrackedResource):
     :type image_reference: ~fidalgo.models.ImageReference
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
+    :ivar image_validation_status: Validation status of the configured image. Possible values
+     include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
+    :ivar image_validation_error_details: Details for image validator error. Populated when the
+     image validation is not successful.
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
+    :ivar active_image_reference: Image reference information for the currently active image (only
+     populated during updates).
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
     """
 
     _validation = {
@@ -1523,6 +1588,9 @@ class MachineDefinition(TrackedResource):
         'location': {'required': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
+        'image_validation_status': {'readonly': True},
+        'image_validation_error_details': {'readonly': True},
+        'active_image_reference': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1534,6 +1602,9 @@ class MachineDefinition(TrackedResource):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'image_validation_status': {'key': 'properties.imageValidationStatus', 'type': 'str'},
+        'image_validation_error_details': {'key': 'properties.imageValidationErrorDetails', 'type': 'ImageValidationErrorDetails'},
+        'active_image_reference': {'key': 'properties.activeImageReference', 'type': 'ImageReference'},
     }
 
     def __init__(
@@ -1548,6 +1619,9 @@ class MachineDefinition(TrackedResource):
         self.system_data = None
         self.image_reference = image_reference
         self.provisioning_state = None
+        self.image_validation_status = None
+        self.image_validation_error_details = None
+        self.active_image_reference = None
 
 
 class MachineDefinitionListResult(msrest.serialization.Model):
@@ -1610,15 +1684,30 @@ class MachineDefinitionProperties(MachineDefinitionUpdateProperties):
     :type image_reference: ~fidalgo.models.ImageReference
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
+    :ivar image_validation_status: Validation status of the configured image. Possible values
+     include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
+    :ivar image_validation_error_details: Details for image validator error. Populated when the
+     image validation is not successful.
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
+    :ivar active_image_reference: Image reference information for the currently active image (only
+     populated during updates).
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
+        'image_validation_status': {'readonly': True},
+        'image_validation_error_details': {'readonly': True},
+        'active_image_reference': {'readonly': True},
     }
 
     _attribute_map = {
         'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'image_validation_status': {'key': 'imageValidationStatus', 'type': 'str'},
+        'image_validation_error_details': {'key': 'imageValidationErrorDetails', 'type': 'ImageValidationErrorDetails'},
+        'active_image_reference': {'key': 'activeImageReference', 'type': 'ImageReference'},
     }
 
     def __init__(
@@ -1629,6 +1718,9 @@ class MachineDefinitionProperties(MachineDefinitionUpdateProperties):
     ):
         super(MachineDefinitionProperties, self).__init__(image_reference=image_reference, **kwargs)
         self.provisioning_state = None
+        self.image_validation_status = None
+        self.image_validation_error_details = None
+        self.active_image_reference = None
 
 
 class MachineDefinitionUpdate(TrackedResourceUpdate):
@@ -1665,13 +1757,13 @@ class Mapping(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
@@ -1952,13 +2044,13 @@ class NetworkSettings(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -2298,13 +2390,13 @@ class Pool(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -2511,13 +2603,13 @@ class Project(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -2695,17 +2787,17 @@ class ProjectUpdate(TrackedResourceUpdate):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location.
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
+    :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
     :vartype type: str
     """
 
@@ -2825,7 +2917,7 @@ class SystemData(msrest.serialization.Model):
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
     :type last_modified_by_type: str or ~fidalgo.models.CreatedByType
-    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :param last_modified_at: The type of identity that last modified the resource.
     :type last_modified_at: ~datetime.datetime
     """
 

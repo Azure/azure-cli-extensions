@@ -60,6 +60,16 @@ class HealthCheckStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     UNKNOWN = "Unknown"
 
+class ImageValidationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Image validation status
+    """
+
+    UNKNOWN = "Unknown"
+    PENDING = "Pending"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    TIMED_OUT = "TimedOut"
+
 class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes
     both an implicitly created identity and a user assigned identity. The type 'None' will remove

@@ -40,8 +40,10 @@ try:
     from ._models_py3 import GitCatalog
     from ._models_py3 import HealthCheck
     from ._models_py3 import HealthCheckStatusDetails
+    from ._models_py3 import HealthCheckStatusDetailsListResult
     from ._models_py3 import IdentityProperties
     from ._models_py3 import ImageReference
+    from ._models_py3 import ImageValidationErrorDetails
     from ._models_py3 import MachineDefinition
     from ._models_py3 import MachineDefinitionListResult
     from ._models_py3 import MachineDefinitionProperties
@@ -113,8 +115,10 @@ except (SyntaxError, ImportError):
     from ._models import GitCatalog  # type: ignore
     from ._models import HealthCheck  # type: ignore
     from ._models import HealthCheckStatusDetails  # type: ignore
+    from ._models import HealthCheckStatusDetailsListResult  # type: ignore
     from ._models import IdentityProperties  # type: ignore
     from ._models import ImageReference  # type: ignore
+    from ._models import ImageValidationErrorDetails  # type: ignore
     from ._models import MachineDefinition  # type: ignore
     from ._models import MachineDefinitionListResult  # type: ignore
     from ._models import MachineDefinitionProperties  # type: ignore
@@ -158,6 +162,7 @@ from ._fidalgo_enums import (
     CreatedByType,
     EnableStatus,
     HealthCheckStatus,
+    ImageValidationStatus,
     ResourceIdentityType,
     SkuTier,
 )
@@ -196,8 +201,10 @@ __all__ = [
     'GitCatalog',
     'HealthCheck',
     'HealthCheckStatusDetails',
+    'HealthCheckStatusDetailsListResult',
     'IdentityProperties',
     'ImageReference',
+    'ImageValidationErrorDetails',
     'MachineDefinition',
     'MachineDefinitionListResult',
     'MachineDefinitionProperties',
@@ -239,6 +246,7 @@ __all__ = [
     'CreatedByType',
     'EnableStatus',
     'HealthCheckStatus',
+    'ImageValidationStatus',
     'ResourceIdentityType',
     'SkuTier',
 ]
