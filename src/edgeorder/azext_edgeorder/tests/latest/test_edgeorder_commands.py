@@ -176,4 +176,46 @@ class EdgeOrderClientTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="cli_test_edgeorder_", location="eastus")
     def test_edgeorder_list(self):
-        pass
+        self.kwargs.update({
+            "name": "azurestackedgegpu",
+            "line_name": "azurestackedge",
+            "family_name": "azurestackedge"
+        })
+
+        metadata_list = self.cmd("edgeorder list-metadata").get_output_in_json()
+        assert isinstance(metadata_list, list)
+        assert "filterableProperties" in metadata_list[0]
+        assert "hierarchyInformation" in metadata_list[0]
+
+        operation_list = self.cmd("edgeorder list-operation").get_output_in_json()
+        assert isinstance(operation_list, list)
+        assert "actionType" in operation_list[0]
+        assert "isDataAction" in operation_list[0]
+
+        # obtain JSON string
+        filters_props = [{
+            "filterableProperty": [{
+                "type": "ShipToCountries",
+                "supportedValues": ["US"]
+            }],
+            "hierarchyInformation": {
+                "productFamilyName": self.kwargs["family_name"],
+                "productLineName": self.kwargs["line_name"],
+                "productName": self.kwargs["name"]
+            }
+        }]
+        self.kwargs["filters"] = json.dumps(filters_props)
+
+        config_list = self.cmd("edgeorder list-config --configuration-filters '{filters}'").get_output_in_json()
+        assert isinstance(config_list, list)
+        assert "filterableProperties" in config_list[0]
+        assert "hierarchyInformation" in config_list[0]
+
+        # self.cmd("edgeorder list-family --filterable-properties azurestackedge={{'type':'ShipToCountries','supportedValues':['US']}}",
+        #          checks=[
+        #              self.check("name", "")
+        #          ])
+
+
+
+

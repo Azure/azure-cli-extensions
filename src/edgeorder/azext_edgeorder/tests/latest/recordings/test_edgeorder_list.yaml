@@ -1,0 +1,369 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder list-metadata
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/productFamiliesMetadata?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"productLines\":
+        [],\r\n        \"resourceProviderDetails\": [\r\n          {\r\n            \"resourceProviderNamespace\":
+        \"Microsoft.DataBoxEdge\"\r\n          }\r\n        ],\r\n        \"filterableProperties\":
+        [\r\n          {\r\n            \"type\": \"ShipToCountries\",\r\n            \"supportedValues\":
+        [\r\n              \"US\",\r\n              \"AU\",\r\n              \"CA\",\r\n
+        \             \"HK\",\r\n              \"JP\",\r\n              \"MO\",\r\n
+        \             \"MY\",\r\n              \"NZ\",\r\n              \"NO\",\r\n
+        \             \"PR\",\r\n              \"SG\",\r\n              \"KR\",\r\n
+        \             \"CH\",\r\n              \"TW\",\r\n              \"AE\",\r\n
+        \             \"GB\",\r\n              \"NL\",\r\n              \"AT\",\r\n
+        \             \"IT\",\r\n              \"BE\",\r\n              \"LV\",\r\n
+        \             \"BG\",\r\n              \"LT\",\r\n              \"HR\",\r\n
+        \             \"LU\",\r\n              \"CY\",\r\n              \"MT\",\r\n
+        \             \"CZ\",\r\n              \"DK\",\r\n              \"PL\",\r\n
+        \             \"EE\",\r\n              \"PT\",\r\n              \"FI\",\r\n
+        \             \"RO\",\r\n              \"FR\",\r\n              \"SK\",\r\n
+        \             \"DE\",\r\n              \"SI\",\r\n              \"GR\",\r\n
+        \             \"ES\",\r\n              \"HU\",\r\n              \"SE\",\r\n
+        \             \"IE\",\r\n              \"AR\",\r\n              \"DZ\",\r\n
+        \             \"BS\",\r\n              \"BH\",\r\n              \"BD\",\r\n
+        \             \"BB\",\r\n              \"BM\",\r\n              \"BO\",\r\n
+        \             \"BA\",\r\n              \"BR\",\r\n              \"CL\",\r\n
+        \             \"KY\",\r\n              \"CO\",\r\n              \"CR\",\r\n
+        \             \"CI\",\r\n              \"DO\",\r\n              \"EC\",\r\n
+        \             \"EG\",\r\n              \"SV\",\r\n              \"ET\",\r\n
+        \             \"GE\",\r\n              \"GH\",\r\n              \"GT\",\r\n
+        \             \"HN\",\r\n              \"IS\",\r\n              \"IN\",\r\n
+        \             \"ID\",\r\n              \"IL\",\r\n              \"JM\",\r\n
+        \             \"KE\",\r\n              \"KW\",\r\n              \"KG\",\r\n
+        \             \"LY\",\r\n              \"LI\",\r\n              \"MU\",\r\n
+        \             \"MX\",\r\n              \"MD\",\r\n              \"MC\",\r\n
+        \             \"MN\",\r\n              \"ME\",\r\n              \"MA\",\r\n
+        \             \"NP\",\r\n              \"NI\",\r\n              \"NG\",\r\n
+        \             \"OM\",\r\n              \"PS\",\r\n              \"PA\",\r\n
+        \             \"PY\",\r\n              \"PE\",\r\n              \"PH\",\r\n
+        \             \"QA\",\r\n              \"RW\",\r\n              \"ZA\",\r\n
+        \             \"KN\",\r\n              \"SA\",\r\n              \"SN\",\r\n
+        \             \"RS\",\r\n              \"LK\",\r\n              \"TJ\",\r\n
+        \             \"TZ\",\r\n              \"TH\",\r\n              \"TT\",\r\n
+        \             \"TN\",\r\n              \"TR\",\r\n              \"TM\",\r\n
+        \             \"UG\",\r\n              \"UA\",\r\n              \"UY\",\r\n
+        \             \"UZ\",\r\n              \"VI\",\r\n              \"VE\",\r\n
+        \             \"VN\",\r\n              \"YE\",\r\n              \"ZM\",\r\n
+        \             \"ZW\"\r\n            ]\r\n          },\r\n          {\r\n            \"type\":
+        \"DoubleEncryptionStatus\",\r\n            \"supportedValues\": [\r\n              \"Enabled\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"displayName\": \"Azure
+        Stack Edge\",\r\n        \"description\": {\r\n          \"descriptionType\":
+        \"Base\",\r\n          \"shortDescription\": \"Azure managed physical edge
+        compute device\",\r\n          \"keywords\": [],\r\n          \"attributes\":
+        [],\r\n          \"links\": []\r\n        },\r\n        \"imageInformation\":
+        [],\r\n        \"availabilityInformation\": {\r\n          \"availabilityStage\":
+        \"Available\",\r\n          \"disabledReason\": \"None\"\r\n        },\r\n
+        \       \"hierarchyInformation\": {\r\n          \"productFamilyName\": \"azurestackedge\",\r\n
+        \         \"productLineName\": \"\",\r\n          \"productName\": \"\",\r\n
+        \         \"configurationName\": \"\"\r\n        }\r\n      }\r\n    }\r\n
+        \ ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3662'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Feb 2022 07:46:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder list-operation
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.EdgeOrder/operations?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Addresses\",\r\n        \"operation\": \"List or Get Addresses\",\r\n        \"description\":
+        \"List or get the Addresses\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/delete\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Addresses\",\r\n        \"operation\": \"Delete Addresses\",\r\n        \"description\":
+        \"Delete the Addresses\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
+        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/write\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Addresses\",\r\n        \"operation\": \"Create or Update Addresses\",\r\n
+        \       \"description\": \"Create or update the Addresses\"\r\n      },\r\n
+        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
+        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/locations/operationResults/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Operation Results\",\r\n        \"operation\": \"List or Get Operation Results\",\r\n
+        \       \"description\": \"List or get the Operation Results\"\r\n      },\r\n
+        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
+        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/operations/read\",\r\n      \"display\":
+        {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"Operations\",\r\n
+        \       \"operation\": \"List or Get Operations\",\r\n        \"description\":
+        \"List or get the Operations\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/locations/orders/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Order\",\r\n        \"operation\": \"List or Get Order\",\r\n        \"description\":
+        \"List or get the Order\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
+        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orders/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"Order\",\r\n        \"operation\": \"List or Get Order\",\r\n        \"description\":
+        \"List or get the Order\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
+        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/cancel/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"OrderItem\",\r\n        \"operation\": \"Cancel OrderItem\",\r\n        \"description\":
+        \"Cancels an OrderItem in progress.\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/return/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"OrderItem\",\r\n        \"operation\": \"Return OrderItem\",\r\n        \"description\":
+        \"Return an OrderItem.\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
+        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"OrderItem\",\r\n        \"operation\": \"List or Get OrderItem\",\r\n        \"description\":
+        \"List or get the OrderItem\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/delete\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"OrderItem\",\r\n        \"operation\": \"Delete OrderItem\",\r\n        \"description\":
+        \"Delete the OrderItem\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
+        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/write\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"OrderItem\",\r\n        \"operation\": \"Create or Update OrderItem\",\r\n
+        \       \"description\": \"Create or update the OrderItem\"\r\n      },\r\n
+        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
+        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/productFamiliesMetadata/read\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"ArmApiRes_Microsoft.EdgeOrder\",\r\n        \"operation\": \"List or Get
+        product families metadata\",\r\n        \"description\": \"This method lists
+        or gets the product families metadata.\"\r\n      },\r\n      \"origin\":
+        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
+        \"Microsoft.EdgeOrder/listProductFamilies/read\",\r\n      \"display\": {\r\n
+        \       \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"ArmApiRes_Microsoft.EdgeOrder\",\r\n
+        \       \"operation\": \"List Product Families\",\r\n        \"description\":
+        \"This method returns list of product families.\"\r\n      },\r\n      \"origin\":
+        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
+        \"Microsoft.EdgeOrder/listConfigurations/read\",\r\n      \"display\": {\r\n
+        \       \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"ArmApiRes_Microsoft.EdgeOrder\",\r\n
+        \       \"operation\": \"List Product Configurations\",\r\n        \"description\":
+        \"This method returns list of product configurations.\"\r\n      },\r\n      \"origin\":
+        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
+        \"Microsoft.EdgeOrder/subscriptions/resourceGroups/moveResources/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"ArmApiRes_resourceGroups\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/subscriptions/resourceGroups/validateMoveResources/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"ArmApiRes_resourceGroups\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/register/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"ArmApiRes_Microsoft.EdgeOrder\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/unregister/action\",\r\n
+        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
+        \"ArmApiRes_Microsoft.EdgeOrder\"\r\n      },\r\n      \"origin\": \"user\",\r\n
+        \     \"isDataAction\": false\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6150'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Feb 2022 07:46:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"configurationFilters": [{"hierarchyInformation": {"productFamilyName":
+      "azurestackedge", "productLineName": "azurestackedge", "productName": "azurestackedgegpu"},
+      "filterableProperty": [{"type": "ShipToCountries", "supportedValues": ["US"]}]}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edgeorder list-config
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '246'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --configuration-filters
+      User-Agent:
+      - AZURECLI/2.33.0 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOrder/listConfigurations?api-version=2021-12-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"specifications\":
+        [\r\n          {\r\n            \"name\": \"Usable compute\",\r\n            \"value\":
+        \"40 vCPU\"\r\n          },\r\n          {\r\n            \"name\": \"Usable
+        memory\",\r\n            \"value\": \"102 GB\"\r\n          },\r\n          {\r\n
+        \           \"name\": \"Usable storage\",\r\n            \"value\": \"4.2
+        TB\"\r\n          }\r\n        ],\r\n        \"dimensions\": {\r\n          \"length\":
+        50.0,\r\n          \"height\": 15.0,\r\n          \"width\": 5.0,\r\n          \"lengthHeightUnit\":
+        \"IN\",\r\n          \"weight\": 50.0,\r\n          \"depth\": 2.0,\r\n          \"weightUnit\":
+        \"LBS\"\r\n        },\r\n        \"filterableProperties\": [\r\n          {\r\n
+        \           \"type\": \"ShipToCountries\",\r\n            \"supportedValues\":
+        [\r\n              \"US\",\r\n              \"AU\",\r\n              \"CA\",\r\n
+        \             \"HK\",\r\n              \"JP\",\r\n              \"MO\",\r\n
+        \             \"MY\",\r\n              \"NZ\",\r\n              \"NO\",\r\n
+        \             \"PR\",\r\n              \"SG\",\r\n              \"KR\",\r\n
+        \             \"CH\",\r\n              \"TW\",\r\n              \"AE\",\r\n
+        \             \"GB\",\r\n              \"NL\",\r\n              \"AT\",\r\n
+        \             \"IT\",\r\n              \"BE\",\r\n              \"LV\",\r\n
+        \             \"BG\",\r\n              \"LT\",\r\n              \"HR\",\r\n
+        \             \"LU\",\r\n              \"CY\",\r\n              \"MT\",\r\n
+        \             \"CZ\",\r\n              \"DK\",\r\n              \"PL\",\r\n
+        \             \"EE\",\r\n              \"PT\",\r\n              \"FI\",\r\n
+        \             \"RO\",\r\n              \"FR\",\r\n              \"SK\",\r\n
+        \             \"DE\",\r\n              \"SI\",\r\n              \"GR\",\r\n
+        \             \"ES\",\r\n              \"HU\",\r\n              \"SE\",\r\n
+        \             \"IE\"\r\n            ]\r\n          }\r\n        ],\r\n        \"displayName\":
+        \"Azure Stack Edge Pro - 1 GPU\",\r\n        \"description\": {\r\n          \"descriptionType\":
+        \"Base\",\r\n          \"shortDescription\": \"\",\r\n          \"longDescription\":
+        \"\",\r\n          \"keywords\": [\r\n            \"GPU\"\r\n          ],\r\n
+        \         \"attributes\": [],\r\n          \"links\": []\r\n        },\r\n
+        \       \"imageInformation\": [],\r\n        \"costInformation\": {\r\n          \"billingMeterDetails\":
+        [\r\n            {\r\n              \"name\": \"RentalFee\",\r\n              \"meterDetails\":
+        {\r\n                \"meterGuid\": \"91edd360-e07c-5529-a0fd-99f30b20cf21\",\r\n
+        \               \"billingType\": \"Pav2\",\r\n                \"multiplier\":
+        1.0,\r\n                \"chargingType\": \"PerOrder\"\r\n              },\r\n
+        \             \"meteringType\": \"Recurring\",\r\n              \"frequency\":
+        \"P1D\"\r\n            },\r\n            {\r\n              \"name\": \"ShippingFee\",\r\n
+        \             \"meterDetails\": {\r\n                \"meterGuid\": \"97b0cf84-c662-567c-bcbb-4158fa54ccc9\",\r\n
+        \               \"billingType\": \"Pav2\",\r\n                \"multiplier\":
+        1.0,\r\n                \"chargingType\": \"PerOrder\"\r\n              },\r\n
+        \             \"meteringType\": \"OneTime\",\r\n              \"frequency\":
+        \"\"\r\n            }\r\n          ]\r\n        },\r\n        \"availabilityInformation\":
+        {\r\n          \"availabilityStage\": \"Available\",\r\n          \"disabledReason\":
+        \"None\"\r\n        },\r\n        \"hierarchyInformation\": {\r\n          \"productFamilyName\":
+        \"azurestackedge\",\r\n          \"productLineName\": \"azurestackedge\",\r\n
+        \         \"productName\": \"azurestackedgegpu\",\r\n          \"configurationName\":
+        \"edgep_base\"\r\n        }\r\n      }\r\n    },\r\n    {\r\n      \"properties\":
+        {\r\n        \"specifications\": [\r\n          {\r\n            \"name\":
+        \"Usable compute\",\r\n            \"value\": \"40 vCPU\"\r\n          },\r\n
+        \         {\r\n            \"name\": \"Usable memory\",\r\n            \"value\":
+        \"102 GB\"\r\n          },\r\n          {\r\n            \"name\": \"Usable
+        storage\",\r\n            \"value\": \"4.2 TB\"\r\n          }\r\n        ],\r\n
+        \       \"dimensions\": {\r\n          \"length\": 50.0,\r\n          \"height\":
+        15.0,\r\n          \"width\": 5.0,\r\n          \"lengthHeightUnit\": \"IN\",\r\n
+        \         \"weight\": 50.0,\r\n          \"depth\": 2.0,\r\n          \"weightUnit\":
+        \"LBS\"\r\n        },\r\n        \"filterableProperties\": [\r\n          {\r\n
+        \           \"type\": \"ShipToCountries\",\r\n            \"supportedValues\":
+        [\r\n              \"US\",\r\n              \"AU\",\r\n              \"CA\",\r\n
+        \             \"HK\",\r\n              \"JP\",\r\n              \"MO\",\r\n
+        \             \"MY\",\r\n              \"NZ\",\r\n              \"NO\",\r\n
+        \             \"PR\",\r\n              \"SG\",\r\n              \"KR\",\r\n
+        \             \"CH\",\r\n              \"TW\",\r\n              \"AE\",\r\n
+        \             \"GB\",\r\n              \"NL\",\r\n              \"AT\",\r\n
+        \             \"IT\",\r\n              \"BE\",\r\n              \"LV\",\r\n
+        \             \"BG\",\r\n              \"LT\",\r\n              \"HR\",\r\n
+        \             \"LU\",\r\n              \"CY\",\r\n              \"MT\",\r\n
+        \             \"CZ\",\r\n              \"DK\",\r\n              \"PL\",\r\n
+        \             \"EE\",\r\n              \"PT\",\r\n              \"FI\",\r\n
+        \             \"RO\",\r\n              \"FR\",\r\n              \"SK\",\r\n
+        \             \"DE\",\r\n              \"SI\",\r\n              \"GR\",\r\n
+        \             \"ES\",\r\n              \"HU\",\r\n              \"SE\",\r\n
+        \             \"IE\"\r\n            ]\r\n          }\r\n        ],\r\n        \"displayName\":
+        \"Azure Stack Edge Pro - 2 GPU\",\r\n        \"description\": {\r\n          \"descriptionType\":
+        \"Base\",\r\n          \"shortDescription\": \"\",\r\n          \"longDescription\":
+        \"\",\r\n          \"keywords\": [\r\n            \"GPU\"\r\n          ],\r\n
+        \         \"attributes\": [],\r\n          \"links\": []\r\n        },\r\n
+        \       \"imageInformation\": [],\r\n        \"costInformation\": {\r\n          \"billingMeterDetails\":
+        [\r\n            {\r\n              \"name\": \"RentalFee\",\r\n              \"meterDetails\":
+        {\r\n                \"meterGuid\": \"35b0dd3f-1ba4-57b9-b08e-0f1ab87111c1\",\r\n
+        \               \"billingType\": \"Pav2\",\r\n                \"multiplier\":
+        1.0,\r\n                \"chargingType\": \"PerOrder\"\r\n              },\r\n
+        \             \"meteringType\": \"Recurring\",\r\n              \"frequency\":
+        \"P1D\"\r\n            },\r\n            {\r\n              \"name\": \"ShippingFee\",\r\n
+        \             \"meterDetails\": {\r\n                \"meterGuid\": \"97b0cf84-c662-567c-bcbb-4158fa54ccc9\",\r\n
+        \               \"billingType\": \"Pav2\",\r\n                \"multiplier\":
+        1.0,\r\n                \"chargingType\": \"PerOrder\"\r\n              },\r\n
+        \             \"meteringType\": \"OneTime\",\r\n              \"frequency\":
+        \"\"\r\n            }\r\n          ]\r\n        },\r\n        \"availabilityInformation\":
+        {\r\n          \"availabilityStage\": \"Available\",\r\n          \"disabledReason\":
+        \"None\"\r\n        },\r\n        \"hierarchyInformation\": {\r\n          \"productFamilyName\":
+        \"azurestackedge\",\r\n          \"productLineName\": \"azurestackedge\",\r\n
+        \         \"productName\": \"azurestackedgegpu\",\r\n          \"configurationName\":
+        \"edgep_high\"\r\n        }\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Feb 2022 07:46:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
