@@ -443,14 +443,7 @@ ExpectedHttpStatusCode=\\"200\\" ExpectedResponseUrl=\\"\\" ReportingName=\\"\\"
 /></Items></WebTest>" --description "Ping web test alert for mytestwebapp" --enabled true --frequency 900 \
 --web-test-kind "ping" --locations Id="us-fl-mia-edge" --defined-web-test-name \
 "my-webtest-my-component" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
---resource-group "my-resource-group" --name "my-webtest-my-component"
-      - name: webTestCreateBasic
-        text: |-
-               az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
-alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "basic" --locations Id="us-fl-mia-edge" \
---web-test-properties-name-web-test-name "my-webtest-my-component" --parse-dependent-requests true --request-url \
-"https://www.bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
---expected-status-code 200 --ssl-check true --resource-group "my-resource-group" --name "my-webtest-my-component"
+--resource-group "my-resource-group" --name "my-webtest-my-component" --tags hidden-link:XX=XX
       - name: webTestCreateStandard
         text: |-
                az monitor app-insights web-test create --location "South Central US" --description "Ping web test \
@@ -458,7 +451,7 @@ alert for mytestwebapp" --enabled true --frequency 900 --web-test-kind "standard
 --defined-web-test-name "my-webtest-my-component" --http-verb "POST" --request-body "SGVsbG8gd29ybGQ=" --request-url \
 "https://bing.com" --retry-enabled true --synthetic-monitor-id "my-webtest-my-component" --timeout 120 \
 --ssl-lifetime-check 100 --ssl-check true --resource-group "my-resource-group" --name \
-"my-webtest-my-component"
+"my-webtest-my-component" --tags hidden-link:XX=XX
 """
 
 helps['monitor app-insights web-test update'] = """

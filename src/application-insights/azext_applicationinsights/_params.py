@@ -132,7 +132,7 @@ def load_arguments(self, _):
         c.argument('enabled', arg_type=get_three_state_flag(), help='Is the test actively being monitored.')
         c.argument('frequency', type=int, help='Interval in seconds between test runs for this WebTest. Default value is 300.')
         c.argument('timeout', type=int, help='Seconds until this WebTest will timeout and fail. Default value is 30.')
-        c.argument('web_test_kind', arg_type=get_enum_type(['ping', 'multistep', 'basic', 'standard']), help='The kind of web test this is, valid choices are ping, multistep, basic, and standard.')
+        c.argument('web_test_kind', arg_type=get_enum_type(['ping', 'multistep', 'standard']), help='The kind of web test this is, valid choices are ping, multistep and standard.')
         c.argument('retry_enabled', arg_type=get_three_state_flag(), help='Allow for retries should this WebTest fail.')
         c.argument('locations', action=AddLocations, nargs='+', help='A list of where to physically run the tests from to give global coverage for accessibility of your application.')
 
