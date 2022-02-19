@@ -29,7 +29,7 @@ from azext_cosmosdb_preview._client_factory import (
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError
 
 from azure.mgmt.cosmosdb.models import (
     Location,
@@ -974,6 +974,8 @@ def cli_cosmosdb_list(client, resource_group_name=None):
     """ Lists all Azure Cosmos DB database accounts within a given resource group or subscription. """
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
+
+    return client.list()
 
 
 # latest restorable timestamp for gremlin graph and table
