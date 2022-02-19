@@ -13,8 +13,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DataCenterResourceProperties,
     ManagedCassandraManagedServiceIdentity,
     AuthenticationMethodLdapProperties,
-    GraphResource,
-    GraphResourceCreateUpdateParameters,
     ServiceResourceCreateUpdateParameters,
     MongoRoleDefinitionCreateUpdateParameters,
     MongoUserDefinitionCreateUpdateParameters,
@@ -357,20 +355,6 @@ def _handle_exists_exception(http_response_error):
     if http_response_error.status_code == 404:
         return False
     raise http_response_error
-
-
-def cli_cosmosdb_graph_create(client, account_name, resource_group_name, graph_name):
-    graph = GraphResourceCreateUpdateParameters(resource=GraphResource(id=graph_name))
-    return client.begin_create_update_graph(resource_group_name, account_name, graph_name, graph)
-
-
-def cli_cosmosdb_graph_exists(client, account_name, resource_group_name, graph_name):
-    try:
-        client.get_graph(resource_group_name, account_name, graph_name)
-    except HttpResponseError as ex:
-        return _handle_exists_exception(ex)
-
-    return True
 
 
 def cli_cosmosdb_service_create(client,

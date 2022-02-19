@@ -178,7 +178,6 @@ short-summary: Create a cosmosdb service resource.
 examples:
   - name: Create a cosmosdb service resource.
     text: |
-      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --name "graphApiCompute" --kind "GraphApiCompute" --count 1 --size "Cosmos.D4s"
       az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway" --kind "SqlDedicatedGateway" --count 3 --size "Cosmos.D4s"
 """
 
@@ -188,7 +187,6 @@ short-summary: Update a cosmosdb service resource.
 examples:
   - name: Update a cosmosdb service resource.
     text: |
-      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --name "graphApiCompute" --kind "GraphApiCompute" --count 1
       az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway" --kind "SqlDedicatedGateway" --count 3
 """
 
@@ -208,31 +206,6 @@ examples:
   - name: Delete the given cosmosdb service resource.
     text: |
       az cosmosdb service delete --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway"
-"""
-
-helps['cosmosdb graph'] = """
-type: group
-short-summary: Commands to perform operations on Graph resources.
-"""
-
-helps['cosmosdb graph create'] = """
-type: command
-short-summary: Create a cosmosdb graph resource.
-"""
-
-helps['cosmosdb graph list'] = """
-type: command
-short-summary: List all cosmosdb graph resource under an account.
-"""
-
-helps['cosmosdb graph delete'] = """
-type: command
-short-summary: Delete the given cosmosdb graph resource.
-"""
-
-helps['cosmosdb graph exists'] = """
-type: command
-short-summary: Return if the given cosmosdb graph resource exist.
 """
 
 helps['cosmosdb mongodb role'] = """
