@@ -4,7 +4,68 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from azure.cli.core.util import sdk_no_wait
 
+# customized control plane commands (these will override the generated as they are imported second)
+
+def fidalgo_dev_center_create(client,
+                              resource_group_name,
+                              dev_center_name,
+                              location,
+                              tags=None,
+                              identity_type="SystemAssigned",
+                              user_assigned_identity=None,
+                              no_wait=False):
+    body = {}
+    if tags is not None:
+        body['tags'] = tags
+    body['location'] = location
+    body['identity'] = {}
+    if identity_type is not None:
+        body['identity']['type'] = identity_type
+    if user_assigned_identity is not None:
+        body['identity']['user_assigned_identities'] = {}
+        body['identity']['user_assigned_identities'][user_assigned_identity] = {}
+    if len(body['identity']) == 0:
+        del body['identity']
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       body=body)
+
+def fidalgo_pool_create(client,
+                        resource_group_name,
+                        project_name,
+                        pool_name,
+                        location,
+                        tags=None,
+                        machine_definition_id=None,
+                        network_settings_id=None,
+                        sku_name=None,
+                        no_wait=False):
+    body = {}
+    if tags is not None:
+        body['tags'] = tags
+    body['location'] = location
+    if machine_definition_id is not None:
+        body['machine_definition_id'] = machine_definition_id
+    if network_settings_id is not None:
+        body['network_settings_id'] = network_settings_id
+    body['sku'] = {}
+    if sku_name is not None:
+        body['sku']['name'] = sku_name
+    if len(body['sku']) == 0:
+        del body['sku']
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       project_name=project_name,
+                       pool_name=pool_name,
+                       body=body)
+
+
+# dataplane commands
 def fidalgo_project_list_dp(client,
                 dev_center,
                 fidalgo_dns_suffix=None,

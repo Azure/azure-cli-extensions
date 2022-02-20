@@ -32,45 +32,10 @@ if TYPE_CHECKING:
 _SERIALIZER = Serializer()
 # fmt: off
 
-def build_list_by_subscription_request(
-    subscription_id,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
-    top = kwargs.pop('top', None)  # type: Optional[int]
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/providers/Microsoft.Fidalgo/machinedefinitions")
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if top is not None:
-        _query_parameters['$top'] = _SERIALIZER.query("top", top, 'int')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_list_by_resource_group_request(
+def build_list_by_dev_center_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
+    dev_center_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -79,10 +44,11 @@ def build_list_by_resource_group_request(
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "devCenterName": _SERIALIZER.url("dev_center_name", dev_center_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -109,7 +75,8 @@ def build_list_by_resource_group_request(
 def build_get_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
-    machine_definition_name,  # type: str
+    dev_center_name,  # type: str
+    gallery_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -117,11 +84,12 @@ def build_get_request(
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "machineDefinitionName": _SERIALIZER.url("machine_definition_name", machine_definition_name, 'str'),
+        "devCenterName": _SERIALIZER.url("dev_center_name", dev_center_name, 'str'),
+        "galleryName": _SERIALIZER.url("gallery_name", gallery_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -146,7 +114,8 @@ def build_get_request(
 def build_create_or_update_request_initial(
     subscription_id,  # type: str
     resource_group_name,  # type: str
-    machine_definition_name,  # type: str
+    dev_center_name,  # type: str
+    gallery_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -155,11 +124,12 @@ def build_create_or_update_request_initial(
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "machineDefinitionName": _SERIALIZER.url("machine_definition_name", machine_definition_name, 'str'),
+        "devCenterName": _SERIALIZER.url("dev_center_name", dev_center_name, 'str'),
+        "galleryName": _SERIALIZER.url("gallery_name", gallery_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -183,50 +153,11 @@ def build_create_or_update_request_initial(
     )
 
 
-def build_update_request_initial(
-    subscription_id,  # type: str
-    resource_group_name,  # type: str
-    machine_definition_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
-    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}")  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "machineDefinitionName": _SERIALIZER.url("machine_definition_name", machine_definition_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if content_type is not None:
-        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="PATCH",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
 def build_delete_request_initial(
     subscription_id,  # type: str
     resource_group_name,  # type: str
-    machine_definition_name,  # type: str
+    dev_center_name,  # type: str
+    gallery_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
@@ -234,11 +165,12 @@ def build_delete_request_initial(
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-        "machineDefinitionName": _SERIALIZER.url("machine_definition_name", machine_definition_name, 'str'),
+        "devCenterName": _SERIALIZER.url("dev_center_name", dev_center_name, 'str'),
+        "galleryName": _SERIALIZER.url("gallery_name", gallery_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -260,8 +192,8 @@ def build_delete_request_initial(
     )
 
 # fmt: on
-class MachineDefinitionsOperations(object):
-    """MachineDefinitionsOperations operations.
+class GalleriesOperations(object):
+    """GalleriesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -283,106 +215,30 @@ class MachineDefinitionsOperations(object):
         self._config = config
 
     @distributed_trace
-    def list_by_subscription(
-        self,
-        top=None,  # type: Optional[int]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["_models.MachineDefinitionListResult"]
-        """Lists Machine Definitions in a subscription.
-
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
-        :type top: int
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either MachineDefinitionListResult or the result of
-         cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.Fidalgo.models.MachineDefinitionListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinitionListResult"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_by_subscription_request(
-                    subscription_id=self._config.subscription_id,
-                    api_version=api_version,
-                    top=top,
-                    template_url=self.list_by_subscription.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_by_subscription_request(
-                    subscription_id=self._config.subscription_id,
-                    api_version=api_version,
-                    top=top,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("MachineDefinitionListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_by_subscription.metadata = {'url': "/subscriptions/{subscriptionId}/providers/Microsoft.Fidalgo/machinedefinitions"}  # type: ignore
-
-    @distributed_trace
-    def list_by_resource_group(
+    def list_by_dev_center(
         self,
         resource_group_name,  # type: str
+        dev_center_name,  # type: str
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.MachineDefinitionListResult"]
-        """List Machine Definitions in a resource group.
+        # type: (...) -> Iterable["_models.GalleryListResult"]
+        """Lists galleries for a devcenter.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
+        :param dev_center_name: The name of the devcenter.
+        :type dev_center_name: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either MachineDefinitionListResult or the result of
-         cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.Fidalgo.models.MachineDefinitionListResult]
+        :return: An iterator like instance of either GalleryListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.Fidalgo.models.GalleryListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
 
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinitionListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GalleryListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -390,21 +246,23 @@ class MachineDefinitionsOperations(object):
         def prepare_request(next_link=None):
             if not next_link:
                 
-                request = build_list_by_resource_group_request(
+                request = build_list_by_dev_center_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
+                    dev_center_name=dev_center_name,
                     api_version=api_version,
                     top=top,
-                    template_url=self.list_by_resource_group.metadata['url'],
+                    template_url=self.list_by_dev_center.metadata['url'],
                 )
                 request = _convert_request(request)
                 request.url = self._client.format_url(request.url)
 
             else:
                 
-                request = build_list_by_resource_group_request(
+                request = build_list_by_dev_center_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
+                    dev_center_name=dev_center_name,
                     api_version=api_version,
                     top=top,
                     template_url=next_link,
@@ -415,7 +273,7 @@ class MachineDefinitionsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("MachineDefinitionListResult", pipeline_response)
+            deserialized = self._deserialize("GalleryListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -441,28 +299,31 @@ class MachineDefinitionsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions"}  # type: ignore
+    list_by_dev_center.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries"}  # type: ignore
 
     @distributed_trace
     def get(
         self,
         resource_group_name,  # type: str
-        machine_definition_name,  # type: str
+        dev_center_name,  # type: str
+        gallery_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.MachineDefinition"
-        """Gets a Machine Definition.
+        # type: (...) -> "_models.Gallery"
+        """Gets a gallery.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
-        :param machine_definition_name: The name of the machine definition.
-        :type machine_definition_name: str
+        :param dev_center_name: The name of the devcenter.
+        :type dev_center_name: str
+        :param gallery_name: The name of the gallery.
+        :type gallery_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: MachineDefinition, or the result of cls(response)
-        :rtype: ~azure.mgmt.Fidalgo.models.MachineDefinition
+        :return: Gallery, or the result of cls(response)
+        :rtype: ~azure.mgmt.Fidalgo.models.Gallery
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinition"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Gallery"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -474,7 +335,8 @@ class MachineDefinitionsOperations(object):
         request = build_get_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
-            machine_definition_name=machine_definition_name,
+            dev_center_name=dev_center_name,
+            gallery_name=gallery_name,
             api_version=api_version,
             template_url=self.get.metadata['url'],
         )
@@ -492,25 +354,26 @@ class MachineDefinitionsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('MachineDefinition', pipeline_response)
+        deserialized = self._deserialize('Gallery', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}"}  # type: ignore
 
 
     def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
-        machine_definition_name,  # type: str
-        body,  # type: "_models.MachineDefinition"
+        dev_center_name,  # type: str
+        gallery_name,  # type: str
+        body,  # type: "_models.Gallery"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.MachineDefinition"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinition"]
+        # type: (...) -> "_models.Gallery"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Gallery"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -519,12 +382,13 @@ class MachineDefinitionsOperations(object):
         api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(body, 'MachineDefinition')
+        _json = self._serialize.body(body, 'Gallery')
 
         request = build_create_or_update_request_initial(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
-            machine_definition_name=machine_definition_name,
+            dev_center_name=dev_center_name,
+            gallery_name=gallery_name,
             api_version=api_version,
             content_type=content_type,
             json=_json,
@@ -540,41 +404,40 @@ class MachineDefinitionsOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
+        deserialized = self._deserialize('Gallery', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    _create_or_update_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
+    _create_or_update_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}"}  # type: ignore
 
 
     @distributed_trace
     def begin_create_or_update(
         self,
         resource_group_name,  # type: str
-        machine_definition_name,  # type: str
-        body,  # type: "_models.MachineDefinition"
+        dev_center_name,  # type: str
+        gallery_name,  # type: str
+        body,  # type: "_models.Gallery"
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["_models.MachineDefinition"]
-        """Creates or updates a Machine definition.
+        # type: (...) -> LROPoller["_models.Gallery"]
+        """Creates or updates a gallery.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
-        :param machine_definition_name: The name of the machine definition.
-        :type machine_definition_name: str
-        :param body: Represents a machine definition.
-        :type body: ~azure.mgmt.Fidalgo.models.MachineDefinition
+        :param dev_center_name: The name of the devcenter.
+        :type dev_center_name: str
+        :param gallery_name: The name of the gallery.
+        :type gallery_name: str
+        :param body: Represents a gallery.
+        :type body: ~azure.mgmt.Fidalgo.models.Gallery
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -583,15 +446,14 @@ class MachineDefinitionsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either MachineDefinition or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.Fidalgo.models.MachineDefinition]
+        :return: An instance of LROPoller that returns either Gallery or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.Fidalgo.models.Gallery]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinition"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Gallery"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -600,7 +462,8 @@ class MachineDefinitionsOperations(object):
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
-                machine_definition_name=machine_definition_name,
+                dev_center_name=dev_center_name,
+                gallery_name=gallery_name,
                 body=body,
                 api_version=api_version,
                 content_type=content_type,
@@ -611,7 +474,7 @@ class MachineDefinitionsOperations(object):
 
         def get_long_running_output(pipeline_response):
             response = pipeline_response.http_response
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
+            deserialized = self._deserialize('Gallery', pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
@@ -629,141 +492,13 @@ class MachineDefinitionsOperations(object):
             )
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    begin_create_or_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
-
-    def _update_initial(
-        self,
-        resource_group_name,  # type: str
-        machine_definition_name,  # type: str
-        body,  # type: "_models.MachineDefinitionUpdate"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.MachineDefinition"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinition"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-
-        _json = self._serialize.body(body, 'MachineDefinitionUpdate')
-
-        request = build_update_request_initial(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            machine_definition_name=machine_definition_name,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            template_url=self._update_initial.metadata['url'],
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
-
-        if response.status_code == 202:
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    _update_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
-
-
-    @distributed_trace
-    def begin_update(
-        self,
-        resource_group_name,  # type: str
-        machine_definition_name,  # type: str
-        body,  # type: "_models.MachineDefinitionUpdate"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller["_models.MachineDefinition"]
-        """Partially updates a Machine definition.
-
-        :param resource_group_name: Name of the resource group within the Azure subscription.
-        :type resource_group_name: str
-        :param machine_definition_name: The name of the machine definition.
-        :type machine_definition_name: str
-        :param body: Represents a machine definition.
-        :type body: ~azure.mgmt.Fidalgo.models.MachineDefinitionUpdate
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either MachineDefinition or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.Fidalgo.models.MachineDefinition]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2021-12-01-privatepreview")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineDefinition"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._update_initial(
-                resource_group_name=resource_group_name,
-                machine_definition_name=machine_definition_name,
-                body=body,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-        kwargs.pop('error_map', None)
-
-        def get_long_running_output(pipeline_response):
-            response = pipeline_response.http_response
-            deserialized = self._deserialize('MachineDefinition', pipeline_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-
-    begin_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
+    begin_create_or_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}"}  # type: ignore
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
-        machine_definition_name,  # type: str
+        dev_center_name,  # type: str
+        gallery_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -779,7 +514,8 @@ class MachineDefinitionsOperations(object):
         request = build_delete_request_initial(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
-            machine_definition_name=machine_definition_name,
+            dev_center_name=dev_center_name,
+            gallery_name=gallery_name,
             api_version=api_version,
             template_url=self._delete_initial.metadata['url'],
         )
@@ -800,23 +536,26 @@ class MachineDefinitionsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
+    _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}"}  # type: ignore
 
 
     @distributed_trace
     def begin_delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
-        machine_definition_name,  # type: str
+        dev_center_name,  # type: str
+        gallery_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Deletes a Machine definition.
+        """Deletes a gallery resource.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
-        :param machine_definition_name: The name of the machine definition.
-        :type machine_definition_name: str
+        :param dev_center_name: The name of the devcenter.
+        :type dev_center_name: str
+        :param gallery_name: The name of the gallery.
+        :type gallery_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -840,7 +579,8 @@ class MachineDefinitionsOperations(object):
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
-                machine_definition_name=machine_definition_name,
+                dev_center_name=dev_center_name,
+                gallery_name=gallery_name,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -864,4 +604,4 @@ class MachineDefinitionsOperations(object):
             )
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
 
-    begin_delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}"}  # type: ignore
+    begin_delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/galleries/{galleryName}"}  # type: ignore

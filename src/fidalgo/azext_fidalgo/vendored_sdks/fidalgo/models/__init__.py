@@ -37,13 +37,19 @@ try:
     from ._models_py3 import EnvironmentTypeUpdateProperties
     from ._models_py3 import EnvironmentUpdate
     from ._models_py3 import EnvironmentUpdateProperties
+    from ._models_py3 import Gallery
+    from ._models_py3 import GalleryListResult
     from ._models_py3 import GitCatalog
     from ._models_py3 import HealthCheck
     from ._models_py3 import HealthCheckStatusDetails
     from ._models_py3 import HealthCheckStatusDetailsListResult
     from ._models_py3 import IdentityProperties
+    from ._models_py3 import Image
+    from ._models_py3 import ImageListResult
     from ._models_py3 import ImageReference
     from ._models_py3 import ImageValidationErrorDetails
+    from ._models_py3 import ImageVersion
+    from ._models_py3 import ImageVersionListResult
     from ._models_py3 import MachineDefinition
     from ._models_py3 import MachineDefinitionListResult
     from ._models_py3 import MachineDefinitionProperties
@@ -74,7 +80,9 @@ try:
     from ._models_py3 import ProjectUpdate
     from ._models_py3 import ProjectUpdateProperties
     from ._models_py3 import ProxyResource
+    from ._models_py3 import RecommendedMachineConfiguration
     from ._models_py3 import Resource
+    from ._models_py3 import ResourceRange
     from ._models_py3 import Sku
     from ._models_py3 import SkuListResult
     from ._models_py3 import SystemData
@@ -112,13 +120,19 @@ except (SyntaxError, ImportError):
     from ._models import EnvironmentTypeUpdateProperties  # type: ignore
     from ._models import EnvironmentUpdate  # type: ignore
     from ._models import EnvironmentUpdateProperties  # type: ignore
+    from ._models import Gallery  # type: ignore
+    from ._models import GalleryListResult  # type: ignore
     from ._models import GitCatalog  # type: ignore
     from ._models import HealthCheck  # type: ignore
     from ._models import HealthCheckStatusDetails  # type: ignore
     from ._models import HealthCheckStatusDetailsListResult  # type: ignore
     from ._models import IdentityProperties  # type: ignore
+    from ._models import Image  # type: ignore
+    from ._models import ImageListResult  # type: ignore
     from ._models import ImageReference  # type: ignore
     from ._models import ImageValidationErrorDetails  # type: ignore
+    from ._models import ImageVersion  # type: ignore
+    from ._models import ImageVersionListResult  # type: ignore
     from ._models import MachineDefinition  # type: ignore
     from ._models import MachineDefinitionListResult  # type: ignore
     from ._models import MachineDefinitionProperties  # type: ignore
@@ -149,7 +163,9 @@ except (SyntaxError, ImportError):
     from ._models import ProjectUpdate  # type: ignore
     from ._models import ProjectUpdateProperties  # type: ignore
     from ._models import ProxyResource  # type: ignore
+    from ._models import RecommendedMachineConfiguration  # type: ignore
     from ._models import Resource  # type: ignore
+    from ._models import ResourceRange  # type: ignore
     from ._models import Sku  # type: ignore
     from ._models import SkuListResult  # type: ignore
     from ._models import SystemData  # type: ignore
@@ -198,13 +214,19 @@ __all__ = [
     'EnvironmentTypeUpdateProperties',
     'EnvironmentUpdate',
     'EnvironmentUpdateProperties',
+    'Gallery',
+    'GalleryListResult',
     'GitCatalog',
     'HealthCheck',
     'HealthCheckStatusDetails',
     'HealthCheckStatusDetailsListResult',
     'IdentityProperties',
+    'Image',
+    'ImageListResult',
     'ImageReference',
     'ImageValidationErrorDetails',
+    'ImageVersion',
+    'ImageVersionListResult',
     'MachineDefinition',
     'MachineDefinitionListResult',
     'MachineDefinitionProperties',
@@ -235,7 +257,9 @@ __all__ = [
     'ProjectUpdate',
     'ProjectUpdateProperties',
     'ProxyResource',
+    'RecommendedMachineConfiguration',
     'Resource',
+    'ResourceRange',
     'Sku',
     'SkuListResult',
     'SystemData',

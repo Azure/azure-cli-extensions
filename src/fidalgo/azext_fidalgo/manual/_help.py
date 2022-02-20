@@ -287,9 +287,9 @@ helps['fidalgo admin dev-center create'] = """
 --resource-group "rg1"
       - name: DevCenters_CreateWithUserIdentity
         text: |-
-               az fidalgo admin dev-center create --type "UserAssigned" --user-assigned-identities \
-"{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
-ty/userAssignedIdentities/testidentity1\\":{}}" --location "centralus" --tags CostCode="12345" --name "Contoso" \
+               az fidalgo admin dev-center create --identity-type "UserAssigned" --user-assigned-identities \
+"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/identityGroup/providers/Microsoft.ManagedIdenti\
+ty/userAssignedIdentities/testidentity1" --location "centralus" --tags CostCode="12345" --name "Contoso" \
 --resource-group "rg1"
 """
 
@@ -1126,4 +1126,122 @@ helps['fidalgo admin network-setting wait'] = """
       - name: Pause executing next line of CLI script until the fidalgo network-setting is successfully deleted.
         text: |-
                az fidalgo admin network-setting wait --name "{networkSettingName}" --resource-group "rg1" --deleted
+"""
+
+helps['fidalgo admin gallery'] = """
+    type: group
+    short-summary: Manage gallery with fidalgo
+"""
+
+helps['fidalgo admin gallery list'] = """
+    type: command
+    short-summary: "Lists galleries for a devcenter."
+    examples:
+      - name: Galleries_ListByDevCenter
+        text: |-
+               az fidalgo gallery list --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin gallery show'] = """
+    type: command
+    short-summary: "Gets a gallery."
+    examples:
+      - name: Galleries_Get
+        text: |-
+               az fidalgo gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+"""
+
+helps['fidalgo admin gallery create'] = """
+    type: command
+    short-summary: "Create a gallery."
+    examples:
+      - name: Galleries_CreateOrUpdate
+        text: |-
+               az fidalgo gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/prov\
+iders/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group \
+"rg1"
+"""
+
+helps['fidalgo admin gallery update'] = """
+    type: command
+    short-summary: "Update a gallery."
+"""
+
+helps['fidalgo admin gallery delete'] = """
+    type: command
+    short-summary: "Deletes a gallery resource."
+    examples:
+      - name: Galleries_Delete
+        text: |-
+               az fidalgo gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+"""
+
+helps['fidalgo admin gallery wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the fidalgo gallery is met.
+    examples:
+      - name: Pause executing next line of CLI script until the fidalgo gallery is successfully created.
+        text: |-
+               az fidalgo gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+--created
+      - name: Pause executing next line of CLI script until the fidalgo gallery is successfully updated.
+        text: |-
+               az fidalgo gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+--updated
+      - name: Pause executing next line of CLI script until the fidalgo gallery is successfully deleted.
+        text: |-
+               az fidalgo gallery wait --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1" \
+--deleted
+"""
+
+helps['fidalgo admin image'] = """
+    type: group
+    short-summary: Manage image with fidalgo
+"""
+
+helps['fidalgo admin image list'] = """
+    type: command
+    short-summary: "Lists images for a gallery. And Lists images for a devcenter."
+    examples:
+      - name: Images_ListByGallery
+        text: |-
+               az fidalgo image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
+      - name: Images_ListByDevCenter
+        text: |-
+               az fidalgo image list --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin image show'] = """
+    type: command
+    short-summary: "Gets a gallery image."
+    examples:
+      - name: Images_Get
+        text: |-
+               az fidalgo image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name \
+"{imageName}" --resource-group "rg1"
+"""
+
+helps['fidalgo admin image-version'] = """
+    type: group
+    short-summary: Manage image version with fidalgo
+"""
+
+helps['fidalgo admin image-version list'] = """
+    type: command
+    short-summary: "Lists versions for an image."
+    examples:
+      - name: ImageVersions_ListByImage
+        text: |-
+               az fidalgo image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
+--image-name "Win11" --resource-group "rg1"
+"""
+
+helps['fidalgo admin image-version show'] = """
+    type: command
+    short-summary: "Gets an image version."
+    examples:
+      - name: Versions_Get
+        text: |-
+               az fidalgo image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" \
+--image-name "Win11" --resource-group "rg1" --version-name "{versionName}"
 """

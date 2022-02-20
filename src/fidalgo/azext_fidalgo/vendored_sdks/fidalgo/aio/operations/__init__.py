@@ -12,6 +12,9 @@ from ._environments_operations import EnvironmentsOperations
 from ._deployments_operations import DeploymentsOperations
 from ._environment_types_operations import EnvironmentTypesOperations
 from ._catalog_items_operations import CatalogItemsOperations
+from ._galleries_operations import GalleriesOperations
+from ._images_operations import ImagesOperations
+from ._image_versions_operations import ImageVersionsOperations
 from ._catalogs_operations import CatalogsOperations
 from ._mappings_operations import MappingsOperations
 from ._operations import Operations
@@ -28,6 +31,9 @@ __all__ = [
     'DeploymentsOperations',
     'EnvironmentTypesOperations',
     'CatalogItemsOperations',
+    'GalleriesOperations',
+    'ImagesOperations',
+    'ImageVersionsOperations',
     'CatalogsOperations',
     'MappingsOperations',
     'Operations',

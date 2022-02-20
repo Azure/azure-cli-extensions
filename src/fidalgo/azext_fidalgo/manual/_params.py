@@ -18,7 +18,6 @@ from azure.cli.core.commands.validators import (
 from azext_fidalgo.action import (
     AddParameters,
     AddGitHub,
-    AddSku,
     AddImageReference
 )
 
@@ -227,16 +226,15 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
                    'includes both an implicitly created identity and a user assigned identity. The type \'None\' will '
-                   'remove any identities from the resource.', arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
-                   'associated with the resource. The user identity dictionary key references will be ARM resource ids '
+                   'remove any identities from the resource.', required=False, arg_group='Identity')
+        c.argument('user_assigned_identity', type=str, help='The user identity '
+                   'associated with the resource. The user identity references will be an ARM resource id '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
-                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
-                   'json-string/json-file/@json-file.', arg_group='Identity')
+                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. ', arg_group='Identity')
 
     with self.argument_context('fidalgo admin dev-center update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -245,11 +243,11 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
                    'includes both an implicitly created identity and a user assigned identity. The type \'None\' will '
-                   'remove any identities from the resource.', arg_group='Identity')
+                   'remove any identities from the resource.', required=False, arg_group='Identity')
         c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
                    'associated with the resource. The user identity dictionary key references will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
@@ -457,6 +455,72 @@ def load_arguments(self, _):
         c.argument('catalog_item_name', options_list=['--name', '-n', '--catalog-item-name'], type=str, help='The name '
                    'of the catalog item.', id_part='child_name_2')
 
+    with self.argument_context('fidalgo admin gallery list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+
+    with self.argument_context('fidalgo admin gallery show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
+                   'gallery.', id_part='child_name_1')
+
+    with self.argument_context('fidalgo admin gallery create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
+                   'gallery.')
+        c.argument('gallery_resource_id', type=str, help='The resource ID of the backing Azure Compute Gallery.')
+
+    with self.argument_context('fidalgo admin gallery update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
+                   'gallery.', id_part='child_name_1')
+        c.argument('gallery_resource_id', type=str, help='The resource ID of the backing Azure Compute Gallery.')
+        c.ignore('body')
+
+    with self.argument_context('fidalgo admin gallery delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
+                   'gallery.', id_part='child_name_1')
+
+    with self.argument_context('fidalgo admin gallery wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', options_list=['--name', '-n', '--gallery-name'], type=str, help='The name of the '
+                   'gallery.', id_part='child_name_1')
+                   
+    with self.argument_context('fidalgo admin image list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('gallery_name', type=str, help='The name of the gallery.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+
+    with self.argument_context('fidalgo admin image show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', type=str, help='The name of the gallery.', id_part='child_name_1')
+        c.argument('image_name', options_list=['--name', '-n', '--image-name'], type=str,
+                   help='The name of the image.', id_part='child_name_2')
+
+    with self.argument_context('fidalgo admin image-version list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('gallery_name', type=str, help='The name of the gallery.')
+        c.argument('image_name', type=str, help='The name of the image.')
+
+    with self.argument_context('fidalgo admin image-version show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('gallery_name', type=str, help='The name of the gallery.', id_part='child_name_1')
+        c.argument('image_name', type=str, help='The name of the image.', id_part='child_name_2')
+        c.argument('version_name', type=str, help='The version of the image.', id_part='child_name_3')
+
     with self.argument_context('fidalgo admin catalog list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.')
@@ -566,10 +630,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', action=AddSku, nargs='+', help='The SKU for the virtual machine. Defines the type of virtual '
-                   'machines used in the pool.')
-        c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
-        c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
+        c.argument('machine_definition_id', type=str, required=True, help='Resource Id of a Machine Definition')
+        c.argument('network_settings_id', type=str, required=True, help='Resource Id of a Network Settings resource')
+        c.argument('sku_name', type=str, required=True, help='The name of the SKU.', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -579,10 +642,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', action=AddSku, nargs='+', help='The SKU for the virtual machine. Defines the type of virtual '
-                   'machines used in the pool.')
         c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
         c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
+        c.argument('sku_name', type=str, help='The name of the SKU.', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -30,23 +30,32 @@ from .example_steps import step_catalog_item_show
 from .example_steps import step_catalog_item_list
 from .example_steps import step_catalog_item_list2
 from .example_steps import step_catalog_item_update
-from .example_steps import step_environment_create
-from .example_steps import step_environment_create2
-from .example_steps import step_environment_show
-from .example_steps import step_environment_list
-from .example_steps import step_environment_update
-from .example_steps import step_environment_deploy
-from .example_steps import step_catalog_item_delete
 from .example_steps import step_catalog_delete
-from .example_steps import step_deployment_list
-from .example_steps import step_environment_type_create
-from .example_steps import step_environment_type_update
-from .example_steps import step_dev_center_delete
+from .example_steps import step_environment_show
 from .example_steps import step_environment_delete
+from .example_steps import step_catalog_item_delete
+from .example_steps import step_environment_type_create
 from .example_steps import step_environment_type_show
 from .example_steps import step_environment_type_list
 from .example_steps import step_environment_type_list2
+from .example_steps import step_environment_type_update
 from .example_steps import step_environment_type_delete
+from .example_steps import step_gallery_create
+from .example_steps import step_gallery_show
+from .example_steps import step_gallery_list
+from .example_steps import step_image_show
+from .example_steps import step_image_list
+from .example_steps import step_image_list2
+from .example_steps import step_image_version_list
+from .example_steps import step_image_version_show
+from .example_steps import step_gallery_delete
+from .example_steps import step_dev_center_delete
+from .example_steps import step_environment_create
+from .example_steps import step_environment_create2
+from .example_steps import step_environment_list
+from .example_steps import step_environment_update
+from .example_steps import step_environment_deploy
+from .example_steps import step_deployment_list
 from .example_steps import step_machine_definition_create
 from .example_steps import step_machine_definition_show
 from .example_steps import step_machine_definition_list
@@ -63,6 +72,7 @@ from .example_steps import step_network_setting_show
 from .example_steps import step_network_setting_show_health_detail
 from .example_steps import step_network_setting_list
 from .example_steps import step_network_setting_list2
+from .example_steps import step_network_setting_list_health_detail
 from .example_steps import step_network_setting_update
 from .example_steps import step_network_setting_delete
 from .example_steps import step_operation_statuses_show
@@ -167,6 +177,43 @@ def call_scenario(test):
         test.check("engine.templatePath", "azuredeploy.json", case_sensitive=False),
         test.check("name", "{myCatalogItem2}", case_sensitive=False),
     ])
+    step_catalog_delete(test, checks=[])
+    step_environment_show(test, checks=[])
+    step_environment_delete(test, checks=[])
+    step_catalog_item_delete(test, checks=[])
+    step_environment_type_create(test, checks=[
+        test.check("description", "Developer/Testing environment", case_sensitive=False),
+        test.check("name", "{myEnvironmentType}", case_sensitive=False),
+    ])
+    step_environment_type_show(test, checks=[
+        test.check("description", "Developer/Testing environment", case_sensitive=False),
+        test.check("name", "{myEnvironmentType}", case_sensitive=False),
+    ])
+    step_environment_type_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_environment_type_list2(test, checks=[])
+    step_environment_type_update(test, checks=[
+        test.check("description", "Updated description", case_sensitive=False),
+        test.check("name", "{myEnvironmentType}", case_sensitive=False),
+    ])
+    step_environment_type_delete(test, checks=[])
+    step_gallery_create(test, checks=[])
+    step_gallery_show(test, checks=[
+        test.check("galleryResourceId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compu"
+                   "te/galleries/{myGallery}", case_sensitive=False),
+        test.check("name", "{myGallery}", case_sensitive=False),
+    ])
+    step_gallery_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_image_show(test, checks=[])
+    step_image_list(test, checks=[])
+    step_image_list2(test, checks=[])
+    step_image_version_list(test, checks=[])
+    step_image_version_show(test, checks=[])
+    step_gallery_delete(test, checks=[])
+    step_dev_center_delete(test, checks=[])
     step_environment_create(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("description", "Personal Dev Environment", case_sensitive=False),
@@ -190,15 +237,6 @@ def call_scenario(test):
         test.check("templateUri", "https://raw.githubusercontent.com/contoso/webhelpcenter/master/environments/composit"
                    "ion-template.json", case_sensitive=False),
     ])
-    step_environment_show(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("catalogItemName", "{myCatalogItem}", case_sensitive=False),
-        test.check("environmentType", "DevTest", case_sensitive=False),
-        test.check("tags.ProjectType", "WebApi", case_sensitive=False),
-        test.check("tags.Role", "Development", case_sensitive=False),
-        test.check("tags.Tech", "NetCore", case_sensitive=False),
-        test.check("name", "{myEnvironment}", case_sensitive=False),
-    ])
     step_environment_list(test, checks=[
         test.check('length(@)', 1),
     ])
@@ -214,37 +252,17 @@ def call_scenario(test):
         test.check("name", "{myEnvironment}", case_sensitive=False),
     ])
     step_environment_deploy(test, checks=[])
-    step_catalog_item_delete(test, checks=[])
-    step_catalog_delete(test, checks=[])
     step_deployment_list(test, checks=[])
-    step_environment_type_create(test, checks=[
-        test.check("description", "Developer/Testing environment", case_sensitive=False),
-        test.check("name", "{myEnvironmentType}", case_sensitive=False),
-    ])
-    step_environment_type_update(test, checks=[
-        test.check("description", "Updated description", case_sensitive=False),
-        test.check("name", "{myEnvironmentType}", case_sensitive=False),
-    ])
-    step_dev_center_delete(test, checks=[])
-    step_environment_delete(test, checks=[])
-    step_environment_type_show(test, checks=[
-        test.check("name", "{myEnvironmentType}", case_sensitive=False),
-    ])
-    step_environment_type_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_environment_type_list2(test, checks=[])
-    step_environment_type_delete(test, checks=[])
     step_machine_definition_create(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Com"
-                   "pute/images/exampleImage", case_sensitive=False),
+                   "pute/images/{myImage3}", case_sensitive=False),
         test.check("name", "{myMachineDefinition}", case_sensitive=False),
     ])
     step_machine_definition_show(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Com"
-                   "pute/images/exampleImage", case_sensitive=False),
+                   "pute/images/{myImage3}", case_sensitive=False),
         test.check("name", "{myMachineDefinition}", case_sensitive=False),
     ])
     step_machine_definition_list(test, checks=[
@@ -256,7 +274,7 @@ def call_scenario(test):
     step_machine_definition_update(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Com"
-                   "pute/images/image2", case_sensitive=False),
+                   "pute/images/{myImage4}", case_sensitive=False),
         test.check("name", "{myMachineDefinition}", case_sensitive=False),
     ])
     step_machine_definition_delete(test, checks=[])
@@ -310,6 +328,7 @@ def call_scenario(test):
     step_network_setting_list2(test, checks=[
         test.check('length(@)', 1),
     ])
+    step_network_setting_list_health_detail(test, checks=[])
     step_network_setting_update(test, checks=[
         test.check("location", "centralus", case_sensitive=False),
         test.check("domainName", "mydomaincontroller.local", case_sensitive=False),
@@ -401,6 +420,13 @@ class FidalgoScenarioTest(ScenarioTest):
             'myProject': '{projectName}',
             'myProject2': 'Contoso',
             'myEnvironmentType': '{environmentTypeName}',
+            'myGallery': '{galleryName}',
+            'myGallery2': 'DevGallery',
+            'myGallery3': 'DefaultDevGallery',
+            'myImage3': 'exampleImage',
+            'myImage4': 'image2',
+            'myImage': '{imageName}',
+            'myImage2': 'Win11',
             'myCatalog': '{catalogName}',
             'myMapping': '{mappingName}',
             'myMachineDefinition': '{machineDefinitionName}',

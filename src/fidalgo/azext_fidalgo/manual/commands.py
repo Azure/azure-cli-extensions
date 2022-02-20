@@ -13,6 +13,9 @@ from azext_fidalgo.generated._client_factory import (
     cf_deployment,
     cf_environment_type,
     cf_catalog_item,
+    cf_gallery,
+    cf_image,
+    cf_image_version,
     cf_catalog,
     cf_mapping,
     cf_operation_statuses,
@@ -112,6 +115,26 @@ def load_command_table(self, _):
             'azext_fidalgo.vendored_sdks.fidalgo.operations._environment_types_operations#EnvironmentTypesOperations.{}'
         ),
         client_factory=cf_environment_type,
+    )
+
+
+    fidalgo_gallery = CliCommandType(
+        operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo.operations._galleries_operations#GalleriesOperations.{}',
+        client_factory=cf_gallery,
+    )
+
+
+    fidalgo_image = CliCommandType(
+        operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo.operations._images_operations#ImagesOperations.{}',
+        client_factory=cf_image,
+    )
+
+
+    fidalgo_image_version = CliCommandType(
+        operations_tmpl=(
+            'azext_fidalgo.vendored_sdks.fidalgo.operations._image_versions_operations#ImageVersionsOperations.{}'
+        ),
+        client_factory=cf_image_version,
     )
 
 
@@ -251,6 +274,28 @@ def load_command_table(self, _):
         g.custom_command('update', 'fidalgo_environment_type_update')
         g.custom_command('delete', 'fidalgo_environment_type_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'fidalgo_environment_type_show')
+
+    with self.command_group('fidalgo admin gallery', fidalgo_gallery, client_factory=cf_gallery) as g:
+        g.custom_command('list', 'fidalgo_gallery_list')
+        g.custom_show_command('show', 'fidalgo_gallery_show')
+        g.custom_command('create', 'fidalgo_gallery_create', supports_no_wait=True)
+        g.generic_update_command(
+            'update',
+            supports_no_wait=True,
+            custom_func_name='fidalgo_gallery_update',
+            setter_arg_name='body',
+            setter_name='begin_create_or_update',
+        )
+        g.custom_command('delete', 'fidalgo_gallery_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'fidalgo_gallery_show')
+
+    with self.command_group('fidalgo admin image', fidalgo_image, client_factory=cf_image) as g:
+        g.custom_command('list', 'fidalgo_image_list')
+        g.custom_show_command('show', 'fidalgo_image_show')
+
+    with self.command_group('fidalgo admin image-version', fidalgo_image_version, client_factory=cf_image_version) as g:
+        g.custom_command('list', 'fidalgo_image_version_list')
+        g.custom_show_command('show', 'fidalgo_image_version_show')
 
     with self.command_group(
         'fidalgo admin machine-definition', fidalgo_machine_definition, client_factory=cf_machine_definition

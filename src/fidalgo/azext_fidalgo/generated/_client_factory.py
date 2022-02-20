@@ -40,6 +40,18 @@ def cf_catalog_item(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).catalog_items
 
 
+def cf_gallery(cli_ctx, *_):
+    return cf_fidalgo_cl(cli_ctx).galleries
+
+
+def cf_image(cli_ctx, *_):
+    return cf_fidalgo_cl(cli_ctx).images
+
+
+def cf_image_version(cli_ctx, *_):
+    return cf_fidalgo_cl(cli_ctx).image_versions
+
+
 def cf_catalog(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).catalogs
 

@@ -245,6 +245,255 @@ def step_catalog_item_update(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /Catalogs/delete/Catalogs_Delete
+@try_manual
+def step_catalog_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo catalog delete -y '
+             '--name "{myCatalog}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Environments/get/Environments_Get
+@try_manual
+def step_environment_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment show '
+             '--name "{myEnvironment}" '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Environments/delete/Environments_Delete
+@try_manual
+def step_environment_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment delete -y '
+             '--name "{myEnvironment}" '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /CatalogItems/delete/CatalogItems_Delete
+@try_manual
+def step_catalog_item_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo catalog-item delete -y '
+             '--name "{myCatalogItem2}" '
+             '--catalog-name "{myCatalog}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/put/EnvironmentTypes_CreateOrUpdate
+@try_manual
+def step_environment_type_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type create '
+             '--description "Developer/Testing environment" '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myEnvironmentType}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_Get
+@try_manual
+def step_environment_type_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type show '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myEnvironmentType}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_ListByDevCenter
+@try_manual
+def step_environment_type_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type list '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_ListByProject
+@try_manual
+def step_environment_type_list2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type list '
+             '--project-name "{myProject2}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/patch/EnvironmentTypes_Update
+@try_manual
+def step_environment_type_update(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type update '
+             '--description "Updated description" '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myEnvironmentType}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /EnvironmentTypes/delete/EnvironmentTypes_Delete
+@try_manual
+def step_environment_type_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo environment-type delete -y '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myEnvironmentType}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Galleries/put/Galleries_CreateOrUpdate
+@try_manual
+def step_gallery_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo gallery create '
+             '--gallery-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/g'
+             'alleries/{myGallery}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myGallery}" '
+             '--resource-group "{rg}"',
+             checks=[])
+    test.cmd('az fidalgo gallery wait --created '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myGallery}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Galleries/get/Galleries_Get
+@try_manual
+def step_gallery_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo gallery show '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myGallery}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Galleries/get/Galleries_ListByDevCenter
+@try_manual
+def step_gallery_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo gallery list '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Images/get/Images_Get
+@try_manual
+def step_image_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo image show '
+             '--dev-center-name "{myDevCenter}" '
+             '--gallery-name "{myGallery3}" '
+             '--name "{myImage}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Images/get/Images_ListByDevCenter
+@try_manual
+def step_image_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo image list '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Images/get/Images_ListByGallery
+@try_manual
+def step_image_list2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo image list '
+             '--dev-center-name "{myDevCenter}" '
+             '--gallery-name "{myGallery2}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ImageVersions/get/ImageVersions_ListByImage
+@try_manual
+def step_image_version_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo image-version list '
+             '--dev-center-name "{myDevCenter}" '
+             '--gallery-name "{myGallery3}" '
+             '--image-name "{myImage2}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ImageVersions/get/Versions_Get
+@try_manual
+def step_image_version_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo image-version show '
+             '--dev-center-name "{myDevCenter}" '
+             '--gallery-name "{myGallery3}" '
+             '--image-name "{myImage2}" '
+             '--resource-group "{rg}" '
+             '--version-name "{{versionName}}"',
+             checks=checks)
+
+
+# EXAMPLE: /Galleries/delete/Galleries_Delete
+@try_manual
+def step_gallery_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo gallery delete -y '
+             '--dev-center-name "{myDevCenter}" '
+             '--name "{myGallery}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevCenters/delete/DevCenters_Delete
+@try_manual
+def step_dev_center_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-center delete -y '
+             '--name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /Environments/put/Environments_CreateByCatalogItem
 @try_manual
 def step_environment_create(test, checks=None):
@@ -292,18 +541,6 @@ def step_environment_create2(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /Environments/get/Environments_Get
-@try_manual
-def step_environment_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment show '
-             '--name "{myEnvironment}" '
-             '--project-name "{myProject}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /Environments/get/Environments_ListByProject
 @try_manual
 def step_environment_list(test, checks=None):
@@ -341,31 +578,6 @@ def step_environment_deploy(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /CatalogItems/delete/CatalogItems_Delete
-@try_manual
-def step_catalog_item_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo catalog-item delete -y '
-             '--name "{myCatalogItem2}" '
-             '--catalog-name "{myCatalog}" '
-             '--dev-center-name "{myDevCenter}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /Catalogs/delete/Catalogs_Delete
-@try_manual
-def step_catalog_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo catalog delete -y '
-             '--name "{myCatalog}" '
-             '--dev-center-name "{myDevCenter}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /Deployments/get/Deployments_ListByEnvironment
 @try_manual
 def step_deployment_list(test, checks=None):
@@ -378,101 +590,6 @@ def step_deployment_list(test, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /EnvironmentTypes/put/EnvironmentTypes_CreateOrUpdate
-@try_manual
-def step_environment_type_create(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type create '
-             '--description "Developer/Testing environment" '
-             '--dev-center-name "{myDevCenter}" '
-             '--name "{myEnvironmentType}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /EnvironmentTypes/patch/EnvironmentTypes_Update
-@try_manual
-def step_environment_type_update(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type update '
-             '--description "Updated description" '
-             '--dev-center-name "{myDevCenter}" '
-             '--name "{myEnvironmentType}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /DevCenters/delete/DevCenters_Delete
-@try_manual
-def step_dev_center_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo dev-center delete -y '
-             '--name "{myDevCenter}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /Environments/delete/Environments_Delete
-@try_manual
-def step_environment_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment delete -y '
-             '--name "{myEnvironment}" '
-             '--project-name "{myProject}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_Get
-@try_manual
-def step_environment_type_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type show '
-             '--dev-center-name "{myDevCenter}" '
-             '--name "{myEnvironmentType}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_ListByDevCenter
-@try_manual
-def step_environment_type_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type list '
-             '--dev-center-name "{myDevCenter}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /EnvironmentTypes/get/EnvironmentTypes_ListByProject
-@try_manual
-def step_environment_type_list2(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type list '
-             '--project-name "{myProject2}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /EnvironmentTypes/delete/EnvironmentTypes_Delete
-@try_manual
-def step_environment_type_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az fidalgo environment-type delete -y '
-             '--dev-center-name "{myDevCenter}" '
-             '--name "{myEnvironmentType}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /MachineDefinitions/put/MachineDefinitions_CreateWithCustomImage
 @try_manual
 def step_machine_definition_create(test, checks=None):
@@ -481,7 +598,7 @@ def step_machine_definition_create(test, checks=None):
     test.cmd('az fidalgo machine-definition create '
              '--location "centralus" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Compute/'
-             'images/exampleImage" '
+             'images/{myImage3}" '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -529,7 +646,7 @@ def step_machine_definition_update(test, checks=None):
         checks = []
     test.cmd('az fidalgo machine-definition update '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Compute/'
-             'images/image2" '
+             'images/{myImage4}" '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -674,6 +791,17 @@ def step_network_setting_list2(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /NetworkSettings/get/NetworkSettings_ListHealthDetails
+@try_manual
+def step_network_setting_list_health_detail(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo network-setting list-health-detail '
+             '--name "{myNetworkSetting}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /NetworkSettings/patch/NetworkSettings_Update
 @try_manual
 def step_network_setting_update(test, checks=None):
@@ -783,13 +911,13 @@ def step_pool_create(test, checks=None):
              '/machinedefinitions/{myMachineDefinition}" '
              '--network-settings-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo/n'
              'etworksettings/{myNetworkSetting}" '
-             '--sku name="medium" '
-             '--name "{myPool}" '
+             '--name "medium" '
+             '--pool-name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az fidalgo pool wait --created '
-             '--name "{myPool}" '
+             '--pool-name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -826,7 +954,7 @@ def step_pool_update(test, checks=None):
     test.cmd('az fidalgo pool update '
              '--machine-definition-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo'
              '/machinedefinitions/{myMachineDefinition}" '
-             '--name "{myPool}" '
+             '--pool-name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)

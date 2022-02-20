@@ -15,6 +15,9 @@
 |az fidalgo dev-center|DevCenters|[commands](#CommandsInDevCenters)|
 |az fidalgo environment|Environments|[commands](#CommandsInEnvironments)|
 |az fidalgo environment-type|EnvironmentTypes|[commands](#CommandsInEnvironmentTypes)|
+|az fidalgo gallery|Galleries|[commands](#CommandsInGalleries)|
+|az fidalgo image|Images|[commands](#CommandsInImages)|
+|az fidalgo image-version|ImageVersions|[commands](#CommandsInImageVersions)|
 |az fidalgo machine-definition|MachineDefinitions|[commands](#CommandsInMachineDefinitions)|
 |az fidalgo mapping|Mappings|[commands](#CommandsInMappings)|
 |az fidalgo network-setting|NetworkSettings|[commands](#CommandsInNetworkSettings)|
@@ -79,6 +82,28 @@
 |[az fidalgo environment-type update](#EnvironmentTypesUpdate)|Update|[Parameters](#ParametersEnvironmentTypesUpdate)|[Example](#ExamplesEnvironmentTypesUpdate)|
 |[az fidalgo environment-type delete](#EnvironmentTypesDelete)|Delete|[Parameters](#ParametersEnvironmentTypesDelete)|[Example](#ExamplesEnvironmentTypesDelete)|
 
+### <a name="CommandsInGalleries">Commands in `az fidalgo gallery` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az fidalgo gallery list](#GalleriesListByDevCenter)|ListByDevCenter|[Parameters](#ParametersGalleriesListByDevCenter)|[Example](#ExamplesGalleriesListByDevCenter)|
+|[az fidalgo gallery show](#GalleriesGet)|Get|[Parameters](#ParametersGalleriesGet)|[Example](#ExamplesGalleriesGet)|
+|[az fidalgo gallery create](#GalleriesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersGalleriesCreateOrUpdate#Create)|[Example](#ExamplesGalleriesCreateOrUpdate#Create)|
+|[az fidalgo gallery update](#GalleriesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersGalleriesCreateOrUpdate#Update)|Not Found|
+|[az fidalgo gallery delete](#GalleriesDelete)|Delete|[Parameters](#ParametersGalleriesDelete)|[Example](#ExamplesGalleriesDelete)|
+
+### <a name="CommandsInImages">Commands in `az fidalgo image` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az fidalgo image list](#ImagesListByGallery)|ListByGallery|[Parameters](#ParametersImagesListByGallery)|[Example](#ExamplesImagesListByGallery)|
+|[az fidalgo image list](#ImagesListByDevCenter)|ListByDevCenter|[Parameters](#ParametersImagesListByDevCenter)|[Example](#ExamplesImagesListByDevCenter)|
+|[az fidalgo image show](#ImagesGet)|Get|[Parameters](#ParametersImagesGet)|[Example](#ExamplesImagesGet)|
+
+### <a name="CommandsInImageVersions">Commands in `az fidalgo image-version` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az fidalgo image-version list](#ImageVersionsListByImage)|ListByImage|[Parameters](#ParametersImageVersionsListByImage)|[Example](#ExamplesImageVersionsListByImage)|
+|[az fidalgo image-version show](#ImageVersionsGet)|Get|[Parameters](#ParametersImageVersionsGet)|[Example](#ExamplesImageVersionsGet)|
+
 ### <a name="CommandsInMachineDefinitions">Commands in `az fidalgo machine-definition` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -107,6 +132,7 @@
 |[az fidalgo network-setting create](#NetworkSettingsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersNetworkSettingsCreateOrUpdate#Create)|[Example](#ExamplesNetworkSettingsCreateOrUpdate#Create)|
 |[az fidalgo network-setting update](#NetworkSettingsUpdate)|Update|[Parameters](#ParametersNetworkSettingsUpdate)|[Example](#ExamplesNetworkSettingsUpdate)|
 |[az fidalgo network-setting delete](#NetworkSettingsDelete)|Delete|[Parameters](#ParametersNetworkSettingsDelete)|[Example](#ExamplesNetworkSettingsDelete)|
+|[az fidalgo network-setting list-health-detail](#NetworkSettingsListHealthDetails)|ListHealthDetails|[Parameters](#ParametersNetworkSettingsListHealthDetails)|[Example](#ExamplesNetworkSettingsListHealthDetails)|
 |[az fidalgo network-setting show-health-detail](#NetworkSettingsGetHealthDetails)|GetHealthDetails|[Parameters](#ParametersNetworkSettingsGetHealthDetails)|[Example](#ExamplesNetworkSettingsGetHealthDetails)|
 
 ### <a name="CommandsInOperationStatuses">Commands in `az fidalgo operation-statuses` group</a>
@@ -610,6 +636,147 @@ az fidalgo environment-type delete --dev-center-name "Contoso" --name "{environm
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--environment-type-name**|string|The name of the environment type.|environment_type_name|environmentTypeName|
 
+### group `az fidalgo gallery`
+#### <a name="GalleriesListByDevCenter">Command `az fidalgo gallery list`</a>
+
+##### <a name="ExamplesGalleriesListByDevCenter">Example</a>
+```
+az fidalgo gallery list --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersGalleriesListByDevCenter">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="GalleriesGet">Command `az fidalgo gallery show`</a>
+
+##### <a name="ExamplesGalleriesGet">Example</a>
+```
+az fidalgo gallery show --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+```
+##### <a name="ParametersGalleriesGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+
+#### <a name="GalleriesCreateOrUpdate#Create">Command `az fidalgo gallery create`</a>
+
+##### <a name="ExamplesGalleriesCreateOrUpdate#Create">Example</a>
+```
+az fidalgo gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft\
+.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+```
+##### <a name="ParametersGalleriesCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--gallery-resource-id**|string|The resource ID of the backing Azure Compute Gallery.|gallery_resource_id|galleryResourceId|
+
+#### <a name="GalleriesCreateOrUpdate#Update">Command `az fidalgo gallery update`</a>
+
+
+##### <a name="ParametersGalleriesCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--gallery-resource-id**|string|The resource ID of the backing Azure Compute Gallery.|gallery_resource_id|galleryResourceId|
+
+#### <a name="GalleriesDelete">Command `az fidalgo gallery delete`</a>
+
+##### <a name="ExamplesGalleriesDelete">Example</a>
+```
+az fidalgo gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+```
+##### <a name="ParametersGalleriesDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+
+### group `az fidalgo image`
+#### <a name="ImagesListByGallery">Command `az fidalgo image list`</a>
+
+##### <a name="ExamplesImagesListByGallery">Example</a>
+```
+az fidalgo image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
+```
+##### <a name="ParametersImagesListByGallery">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="ImagesListByDevCenter">Command `az fidalgo image list`</a>
+
+##### <a name="ExamplesImagesListByDevCenter">Example</a>
+```
+az fidalgo image list --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersImagesListByDevCenter">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="ImagesGet">Command `az fidalgo image show`</a>
+
+##### <a name="ExamplesImagesGet">Example</a>
+```
+az fidalgo image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "{imageName}" \
+--resource-group "rg1"
+```
+##### <a name="ParametersImagesGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--image-name**|string|The name of the image.|image_name|imageName|
+
+### group `az fidalgo image-version`
+#### <a name="ImageVersionsListByImage">Command `az fidalgo image-version list`</a>
+
+##### <a name="ExamplesImageVersionsListByImage">Example</a>
+```
+az fidalgo image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" \
+--resource-group "rg1"
+```
+##### <a name="ParametersImageVersionsListByImage">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--image-name**|string|The name of the image.|image_name|imageName|
+
+#### <a name="ImageVersionsGet">Command `az fidalgo image-version show`</a>
+
+##### <a name="ExamplesImageVersionsGet">Example</a>
+```
+az fidalgo image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" \
+--resource-group "rg1" --version-name "{versionName}"
+```
+##### <a name="ParametersImageVersionsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--gallery-name**|string|The name of the gallery.|gallery_name|galleryName|
+|**--image-name**|string|The name of the image.|image_name|imageName|
+|**--version-name**|string|The version of the image.|version_name|versionName|
+
 ### group `az fidalgo machine-definition`
 #### <a name="MachineDefinitionsListByResourceGroup">Command `az fidalgo machine-definition list`</a>
 
@@ -857,6 +1024,19 @@ az fidalgo network-setting delete --name "{networkSettingName}" --resource-group
 |**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--network-setting-name**|string|Name of the Network Settings that can be applied to a Pool.|network_setting_name|networkSettingName|
 
+#### <a name="NetworkSettingsListHealthDetails">Command `az fidalgo network-setting list-health-detail`</a>
+
+##### <a name="ExamplesNetworkSettingsListHealthDetails">Example</a>
+```
+az fidalgo network-setting list-health-detail --name "{networkSettingName}" --resource-group "rg1"
+```
+##### <a name="ParametersNetworkSettingsListHealthDetails">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+|**--network-setting-name**|string|Name of the Network Settings that can be applied to a Pool.|network_setting_name|networkSettingName|
+
 #### <a name="NetworkSettingsGetHealthDetails">Command `az fidalgo network-setting show-health-detail`</a>
 
 ##### <a name="ExamplesNetworkSettingsGetHealthDetails">Example</a>
@@ -916,7 +1096,7 @@ az fidalgo pool show --name "{poolName}" --project-name "{projectName}" --resour
 az fidalgo pool create --location "centralus" --machine-definition-id "/subscriptions/{subscriptionId}/resourceGroups/r\
 g1/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --network-settings-id \
 "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Fidalgo/networksettings/{networkSettingName}" \
---sku name="medium" --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+--name "medium" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -926,16 +1106,16 @@ g1/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --net
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--sku**|object|The SKU for the virtual machine. Defines the type of virtual machines used in the pool.|sku|sku|
 |**--machine-definition-id**|string|Resource Id of a Machine Definition|machine_definition_id|machineDefinitionId|
 |**--network-settings-id**|string|Resource Id of a Network Settings resource|network_settings_id|networkSettingsId|
+|**--name**|string|The name of the SKU.|name|name|
 
 #### <a name="PoolsUpdate">Command `az fidalgo pool update`</a>
 
 ##### <a name="ExamplesPoolsUpdate">Example</a>
 ```
 az fidalgo pool update --machine-definition-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.\
-Fidalgo/machinedefinitions/{machineDefinitionName}" --name "{poolName}" --project-name "{projectName}" \
+Fidalgo/machinedefinitions/{machineDefinitionName}" --pool-name "{poolName}" --project-name "{projectName}" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsUpdate">Parameters</a> 
@@ -946,9 +1126,9 @@ Fidalgo/machinedefinitions/{machineDefinitionName}" --name "{poolName}" --projec
 |**--pool-name**|string|Name of the pool.|pool_name|poolName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--sku**|object|The SKU for the virtual machine. Defines the type of virtual machines used in the pool.|sku|sku|
 |**--machine-definition-id**|string|Resource Id of a Machine Definition|machine_definition_id|machineDefinitionId|
 |**--network-settings-id**|string|Resource Id of a Network Settings resource|network_settings_id|networkSettingsId|
+|**--name**|string|The name of the SKU.|name|name|
 
 #### <a name="PoolsDelete">Command `az fidalgo pool delete`</a>
 
