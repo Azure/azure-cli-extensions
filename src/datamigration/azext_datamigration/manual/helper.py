@@ -34,7 +34,7 @@ def validate_os_env():
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Assessment helper function to test whether the given cofig_file_path is valid and has valid action specified.
+# Assessment helper function to test whether the given config_file_path is valid and has valid action specified.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_config_file_path(path, action):
 
@@ -51,6 +51,9 @@ def validate_config_file_path(path, action):
         raise FileOperationError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
 
 
+# -----------------------------------------------------------------------------------------------------------------
+# Assessment helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
 def console_app_setup():
 
     validate_os_env()
