@@ -16,12 +16,6 @@ def load_command_table(self, _):
 
     with self.command_group('datamigration') as g:
         g.custom_command('get-assessment', 'datamigration_assessment')
-
-    with self.command_group('datamigration') as g:
         g.custom_command('performance-data-collection', 'datamigration_performance_data_collection')
-
-    with self.command_group('datamigration') as g:
         g.custom_command('get-sku-recommendation', 'datamigration_get_sku_recommendation')
-
-    with self.command_group('datamigration') as g:
         g.custom_command('register-integration-runtime', 'datamigration_register_ir')
