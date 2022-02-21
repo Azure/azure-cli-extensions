@@ -181,7 +181,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
-                create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
+                return cc_response
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
@@ -281,7 +282,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
 
     # Create connected cluster resource
-    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
@@ -679,7 +680,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     release_namespace = get_release_namespace(kube_config, kube_context, helm_client_location)
 
     if not release_namespace:
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
         return
 
     # Loading config map
@@ -704,7 +705,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                     summary='The resource cannot be deleted as user is using proxy kubeconfig.')
             raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation="Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
 
-        delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
+        delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
     else:
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
                                 summary='The resource cannot be deleted as kubernetes cluster is onboarded with some other resource id')
