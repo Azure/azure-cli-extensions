@@ -59,9 +59,9 @@ def datamigration_assessment(connection_string=None,
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_performance_data_collection(connection_string=None,
                                               output_folder=None,
-                                              perf_query_interval=None,
-                                              static_query_interval=None,
-                                              number_of_interation=None,
+                                              perf_query_interval=30,
+                                              static_query_interval=3600,
+                                              number_of_interation=20,
                                               config_file_path=None):
 
     try:
@@ -103,10 +103,10 @@ def datamigration_performance_data_collection(connection_string=None,
 #  Get SKU Recommendation Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_get_sku_recommendation(output_folder=None,
-                                         target_platform=None,
+                                         target_platform="Any",
                                          target_sql_instance=None,
-                                         target_percentile=None,
-                                         scaling_factor=None,
+                                         target_percentile=95,
+                                         scaling_factor=100,
                                          start_time=None,
                                          end_time=None,
                                          overwrite=False,

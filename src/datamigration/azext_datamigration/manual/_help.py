@@ -38,7 +38,7 @@ helps['datamigration performance-data-collection'] = """
 
 helps['datamigration get-sku-recommendation'] = """
     type: command
-    short-summary: Gives SKU recommendations for Azure SQL offerings.
+    short-summary: Give SKU recommendations for Azure SQL offerings.
     examples:
       - name: Get SKU recommendation for given SQL Server using command line.
         text: |-
