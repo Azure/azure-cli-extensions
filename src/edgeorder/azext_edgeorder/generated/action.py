@@ -8,13 +8,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-
 # pylint: disable=protected-access
-
 # pylint: disable=no-self-use
-
-
 import argparse
+import json
+
 from collections import defaultdict
 from knack.util import CLIError
 
@@ -35,9 +33,8 @@ class AddFilterableProperties(argparse.Action):
         d = {}
         for k in properties:
             v = properties[k]
-
-            d[k] = v[0]
-
+            val = json.loads(v[0])
+            d[k] = [val]
         return d
 
 

@@ -211,11 +211,14 @@ class EdgeOrderClientTest(ScenarioTest):
         assert "filterableProperties" in config_list[0]
         assert "hierarchyInformation" in config_list[0]
 
-        # self.cmd("edgeorder list-family --filterable-properties azurestackedge={{'type':'ShipToCountries','supportedValues':['US']}}",
-        #          checks=[
-        #              self.check("name", "")
-        #          ])
+        # obtain JSON string
+        filters_props = {
+            "type": "ShipToCountries",
+            "supportedValues": ["US"]
+        }
+        self.kwargs["filters"] = json.dumps(filters_props)
 
-
-
-
+        family_list = self.cmd("edgeorder list-family --filterable-properties azurestackedge='{filters}'").get_output_in_json()
+        assert isinstance(family_list, list)
+        assert "filterableProperties" in family_list[0]
+        assert "productLines" in family_list[0]

@@ -106,14 +106,14 @@ updated with the Update order item API."
                az edgeorder order-item create --name "TestOrderItemName01" --resource "{\\"location\\":\\"eastus\\",\\"\
 tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\
 \\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetai\
-ls\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStac\
-kEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}},\\"addressDetails\\":{\
-\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"164 TOWNSEND ST\\",\\"emailList\\":[\\"ssemmail@micros\
-oft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"shippingAddress\\":{\\"addressType\\":\\"Re\
-sidential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\
-\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT \
-1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGrou\
-ps/TestRG/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}" --resource-group "TestRG"
+ls\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"edgep_base\\",\\"productFamilyName\\":\\"azurestackedge\
+\\",\\"productLineName\\":\\"azurestackedge\\",\\"productName\\":\\"azurestackedgegpu\\"}}},\\"addressDetails\\":{\
+\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"Petr Cech\\",\\"emailList\\":[\\"ssemmail@microsoft.co\
+m\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\",\\"phoneExtension\\":\\"\\"},\\"shippingAddress\\":{\
+\\"addressType\\":\\"None\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\
+\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\
+\\":\\"UNIT 1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGroups/TestRG/provider\
+s/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}" --resource-group "TestRG"
 """
 
 helps['edgeorder address update'] = """
