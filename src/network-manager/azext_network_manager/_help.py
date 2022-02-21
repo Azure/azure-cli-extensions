@@ -741,108 +741,108 @@ helps['network manager security-user-config rule-collection rule delete'] = """
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule"
 """
 
-helps['network manager connection'] = """
+helps['network manager connection subscription'] = """
     type: group
     short-summary: Manage subscription-group connection with network
 """
 
-helps['network manager connection list'] = """
+helps['network manager connection subscription list'] = """
     type: command
     short-summary: "List all network manager connections created by this subscription."
     examples:
       - name: List network manager connections in a network manager
         text: |-
-               az network manager connection list --resource-group "rg1"
+               az network manager connection subscription list --resource-group "rg1"
 """
 
-helps['network manager connection show'] = """
+helps['network manager connection subscription show'] = """
     type: command
     short-summary: "Get a specified connection created by this subscription."
     examples:
       - name: Get network manager connection
         text: |-
-               az network manager connection show --connection-name "testNetworkManagerConnection" \
+               az network manager connection subscription show --connection-name "testNetworkManagerConnection" \
 --resource-group "rg1"
 """
 
-helps['network manager connection create'] = """
+helps['network manager connection subscription create'] = """
     type: command
     short-summary: "Create a connection from this subscription to a cross tenant network manager."
     examples:
       - name: Create network manager connection
         text: |-
-               az network manager connection create --network-manager-id "myTestNetworkManagerId" \
+               az network manager connection subscription create --network-manager-id "myTestNetworkManagerId" \
 --connection-name "testNetworkManagerConnection" --resource-group "rg1" --description "A sample policy"
 """
 
-helps['network manager connection update'] = """
+helps['network manager connection subscription update'] = """
     type: command
     short-summary: "Update a connection from this subscription to a cross tenant network manager."
 """
 
-helps['network manager connection delete'] = """
+helps['network manager connection subscription delete'] = """
     type: command
     short-summary: "Deletes a network manager connection."
     examples:
       - name: Delete network manager connection
         text: |-
-               az network manager connection delete --connection-name "testNetworkManagerConnection" \
+               az network manager connection subscription delete --connection-name "testNetworkManagerConnection" \
 --resource-group "rg1"
 """
 
-helps['network manager management-group'] = """
+helps['network manager connection'] = """
     type: group
-    short-summary: Manage management-group with network manager connection
+    short-summary: Manage connection with network manager
 """
 
-helps['network manager management-group connection'] = """
+helps['network manager connection management-group'] = """
     type: group
     short-summary: Manage management-group connection with network
 """
 
-helps['network manager management-group connection list'] = """
+helps['network manager connection management-group list'] = """
     type: command
     short-summary: "List all network manager connections created by this management group."
     examples:
       - name: List management-group connections in a network manager
         text: |-
-               az network manager management-group connection list --management-group-id "testManagementGroupId" \
+               az network manager connection management-group list --management-group-id "testManagementGroupId" \
 --resource-group "rg1"
 """
 
-helps['network manager management-group connection show'] = """
+helps['network manager connection management-group show'] = """
     type: command
     short-summary: "Get a specified connection created by this management group."
     examples:
       - name: Get network manager connection management-group
         text: |-
-               az network manager management-group connection show --management-group-id "testManagementGroupId" \
+               az network manager connection management-group show --management-group-id "testManagementGroupId" \
 --connection-name "testNetworkManagerConnection" --resource-group "rg1"
 """
 
-helps['network manager management-group connection create'] = """
+helps['network manager connection management-group create'] = """
     type: command
     short-summary: Create a connection to a cross tenant network manager"
     examples:
       - name: Create network manager connection management-group
         text: |-
-               az network manager management-group connection create --management-group-id "testManagementGroupId" \
+               az network manager connection management-group create --management-group-id "testManagementGroupId" \
 --connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
 --description "A sample policy"
 """
 
-helps['network manager management-group connection update'] = """
+helps['network manager connection management-group update'] = """
     type: command
     short-summary: "Update a connection to a cross tenant network manager"
 """
 
-helps['network manager management-group connection delete'] = """
+helps['network manager connection management-group delete'] = """
     type: command
     short-summary: "Delete specified pending connection created by this management group."
     examples:
       - name: Delete network manager connection management-group
         text: |-
-               az network manager management-group connection delete --management-group-id "testManagementGroupId" \
+               az network manager connection management-group delete --management-group-id "testManagementGroupId" \
 --connection-name "testNetworkManagerConnection" --resource-group "rg1"
 """
 

@@ -975,20 +975,20 @@ def network_manager_perimeter_associable_resource_type_list(client,
     return client.get(location=location)
 
 
-def network_manager_connection_list(client,
-                                    resource_group_name,
-                                    top=None,
-                                    skip_token=None):
+def network_manager_connection_subscription_list(client,
+                                                 resource_group_name,
+                                                 top=None,
+                                                 skip_token=None):
     return client.list(resource_group_name=resource_group_name,
                        top=top,
                        skip_token=skip_token)
 
 
-def network_manager_connection_create(client,
-                                      resource_group_name,
-                                      network_manager_connection_name,
-                                      network_manager_id,
-                                      description=None):
+def network_manager_connection_subscription_create(client,
+                                                   resource_group_name,
+                                                   network_manager_connection_name,
+                                                   network_manager_id,
+                                                   description=None):
     parameters = {}
     parameters['network_manager_id'] = network_manager_id
     parameters['description'] = description
@@ -997,28 +997,28 @@ def network_manager_connection_create(client,
                                    parameters=parameters)
 
 
-def network_manager_connection_update(instance,
-                                      description=None):
+def network_manager_connection_subscription_update(instance,
+                                                   description=None):
     if description is not None:
         instance.description = description
     return instance
 
 
-def network_manager_connection_show(client,
-                                    resource_group_name,
-                                    network_manager_connection_name):
+def network_manager_connection_subscription_show(client,
+                                                 resource_group_name,
+                                                 network_manager_connection_name):
     return client.get(resource_group_name=resource_group_name,
                       network_manager_connection_name=network_manager_connection_name)
 
 
-def network_manager_connection_delete(client,
-                                      resource_group_name,
-                                      network_manager_connection_name):
+def network_manager_connection_subscription_delete(client,
+                                                   resource_group_name,
+                                                   network_manager_connection_name):
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_connection_name=network_manager_connection_name)
 
 
-def network_manager_management_group_connection_list(client,
+def network_manager_connection_management_group_list(client,
                                                      resource_group_name,
                                                      management_group_id,
                                                      top=None,
@@ -1029,7 +1029,7 @@ def network_manager_management_group_connection_list(client,
                        skip_token=skip_token)
 
 
-def network_manager_management_group_connection_create(client,
+def network_manager_connection_management_group_create(client,
                                                        resource_group_name,
                                                        network_manager_connection_name,
                                                        management_group_id,
@@ -1044,7 +1044,7 @@ def network_manager_management_group_connection_create(client,
                                    parameters=parameters)
 
 
-def network_manager_management_group_connection_update(instance,
+def network_manager_connection_management_group_update(instance,
                                                        management_group_id,
                                                        description=None):
     if description is not None:
@@ -1054,7 +1054,7 @@ def network_manager_management_group_connection_update(instance,
     return instance
 
 
-def network_manager_management_group_connection_show(client,
+def network_manager_connection_management_group_show(client,
                                                      resource_group_name,
                                                      network_manager_connection_name,
                                                      management_group_id):
@@ -1063,7 +1063,7 @@ def network_manager_management_group_connection_show(client,
                       management_group_id=management_group_id)
 
 
-def network_manager_management_group_connection_delete(client,
+def network_manager_connection_management_group_delete(client,
                                                        resource_group_name,
                                                        network_manager_connection_name,
                                                        management_group_id):
