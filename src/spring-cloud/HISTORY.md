@@ -1,5 +1,9 @@
 Release History
 ===============
+3.0.1
+---
+* Fix the deploy of Gradle project with multiple modules.
+
 3.0.0
 ---
 * New preview argument `az spring-cloud create` has new argument "--sku=Enterprise" to support Azure Spring Cloud Enterprise creation.

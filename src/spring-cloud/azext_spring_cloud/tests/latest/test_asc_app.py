@@ -279,6 +279,9 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='Java_17')
         resource = self.put_build_resource
         self.assertEqual({"BP_JVM_VERSION": "17.*"}, resource.properties.env)
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', target_module='test-module')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_MAVEN_BUILT_MODULE": "test-module", "BP_GRADLE_BUILT_MODULE": "test-module"}, resource.properties.env)
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
