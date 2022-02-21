@@ -753,9 +753,9 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
 
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
-        sdk_no_wait(no_wait, client.begin_delete,
-                    resource_group_name=resource_group_name,
-                    cluster_name=cluster_name)
+        return sdk_no_wait(no_wait, client.begin_delete,
+                           resource_group_name=resource_group_name,
+                           cluster_name=cluster_name)
     except Exception as e:
         utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
