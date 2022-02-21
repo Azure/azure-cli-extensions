@@ -886,8 +886,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if kube_context:
         cmd_helm_values.extend(["--kube-context", kube_context])
 
-    user_values_filepath_string = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
-    user_values_location = os.path.expanduser(os.path.join('~', user_values_filepath_string))
+    user_values_location = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
     existing_user_values = open(user_values_location, 'w+')
     response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
     _, error_helm_get_values = response_helm_values_get.communicate()
