@@ -450,6 +450,14 @@ class TestAppUpdate(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
 
+    def test_app_update_clear_jvm_option_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='')
+        resource = self.patch_deployment_resource
+        self.assertEqual({"foo": "bar"}, resource.properties.deployment_settings.environment_variables)
+
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()
         deployment.properties.source.type = 'Container'

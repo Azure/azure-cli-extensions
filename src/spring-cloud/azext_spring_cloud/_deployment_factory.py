@@ -96,10 +96,13 @@ class DefaultDeployment:
 
 class EnterpriseDeployment(DefaultDeployment):
     def _get_env(self, env, jvm_options, **_):
-        if not jvm_options:
+        if jvm_options is None:
             return env
         env = env or {}
-        env['JAVA_OPTS'] = jvm_options
+        if jvm_options:
+            env['JAVA_OPTS'] = jvm_options
+        else:
+            env.pop('JAVA_OPTS', None)
         return env
 
 
