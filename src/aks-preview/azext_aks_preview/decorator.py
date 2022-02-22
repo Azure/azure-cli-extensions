@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import os
 import time
 from types import SimpleNamespace
@@ -32,7 +33,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import get_file_json
+from azure.cli.core.util import get_file_json, read_file_content
 from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -376,7 +377,19 @@ class AKSPreviewContext(AKSContext):
         :return: string or None
         """
         # read the original value passed by the command
-        message_of_the_day = self.raw_param.get("message_of_the_day")
+        message_of_the_day = None
+        message_of_the_day_file_path = self.raw_param.get("message_of_the_day")
+
+        if message_of_the_day_file_path:
+            if not os.path.isfile(message_of_the_day_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        message_of_the_day_file_path
+                    )
+                )
+            message_of_the_day = read_file_content(message_of_the_day_file_path)
+            message_of_the_day = base64.b64encode(bytes(message_of_the_day, 'ascii')).decode('ascii')
+
         # try to read the property value corresponding to the parameter from the `mc` object
         if self.mc and self.mc.agent_pool_profiles:
             agent_pool_profile = safe_list_get(

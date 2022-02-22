@@ -206,7 +206,7 @@ def load_arguments(self, _):
         c.argument('host_group_id',
                    validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
-        c.argument('message_of_the_day', type=str)
+        c.argument('message_of_the_day', type=str) # no validation for aks create because it already only supports Linux.
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[

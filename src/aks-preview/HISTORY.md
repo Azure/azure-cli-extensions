@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.56
+++++++
+* Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
+
 0.5.55
 +++++
 * Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
@@ -19,11 +23,6 @@ Release History
   * `az aks create --crg-id`
 * Add support for nodepool adding with Capacity Reservation Group.
   * `az aks nodepool add --crg-id`
-
-0.5.53
-++++++
-
-* Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
 
 0.5.52
 ++++++
