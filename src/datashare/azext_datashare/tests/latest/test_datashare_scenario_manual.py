@@ -20,11 +20,11 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'SubscriptionId': self.get_subscription_id(),
-            'ConsumerSubscription': 'e381f805-7d1c-4c53-8640-2bf6204d7e5b',  # change this value in live test
+            'ConsumerSubscription': '00000000-0000-0000-0000-000000000000',  # change this value in live test
             'ConsumerResourceGroup': 'ads_azure_cli_rg',  # this is a pre-existing reosurce group in consumer subscription
             'ConsumerStorageAccount': 'azurecliadsconsumersa',  # this is a pre-existing storage account in consumer subscription
-            'ProviderEmail': 'hsrivastava@microsoft.com',  # change this value in live test
-            'ConsumerEmail': 'hsrivastava@microsoft.com',  # change this value in live test
+            'ProviderEmail': 'provider@microsoft.com',  # change this value in live test
+            'ConsumerEmail': 'consumer@microsoft.com',  # change this value in live test
             'ProviderAccount': 'cli_test_account',
             'ConsumerAccount': 'cli_test_consumer_account',
             'ProviderDataset': 'cli_test_data_set',
@@ -342,6 +342,15 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                  '--subscription "{ConsumerSubscription}"',
                  checks=[])
 
+        # EXAMPLE: /ShareSubscriptions/delete/ShareSubscriptions_Delete
+        # self.cmd('az datashare share-subscription delete '
+        #          '--account-name "{ConsumerAccount}" '
+        #          '--resource-group "{ConsumerResourceGroup}" '
+        #          '--name "{ConsumerShareSubscription}" '
+        #          '--yes '
+        #          '--subscription "{ConsumerSubscription}"',
+        #          checks=[])
+
         # EXAMPLE: /ShareSubscriptions/put/ShareSubscriptions_Create
         self.cmd('az datashare share-subscription create '
                  '--account-name "{ConsumerAccount}" '
@@ -548,11 +557,11 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
 
         # EXAMPLE: /ProviderShareSubscriptions/post/ProviderShareSubscriptions_Revoke
         # self.cmd('az datashare provider-share-subscription revoke '
-        #          '--account-name "{ProviderAccount}" '
-        #          '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
-        #          '--resource-group "{ProviderResourceGroup}" '
-        #          '--share-name "{ProviderShare}"',
-        #          checks=[self.check('status', 'Succeeded')])
+        #           '--account-name "{ProviderAccount}" '
+        #           '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
+        #           '--resource-group "{ProviderResourceGroup}" '
+        #           '--share-name "{ProviderShare}"',
+        #           checks=[self.check('status', 'Succeeded')])
 
         # if self.is_live or self.in_recording:
         #     import time
@@ -564,7 +573,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
         #          '--provider-share-subscription-id "{ProviderShareSubscriptionObjectId}" '
         #          '--resource-group "{ProviderResourceGroup}" '
         #          '--share-name "{ProviderShare}"',
-        #          checks=[self.check('consumerEmail', '{ConsumerEmail}'),
+        #          checks=[self.check('consumerEmail', '{ConsumerEmail}'),          
         #                  self.check('providerEmail', '{ProviderEmail}'),
         #                  self.check('shareSubscriptionStatus', 'Active'),
         #                  self.check('name', '{ConsumerShareSubscription}'),
