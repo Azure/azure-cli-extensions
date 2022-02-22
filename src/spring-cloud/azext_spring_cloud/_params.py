@@ -304,7 +304,7 @@ def load_arguments(self, _):
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.', arg_group='Source Code deploy', validate=not_support_enterprise)
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.', arg_group='Source Code deploy', validator=not_support_enterprise)
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
             c.argument(
@@ -320,7 +320,7 @@ def load_arguments(self, _):
             c.argument(
                 'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
-                'build_env', help='The key-value pairs of env used in build phase.', type=dict, validate=only_support_enterprise)
+                'build_env', help='The key-value pairs of env used in build phase.', type=dict, validator=only_support_enterprise)
 
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
