@@ -12,7 +12,7 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
@@ -225,7 +225,7 @@ def validate_message_of_the_day(namespace):
     """Validates message of the day can only be used on Linux."""
     if namespace.message_of_the_day is not None and namespace.message_of_the_day != "":
         if namespace.os_type is not None and namespace.os_type != "Linux":
-            raise CLIError('--message-of-the-day can only be set for linux nodepools')
+            raise ArgumentUsageError('--message-of-the-day can only be set for linux nodepools')
 
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
