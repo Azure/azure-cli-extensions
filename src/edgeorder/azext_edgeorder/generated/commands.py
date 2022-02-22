@@ -13,7 +13,7 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from azext_edgeorder.generated._client_factory import cf_edgeorder_cl
+from azext_edgeorder.generated._client_factory import cf_edgeorder_cl, cf_address, cf_order, cf_order_item
 
 
 edgeorder_ = CliCommandType(
@@ -22,27 +22,63 @@ edgeorder_ = CliCommandType(
 )
 
 
+edgeorder_order = CliCommandType(
+    operations_tmpl='azext_edgeorder.vendored_sdks.edgeorder.operations._order_operations#OrderOperations.{}',
+    client_factory=cf_order,
+)
+
+
+edgeorder_address = CliCommandType(
+    operations_tmpl='azext_edgeorder.vendored_sdks.edgeorder.operations._addresses_operations#AddressesOperations.{}',
+    client_factory=cf_address,
+)
+
+
+edgeorder_order_item = CliCommandType(
+    operations_tmpl=(
+        'azext_edgeorder.vendored_sdks.edgeorder.operations._order_items_operations#OrderItemsOperations.{}'
+    ),
+    client_factory=cf_order_item,
+)
+
+
 def load_command_table(self, _):
 
     with self.command_group('edgeorder', edgeorder_, client_factory=cf_edgeorder_cl, is_experimental=True) as g:
-        g.custom_command('address show', 'edgeorder_address_show')
         g.custom_command('order show', 'edgeorder_order_show')
-        g.custom_command('order-item show', 'edgeorder_order_item_show')
-        g.custom_command('address create', 'edgeorder_address_create')
-        g.custom_command('order-item create', 'edgeorder_order_item_create')
-        g.custom_command('address update', 'edgeorder_address_update')
-        g.custom_command('order-item update', 'edgeorder_order_item_update')
-        g.custom_command('address delete', 'edgeorder_address_delete')
-        g.custom_command('order-item delete', 'edgeorder_order_item_delete')
-        g.custom_command('address rg-list', 'edgeorder_address_rg_list')
-        g.custom_command('address sub-list', 'edgeorder_address_sub_list')
         g.custom_command('list-config', 'edgeorder_list_config')
         g.custom_command('list-family', 'edgeorder_list_family')
         g.custom_command('list-metadata', 'edgeorder_list_metadata')
         g.custom_command('list-operation', 'edgeorder_list_operation')
-        g.custom_command('order rg-list', 'edgeorder_order_rg_list')
-        g.custom_command('order sub-list', 'edgeorder_order_sub_list')
-        g.custom_command('order-item cancel', 'edgeorder_order_item_cancel')
-        g.custom_command('order-item return', 'edgeorder_order_item_return')
-        g.custom_command('order-item rg-list', 'edgeorder_order_item_rg_list')
-        g.custom_command('order-item sub-list', 'edgeorder_order_item_sub_list')
+
+    with self.command_group('edgeorder', edgeorder_order, client_factory=cf_order, is_experimental=True) as g:
+        g.custom_command('order list', 'edgeorder_order_list')
+
+    with self.command_group('edgeorder address', edgeorder_, client_factory=cf_edgeorder_cl) as g:
+        g.custom_show_command('show', 'edgeorder_address_show')
+        g.custom_command('create', 'edgeorder_address_create', supports_no_wait=True)
+        g.custom_command('update', 'edgeorder_address_update', supports_no_wait=True)
+        g.custom_command('delete', 'edgeorder_address_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'edgeorder_address_show')
+
+    with self.command_group('edgeorder address', edgeorder_address, client_factory=cf_address) as g:
+        g.custom_command('list', 'edgeorder_address_list')
+
+    with self.command_group('edgeorder order-item', edgeorder_, client_factory=cf_edgeorder_cl) as g:
+        g.custom_command('list', 'edgeorder_order_item_list')
+        g.custom_show_command('show', 'edgeorder_order_item_show', client_factory=cf_edgeorder_cl)
+        g.custom_command('create', 'edgeorder_order_item_create', supports_no_wait=True, client_factory=cf_edgeorder_cl)
+        g.custom_command('update', 'edgeorder_order_item_update', supports_no_wait=True, client_factory=cf_edgeorder_cl)
+        g.custom_command(
+            'delete',
+            'edgeorder_order_item_delete',
+            supports_no_wait=True,
+            confirmation=True,
+            client_factory=cf_edgeorder_cl,
+        )
+        g.custom_command('cancel', 'edgeorder_order_item_cancel', client_factory=cf_edgeorder_cl)
+        g.custom_command('return', 'edgeorder_order_item_return', supports_no_wait=True, client_factory=cf_edgeorder_cl)
+        g.custom_wait_command('wait', 'edgeorder_order_item_show')
+
+    with self.command_group('edgeorder order-item', edgeorder_order_item, client_factory=cf_order_item) as g:
+        g.custom_command('list', 'edgeorder_order_item_list')

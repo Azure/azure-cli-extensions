@@ -10,13 +10,6 @@
 # pylint: disable=too-many-lines
 
 
-def edgeorder_address_show(client,
-                           name,
-                           resource_group_name):
-    return client.get_address_by_name(address_name=name,
-                                      resource_group_name=resource_group_name)
-
-
 def edgeorder_order_show(client,
                          name,
                          resource_group_name,
@@ -24,134 +17,6 @@ def edgeorder_order_show(client,
     return client.get_order_by_name(order_name=name,
                                     resource_group_name=resource_group_name,
                                     location=location)
-
-
-def edgeorder_order_item_show(client,
-                              name,
-                              resource_group_name,
-                              expand=None):
-    return client.get_order_item_by_name(order_item_name=name,
-                                         resource_group_name=resource_group_name,
-                                         expand=expand)
-
-
-def edgeorder_address_create(client,
-                             name,
-                             resource_group_name,
-                             location,
-                             contact_details,
-                             tags=None,
-                             shipping_address=None):
-    address_resource = {}
-    if tags is not None:
-        address_resource['tags'] = tags
-    address_resource['location'] = location
-    if shipping_address is not None:
-        address_resource['shipping_address'] = shipping_address
-    address_resource['contact_details'] = contact_details
-    return client.begin_create_address(address_name=name,
-                                       resource_group_name=resource_group_name,
-                                       address_resource=address_resource)
-
-
-def edgeorder_order_item_create(client,
-                                name,
-                                resource_group_name,
-                                resource):
-    return client.begin_create_order_item(order_item_name=name,
-                                          resource_group_name=resource_group_name,
-                                          order_item_resource=resource)
-
-
-def edgeorder_address_update(client,
-                             name,
-                             resource_group_name,
-                             if_match=None,
-                             tags=None,
-                             shipping_address=None,
-                             contact_details=None):
-    address_update_parameter = {}
-    if tags is not None:
-        address_update_parameter['tags'] = tags
-    if shipping_address is not None:
-        address_update_parameter['shipping_address'] = shipping_address
-    if contact_details is not None:
-        address_update_parameter['contact_details'] = contact_details
-    return client.begin_update_address(address_name=name,
-                                       resource_group_name=resource_group_name,
-                                       if_match=if_match,
-                                       address_update_parameter=address_update_parameter)
-
-
-def edgeorder_order_item_update(client,
-                                name,
-                                resource_group_name,
-                                if_match=None,
-                                tags=None,
-                                notification_email_list=None,
-                                notification_preferences=None,
-                                transport_preferences=None,
-                                encryption_preferences=None,
-                                management_resource_preferences=None,
-                                shipping_address=None,
-                                contact_details=None):
-    order_item_update_parameter = {}
-    if tags is not None:
-        order_item_update_parameter['tags'] = tags
-    if notification_email_list is not None:
-        order_item_update_parameter['notification_email_list'] = notification_email_list
-    order_item_update_parameter['preferences'] = {}
-    if notification_preferences is not None:
-        order_item_update_parameter['preferences']['notification_preferences'] = notification_preferences
-    if transport_preferences is not None:
-        order_item_update_parameter['preferences']['transport_preferences'] = transport_preferences
-    if encryption_preferences is not None:
-        order_item_update_parameter['preferences']['encryption_preferences'] = encryption_preferences
-    if management_resource_preferences is not None:
-        order_item_update_parameter['preferences']['management_resource_preferences'] = management_resource_preferences
-    if len(order_item_update_parameter['preferences']) == 0:
-        del order_item_update_parameter['preferences']
-    order_item_update_parameter['forward_address'] = {}
-    if shipping_address is not None:
-        order_item_update_parameter['forward_address']['shipping_address'] = shipping_address
-    if contact_details is not None:
-        order_item_update_parameter['forward_address']['contact_details'] = contact_details
-    if len(order_item_update_parameter['forward_address']) == 0:
-        del order_item_update_parameter['forward_address']
-    return client.begin_update_order_item(order_item_name=name,
-                                          resource_group_name=resource_group_name,
-                                          if_match=if_match,
-                                          order_item_update_parameter=order_item_update_parameter)
-
-
-def edgeorder_address_delete(client,
-                             name,
-                             resource_group_name):
-    return client.begin_delete_address_by_name(address_name=name,
-                                               resource_group_name=resource_group_name)
-
-
-def edgeorder_order_item_delete(client,
-                                name,
-                                resource_group_name):
-    return client.begin_delete_order_item_by_name(order_item_name=name,
-                                                  resource_group_name=resource_group_name)
-
-
-def edgeorder_address_rg_list(client,
-                              resource_group_name,
-                              filter_=None,
-                              skip_token=None):
-    return client.list_addresses_at_resource_group_level(resource_group_name=resource_group_name,
-                                                         filter=filter_,
-                                                         skip_token=skip_token)
-
-
-def edgeorder_address_sub_list(client,
-                               filter_=None,
-                               skip_token=None):
-    return client.list_addresses_at_subscription_level(filter=filter_,
-                                                       skip_token=skip_token)
 
 
 def edgeorder_list_config(client,
@@ -207,31 +72,174 @@ def edgeorder_list_operation(client):
     return client.list_operations()
 
 
-def edgeorder_order_rg_list(client,
-                            resource_group_name,
-                            skip_token=None):
-    return client.list_order_at_resource_group_level(resource_group_name=resource_group_name,
-                                                     skip_token=skip_token)
+def edgeorder_address_list(client,
+                           resource_group_name=None,
+                           filter_=None,
+                           skip_token=None):
+    if resource_group_name:
+        return client.list_by_group(resource_group_name=resource_group_name,
+                                    filter=filter_,
+                                    skip_token=skip_token)
+    return client.list(filter=filter_,
+                       skip_token=skip_token)
 
 
-def edgeorder_order_sub_list(client,
-                             skip_token=None):
-    return client.list_order_at_subscription_level(skip_token=skip_token)
+def edgeorder_address_show(client,
+                           address_name,
+                           resource_group_name):
+    return client.get_address_by_name(address_name=address_name,
+                                      resource_group_name=resource_group_name)
+
+
+def edgeorder_address_create(client,
+                             address_name,
+                             resource_group_name,
+                             location,
+                             contact_details,
+                             tags=None,
+                             shipping_address=None):
+    address_resource = {}
+    if tags is not None:
+        address_resource['tags'] = tags
+    address_resource['location'] = location
+    if shipping_address is not None:
+        address_resource['shipping_address'] = shipping_address
+    address_resource['contact_details'] = contact_details
+    return client.begin_create_address(address_name=address_name,
+                                       resource_group_name=resource_group_name,
+                                       address_resource=address_resource)
+
+
+def edgeorder_address_update(client,
+                             address_name,
+                             resource_group_name,
+                             if_match=None,
+                             tags=None,
+                             shipping_address=None,
+                             contact_details=None):
+    address_update_parameter = {}
+    if tags is not None:
+        address_update_parameter['tags'] = tags
+    if shipping_address is not None:
+        address_update_parameter['shipping_address'] = shipping_address
+    if contact_details is not None:
+        address_update_parameter['contact_details'] = contact_details
+    return client.begin_update_address(address_name=address_name,
+                                       resource_group_name=resource_group_name,
+                                       if_match=if_match,
+                                       address_update_parameter=address_update_parameter)
+
+
+def edgeorder_address_delete(client,
+                             address_name,
+                             resource_group_name):
+    return client.begin_delete_address_by_name(address_name=address_name,
+                                               resource_group_name=resource_group_name)
+
+
+def edgeorder_order_list(client,
+                         resource_group_name=None,
+                         skip_token=None):
+    if resource_group_name:
+        return client.list_by_group(resource_group_name=resource_group_name,
+                                    skip_token=skip_token)
+    return client.list(skip_token=skip_token)
+
+
+def edgeorder_order_item_list(client,
+                              resource_group_name=None,
+                              filter_=None,
+                              expand=None,
+                              skip_token=None):
+    if resource_group_name:
+        return client.list_by_group(resource_group_name=resource_group_name,
+                                    filter=filter_,
+                                    expand=expand,
+                                    skip_token=skip_token)
+    return client.list(filter=filter_,
+                       expand=expand,
+                       skip_token=skip_token)
+
+
+def edgeorder_order_item_show(client,
+                              order_item_name,
+                              resource_group_name,
+                              expand=None):
+    return client.get_order_item_by_name(order_item_name=order_item_name,
+                                         resource_group_name=resource_group_name,
+                                         expand=expand)
+
+
+def edgeorder_order_item_create(client,
+                                order_item_name,
+                                resource_group_name,
+                                order_item_resource):
+    return client.begin_create_order_item(order_item_name=order_item_name,
+                                          resource_group_name=resource_group_name,
+                                          order_item_resource=order_item_resource)
+
+
+def edgeorder_order_item_update(client,
+                                order_item_name,
+                                resource_group_name,
+                                if_match=None,
+                                tags=None,
+                                notification_email_list=None,
+                                notification_preferences=None,
+                                transport_preferences=None,
+                                encryption_preferences=None,
+                                management_resource_preferences=None,
+                                shipping_address=None,
+                                contact_details=None):
+    order_item_update_parameter = {}
+    if tags is not None:
+        order_item_update_parameter['tags'] = tags
+    if notification_email_list is not None:
+        order_item_update_parameter['notification_email_list'] = notification_email_list
+    order_item_update_parameter['preferences'] = {}
+    if notification_preferences is not None:
+        order_item_update_parameter['preferences']['notification_preferences'] = notification_preferences
+    if transport_preferences is not None:
+        order_item_update_parameter['preferences']['transport_preferences'] = transport_preferences
+    if encryption_preferences is not None:
+        order_item_update_parameter['preferences']['encryption_preferences'] = encryption_preferences
+    if management_resource_preferences is not None:
+        order_item_update_parameter['preferences']['management_resource_preferences'] = management_resource_preferences
+    if len(order_item_update_parameter['preferences']) == 0:
+        del order_item_update_parameter['preferences']
+    order_item_update_parameter['forward_address'] = {}
+    if shipping_address is not None:
+        order_item_update_parameter['forward_address']['shipping_address'] = shipping_address
+    if contact_details is not None:
+        order_item_update_parameter['forward_address']['contact_details'] = contact_details
+    if len(order_item_update_parameter['forward_address']) == 0:
+        del order_item_update_parameter['forward_address']
+    return client.begin_update_order_item(order_item_name=order_item_name,
+                                          resource_group_name=resource_group_name,
+                                          if_match=if_match,
+                                          order_item_update_parameter=order_item_update_parameter)
+
+
+def edgeorder_order_item_delete(client,
+                                order_item_name,
+                                resource_group_name):
+    return client.begin_delete_order_item_by_name(order_item_name=order_item_name,
+                                                  resource_group_name=resource_group_name)
 
 
 def edgeorder_order_item_cancel(client,
-                                name,
+                                order_item_name,
                                 resource_group_name,
                                 reason):
     cancellation_reason = {}
     cancellation_reason['reason'] = reason
-    return client.cancel_order_item(order_item_name=name,
+    return client.cancel_order_item(order_item_name=order_item_name,
                                     resource_group_name=resource_group_name,
                                     cancellation_reason=cancellation_reason)
 
 
 def edgeorder_order_item_return(client,
-                                name,
+                                order_item_name,
                                 resource_group_name,
                                 return_reason,
                                 service_tag=None,
@@ -253,26 +261,6 @@ def edgeorder_order_item_return(client,
         return_order_item_details['return_address']['contact_details'] = contact_details
     if len(return_order_item_details['return_address']) == 0:
         del return_order_item_details['return_address']
-    return client.begin_return_order_item(order_item_name=name,
+    return client.begin_return_order_item(order_item_name=order_item_name,
                                           resource_group_name=resource_group_name,
                                           return_order_item_details=return_order_item_details)
-
-
-def edgeorder_order_item_rg_list(client,
-                                 resource_group_name,
-                                 filter_=None,
-                                 expand=None,
-                                 skip_token=None):
-    return client.list_order_items_at_resource_group_level(resource_group_name=resource_group_name,
-                                                           filter=filter_,
-                                                           expand=expand,
-                                                           skip_token=skip_token)
-
-
-def edgeorder_order_item_sub_list(client,
-                                  filter_=None,
-                                  expand=None,
-                                  skip_token=None):
-    return client.list_order_items_at_subscription_level(filter=filter_,
-                                                         expand=expand,
-                                                         skip_token=skip_token)

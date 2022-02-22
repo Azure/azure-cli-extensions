@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
+
 import json
 
 from azure.cli.testsdk import (
@@ -30,7 +31,7 @@ class EdgeOrderClientTest(ScenarioTest):
             "address2": "UNIT 1"
         })
         self.cmd(
-            "edgeorder address create -g {rg} --name TestAddressName "
+            "edgeorder address create -n TestAddressName -g {rg} "
             "--contact-details contact-name='{name}' email-list={email} phone={phone} phone-extension='' "
             "--shipping-address address-type='None' city='{city}' company-name={company} country={country} postal-code={code} state-or-province={state} street-address1='{address1}' street-address2='{address2}'",
             checks=[
@@ -39,25 +40,25 @@ class EdgeOrderClientTest(ScenarioTest):
             ]
         )
         self.cmd(
-            "edgeorder address show -g {rg} --name TestAddressName",
+            "edgeorder address show -n TestAddressName -g {rg}",
             checks=[
                 self.check("name", "TestAddressName"),
                 self.check("type", "Microsoft.EdgeOrder/addresses")
             ]
         )
         self.cmd(
-            "edgeorder address update -g {rg} --name TestAddressName "
+            "edgeorder address update -n TestAddressName -g {rg} "
             "--contact-details contact-name='{name}' email-list=ssemcr@microsoft.com phone={phone} phone-extension='' "
             "--shipping-address address-type='None' city='{city}' company-name={company} country={country} postal-code={code} state-or-province={state} street-address1='{address1}' street-address2='{address2}'"
         )
         self.cmd(
-            "edgeorder address rg-list -g {rg}",
+            "edgeorder address list -g {rg}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("@[0].contactDetails.emailList[0]", "ssemcr@microsoft.com")
             ]
         )
-        self.cmd("edgeorder address delete -g {rg} --name TestAddressName")
+        self.cmd("edgeorder address delete -n TestAddressName -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_edgeorder_", location="eastus")
     def test_edgeorder_order_crud(self):
@@ -121,15 +122,15 @@ class EdgeOrderClientTest(ScenarioTest):
 
         # create two order items
         self.cmd(
-            "edgeorder order-item create -g {rg} --name {order1} --resource '{resource1}'",
+            "edgeorder order-item create -n {order1} -g {rg} --order-item-resource '{resource1}'",
             checks=[
                 self.check("name", self.kwargs["order1"]),
                 self.check("type", "Microsoft.EdgeOrder/orderItems")
             ]
         )
-        self.cmd("edgeorder order-item create -g {rg} --name {order2} --resource '{resource2}'")
+        self.cmd("edgeorder order-item create -n {order2} -g {rg} --order-item-resource '{resource2}'")
         self.cmd(
-            "edgeorder order-item rg-list -g {rg}",
+            "edgeorder order-item list -g {rg}",
             checks=[
                 self.check("length(@)", 2),
                 self.check("@[0].name", self.kwargs["order1"]),
@@ -138,7 +139,7 @@ class EdgeOrderClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "edgeorder order rg-list -g {rg}",
+            "edgeorder order list -g {rg}",
             checks=[
                 self.check("length(@)", 2),
                 self.check("@[0].name", self.kwargs["order1"]),
@@ -146,7 +147,7 @@ class EdgeOrderClientTest(ScenarioTest):
             ]
         )
         self.cmd(
-            "edgeorder order show -g {rg} --location eastus --name {order1}",
+            "edgeorder order show -g {rg} --name {order1} --location eastus",
             checks=[
                 self.check("name", "{order1}"),
                 self.check("type", "Microsoft.EdgeOrder/orders")
@@ -154,10 +155,10 @@ class EdgeOrderClientTest(ScenarioTest):
         )
 
         # delete one of the order items
-        self.cmd("edgeorder order-item cancel -g {rg} --name {order2} --reason 'Order cancelled'")
-        self.cmd("edgeorder order-item delete -g {rg} --name {order2}")
+        self.cmd("edgeorder order-item cancel -n {order2} -g {rg} --reason 'Order cancelled'")
+        self.cmd("edgeorder order-item delete -n {order2} -g {rg} --yes")
         self.cmd(
-            "edgeorder order-item rg-list -g {rg}",
+            "edgeorder order-item list -g {rg}",
             checks=[
                 self.check("length(@)", 1),
                 self.check("@[0].name", self.kwargs["order1"])
@@ -165,14 +166,14 @@ class EdgeOrderClientTest(ScenarioTest):
         )
 
         self.cmd(
-            "edgeorder order-item update -g {rg} --name {order1} --transport-preferences preferred-shipment-type='CustomerManaged'",
+            "edgeorder order-item update -n {order1} -g {rg} --transport-preferences preferred-shipment-type='CustomerManaged'",
             checks=[
                 self.check("name", "{order1}"),
                 self.check("orderItemDetails.preferences.transportPreferences.preferredShipmentType", "CustomerManaged")
             ]
         )
-        self.cmd("edgeorder order-item cancel -g {rg} --name {order1} --reason 'Order cancelled'")
-        self.cmd("edgeorder order-item delete -g {rg} --name {order1}")
+        self.cmd("edgeorder order-item cancel -n {order1} -g {rg} --reason 'Order cancelled'")
+        self.cmd("edgeorder order-item delete -n {order1} -g {rg} --yes")
 
     @ResourceGroupPreparer(name_prefix="cli_test_edgeorder_", location="eastus")
     def test_edgeorder_list(self):

@@ -17,20 +17,6 @@ helps['edgeorder'] = '''
     short-summary: Manage Edge Order
 '''
 
-helps['edgeorder address'] = """
-    type: group
-    short-summary:  sub group address
-"""
-
-helps['edgeorder address show'] = """
-    type: command
-    short-summary: "Gets information about the specified address."
-    examples:
-      - name: GetAddressByName
-        text: |-
-               az edgeorder address show --name "TestMSAddressName" --resource-group "TestRG"
-"""
-
 helps['edgeorder order'] = """
     type: group
     short-summary:  sub group order
@@ -46,18 +32,96 @@ helps['edgeorder order show'] = """
 --resource-group "TestRG"
 """
 
-helps['edgeorder order-item'] = """
-    type: group
-    short-summary:  sub group order-item
+helps['edgeorder list-config'] = """
+    type: command
+    short-summary: "This method provides the list of configurations for the given product family, product line and \
+product under subscription."
+    parameters:
+      - name: --registered-features
+        short-summary: "List of registered feature flags for subscription"
+        long-summary: |
+            Usage: --registered-features name=XX state=XX
+
+            name: Name of subscription registered feature
+            state: State of subscription registered feature
+
+            Multiple actions can be specified by using more than one --registered-features argument.
+    examples:
+      - name: ListConfigurations
+        text: |-
+               az edgeorder list-config --configuration-filters "[{\\"filterableProperty\\":[{\\"type\\":\\"ShipToCount\
+ries\\",\\"supportedValues\\":[\\"US\\"]}],\\"hierarchyInformation\\":{\\"productFamilyName\\":\\"AzureStackEdge\\",\\"\
+productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}]"
 """
 
-helps['edgeorder order-item show'] = """
+helps['edgeorder list-family'] = """
     type: command
-    short-summary: "Gets an order item."
+    short-summary: "This method provides the list of product families for the given subscription."
+    parameters:
+      - name: --registered-features
+        short-summary: "List of registered feature flags for subscription"
+        long-summary: |
+            Usage: --registered-features name=XX state=XX
+
+            name: Name of subscription registered feature
+            state: State of subscription registered feature
+
+            Multiple actions can be specified by using more than one --registered-features argument.
     examples:
-      - name: GetOrderItemByName
+      - name: ListProductFamilies
         text: |-
-               az edgeorder order-item show --name "TestOrderItemName01" --resource-group "TestRG"
+               az edgeorder list-family --filterable-properties azurestackedge={"type":"ShipToCountries","supportedValu\
+es":["US"]}
+"""
+
+helps['edgeorder list-metadata'] = """
+    type: command
+    short-summary: "This method provides the list of product families metadata for the given subscription."
+    examples:
+      - name: ListProductFamiliesMetadata
+        text: |-
+               az edgeorder list-metadata
+"""
+
+helps['edgeorder list-operation'] = """
+    type: command
+    short-summary: "This method gets all the operations that are exposed for customer."
+    examples:
+      - name: ListOperations
+        text: |-
+               az edgeorder list-operation
+"""
+
+helps['edgeorder address'] = """
+    type: group
+    short-summary: Manage address with edgeorder
+"""
+
+helps['edgeorder address list'] = """
+    type: command
+    short-summary: "Lists all the addresses available under the given resource group. And Lists all the addresses \
+available under the subscription."
+    examples:
+      - name: ListAddressesAtResourceGroupLevel
+        text: |-
+               az edgeorder address list --resource-group "TestRG"
+      - name: ListAddressesAtSubscriptionLevel
+        text: |-
+               az edgeorder address list
+"""
+
+helps['edgeorder address'] = """
+    type: group
+    short-summary: Manage address with edgeorder sub group address
+"""
+
+helps['edgeorder address show'] = """
+    type: command
+    short-summary: "Gets information about the specified address."
+    examples:
+      - name: GetAddressByName
+        text: |-
+               az edgeorder address show --name "TestMSAddressName" --resource-group "TestRG"
 """
 
 helps['edgeorder address create'] = """
@@ -100,26 +164,6 @@ address-type="None" city="San Francisco" company-name="Microsoft" country="US" p
 state-or-province="CA" street-address1="16 TOWNSEND ST" street-address2="UNIT 1" --resource-group "TestRG"
 """
 
-helps['edgeorder order-item create'] = """
-    type: command
-    short-summary: "Creates an order item. Existing order item cannot be updated with this api and should instead be \
-updated with the Update order item API."
-    examples:
-      - name: CreateOrderItem
-        text: |-
-               az edgeorder order-item create --name "TestOrderItemName01" --resource "{\\"location\\":\\"westus\\",\\"\
-tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\
-\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetai\
-ls\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"productFamilyName\\":\\"AzureStac\
-kEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}},\\"addressDetails\\":{\
-\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"164 TOWNSEND ST\\",\\"emailList\\":[\\"ssemmail@micros\
-oft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"shippingAddress\\":{\\"addressType\\":\\"Re\
-sidential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\
-\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT \
-1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGrou\
-ps/TestRG/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\\"}" --resource-group "TestRG"
-"""
-
 helps['edgeorder address update'] = """
     type: command
     short-summary: "Updates the properties of an existing address."
@@ -158,6 +202,84 @@ email-list="ssemcr@microsoft.com" phone="1234567890" phone-extension="" --shippi
 city="San Francisco" company-name="Microsoft" country="US" postal-code="94107" state-or-province="CA" \
 street-address1="16 TOWNSEND STT" street-address2="UNIT 1" --tags Hobby="Web Series Added" Name="Smile-Updated" \
 WhatElse="Web Series Added" Work="Engineering" --resource-group "TestRG"
+"""
+
+helps['edgeorder address delete'] = """
+    type: command
+    short-summary: "Deletes an address."
+    examples:
+      - name: DeleteAddressByName
+        text: |-
+               az edgeorder address delete --name "TestAddressName1" --resource-group "TestRG"
+"""
+
+helps['edgeorder order'] = """
+    type: group
+    short-summary: Manage order with edgeorder sub group order
+"""
+
+helps['edgeorder order list'] = """
+    type: command
+    short-summary: "Lists order at resource group level. And Lists order at subscription level."
+    examples:
+      - name: ListOrderAtResourceGroupLevel
+        text: |-
+               az edgeorder order list --resource-group "TestRG"
+      - name: ListOrderAtSubscriptionLevel
+        text: |-
+               az edgeorder order list
+"""
+
+helps['edgeorder order-item'] = """
+    type: group
+    short-summary: Manage order item with edgeorder
+"""
+
+helps['edgeorder order-item list'] = """
+    type: command
+    short-summary: "Lists order item at resource group level. And Lists order item at subscription level."
+    examples:
+      - name: ListOrderItemsAtResourceGroupLevel
+        text: |-
+               az edgeorder order-item list --resource-group "TestRG"
+      - name: ListOrderItemsAtSubscriptionLevel
+        text: |-
+               az edgeorder order-item list
+"""
+
+helps['edgeorder order-item'] = """
+    type: group
+    short-summary: Manage order item with edgeorder sub group order-item
+"""
+
+helps['edgeorder order-item show'] = """
+    type: command
+    short-summary: "Gets an order item."
+    examples:
+      - name: GetOrderItemByName
+        text: |-
+               az edgeorder order-item show --name "TestOrderItemName01" --resource-group "TestRG"
+"""
+
+helps['edgeorder order-item create'] = """
+    type: command
+    short-summary: "Creates an order item. Existing order item cannot be updated with this api and should instead be \
+updated with the Update order item API."
+    examples:
+      - name: CreateOrderItem
+        text: |-
+               az edgeorder order-item create --name "TestOrderItemName01" --order-item-resource \
+"{\\"location\\":\\"westus\\",\\"tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":\
+{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"Micro\
+softManaged\\"}},\\"productDetails\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"AzureStackEdgeGPU\\",\\"p\
+roductFamilyName\\":\\"AzureStackEdge\\",\\"productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdge\
+GPU\\"}}},\\"addressDetails\\":{\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"164 TOWNSEND \
+ST\\",\\"emailList\\":[\\"ssemmail@microsoft.com\\",\\"vishwamdir@microsoft.com\\"],\\"phone\\":\\"3213131190\\"},\\"sh\
+ippingAddress\\":{\\"addressType\\":\\"Residential\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\
+\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND \
+ST\\",\\"streetAddress2\\":\\"UNIT 1\\",\\"zipExtendedCode\\":\\"1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-\
+4a25-95c7-ce9da541242f/resourceGroups/TestRG/providers/Microsoft.EdgeOrder/locations/westus/orders/TestOrderItemName01\
+\\"}" --resource-group "TestRG"
 """
 
 helps['edgeorder order-item update'] = """
@@ -226,15 +348,6 @@ contact name" email-list="testemail@microsoft.com" phone="2222200000" --transpor
 preferred-shipment-type="CustomerManaged" --tags ant="insect" pigeon="bird" tiger="animal" --resource-group "TestRG"
 """
 
-helps['edgeorder address delete'] = """
-    type: command
-    short-summary: "Deletes an address."
-    examples:
-      - name: DeleteAddressByName
-        text: |-
-               az edgeorder address delete --name "TestAddressName1" --resource-group "TestRG"
-"""
-
 helps['edgeorder order-item delete'] = """
     type: command
     short-summary: "Deletes an order item."
@@ -242,102 +355,6 @@ helps['edgeorder order-item delete'] = """
       - name: DeleteOrderItemByName
         text: |-
                az edgeorder order-item delete --name "TestOrderItemName01" --resource-group "TestRG"
-"""
-
-helps['edgeorder address rg-list'] = """
-    type: command
-    short-summary: "Lists all the addresses available under the given resource group."
-    examples:
-      - name: ListAddressesAtResourceGroupLevel
-        text: |-
-               az edgeorder address rg-list --resource-group "TestRG"
-"""
-
-helps['edgeorder address sub-list'] = """
-    type: command
-    short-summary: "Lists all the addresses available under the subscription."
-    examples:
-      - name: ListAddressesAtSubscriptionLevel
-        text: |-
-               az edgeorder address sub-list
-"""
-
-helps['edgeorder list-config'] = """
-    type: command
-    short-summary: "This method provides the list of configurations for the given product family, product line and \
-product under subscription."
-    parameters:
-      - name: --registered-features
-        short-summary: "List of registered feature flags for subscription"
-        long-summary: |
-            Usage: --registered-features name=XX state=XX
-
-            name: Name of subscription registered feature
-            state: State of subscription registered feature
-
-            Multiple actions can be specified by using more than one --registered-features argument.
-    examples:
-      - name: ListConfigurations
-        text: |-
-               az edgeorder list-config --configuration-filters "[{\\"filterableProperty\\":[{\\"type\\":\\"ShipToCount\
-ries\\",\\"supportedValues\\":[\\"US\\"]}],\\"hierarchyInformation\\":{\\"productFamilyName\\":\\"AzureStackEdge\\",\\"\
-productLineName\\":\\"AzureStackEdge\\",\\"productName\\":\\"AzureStackEdgeGPU\\"}}]"
-"""
-
-helps['edgeorder list-family'] = """
-    type: command
-    short-summary: "This method provides the list of product families for the given subscription."
-    parameters:
-      - name: --registered-features
-        short-summary: "List of registered feature flags for subscription"
-        long-summary: |
-            Usage: --registered-features name=XX state=XX
-
-            name: Name of subscription registered feature
-            state: State of subscription registered feature
-
-            Multiple actions can be specified by using more than one --registered-features argument.
-    examples:
-      - name: ListProductFamilies
-        text: |-
-               az edgeorder list-family --filterable-properties azurestackedge={"type":"ShipToCountries","supportedValu\
-es":["US"]}
-"""
-
-helps['edgeorder list-metadata'] = """
-    type: command
-    short-summary: "This method provides the list of product families metadata for the given subscription."
-    examples:
-      - name: ListProductFamiliesMetadata
-        text: |-
-               az edgeorder list-metadata
-"""
-
-helps['edgeorder list-operation'] = """
-    type: command
-    short-summary: "This method gets all the operations that are exposed for customer."
-    examples:
-      - name: ListOperations
-        text: |-
-               az edgeorder list-operation
-"""
-
-helps['edgeorder order rg-list'] = """
-    type: command
-    short-summary: "Lists order at resource group level."
-    examples:
-      - name: ListOrderAtResourceGroupLevel
-        text: |-
-               az edgeorder order rg-list --resource-group "TestRG"
-"""
-
-helps['edgeorder order sub-list'] = """
-    type: command
-    short-summary: "Lists order at subscription level."
-    examples:
-      - name: ListOrderAtSubscriptionLevel
-        text: |-
-               az edgeorder order sub-list
 """
 
 helps['edgeorder order-item cancel'] = """
@@ -385,22 +402,4 @@ state-or-province=XX country=XX postal-code=XX zip-extended-code=XX company-name
         text: |-
                az edgeorder order-item return --name "TestOrderName1" --resource-group "TestRG" --return-reason "Order \
 returned"
-"""
-
-helps['edgeorder order-item rg-list'] = """
-    type: command
-    short-summary: "Lists order item at resource group level."
-    examples:
-      - name: ListOrderItemsAtResourceGroupLevel
-        text: |-
-               az edgeorder order-item rg-list --resource-group "TestRG"
-"""
-
-helps['edgeorder order-item sub-list'] = """
-    type: command
-    short-summary: "Lists order item at subscription level."
-    examples:
-      - name: ListOrderItemsAtSubscriptionLevel
-        text: |-
-               az edgeorder order-item sub-list
 """

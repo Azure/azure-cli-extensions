@@ -7,7 +7,13 @@
 # --------------------------------------------------------------------------
 
 from ._edge_order_management_client_operations import EdgeOrderManagementClientOperationsMixin
+from ._addresses_operations import AddressesOperations
+from ._order_operations import OrderOperations
+from ._order_items_operations import OrderItemsOperations
 
 __all__ = [
     'EdgeOrderManagementClientOperationsMixin',
+    'AddressesOperations',
+    'OrderOperations',
+    'OrderItemsOperations',
 ]

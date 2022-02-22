@@ -18,7 +18,7 @@ az edgeorder address create --name "TestMSAddressName" --location "eastus" \
 ##### Create an order item #####
 ```
 az edgeorder order-item create --name "TestOrderItemName01" \
-    --resource "{\\"location\\":\\"eastus\\",\\"tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetails\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"edgep_base\\",\\"productFamilyName\\":\\"azurestackedge\\",\\"productLineName\\":\\"azurestackedge\\",\\"productName\\":\\"azurestackedgegpu\\"}}},\\"addressDetails\\":{\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"Petr Cech\\",\\"emailList\\":[\\"testemail@microsoft.com\\"],\\"phone\\":\\"3213131190\\",\\"phoneExtension\\":\\"\\"},\\"shippingAddress\\":{\\"addressType\\":\\"None\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT 1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGroups/TestRG/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}" \
+    --order-item-resource "{\\"location\\":\\"eastus\\",\\"tags\\":{\\"carrot\\":\\"vegetable\\",\\"mango\\":\\"fruit\\"},\\"orderItemDetails\\":{\\"orderItemType\\":\\"Purchase\\",\\"preferences\\":{\\"transportPreferences\\":{\\"preferredShipmentType\\":\\"MicrosoftManaged\\"}},\\"productDetails\\":{\\"hierarchyInformation\\":{\\"configurationName\\":\\"edgep_base\\",\\"productFamilyName\\":\\"azurestackedge\\",\\"productLineName\\":\\"azurestackedge\\",\\"productName\\":\\"azurestackedgegpu\\"}}},\\"addressDetails\\":{\\"forwardAddress\\":{\\"contactDetails\\":{\\"contactName\\":\\"Petr Cech\\",\\"emailList\\":[\\"testemail@microsoft.com\\"],\\"phone\\":\\"3213131190\\",\\"phoneExtension\\":\\"\\"},\\"shippingAddress\\":{\\"addressType\\":\\"None\\",\\"city\\":\\"San Francisco\\",\\"companyName\\":\\"Microsoft\\",\\"country\\":\\"US\\",\\"postalCode\\":\\"94107\\",\\"stateOrProvince\\":\\"CA\\",\\"streetAddress1\\":\\"16 TOWNSEND ST\\",\\"streetAddress2\\":\\"UNIT 1\\"}}},\\"orderId\\":\\"/subscriptions/fa68082f-8ff7-4a25-95c7-ce9da541242f/resourceGroups/TestRG/providers/Microsoft.EdgeOrder/locations/eastus/orders/TestOrderItemName01\\"}" \
     --resource-group "TestRG" 
 ```
 ##### Cancel an order item #####
@@ -28,11 +28,11 @@ az edgeorder order-item cancel --reason "Order cancelled" --name "TestOrderItemN
 ```
 ##### List addresses at resource group level #####
 ```
-az edgeorder address rg-list --resource-group "TestRG"
+az edgeorder address list --resource-group "TestRG"
 ```
 ##### List addresses at subscription level #####
 ```
-az edgeorder address sub-list
+az edgeorder address list
 ```
 ##### List configurations #####
 ```
@@ -45,19 +45,19 @@ az edgeorder list-operation
 ```
 ##### List orders at resource group level #####
 ```
-az edgeorder order rg-list --resource-group "TestRG"
+az edgeorder order list --resource-group "TestRG"
 ```
 ##### List orders at subscription level #####
 ```
-az edgeorder order sub-list
+az edgeorder order list
 ```
 ##### List order items at resource group level #####
 ```
-az edgeorder order-item rg-list --resource-group "TestRG"
+az edgeorder order-item list --resource-group "TestRG"
 ```
 ##### List order items at subscription level #####
 ```
-az edgeorder order-item sub-list
+az edgeorder order-item list
 ```
 ##### List product families #####
 ```

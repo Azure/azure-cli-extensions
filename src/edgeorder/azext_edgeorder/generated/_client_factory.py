@@ -14,3 +14,15 @@ def cf_edgeorder_cl(cli_ctx, *_):
     from azext_edgeorder.vendored_sdks.edgeorder import EdgeOrderManagementClient
     return get_mgmt_service_client(cli_ctx,
                                    EdgeOrderManagementClient)
+
+
+def cf_address(cli_ctx, *_):
+    return cf_edgeorder_cl(cli_ctx).addresses
+
+
+def cf_order(cli_ctx, *_):
+    return cf_edgeorder_cl(cli_ctx).order
+
+
+def cf_order_item(cli_ctx, *_):
+    return cf_edgeorder_cl(cli_ctx).order_items

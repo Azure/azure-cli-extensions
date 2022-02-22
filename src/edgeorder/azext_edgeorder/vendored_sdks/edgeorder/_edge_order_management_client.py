@@ -19,12 +19,21 @@ if TYPE_CHECKING:
 
 from ._configuration import EdgeOrderManagementClientConfiguration
 from .operations import EdgeOrderManagementClientOperationsMixin
+from .operations import AddressesOperations
+from .operations import OrderOperations
+from .operations import OrderItemsOperations
 from . import models
 
 
 class EdgeOrderManagementClient(EdgeOrderManagementClientOperationsMixin):
     """Edge Order API's.
 
+    :ivar addresses: AddressesOperations operations
+    :vartype addresses: azure.mgmt.edgeorder.operations.AddressesOperations
+    :ivar order: OrderOperations operations
+    :vartype order: azure.mgmt.edgeorder.operations.OrderOperations
+    :ivar order_items: OrderItemsOperations operations
+    :vartype order_items: azure.mgmt.edgeorder.operations.OrderItemsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -51,6 +60,12 @@ class EdgeOrderManagementClient(EdgeOrderManagementClientOperationsMixin):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
+        self.addresses = AddressesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.order = OrderOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.order_items = OrderItemsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
         # type: () -> None
