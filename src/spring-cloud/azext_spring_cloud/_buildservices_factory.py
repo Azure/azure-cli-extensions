@@ -57,14 +57,14 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, target_module=None, runtime_version=None, app=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, app=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         properties = models.BuildProperties(
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env=self._get_build_env(target_module, runtime_version))
+            env=build_env)
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
@@ -74,23 +74,6 @@ class BuildService:
                                                                     build).properties.triggered_build_result.id
         except (AttributeError, CloudError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
-
-    def _get_build_env(self, target_module, runtime_version):
-        if all(x is None for x in [target_module, runtime_version]):
-            return None
-        env = {}
-        if target_module:
-            env['BP_MAVEN_BUILT_MODULE'] = target_module
-            env['BP_GRADLE_BUILT_MODULE'] = target_module
-
-        runtime_version_table = {
-            SupportedRuntimeValue.JAVA8: '8.*',
-            SupportedRuntimeValue.JAVA11: '11.*',
-            SupportedRuntimeValue.JAVA17: '17.*'
-        }
-        if runtime_version:
-            env['BP_JVM_VERSION'] = runtime_version_table.get(runtime_version, '11.*')
-        return env
 
     def _wait_build_finished(self, build_result_id):
         '''
