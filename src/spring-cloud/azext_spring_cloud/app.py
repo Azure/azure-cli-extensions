@@ -184,8 +184,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
-    deployment_kwargs.update(deployment_factory.source_factory
-                             .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
+    deployment_kwargs.update(deployment_factory.get_update_backfill_options(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
     deployment_factory.source_factory.validate_source(**deployment_kwargs, **basic_kwargs)

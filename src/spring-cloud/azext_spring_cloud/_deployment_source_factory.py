@@ -37,16 +37,15 @@ class JarSource(BaseSource):
         )
 
     def fulfilled_options_from_original_source_info(self, deployment_resource,
-                                                    jvm_options=None, runtime_version=None, env=None, **_):
-        if all(x is None for x in [jvm_options, runtime_version, env]):
+                                                    jvm_options=None, runtime_version=None, **_):
+        if all(x is None for x in [jvm_options, runtime_version]):
             return {}
         original_source = deployment_resource.properties.source
         return {
             'jvm_options': jvm_options if jvm_options is not None else original_source.jvm_options,
             'runtime_version': runtime_version or original_source.runtime_version,
             'version': original_source.version,
-            'deployable_path': original_source.relative_path,
-            'env': env or  deployment_resource.properties.deployment_settings.environment_variables
+            'deployable_path': original_source.relative_path
         }
 
 
@@ -70,16 +69,15 @@ class NetCoreZipSource(BaseSource):
         )
 
     def fulfilled_options_from_original_source_info(self, deployment_resource,
-                                                    main_entry=None, runtime_version=None, env=None, **_):
-        if all(x is None for x in [main_entry, runtime_version, env]):
+                                                    main_entry=None, runtime_version=None, **_):
+        if all(x is None for x in [main_entry, runtime_version]):
             return {}
         original_source = deployment_resource.properties.source
         return {
             'main_entry': main_entry or original_source.net_core_main_entry_path,
             'runtime_version': runtime_version or original_source.runtime_version,
             'version': original_source.version,
-            'deployable_path': original_source.relative_path,
-            'env': env or  deployment_resource.properties.deployment_settings.environment_variables
+            'deployable_path': original_source.relative_path
         }
 
 
