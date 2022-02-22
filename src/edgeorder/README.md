@@ -62,7 +62,7 @@ az edgeorder order-item list
 ##### List product families #####
 ```
 az edgeorder list-family \
-    --filterable-properties azurestackedge={"type":"ShipToCountries","supportedValues":["US"]} 
+    --filterable-properties azurestackedge="{\\"type\\":\\"ShipToCountries\\",\\"supportedValues\\":[\\"US\\"]}"
 ```
 ##### List product family metadata #####
 ```

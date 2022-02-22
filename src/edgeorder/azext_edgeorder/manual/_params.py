@@ -14,8 +14,10 @@ from azext_edgeorder.action import (
 
 def load_arguments(self, _):
     with self.argument_context('edgeorder order-item update') as c:
-        c.argument('notification_email_list', options_list=['--notif-email-list'], nargs='+', help='Additional notification email list.')
-        c.argument('notification_preferences', options_list=['--notif-preferences'], action=AddNotificationPreferences, nargs='+', help='Notification '
-                   'preferences.', arg_group='Preferences')
-        c.argument('management_resource_preferences', options_list=['--mgmt-preferences'], action=AddManagementResourcePreferences, nargs='+',
+        c.argument('notification_email_list', options_list=['--notif-email-list'], nargs='+',
+                   help='Additional notification email list.')
+        c.argument('notification_preferences', options_list=['--notif-preferences'], action=AddNotificationPreferences,
+                   nargs='+', help='Notification preferences.', arg_group='Preferences')
+        c.argument('management_resource_preferences', options_list=['--mgmt-preferences'],
+                   action=AddManagementResourcePreferences, nargs='+',
                    help='Preferences related to the Management resource.', arg_group='Preferences')

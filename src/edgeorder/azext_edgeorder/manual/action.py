@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 # pylint: disable=no-self-use
+# pylint: disable=raise-missing-from
 
 import argparse
 import json
@@ -25,7 +26,7 @@ class AddFilterableProperties(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             v = properties[k]
@@ -37,7 +38,7 @@ class AddFilterableProperties(argparse.Action):
 class AddRegisteredFeatures(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddRegisteredFeatures, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -46,7 +47,7 @@ class AddRegisteredFeatures(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -60,8 +61,8 @@ class AddRegisteredFeatures(argparse._AppendAction):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter registered-features. All possible keys are: name,'
-                    ' state'.format(k)
+                    f'Unsupported Key {k} is provided for parameter registered-features. All possible keys are: name,'
+                    ' state'
                 )
 
         return d
@@ -79,7 +80,7 @@ class AddShippingAddress(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -117,9 +118,9 @@ class AddShippingAddress(argparse.Action):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter shipping-address. All possible keys are:'
+                    f'Unsupported Key {k} is provided for parameter shipping-address. All possible keys are:'
                     ' street-address1, street-address2, street-address3, city, state-or-province, country, postal-code,'
-                    ' zip-extended-code, company-name, address-type'.format(k)
+                    ' zip-extended-code, company-name, address-type'
                 )
 
         return d
@@ -137,7 +138,7 @@ class AddContactDetails(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -160,8 +161,8 @@ class AddContactDetails(argparse.Action):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter contact-details. All possible keys are: contact-name,'
-                    ' phone, phone-extension, mobile, email-list'.format(k)
+                    f'Unsupported Key {k} is provided for parameter contact-details. All possible keys are: '
+                    'contact-name, phone, phone-extension, mobile, email-list'
                 )
 
         return d
@@ -170,7 +171,7 @@ class AddContactDetails(argparse.Action):
 class AddNotificationPreferences(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddNotificationPreferences, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -179,7 +180,7 @@ class AddNotificationPreferences(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -193,8 +194,8 @@ class AddNotificationPreferences(argparse._AppendAction):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter notification-preferences. All possible keys are:'
-                    ' stage-name, send-notification'.format(k)
+                    f'Unsupported Key {k} is provided for parameter notification-preferences. All possible keys are:'
+                    ' stage-name, send-notification'
                 )
 
         return d
@@ -212,7 +213,7 @@ class AddTransportPreferences(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -223,8 +224,8 @@ class AddTransportPreferences(argparse.Action):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter transport-preferences. All possible keys are:'
-                    ' preferred-shipment-type'.format(k)
+                    f'Unsupported Key {k} is provided for parameter transport-preferences. All possible keys are:'
+                    ' preferred-shipment-type'
                 )
 
         return d
@@ -242,7 +243,7 @@ class AddEncryptionPreferences(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -253,8 +254,8 @@ class AddEncryptionPreferences(argparse.Action):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter encryption-preferences. All possible keys are:'
-                    ' double-encryption-status'.format(k)
+                    f'Unsupported Key {k} is provided for parameter encryption-preferences. All possible keys are:'
+                    ' double-encryption-status'
                 )
 
         return d
@@ -272,7 +273,7 @@ class AddManagementResourcePreferences(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
         d = {}
         for k in properties:
             kl = k.lower()
@@ -283,8 +284,8 @@ class AddManagementResourcePreferences(argparse.Action):
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter management-resource-preferences. All possible keys'
-                    ' are: preferred-management-resource-id'.format(k)
+                    f'Unsupported Key {k} is provided for parameter management-resource-preferences. All possible keys'
+                    ' are: preferred-management-resource-id'
                 )
 
         return d

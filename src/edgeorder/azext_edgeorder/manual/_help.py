@@ -67,8 +67,8 @@ helps['edgeorder list-family'] = """
     examples:
       - name: ListProductFamilies
         text: |-
-               az edgeorder list-family --filterable-properties azurestackedge={"type":"ShipToCountries","supportedValu\
-es":["US"]}
+               az edgeorder list-family --filterable-properties azurestackedge="{\\"type\\":\\"ShipToCountries\\",\
+               \\"supportedValues\\":[\\"US\\"]}"
 """
 
 helps['edgeorder list-metadata'] = """
@@ -398,4 +398,22 @@ state-or-province=XX country=XX postal-code=XX zip-extended-code=XX company-name
         text: |-
                az edgeorder order-item return --name "TestOrderName1" --resource-group "TestRG" --return-reason "Order \
 returned"
+"""
+
+helps['edgeorder address wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the address is met.
+    parameters:
+      - name: --address-name
+        short-summary: "The name of the address Resource within the specified resource group."
+"""
+
+helps['edgeorder order-item wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the order-item is met.
+    parameters:
+      - name: --expand
+        short-summary: "$expand is supported on device details, forward shipping details and reverse shipping details parameters."
+      - name: --order-item-name
+        short-summary: "The name of the order item."
 """
