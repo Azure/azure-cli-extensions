@@ -571,6 +571,16 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_1.get_message_of_the_day(), "test_mc_message_of_the_day"
         )
 
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"message_of_the_day": "fake-path"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_message_of_the_day()
+
     def test_get_kubelet_config(self):
         # default
         ctx_1 = AKSPreviewContext(
