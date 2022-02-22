@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.9
+++++++
+* Fix the issue that the hyper_v_generation is always V1 when copying the image.
+
 0.2.8
 ++++++
 * Remove unused --subscription parameter

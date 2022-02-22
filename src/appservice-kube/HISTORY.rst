@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* Update functionapp runtimes and support v4 functionapps
+
 0.1.2
 ++++++
 * Allow passing custom locations by name if in the same resource group as the app/plan

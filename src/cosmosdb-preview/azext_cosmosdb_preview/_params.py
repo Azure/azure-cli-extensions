@@ -4,20 +4,48 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
+from azext_cosmosdb_preview.actions import (
+    InvokeCommandArgumentsAddAction)
+from argcomplete.completers import FilesCompleter
 
 from azext_cosmosdb_preview._validators import (
     validate_gossip_certificates,
     validate_client_certificates,
     validate_server_certificates,
     validate_seednodes,
-    validate_node_count)
+    validate_node_count,
+    validate_mongo_role_definition_body,
+    validate_mongo_role_definition_id,
+    validate_mongo_user_definition_body,
+    validate_mongo_user_definition_id)
 
-from azext_cosmosdb_preview.actions import (
-    InvokeCommandArgumentsAddAction)
+MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyRWRole\\",
+\\"Type\\": \\"CustomRole\\"
+\\"DatabaseName\\": \\"MyDb\\",
+\\"Privileges\\": [ {\\"Resource\\": {\\"Db\\": \\"MyDB\\",\\"Collection\\": \\"MyCol\\"},\\"Actions\\": [\\"insert\\",\\"find\\"]}],
+\\"Roles\\": [ {\\"Role\\": \\"myInheritedRole\\",\\"Db\\": \\"MyTestDb\\"}]
+}"
+"""
+
+MONGO_USER_DEFINITION_EXAMPLE = """--body "{
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"UserName\\": \\"MyUserName\\",
+\\"Password\\": \\"MyPass\\",
+\\"CustomData\\": \\"MyCustomData\\",
+\\"Mechanisms\\": \\"SCRAM-SHA-256\\"
+\\"DatabaseName\\": \\"MyDb\\",
+\\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
+}"
+"""
 
 
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type, get_enum_type, get_three_state_flag
+    from knack.arguments import CLIArgumentType
+
+    account_name_type = CLIArgumentType(options_list=['--account-name', '-a'], help="Cosmosdb account name.")
 
     # Managed Cassandra Cluster
     for scope in [
@@ -81,12 +109,12 @@ def load_arguments(self, _):
             c.argument('managed_disk_customer_key_uri', options_list=['--managed-disk-customer-key-uri', '-k'], help="Key uri to use for encryption of managed disks. Ensure the system assigned identity of the cluster has been assigned appropriate permissions(key get/wrap/unwrap permissions) on the key.")
             c.argument('backup_storage_customer_key_uri', options_list=['--backup-storage-customer-key-uri', '-p'], help="Indicates the Key Uri of the customer key to use for encryption of the backup storage account.")
             c.argument('server_hostname', options_list=['--ldap-server-hostname'], help="Hostname of the LDAP server.")
-            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server.")
-            c.argument('service_user_distinguished_name', options_list=['--ldap-user-name'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
-            c.argument('service_user_password', options_list=['--ldap-user-password'], help="Password of the look up user.")
-            c.argument('search_base_distinguished_name', options_list=['--ldap-base-name'], help="Distinguished name of the object to start the recursive search of users from.")
-            c.argument('search_filter_template', options_list=['--ldap-filter-template'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login.")
-            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-certificates'], help="LDAP server certificate.")
+            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server. Defaults to 636")
+            c.argument('service_user_distinguished_name', options_list=['--ldap-service-user-dn'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
+            c.argument('service_user_password', options_list=['--ldap-svc-user-pwd'], help="Password of the look up user.")
+            c.argument('search_base_distinguished_name', options_list=['--ldap-search-base-dn'], help="Distinguished name of the object to start the recursive search of users from.")
+            c.argument('search_filter_template', options_list=['--ldap-search-filter'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login. While using this parameter from Windows Powershell (not Windows CommandPrompt or Linux) there is a known issue with escaping special characters, so pass as \"\"\"(cn=%s)\"\"\" instead.")
+            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-server-certs'], help="LDAP server certificate. It should have subject alternative name(SAN) DNS Name entry matching the hostname of the LDAP server.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter create') as c:
@@ -116,3 +144,15 @@ def load_arguments(self, _):
             c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
             c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
             c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
+
+    # Mongo role definition
+    with self.argument_context('cosmosdb mongodb role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('mongo_role_definition_id', options_list=['--id', '-i'], validator=validate_mongo_role_definition_id, help="Unique ID for the Mongo Role Definition.")
+        c.argument('mongo_role_definition_body', options_list=['--body', '-b'], validator=validate_mongo_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), Type (Default is CustomRole), DatabaseName, Privileges, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-role_definition-body-file.json or " + MONGO_ROLE_DEFINITION_EXAMPLE)
+
+    # Mongo user definition
+    with self.argument_context('cosmosdb mongodb user definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('mongo_user_definition_id', options_list=['--id', '-i'], validator=validate_mongo_user_definition_id, help="Unique ID for the Mongo User Definition.")
+        c.argument('mongo_user_definition_body', options_list=['--body', '-b'], validator=validate_mongo_user_definition_body, completer=FilesCompleter(), help="User Definition body with Id (Optional for create), UserName, Password, DatabaseName, CustomData, Mechanisms, Roles.  You can enter it as a string or as a file, e.g., --body @mongo-user_definition-body-file.json or " + MONGO_USER_DEFINITION_EXAMPLE)
