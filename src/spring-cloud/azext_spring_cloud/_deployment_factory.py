@@ -112,7 +112,7 @@ class EnterpriseDeployment(DefaultDeployment):
         else:
             env.pop('JAVA_OPTS', None)
         return env
-    
+
     def _backfill_settings(self, deployment_resource=None, env=None, jvm_options=None, **_):
         if jvm_options is None or env is not None:
             return {}
