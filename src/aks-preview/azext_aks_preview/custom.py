@@ -2651,6 +2651,7 @@ def _is_msi_cluster(managed_cluster):
     return (managed_cluster and managed_cluster.identity and
             (managed_cluster.identity.type.casefold() == "systemassigned" or managed_cluster.identity.type.casefold() == "userassigned"))
 
+
 def _get_message_of_the_day(file_path):
     if not os.path.isfile(file_path):
         raise CLIError("{} is not valid file, or not accessable.".format(file_path))
@@ -2659,6 +2660,7 @@ def _get_message_of_the_day(file_path):
         raise ArgumentUsageError("message of the day should point to a non-empty file if specified.")
     content = base64.b64encode(bytes(content, 'ascii')).decode('ascii')
     return content
+
 
 def _get_kubelet_config(file_path):
     if not os.path.isfile(file_path):
