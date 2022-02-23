@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/virtual-wan',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/virtual-wan',
     classifiers=CLASSIFIERS,
     package_data={'azext_vwan': ['azext_metadata.json']},
     packages=find_packages(),

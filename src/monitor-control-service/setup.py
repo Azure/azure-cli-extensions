@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools MonitorClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/monitor-control-service',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/monitor-control-service',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
