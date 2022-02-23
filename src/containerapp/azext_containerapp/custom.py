@@ -34,7 +34,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                    _add_or_update_env_vars)
+                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary)
 
 logger = get_logger(__name__)
 
@@ -82,7 +82,7 @@ def create_deserializer():
     return Deserializer(deserializer)
 
 
-def create_or_update_containerapp_yaml(cmd, name, resource_group_name, file_name, is_update, no_wait=False):
+def update_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerapp) != dict:
         raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
@@ -106,10 +106,118 @@ def create_or_update_containerapp_yaml(cmd, name, resource_group_name, file_name
     except Exception as ex:
         pass
 
-    if is_update and current_containerapp_def is None:
+    if not current_containerapp_def:
         raise ValidationError("The containerapp '{}' does not exist".format(name))
 
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+
+        containerapp_def = deserializer('ContainerApp', yaml_containerapp)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+    tags = None
+    if yaml_containerapp.get('tags'):
+        tags = yaml_containerapp.get('tags')
+        del yaml_containerapp['tags']
+
+    containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
+    containerapp_def['tags'] = tags
+
+    # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+    containerapp_def = process_loaded_yaml(containerapp_def)
+
+    _get_existing_secrets(cmd, resource_group_name, name, current_containerapp_def)
+
+    update_nested_dictionary(current_containerapp_def, containerapp_def)
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(current_containerapp_def)
+    _remove_readonly_attributes(current_containerapp_def)
+
+    '''
+    # Not sure if update should replace items that are a list, or do createOrUpdate. This commented out section is the implementation for createOrUpdate.
+    # (If a property is a list, do createOrUpdate, rather than just replace with new list)
+
+    if 'properties' in containerapp_def and 'template' in containerapp_def['properties']:
+        # Containers
+        if 'containers' in containerapp_def['properties']['template'] and containerapp_def['properties']['template']['containers']:
+            for new_container in containerapp_def['properties']['template']['containers']:
+                if "name" not in new_container or not new_container["name"]:
+                    raise ValidationError("The container name is not specified.")
+
+                # Check if updating existing container
+                updating_existing_container = False
+                for existing_container in current_containerapp_def["properties"]["template"]["containers"]:
+                    if existing_container['name'].lower() == new_container['name'].lower():
+                        updating_existing_container = True
+
+                        if 'image' in new_container and new_container['image']:
+                            existing_container['image'] = new_container['image']
+                        if 'env' in new_container and new_container['env']:
+                            if 'env' not in existing_container or not existing_container['env']:
+                                existing_container['env'] = []
+                            _add_or_update_env_vars(existing_container['env'], new_container['env'])
+                        if 'command' in new_container and new_container['command']:
+                            existing_container['command'] = new_container['command']
+                        if 'args' in new_container and new_container['args']:
+                            existing_container['args'] = new_container['args']
+                        if 'resources' in new_container and new_container['resources']:
+                            if 'cpu' in new_container['resources'] and new_container['resources']['cpu'] is not None:
+                                existing_container['resources']['cpu'] = new_container['resources']['cpu']
+                            if 'memory' in new_container['resources'] and new_container['resources']['memory'] is not None:
+                                existing_container['resources']['memory'] = new_container['resources']['memory']
+
+                # If not updating existing container, add as new container
+                if not updating_existing_container:
+                    current_containerapp_def["properties"]["template"]["containers"].append(new_container)
+
+    # Traffic Weights
+
+    # Secrets
+
+    # Registries
+
+    # Scale rules
+
+    # Source Controls
+
+    '''
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=current_containerapp_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
+                name, resource_group_name
+            ))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+    yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
+    if type(yaml_containerapp) != dict:
+        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    if not yaml_containerapp.get('name'):
+        yaml_containerapp['name'] = name
+    elif yaml_containerapp.get('name').lower() != name.lower():
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+            yaml_containerapp.get('name'), name))
+    name = yaml_containerapp.get('name')
+
+    if not yaml_containerapp.get('type'):
+        yaml_containerapp['type'] = 'Microsoft.App/containerApps'
+    elif yaml_containerapp.get('type').lower() != "microsoft.app/containerapps":
+        raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
+
+    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    containerapp_def = None
     try:
         deserializer = create_deserializer()
 
@@ -135,21 +243,15 @@ def create_or_update_containerapp_yaml(cmd, name, resource_group_name, file_name
 
     # Validate managed environment
     if not containerapp_def["properties"].get('managedEnvironmentId'):
-        if is_update:
-            containerapp_def["properties"]['managedEnvironmentId'] = current_containerapp_def["properties"]['managedEnvironmentId']
-        else:
-            raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
-
-    managed_env_id = containerapp_def["properties"]['managedEnvironmentId']
-    if not managed_env_id:
         raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
 
+    env_id = containerapp_def["properties"]['managedEnvironmentId']
     env_name = None
     env_rg = None
     env_info = None
 
-    if (is_valid_resource_id(managed_env_id)):
-        parsed_managed_env = parse_resource_id(managed_env_id)
+    if (is_valid_resource_id(env_id)):
+        parsed_managed_env = parse_resource_id(env_id)
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
     else:
@@ -167,25 +269,14 @@ def create_or_update_containerapp_yaml(cmd, name, resource_group_name, file_name
     if not containerapp_def.get('location'):
         containerapp_def['location'] = env_info['location']
 
-    # Secrets
-    if is_update:
-        add_secrets = []
-        if containerapp_def["properties"]["configuration"].get('secrets'):
-            add_secrets = containerapp_def["properties"]["configuration"]["secrets"]
-        
-        _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-        if add_secrets:
-            _add_or_update_secrets(containerapp_def, add_secrets)
-
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp {} in progress. Please monitor the {} using `az containerapp show -n {} -g {}`'.format(
-                "update" if is_update else "creation",
-                name,
-                resource_group_name))
+            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
+                name, resource_group_name
+            ))
 
         return r
     except Exception as e:
@@ -234,7 +325,7 @@ def create_containerapp(cmd,
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
             location or startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return create_or_update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, is_update=False, no_wait=no_wait)
+        return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if image is None:
         raise RequiredArgumentMissingError('Usage error: --image is required if not using --yaml')
@@ -395,7 +486,7 @@ def update_containerapp(cmd,
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
             startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return create_or_update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, is_update=True, no_wait=no_wait)
+        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     containerapp_def = None
     try:
@@ -415,11 +506,8 @@ def update_containerapp(cmd,
     update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
     update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
 
-    if update_map['container'] and len(containerapp_def['properties']['template']['containers']) > 1:
-        raise CLIError("Usage error: trying to update image, environment variables, resources claims on a multicontainer containerapp. Please use --yaml or ARM templates for multicontainer containerapp update")
-
     if tags:
-        containerapp_def['tags'] = tags
+        _add_or_update_tags(containerapp_def, tags)
 
     if revision_suffix is not None:
         containerapp_def["properties"]["template"]["revisionSuffix"] = revision_suffix

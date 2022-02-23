@@ -316,6 +316,17 @@ def _add_or_update_env_vars(existing_env_vars, new_env_vars):
             existing_env_vars.append(new_env_var)
 
 
+def _add_or_update_tags(containerapp_def, tags):
+    if 'tags' not in containerapp_def:
+        if tags:
+            containerapp_def['tags'] = tags
+        else:
+            containerapp_def['tags'] = {}
+    else:
+        for key in tags:
+            containerapp_def['tags'][key] = tags[key]
+
+
 def _object_to_dict(obj):
     import json
     return json.loads(json.dumps(obj, default=lambda o: o.__dict__))
@@ -345,6 +356,7 @@ def _remove_additional_attributes(o):
         for key in o:
             _remove_additional_attributes(o[key])
 
+
 def _remove_readonly_attributes(containerapp_def):
     unneeded_properties = [
         "id",
@@ -355,7 +367,8 @@ def _remove_readonly_attributes(containerapp_def):
         "latestRevisionName",
         "latestRevisionFqdn",
         "customDomainVerificationId",
-        "outboundIpAddresses"
+        "outboundIpAddresses",
+        "fqdn"
     ]
 
     for unneeded_property in unneeded_properties:
@@ -363,3 +376,20 @@ def _remove_readonly_attributes(containerapp_def):
             del containerapp_def[unneeded_property]
         elif unneeded_property in containerapp_def['properties']:
             del containerapp_def['properties'][unneeded_property]
+
+
+def update_nested_dictionary(orig_dict, new_dict):
+    # Recursively update a nested dictionary. If the value is a list, replace the old list with new list
+    import collections
+
+    for key, val in new_dict.items():
+        if isinstance(val, collections.Mapping):
+            tmp = update_nested_dictionary(orig_dict.get(key, { }), val)
+            orig_dict[key] = tmp
+        elif isinstance(val, list):
+            if new_dict[key]:
+                orig_dict[key] = new_dict[key]
+        else:
+            if new_dict[key] is not None:
+                orig_dict[key] = new_dict[key]
+    return orig_dict
