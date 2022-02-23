@@ -21,7 +21,7 @@ class DataShareManagementClientCommandsLoader(AzCommandsLoader):
         datashare_custom = CliCommandType(
             operations_tmpl='azext_datashare.custom#{}',
             client_factory=cf_datashare_cl)
-        parent = super(DataShareManagementClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=datashare_custom)
 
     def load_command_table(self, args):
