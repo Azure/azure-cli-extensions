@@ -122,13 +122,13 @@ def load_arguments(self, _):
                        help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
 
     with self.argument_context('monitor app-insights web-test') as c:
-        c.argument('web_test_name', options_list=['--name', '-n', '--web-test-name'], type=str, help='The name of the Application Insights WebTest resource.')
+        c.argument('web_test_name', options_list=['--name', '-n', '--web-test-name'], help='The name of the Application Insights WebTest resource.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False, validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('kind', arg_type=get_enum_type(['ping', 'multistep']), help='The kind of WebTest that this web test watches. Choices are ping and multistep.')
-        c.argument('synthetic_monitor_id', type=str, help='Unique ID of this WebTest. This is typically the same value as the Name field.')
-        c.argument('web_test_properties_name_web_test_name', options_list=['--defined-web-test-name'], type=str, help='User defined name if this WebTest.')
-        c.argument('description', type=str, help='User defined description for this WebTest.')
+        c.argument('synthetic_monitor_id', help='Unique ID of this WebTest. This is typically the same value as the Name field.')
+        c.argument('web_test_properties_name_web_test_name', options_list=['--defined-web-test-name'], help='User defined name if this WebTest.')
+        c.argument('description', help='User defined description for this WebTest.')
         c.argument('enabled', arg_type=get_three_state_flag(), help='Is the test actively being monitored.')
         c.argument('frequency', type=int, help='Interval in seconds between test runs for this WebTest. Default value is 300.')
         c.argument('timeout', type=int, help='Seconds until this WebTest will timeout and fail. Default value is 30.')
@@ -137,10 +137,10 @@ def load_arguments(self, _):
         c.argument('locations', action=AddLocations, nargs='+', help='A list of where to physically run the tests from to give global coverage for accessibility of your application.')
 
     with self.argument_context('monitor app-insights web-test', arg_group="Request") as c:
-        c.argument('request_url', type=str, help='Url location to test.')
+        c.argument('request_url', help='Url location to test.')
         c.argument('headers', action=AddHeaders, nargs='+', help='List of headers and their values to add to the WebTest call.')
-        c.argument('http_verb', type=str, help='Http verb to use for this web test.')
-        c.argument('request_body', type=str, help='Base64 encoded string body to send with this web test.')
+        c.argument('http_verb', help='Http verb to use for this web test.')
+        c.argument('request_body', help='Base64 encoded string body to send with this web test.')
         c.argument('parse_dependent_requests', options_list=['--parse-requests'], arg_type=get_three_state_flag(), help='Parse Dependent request for this WebTest.')
         c.argument('follow_redirects', arg_type=get_three_state_flag(), help='Follow redirects for this web test.')
 
@@ -152,7 +152,7 @@ def load_arguments(self, _):
         c.argument('ignore_https_status_code', options_list=['--ignore-status-code'], arg_type=get_three_state_flag(), help='When set, validation will ignore the status code.')
 
     with self.argument_context('monitor app-insights web-test', arg_group="Configuration") as c:
-        c.argument('web_test', type=str, help='The XML specification of a WebTest to run against an application.')
+        c.argument('web_test', help='The XML specification of a WebTest to run against an application.')
 
     with self.argument_context('monitor app-insights web-test list') as c:
-        c.argument('component_name', type=str, help='The name of the Application Insights component resource.')
+        c.argument('component_name', help='The name of the Application Insights component resource.')
