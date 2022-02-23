@@ -2426,8 +2426,9 @@ def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
         '/managedClusters/{2}'.format(subscription_id,
                                       resource_group_name, name)
     diag_settings = diag_settings_client.list(aks_resource_id)
-    if diag_settings.value:
-        return diag_settings.value[0].storage_account_id
+    for _, diag_setting in enumerate(diag_settings):
+        if diag_setting:
+            return diag_setting.storage_account_id
 
     print("No diag settings specified")
     return None
