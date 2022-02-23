@@ -39,7 +39,7 @@ setup(
     description='Microsoft Azure Command-Line Tools NetworkManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/network-manager',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/network-manager',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

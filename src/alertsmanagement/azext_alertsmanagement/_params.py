@@ -6,7 +6,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from typing_extensions import Required
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
