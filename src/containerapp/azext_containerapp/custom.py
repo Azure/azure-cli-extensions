@@ -10,17 +10,185 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from knack.util import CLIError
 from knack.log import get_logger
-from msrestazure.tools import parse_resource_id
+from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient
-from ._models import (ManagedEnvironment, VnetConfiguration, AppLogsConfiguration, LogAnalyticsConfiguration,
-                     Ingress, Configuration, Template, RegistryCredentials, ContainerApp, Dapr, ContainerResources, Scale, Container)
+from ._sdk_models import *
+from ._models import (
+    ManagedEnvironment as ManagedEnvironmentModel,
+    VnetConfiguration as VnetConfigurationModel,
+    AppLogsConfiguration as AppLogsConfigurationModel,
+    LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
+    Ingress as IngressModel,
+    Configuration as ConfigurationModel,
+    Template as TemplateModel,
+    RegistryCredentials as RegistryCredentialsModel,
+    ContainerApp as ContainerAppModel,
+    Dapr as DaprModel,
+    ContainerResources as ContainerResourcesModel,
+    Scale as ScaleModel,
+    Container as ContainerModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
-                    _generate_log_analytics_if_not_provided, _get_existing_secrets)
+                    _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
+                    _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes)
 
 logger = get_logger(__name__)
+
+
+# These properties should be under the "properties" attribute. Move the properties under "properties" attribute
+def process_loaded_yaml(yaml_containerapp):
+    if not yaml_containerapp.get('properties'):
+        yaml_containerapp['properties'] = {}
+
+    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn", "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+    for nested_property in nested_properties:
+        tmp = yaml_containerapp.get(nested_property)
+        if tmp:
+            yaml_containerapp['properties'][nested_property] = tmp
+            del yaml_containerapp[nested_property]
+
+    return yaml_containerapp
+
+
+def load_yaml_file(file_name):
+    import yaml
+    import errno
+
+    try:
+        with open(file_name) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            raise CLIError('{} does not exist'.format(file_name))
+        raise
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        raise CLIError('Error parsing {} ({})'.format(file_name, str(ex)))
+
+
+def create_deserializer():
+    from msrest import Deserializer
+    import sys, inspect
+
+    sdkClasses = inspect.getmembers(sys.modules["azext_containerapp._sdk_models"])
+    deserializer = {}
+
+    for sdkClass in sdkClasses:
+        deserializer[sdkClass[0]] = sdkClass[1]
+
+    return Deserializer(deserializer)
+
+
+def create_or_update_containerapp_yaml(cmd, name, resource_group_name, file_name, is_update, no_wait=False):
+    yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
+    if type(yaml_containerapp) != dict:
+        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    if not yaml_containerapp.get('name'):
+        yaml_containerapp['name'] = name
+    elif yaml_containerapp.get('name').lower() != name.lower():
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+            yaml_containerapp.get('name'), name))
+    name = yaml_containerapp.get('name')
+
+    if not yaml_containerapp.get('type'):
+        yaml_containerapp['type'] = 'Microsoft.App/containerApps'
+    elif yaml_containerapp.get('type').lower() != "microsoft.app/containerapps":
+        raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
+
+    current_containerapp_def = None
+    containerapp_def = None
+    try:
+        current_containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as ex:
+        pass
+
+    if is_update and current_containerapp_def is None:
+        raise ValidationError("The containerapp '{}' does not exist".format(name))
+
+    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+
+        containerapp_def = deserializer('ContainerApp', yaml_containerapp)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+    tags = None
+    if yaml_containerapp.get('tags'):
+        tags = yaml_containerapp.get('tags')
+        del yaml_containerapp['tags']
+
+    containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
+    containerapp_def['tags'] = tags
+
+    # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+    containerapp_def = process_loaded_yaml(containerapp_def)
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(containerapp_def)
+    _remove_readonly_attributes(containerapp_def)
+
+    # Validate managed environment
+    if not containerapp_def["properties"].get('managedEnvironmentId'):
+        if is_update:
+            containerapp_def["properties"]['managedEnvironmentId'] = current_containerapp_def["properties"]['managedEnvironmentId']
+        else:
+            raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    managed_env_id = containerapp_def["properties"]['managedEnvironmentId']
+    if not managed_env_id:
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+
+    env_name = None
+    env_rg = None
+    env_info = None
+
+    if (is_valid_resource_id(managed_env_id)):
+        parsed_managed_env = parse_resource_id(managed_env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+    else:
+        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+
+    try:
+        env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
+    except:
+        pass
+
+    if not env_info:
+        raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
+
+    # Validate location
+    if not containerapp_def.get('location'):
+        containerapp_def['location'] = env_info['location']
+
+    # Secrets
+    if is_update:
+        add_secrets = []
+        if containerapp_def["properties"]["configuration"].get('secrets'):
+            add_secrets = containerapp_def["properties"]["configuration"]["secrets"]
+        
+        _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+        if add_secrets:
+            _add_or_update_secrets(containerapp_def, add_secrets)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp {} in progress. Please monitor the {} using `az containerapp show -n {} -g {}`'.format(
+                "update" if is_update else "creation",
+                name,
+                resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def create_containerapp(cmd,
@@ -59,8 +227,12 @@ def create_containerapp(cmd,
     _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
 
     if yaml:
-        # TODO: Implement yaml
-        raise CLIError("--yaml is not yet implemented")
+        if image_name or managed_env or min_replicas or max_replicas or target_port or ingress or\
+            revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
+            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
+            location or startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return create_or_update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, is_update=False, no_wait=no_wait)
 
     if image_name is None:
         raise RequiredArgumentMissingError('Usage error: --image is required if not using --yaml')
@@ -99,7 +271,7 @@ def create_containerapp(cmd,
 
     ingress_def = None
     if target_port is not None and ingress is not None:
-        ingress_def = Ingress
+        ingress_def = IngressModel
         ingress_def["external"] = external_ingress
         ingress_def["targetPort"] = target_port
         ingress_def["transport"] = transport
@@ -110,7 +282,7 @@ def create_containerapp(cmd,
 
     registries_def = None
     if registry_server is not None:
-        registries_def = RegistryCredentials
+        registries_def = RegistryCredentialsModel
         registries_def["server"] = registry_server
         registries_def["username"] = registry_user
 
@@ -118,7 +290,7 @@ def create_containerapp(cmd,
             secrets_def = []
         registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
 
-    config_def = Configuration
+    config_def = ConfigurationModel
     config_def["secrets"] = secrets_def
     config_def["activeRevisionsMode"] = revisions_mode
     config_def["ingress"] = ingress_def
@@ -126,17 +298,17 @@ def create_containerapp(cmd,
 
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
-        scale_def = Scale
+        scale_def = ScaleModel
         scale_def["minReplicas"] = min_replicas
         scale_def["maxReplicas"] = max_replicas
 
     resources_def = None
     if cpu is not None or memory is not None:
-        resources_def = ContainerResources
+        resources_def = ContainerResourcesModel
         resources_def["cpu"] = cpu
         resources_def["memory"] = memory
 
-    container_def = Container
+    container_def = ContainerModel
     container_def["name"] = name
     container_def["image"] = image_name
     if env_vars is not None:
@@ -150,13 +322,13 @@ def create_containerapp(cmd,
 
     dapr_def = None
     if dapr_enabled:
-        dapr_def = Dapr
+        dapr_def = DaprModel
         dapr_def["daprEnabled"] = True
         dapr_def["appId"] = dapr_app_id
         dapr_def["appPort"] = dapr_app_port
         dapr_def["appProtocol"] = dapr_app_protocol
 
-    template_def = Template
+    template_def = TemplateModel
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
     template_def["dapr"] = dapr_def
@@ -164,7 +336,7 @@ def create_containerapp(cmd,
     if revision_suffix is not None:
         template_def["revisionSuffix"] = revision_suffix
 
-    containerapp_def = ContainerApp
+    containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
     containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
@@ -215,8 +387,12 @@ def update_containerapp(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
-        # TODO: Implement yaml
-        raise CLIError("--yaml is not yet implemented")
+        if image_name or min_replicas or max_replicas or target_port or ingress or\
+            revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
+            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
+            startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return create_or_update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, is_update=True, no_wait=no_wait)
 
     containerapp_def = None
     try:
@@ -313,6 +489,7 @@ def update_containerapp(cmd,
             containerapp_def["properties"]["configuration"]["transport"] = transport
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+    _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
 
     if update_map["registries"]:
         registries_def = None
@@ -327,7 +504,7 @@ def update_containerapp(cmd,
             if not(registry_server is not None and registry_user is not None and registry_pass is not None):
                 raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required when adding a registry")
 
-            registry = RegistryCredentials
+            registry = RegistryCredentialsModel
             registry["server"] = registry_server
             registry["username"] = registry_user
             registries_def.append(registry)
@@ -451,15 +628,15 @@ def create_managed_environment(cmd,
     if logs_customer_id is None or logs_key is None:
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
-    log_analytics_config_def = LogAnalyticsConfiguration
+    log_analytics_config_def = LogAnalyticsConfigurationModel
     log_analytics_config_def["customerId"] = logs_customer_id
     log_analytics_config_def["sharedKey"] = logs_key
 
-    app_logs_config_def = AppLogsConfiguration
+    app_logs_config_def = AppLogsConfigurationModel
     app_logs_config_def["destination"] = "log-analytics"
     app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
 
-    managed_env_def = ManagedEnvironment
+    managed_env_def = ManagedEnvironmentModel
     managed_env_def["location"] = location
     managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
@@ -469,7 +646,7 @@ def create_managed_environment(cmd,
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
 
     if infrastructure_subnet_resource_id or app_subnet_resource_id or docker_bridge_cidr or platform_reserved_cidr or platform_reserved_dns_ip:
-        vnet_config_def = VnetConfiguration
+        vnet_config_def = VnetConfigurationModel
 
         if infrastructure_subnet_resource_id is not None:
             if not app_subnet_resource_id:
@@ -518,7 +695,7 @@ def update_managed_environment(cmd,
 
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    managed_env_def = ManagedEnvironment
+    managed_env_def = ManagedEnvironmentModel
     managed_env_def["tags"] = tags
 
     try:

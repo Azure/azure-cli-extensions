@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from distutils.filelist import findall
+from operator import is_
 from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
@@ -272,3 +273,68 @@ def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
             handle_raw_exception(e)
 
         containerapp_def["properties"]["configuration"]["secrets"] = secrets["value"]
+
+
+def _add_or_update_secrets(containerapp_def, add_secrets):
+    if "secrets" not in containerapp_def["properties"]["configuration"]:
+        containerapp_def["properties"]["configuration"]["secrets"] = []
+
+    for new_secret in add_secrets:
+        is_existing = False
+        for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
+            if existing_secret["name"].lower() == new_secret["name"].lower():
+                is_existing = True
+                existing_secret["value"] = new_secret["value"]
+                break
+        
+        if not is_existing:
+            containerapp_def["properties"]["configuration"]["secrets"].append(new_secret)
+
+
+def _object_to_dict(obj):
+    import json
+    return json.loads(json.dumps(obj, default=lambda o: o.__dict__))
+
+
+def _to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+
+def _convert_object_from_snake_to_camel_case(o):
+    if isinstance(o, list):
+        return [_convert_object_from_snake_to_camel_case(i) if isinstance(i, (dict, list)) else i for i in o]
+    return {
+        _to_camel_case(a): _convert_object_from_snake_to_camel_case(b) if isinstance(b, (dict, list)) else b for a, b in o.items()
+    }
+
+
+def _remove_additional_attributes(o):
+    if isinstance(o, list):
+        for i in o:
+            _remove_additional_attributes(i)
+    elif isinstance(o, dict):
+        if "additionalProperties" in o:
+            del o["additionalProperties"]
+
+        for key in o:
+            _remove_additional_attributes(o[key])
+
+def _remove_readonly_attributes(containerapp_def):
+    unneeded_properties = [
+        "id",
+        "name",
+        "type",
+        "systemData",
+        "provisioningState",
+        "latestRevisionName",
+        "latestRevisionFqdn",
+        "customDomainVerificationId",
+        "outboundIpAddresses"
+    ]
+
+    for unneeded_property in unneeded_properties:
+        if unneeded_property in containerapp_def:
+            del containerapp_def[unneeded_property]
+        elif unneeded_property in containerapp_def['properties']:
+            del containerapp_def['properties'][unneeded_property]

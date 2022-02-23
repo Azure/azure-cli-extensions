@@ -33,6 +33,7 @@ def load_command_table(self, _):
         g.custom_command('scale', 'scale_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('test', 'create_or_update_containerapp_yaml')
 
 
     with self.command_group('containerapp env') as g:

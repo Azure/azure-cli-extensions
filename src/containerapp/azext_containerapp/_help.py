@@ -60,7 +60,7 @@ helps['containerapp create'] = """
     - name: Create a Containerapp using a YAML configuration. Example YAML configuration - https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples
       text: |
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
-              -- yaml "C:/path/to/yaml/file.yml"
+              --yaml "C:/path/to/yaml/file.yml"
 """
 
 helps['containerapp update'] = """
