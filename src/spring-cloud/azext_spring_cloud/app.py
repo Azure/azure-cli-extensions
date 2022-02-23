@@ -224,6 +224,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               build_env=None,
                builder=None,
                # deployment.settings
                env=None,
@@ -267,6 +268,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
