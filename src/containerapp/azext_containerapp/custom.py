@@ -500,28 +500,41 @@ def update_containerapp(cmd,
 
         registries_def = containerapp_def["properties"]["configuration"]["registries"]
 
-        if len(registries_def) == 0: # Adding new registry
+        if not registry_server:
+            raise ValidationError("Usage error: --registry-login-server is required when adding or updating a registry")
+
+        # Check if updating existing registry
+        updating_existing_registry = False
+        for r in registries_def:
+            if r['server'].lower() == registry_server.lower():
+                updating_existing_registry = True
+
+                if registry_user:
+                    r["username"] = registry_user
+                if registry_pass:
+                    r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                        containerapp_def["properties"]["configuration"]["secrets"],
+                        r["username"],
+                        r["server"],
+                        registry_pass,
+                        update_existing_secret=True)
+
+        # If not updating existing registry, add as new registry
+        if not updating_existing_registry:
             if not(registry_server is not None and registry_user is not None and registry_pass is not None):
                 raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required when adding a registry")
 
             registry = RegistryCredentialsModel
             registry["server"] = registry_server
             registry["username"] = registry_user
+            registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                containerapp_def["properties"]["configuration"]["secrets"],
+                registry_user,
+                registry_server,
+                registry_pass,
+                update_existing_secret=True)
+
             registries_def.append(registry)
-        elif len(registries_def) == 1: # Modifying single registry
-            if registry_server is not None:
-                registries_def[0]["server"] = registry_server
-            if registry_user is not None:
-                registries_def[0]["username"] = registry_user
-        else: # Multiple registries
-            raise ValidationError("Usage error: trying to update image, environment variables, resources claims on a multicontainer containerapp. Please use --yaml or ARM templates for multicontainer containerapp update")
-
-        if "secrets" not in containerapp_def["properties"]["configuration"]:
-            containerapp_def["properties"]["configuration"]["secrets"] = []
-        secrets_def = containerapp_def["properties"]["configuration"]["secrets"]
-
-        registries_def[0]["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, update_existing_secret=True)
-
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
