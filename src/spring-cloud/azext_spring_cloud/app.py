@@ -311,6 +311,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      build_env=None,
                       builder=None,
                       # deployment.settings
                       skip_clone_settings=False,
@@ -359,6 +360,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
