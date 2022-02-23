@@ -31,12 +31,13 @@ def load_arguments(self, _):
 
     # Container
     with self.argument_context('containerapp', arg_group='Container (Creates new revision)') as c:
-        c.argument('image_name', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag. If there are multiple containers, please use --yaml instead.")
+        c.argument('image', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('image_name', type=str, options_list=['--image-name'], help="Name of the Container image.")
         c.argument('cpu', type=float, validator=validate_cpu, options_list=['--cpu'], help="Required CPU in cores, e.g. 0.5")
         c.argument('memory', type=str, validator=validate_memory, options_list=['--memory'], help="Required memory, e.g. 1.0Gi")
-        c.argument('env_vars', nargs='*', options_list=['--environment-variables'], help="A list of environment variable(s) for the containerapp. Space-separated values in 'key=value' format. If there are multiple containers, please use --yaml instead.")
-        c.argument('startup_command', type=str, options_list=['--command'], help="A list of supported commands on the container app that will executed during container startup. Comma-separated values e.g. '/bin/queue'. If there are multiple containers, please use --yaml instead.")
-        c.argument('args', type=str, options_list=['--args'], help="A list of container startup command argument(s). Comma-separated values e.g. '-c, mycommand'. If there are multiple containers, please use --yaml instead.")
+        c.argument('env_vars', nargs='*', options_list=['--environment-variables'], help="A list of environment variable(s) for the containerapp. Space-separated values in 'key=value' format.")
+        c.argument('startup_command', type=str, options_list=['--command'], help="A list of supported commands on the container app that will executed during container startup. Comma-separated values e.g. '/bin/queue'.")
+        c.argument('args', type=str, options_list=['--args'], help="A list of container startup command argument(s). Comma-separated values e.g. '-c, mycommand'.")
         c.argument('revision_suffix', type=str, options_list=['--revision-suffix'], help='User friendly suffix that is appended to the revision name')
 
     # Scale

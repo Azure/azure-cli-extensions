@@ -33,7 +33,8 @@ from ._models import (
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
-                    _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes)
+                    _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
+                    _add_or_update_env_vars)
 
 logger = get_logger(__name__)
 
@@ -195,6 +196,7 @@ def create_containerapp(cmd,
                         name,
                         resource_group_name,
                         yaml=None,
+                        image=None,
                         image_name=None,
                         managed_env=None,
                         min_replicas=None,
@@ -227,14 +229,14 @@ def create_containerapp(cmd,
     _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
 
     if yaml:
-        if image_name or managed_env or min_replicas or max_replicas or target_port or ingress or\
+        if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
             revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
             location or startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_or_update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, is_update=False, no_wait=no_wait)
 
-    if image_name is None:
+    if image is None:
         raise RequiredArgumentMissingError('Usage error: --image is required if not using --yaml')
 
     if managed_env is None:
@@ -309,8 +311,8 @@ def create_containerapp(cmd,
         resources_def["memory"] = memory
 
     container_def = ContainerModel
-    container_def["name"] = name
-    container_def["image"] = image_name
+    container_def["name"] = image_name if image_name else name
+    container_def["image"] = image
     if env_vars is not None:
         container_def["env"] = parse_env_var_flags(env_vars)
     if startup_command is not None:
@@ -359,6 +361,7 @@ def update_containerapp(cmd,
                         name,
                         resource_group_name,
                         yaml=None,
+                        image=None,
                         image_name=None,
                         min_replicas=None,
                         max_replicas=None,
@@ -387,7 +390,7 @@ def update_containerapp(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
-        if image_name or min_replicas or max_replicas or target_port or ingress or\
+        if image or min_replicas or max_replicas or target_port or ingress or\
             revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
             startup_command or args or tags:
@@ -408,7 +411,7 @@ def update_containerapp(cmd,
     update_map['ingress'] = ingress or target_port or transport
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image_name or env_vars or cpu or memory or startup_command or args
+    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command or args
     update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
     update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
 
@@ -422,26 +425,62 @@ def update_containerapp(cmd,
         containerapp_def["properties"]["template"]["revisionSuffix"] = revision_suffix
 
     # Containers
-    if image_name is not None:
-        containerapp_def["properties"]["template"]["containers"][0]["image"] = image_name
-    if env_vars is not None:
-        containerapp_def["properties"]["template"]["containers"][0]["env"] = parse_env_var_flags(env_vars)
-    if startup_command is not None:
-        containerapp_def["properties"]["template"]["containers"][0]["command"] = parse_list_of_strings(startup_command)
-    if args is not None:
-        containerapp_def["properties"]["template"]["containers"][0]["args"] = parse_list_of_strings(startup_command)
-    if cpu is not None or memory is not None:
-        resources = containerapp_def["properties"]["template"]["containers"][0]["resources"]
-        if resources:
-            if cpu is not None:
-                resources["cpu"] = cpu
-            if memory is not None:
-                resources["memory"] = memory
-        else:
-            resources = containerapp_def["properties"]["template"]["containers"][0]["resources"] = {
-                "cpu": cpu,
-                "memory": memory
-            }
+    if update_map["container"]:
+        if not image_name:
+            raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+
+        # Check if updating existing container
+        updating_existing_container = False
+        for c in containerapp_def["properties"]["template"]["containers"]:
+            if c["name"].lower() == image_name.lower():
+                updating_existing_container = True
+
+                if image is not None:
+                    c["image"] = image
+                if env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                if startup_command is not None:
+                    c["command"] = parse_list_of_strings(startup_command)
+                if args is not None:
+                    c["args"] = parse_list_of_strings(args)
+                if cpu is not None or memory is not None:
+                    if "resources" in c and c["resources"]:
+                        if cpu is not None:
+                            c["resources"]["cpu"] = cpu
+                        if memory is not None:
+                            c["resources"]["memory"] = memory
+                    else:
+                        c["resources"] = {
+                            "cpu": cpu,
+                            "memory": memory
+                        }
+
+        # If not updating existing container, add as new container
+        if not updating_existing_container:
+            if image is None:
+                raise ValidationError("Usage error: --image is required when adding a new container")
+
+            resources_def = None
+            if cpu is not None or memory is not None:
+                resources_def = ContainerResourcesModel
+                resources_def["cpu"] = cpu
+                resources_def["memory"] = memory
+
+            container_def = ContainerModel
+            container_def["name"] = image_name
+            container_def["image"] = image
+            if env_vars is not None:
+                container_def["env"] = parse_env_var_flags(env_vars)
+            if startup_command is not None:
+                container_def["command"] = parse_list_of_strings(startup_command)
+            if args is not None:
+                container_def["args"] = parse_list_of_strings(args)
+            if resources_def is not None:
+                container_def["resources"] = resources_def
+
+            containerapp_def["properties"]["template"]["containers"].append(container_def)
 
     # Scale
     if update_map["scale"]:
@@ -489,7 +528,9 @@ def update_containerapp(cmd,
             containerapp_def["properties"]["configuration"]["transport"] = transport
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-    _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
+
+    if secrets is not None:
+        _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
 
     if update_map["registries"]:
         registries_def = None

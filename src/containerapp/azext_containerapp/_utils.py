@@ -291,6 +291,31 @@ def _add_or_update_secrets(containerapp_def, add_secrets):
             containerapp_def["properties"]["configuration"]["secrets"].append(new_secret)
 
 
+def _add_or_update_env_vars(existing_env_vars, new_env_vars):
+    for new_env_var in new_env_vars:
+
+        # Check if updating existing env var
+        is_existing = False
+        for existing_env_var in existing_env_vars:
+            if existing_env_var["name"].lower() == new_env_var["name"].lower():
+                is_existing = True
+
+                if "value" in new_env_var:
+                    existing_env_var["value"] = new_env_var["value"]
+                else:
+                    existing_env_var["value"] = None
+
+                if "secretRef" in new_env_var:
+                    existing_env_var["secretRef"] = new_env_var["secretRef"]
+                else:
+                    existing_env_var["secretRef"] = None
+                break
+
+        # If not updating existing env var, add it as a new env var
+        if not is_existing:
+            existing_env_vars.append(new_env_var)
+
+
 def _object_to_dict(obj):
     import json
     return json.loads(json.dumps(obj, default=lambda o: o.__dict__))
