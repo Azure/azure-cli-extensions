@@ -6,6 +6,7 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 import sys
 import requests
+import json
 from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
@@ -64,7 +65,7 @@ class BuildService:
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env=build_env)
+            env=json.loads(build_env))
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,

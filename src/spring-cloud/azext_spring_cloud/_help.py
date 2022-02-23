@@ -232,8 +232,6 @@ helps['spring-cloud app deploy'] = """
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
     - name: Deploy with Application Configuration Service config file patterns to an app.
       text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --config-file-patterns MyPatterns --jar-path app.jar
-    - name: (Enterprise Tier Only) Deploy with build env to specify module and jvm version.
-      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --build-env {"BP_JVM_VERSION": "8.*","BP_MAVEN_BUILT_MODULE": "gateway"}
 """
 
 helps['spring-cloud app scale'] = """
