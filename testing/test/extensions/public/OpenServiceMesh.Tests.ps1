@@ -2,7 +2,7 @@ Describe 'Azure OpenServiceMesh Testing' {
     BeforeAll {
         $extensionType = "microsoft.openservicemesh"
         $extensionName = "openservicemesh"
-        $extensionVersion = "0.9.1"
+        $extensionVersion = "1.0.0"
         $extensionAgentName = "osm-controller"
         $extensionAgentNamespace = "arc-osm-system"
         $releaseTrain = "pilot"
