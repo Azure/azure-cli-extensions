@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import ApplicationInsightsManagementClientConfiguration
-from .operations import ProactiveDetectionConfigurationsOperations
+from .operations import ProactiveDetectionConfigurationsOperations, WebTestsOperations
 from .operations import ComponentsOperations
 from . import models
 
@@ -30,6 +30,8 @@ class ApplicationInsightsManagementClient(object):
     :vartype proactive_detection_configurations: azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ProactiveDetectionConfigurationsOperations
     :ivar components: ComponentsOperations operations
     :vartype components: azure.mgmt.applicationinsights.v2018_05_01_preview.operations.ComponentsOperations
+    :ivar web_tests: WebTestsOperations operations
+    :vartype web_tests: azure.mgmt.applicationinsights.v2018_05_01_preview.operations.WebTestsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -58,6 +60,7 @@ class ApplicationInsightsManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.components = ComponentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
+        self.web_tests = WebTestsOperations(self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
         # type: () -> None
