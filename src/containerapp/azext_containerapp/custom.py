@@ -407,9 +407,9 @@ def create_containerapp(cmd,
     if env_vars is not None:
         container_def["env"] = parse_env_var_flags(env_vars)
     if startup_command is not None:
-        container_def["command"] = parse_list_of_strings(startup_command)
+        container_def["command"] = startup_command
     if args is not None:
-        container_def["args"] = parse_list_of_strings(args)
+        container_def["args"] = args
     if resources_def is not None:
         container_def["resources"] = resources_def
 
@@ -530,9 +530,9 @@ def update_containerapp(cmd,
                         c["env"] = []
                     _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
                 if startup_command is not None:
-                    c["command"] = parse_list_of_strings(startup_command)
+                    c["command"] = startup_command
                 if args is not None:
-                    c["args"] = parse_list_of_strings(args)
+                    c["args"] = args
                 if cpu is not None or memory is not None:
                     if "resources" in c and c["resources"]:
                         if cpu is not None:
@@ -562,9 +562,9 @@ def update_containerapp(cmd,
             if env_vars is not None:
                 container_def["env"] = parse_env_var_flags(env_vars)
             if startup_command is not None:
-                container_def["command"] = parse_list_of_strings(startup_command)
+                container_def["command"] = startup_command
             if args is not None:
-                container_def["args"] = parse_list_of_strings(args)
+                container_def["args"] = args
             if resources_def is not None:
                 container_def["resources"] = resources_def
 
