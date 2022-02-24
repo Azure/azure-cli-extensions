@@ -34,7 +34,7 @@ def load_arguments(self, _):
         c.argument('image_name', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag. If there are multiple containers, please use --yaml instead.")
         c.argument('cpu', type=float, validator=validate_cpu, options_list=['--cpu'], help="Required CPU in cores, e.g. 0.5")
         c.argument('memory', type=str, validator=validate_memory, options_list=['--memory'], help="Required memory, e.g. 1.0Gi")
-        c.argument('env_vars', type=str, options_list=['--environment-variables', '-v'], help="A list of environment variable(s) for the containerapp. Comma-separated values in 'key=value' format. If there are multiple containers, please use --yaml instead.")
+        c.argument('env_vars', nargs='*', options_list=['--environment-variables', '-v'], help="A list of environment variable(s) for the containerapp. Space-separated values in 'key=value' format. If there are multiple containers, please use --yaml instead.")
         c.argument('startup_command', type=str, options_list=['--command'], help="A list of supported commands on the container app that will executed during container startup. Comma-separated values e.g. '/bin/queue'. If there are multiple containers, please use --yaml instead.")
         c.argument('args', type=str, options_list=['--args'], help="A list of container startup command argument(s). Comma-separated values e.g. '-c, mycommand'. If there are multiple containers, please use --yaml instead.")
         c.argument('revision_suffix', type=str, options_list=['--revision-suffix'], help='User friendly suffix that is appended to the revision name')
@@ -58,7 +58,7 @@ def load_arguments(self, _):
         c.argument('registry_server', type=str, validator=validate_registry_server, options_list=['--registry-login-server'], help="The url of the registry, e.g. myregistry.azurecr.io")
         c.argument('registry_pass', type=str, validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in container image registry server. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', type=str, validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in container image registry server")
-        c.argument('secrets', type=str, options_list=['--secrets', '-s'], help="A list of secret(s) for the containerapp. Comma-separated values in 'key=value' format.")
+        c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the containerapp. Space-separated values in 'key=value' format.")
 
     # Ingress
     with self.argument_context('containerapp', arg_group='Ingress') as c:

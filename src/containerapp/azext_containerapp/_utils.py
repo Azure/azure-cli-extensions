@@ -61,11 +61,10 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
         pass
 
 
-def parse_env_var_flags(env_string, is_update_containerapp=False):
-    env_pair_strings = env_string.split(',')
+def parse_env_var_flags(env_list, is_update_containerapp=False):
     env_pairs = {}
 
-    for pair in env_pair_strings:
+    for pair in env_list:
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
             if is_update_containerapp:
@@ -92,11 +91,10 @@ def parse_env_var_flags(env_string, is_update_containerapp=False):
     return env_var_def
 
 
-def parse_secret_flags(secret_string):
-    secret_pair_strings = secret_string.split(',')
+def parse_secret_flags(secret_list):
     secret_pairs = {}
 
-    for pair in secret_pair_strings:
+    for pair in secret_list:
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
             raise ValidationError("--secrets: must be in format \"<key>=<value>,<key>=<value>,...\"")
