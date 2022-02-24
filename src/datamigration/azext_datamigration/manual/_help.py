@@ -24,6 +24,30 @@ helps['datamigration get-assessment'] = """
                az datamigration get-assessment --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
+helps['datamigration performance-data-collection'] = """
+    type: command
+    short-summary: Collect performance data for given SQL Server instance(s).
+    examples:
+      - name: Collect performance data of a given SQL Server using connection string.
+        text: |-
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-interation 5 --perf-query-interval 10 --static-query-interval 60
+      - name: Collect performance data of a given SQL Server using assessment config file.
+        text: |-
+               az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
+helps['datamigration get-sku-recommendation'] = """
+    type: command
+    short-summary: Give SKU recommendations for Azure SQL offerings.
+    examples:
+      - name: Get SKU recommendation for given SQL Server using command line.
+        text: |-
+               az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+      - name: Get SKU recommendation for given SQL Server using assessment config file.
+        text: |-
+               az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
 helps['datamigration register-integration-runtime'] = """
     type: command
     short-summary: Register Database Migration Service on Integration Runtime
