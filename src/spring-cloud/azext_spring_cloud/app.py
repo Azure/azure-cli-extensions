@@ -368,6 +368,10 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     kwargs['deployable_path'] = deploy.build_deployable_path(**kwargs)
     deployment_factory = deployment_selector(**kwargs)
     deployment_resource = deployment_factory.format_resource(**kwargs)
+    logger.warning('[{}/{}] Creating deployment in app "{}" (this operation can take a '
+                'while to complete)'.format(kwargs['total_steps'],
+                                            kwargs['total_steps'],
+                                            app))
     return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                        resource_group, service, app, name,
                        deployment_resource)
