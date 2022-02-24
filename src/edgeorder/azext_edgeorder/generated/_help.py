@@ -83,15 +83,6 @@ helps['edgeorder list-metadata'] = """
                az edgeorder list-metadata
 """
 
-helps['edgeorder list-operation'] = """
-    type: command
-    short-summary: "This method gets all the operations that are exposed for customer."
-    examples:
-      - name: ListOperations
-        text: |-
-               az edgeorder list-operation
-"""
-
 helps['edgeorder address'] = """
     type: group
     short-summary: Manage address with edgeorder

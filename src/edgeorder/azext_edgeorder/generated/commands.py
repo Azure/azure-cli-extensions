@@ -49,7 +49,6 @@ def load_command_table(self, _):
         g.custom_command('list-config', 'edgeorder_list_config')
         g.custom_command('list-family', 'edgeorder_list_family')
         g.custom_command('list-metadata', 'edgeorder_list_metadata')
-        g.custom_command('list-operation', 'edgeorder_list_operation')
 
     with self.command_group('edgeorder', edgeorder_order, client_factory=cf_order) as g:
         g.custom_command('order list', 'edgeorder_order_list')

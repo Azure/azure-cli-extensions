@@ -82,130 +82,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Feb 2022 09:02:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - edgeorder list-operation
-      Connection:
-      - keep-alive
-      User-Agent:
-      - AZURECLI/2.33.1 azsdk-python-mgmt-edgeorder/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Microsoft.EdgeOrder/operations?api-version=2021-12-01
-  response:
-    body:
-      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Addresses\",\r\n        \"operation\": \"List or Get Addresses\",\r\n        \"description\":
-        \"List or get the Addresses\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/delete\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Addresses\",\r\n        \"operation\": \"Delete Addresses\",\r\n        \"description\":
-        \"Delete the Addresses\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
-        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/addresses/write\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Addresses\",\r\n        \"operation\": \"Create or Update Addresses\",\r\n
-        \       \"description\": \"Create or update the Addresses\"\r\n      },\r\n
-        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
-        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/locations/operationResults/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Operation Results\",\r\n        \"operation\": \"List or Get Operation Results\",\r\n
-        \       \"description\": \"List or get the Operation Results\"\r\n      },\r\n
-        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
-        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/operations/read\",\r\n      \"display\":
-        {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"Operations\",\r\n
-        \       \"operation\": \"List or Get Operations\",\r\n        \"description\":
-        \"List or get the Operations\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/locations/orders/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Order\",\r\n        \"operation\": \"List or Get Order\",\r\n        \"description\":
-        \"List or get the Order\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
-        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orders/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"Order\",\r\n        \"operation\": \"List or Get Order\",\r\n        \"description\":
-        \"List or get the Order\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
-        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/cancel/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"OrderItem\",\r\n        \"operation\": \"Cancel OrderItem\",\r\n        \"description\":
-        \"Cancels an OrderItem in progress.\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/return/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"OrderItem\",\r\n        \"operation\": \"Return OrderItem\",\r\n        \"description\":
-        \"Return an OrderItem.\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
-        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"OrderItem\",\r\n        \"operation\": \"List or Get OrderItem\",\r\n        \"description\":
-        \"List or get the OrderItem\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/delete\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"OrderItem\",\r\n        \"operation\": \"Delete OrderItem\",\r\n        \"description\":
-        \"Delete the OrderItem\"\r\n      },\r\n      \"origin\": \"user\",\r\n      \"isDataAction\":
-        false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/orderItems/write\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"OrderItem\",\r\n        \"operation\": \"Create or Update OrderItem\",\r\n
-        \       \"description\": \"Create or update the OrderItem\"\r\n      },\r\n
-        \     \"origin\": \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n
-        \   {\r\n      \"name\": \"Microsoft.EdgeOrder/productFamiliesMetadata/read\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"ArmApiRes_Microsoft.EdgeOrder\",\r\n        \"operation\": \"List or Get
-        product families metadata\",\r\n        \"description\": \"This method lists
-        or gets the product families metadata.\"\r\n      },\r\n      \"origin\":
-        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
-        \"Microsoft.EdgeOrder/listProductFamilies/read\",\r\n      \"display\": {\r\n
-        \       \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"ArmApiRes_Microsoft.EdgeOrder\",\r\n
-        \       \"operation\": \"List Product Families\",\r\n        \"description\":
-        \"This method returns list of product families.\"\r\n      },\r\n      \"origin\":
-        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
-        \"Microsoft.EdgeOrder/listConfigurations/read\",\r\n      \"display\": {\r\n
-        \       \"provider\": \"Edge Ordering\",\r\n        \"resource\": \"ArmApiRes_Microsoft.EdgeOrder\",\r\n
-        \       \"operation\": \"List Product Configurations\",\r\n        \"description\":
-        \"This method returns list of product configurations.\"\r\n      },\r\n      \"origin\":
-        \"user\",\r\n      \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\":
-        \"Microsoft.EdgeOrder/subscriptions/resourceGroups/moveResources/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"ArmApiRes_resourceGroups\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/subscriptions/resourceGroups/validateMoveResources/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"ArmApiRes_resourceGroups\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/register/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"ArmApiRes_Microsoft.EdgeOrder\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    },\r\n    {\r\n      \"name\": \"Microsoft.EdgeOrder/unregister/action\",\r\n
-        \     \"display\": {\r\n        \"provider\": \"Edge Ordering\",\r\n        \"resource\":
-        \"ArmApiRes_Microsoft.EdgeOrder\"\r\n      },\r\n      \"origin\": \"user\",\r\n
-        \     \"isDataAction\": false\r\n    }\r\n  ]\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '6150'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 21 Feb 2022 09:02:03 GMT
+      - Thu, 24 Feb 2022 04:46:48 GMT
       expires:
       - '-1'
       pragma:
@@ -348,7 +225,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Feb 2022 09:02:06 GMT
+      - Thu, 24 Feb 2022 04:46:50 GMT
       expires:
       - '-1'
       pragma:
@@ -917,7 +794,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Feb 2022 09:02:07 GMT
+      - Thu, 24 Feb 2022 04:46:50 GMT
       expires:
       - '-1'
       pragma:

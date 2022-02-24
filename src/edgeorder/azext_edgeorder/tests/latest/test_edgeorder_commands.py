@@ -188,11 +188,6 @@ class EdgeOrderClientTest(ScenarioTest):
         assert "filterableProperties" in metadata_list[0]
         assert "hierarchyInformation" in metadata_list[0]
 
-        operation_list = self.cmd("edgeorder list-operation").get_output_in_json()
-        assert isinstance(operation_list, list)
-        assert "actionType" in operation_list[0]
-        assert "isDataAction" in operation_list[0]
-
         # obtain JSON string
         filters_props = [{
             "filterableProperty": [{
