@@ -197,7 +197,7 @@ def app_update(cmd, client, resource_group, service, name,
         pollers.append(client.deployments.begin_update(resource_group,
                                                        service,
                                                        name,
-                                                       DEFAULT_DEPLOYMENT_NAME,
+                                                       deployment.name,
                                                        deployment_resource))
     if no_wait:
         return
