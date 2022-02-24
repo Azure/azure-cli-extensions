@@ -458,6 +458,22 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_deployment_resource
         self.assertEqual({"foo": "bar"}, resource.properties.deployment_settings.environment_variables)
 
+    def test_app_update_in_enterprise_with_new_set_env(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_env_and_jvm_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option', env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()
         deployment.properties.source.type = 'Container'
