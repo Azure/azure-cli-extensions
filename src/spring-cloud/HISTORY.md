@@ -2,7 +2,7 @@ Release History
 ===============
 3.0.1
 ---
-* New preview argument `az spring-cloud app deploy` has new argument "--build-env" to specify build module and jvm version and so on.
+* `az spring-cloud app deploy` has new preview argument "--build-env" to specify build module and jvm version and so on.
 * Raise error when `az spring-cloud app deploy` setting "--target-modules" and "--runtime-version for enterprise tier.
 
 3.0.0
