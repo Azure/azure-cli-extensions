@@ -107,7 +107,7 @@ datashare_trigger = CliCommandType(
 
 def load_command_table(self, _):
 
-    with self.command_group('datashare', datashare_share, client_factory=cf_share) as g:
+    with self.command_group('datashare', datashare_share, client_factory=cf_share, is_experimental=True) as g:
         g.custom_command('list', 'datashare_list')
         g.custom_show_command('show', 'datashare_show')
         g.custom_command('create', 'datashare_create')
