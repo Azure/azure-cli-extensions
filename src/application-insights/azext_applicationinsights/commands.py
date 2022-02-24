@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from azure.cli.core.commands import CliCommandType
 
@@ -15,7 +16,8 @@ from azext_applicationinsights._client_factory import (
     cf_api_key,
     cf_component_billing,
     cf_component_linked_storage_accounts,
-    cf_export_configuration
+    cf_export_configuration,
+    cf_web_test
 )
 
 
@@ -80,6 +82,16 @@ def load_command_table(self, _):
         client_factory=cf_export_configuration
     )
 
+    web_test_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.operations#WebTestsOperations.{}',
+        client_factory=cf_web_test
+    )
+
+    web_test_custom_sdk = CliCommandType(
+        operations_tmpl='azext_applicationinsights.custom#{}',
+        client_factory=cf_web_test
+    )
+
     with self.command_group('monitor app-insights component', command_type=components_sdk, custom_command_type=components_custom_sdk) as g:
         g.custom_command('create', 'create_or_update_component')
         g.custom_command('update', 'update_component')
@@ -120,3 +132,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_export_configuration')
         g.custom_command('update', 'update_export_configuration')
         g.custom_command('delete', 'delete_export_configuration', confirmation=True)
+
+    with self.command_group('monitor app-insights web-test', command_type=web_test_sdk, custom_command_type=web_test_custom_sdk) as g:
+        g.custom_command('list', 'list_web_tests')
+        g.custom_show_command('show', 'get_web_test')
+        g.custom_command('create', 'create_web_test')
+        g.generic_update_command('update', custom_func_name='update_web_test', setter_arg_name='web_test_definition')
+        g.custom_command('delete', 'delete_web_test', confirmation=True)

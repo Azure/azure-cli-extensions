@@ -18,7 +18,7 @@ class ApplicationInsightsCommandsLoader(AzCommandsLoader):
             client_factory=applicationinsights_data_plane_client
         )
 
-        super(ApplicationInsightsCommandsLoader, self).__init__(
+        super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=applicationinsights_custom
         )
