@@ -25,6 +25,20 @@ def transform_containerapp_list_output(apps):
     return [transform_containerapp_output(a) for a in apps]
 
 
+def transform_revision_output(rev):
+    props = ['name', 'replicas', 'active', 'createdTime']
+    result = {k: rev[k] for k in rev if k in props}
+
+    if 'latestRevisionFqdn' in rev['template']:
+        result['fqdn'] = rev['template']['latestRevisionFqdn']
+
+    return result
+
+
+def transform_revision_list_output(revs):
+    return [transform_revision_output(r) for r in revs]
+
+
 def load_command_table(self, _):
     with self.command_group('containerapp') as g:
         g.custom_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
@@ -41,3 +55,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         # g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp revision') as g:
+        # g.custom_command('activate', 'activate_revision')
+        # g.custom_command('deactivate', 'deactivate_revision')
+        g.custom_command('list', 'list_revisions', table_transformer=transform_revision_list_output, exception_handler=ex_handler_factory())
+        # g.custom_command('restart', 'restart_revision')
+        g.custom_command('show', 'show_revision', table_transformer=transform_revision_output, exception_handler=ex_handler_factory())

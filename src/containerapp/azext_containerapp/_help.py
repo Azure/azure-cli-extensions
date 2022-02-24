@@ -138,6 +138,24 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp revision show'] = """
+    type: command
+    short-summary: Show details of a Containerapp's revision.
+    examples:
+    - name: Show details of a Containerapp's revision.
+      text: |
+          az containerapp revision show --revision-name MyContainerappRevision -g MyResourceGroup
+"""
+
+helps['containerapp revision list'] = """
+    type: command
+    short-summary: List details of a Containerapp's revisions.
+    examples:
+    - name: List a Containerapp's revisions.
+      text: |
+          az containerapp revision list -n MyContainerapp -g MyResourceGroup
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group

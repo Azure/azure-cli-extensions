@@ -102,3 +102,6 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the managed Environment.')
+
+    with self.argument_context('containerapp revision') as c:
+        c.argument('revision_name', type=str, help='Name of the revision')

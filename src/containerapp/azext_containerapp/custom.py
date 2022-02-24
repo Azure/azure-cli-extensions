@@ -34,7 +34,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _add_or_update_traffic_Weights)
+                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _add_or_update_traffic_Weights,
+                    _get_app_from_revision)
 
 logger = get_logger(__name__)
 
@@ -889,5 +890,22 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_revisions(cmd, name, resource_group_name):
+    try:
+        return ContainerAppClient.list_revisions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def show_revision(cmd, resource_group_name, revision_name, name=None):
+    if not name:
+        name = _get_app_from_revision(revision_name)
+
+    try:
+        return ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
     except CLIError as e:
         handle_raw_exception(e)

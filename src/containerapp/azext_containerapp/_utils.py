@@ -429,3 +429,13 @@ def _add_or_update_traffic_Weights(containerapp_def, list_weights):
                 "revisionName": key_val[0],
                 "weight": int(key_val[1])
             })
+
+
+def _get_app_from_revision(revision):
+    if not revision:
+        raise ValidationError('Invalid revision. Revision must not be empty')
+
+    revision = revision.split('--')
+    revision.pop()
+    revision = "--".join(revision)
+    return revision
