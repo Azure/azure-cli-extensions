@@ -305,6 +305,56 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
+    @classmethod
+    def restart_revision(cls, cmd, resource_group_name, container_app_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/restart?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def activate_revision(cls, cmd, resource_group_name, container_app_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/activate?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def deactivate_revision(cls, cmd, resource_group_name, container_app_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/deactivate?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
 
 class ManagedEnvironmentClient():
     @classmethod

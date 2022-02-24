@@ -57,8 +57,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp revision') as g:
-        # g.custom_command('activate', 'activate_revision')
-        # g.custom_command('deactivate', 'deactivate_revision')
+        g.custom_command('activate', 'activate_revision')
+        g.custom_command('deactivate', 'deactivate_revision')
         g.custom_command('list', 'list_revisions', table_transformer=transform_revision_list_output, exception_handler=ex_handler_factory())
-        # g.custom_command('restart', 'restart_revision')
+        g.custom_command('restart', 'restart_revision')
         g.custom_command('show', 'show_revision', table_transformer=transform_revision_output, exception_handler=ex_handler_factory())

@@ -909,3 +909,33 @@ def show_revision(cmd, resource_group_name, revision_name, name=None):
         return ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def restart_revision(cmd, resource_group_name, revision_name, name=None):
+    if not name:
+        name = _get_app_from_revision(revision_name)
+
+    try:
+        return ContainerAppClient.restart_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def activate_revision(cmd, resource_group_name, revision_name, name=None):
+    if not name:
+        name = _get_app_from_revision(revision_name)
+
+    try:
+        return ContainerAppClient.activate_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+def deactivate_revision(cmd, resource_group_name, revision_name, name=None):
+    if not name:
+        name = _get_app_from_revision(revision_name)
+
+    try:
+        return ContainerAppClient.deactivate_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+

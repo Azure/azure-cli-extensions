@@ -138,6 +138,12 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+# Revision Commands
+helps['containerapp revision'] = """
+    type: group
+    short-summary: Commands to manage a Containerapp's revisions.
+"""
+
 helps['containerapp revision show'] = """
     type: command
     short-summary: Show details of a Containerapp's revision.
@@ -153,7 +159,34 @@ helps['containerapp revision list'] = """
     examples:
     - name: List a Containerapp's revisions.
       text: |
-          az containerapp revision list -n MyContainerapp -g MyResourceGroup
+          az containerapp revision list --revision-name MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp revision restart'] = """
+    type: command
+    short-summary: Restart a Containerapps's revision.
+    examples:
+    - name: Restart a Containerapp's revision.
+      text: |
+          az containerapp revision restart --revision-name MyContainerappRevision -g MyResourceGroup
+"""
+
+helps['containerapp revision activate'] = """
+    type: command
+    short-summary: Activates Containerapp's revision.
+    examples:
+    - name: Activate a Containerapp's revision.
+      text: |
+          az containerapp revision activate --revision-name MyContainerappRevision -g MyResourceGroup
+"""
+
+helps['containerapp revision deactivate'] = """
+    type: command
+    short-summary: Deactivates Containerapp's revision.
+    examples:
+    - name: Deactivate a Containerapp's revision.
+      text: |
+          az containerapp revision deactivate --revision-name MyContainerappRevision -g MyResourceGroup
 """
 
 # Environment Commands
