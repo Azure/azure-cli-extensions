@@ -19,6 +19,16 @@ az datamigration get-assessment --connection-string "Data Source=LabServer.datab
 az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
 ```
 
+##### Performance-data-collection #####
+```
+az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-interation 5 --perf-query-interval 10 --static-query-interval 60
+```
+
+##### Get-sku-recommendation #####
+```
+az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+```
+
 #### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```
