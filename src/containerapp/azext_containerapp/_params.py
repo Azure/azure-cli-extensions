@@ -77,7 +77,6 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('containerapp env', arg_group='Log Analytics') as c:
-        c.argument('logs_destination', type=str, options_list=['--logs-dest'])
         c.argument('logs_customer_id', type=str, options_list=['--logs-workspace-id'], help='Name or resource ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
         c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
 

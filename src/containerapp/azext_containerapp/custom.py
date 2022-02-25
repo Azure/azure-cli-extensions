@@ -428,7 +428,6 @@ def create_managed_environment(cmd,
                               resource_group_name,
                               logs_customer_id=None,
                               logs_key=None,
-                              logs_destination="log-analytics",
                               location=None,
                               instrumentation_key=None,
                               infrastructure_subnet_resource_id=None,
@@ -445,6 +444,10 @@ def create_managed_environment(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
     _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
 
+    # Microsoft.ContainerService RP registration is required for vnet enabled environments
+    if infrastructure_subnet_resource_id is not None or app_subnet_resource_id is not None:
+        _validate_subscription_registered(cmd, "Microsoft.ContainerService")
+
     if logs_customer_id is None or logs_key is None:
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
@@ -453,7 +456,7 @@ def create_managed_environment(cmd,
     log_analytics_config_def["sharedKey"] = logs_key
 
     app_logs_config_def = AppLogsConfiguration
-    app_logs_config_def["destination"] = logs_destination
+    app_logs_config_def["destination"] = "log-analytics"
     app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
 
     managed_env_def = ManagedEnvironment
