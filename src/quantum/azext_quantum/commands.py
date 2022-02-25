@@ -99,7 +99,10 @@ def transform_output(results):
         errorData = results['errorData']
         errorCode = errorData['code']
         errorMessage = errorData['message']
-        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage}
+        target = results['target']
+        jobId = results['id']
+        submissionTime = results['creationTime']
+        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
 
