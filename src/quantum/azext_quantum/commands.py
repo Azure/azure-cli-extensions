@@ -94,6 +94,13 @@ def transform_output(results):
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
 
+    elif 'errorData' in results:
+        status = results['status']
+        errorData = results['errorData']
+        errorCode = errorData['code']
+        errorMessage = errorData['message']
+        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage}
+
     return results
 
 
