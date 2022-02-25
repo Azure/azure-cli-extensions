@@ -511,6 +511,11 @@ class AKSPreviewContext(AKSContext):
                     )
                 )
 
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.http_proxy_config is not None:
+                http_proxy_config = self.mc.http_proxy_config
+
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return http_proxy_config
