@@ -9,6 +9,7 @@ import os
 import json
 import tempfile
 import time
+import base64
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -1758,39 +1759,40 @@ def client_side_proxy_wrapper(cmd,
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
 
-        # Fetching creds
-        creds_location = os.path.expanduser(os.path.join('~', creds_string))
-        try:
-            with open(creds_location) as f:
-                creds_list = json.load(f)
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
-                                    summary='Unable to load accessToken.json')
-            raise FileOperationError("Failed to load credentials." + str(e))
+        if not utils.is_cli_using_msal_auth():
+            # Fetching creds
+            creds_location = os.path.expanduser(os.path.join('~', creds_string))
+            try:
+                with open(creds_location) as f:
+                    creds_list = json.load(f)
+            except Exception as e:
+                telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
+                                        summary='Unable to load accessToken.json')
+                raise FileOperationError("Failed to load credentials." + str(e))
 
-        user_name = account['user']['name']
+            user_name = account['user']['name']
 
-        if user_type == 'user':
-            key = 'userId'
-            key2 = 'refreshToken'
-        else:
-            key = 'servicePrincipalId'
-            key2 = 'accessToken'
+            if user_type == 'user':
+                key = 'userId'
+                key2 = 'refreshToken'
+            else:
+                key = 'servicePrincipalId'
+                key2 = 'accessToken'
 
-        for i in range(len(creds_list)):
-            creds_obj = creds_list[i]
+            for i in range(len(creds_list)):
+                creds_obj = creds_list[i]
 
-            if key in creds_obj and creds_obj[key] == user_name:
-                creds = creds_obj[key2]
-                break
+                if key in creds_obj and creds_obj[key] == user_name:
+                    creds = creds_obj[key2]
+                    break
 
-        if creds == '':
-            telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
-                                    summary='Unable to find creds of user')
-            raise UnclassifiedUserFault("Credentials of user not found.")
+            if creds == '':
+                telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
+                                        summary='Unable to find creds of user')
+                raise UnclassifiedUserFault("Credentials of user not found.")
 
-        if user_type != 'user':
-            dict_file['identity']['clientSecret'] = creds
+            if user_type != 'user':
+                dict_file['identity']['clientSecret'] = creds
     else:
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
@@ -1882,7 +1884,7 @@ def client_side_proxy(cmd,
                       clientproxy_process=None):
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-
+    tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     if token is not None:
         auth_method = 'Token'
     else:
@@ -1915,20 +1917,30 @@ def client_side_proxy(cmd,
                                     summary='Unable to run client proxy executable')
             raise CLIInternalError("Failed to start proxy process." + str(e))
 
-        if user_type == 'user':
-            identity_data = {}
-            identity_data['refreshToken'] = creds
-            identity_uri = f'https://localhost:{api_server_port}/identity/rt'
+        if not utils.is_cli_using_msal_auth(): # refresh token approach if cli is ADAL auth. This is for cli < 2.30.0
+            if user_type == 'user':
+                identity_data = {}
+                identity_data['refreshToken'] = creds
+                identity_uri = f'https://localhost:{api_server_port}/identity/rt'
 
-            # Needed to prevent skip tls warning from printing to the console
-            original_stderr = sys.stderr
-            f = open(os.devnull, 'w')
-            sys.stderr = f
+                # Needed to prevent skip tls warning from printing to the console
+                original_stderr = sys.stderr
+                f = open(os.devnull, 'w')
+                sys.stderr = f
 
-            make_api_call_with_retries(identity_uri, identity_data, False, consts.Post_RefreshToken_Fault_Type,
+                make_api_call_with_retries(identity_uri, identity_data, "post", False, consts.Post_RefreshToken_Fault_Type,
                                        'Unable to post refresh token details to clientproxy',
                                        "Failed to pass refresh token details to proxy.", clientproxy_process)
-            sys.stderr = original_stderr
+                sys.stderr = original_stderr
+
+    if utils.is_cli_using_msal_auth(): #jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+        kid = fetch_pop_publickey_kid(api_server_port, clientproxy_process)
+        post_at_response = fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
+        if post_at_response.status_code == 500 and "public key expired" in post_at_response.text: # pop public key must have been rotated
+            telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type, 
+                                    summary='PoP public key has expired')
+            kid = fetch_pop_publickey_kid(api_server_port, clientproxy_process) # fetch the rotated PoP public key
+            fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process) #fetch and post the at corresponding to the new public key
 
     data = prepare_clientproxy_data(response)
     expiry = data['hybridConnectionConfig']['expirationTime']
@@ -1939,7 +1951,7 @@ def client_side_proxy(cmd,
     uri = f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01'
 
     # Posting hybrid connection details to proxy in order to get kubeconfig
-    response = make_api_call_with_retries(uri, data, False, consts.Post_Hybridconn_Fault_Type,
+    response = make_api_call_with_retries(uri, data, "post", False, consts.Post_Hybridconn_Fault_Type,
                                           'Unable to post hybrid connection details to clientproxy',
                                           "Failed to pass hybrid connection details to proxy.", clientproxy_process)
 
@@ -1975,10 +1987,10 @@ def client_side_proxy(cmd,
     return expiry, clientproxy_process
 
 
-def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error, clientproxy_process):
+def make_api_call_with_retries(uri, data, method, tls_verify, fault_type, summary, cli_error, clientproxy_process):
     for i in range(consts.API_CALL_RETRIES):
         try:
-            response = requests.post(uri, json=data, verify=tls_verify)
+            response = requests.request(method, uri, json=data, verify=tls_verify)
             return response
         except Exception as e:
             time.sleep(5)
@@ -1987,6 +1999,51 @@ def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_e
             else:
                 telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
                 close_subprocess_and_raise_cli_error(clientproxy_process, cli_error + str(e))
+
+
+def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
+    requestbody = {}
+    poppublickey_uri = f'https://localhost:{api_server_port}/identity/poppublickey'
+    # Needed to prevent skip tls warning from printing to the console
+    original_stderr = sys.stderr
+    f = open(os.devnull, 'w')
+    sys.stderr = f
+
+    get_publickey_response = make_api_call_with_retries(poppublickey_uri, requestbody, "get", False, consts.Get_PublicKey_Info_Fault_Type,
+                                                        'Unable to fetch public key info from clientproxy',
+                                                        "Failed to fetch public key info from client proxy", clientproxy_process)
+
+    sys.stderr = original_stderr
+    publickey_info = json.loads(get_publickey_response.text)
+    kid = publickey_info['publicKey']['kid']
+       
+    return kid
+
+
+def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process):
+    req_cnfJSON = {"kid":kid, "xms_ksl":"sw"}
+    req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode('utf-8')).decode('utf-8')
+
+    #remove padding '=' character
+    if req_cnf[len(req_cnf)-1] == '=':
+        req_cnf = req_cnf[:-1]
+            
+    token_data = {"token_type": "pop", "key_id": kid, "req_cnf": req_cnf}
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"], resource=consts.KAP_1P_Server_App_Scope)
+    accessToken = credential.get_token(consts.KAP_1P_Server_App_Scope, data=token_data)
+    jwtToken = accessToken.token
+
+    jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenantId, "kid": kid}
+    post_at_uri = f'https://localhost:{api_server_port}/identity/at'
+    # Needed to prevent skip tls warning from printing to the console
+    original_stderr = sys.stderr
+    f = open(os.devnull, 'w')
+    sys.stderr = f
+    post_at_response = make_api_call_with_retries(post_at_uri, jwtTokenData, "post", False, consts.PublicKey_Export_Fault_Type, 'pass', "pass", clientproxy_process)
+
+    sys.stderr = original_stderr
+    return post_at_response
 
 
 def insert_token_in_kubeconfig(data, token):
