@@ -9,12 +9,12 @@
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-# pylint: disable=unused-import
-from .generated._help import helps  # pylint: disable=reimported
+
+from .generated.custom import *  # noqa: F403
 try:
-    from .manual._help import helps  # pylint: disable=reimported
+    from .manual.custom import *  # noqa: F403
 except ImportError as e:
-    if e.name.endswith('manual._help'):
+    if e.name.endswith('manual.custom'):
         pass
     else:
         raise e
