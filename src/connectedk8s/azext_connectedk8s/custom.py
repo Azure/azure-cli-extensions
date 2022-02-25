@@ -2016,7 +2016,7 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
     sys.stderr = original_stderr
     publickey_info = json.loads(get_publickey_response.text)
     kid = publickey_info['publicKey']['kid']
-       
+
     return kid
 
 
@@ -2027,7 +2027,7 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_pr
     # remove padding '=' character
     if req_cnf[len(req_cnf) - 1] == '=':
         req_cnf = req_cnf[:-1]
- 
+
     token_data = {"token_type": "pop", "key_id": kid, "req_cnf": req_cnf}
     profile = Profile(cli_ctx=cmd.cli_ctx)
     credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"], resource=consts.KAP_1P_Server_App_Scope)
