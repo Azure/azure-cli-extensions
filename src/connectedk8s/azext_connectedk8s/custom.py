@@ -1917,7 +1917,7 @@ def client_side_proxy(cmd,
                                     summary='Unable to run client proxy executable')
             raise CLIInternalError("Failed to start proxy process." + str(e))
 
-        if not utils.is_cli_using_msal_auth(): # refresh token approach if cli is ADAL auth. This is for cli < 2.30.0
+        if not utils.is_cli_using_msal_auth():  # refresh token approach if cli is ADAL auth. This is for cli < 2.30.0
             if user_type == 'user':
                 identity_data = {}
                 identity_data['refreshToken'] = creds
@@ -1929,18 +1929,18 @@ def client_side_proxy(cmd,
                 sys.stderr = f
 
                 make_api_call_with_retries(identity_uri, identity_data, "post", False, consts.Post_RefreshToken_Fault_Type,
-                                       'Unable to post refresh token details to clientproxy',
-                                       "Failed to pass refresh token details to proxy.", clientproxy_process)
+                                           'Unable to post refresh token details to clientproxy',
+                                           "Failed to pass refresh token details to proxy.", clientproxy_process)
                 sys.stderr = original_stderr
 
-    if utils.is_cli_using_msal_auth(): #jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+    if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
         kid = fetch_pop_publickey_kid(api_server_port, clientproxy_process)
         post_at_response = fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
-        if post_at_response.status_code == 500 and "public key expired" in post_at_response.text: # pop public key must have been rotated
-            telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type, 
+        if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
+            telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
                                     summary='PoP public key has expired')
-            kid = fetch_pop_publickey_kid(api_server_port, clientproxy_process) # fetch the rotated PoP public key
-            fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process) #fetch and post the at corresponding to the new public key
+            kid = fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
+            fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
 
     data = prepare_clientproxy_data(response)
     expiry = data['hybridConnectionConfig']['expirationTime']
@@ -2021,13 +2021,13 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
 
 
 def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process):
-    req_cnfJSON = {"kid":kid, "xms_ksl":"sw"}
+    req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode('utf-8')).decode('utf-8')
 
-    #remove padding '=' character
-    if req_cnf[len(req_cnf)-1] == '=':
+    # remove padding '=' character
+    if req_cnf[len(req_cnf) - 1] == '=':
         req_cnf = req_cnf[:-1]
-            
+   
     token_data = {"token_type": "pop", "key_id": kid, "req_cnf": req_cnf}
     profile = Profile(cli_ctx=cmd.cli_ctx)
     credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"], resource=consts.KAP_1P_Server_App_Scope)
