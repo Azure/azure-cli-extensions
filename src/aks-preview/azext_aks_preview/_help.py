@@ -676,7 +676,7 @@ helps['aks update'] = """
           short-summary: (PREVIEW) Enable OIDC issuer.
         - name: --http-proxy-config
           type: string
-          short-summary: Http Proxy configuration for this cluster.
+          short-summary: HTTP Proxy configuration for this cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
