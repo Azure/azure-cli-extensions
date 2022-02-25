@@ -448,10 +448,10 @@ def validate_node_api_response(api_instance, node_api_response):
         return node_api_response
 
 
-def az_cli (args_str):
+def az_cli(args_str):
     args = args_str.split()
     cli = get_default_cli()
-    cli.invoke(args,  out_file = open(os.devnull, 'w'))
+    cli.invoke(args, out_file=open(os.devnull, 'w'))
     if cli.result.result:
         return cli.result.result
     elif cli.result.error:
