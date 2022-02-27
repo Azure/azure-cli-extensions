@@ -823,6 +823,95 @@ helps['fidalgo admin mapping delete'] = """
                az fidalgo admin mapping delete --dev-center-name "Contoso" --name "{mappingName}" --resource-group "rg1"
 """
 
+helps['fidalgo admin devbox-definition'] = """
+    type: group
+    short-summary: Manage Dev Box definition with fidalgo
+"""
+
+helps['fidalgo admin devbox-definition list'] = """
+    type: command
+    short-summary: "List Dev Box definitions for a devcenter."
+    examples:
+      - name: DevBoxDefinitions_ListByDevCenter
+        text: |-
+               az fidalgo admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin devbox-definition show'] = """
+    type: command
+    short-summary: "Gets a Dev Box definition."
+    examples:
+      - name: DevBoxDefinitions_Get
+        text: |-
+               az fidalgo admin devbox-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
+"rg1"
+"""
+
+helps['fidalgo admin devbox-definition create'] = """
+    type: command
+    short-summary: "Create a Dev Box definition."
+    parameters:
+      - name: --image-reference
+        short-summary: "Image reference information."
+        long-summary: |
+            Usage: --image-reference id=XX
+
+            id: Image resource ID.
+    examples:
+      - name: DevBoxDefinitions_Create
+        text: |-
+               az fidalgo admin devbox-definition create --location "centralus" --image-reference \
+id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Fidalgo/galleries/con\
+tosogallery/images/exampleImage/version/1.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" \
+--resource-group "rg1"
+"""
+
+helps['fidalgo admin devbox-definition update'] = """
+    type: command
+    short-summary: "Partially updates a Dev Box definition."
+    parameters:
+      - name: --image-reference
+        short-summary: "Image reference information."
+        long-summary: |
+            Usage: --image-reference
+
+            id: Image resource ID.
+    examples:
+      - name: DevBoxDefinitions_Patch
+        text: |-
+               az fidalgo admin devbox-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c5\
+8ffff/resourceGroups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/2.0.0" \
+--dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin devbox-definition delete'] = """
+    type: command
+    short-summary: "Deletes a Dev Box definition."
+    examples:
+      - name: DevBoxDefinitions_Delete
+        text: |-
+               az fidalgo admin devbox-definition delete --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
+"rg1"
+"""
+
+helps['fidalgo admin devbox-definition wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the fidalgo admin devbox-definition is met.
+    examples:
+      - name: Pause executing next line of CLI script until the fidalgo admin devbox-definition is successfully created.
+        text: |-
+               az fidalgo admin devbox-definition wait --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
+"rg1" --created
+      - name: Pause executing next line of CLI script until the fidalgo admin devbox-definition is successfully updated.
+        text: |-
+               az fidalgo admin devbox-definition wait --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
+"rg1" --updated
+      - name: Pause executing next line of CLI script until the fidalgo admin devbox-definition is successfully deleted.
+        text: |-
+               az fidalgo admin devbox-definition wait --name "WebDevBox" --dev-center-name "Contoso" --resource-group \
+"rg1" --deleted
+"""
+
 helps['fidalgo admin operation-statuses'] = """
     type: group
     short-summary: Manage operation statuses with fidalgo
