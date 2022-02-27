@@ -7,11 +7,43 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import msrest.serialization
 
 from ._fidalgo_enums import *
+
+
+class AttachedNetworkConnectionProperties(msrest.serialization.Model):
+    """Additional properties for the Network Connection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar location: The geo-location where the resource lives.
+    :vartype location: str
+    :param health_check_status: Health check status values. Possible values include: "Pending",
+     "Running", "Passed", "Failed", "Warning", "Unknown".
+    :type health_check_status: str or ~fidalgo.models.HealthCheckStatus
+    """
+
+    _validation = {
+        'location': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'health_check_status': {'key': 'healthCheckStatus', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        health_check_status: Optional[Union[str, "HealthCheckStatus"]] = None,
+        **kwargs
+    ):
+        super(AttachedNetworkConnectionProperties, self).__init__(**kwargs)
+        self.location = None
+        self.health_check_status = health_check_status
 
 
 class AvailableOperations(msrest.serialization.Model):
@@ -20,7 +52,7 @@ class AvailableOperations(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Collection of available operation details.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.OperationDetail]
+    :vartype value: list[~fidalgo.models.OperationDetail]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
     :vartype next_link: str
     """
@@ -39,11 +71,39 @@ class AvailableOperations(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(AvailableOperations, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
+
+
+class Capability(msrest.serialization.Model):
+    """A name/value pair to describe a capability.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: Name of the capability.
+    :vartype name: str
+    :ivar value: Value of the capability.
+    :vartype value: str
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'value': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Capability, self).__init__(**kwargs)
+        self.name = None
+        self.value = None
 
 
 class Resource(msrest.serialization.Model):
@@ -77,8 +137,6 @@ class Resource(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -99,11 +157,11 @@ class Catalog(Resource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar git_hub: Properties for a GitHub catalog type.
-    :vartype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-    :ivar ado_git: Properties for an Azure DevOps catalog type.
-    :vartype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param git_hub: Properties for a GitHub catalog type.
+    :type git_hub: ~fidalgo.models.GitCatalog
+    :param ado_git: Properties for an Azure DevOps catalog type.
+    :type ado_git: ~fidalgo.models.GitCatalog
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar ignored_catalog_items: Manifests which have been ignored as duplicates.
@@ -145,12 +203,6 @@ class Catalog(Resource):
         ado_git: Optional["GitCatalog"] = None,
         **kwargs
     ):
-        """
-        :keyword git_hub: Properties for a GitHub catalog type.
-        :paramtype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-        :keyword ado_git: Properties for an Azure DevOps catalog type.
-        :paramtype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
-        """
         super(Catalog, self).__init__(**kwargs)
         self.system_data = None
         self.git_hub = git_hub
@@ -161,43 +213,7 @@ class Catalog(Resource):
         self.last_sync_time = None
 
 
-class ProxyResource(Resource):
-    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ProxyResource, self).__init__(**kwargs)
-
-
-class CatalogItem(ProxyResource):
+class CatalogItem(Resource):
     """A catalog item.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -211,11 +227,11 @@ class CatalogItem(ProxyResource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar description: Description of the catalog item.
-    :vartype description: str
-    :ivar engine: The catalog item engine.
-    :vartype engine: ~azure.mgmt.Fidalgo.models.CatalogItemEngineProperties
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param description: Description of the catalog item.
+    :type description: str
+    :param engine: The catalog item engine.
+    :type engine: ~fidalgo.models.CatalogItemEngineProperties
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -245,12 +261,6 @@ class CatalogItem(ProxyResource):
         engine: Optional["CatalogItemEngineProperties"] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the catalog item.
-        :paramtype description: str
-        :keyword engine: The catalog item engine.
-        :paramtype engine: ~azure.mgmt.Fidalgo.models.CatalogItemEngineProperties
-        """
         super(CatalogItem, self).__init__(**kwargs)
         self.system_data = None
         self.description = description
@@ -261,13 +271,13 @@ class CatalogItem(ProxyResource):
 class CatalogItemEngineProperties(msrest.serialization.Model):
     """Properties of a catalog item engine.
 
-    :ivar type: The type of catalog item used to deploy the environment. Possible values include:
+    :param type: The type of catalog item used to deploy the environment. Possible values include:
      "ARM".
-    :vartype type: str or ~azure.mgmt.Fidalgo.models.CatalogItemType
-    :ivar template_path: Path to the catalog item entrypoint file.
-    :vartype template_path: str
-    :ivar parameters: Parameters that can be provided to the catalog item.
-    :vartype parameters: list[~azure.mgmt.Fidalgo.models.CatalogItemParameterProperties]
+    :type type: str or ~fidalgo.models.CatalogItemType
+    :param template_path: Path to the catalog item entrypoint file.
+    :type template_path: str
+    :param parameters: Parameters that can be provided to the catalog item.
+    :type parameters: list[~fidalgo.models.CatalogItemParameterProperties]
     """
 
     _attribute_map = {
@@ -284,15 +294,6 @@ class CatalogItemEngineProperties(msrest.serialization.Model):
         parameters: Optional[List["CatalogItemParameterProperties"]] = None,
         **kwargs
     ):
-        """
-        :keyword type: The type of catalog item used to deploy the environment. Possible values
-         include: "ARM".
-        :paramtype type: str or ~azure.mgmt.Fidalgo.models.CatalogItemType
-        :keyword template_path: Path to the catalog item entrypoint file.
-        :paramtype template_path: str
-        :keyword parameters: Parameters that can be provided to the catalog item.
-        :paramtype parameters: list[~azure.mgmt.Fidalgo.models.CatalogItemParameterProperties]
-        """
         super(CatalogItemEngineProperties, self).__init__(**kwargs)
         self.type = type
         self.template_path = template_path
@@ -305,7 +306,7 @@ class CatalogItemListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.CatalogItem]
+    :vartype value: list[~fidalgo.models.CatalogItem]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -324,8 +325,6 @@ class CatalogItemListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(CatalogItemListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -334,12 +333,12 @@ class CatalogItemListResult(msrest.serialization.Model):
 class CatalogItemParameterProperties(msrest.serialization.Model):
     """Properties of a catalog item parameter.
 
-    :ivar name: The name of the parameter.
-    :vartype name: str
-    :ivar type: The type accepted for the parameter value.
-    :vartype type: str
-    :ivar description: Description of the parameter.
-    :vartype description: str
+    :param name: The name of the parameter.
+    :type name: str
+    :param type: The type accepted for the parameter value.
+    :type type: str
+    :param description: Description of the parameter.
+    :type description: str
     """
 
     _attribute_map = {
@@ -356,14 +355,6 @@ class CatalogItemParameterProperties(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword name: The name of the parameter.
-        :paramtype name: str
-        :keyword type: The type accepted for the parameter value.
-        :paramtype type: str
-        :keyword description: Description of the parameter.
-        :paramtype description: str
-        """
         super(CatalogItemParameterProperties, self).__init__(**kwargs)
         self.name = name
         self.type = type
@@ -373,8 +364,8 @@ class CatalogItemParameterProperties(msrest.serialization.Model):
 class CatalogItemUpdateProperties(msrest.serialization.Model):
     """Properties of a catalog item which can be updated after creation.
 
-    :ivar description: Description of the catalog item.
-    :vartype description: str
+    :param description: Description of the catalog item.
+    :type description: str
     """
 
     _attribute_map = {
@@ -387,10 +378,6 @@ class CatalogItemUpdateProperties(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the catalog item.
-        :paramtype description: str
-        """
         super(CatalogItemUpdateProperties, self).__init__(**kwargs)
         self.description = description
 
@@ -400,10 +387,10 @@ class CatalogItemProperties(CatalogItemUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar description: Description of the catalog item.
-    :vartype description: str
-    :ivar engine: The catalog item engine.
-    :vartype engine: ~azure.mgmt.Fidalgo.models.CatalogItemEngineProperties
+    :param description: Description of the catalog item.
+    :type description: str
+    :param engine: The catalog item engine.
+    :type engine: ~fidalgo.models.CatalogItemEngineProperties
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -425,12 +412,6 @@ class CatalogItemProperties(CatalogItemUpdateProperties):
         engine: Optional["CatalogItemEngineProperties"] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the catalog item.
-        :paramtype description: str
-        :keyword engine: The catalog item engine.
-        :paramtype engine: ~azure.mgmt.Fidalgo.models.CatalogItemEngineProperties
-        """
         super(CatalogItemProperties, self).__init__(description=description, **kwargs)
         self.engine = engine
         self.provisioning_state = None
@@ -439,10 +420,10 @@ class CatalogItemProperties(CatalogItemUpdateProperties):
 class CatalogItemUpdate(msrest.serialization.Model):
     """The catalog item's properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar description: Description of the catalog item.
-    :vartype description: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param description: Description of the catalog item.
+    :type description: str
     """
 
     _attribute_map = {
@@ -457,12 +438,6 @@ class CatalogItemUpdate(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword description: Description of the catalog item.
-        :paramtype description: str
-        """
         super(CatalogItemUpdate, self).__init__(**kwargs)
         self.tags = tags
         self.description = description
@@ -474,7 +449,7 @@ class CatalogListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Catalog]
+    :vartype value: list[~fidalgo.models.Catalog]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -493,8 +468,6 @@ class CatalogListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(CatalogListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -503,10 +476,10 @@ class CatalogListResult(msrest.serialization.Model):
 class CatalogUpdateProperties(msrest.serialization.Model):
     """Properties of a catalog. These properties can be updated after the resource has been created.
 
-    :ivar git_hub: Properties for a GitHub catalog type.
-    :vartype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-    :ivar ado_git: Properties for an Azure DevOps catalog type.
-    :vartype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
+    :param git_hub: Properties for a GitHub catalog type.
+    :type git_hub: ~fidalgo.models.GitCatalog
+    :param ado_git: Properties for an Azure DevOps catalog type.
+    :type ado_git: ~fidalgo.models.GitCatalog
     """
 
     _attribute_map = {
@@ -521,12 +494,6 @@ class CatalogUpdateProperties(msrest.serialization.Model):
         ado_git: Optional["GitCatalog"] = None,
         **kwargs
     ):
-        """
-        :keyword git_hub: Properties for a GitHub catalog type.
-        :paramtype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-        :keyword ado_git: Properties for an Azure DevOps catalog type.
-        :paramtype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
-        """
         super(CatalogUpdateProperties, self).__init__(**kwargs)
         self.git_hub = git_hub
         self.ado_git = ado_git
@@ -537,10 +504,10 @@ class CatalogProperties(CatalogUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar git_hub: Properties for a GitHub catalog type.
-    :vartype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-    :ivar ado_git: Properties for an Azure DevOps catalog type.
-    :vartype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
+    :param git_hub: Properties for a GitHub catalog type.
+    :type git_hub: ~fidalgo.models.GitCatalog
+    :param ado_git: Properties for an Azure DevOps catalog type.
+    :type ado_git: ~fidalgo.models.GitCatalog
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar ignored_catalog_items: Manifests which have been ignored as duplicates.
@@ -574,12 +541,6 @@ class CatalogProperties(CatalogUpdateProperties):
         ado_git: Optional["GitCatalog"] = None,
         **kwargs
     ):
-        """
-        :keyword git_hub: Properties for a GitHub catalog type.
-        :paramtype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-        :keyword ado_git: Properties for an Azure DevOps catalog type.
-        :paramtype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
-        """
         super(CatalogProperties, self).__init__(git_hub=git_hub, ado_git=ado_git, **kwargs)
         self.provisioning_state = None
         self.ignored_catalog_items = None
@@ -590,12 +551,12 @@ class CatalogProperties(CatalogUpdateProperties):
 class CatalogUpdate(msrest.serialization.Model):
     """The catalog's properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar git_hub: Properties for a GitHub catalog type.
-    :vartype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-    :ivar ado_git: Properties for an Azure DevOps catalog type.
-    :vartype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param git_hub: Properties for a GitHub catalog type.
+    :type git_hub: ~fidalgo.models.GitCatalog
+    :param ado_git: Properties for an Azure DevOps catalog type.
+    :type ado_git: ~fidalgo.models.GitCatalog
     """
 
     _attribute_map = {
@@ -612,14 +573,6 @@ class CatalogUpdate(msrest.serialization.Model):
         ado_git: Optional["GitCatalog"] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword git_hub: Properties for a GitHub catalog type.
-        :paramtype git_hub: ~azure.mgmt.Fidalgo.models.GitCatalog
-        :keyword ado_git: Properties for an Azure DevOps catalog type.
-        :paramtype ado_git: ~azure.mgmt.Fidalgo.models.GitCatalog
-        """
         super(CatalogUpdate, self).__init__(**kwargs)
         self.tags = tags
         self.git_hub = git_hub
@@ -629,17 +582,17 @@ class CatalogUpdate(msrest.serialization.Model):
 class CloudErrorBody(msrest.serialization.Model):
     """An error response from the Fidalgo service.
 
-    :ivar code: An identifier for the error. Codes are invariant and are intended to be consumed
+    :param code: An identifier for the error. Codes are invariant and are intended to be consumed
      programmatically.
-    :vartype code: str
-    :ivar message: A message describing the error, intended to be suitable for display in a user
+    :type code: str
+    :param message: A message describing the error, intended to be suitable for display in a user
      interface.
-    :vartype message: str
-    :ivar target: The target of the particular error. For example, the name of the property in
+    :type message: str
+    :param target: The target of the particular error. For example, the name of the property in
      error.
-    :vartype target: str
-    :ivar details: A list of additional details about the error.
-    :vartype details: list[~azure.mgmt.Fidalgo.models.CloudErrorBody]
+    :type target: str
+    :param details: A list of additional details about the error.
+    :type details: list[~fidalgo.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -658,19 +611,6 @@ class CloudErrorBody(msrest.serialization.Model):
         details: Optional[List["CloudErrorBody"]] = None,
         **kwargs
     ):
-        """
-        :keyword code: An identifier for the error. Codes are invariant and are intended to be consumed
-         programmatically.
-        :paramtype code: str
-        :keyword message: A message describing the error, intended to be suitable for display in a user
-         interface.
-        :paramtype message: str
-        :keyword target: The target of the particular error. For example, the name of the property in
-         error.
-        :paramtype target: str
-        :keyword details: A list of additional details about the error.
-        :paramtype details: list[~azure.mgmt.Fidalgo.models.CloudErrorBody]
-        """
         super(CloudErrorBody, self).__init__(**kwargs)
         self.code = code
         self.message = message
@@ -688,7 +628,7 @@ class Deployment(msrest.serialization.Model):
     :ivar logs: Deployment logs.
     :vartype logs: str
     :ivar parameters: Deployment parameters passed to the catalog item.
-    :vartype parameters: any
+    :vartype parameters: object
     """
 
     _validation = {
@@ -707,8 +647,6 @@ class Deployment(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(Deployment, self).__init__(**kwargs)
         self.provisioning_state = None
         self.logs = None
@@ -721,7 +659,7 @@ class DeploymentHistoryResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Recent deployment history.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Deployment]
+    :vartype value: list[~fidalgo.models.Deployment]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -740,8 +678,6 @@ class DeploymentHistoryResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(DeploymentHistoryResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -762,10 +698,10 @@ class TrackedResource(Resource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     """
 
     _validation = {
@@ -790,15 +726,261 @@ class TrackedResource(Resource):
         tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        """
         super(TrackedResource, self).__init__(**kwargs)
         self.tags = tags
         self.location = location
+
+
+class DevBoxDefinition(TrackedResource):
+    """Represents a definition for a Developer Machine.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
+    :param sku: The SKU for Dev Boxes created using this definition.
+    :type sku: ~fidalgo.models.Sku
+    :ivar provisioning_state: The provisioning state of the resource.
+    :vartype provisioning_state: str
+    :ivar image_validation_status: Validation status of the configured image. Possible values
+     include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
+    :ivar image_validation_error_details: Details for image validator error. Populated when the
+     image validation is not successful.
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
+    :ivar active_image_reference: Image reference information for the currently active image (only
+     populated during updates).
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'required': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'image_validation_status': {'readonly': True},
+        'image_validation_error_details': {'readonly': True},
+        'active_image_reference': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
+        'sku': {'key': 'properties.sku', 'type': 'Sku'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'image_validation_status': {'key': 'properties.imageValidationStatus', 'type': 'str'},
+        'image_validation_error_details': {'key': 'properties.imageValidationErrorDetails', 'type': 'ImageValidationErrorDetails'},
+        'active_image_reference': {'key': 'properties.activeImageReference', 'type': 'ImageReference'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        image_reference: Optional["ImageReference"] = None,
+        sku: Optional["Sku"] = None,
+        **kwargs
+    ):
+        super(DevBoxDefinition, self).__init__(tags=tags, location=location, **kwargs)
+        self.system_data = None
+        self.image_reference = image_reference
+        self.sku = sku
+        self.provisioning_state = None
+        self.image_validation_status = None
+        self.image_validation_error_details = None
+        self.active_image_reference = None
+
+
+class DevBoxDefinitionListResult(msrest.serialization.Model):
+    """Results of the Dev Box definition list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~fidalgo.models.DevBoxDefinition]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DevBoxDefinition]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DevBoxDefinitionListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class DevBoxDefinitionUpdateProperties(msrest.serialization.Model):
+    """Properties of a Dev Box definition. These properties can be updated after the resource has been created.
+
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
+    :param sku: The SKU for Dev Boxes created using this definition.
+    :type sku: ~fidalgo.models.Sku
+    """
+
+    _attribute_map = {
+        'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
+    }
+
+    def __init__(
+        self,
+        *,
+        image_reference: Optional["ImageReference"] = None,
+        sku: Optional["Sku"] = None,
+        **kwargs
+    ):
+        super(DevBoxDefinitionUpdateProperties, self).__init__(**kwargs)
+        self.image_reference = image_reference
+        self.sku = sku
+
+
+class DevBoxDefinitionProperties(DevBoxDefinitionUpdateProperties):
+    """Properties of a Dev Box definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
+    :param sku: The SKU for Dev Boxes created using this definition.
+    :type sku: ~fidalgo.models.Sku
+    :ivar provisioning_state: The provisioning state of the resource.
+    :vartype provisioning_state: str
+    :ivar image_validation_status: Validation status of the configured image. Possible values
+     include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
+    :ivar image_validation_error_details: Details for image validator error. Populated when the
+     image validation is not successful.
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
+    :ivar active_image_reference: Image reference information for the currently active image (only
+     populated during updates).
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'image_validation_status': {'readonly': True},
+        'image_validation_error_details': {'readonly': True},
+        'active_image_reference': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'image_validation_status': {'key': 'imageValidationStatus', 'type': 'str'},
+        'image_validation_error_details': {'key': 'imageValidationErrorDetails', 'type': 'ImageValidationErrorDetails'},
+        'active_image_reference': {'key': 'activeImageReference', 'type': 'ImageReference'},
+    }
+
+    def __init__(
+        self,
+        *,
+        image_reference: Optional["ImageReference"] = None,
+        sku: Optional["Sku"] = None,
+        **kwargs
+    ):
+        super(DevBoxDefinitionProperties, self).__init__(image_reference=image_reference, sku=sku, **kwargs)
+        self.provisioning_state = None
+        self.image_validation_status = None
+        self.image_validation_error_details = None
+        self.active_image_reference = None
+
+
+class TrackedResourceUpdate(msrest.serialization.Model):
+    """Base tracked resource type for PATCH updates.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
+        **kwargs
+    ):
+        super(TrackedResourceUpdate, self).__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
+class DevBoxDefinitionUpdate(TrackedResourceUpdate):
+    """Partial update of a Dev Box definition resource.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
+    :param sku: The SKU for Dev Boxes created using this definition.
+    :type sku: ~fidalgo.models.Sku
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
+        'sku': {'key': 'properties.sku', 'type': 'Sku'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
+        image_reference: Optional["ImageReference"] = None,
+        sku: Optional["Sku"] = None,
+        **kwargs
+    ):
+        super(DevBoxDefinitionUpdate, self).__init__(tags=tags, location=location, **kwargs)
+        self.image_reference = image_reference
+        self.sku = sku
 
 
 class DevCenter(TrackedResource):
@@ -816,14 +998,16 @@ class DevCenter(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar identity: Managed identity properties.
-    :vartype identity: ~azure.mgmt.Fidalgo.models.IdentityProperties
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param identity: Managed identity properties.
+    :type identity: ~fidalgo.models.IdentityProperties
+    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
+    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -845,6 +1029,7 @@ class DevCenter(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'identity': {'key': 'identity', 'type': 'IdentityProperties'},
+        'network_connections': {'key': 'properties.networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -854,19 +1039,13 @@ class DevCenter(TrackedResource):
         location: str,
         tags: Optional[Dict[str, str]] = None,
         identity: Optional["IdentityProperties"] = None,
+        network_connections: Optional[Dict[str, "AttachedNetworkConnectionProperties"]] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword identity: Managed identity properties.
-        :paramtype identity: ~azure.mgmt.Fidalgo.models.IdentityProperties
-        """
         super(DevCenter, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.identity = identity
+        self.network_connections = network_connections
         self.provisioning_state = None
 
 
@@ -876,7 +1055,7 @@ class DevCenterListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.DevCenter]
+    :vartype value: list[~fidalgo.models.DevCenter]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -895,60 +1074,80 @@ class DevCenterListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(DevCenterListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
 
 
-class TrackedResourceUpdate(msrest.serialization.Model):
-    """Base tracked resource type for PATCH updates.
+class DevCenterUpdateProperties(msrest.serialization.Model):
+    """Properties of the devcenter.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
+    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
+    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
     """
 
     _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
+        'network_connections': {'key': 'networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
     }
 
     def __init__(
         self,
         *,
-        tags: Optional[Dict[str, str]] = None,
-        location: Optional[str] = None,
+        network_connections: Optional[Dict[str, "AttachedNetworkConnectionProperties"]] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        """
-        super(TrackedResourceUpdate, self).__init__(**kwargs)
-        self.tags = tags
-        self.location = location
+        super(DevCenterUpdateProperties, self).__init__(**kwargs)
+        self.network_connections = network_connections
+
+
+class DevCenterProperties(DevCenterUpdateProperties):
+    """Properties of the devcenter.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
+    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
+    :ivar provisioning_state: The provisioning state of the resource.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'network_connections': {'key': 'networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        network_connections: Optional[Dict[str, "AttachedNetworkConnectionProperties"]] = None,
+        **kwargs
+    ):
+        super(DevCenterProperties, self).__init__(network_connections=network_connections, **kwargs)
+        self.provisioning_state = None
 
 
 class DevCenterUpdate(TrackedResourceUpdate):
     """The devcenter resource for partial updates. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar identity: Managed identity properties.
-    :vartype identity: ~azure.mgmt.Fidalgo.models.IdentityProperties
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param identity: Managed identity properties.
+    :type identity: ~fidalgo.models.IdentityProperties
+    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
+    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'IdentityProperties'},
+        'network_connections': {'key': 'properties.networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
     }
 
     def __init__(
@@ -957,18 +1156,12 @@ class DevCenterUpdate(TrackedResourceUpdate):
         tags: Optional[Dict[str, str]] = None,
         location: Optional[str] = None,
         identity: Optional["IdentityProperties"] = None,
+        network_connections: Optional[Dict[str, "AttachedNetworkConnectionProperties"]] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword identity: Managed identity properties.
-        :paramtype identity: ~azure.mgmt.Fidalgo.models.IdentityProperties
-        """
         super(DevCenterUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.identity = identity
+        self.network_connections = network_connections
 
 
 class Environment(TrackedResource):
@@ -986,29 +1179,29 @@ class Environment(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar description: Description of the Environment.
-    :vartype description: str
-    :ivar catalog_item_name: Name of the catalog item.
-    :vartype catalog_item_name: str
-    :ivar template_uri: Uri of a template used to deploy resources to the environment.
-    :vartype template_uri: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
-    :ivar environment_type: Environment type.
-    :vartype environment_type: str
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param description: Description of the Environment.
+    :type description: str
+    :param catalog_item_name: Name of the catalog item.
+    :type catalog_item_name: str
+    :param template_uri: Uri of a template used to deploy resources to the environment.
+    :type template_uri: str
+    :param deployment_parameters: Deployment parameters passed to catalog item.
+    :type deployment_parameters: object
+    :param environment_type: Environment type.
+    :type environment_type: str
     :ivar provisioning_state: The provisioning state of the environment.
     :vartype provisioning_state: str
     :ivar resource_group_id: The identifier of the resource group containing the environment's
      resources.
     :vartype resource_group_id: str
     :ivar outputs: Outputs from the deployment.
-    :vartype outputs: any
+    :vartype outputs: object
     """
 
     _validation = {
@@ -1047,26 +1240,10 @@ class Environment(TrackedResource):
         description: Optional[str] = None,
         catalog_item_name: Optional[str] = None,
         template_uri: Optional[str] = None,
-        deployment_parameters: Optional[Any] = None,
+        deployment_parameters: Optional[object] = None,
         environment_type: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword description: Description of the Environment.
-        :paramtype description: str
-        :keyword catalog_item_name: Name of the catalog item.
-        :paramtype catalog_item_name: str
-        :keyword template_uri: Uri of a template used to deploy resources to the environment.
-        :paramtype template_uri: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
-        :keyword environment_type: Environment type.
-        :paramtype environment_type: str
-        """
         super(Environment, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.description = description
@@ -1082,8 +1259,8 @@ class Environment(TrackedResource):
 class EnvironmentDeploy(msrest.serialization.Model):
     """An environment deployment.
 
-    :ivar parameters: Deployment parameters passed to catalog item.
-    :vartype parameters: any
+    :param parameters: Deployment parameters passed to catalog item.
+    :type parameters: object
     """
 
     _attribute_map = {
@@ -1093,13 +1270,9 @@ class EnvironmentDeploy(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        parameters: Optional[Any] = None,
+        parameters: Optional[object] = None,
         **kwargs
     ):
-        """
-        :keyword parameters: Deployment parameters passed to catalog item.
-        :paramtype parameters: any
-        """
         super(EnvironmentDeploy, self).__init__(**kwargs)
         self.parameters = parameters
 
@@ -1110,7 +1283,7 @@ class EnvironmentListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Environment]
+    :vartype value: list[~fidalgo.models.Environment]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -1129,8 +1302,6 @@ class EnvironmentListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(EnvironmentListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1139,14 +1310,14 @@ class EnvironmentListResult(msrest.serialization.Model):
 class EnvironmentUpdateProperties(msrest.serialization.Model):
     """Properties of an environment. These properties can be updated after the resource has been created.
 
-    :ivar description: Description of the Environment.
-    :vartype description: str
-    :ivar catalog_item_name: Name of the catalog item.
-    :vartype catalog_item_name: str
-    :ivar template_uri: Uri of a template used to deploy resources to the environment.
-    :vartype template_uri: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
+    :param description: Description of the Environment.
+    :type description: str
+    :param catalog_item_name: Name of the catalog item.
+    :type catalog_item_name: str
+    :param template_uri: Uri of a template used to deploy resources to the environment.
+    :type template_uri: str
+    :param deployment_parameters: Deployment parameters passed to catalog item.
+    :type deployment_parameters: object
     """
 
     _attribute_map = {
@@ -1162,19 +1333,9 @@ class EnvironmentUpdateProperties(msrest.serialization.Model):
         description: Optional[str] = None,
         catalog_item_name: Optional[str] = None,
         template_uri: Optional[str] = None,
-        deployment_parameters: Optional[Any] = None,
+        deployment_parameters: Optional[object] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the Environment.
-        :paramtype description: str
-        :keyword catalog_item_name: Name of the catalog item.
-        :paramtype catalog_item_name: str
-        :keyword template_uri: Uri of a template used to deploy resources to the environment.
-        :paramtype template_uri: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
-        """
         super(EnvironmentUpdateProperties, self).__init__(**kwargs)
         self.description = description
         self.catalog_item_name = catalog_item_name
@@ -1187,23 +1348,23 @@ class EnvironmentProperties(EnvironmentUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar description: Description of the Environment.
-    :vartype description: str
-    :ivar catalog_item_name: Name of the catalog item.
-    :vartype catalog_item_name: str
-    :ivar template_uri: Uri of a template used to deploy resources to the environment.
-    :vartype template_uri: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
-    :ivar environment_type: Environment type.
-    :vartype environment_type: str
+    :param description: Description of the Environment.
+    :type description: str
+    :param catalog_item_name: Name of the catalog item.
+    :type catalog_item_name: str
+    :param template_uri: Uri of a template used to deploy resources to the environment.
+    :type template_uri: str
+    :param deployment_parameters: Deployment parameters passed to catalog item.
+    :type deployment_parameters: object
+    :param environment_type: Environment type.
+    :type environment_type: str
     :ivar provisioning_state: The provisioning state of the environment.
     :vartype provisioning_state: str
     :ivar resource_group_id: The identifier of the resource group containing the environment's
      resources.
     :vartype resource_group_id: str
     :ivar outputs: Outputs from the deployment.
-    :vartype outputs: any
+    :vartype outputs: object
     """
 
     _validation = {
@@ -1229,22 +1390,10 @@ class EnvironmentProperties(EnvironmentUpdateProperties):
         description: Optional[str] = None,
         catalog_item_name: Optional[str] = None,
         template_uri: Optional[str] = None,
-        deployment_parameters: Optional[Any] = None,
+        deployment_parameters: Optional[object] = None,
         environment_type: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the Environment.
-        :paramtype description: str
-        :keyword catalog_item_name: Name of the catalog item.
-        :paramtype catalog_item_name: str
-        :keyword template_uri: Uri of a template used to deploy resources to the environment.
-        :paramtype template_uri: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
-        :keyword environment_type: Environment type.
-        :paramtype environment_type: str
-        """
         super(EnvironmentProperties, self).__init__(description=description, catalog_item_name=catalog_item_name, template_uri=template_uri, deployment_parameters=deployment_parameters, **kwargs)
         self.environment_type = environment_type
         self.provisioning_state = None
@@ -1266,11 +1415,11 @@ class EnvironmentType(Resource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar description: Description of the environment type.
-    :vartype description: str
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param description: Description of the environment type.
+    :type description: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -1300,12 +1449,6 @@ class EnvironmentType(Resource):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword description: Description of the environment type.
-        :paramtype description: str
-        """
         super(EnvironmentType, self).__init__(**kwargs)
         self.system_data = None
         self.tags = tags
@@ -1319,7 +1462,7 @@ class EnvironmentTypeListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.EnvironmentType]
+    :vartype value: list[~fidalgo.models.EnvironmentType]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -1338,8 +1481,6 @@ class EnvironmentTypeListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(EnvironmentTypeListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1348,8 +1489,8 @@ class EnvironmentTypeListResult(msrest.serialization.Model):
 class EnvironmentTypeUpdateProperties(msrest.serialization.Model):
     """Properties of an environment type. These properties can be updated after the resource has been created.
 
-    :ivar description: Description of the environment type.
-    :vartype description: str
+    :param description: Description of the environment type.
+    :type description: str
     """
 
     _attribute_map = {
@@ -1362,10 +1503,6 @@ class EnvironmentTypeUpdateProperties(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the environment type.
-        :paramtype description: str
-        """
         super(EnvironmentTypeUpdateProperties, self).__init__(**kwargs)
         self.description = description
 
@@ -1375,8 +1512,8 @@ class EnvironmentTypeProperties(EnvironmentTypeUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar description: Description of the environment type.
-    :vartype description: str
+    :param description: Description of the environment type.
+    :type description: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -1396,10 +1533,6 @@ class EnvironmentTypeProperties(EnvironmentTypeUpdateProperties):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword description: Description of the environment type.
-        :paramtype description: str
-        """
         super(EnvironmentTypeProperties, self).__init__(description=description, **kwargs)
         self.provisioning_state = None
 
@@ -1407,10 +1540,10 @@ class EnvironmentTypeProperties(EnvironmentTypeUpdateProperties):
 class EnvironmentTypeUpdate(msrest.serialization.Model):
     """The environment type for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar description: Description of the environment type.
-    :vartype description: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param description: Description of the environment type.
+    :type description: str
     """
 
     _attribute_map = {
@@ -1425,12 +1558,6 @@ class EnvironmentTypeUpdate(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword description: Description of the environment type.
-        :paramtype description: str
-        """
         super(EnvironmentTypeUpdate, self).__init__(**kwargs)
         self.tags = tags
         self.description = description
@@ -1439,18 +1566,18 @@ class EnvironmentTypeUpdate(msrest.serialization.Model):
 class EnvironmentUpdate(TrackedResourceUpdate):
     """The environment properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar description: Description of the Environment.
-    :vartype description: str
-    :ivar catalog_item_name: Name of the catalog item.
-    :vartype catalog_item_name: str
-    :ivar template_uri: Uri of a template used to deploy resources to the environment.
-    :vartype template_uri: str
-    :ivar deployment_parameters: Deployment parameters passed to catalog item.
-    :vartype deployment_parameters: any
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param description: Description of the Environment.
+    :type description: str
+    :param catalog_item_name: Name of the catalog item.
+    :type catalog_item_name: str
+    :param template_uri: Uri of a template used to deploy resources to the environment.
+    :type template_uri: str
+    :param deployment_parameters: Deployment parameters passed to catalog item.
+    :type deployment_parameters: object
     """
 
     _attribute_map = {
@@ -1470,23 +1597,9 @@ class EnvironmentUpdate(TrackedResourceUpdate):
         description: Optional[str] = None,
         catalog_item_name: Optional[str] = None,
         template_uri: Optional[str] = None,
-        deployment_parameters: Optional[Any] = None,
+        deployment_parameters: Optional[object] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword description: Description of the Environment.
-        :paramtype description: str
-        :keyword catalog_item_name: Name of the catalog item.
-        :paramtype catalog_item_name: str
-        :keyword template_uri: Uri of a template used to deploy resources to the environment.
-        :paramtype template_uri: str
-        :keyword deployment_parameters: Deployment parameters passed to catalog item.
-        :paramtype deployment_parameters: any
-        """
         super(EnvironmentUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.description = description
         self.catalog_item_name = catalog_item_name
@@ -1508,11 +1621,11 @@ class Gallery(Resource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
+    :vartype system_data: ~fidalgo.models.SystemData
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
-    :ivar gallery_resource_id: The resource ID of the backing Azure Compute Gallery.
-    :vartype gallery_resource_id: str
+    :param gallery_resource_id: The resource ID of the backing Azure Compute Gallery.
+    :type gallery_resource_id: str
     """
 
     _validation = {
@@ -1538,10 +1651,6 @@ class Gallery(Resource):
         gallery_resource_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword gallery_resource_id: The resource ID of the backing Azure Compute Gallery.
-        :paramtype gallery_resource_id: str
-        """
         super(Gallery, self).__init__(**kwargs)
         self.system_data = None
         self.provisioning_state = None
@@ -1554,7 +1663,7 @@ class GalleryListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Gallery]
+    :vartype value: list[~fidalgo.models.Gallery]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -1573,8 +1682,6 @@ class GalleryListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(GalleryListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1583,15 +1690,15 @@ class GalleryListResult(msrest.serialization.Model):
 class GitCatalog(msrest.serialization.Model):
     """Properties for a Git repository catalog.
 
-    :ivar uri: Git URI.
-    :vartype uri: str
-    :ivar branch: Git branch.
-    :vartype branch: str
-    :ivar secret_identifier: A reference to the Key Vault secret containing a security token to
+    :param uri: Git URI.
+    :type uri: str
+    :param branch: Git branch.
+    :type branch: str
+    :param secret_identifier: A reference to the Key Vault secret containing a security token to
      authenticate to a Git repository.
-    :vartype secret_identifier: str
-    :ivar path: The folder where the catalog items can be found inside the repository.
-    :vartype path: str
+    :type secret_identifier: str
+    :param path: The folder where the catalog items can be found inside the repository.
+    :type path: str
     """
 
     _attribute_map = {
@@ -1610,17 +1717,6 @@ class GitCatalog(msrest.serialization.Model):
         path: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword uri: Git URI.
-        :paramtype uri: str
-        :keyword branch: Git branch.
-        :paramtype branch: str
-        :keyword secret_identifier: A reference to the Key Vault secret containing a security token to
-         authenticate to a Git repository.
-        :paramtype secret_identifier: str
-        :keyword path: The folder where the catalog items can be found inside the repository.
-        :paramtype path: str
-        """
         super(GitCatalog, self).__init__(**kwargs)
         self.uri = uri
         self.branch = branch
@@ -1635,7 +1731,7 @@ class HealthCheck(msrest.serialization.Model):
 
     :ivar status: The status of the health check item. Possible values include: "Pending",
      "Running", "Passed", "Failed", "Warning", "Unknown".
-    :vartype status: str or ~azure.mgmt.Fidalgo.models.HealthCheckStatus
+    :vartype status: str or ~fidalgo.models.HealthCheckStatus
     :ivar display_name: The display name of this health check item.
     :vartype display_name: str
     :ivar start_date_time: Start time of health check item.
@@ -1674,8 +1770,6 @@ class HealthCheck(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(HealthCheck, self).__init__(**kwargs)
         self.status = None
         self.display_name = None
@@ -1700,13 +1794,13 @@ class HealthCheckStatusDetails(Resource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
+    :vartype system_data: ~fidalgo.models.SystemData
     :ivar start_date_time: Start time of last execution of the health checks.
     :vartype start_date_time: ~datetime.datetime
     :ivar end_date_time: End time of last execution of the health checks.
     :vartype end_date_time: ~datetime.datetime
     :ivar health_checks: Details for each health check item.
-    :vartype health_checks: list[~azure.mgmt.Fidalgo.models.HealthCheck]
+    :vartype health_checks: list[~fidalgo.models.HealthCheck]
     """
 
     _validation = {
@@ -1733,8 +1827,6 @@ class HealthCheckStatusDetails(Resource):
         self,
         **kwargs
     ):
-        """
-        """
         super(HealthCheckStatusDetails, self).__init__(**kwargs)
         self.system_data = None
         self.start_date_time = None
@@ -1748,7 +1840,7 @@ class HealthCheckStatusDetailsListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.HealthCheckStatusDetails]
+    :vartype value: list[~fidalgo.models.HealthCheckStatusDetails]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -1767,8 +1859,6 @@ class HealthCheckStatusDetailsListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(HealthCheckStatusDetailsListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1785,16 +1875,15 @@ class IdentityProperties(msrest.serialization.Model):
     :ivar tenant_id: The tenant id associated with the resource. This property will only be
      provided for a system assigned identity.
     :vartype tenant_id: str
-    :ivar type: The type of identity used for the resource. The type 'SystemAssigned, UserAssigned'
-     includes both an implicitly created identity and a user assigned identity. The type 'None' will
-     remove any identities from the resource. Possible values include: "SystemAssigned",
-     "UserAssigned", "SystemAssigned, UserAssigned", "None".
-    :vartype type: str or ~azure.mgmt.Fidalgo.models.ResourceIdentityType
-    :ivar user_assigned_identities: The list of user identities associated with the resource. The
+    :param type: The type of identity used for the resource. The type 'SystemAssigned,
+     UserAssigned' includes both an implicitly created identity and a user assigned identity. The
+     type 'None' will remove any identities from the resource. Possible values include:
+     "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned", "None".
+    :type type: str or ~fidalgo.models.ResourceIdentityType
+    :param user_assigned_identities: The list of user identities associated with the resource. The
      user identity dictionary key references will be ARM resource ids in the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
-    :vartype user_assigned_identities: dict[str,
-     ~azure.mgmt.Fidalgo.models.UserAssignedIdentitiesValue]
+    :type user_assigned_identities: dict[str, ~fidalgo.models.UserAssignedIdentitiesValue]
     """
 
     _validation = {
@@ -1816,18 +1905,6 @@ class IdentityProperties(msrest.serialization.Model):
         user_assigned_identities: Optional[Dict[str, "UserAssignedIdentitiesValue"]] = None,
         **kwargs
     ):
-        """
-        :keyword type: The type of identity used for the resource. The type 'SystemAssigned,
-         UserAssigned' includes both an implicitly created identity and a user assigned identity. The
-         type 'None' will remove any identities from the resource. Possible values include:
-         "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned", "None".
-        :paramtype type: str or ~azure.mgmt.Fidalgo.models.ResourceIdentityType
-        :keyword user_assigned_identities: The list of user identities associated with the resource.
-         The user identity dictionary key references will be ARM resource ids in the form:
-         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
-        :paramtype user_assigned_identities: dict[str,
-         ~azure.mgmt.Fidalgo.models.UserAssignedIdentitiesValue]
-        """
         super(IdentityProperties, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
@@ -1835,7 +1912,7 @@ class IdentityProperties(msrest.serialization.Model):
         self.user_assigned_identities = user_assigned_identities
 
 
-class Image(ProxyResource):
+class Image(Resource):
     """Represents an image.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1849,7 +1926,7 @@ class Image(ProxyResource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
+    :vartype system_data: ~fidalgo.models.SystemData
     :ivar description: The description of the image.
     :vartype description: str
     :ivar publisher: The publisher of the image.
@@ -1860,8 +1937,7 @@ class Image(ProxyResource):
     :vartype sku: str
     :ivar recommended_machine_configuration: The recommended machine configuration to use with the
      image.
-    :vartype recommended_machine_configuration:
-     ~azure.mgmt.Fidalgo.models.RecommendedMachineConfiguration
+    :vartype recommended_machine_configuration: ~fidalgo.models.RecommendedMachineConfiguration
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -1896,8 +1972,6 @@ class Image(ProxyResource):
         self,
         **kwargs
     ):
-        """
-        """
         super(Image, self).__init__(**kwargs)
         self.system_data = None
         self.description = None
@@ -1914,7 +1988,7 @@ class ImageListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Image]
+    :vartype value: list[~fidalgo.models.Image]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -1933,8 +2007,6 @@ class ImageListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(ImageListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1943,14 +2015,14 @@ class ImageListResult(msrest.serialization.Model):
 class ImageReference(msrest.serialization.Model):
     """Image reference information.
 
-    :ivar id: Image resource ID.
-    :vartype id: str
-    :ivar publisher: The image publisher.
-    :vartype publisher: str
-    :ivar offer: The image offer.
-    :vartype offer: str
-    :ivar sku: The image sku.
-    :vartype sku: str
+    :param id: Image resource ID.
+    :type id: str
+    :param publisher: The image publisher.
+    :type publisher: str
+    :param offer: The image offer.
+    :type offer: str
+    :param sku: The image sku.
+    :type sku: str
     """
 
     _attribute_map = {
@@ -1969,16 +2041,6 @@ class ImageReference(msrest.serialization.Model):
         sku: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword id: Image resource ID.
-        :paramtype id: str
-        :keyword publisher: The image publisher.
-        :paramtype publisher: str
-        :keyword offer: The image offer.
-        :paramtype offer: str
-        :keyword sku: The image sku.
-        :paramtype sku: str
-        """
         super(ImageReference, self).__init__(**kwargs)
         self.id = id
         self.publisher = publisher
@@ -1989,10 +2051,10 @@ class ImageReference(msrest.serialization.Model):
 class ImageValidationErrorDetails(msrest.serialization.Model):
     """Image validation error details.
 
-    :ivar code: An identifier for the error.
-    :vartype code: str
-    :ivar message: A message describing the error.
-    :vartype message: str
+    :param code: An identifier for the error.
+    :type code: str
+    :param message: A message describing the error.
+    :type message: str
     """
 
     _attribute_map = {
@@ -2007,18 +2069,12 @@ class ImageValidationErrorDetails(msrest.serialization.Model):
         message: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword code: An identifier for the error.
-        :paramtype code: str
-        :keyword message: A message describing the error.
-        :paramtype message: str
-        """
         super(ImageValidationErrorDetails, self).__init__(**kwargs)
         self.code = code
         self.message = message
 
 
-class ImageVersion(ProxyResource):
+class ImageVersion(Resource):
     """Represents an image version.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2032,7 +2088,7 @@ class ImageVersion(ProxyResource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
+    :vartype system_data: ~fidalgo.models.SystemData
     :ivar name_properties_name: The semantic version string.
     :vartype name_properties_name: str
     :ivar published_date: The datetime that the backing image version was published.
@@ -2074,8 +2130,6 @@ class ImageVersion(ProxyResource):
         self,
         **kwargs
     ):
-        """
-        """
         super(ImageVersion, self).__init__(**kwargs)
         self.system_data = None
         self.name_properties_name = None
@@ -2091,7 +2145,7 @@ class ImageVersionListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.ImageVersion]
+    :vartype value: list[~fidalgo.models.ImageVersion]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -2110,8 +2164,6 @@ class ImageVersionListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(ImageVersionListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -2132,25 +2184,25 @@ class MachineDefinition(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar image_reference: Image reference information.
-    :vartype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar image_validation_status: Validation status of the configured image. Possible values
      include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
-    :vartype image_validation_status: str or ~azure.mgmt.Fidalgo.models.ImageValidationStatus
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
     :ivar image_validation_error_details: Details for image validator error. Populated when the
      image validation is not successful.
-    :vartype image_validation_error_details: ~azure.mgmt.Fidalgo.models.ImageValidationErrorDetails
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
     :ivar active_image_reference: Image reference information for the currently active image (only
      populated during updates).
-    :vartype active_image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
     """
 
     _validation = {
@@ -2187,14 +2239,6 @@ class MachineDefinition(TrackedResource):
         image_reference: Optional["ImageReference"] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword image_reference: Image reference information.
-        :paramtype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
-        """
         super(MachineDefinition, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.image_reference = image_reference
@@ -2210,7 +2254,7 @@ class MachineDefinitionListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.MachineDefinition]
+    :vartype value: list[~fidalgo.models.MachineDefinition]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -2229,8 +2273,6 @@ class MachineDefinitionListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(MachineDefinitionListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -2239,8 +2281,8 @@ class MachineDefinitionListResult(msrest.serialization.Model):
 class MachineDefinitionUpdateProperties(msrest.serialization.Model):
     """Properties of a Machine Definition. These properties can be updated after the resource has been created.
 
-    :ivar image_reference: Image reference information.
-    :vartype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
     """
 
     _attribute_map = {
@@ -2253,10 +2295,6 @@ class MachineDefinitionUpdateProperties(msrest.serialization.Model):
         image_reference: Optional["ImageReference"] = None,
         **kwargs
     ):
-        """
-        :keyword image_reference: Image reference information.
-        :paramtype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
-        """
         super(MachineDefinitionUpdateProperties, self).__init__(**kwargs)
         self.image_reference = image_reference
 
@@ -2266,19 +2304,19 @@ class MachineDefinitionProperties(MachineDefinitionUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar image_reference: Image reference information.
-    :vartype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar image_validation_status: Validation status of the configured image. Possible values
      include: "Unknown", "Pending", "Succeeded", "Failed", "TimedOut".
-    :vartype image_validation_status: str or ~azure.mgmt.Fidalgo.models.ImageValidationStatus
+    :vartype image_validation_status: str or ~fidalgo.models.ImageValidationStatus
     :ivar image_validation_error_details: Details for image validator error. Populated when the
      image validation is not successful.
-    :vartype image_validation_error_details: ~azure.mgmt.Fidalgo.models.ImageValidationErrorDetails
+    :vartype image_validation_error_details: ~fidalgo.models.ImageValidationErrorDetails
     :ivar active_image_reference: Image reference information for the currently active image (only
      populated during updates).
-    :vartype active_image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :vartype active_image_reference: ~fidalgo.models.ImageReference
     """
 
     _validation = {
@@ -2302,10 +2340,6 @@ class MachineDefinitionProperties(MachineDefinitionUpdateProperties):
         image_reference: Optional["ImageReference"] = None,
         **kwargs
     ):
-        """
-        :keyword image_reference: Image reference information.
-        :paramtype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
-        """
         super(MachineDefinitionProperties, self).__init__(image_reference=image_reference, **kwargs)
         self.provisioning_state = None
         self.image_validation_status = None
@@ -2316,12 +2350,12 @@ class MachineDefinitionProperties(MachineDefinitionUpdateProperties):
 class MachineDefinitionUpdate(TrackedResourceUpdate):
     """Partial update of a machine definition resource.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar image_reference: Image reference information.
-    :vartype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
     """
 
     _attribute_map = {
@@ -2338,14 +2372,6 @@ class MachineDefinitionUpdate(TrackedResourceUpdate):
         image_reference: Optional["ImageReference"] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword image_reference: Image reference information.
-        :paramtype image_reference: ~azure.mgmt.Fidalgo.models.ImageReference
-        """
         super(MachineDefinitionUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.image_reference = image_reference
 
@@ -2364,14 +2390,14 @@ class Mapping(Resource):
      Microsoft.Storage/storageAccounts.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar mapped_subscription_id: Id of a subscription that the environment type will be mapped to.
-     The environment's resources will be deployed into this subscription.
-    :vartype mapped_subscription_id: str
-    :ivar environment_type: Environment type (e.g. Dev/Test).
-    :vartype environment_type: str
-    :ivar project_id: Resource Id of a project that this mapping is associated with.
-    :vartype project_id: str
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param mapped_subscription_id: Id of a subscription that the environment type will be mapped
+     to. The environment's resources will be deployed into this subscription.
+    :type mapped_subscription_id: str
+    :param environment_type: Environment type (e.g. Dev/Test).
+    :type environment_type: str
+    :param project_id: Resource Id of a project that this mapping is associated with.
+    :type project_id: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -2403,15 +2429,6 @@ class Mapping(Resource):
         project_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword mapped_subscription_id: Id of a subscription that the environment type will be mapped
-         to. The environment's resources will be deployed into this subscription.
-        :paramtype mapped_subscription_id: str
-        :keyword environment_type: Environment type (e.g. Dev/Test).
-        :paramtype environment_type: str
-        :keyword project_id: Resource Id of a project that this mapping is associated with.
-        :paramtype project_id: str
-        """
         super(Mapping, self).__init__(**kwargs)
         self.system_data = None
         self.mapped_subscription_id = mapped_subscription_id
@@ -2426,7 +2443,7 @@ class MappingListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Mapping]
+    :vartype value: list[~fidalgo.models.Mapping]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -2445,8 +2462,6 @@ class MappingListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(MappingListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -2455,9 +2470,9 @@ class MappingListResult(msrest.serialization.Model):
 class MappingUpdateProperties(msrest.serialization.Model):
     """Properties of a mapping. These properties can be updated after the resource has been created.
 
-    :ivar mapped_subscription_id: Id of a subscription that the environment type will be mapped to.
-     The environment's resources will be deployed into this subscription.
-    :vartype mapped_subscription_id: str
+    :param mapped_subscription_id: Id of a subscription that the environment type will be mapped
+     to. The environment's resources will be deployed into this subscription.
+    :type mapped_subscription_id: str
     """
 
     _attribute_map = {
@@ -2470,11 +2485,6 @@ class MappingUpdateProperties(msrest.serialization.Model):
         mapped_subscription_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword mapped_subscription_id: Id of a subscription that the environment type will be mapped
-         to. The environment's resources will be deployed into this subscription.
-        :paramtype mapped_subscription_id: str
-        """
         super(MappingUpdateProperties, self).__init__(**kwargs)
         self.mapped_subscription_id = mapped_subscription_id
 
@@ -2484,13 +2494,13 @@ class MappingProperties(MappingUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar mapped_subscription_id: Id of a subscription that the environment type will be mapped to.
-     The environment's resources will be deployed into this subscription.
-    :vartype mapped_subscription_id: str
-    :ivar environment_type: Environment type (e.g. Dev/Test).
-    :vartype environment_type: str
-    :ivar project_id: Resource Id of a project that this mapping is associated with.
-    :vartype project_id: str
+    :param mapped_subscription_id: Id of a subscription that the environment type will be mapped
+     to. The environment's resources will be deployed into this subscription.
+    :type mapped_subscription_id: str
+    :param environment_type: Environment type (e.g. Dev/Test).
+    :type environment_type: str
+    :param project_id: Resource Id of a project that this mapping is associated with.
+    :type project_id: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -2514,15 +2524,6 @@ class MappingProperties(MappingUpdateProperties):
         project_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword mapped_subscription_id: Id of a subscription that the environment type will be mapped
-         to. The environment's resources will be deployed into this subscription.
-        :paramtype mapped_subscription_id: str
-        :keyword environment_type: Environment type (e.g. Dev/Test).
-        :paramtype environment_type: str
-        :keyword project_id: Resource Id of a project that this mapping is associated with.
-        :paramtype project_id: str
-        """
         super(MappingProperties, self).__init__(mapped_subscription_id=mapped_subscription_id, **kwargs)
         self.environment_type = environment_type
         self.project_id = project_id
@@ -2532,9 +2533,9 @@ class MappingProperties(MappingUpdateProperties):
 class MappingUpdate(msrest.serialization.Model):
     """The environment mapping for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar mapped_subscription_id: Id of a subscription that the environment type will be mapped to.
-     The environment's resources will be deployed into this subscription.
-    :vartype mapped_subscription_id: str
+    :param mapped_subscription_id: Id of a subscription that the environment type will be mapped
+     to. The environment's resources will be deployed into this subscription.
+    :type mapped_subscription_id: str
     """
 
     _attribute_map = {
@@ -2547,11 +2548,6 @@ class MappingUpdate(msrest.serialization.Model):
         mapped_subscription_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword mapped_subscription_id: Id of a subscription that the environment type will be mapped
-         to. The environment's resources will be deployed into this subscription.
-        :paramtype mapped_subscription_id: str
-        """
         super(MappingUpdate, self).__init__(**kwargs)
         self.mapped_subscription_id = mapped_subscription_id
 
@@ -2559,21 +2555,21 @@ class MappingUpdate(msrest.serialization.Model):
 class NetworkSettingsUpdateProperties(msrest.serialization.Model):
     """Properties of network settings. These properties can be updated after the resource has been created.
 
-    :ivar subnet_id: The subnet to attach Virtual Machines to.
-    :vartype subnet_id: str
-    :ivar networking_resource_group_id: Target resource group id for NICs to be placed. Required
+    :param subnet_id: The subnet to attach Virtual Machines to.
+    :type subnet_id: str
+    :param networking_resource_group_id: Target resource group id for NICs to be placed. Required
      format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-    :vartype networking_resource_group_id: str
-    :ivar domain_name: Active Directory domain name.
-    :vartype domain_name: str
-    :ivar organization_unit: Active Directory domain Organization Unit (OU).
-    :vartype organization_unit: str
-    :ivar domain_username: The username of an Active Directory account (user or service account)
+    :type networking_resource_group_id: str
+    :param domain_name: Active Directory domain name.
+    :type domain_name: str
+    :param organization_unit: Active Directory domain Organization Unit (OU).
+    :type organization_unit: str
+    :param domain_username: The username of an Active Directory account (user or service account)
      that has permissions to create computer objects in Active Directory. Required format:
      admin@contoso.com.
-    :vartype domain_username: str
-    :ivar domain_password: The password for the account used to join domain.
-    :vartype domain_password: str
+    :type domain_username: str
+    :param domain_password: The password for the account used to join domain.
+    :type domain_password: str
     """
 
     _attribute_map = {
@@ -2596,23 +2592,6 @@ class NetworkSettingsUpdateProperties(msrest.serialization.Model):
         domain_password: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword subnet_id: The subnet to attach Virtual Machines to.
-        :paramtype subnet_id: str
-        :keyword networking_resource_group_id: Target resource group id for NICs to be placed. Required
-         format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-        :paramtype networking_resource_group_id: str
-        :keyword domain_name: Active Directory domain name.
-        :paramtype domain_name: str
-        :keyword organization_unit: Active Directory domain Organization Unit (OU).
-        :paramtype organization_unit: str
-        :keyword domain_username: The username of an Active Directory account (user or service account)
-         that has permissions to create computer objects in Active Directory. Required format:
-         admin@contoso.com.
-        :paramtype domain_username: str
-        :keyword domain_password: The password for the account used to join domain.
-        :paramtype domain_password: str
-        """
         super(NetworkSettingsUpdateProperties, self).__init__(**kwargs)
         self.subnet_id = subnet_id
         self.networking_resource_group_id = networking_resource_group_id
@@ -2627,27 +2606,29 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar subnet_id: The subnet to attach Virtual Machines to.
-    :vartype subnet_id: str
-    :ivar networking_resource_group_id: Target resource group id for NICs to be placed. Required
+    :param subnet_id: The subnet to attach Virtual Machines to.
+    :type subnet_id: str
+    :param networking_resource_group_id: Target resource group id for NICs to be placed. Required
      format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-    :vartype networking_resource_group_id: str
-    :ivar domain_name: Active Directory domain name.
-    :vartype domain_name: str
-    :ivar organization_unit: Active Directory domain Organization Unit (OU).
-    :vartype organization_unit: str
-    :ivar domain_username: The username of an Active Directory account (user or service account)
+    :type networking_resource_group_id: str
+    :param domain_name: Active Directory domain name.
+    :type domain_name: str
+    :param organization_unit: Active Directory domain Organization Unit (OU).
+    :type organization_unit: str
+    :param domain_username: The username of an Active Directory account (user or service account)
      that has permissions to create computer objects in Active Directory. Required format:
      admin@contoso.com.
-    :vartype domain_username: str
-    :ivar domain_password: The password for the account used to join domain.
-    :vartype domain_password: str
+    :type domain_username: str
+    :param domain_password: The password for the account used to join domain.
+    :type domain_password: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar health_check_status: Overall health status of the network connection. Health checks are
      run on creation, update, and periodically to validate the network connection. Possible values
      include: "Pending", "Running", "Passed", "Failed", "Warning", "Unknown".
-    :vartype health_check_status: str or ~azure.mgmt.Fidalgo.models.HealthCheckStatus
+    :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
+    :param networking_resource_group_name: The name for resource group where NICs will be placed.
+    :type networking_resource_group_name: str
     """
 
     _validation = {
@@ -2664,6 +2645,7 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
         'domain_password': {'key': 'domainPassword', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'health_check_status': {'key': 'healthCheckStatus', 'type': 'str'},
+        'networking_resource_group_name': {'key': 'networkingResourceGroupName', 'type': 'str'},
     }
 
     def __init__(
@@ -2675,28 +2657,13 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
         organization_unit: Optional[str] = None,
         domain_username: Optional[str] = None,
         domain_password: Optional[str] = None,
+        networking_resource_group_name: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword subnet_id: The subnet to attach Virtual Machines to.
-        :paramtype subnet_id: str
-        :keyword networking_resource_group_id: Target resource group id for NICs to be placed. Required
-         format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-        :paramtype networking_resource_group_id: str
-        :keyword domain_name: Active Directory domain name.
-        :paramtype domain_name: str
-        :keyword organization_unit: Active Directory domain Organization Unit (OU).
-        :paramtype organization_unit: str
-        :keyword domain_username: The username of an Active Directory account (user or service account)
-         that has permissions to create computer objects in Active Directory. Required format:
-         admin@contoso.com.
-        :paramtype domain_username: str
-        :keyword domain_password: The password for the account used to join domain.
-        :paramtype domain_password: str
-        """
         super(NetworkProperties, self).__init__(subnet_id=subnet_id, networking_resource_group_id=networking_resource_group_id, domain_name=domain_name, organization_unit=organization_unit, domain_username=domain_username, domain_password=domain_password, **kwargs)
         self.provisioning_state = None
         self.health_check_status = None
+        self.networking_resource_group_name = networking_resource_group_name
 
 
 class NetworkSettings(TrackedResource):
@@ -2714,33 +2681,35 @@ class NetworkSettings(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar subnet_id: The subnet to attach Virtual Machines to.
-    :vartype subnet_id: str
-    :ivar networking_resource_group_id: Target resource group id for NICs to be placed. Required
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param subnet_id: The subnet to attach Virtual Machines to.
+    :type subnet_id: str
+    :param networking_resource_group_id: Target resource group id for NICs to be placed. Required
      format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-    :vartype networking_resource_group_id: str
-    :ivar domain_name: Active Directory domain name.
-    :vartype domain_name: str
-    :ivar organization_unit: Active Directory domain Organization Unit (OU).
-    :vartype organization_unit: str
-    :ivar domain_username: The username of an Active Directory account (user or service account)
+    :type networking_resource_group_id: str
+    :param domain_name: Active Directory domain name.
+    :type domain_name: str
+    :param organization_unit: Active Directory domain Organization Unit (OU).
+    :type organization_unit: str
+    :param domain_username: The username of an Active Directory account (user or service account)
      that has permissions to create computer objects in Active Directory. Required format:
      admin@contoso.com.
-    :vartype domain_username: str
-    :ivar domain_password: The password for the account used to join domain.
-    :vartype domain_password: str
+    :type domain_username: str
+    :param domain_password: The password for the account used to join domain.
+    :type domain_password: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     :ivar health_check_status: Overall health status of the network connection. Health checks are
      run on creation, update, and periodically to validate the network connection. Possible values
      include: "Pending", "Running", "Passed", "Failed", "Warning", "Unknown".
-    :vartype health_check_status: str or ~azure.mgmt.Fidalgo.models.HealthCheckStatus
+    :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
+    :param networking_resource_group_name: The name for resource group where NICs will be placed.
+    :type networking_resource_group_name: str
     """
 
     _validation = {
@@ -2768,6 +2737,7 @@ class NetworkSettings(TrackedResource):
         'domain_password': {'key': 'properties.domainPassword', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'health_check_status': {'key': 'properties.healthCheckStatus', 'type': 'str'},
+        'networking_resource_group_name': {'key': 'properties.networkingResourceGroupName', 'type': 'str'},
     }
 
     def __init__(
@@ -2781,29 +2751,9 @@ class NetworkSettings(TrackedResource):
         organization_unit: Optional[str] = None,
         domain_username: Optional[str] = None,
         domain_password: Optional[str] = None,
+        networking_resource_group_name: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword subnet_id: The subnet to attach Virtual Machines to.
-        :paramtype subnet_id: str
-        :keyword networking_resource_group_id: Target resource group id for NICs to be placed. Required
-         format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-        :paramtype networking_resource_group_id: str
-        :keyword domain_name: Active Directory domain name.
-        :paramtype domain_name: str
-        :keyword organization_unit: Active Directory domain Organization Unit (OU).
-        :paramtype organization_unit: str
-        :keyword domain_username: The username of an Active Directory account (user or service account)
-         that has permissions to create computer objects in Active Directory. Required format:
-         admin@contoso.com.
-        :paramtype domain_username: str
-        :keyword domain_password: The password for the account used to join domain.
-        :paramtype domain_password: str
-        """
         super(NetworkSettings, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.subnet_id = subnet_id
@@ -2814,6 +2764,7 @@ class NetworkSettings(TrackedResource):
         self.domain_password = domain_password
         self.provisioning_state = None
         self.health_check_status = None
+        self.networking_resource_group_name = networking_resource_group_name
 
 
 class NetworkSettingsListResult(msrest.serialization.Model):
@@ -2822,7 +2773,7 @@ class NetworkSettingsListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.NetworkSettings]
+    :vartype value: list[~fidalgo.models.NetworkSettings]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -2841,8 +2792,6 @@ class NetworkSettingsListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(NetworkSettingsListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -2851,25 +2800,25 @@ class NetworkSettingsListResult(msrest.serialization.Model):
 class NetworkSettingsUpdate(TrackedResourceUpdate):
     """The network settings properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar subnet_id: The subnet to attach Virtual Machines to.
-    :vartype subnet_id: str
-    :ivar networking_resource_group_id: Target resource group id for NICs to be placed. Required
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param subnet_id: The subnet to attach Virtual Machines to.
+    :type subnet_id: str
+    :param networking_resource_group_id: Target resource group id for NICs to be placed. Required
      format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-    :vartype networking_resource_group_id: str
-    :ivar domain_name: Active Directory domain name.
-    :vartype domain_name: str
-    :ivar organization_unit: Active Directory domain Organization Unit (OU).
-    :vartype organization_unit: str
-    :ivar domain_username: The username of an Active Directory account (user or service account)
+    :type networking_resource_group_id: str
+    :param domain_name: Active Directory domain name.
+    :type domain_name: str
+    :param organization_unit: Active Directory domain Organization Unit (OU).
+    :type organization_unit: str
+    :param domain_username: The username of an Active Directory account (user or service account)
      that has permissions to create computer objects in Active Directory. Required format:
      admin@contoso.com.
-    :vartype domain_username: str
-    :ivar domain_password: The password for the account used to join domain.
-    :vartype domain_password: str
+    :type domain_username: str
+    :param domain_password: The password for the account used to join domain.
+    :type domain_password: str
     """
 
     _attribute_map = {
@@ -2896,27 +2845,6 @@ class NetworkSettingsUpdate(TrackedResourceUpdate):
         domain_password: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword subnet_id: The subnet to attach Virtual Machines to.
-        :paramtype subnet_id: str
-        :keyword networking_resource_group_id: Target resource group id for NICs to be placed. Required
-         format: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}'.
-        :paramtype networking_resource_group_id: str
-        :keyword domain_name: Active Directory domain name.
-        :paramtype domain_name: str
-        :keyword organization_unit: Active Directory domain Organization Unit (OU).
-        :paramtype organization_unit: str
-        :keyword domain_username: The username of an Active Directory account (user or service account)
-         that has permissions to create computer objects in Active Directory. Required format:
-         admin@contoso.com.
-        :paramtype domain_username: str
-        :keyword domain_password: The password for the account used to join domain.
-        :paramtype domain_password: str
-        """
         super(NetworkSettingsUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.subnet_id = subnet_id
         self.networking_resource_group_id = networking_resource_group_id
@@ -2929,14 +2857,14 @@ class NetworkSettingsUpdate(TrackedResourceUpdate):
 class OperationDetail(msrest.serialization.Model):
     """Operation detail payload.
 
-    :ivar name: Name of the operation.
-    :vartype name: str
-    :ivar is_data_action: Indicates whether the operation is a data action.
-    :vartype is_data_action: bool
-    :ivar display: Display of the operation.
-    :vartype display: ~azure.mgmt.Fidalgo.models.OperationDisplay
-    :ivar origin: Origin of the operation.
-    :vartype origin: str
+    :param name: Name of the operation.
+    :type name: str
+    :param is_data_action: Indicates whether the operation is a data action.
+    :type is_data_action: bool
+    :param display: Display of the operation.
+    :type display: ~fidalgo.models.OperationDisplay
+    :param origin: Origin of the operation.
+    :type origin: str
     """
 
     _attribute_map = {
@@ -2955,16 +2883,6 @@ class OperationDetail(msrest.serialization.Model):
         origin: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword name: Name of the operation.
-        :paramtype name: str
-        :keyword is_data_action: Indicates whether the operation is a data action.
-        :paramtype is_data_action: bool
-        :keyword display: Display of the operation.
-        :paramtype display: ~azure.mgmt.Fidalgo.models.OperationDisplay
-        :keyword origin: Origin of the operation.
-        :paramtype origin: str
-        """
         super(OperationDetail, self).__init__(**kwargs)
         self.name = name
         self.is_data_action = is_data_action
@@ -2975,14 +2893,14 @@ class OperationDetail(msrest.serialization.Model):
 class OperationDisplay(msrest.serialization.Model):
     """Operation display payload.
 
-    :ivar provider: Resource provider of the operation.
-    :vartype provider: str
-    :ivar resource: Resource of the operation.
-    :vartype resource: str
-    :ivar operation: Localized friendly name for the operation.
-    :vartype operation: str
-    :ivar description: Localized friendly description for the operation.
-    :vartype description: str
+    :param provider: Resource provider of the operation.
+    :type provider: str
+    :param resource: Resource of the operation.
+    :type resource: str
+    :param operation: Localized friendly name for the operation.
+    :type operation: str
+    :param description: Localized friendly description for the operation.
+    :type description: str
     """
 
     _attribute_map = {
@@ -3001,16 +2919,6 @@ class OperationDisplay(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword provider: Resource provider of the operation.
-        :paramtype provider: str
-        :keyword resource: Resource of the operation.
-        :paramtype resource: str
-        :keyword operation: Localized friendly name for the operation.
-        :paramtype operation: str
-        :keyword description: Localized friendly description for the operation.
-        :paramtype description: str
-        """
         super(OperationDisplay, self).__init__(**kwargs)
         self.provider = provider
         self.resource = resource
@@ -3036,9 +2944,9 @@ class OperationStatus(msrest.serialization.Model):
     :ivar percent_complete: Percent of the operation that is complete.
     :vartype percent_complete: float
     :ivar properties: Custom operation properties, populated only for a successful operation.
-    :vartype properties: any
-    :ivar error: Operation Error message.
-    :vartype error: ~azure.mgmt.Fidalgo.models.OperationStatusError
+    :vartype properties: object
+    :param error: Operation Error message.
+    :type error: ~fidalgo.models.OperationStatusError
     """
 
     _validation = {
@@ -3068,10 +2976,6 @@ class OperationStatus(msrest.serialization.Model):
         error: Optional["OperationStatusError"] = None,
         **kwargs
     ):
-        """
-        :keyword error: Operation Error message.
-        :paramtype error: ~azure.mgmt.Fidalgo.models.OperationStatusError
-        """
         super(OperationStatus, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -3108,8 +3012,6 @@ class OperationStatusError(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(OperationStatusError, self).__init__(**kwargs)
         self.code = None
         self.message = None
@@ -3130,19 +3032,19 @@ class Pool(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
      pool.
-    :vartype sku: ~azure.mgmt.Fidalgo.models.Sku
-    :ivar machine_definition_id: Resource Id of a Machine Definition.
-    :vartype machine_definition_id: str
-    :ivar network_settings_id: Resource Id of a Network Settings resource.
-    :vartype network_settings_id: str
+    :type sku: ~fidalgo.models.Sku
+    :param machine_definition_id: Resource Id of a Machine Definition.
+    :type machine_definition_id: str
+    :param network_settings_id: Resource Id of a Network Settings resource.
+    :type network_settings_id: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -3179,19 +3081,6 @@ class Pool(TrackedResource):
         network_settings_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
-         pool.
-        :paramtype sku: ~azure.mgmt.Fidalgo.models.Sku
-        :keyword machine_definition_id: Resource Id of a Machine Definition.
-        :paramtype machine_definition_id: str
-        :keyword network_settings_id: Resource Id of a Network Settings resource.
-        :paramtype network_settings_id: str
-        """
         super(Pool, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.sku = sku
@@ -3206,7 +3095,7 @@ class PoolListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Pool]
+    :vartype value: list[~fidalgo.models.Pool]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -3225,8 +3114,6 @@ class PoolListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(PoolListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -3235,13 +3122,13 @@ class PoolListResult(msrest.serialization.Model):
 class PoolUpdateProperties(msrest.serialization.Model):
     """Properties of a Pool. These properties can be updated after the resource has been created.
 
-    :ivar sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
+    :param sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
      pool.
-    :vartype sku: ~azure.mgmt.Fidalgo.models.Sku
-    :ivar machine_definition_id: Resource Id of a Machine Definition.
-    :vartype machine_definition_id: str
-    :ivar network_settings_id: Resource Id of a Network Settings resource.
-    :vartype network_settings_id: str
+    :type sku: ~fidalgo.models.Sku
+    :param machine_definition_id: Resource Id of a Machine Definition.
+    :type machine_definition_id: str
+    :param network_settings_id: Resource Id of a Network Settings resource.
+    :type network_settings_id: str
     """
 
     _attribute_map = {
@@ -3258,15 +3145,6 @@ class PoolUpdateProperties(msrest.serialization.Model):
         network_settings_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
-         pool.
-        :paramtype sku: ~azure.mgmt.Fidalgo.models.Sku
-        :keyword machine_definition_id: Resource Id of a Machine Definition.
-        :paramtype machine_definition_id: str
-        :keyword network_settings_id: Resource Id of a Network Settings resource.
-        :paramtype network_settings_id: str
-        """
         super(PoolUpdateProperties, self).__init__(**kwargs)
         self.sku = sku
         self.machine_definition_id = machine_definition_id
@@ -3278,13 +3156,13 @@ class PoolProperties(PoolUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
+    :param sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
      pool.
-    :vartype sku: ~azure.mgmt.Fidalgo.models.Sku
-    :ivar machine_definition_id: Resource Id of a Machine Definition.
-    :vartype machine_definition_id: str
-    :ivar network_settings_id: Resource Id of a Network Settings resource.
-    :vartype network_settings_id: str
+    :type sku: ~fidalgo.models.Sku
+    :param machine_definition_id: Resource Id of a Machine Definition.
+    :type machine_definition_id: str
+    :param network_settings_id: Resource Id of a Network Settings resource.
+    :type network_settings_id: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -3308,15 +3186,6 @@ class PoolProperties(PoolUpdateProperties):
         network_settings_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
-         pool.
-        :paramtype sku: ~azure.mgmt.Fidalgo.models.Sku
-        :keyword machine_definition_id: Resource Id of a Machine Definition.
-        :paramtype machine_definition_id: str
-        :keyword network_settings_id: Resource Id of a Network Settings resource.
-        :paramtype network_settings_id: str
-        """
         super(PoolProperties, self).__init__(sku=sku, machine_definition_id=machine_definition_id, network_settings_id=network_settings_id, **kwargs)
         self.provisioning_state = None
 
@@ -3324,17 +3193,17 @@ class PoolProperties(PoolUpdateProperties):
 class PoolUpdate(TrackedResourceUpdate):
     """The pool properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
      pool.
-    :vartype sku: ~azure.mgmt.Fidalgo.models.Sku
-    :ivar machine_definition_id: Resource Id of a Machine Definition.
-    :vartype machine_definition_id: str
-    :ivar network_settings_id: Resource Id of a Network Settings resource.
-    :vartype network_settings_id: str
+    :type sku: ~fidalgo.models.Sku
+    :param machine_definition_id: Resource Id of a Machine Definition.
+    :type machine_definition_id: str
+    :param network_settings_id: Resource Id of a Network Settings resource.
+    :type network_settings_id: str
     """
 
     _attribute_map = {
@@ -3355,19 +3224,6 @@ class PoolUpdate(TrackedResourceUpdate):
         network_settings_id: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword sku: The SKU for the virtual machine. Defines the type of virtual machines used in the
-         pool.
-        :paramtype sku: ~azure.mgmt.Fidalgo.models.Sku
-        :keyword machine_definition_id: Resource Id of a Machine Definition.
-        :paramtype machine_definition_id: str
-        :keyword network_settings_id: Resource Id of a Network Settings resource.
-        :paramtype network_settings_id: str
-        """
         super(PoolUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.sku = sku
         self.machine_definition_id = machine_definition_id
@@ -3389,16 +3245,16 @@ class Project(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: Required. The geo-location where the resource lives.
-    :vartype location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.Fidalgo.models.SystemData
-    :ivar dev_center_id: Resource Id of an associated DevCenter.
-    :vartype dev_center_id: str
-    :ivar description: Description of the project.
-    :vartype description: str
+    :vartype system_data: ~fidalgo.models.SystemData
+    :param dev_center_id: Resource Id of an associated DevCenter.
+    :type dev_center_id: str
+    :param description: Description of the project.
+    :type description: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -3433,16 +3289,6 @@ class Project(TrackedResource):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: Required. The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword dev_center_id: Resource Id of an associated DevCenter.
-        :paramtype dev_center_id: str
-        :keyword description: Description of the project.
-        :paramtype description: str
-        """
         super(Project, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.dev_center_id = dev_center_id
@@ -3456,7 +3302,7 @@ class ProjectListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Project]
+    :vartype value: list[~fidalgo.models.Project]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -3475,8 +3321,6 @@ class ProjectListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(ProjectListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -3485,10 +3329,10 @@ class ProjectListResult(msrest.serialization.Model):
 class ProjectUpdateProperties(msrest.serialization.Model):
     """Properties of a project. These properties can be updated after the resource has been created.
 
-    :ivar dev_center_id: Resource Id of an associated DevCenter.
-    :vartype dev_center_id: str
-    :ivar description: Description of the project.
-    :vartype description: str
+    :param dev_center_id: Resource Id of an associated DevCenter.
+    :type dev_center_id: str
+    :param description: Description of the project.
+    :type description: str
     """
 
     _attribute_map = {
@@ -3503,12 +3347,6 @@ class ProjectUpdateProperties(msrest.serialization.Model):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword dev_center_id: Resource Id of an associated DevCenter.
-        :paramtype dev_center_id: str
-        :keyword description: Description of the project.
-        :paramtype description: str
-        """
         super(ProjectUpdateProperties, self).__init__(**kwargs)
         self.dev_center_id = dev_center_id
         self.description = description
@@ -3519,10 +3357,10 @@ class ProjectProperties(ProjectUpdateProperties):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar dev_center_id: Resource Id of an associated DevCenter.
-    :vartype dev_center_id: str
-    :ivar description: Description of the project.
-    :vartype description: str
+    :param dev_center_id: Resource Id of an associated DevCenter.
+    :type dev_center_id: str
+    :param description: Description of the project.
+    :type description: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -3544,12 +3382,6 @@ class ProjectProperties(ProjectUpdateProperties):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword dev_center_id: Resource Id of an associated DevCenter.
-        :paramtype dev_center_id: str
-        :keyword description: Description of the project.
-        :paramtype description: str
-        """
         super(ProjectProperties, self).__init__(dev_center_id=dev_center_id, description=description, **kwargs)
         self.provisioning_state = None
 
@@ -3557,14 +3389,14 @@ class ProjectProperties(ProjectUpdateProperties):
 class ProjectUpdate(TrackedResourceUpdate):
     """The project properties for partial update. Properties not provided in the update request will not be changed.
 
-    :ivar tags: A set of tags. Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :ivar dev_center_id: Resource Id of an associated DevCenter.
-    :vartype dev_center_id: str
-    :ivar description: Description of the project.
-    :vartype description: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param dev_center_id: Resource Id of an associated DevCenter.
+    :type dev_center_id: str
+    :param description: Description of the project.
+    :type description: str
     """
 
     _attribute_map = {
@@ -3583,19 +3415,43 @@ class ProjectUpdate(TrackedResourceUpdate):
         description: Optional[str] = None,
         **kwargs
     ):
-        """
-        :keyword tags: A set of tags. Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
-        :paramtype location: str
-        :keyword dev_center_id: Resource Id of an associated DevCenter.
-        :paramtype dev_center_id: str
-        :keyword description: Description of the project.
-        :paramtype description: str
-        """
         super(ProjectUpdate, self).__init__(tags=tags, location=location, **kwargs)
         self.dev_center_id = dev_center_id
         self.description = description
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyResource, self).__init__(**kwargs)
 
 
 class RecommendedMachineConfiguration(msrest.serialization.Model):
@@ -3604,9 +3460,9 @@ class RecommendedMachineConfiguration(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar memory: Recommended memory range.
-    :vartype memory: ~azure.mgmt.Fidalgo.models.ResourceRange
+    :vartype memory: ~fidalgo.models.ResourceRange
     :ivar v_cp_us: Recommended vCPU range.
-    :vartype v_cp_us: ~azure.mgmt.Fidalgo.models.ResourceRange
+    :vartype v_cp_us: ~fidalgo.models.ResourceRange
     """
 
     _validation = {
@@ -3623,8 +3479,6 @@ class RecommendedMachineConfiguration(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(RecommendedMachineConfiguration, self).__init__(**kwargs)
         self.memory = None
         self.v_cp_us = None
@@ -3655,8 +3509,6 @@ class ResourceRange(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(ResourceRange, self).__init__(**kwargs)
         self.min = None
         self.max = None
@@ -3669,14 +3521,14 @@ class Sku(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar name: Required. The name of the SKU.
-    :vartype name: str
+    :param name: Required. The name of the SKU.
+    :type name: str
     :ivar resource_type: The name of the resource type.
     :vartype resource_type: str
     :ivar tier: This field is required to be implemented by the Resource Provider if the service
      has more than one tier, but is not required on a PUT. Possible values include: "Free", "Basic",
      "Standard", "Premium".
-    :vartype tier: str or ~azure.mgmt.Fidalgo.models.SkuTier
+    :vartype tier: str or ~fidalgo.models.SkuTier
     :ivar size: The SKU size. When the name field is the combination of tier and some other value,
      this would be the standalone code.
     :vartype size: str
@@ -3688,6 +3540,8 @@ class Sku(msrest.serialization.Model):
     :vartype capacity: int
     :ivar locations: SKU supported locations.
     :vartype locations: list[str]
+    :ivar capabilities: Collection of name/value pairs to describe the SKU capabilities.
+    :vartype capabilities: list[~fidalgo.models.Capability]
     """
 
     _validation = {
@@ -3698,6 +3552,7 @@ class Sku(msrest.serialization.Model):
         'family': {'readonly': True},
         'capacity': {'readonly': True},
         'locations': {'readonly': True},
+        'capabilities': {'readonly': True},
     }
 
     _attribute_map = {
@@ -3708,6 +3563,7 @@ class Sku(msrest.serialization.Model):
         'family': {'key': 'family', 'type': 'str'},
         'capacity': {'key': 'capacity', 'type': 'int'},
         'locations': {'key': 'locations', 'type': '[str]'},
+        'capabilities': {'key': 'capabilities', 'type': '[Capability]'},
     }
 
     def __init__(
@@ -3716,10 +3572,6 @@ class Sku(msrest.serialization.Model):
         name: str,
         **kwargs
     ):
-        """
-        :keyword name: Required. The name of the SKU.
-        :paramtype name: str
-        """
         super(Sku, self).__init__(**kwargs)
         self.name = name
         self.resource_type = None
@@ -3728,6 +3580,7 @@ class Sku(msrest.serialization.Model):
         self.family = None
         self.capacity = None
         self.locations = None
+        self.capabilities = None
 
 
 class SkuListResult(msrest.serialization.Model):
@@ -3736,7 +3589,7 @@ class SkuListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: Current page of results.
-    :vartype value: list[~azure.mgmt.Fidalgo.models.Sku]
+    :vartype value: list[~fidalgo.models.Sku]
     :ivar next_link: URL to get the next set of results if there are any.
     :vartype next_link: str
     """
@@ -3755,8 +3608,6 @@ class SkuListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(SkuListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -3765,20 +3616,20 @@ class SkuListResult(msrest.serialization.Model):
 class SystemData(msrest.serialization.Model):
     """Metadata pertaining to creation and last modification of the resource.
 
-    :ivar created_by: The identity that created the resource.
-    :vartype created_by: str
-    :ivar created_by_type: The type of identity that created the resource. Possible values include:
-     "User", "Application", "ManagedIdentity", "Key".
-    :vartype created_by_type: str or ~azure.mgmt.Fidalgo.models.CreatedByType
-    :ivar created_at: The timestamp of resource creation (UTC).
-    :vartype created_at: ~datetime.datetime
-    :ivar last_modified_by: The identity that last modified the resource.
-    :vartype last_modified_by: str
-    :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~fidalgo.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :vartype last_modified_by_type: str or ~azure.mgmt.Fidalgo.models.CreatedByType
-    :ivar last_modified_at: The type of identity that last modified the resource.
-    :vartype last_modified_at: ~datetime.datetime
+    :type last_modified_by_type: str or ~fidalgo.models.CreatedByType
+    :param last_modified_at: The type of identity that last modified the resource.
+    :type last_modified_at: ~datetime.datetime
     """
 
     _attribute_map = {
@@ -3801,22 +3652,6 @@ class SystemData(msrest.serialization.Model):
         last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):
-        """
-        :keyword created_by: The identity that created the resource.
-        :paramtype created_by: str
-        :keyword created_by_type: The type of identity that created the resource. Possible values
-         include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype created_by_type: str or ~azure.mgmt.Fidalgo.models.CreatedByType
-        :keyword created_at: The timestamp of resource creation (UTC).
-        :paramtype created_at: ~datetime.datetime
-        :keyword last_modified_by: The identity that last modified the resource.
-        :paramtype last_modified_by: str
-        :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
-         values include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype last_modified_by_type: str or ~azure.mgmt.Fidalgo.models.CreatedByType
-        :keyword last_modified_at: The type of identity that last modified the resource.
-        :paramtype last_modified_at: ~datetime.datetime
-        """
         super(SystemData, self).__init__(**kwargs)
         self.created_by = created_by
         self.created_by_type = created_by_type
@@ -3851,8 +3686,6 @@ class UserAssignedIdentitiesValue(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(UserAssignedIdentitiesValue, self).__init__(**kwargs)
         self.principal_id = None
         self.client_id = None

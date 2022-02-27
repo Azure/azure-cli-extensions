@@ -590,6 +590,75 @@ def step_deployment_list(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /DevBoxDefinitions/put/DevBoxDefinitions_Create
+@try_manual
+def step_dev_box_definition_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition create '
+             '--location "centralus" '
+             '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fidalgo/'
+             'galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
+             '--dev-box-definition-name "{myDevBoxDefinition}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=[])
+    test.cmd('az fidalgo dev-box-definition wait --created '
+             '--dev-box-definition-name "{myDevBoxDefinition}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/get/DevBoxDefinitions_Get
+@try_manual
+def step_dev_box_definition_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition show '
+             '--name "{myDevBoxDefinition}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/get/DevBoxDefinitions_ListByDevCenter
+@try_manual
+def step_dev_box_definition_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition list '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/patch/DevBoxDefinitions_Patch
+@try_manual
+def step_dev_box_definition_update(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition update '
+             '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fidalgo/'
+             'galleries/{myGallery4}/images/{myImage3}/version/2.0.0" '
+             '--dev-box-definition-name "{myDevBoxDefinition}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/delete/DevBoxDefinitions_Delete
+@try_manual
+def step_dev_box_definition_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition delete -y '
+             '--name "{myDevBoxDefinition}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /MachineDefinitions/put/MachineDefinitions_CreateWithCustomImage
 @try_manual
 def step_machine_definition_create(test, checks=None):

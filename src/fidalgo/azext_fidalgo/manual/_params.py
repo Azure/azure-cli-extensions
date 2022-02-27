@@ -226,6 +226,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
+        c.argument('network_connections', type=validate_file_or_dict, help='Dictionary of '
+                   '<AttachedNetworkConnectionProperties> Expected value: json-string/json-file/@json-file.')
         c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
@@ -243,6 +245,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
+        c.argument('network_connections', type=validate_file_or_dict, help='Dictionary of '
+                   '<AttachedNetworkConnectionProperties> Expected value: json-string/json-file/@json-file.')
         c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
@@ -597,6 +601,51 @@ def load_arguments(self, _):
         c.argument('mapped_subscription_id', type=str, help='Id of a subscription that the environment type will be '
                    'mapped to. The environment\'s resources will be deployed into this subscription.')
 
+    with self.argument_context('fidalgo admin devbox-definition list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+
+    with self.argument_context('fidalgo admin devbox-definition show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('dev_box_definition_name', options_list=['--name', '-n', '--dev-box-definition-name'], type=str,
+                   help='The name of the Dev Box definition.', id_part='child_name_1')
+
+    with self.argument_context('fidalgo admin devbox-definition create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('dev_box_definition_name', type=str, help='The name of the Dev Box definition.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('image_reference', action=AddImageReference, nargs='+', help='Image reference information.')
+        c.argument('sku_name', type=str, help='The name of the SKU.', arg_group='Sku')
+
+    with self.argument_context('fidalgo admin devbox-definition update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('dev_box_definition_name', type=str, help='The name of the Dev Box definition.',
+                   id_part='child_name_1')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('image_reference', action=AddImageReference, nargs='+', help='Image reference information.')
+        c.argument('sku_name', type=str, help='The name of the SKU.', arg_group='Sku')
+
+    with self.argument_context('fidalgo admin devbox-definition delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('dev_box_definition_name', options_list=['--name', '-n', '--dev-box-definition-name'], type=str,
+                   help='The name of the Dev Box definition.', id_part='child_name_1')
+
+    with self.argument_context('fidalgo admin devbox-definition wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('dev_box_definition_name', options_list=['--name', '-n', '--dev-box-definition-name'], type=str,
+                   help='The name of the Dev Box definition.', id_part='child_name_1')
+
     with self.argument_context('fidalgo admin mapping delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
@@ -722,6 +771,8 @@ def load_arguments(self, _):
                    'account) that has permissions to create computer objects in Active Directory. Required format: '
                    'admin@contoso.com.')
         c.argument('domain_password', type=str, help='The password for the account used to join domain')
+        c.argument('networking_resource_group_name', type=str, help='The name for the managed resource group where NICs will be '
+                   'placed.')
 
     with self.argument_context('fidalgo admin network-setting update') as c:
         c.argument('resource_group_name', resource_group_name_type)

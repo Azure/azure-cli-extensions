@@ -18,6 +18,7 @@ from azext_fidalgo.generated._client_factory import (
     cf_image_version,
     cf_catalog,
     cf_mapping,
+    cf_dev_box_definition,
     cf_operation_statuses,
     cf_sku,
     cf_pool,
@@ -61,7 +62,12 @@ def load_command_table(self, _):
         client_factory=cf_deployment_dp,
     )
 
-
+    fidalgo_dev_box_definition = CliCommandType(
+        operations_tmpl=(
+            'azext_fidalgo.vendored_sdks.fidalgo.operations._dev_box_definitions_operations#DevBoxDefinitionsOperations.{}'
+        ),
+        client_factory=cf_dev_box_definition,
+    )
     fidalgo_environment_dp = CliCommandType(
         operations_tmpl=(
             'azext_fidalgo.vendored_sdks.azure_fidalgo.operations._environments_operations#EnvironmentsOperations.{}'
@@ -247,6 +253,16 @@ def load_command_table(self, _):
 
     with self.command_group('fidalgo admin deployment', fidalgo_deployment, client_factory=cf_deployment) as g:
         g.custom_command('list', 'fidalgo_deployment_list')
+
+    with self.command_group(
+        'fidalgo admin devbox-definition', fidalgo_dev_box_definition, client_factory=cf_dev_box_definition
+    ) as g:
+        g.custom_command('list', 'fidalgo_dev_box_definition_list')
+        g.custom_show_command('show', 'fidalgo_dev_box_definition_show')
+        g.custom_command('create', 'fidalgo_dev_box_definition_create', supports_no_wait=True)
+        g.custom_command('update', 'fidalgo_dev_box_definition_update', supports_no_wait=True)
+        g.custom_command('delete', 'fidalgo_dev_box_definition_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'fidalgo_dev_box_definition_show')
 
     with self.command_group('fidalgo admin dev-center', fidalgo_dev_center, client_factory=cf_dev_center) as g:
         g.custom_command('list', 'fidalgo_dev_center_list')

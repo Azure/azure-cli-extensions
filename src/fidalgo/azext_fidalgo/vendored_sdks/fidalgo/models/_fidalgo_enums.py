@@ -6,18 +6,33 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
 from six import with_metaclass
-from azure.core import CaseInsensitiveEnumMeta
+
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
 
 
-class CatalogItemType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class CatalogItemType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of catalog item used to deploy the environment.
     """
 
     ARM = "ARM"
 
-class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
 
@@ -26,7 +41,7 @@ class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class EnableStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class EnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enable or disable status. Indicates whether the property applied to is either enabled or
     disabled.
     """
@@ -34,7 +49,7 @@ class EnableStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
-class HealthCheckStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class HealthCheckStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Health check status values
     """
 
@@ -45,7 +60,7 @@ class HealthCheckStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     UNKNOWN = "Unknown"
 
-class ImageValidationStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class ImageValidationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Image validation status
     """
 
@@ -55,7 +70,7 @@ class ImageValidationStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     FAILED = "Failed"
     TIMED_OUT = "TimedOut"
 
-class ResourceIdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes
     both an implicitly created identity and a user assigned identity. The type 'None' will remove
     any identities from the resource.
@@ -66,7 +81,7 @@ class ResourceIdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
     NONE = "None"
 
-class SkuTier(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class SkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """This field is required to be implemented by the Resource Provider if the service has more than
     one tier, but is not required on a PUT.
     """

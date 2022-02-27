@@ -13,6 +13,7 @@ def fidalgo_dev_center_create(client,
                               dev_center_name,
                               location,
                               tags=None,
+                              network_connections=None,
                               identity_type="SystemAssigned",
                               user_assigned_identity=None,
                               no_wait=False):
@@ -20,6 +21,8 @@ def fidalgo_dev_center_create(client,
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
+    if network_connections is not None:
+        body['network_connections'] = network_connections
     body['identity'] = {}
     if identity_type is not None:
         body['identity']['type'] = identity_type
@@ -40,6 +43,7 @@ def fidalgo_pool_create(client,
                         pool_name,
                         location,
                         tags=None,
+                        network_connections=None,
                         machine_definition_id=None,
                         network_settings_id=None,
                         sku_name=None,
@@ -48,6 +52,8 @@ def fidalgo_pool_create(client,
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
+    if network_connections is not None:
+        body['network_connections'] = network_connections
     if machine_definition_id is not None:
         body['machine_definition_id'] = machine_definition_id
     if network_settings_id is not None:

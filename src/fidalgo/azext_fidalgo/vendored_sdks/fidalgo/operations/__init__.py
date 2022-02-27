@@ -17,6 +17,7 @@ from ._images_operations import ImagesOperations
 from ._image_versions_operations import ImageVersionsOperations
 from ._catalogs_operations import CatalogsOperations
 from ._mappings_operations import MappingsOperations
+from ._dev_box_definitions_operations import DevBoxDefinitionsOperations
 from ._operations import Operations
 from ._operation_statuses_operations import OperationStatusesOperations
 from ._skus_operations import SkusOperations
@@ -36,6 +37,7 @@ __all__ = [
     'ImageVersionsOperations',
     'CatalogsOperations',
     'MappingsOperations',
+    'DevBoxDefinitionsOperations',
     'Operations',
     'OperationStatusesOperations',
     'SkusOperations',

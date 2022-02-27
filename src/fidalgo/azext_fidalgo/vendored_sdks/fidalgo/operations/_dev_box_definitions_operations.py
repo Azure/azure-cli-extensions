@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class EnvironmentTypesOperations(object):
-    """EnvironmentTypesOperations operations.
+class DevBoxDefinitionsOperations(object):
+    """DevBoxDefinitionsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,86 +47,6 @@ class EnvironmentTypesOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_project(
-        self,
-        resource_group_name,  # type: str
-        project_name,  # type: str
-        top=None,  # type: Optional[int]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["models.EnvironmentTypeListResult"]
-        """Lists all environment types configured for this project.
-
-        :param resource_group_name: Name of the resource group within the Azure subscription.
-        :type resource_group_name: str
-        :param project_name: The name of the project.
-        :type project_name: str
-        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
-        :type top: int
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either EnvironmentTypeListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~fidalgo.models.EnvironmentTypeListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentTypeListResult"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-01-privatepreview"
-        accept = "application/json"
-
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-            if not next_link:
-                # Construct URL
-                url = self.list_by_project.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'projectName': self._serialize.url("project_name", project_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-                if top is not None:
-                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
-
-                request = self._client.get(url, query_parameters, header_parameters)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize('EnvironmentTypeListResult', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_by_project.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/projects/{projectName}/environmentTypes'}  # type: ignore
-
     def list_by_dev_center(
         self,
         resource_group_name,  # type: str
@@ -134,8 +54,8 @@ class EnvironmentTypesOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.EnvironmentTypeListResult"]
-        """Lists environment types for the devcenter.
+        # type: (...) -> Iterable["models.DevBoxDefinitionListResult"]
+        """List Dev Box definitions for a devcenter.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
@@ -144,11 +64,11 @@ class EnvironmentTypesOperations(object):
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either EnvironmentTypeListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~fidalgo.models.EnvironmentTypeListResult]
+        :return: An iterator like instance of either DevBoxDefinitionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~fidalgo.models.DevBoxDefinitionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentTypeListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinitionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -184,7 +104,7 @@ class EnvironmentTypesOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('EnvironmentTypeListResult', pipeline_response)
+            deserialized = self._deserialize('DevBoxDefinitionListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -205,30 +125,30 @@ class EnvironmentTypesOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_dev_center.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes'}  # type: ignore
+    list_by_dev_center.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         dev_center_name,  # type: str
-        environment_type_name,  # type: str
+        dev_box_definition_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.EnvironmentType"
-        """Gets an environment type.
+        # type: (...) -> "models.DevBoxDefinition"
+        """Gets a Dev Box definition.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
-        :param environment_type_name: The name of the environment type.
-        :type environment_type_name: str
+        :param dev_box_definition_name: The name of the Dev Box definition.
+        :type dev_box_definition_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: EnvironmentType, or the result of cls(response)
-        :rtype: ~fidalgo.models.EnvironmentType
+        :return: DevBoxDefinition, or the result of cls(response)
+        :rtype: ~fidalgo.models.DevBoxDefinition
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentType"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -242,7 +162,7 @@ class EnvironmentTypesOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -262,39 +182,24 @@ class EnvironmentTypesOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('EnvironmentType', pipeline_response)
+        deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
 
-    def create_or_update(
+    def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
         dev_center_name,  # type: str
-        environment_type_name,  # type: str
-        body,  # type: "models.EnvironmentType"
+        dev_box_definition_name,  # type: str
+        body,  # type: "models.DevBoxDefinition"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.EnvironmentType"
-        """Creates or updates an environment type.
-
-        :param resource_group_name: Name of the resource group within the Azure subscription.
-        :type resource_group_name: str
-        :param dev_center_name: The name of the devcenter.
-        :type dev_center_name: str
-        :param environment_type_name: The name of the environment type.
-        :type environment_type_name: str
-        :param body: Represents an Environment Type.
-        :type body: ~fidalgo.models.EnvironmentType
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: EnvironmentType, or the result of cls(response)
-        :rtype: ~fidalgo.models.EnvironmentType
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentType"]
+        # type: (...) -> "models.DevBoxDefinition"
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -304,12 +209,12 @@ class EnvironmentTypesOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self.create_or_update.metadata['url']  # type: ignore
+        url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -323,49 +228,115 @@ class EnvironmentTypesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(body, 'EnvironmentType')
+        body_content = self._serialize.body(body, 'DevBoxDefinition')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('EnvironmentType', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
 
-    def update(
+    def begin_create_or_update(
         self,
         resource_group_name,  # type: str
         dev_center_name,  # type: str
-        environment_type_name,  # type: str
-        body,  # type: "models.EnvironmentTypeUpdate"
+        dev_box_definition_name,  # type: str
+        body,  # type: "models.DevBoxDefinition"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.EnvironmentType"
-        """Partially updates an environment type.
+        # type: (...) -> LROPoller["models.DevBoxDefinition"]
+        """Creates or updates a Dev Box definition.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
-        :param environment_type_name: The name of the environment type.
-        :type environment_type_name: str
-        :param body: Updatable environment type properties.
-        :type body: ~fidalgo.models.EnvironmentTypeUpdate
+        :param dev_box_definition_name: The name of the Dev Box definition.
+        :type dev_box_definition_name: str
+        :param body: Represents a Dev Box definition.
+        :type body: ~fidalgo.models.DevBoxDefinition
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: EnvironmentType, or the result of cls(response)
-        :rtype: ~fidalgo.models.EnvironmentType
-        :raises: ~azure.core.exceptions.HttpResponseError
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either DevBoxDefinition or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~fidalgo.models.DevBoxDefinition]
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.EnvironmentType"]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                dev_center_name=dev_center_name,
+                dev_box_definition_name=dev_box_definition_name,
+                body=body,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
+
+    def _update_initial(
+        self,
+        resource_group_name,  # type: str
+        dev_center_name,  # type: str
+        dev_box_definition_name,  # type: str
+        body,  # type: "models.DevBoxDefinitionUpdate"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.DevBoxDefinition"
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -375,12 +346,12 @@ class EnvironmentTypesOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self.update.metadata['url']  # type: ignore
+        url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -394,29 +365,110 @@ class EnvironmentTypesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(body, 'EnvironmentTypeUpdate')
+        body_content = self._serialize.body(body, 'DevBoxDefinitionUpdate')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('EnvironmentType', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
+
+        if response.status_code == 202:
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}'}  # type: ignore
+    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
+
+    def begin_update(
+        self,
+        resource_group_name,  # type: str
+        dev_center_name,  # type: str
+        dev_box_definition_name,  # type: str
+        body,  # type: "models.DevBoxDefinitionUpdate"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["models.DevBoxDefinition"]
+        """Partially updates a Dev Box definition.
+
+        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :type resource_group_name: str
+        :param dev_center_name: The name of the devcenter.
+        :type dev_center_name: str
+        :param dev_box_definition_name: The name of the Dev Box definition.
+        :type dev_box_definition_name: str
+        :param body: Represents a Dev Box definition.
+        :type body: ~fidalgo.models.DevBoxDefinitionUpdate
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either DevBoxDefinition or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~fidalgo.models.DevBoxDefinition]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._update_initial(
+                resource_group_name=resource_group_name,
+                dev_center_name=dev_center_name,
+                dev_box_definition_name=dev_box_definition_name,
+                body=body,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
         dev_center_name,  # type: str
-        environment_type_name,  # type: str
+        dev_box_definition_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -434,7 +486,7 @@ class EnvironmentTypesOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -457,24 +509,24 @@ class EnvironmentTypesOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
         dev_center_name,  # type: str
-        environment_type_name,  # type: str
+        dev_box_definition_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Deletes an environment type.
+        """Deletes a Dev Box definition.
 
         :param resource_group_name: Name of the resource group within the Azure subscription.
         :type resource_group_name: str
         :param dev_center_name: The name of the devcenter.
         :type dev_center_name: str
-        :param environment_type_name: The name of the environment type.
-        :type environment_type_name: str
+        :param dev_box_definition_name: The name of the Dev Box definition.
+        :type dev_box_definition_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -496,7 +548,7 @@ class EnvironmentTypesOperations(object):
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 dev_center_name=dev_center_name,
-                environment_type_name=environment_type_name,
+                dev_box_definition_name=dev_box_definition_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -512,7 +564,7 @@ class EnvironmentTypesOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'devCenterName': self._serialize.url("dev_center_name", dev_center_name, 'str'),
-            'environmentTypeName': self._serialize.url("environment_type_name", environment_type_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
@@ -527,4 +579,4 @@ class EnvironmentTypesOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/environmentTypes/{environmentTypeName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore

@@ -12,6 +12,7 @@
 |az fidalgo catalog|Catalogs|[commands](#CommandsInCatalogs)|
 |az fidalgo catalog-item|CatalogItems|[commands](#CommandsInCatalogItems)|
 |az fidalgo deployment|Deployments|[commands](#CommandsInDeployments)|
+|az fidalgo dev-box-definition|DevBoxDefinitions|[commands](#CommandsInDevBoxDefinitions)|
 |az fidalgo dev-center|DevCenters|[commands](#CommandsInDevCenters)|
 |az fidalgo environment|Environments|[commands](#CommandsInEnvironments)|
 |az fidalgo environment-type|EnvironmentTypes|[commands](#CommandsInEnvironmentTypes)|
@@ -51,6 +52,15 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az fidalgo deployment list](#DeploymentsListByEnvironment)|ListByEnvironment|[Parameters](#ParametersDeploymentsListByEnvironment)|[Example](#ExamplesDeploymentsListByEnvironment)|
+
+### <a name="CommandsInDevBoxDefinitions">Commands in `az fidalgo dev-box-definition` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az fidalgo dev-box-definition list](#DevBoxDefinitionsListByDevCenter)|ListByDevCenter|[Parameters](#ParametersDevBoxDefinitionsListByDevCenter)|[Example](#ExamplesDevBoxDefinitionsListByDevCenter)|
+|[az fidalgo dev-box-definition show](#DevBoxDefinitionsGet)|Get|[Parameters](#ParametersDevBoxDefinitionsGet)|[Example](#ExamplesDevBoxDefinitionsGet)|
+|[az fidalgo dev-box-definition create](#DevBoxDefinitionsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDevBoxDefinitionsCreateOrUpdate#Create)|[Example](#ExamplesDevBoxDefinitionsCreateOrUpdate#Create)|
+|[az fidalgo dev-box-definition update](#DevBoxDefinitionsUpdate)|Update|[Parameters](#ParametersDevBoxDefinitionsUpdate)|[Example](#ExamplesDevBoxDefinitionsUpdate)|
+|[az fidalgo dev-box-definition delete](#DevBoxDefinitionsDelete)|Delete|[Parameters](#ParametersDevBoxDefinitionsDelete)|[Example](#ExamplesDevBoxDefinitionsDelete)|
 
 ### <a name="CommandsInDevCenters">Commands in `az fidalgo dev-center` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -367,6 +377,84 @@ az fidalgo deployment list --environment-name "{environmentName}" --project-name
 |**--environment-name**|string|The name of the environment.|environment_name|environmentName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
+### group `az fidalgo dev-box-definition`
+#### <a name="DevBoxDefinitionsListByDevCenter">Command `az fidalgo dev-box-definition list`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsListByDevCenter">Example</a>
+```
+az fidalgo dev-box-definition list --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsListByDevCenter">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="DevBoxDefinitionsGet">Command `az fidalgo dev-box-definition show`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsGet">Example</a>
+```
+az fidalgo dev-box-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+
+#### <a name="DevBoxDefinitionsCreateOrUpdate#Create">Command `az fidalgo dev-box-definition create`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsCreateOrUpdate#Create">Example</a>
+```
+az fidalgo dev-box-definition create --location "centralus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c\
+9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/1\
+.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--tags**|dictionary|Resource tags.|tags|tags|
+|**--image-reference**|object|Image reference information.|image_reference|imageReference|
+|**--name**|string|The name of the SKU.|name|name|
+
+#### <a name="DevBoxDefinitionsUpdate">Command `az fidalgo dev-box-definition update`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsUpdate">Example</a>
+```
+az fidalgo dev-box-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceG\
+roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/2.0.0" \
+--dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsUpdate">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+|**--tags**|dictionary|Resource tags.|tags|tags|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--image-reference**|object|Image reference information.|image_reference|imageReference|
+|**--name**|string|The name of the SKU.|name|name|
+
+#### <a name="DevBoxDefinitionsDelete">Command `az fidalgo dev-box-definition delete`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsDelete">Example</a>
+```
+az fidalgo dev-box-definition delete --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+
 ### group `az fidalgo dev-center`
 #### <a name="DevCentersListByResourceGroup">Command `az fidalgo dev-center list`</a>
 
@@ -419,6 +507,7 @@ az fidalgo dev-center create --type "UserAssigned" --user-assigned-identities "{
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
+|**--network-connections**|dictionary|Dictionary of <AttachedNetworkConnectionProperties>|network_connections|networkConnections|
 |**--type**|choice|The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a user assigned identity. The type 'None' will remove any identities from the resource.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -435,6 +524,7 @@ az fidalgo dev-center update --tags CostCode="12345" --name "Contoso" --resource
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
+|**--network-connections**|dictionary|Dictionary of <AttachedNetworkConnectionProperties>|network_connections|networkConnections|
 |**--type**|choice|The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a user assigned identity. The type 'None' will remove any identities from the resource.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -990,6 +1080,7 @@ ks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group "
 |**--organization-unit**|string|Active Directory domain Organization Unit (OU)|organization_unit|organizationUnit|
 |**--domain-username**|string|The username of an Active Directory account (user or service account) that has permissions to create computer objects in Active Directory. Required format: admin@contoso.com.|domain_username|domainUsername|
 |**--domain-password**|string|The password for the account used to join domain|domain_password|domainPassword|
+|**--networking-resource-group-name**|string|The name for resource group where NICs will be placed.|networking_resource_group_name|networkingResourceGroupName|
 
 #### <a name="NetworkSettingsUpdate">Command `az fidalgo network-setting update`</a>
 

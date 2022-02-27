@@ -34,19 +34,21 @@ def fidalgo_dev_center_create(client,
                               dev_center_name,
                               location,
                               tags=None,
-                              identity_type="SystemAssigned",
-                              user_assigned_identity=None,
+                              network_connections=None,
+                              type_=None,
+                              user_assigned_identities=None,
                               no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
+    if network_connections is not None:
+        body['network_connections'] = network_connections
     body['identity'] = {}
-    if identity_type is not None:
-        body['identity']['type'] = identity_type
-    if user_assigned_identity is not None:
-        body['identity']['user_assigned_identities'] = {}
-        body['identity']['user_assigned_identities'][user_assigned_identity] = {}
+    if type_ is not None:
+        body['identity']['type'] = type_
+    if user_assigned_identities is not None:
+        body['identity']['user_assigned_identities'] = user_assigned_identities
     if len(body['identity']) == 0:
         del body['identity']
     return sdk_no_wait(no_wait,
@@ -61,7 +63,8 @@ def fidalgo_dev_center_update(client,
                               dev_center_name,
                               tags=None,
                               location=None,
-                              identity_type=None,
+                              network_connections=None,
+                              type_=None,
                               user_assigned_identities=None,
                               no_wait=False):
     body = {}
@@ -69,9 +72,11 @@ def fidalgo_dev_center_update(client,
         body['tags'] = tags
     if location is not None:
         body['location'] = location
+    if network_connections is not None:
+        body['network_connections'] = network_connections
     body['identity'] = {}
-    if identity_type is not None:
-        body['identity']['type'] = identity_type
+    if type_ is not None:
+        body['identity']['type'] = type_
     if user_assigned_identities is not None:
         body['identity']['user_assigned_identities'] = user_assigned_identities
     if len(body['identity']) == 0:
@@ -696,6 +701,93 @@ def fidalgo_mapping_delete(client,
                          mapping_name=mapping_name)
 
 
+def fidalgo_dev_box_definition_list(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    top=None):
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name,
+                                     top=top)
+
+
+def fidalgo_dev_box_definition_show(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    dev_box_definition_name):
+    return client.get(resource_group_name=resource_group_name,
+                      dev_center_name=dev_center_name,
+                      dev_box_definition_name=dev_box_definition_name)
+
+
+def fidalgo_dev_box_definition_create(client,
+                                      resource_group_name,
+                                      dev_center_name,
+                                      dev_box_definition_name,
+                                      location,
+                                      tags=None,
+                                      image_reference=None,
+                                      name=None,
+                                      no_wait=False):
+    body = {}
+    if tags is not None:
+        body['tags'] = tags
+    body['location'] = location
+    if image_reference is not None:
+        body['image_reference'] = image_reference
+    body['sku'] = {}
+    if name is not None:
+        body['sku']['name'] = name
+    if len(body['sku']) == 0:
+        del body['sku']
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       dev_box_definition_name=dev_box_definition_name,
+                       body=body)
+
+
+def fidalgo_dev_box_definition_update(client,
+                                      resource_group_name,
+                                      dev_center_name,
+                                      dev_box_definition_name,
+                                      tags=None,
+                                      location=None,
+                                      image_reference=None,
+                                      name=None,
+                                      no_wait=False):
+    body = {}
+    if tags is not None:
+        body['tags'] = tags
+    if location is not None:
+        body['location'] = location
+    if image_reference is not None:
+        body['image_reference'] = image_reference
+    body['sku'] = {}
+    if name is not None:
+        body['sku']['name'] = name
+    if len(body['sku']) == 0:
+        del body['sku']
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       dev_box_definition_name=dev_box_definition_name,
+                       body=body)
+
+
+def fidalgo_dev_box_definition_delete(client,
+                                      resource_group_name,
+                                      dev_center_name,
+                                      dev_box_definition_name,
+                                      no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       dev_box_definition_name=dev_box_definition_name)
+
+
 def fidalgo_operation_statuses_show(client,
                                     location,
                                     operation_id):
@@ -734,7 +826,7 @@ def fidalgo_pool_create(client,
                         tags=None,
                         machine_definition_id=None,
                         network_settings_id=None,
-                        sku_name=None,
+                        name=None,
                         no_wait=False):
     body = {}
     if tags is not None:
@@ -745,8 +837,8 @@ def fidalgo_pool_create(client,
     if network_settings_id is not None:
         body['network_settings_id'] = network_settings_id
     body['sku'] = {}
-    if sku_name is not None:
-        body['sku']['name'] = sku_name
+    if name is not None:
+        body['sku']['name'] = name
     if len(body['sku']) == 0:
         del body['sku']
     return sdk_no_wait(no_wait,
@@ -765,7 +857,7 @@ def fidalgo_pool_update(client,
                         location=None,
                         machine_definition_id=None,
                         network_settings_id=None,
-                        sku_name=None,
+                        name=None,
                         no_wait=False):
     body = {}
     if tags is not None:
@@ -777,8 +869,8 @@ def fidalgo_pool_update(client,
     if network_settings_id is not None:
         body['network_settings_id'] = network_settings_id
     body['sku'] = {}
-    if sku_name is not None:
-        body['sku']['name'] = sku_name
+    if name is not None:
+        body['sku']['name'] = name
     if len(body['sku']) == 0:
         del body['sku']
     return sdk_no_wait(no_wait,
@@ -895,6 +987,7 @@ def fidalgo_network_setting_create(client,
                                    organization_unit=None,
                                    domain_username=None,
                                    domain_password=None,
+                                   networking_resource_group_name=None,
                                    no_wait=False):
     body = {}
     if tags is not None:
@@ -912,6 +1005,8 @@ def fidalgo_network_setting_create(client,
         body['domain_username'] = domain_username
     if domain_password is not None:
         body['domain_password'] = domain_password
+    if networking_resource_group_name is not None:
+        body['networking_resource_group_name'] = networking_resource_group_name
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,

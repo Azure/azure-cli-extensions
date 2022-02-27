@@ -60,6 +60,10 @@ def cf_mapping(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).mappings
 
 
+def cf_dev_box_definition(cli_ctx, *_):
+    return cf_fidalgo_cl(cli_ctx).dev_box_definitions
+
+
 def cf_operation_statuses(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).operation_statuses
 
