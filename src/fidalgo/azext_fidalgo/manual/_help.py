@@ -311,6 +311,24 @@ helps['fidalgo admin dev-center delete'] = """
                az fidalgo admin dev-center delete --name "Contoso" --resource-group "rg1"
 """
 
+helps['fidalgo admin dev-center attach-network'] = """
+    type: command
+    short-summary: "Attaches a network connection to a DevCenter."
+    examples:
+      - name: DevCenters_AttachNetwork
+        text: |-
+               az fidalgo admin dev-center attach-network --dev-center-name "Contoso" --resource-group "rg1" --network-connection-id
+"""
+
+helps['fidalgo admin dev-center detach-network'] = """
+    type: command
+    short-summary: "Detaches a network connection from a DevCenter."
+    examples:
+      - name: DevCenters_AttachNetwork
+        text: |-
+               az fidalgo admin dev-center attach-network --dev-center-name "Contoso" --resource-group "rg1" --network-connection-id
+"""
+
 helps['fidalgo admin dev-center wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the fidalgo dev-center is met.

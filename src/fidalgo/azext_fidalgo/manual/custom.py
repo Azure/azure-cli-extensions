@@ -37,6 +37,35 @@ def fidalgo_dev_center_create(client,
                        dev_center_name=dev_center_name,
                        body=body)
 
+def fidalgo_dev_center_attach_network(client,
+                              resource_group_name,
+                              dev_center_name,
+                              network_connection_id,
+                              no_wait=False):
+    body = {}
+    body['network_connections'] = {}
+    body['network_connections'][network_connection_id] = {}
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       body=body)
+
+def fidalgo_dev_center_detach_network(client,
+                              resource_group_name,
+                              dev_center_name,
+                              network_connection_id,
+                              no_wait=False):
+    body = {}
+    body['network_connections'] = {}
+    body['network_connections'][network_connection_id] = None
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       body=body)
+
+
 def fidalgo_pool_create(client,
                         resource_group_name,
                         project_name,

@@ -263,6 +263,18 @@ def load_arguments(self, _):
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
                    'the devcenter.', id_part='name')
 
+    with self.argument_context('fidalgo admin dev-center attach-network') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
+                   'the devcenter.', id_part='name')
+        c.argument('network_connection_id', type=str, help='Resource id of a Network Settings resource')
+
+    with self.argument_context('fidalgo admin dev-center detach-network') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '
+                   'the devcenter.', id_part='name')
+        c.argument('network_connection_id', type=str, help='Resource id of a Network Settings resource')
+
     with self.argument_context('fidalgo admin dev-center wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', options_list=['--name', '-n', '--dev-center-name'], type=str, help='The name of '

@@ -271,6 +271,8 @@ def load_command_table(self, _):
         g.custom_command('update', 'fidalgo_dev_center_update', supports_no_wait=True)
         g.custom_command('delete', 'fidalgo_dev_center_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'fidalgo_dev_center_show')
+        g.custom_command('attach-network', 'fidalgo_dev_center_attach_network', supports_no_wait=True)
+        g.custom_command('detach-network', 'fidalgo_dev_center_detach_network', supports_no_wait=True)
 
     with self.command_group('fidalgo admin environment', fidalgo_environment, client_factory=cf_environment) as g:
         g.custom_command('list', 'fidalgo_environment_list')
