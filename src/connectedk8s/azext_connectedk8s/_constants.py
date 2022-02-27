@@ -13,6 +13,8 @@ Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
 Arc_Namespace = 'azure-arc'
+AZURE_IDENTITY_CERTIFICATE_SECRET = 'azure-identity-certificate'
+ISO_861_Time_format = "%Y-%m-%dT%H:%M:%SZ"
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -122,8 +124,12 @@ DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release16-12-21'
 RELEASE_DATE_LINUX = 'release16-12-21'
 CSP_REFRESH_TIME = 300
+# refer https://docs.microsoft.com/en-us/rest/api/storageservices/
+# naming-and-referencing-containers--blobs--and-metadata#container-names
+STORAGE_CONTAINER_NAME_MAX_LENGTH = 63
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
 HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = 'v3.6.3'
+AGENT_VERSION_SUPPORT_WINDOW = 2

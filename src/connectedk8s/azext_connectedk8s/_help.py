@@ -121,3 +121,15 @@ helps['connectedk8s disable-features'] = """
   - name: Disable multiple features.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
+
+helps['connectedk8s troubleshoot'] = """
+  type: command
+  short-summary: Runs diagnostic tests on the Arc enabled kubernetes cluster and collects logs of the same.
+  examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storage account resource you own.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: Troubleshoot an Arc enabled kubernetes cluster by specifying the kubeconfig and kubecontext
+        text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName --storage-account "MyStoreageAccountResourceId" --kube-config /path/to/kubeconfig --kube-context kubeContextName
+"""

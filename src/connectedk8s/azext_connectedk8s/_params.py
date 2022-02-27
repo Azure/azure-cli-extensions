@@ -72,6 +72,15 @@ def load_arguments(self, _):
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to disable.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
+    with self.argument_context('connectedk8s troubleshoot') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], arg_group='Target Kubernetes Cluster', help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], arg_group='Target Kubernetes Cluster', help='Kubconfig context from current machine.')
+        c.argument('storage_account', options_list=['--storage-account'], arg_group='Storage Account', help='Name or ID of the storage account to save the diagnostic information')
+        c.argument('sas_token', options_list=['--sas-token'], arg_group='Storage Account', help='The SAS token with writable permission for the storage account.')
+        c.argument('container_name', options_list=['--storage-container-name'], arg_group='Storage Account', help='The name of the storage container.', default="connectedk8stroubleshoot")
+        c.argument('output_file', options_list=['--output-file-path'], type=file_type, completer=FilesCompleter(allowednames=[".tar.gz"]), default=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz'), help="Archived file path for the logs collected during troubleshoot.")
+
     with self.argument_context('connectedk8s list') as c:
         pass
 

@@ -20,7 +20,6 @@ import urllib.request
 import shutil
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
-from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
@@ -46,6 +45,11 @@ from threading import Timer, Thread
 import sys
 import hashlib
 import re
+import logging
+from setuptools._vendor.packaging import version
+import colorama
+from datetime import datetime, timezone
+
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -1464,6 +1468,147 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
+
+
+def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account, sas_token=None, container_name="connectedk8stroubleshoot", kube_config=None, kube_context=None,
+                 output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+    colorama.init(autoreset=True)
+    print(f"Troubleshooting issues with your Azure Arc-enabled Kubernetes cluster....")
+    utils.check_connectivity()  # Checks internet connectivity
+    troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
+    utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
+    tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
+
+    cloud_name = cmd.cli_ctx.cloud.name.upper()
+    tr_logger.info(str.format("Cloud Name: {}", cloud_name))
+
+    try:
+        latest_connectedk8s_version = utils.get_latest_extension_version(tr_logger)
+        local_connectedk8s_version = utils.get_existing_extension_version()
+        tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
+        tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
+        from azure.cli.core import __version__ as azure_cli_core_version
+        tr_logger.info("azure-cli-core version installed locally: {}".format(azure_cli_core_version))
+        if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
+            if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
+                print(f"{colorama.Fore.YELLOW}The connectedk8s CLI extension is not on the latest version. We recommend that you update this to the latest version v{latest_connectedk8s_version} using the command 'az extension update -n connectedk8s'")
+
+        try:
+            # Fetch ConnectedCluster
+            connected_cluster = client.get(resource_group_name, cluster_name)
+            tr_logger.info("Connected cluster resource: {}".format(connected_cluster))
+            try:
+                if connected_cluster.agent_version is not None:
+                    # Checking whether optional extra values file has been provided.
+                    values_file_provided, values_file = utils.get_values_file()
+                    # Validate the helm environment file for Dogfood.
+                    dp_endpoint_dogfood = None
+                    release_train_dogfood = None
+                    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+                        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+                    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+                    registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+                    latest_agent_version = registry_path.split(':')[1]
+                    is_supported_agent_version = utils.is_supported_agent_version(connected_cluster.agent_version, latest_agent_version)
+                    if not is_supported_agent_version:
+                        print(f"{colorama.Fore.RED}The agent version your cluster is currently running on is: {connected_cluster.agent_version}. This is an older version which is not supported. Please find the support policy here - https://aka.ms/ArcK8sAgentVersionSupportPolicy . Please upgrade to the latest agent version: {latest_agent_version} by using 'az connectedk8s upgrade'. Refer to this documentation for more details about agent upgrade - https://aka.ms/ArcK8sAgentUpgradeDocs")
+            except Exception:
+                pass
+        except Exception as ex:
+            not_found = False
+            try:
+                if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
+                    tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
+                    logger.error("The specified ConnectedCluster resource doesn't exist.")
+                    not_found = True
+            except Exception:
+                pass
+            if not not_found:
+                tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
+        try:
+            # setting kubeconfig
+            kube_config = set_kube_config(kube_config)
+            # Loading the kubeconfig file in kubernetes client configuration
+            load_kube_config(kube_config, kube_context)
+            configuration = kube_client.Configuration()
+        except Exception as ex:
+            logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+            tr_logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+
+        # Install helm client
+        helm_client_location = install_helm_client()
+
+        try:
+            validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
+        except Exception as e:
+            logger.error(str(e))
+            tr_logger.error(str(e))
+
+        kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            utils.try_list_node_fix()
+            api_response = kapi_instance.list_node()
+            required_node_counts = 0
+            for item in api_response.items:
+                node_arch = item.metadata.labels.get("kubernetes.io/arch")
+                node_os = item.metadata.labels.get("kubernetes.io/os")
+                if node_arch == "amd64" and node_os == "linux":
+                    tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts + 1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
+                    required_node_counts += 1
+            if required_node_counts == 0:
+                tr_logger.error("There are no linux/amd64 nodes available on the kubernetes cluster.")
+                logger.error("{colorama.Fore.RED}The cluster does not have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        except Exception as ex:
+            tr_logger.error("Couldn't list nodes on the k8s cluster. Error: {}".format(str(ex)))
+
+        try:
+            pod_list = kapi_instance.list_namespaced_pod(consts.Arc_Namespace)
+            pods_count = 0
+            pods_pending = 0
+            for pod in pod_list.items:
+                pods_count += 1
+                tr_logger.debug("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
+                if pod.status.phase == "Pending":
+                    pods_pending += 1
+            if pods_pending > 0:
+                tr_logger.warning("Some pods in the azure-arc namespace are stuck in a pending state. Insufficient resources may sometimes cause this.")
+                logger.warning("{colorama.Fore.RED}Some pods in the azure-arc namespace are stuck in a pending state. Insufficient resources may sometimes cause this. Please run kubectl get pods -n azure-arc to ensure your pods are in a running state.")
+            if pods_count == 0:
+                tr_logger.warning("No pods found in azure-arc namespace.")
+
+        except Exception as ex:
+            tr_logger.error("An error has occured while fetching pod's status : {}".format(str(ex)))
+
+        cert_secret = utils.get_kubernetes_secret(kapi_instance, consts.Arc_Namespace, consts.AZURE_IDENTITY_CERTIFICATE_SECRET, custom_logger=tr_logger)
+        if (not cert_secret) or (not hasattr(cert_secret, 'data')) or (consts.AZURE_IDENTITY_CERTIFICATE_SECRET not in cert_secret.data):
+            tr_logger.error("{} secret is not present on the cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+            logger.error("{colorama.Fore.RED}{} secret is not present on the cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+
+        try:
+            current_time = datetime.now(timezone.utc)
+            cert_expirn_time = connected_cluster.managed_identity_certificate_expiration_time
+            if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
+                logger.error("The {} on the cluster has expired. This should renew automatically when the cluster has internet connectivity. Please check your internet connectivity.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+        except ValueError as ex:
+            tr_logger.error(str(ex))
+        except Exception as ex:
+            tr_logger.error("Error while checking the expiration time of {}: {}".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET, str(ex)))
+
+        storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
+        container_name = container_name + "-" + time.strftime("%Y%m%d-%H%M%S")
+        if storage_account_name:  # When validated the storage account
+            print(f"The troubleshooting logs will be uploaded to the following storage account: {storage_account_name} in container {container_name}")
+            utils.try_upload_log_file(storage_account_name, sas_token, container_name, troubleshoot_log_path)
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
+            # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, container_name, readonly_sas_token, kube_context, kube_config)
+        else:
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
+
+    except Exception as ex:
+        tr_logger.error("An exception has occured while running troubleshoot: {}".format(str(ex)), exc_info=True)
+        raise CLIInternalError("An exception has occured while running troubleshoot: {}".format(str(ex)))
 
 
 def load_kubernetes_configuration(filename):
