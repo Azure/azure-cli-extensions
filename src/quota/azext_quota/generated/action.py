@@ -33,6 +33,7 @@ class AddLimitobject(argparse.Action):
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
+        d['limit_object_type'] = 'LimitValue'
         for k in properties:
             kl = k.lower()
             v = properties[k]
@@ -43,12 +44,13 @@ class AddLimitobject(argparse.Action):
             elif kl == 'limit-type':
                 d['limit_type'] = v[0]
 
+            elif kl == 'limit-object-type':
+                d['limit_object_type'] = v[0]
+
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter limitobject. All possible keys are: value, limit-type'
+                    'Unsupported Key {} is provided for parameter limit-object. All possible keys are: value, limit-type, limit-object-type'
                     .format(k)
                 )
-
-        d['limit_object_type'] = 'LimitValue'
 
         return d

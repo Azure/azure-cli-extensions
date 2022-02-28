@@ -120,7 +120,6 @@ class quotarequeststatusOperations(object):
         # type: (...) -> Iterable["models.quotarequestdetailslist"]
         """For the specified scope, get the current quota requests for a one year period ending at the
         time is made. Use the **oData** filter to select quota requests.
-
         :param scope: The target Azure resource URI. For example,
          ``/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qms-
          test/providers/Microsoft.Batch/batchAccounts/testAccount/``. This is the target Azure resource
@@ -129,12 +128,9 @@ class quotarequeststatusOperations(object):
         :type scope: str
         :param filter: .. list-table::
             :header-rows: 1
-
             * - Field
               - Supported operators
             * -
-
-
          |requestSubmitTime | ge, le, eq, gt, lt
           |provisioningState eq {QuotaRequestState}
           |resourceName eq {resourceName}.

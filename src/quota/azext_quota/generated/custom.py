@@ -43,7 +43,6 @@ def quota_create(client,
                  limit_object=None,
                  resource_type=None,
                  properties=None,
-                 value=None,
                  no_wait=False):
     all_limit = []
     if limit_object is not None:
@@ -51,7 +50,6 @@ def quota_create(client,
     if len(all_limit) > 1:
         raise CLIError('at most one of  limit object is needed for limit!')
     limit = all_limit[0] if len(all_limit) == 1 else None
-    print(limit)
     create_quota_request = {}
     create_quota_request['properties'] = {}
     create_quota_request['properties']['limit'] = {}
@@ -66,7 +64,6 @@ def quota_create(client,
         del create_quota_request['properties']['name']
     if resource_type is not None:
         create_quota_request['properties']['resource_type'] = resource_type
-    print(create_quota_request)
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_name=resource_name,
@@ -80,7 +77,6 @@ def quota_update(client,
                  limit_object=None,
                  resource_type=None,
                  properties=None,
-                 value=None,
                  no_wait=False):
     all_limit = []
     if limit_object is not None:
@@ -102,7 +98,6 @@ def quota_update(client,
         del create_quota_request['properties']['name']
     if resource_type is not None:
         create_quota_request['properties']['resource_type'] = resource_type
-
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_name=resource_name,

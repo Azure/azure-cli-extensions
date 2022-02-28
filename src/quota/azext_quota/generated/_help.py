@@ -168,6 +168,11 @@ helps['quota wait'] = """
 -0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" --updated
 """
 
+helps['quota request'] = """
+    type: group
+    short-summary: Manage quota request with quota
+"""
+
 helps['quota request status'] = """
     type: group
     short-summary: Manage quota request status with quota
