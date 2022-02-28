@@ -65,7 +65,10 @@ from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
 )
-from azext_aks_preview.custom import _get_snapshot
+from azext_aks_preview.custom import (
+    _get_snapshot,
+    _put_managed_cluster_ensuring_permission,
+)
 
 logger = get_logger(__name__)
 
@@ -1921,12 +1924,51 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
         """Send request to create a real managed cluster.
 
-        Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
+        The function "_put_managed_cluster_ensuring_permission" will be called to use the ContainerServiceClient to
+        send a reqeust to create a real managed cluster, and also add necessary role assignments for some optional
+        components.
+
+        Extended in aks-preview to create dcr association for monitoring addon if
         enable_msi_auth_for_monitoring is specified after cluster is created.
 
         :return: the ManagedCluster object
         """
-        created_cluster = super().create_mc(mc)
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+
+        # Due to SPN replication latency, we do a few retries here
+        max_retry = 30
+        error_msg = ""
+        for _ in range(0, max_retry):
+            try:
+                created_cluster = _put_managed_cluster_ensuring_permission(
+                    self.cmd,
+                    self.client,
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    mc,
+                    self.context.get_intermediate("monitoring", default_value=False),
+                    self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False),
+                    self.context.get_intermediate("enable_virtual_node", default_value=False),
+                    self.context.get_intermediate("need_post_creation_vnet_permission_granting", default_value=False),
+                    self.context.get_vnet_subnet_id(),
+                    self.context.get_enable_managed_identity(),
+                    self.context.get_attach_acr(),
+                    self.context.get_aks_custom_headers(),
+                    self.context.get_no_wait())
+                return created_cluster
+            # CloudError was raised before, but since the adoption of track 2 SDK,
+            # HttpResponseError would be raised instead
+            except (CloudError, HttpResponseError) as ex:
+                error_msg = str(ex)
+                if "not found in Active Directory tenant" in ex.message:
+                    time.sleep(3)
+                else:
+                    raise ex
+        raise AzCLIError("Maximum number of retries exceeded. " + error_msg)
 
         # determine the value of constants
         addon_consts = self.context.get_addon_consts()
