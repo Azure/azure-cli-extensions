@@ -2572,21 +2572,21 @@ def get_aks_custom_headers(aks_custom_headers=None):
 
 
 def _put_managed_cluster_ensuring_permission(
-        cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
-        client,
-        subscription_id,
-        resource_group_name,
-        name,
-        managed_cluster,
-        monitoring_addon_enabled,
-        ingress_appgw_addon_enabled,
-        virtual_node_addon_enabled,
-        need_grant_vnet_permission_to_cluster_identity,
-        vnet_subnet_id,
-        enable_managed_identity,
-        attach_acr,
-        headers,
-        no_wait
+    cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+    client,
+    subscription_id,
+    resource_group_name,
+    name,
+    managed_cluster,
+    monitoring_addon_enabled,
+    ingress_appgw_addon_enabled,
+    virtual_node_addon_enabled,
+    need_grant_vnet_permission_to_cluster_identity,
+    vnet_subnet_id,
+    enable_managed_identity,
+    attach_acr,
+    headers,
+    no_wait
 ):
     # some addons require post cluster creation role assigment
     need_post_creation_role_assignment = (monitoring_addon_enabled or
