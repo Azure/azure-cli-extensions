@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.4
+++++++
+* Ensure compatibility of 'az webapp create' and 'az functionapp create' with CLI version 2.34.0
+
 0.1.3
 ++++++
 * Update functionapp runtimes and support v4 functionapps
