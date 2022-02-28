@@ -2606,8 +2606,8 @@ def _put_managed_cluster_ensuring_permission(
         if need_grant_vnet_permission_to_cluster_identity:
             instant_cluster = client.get(resource_group_name, name)
             if not add_role_assignment(cmd, 'Network Contributor',
-                                        instant_cluster.identity.principal_id, scope=vnet_subnet_id,
-                                        is_service_principal=False):
+                                       instant_cluster.identity.principal_id, scope=vnet_subnet_id,
+                                       is_service_principal=False):
                 logger.warning('Could not create a role assignment for subnet. '
                                'Are you an Owner on this subscription?')
 
