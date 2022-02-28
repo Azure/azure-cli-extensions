@@ -550,6 +550,37 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_1.get_gpu_instance_profile(), "test_mc_gpu_instance_profile"
         )
 
+    def test_get_message_of_the_day(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"message_of_the_day": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_message_of_the_day(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            message_of_the_day="test_mc_message_of_the_day",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_message_of_the_day(), "test_mc_message_of_the_day"
+        )
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"message_of_the_day": "fake-path"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_message_of_the_day()
+
     def test_get_kubelet_config(self):
         # default
         ctx_1 = AKSPreviewContext(
