@@ -1,7 +1,68 @@
 interactions:
 - request:
+    body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
+      "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
+      120, "IngestionMode": "ApplicationInsights"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '196'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --app --location --kind -g --application-type --retention-time
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.8.8rc1
+        (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2018-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp","name":"demoApp","type":"microsoft.insights/components","location":"westus","tags":{},"kind":"web","etag":"\"ad00f6c7-0000-0200-0000-621c33880000\"","properties":{"Ver":"v2","ApplicationId":"demoApp","AppId":"cfd6e289-9303-473d-8b11-b483300c1903","Application_Type":"web","Flow_Type":"Bluefield","Request_Source":"rest","InstrumentationKey":"f99e74eb-453a-4213-8ff9-c10494e24370","ConnectionString":"InstrumentationKey=f99e74eb-453a-4213-8ff9-c10494e24370;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/","Name":"demoApp","CreationDate":"2022-02-28T02:29:28.0759309+00:00","TenantId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","provisioningState":"Succeeded","SamplingPercentage":null,"RetentionInDays":120,"Retention":"P120D","IngestionMode":"ApplicationInsights","publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled"}}'
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1066'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Feb 2022 02:29:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"query": "availabilityResults | distinct name | order by name asc", "timespan":
-      "2020-06-01T19:21:28.027311/2020-06-05T07:21:28.027311", "applications": []}'
+      "2022-02-24T14:29:30.604843/2022-02-28T02:29:30.604843", "applications": []}'
     headers:
       Accept:
       - application/json
@@ -14,9 +75,9 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.9 azure-applicationinsights/0.1.0
+      - python/3.8.8rc1 (Windows-10-10.0.22000-SP0) msrest/0.6.21 azure-applicationinsights/0.1.0
     method: POST
-    uri: https://api.applicationinsights.io/v1/apps/db709f0e-cb4e-4f43-ba80-05e10d6a4447/query
+    uri: https://api.applicationinsights.io/v1/apps/cfd6e289-9303-473d-8b11-b483300c1903/query
   response:
     body:
       string: '{"tables":[{"name":"PrimaryResult","columns":[{"name":"name","type":"string"}],"rows":[]}]}'
@@ -32,13 +93,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 05 Jun 2020 07:21:29 GMT
+      - Mon, 28 Feb 2022 02:29:33 GMT
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       vary:
       - Accept-Encoding
       via:
-      - 1.1 draft-oms-5f5bbdf49d-pgt7m
+      - 1.1 draft-oms-89ccd7d5c-qlgcw
       x-content-type-options:
       - nosniff
     status:
@@ -46,7 +107,7 @@ interactions:
       message: OK
 - request:
     body: '{"query": "availabilityResults | distinct name | order by name asc", "timespan":
-      "2020-06-01T19:20:29.882273/2020-06-05T07:21:29.882273", "applications": []}'
+      "2022-02-24T14:28:33.341302/2022-02-28T02:29:33.341302", "applications": []}'
     headers:
       Accept:
       - application/json
@@ -59,9 +120,9 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - python/3.8.0 (Windows-10-10.0.18362-SP0) msrest/0.6.9 azure-applicationinsights/0.1.0
+      - python/3.8.8rc1 (Windows-10-10.0.22000-SP0) msrest/0.6.21 azure-applicationinsights/0.1.0
     method: POST
-    uri: https://api.applicationinsights.io/v1/apps/db709f0e-cb4e-4f43-ba80-05e10d6a4447/query
+    uri: https://api.applicationinsights.io/v1/apps/cfd6e289-9303-473d-8b11-b483300c1903/query
   response:
     body:
       string: '{"tables":[{"name":"PrimaryResult","columns":[{"name":"name","type":"string"}],"rows":[]}]}'
@@ -77,13 +138,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 05 Jun 2020 07:21:30 GMT
+      - Mon, 28 Feb 2022 02:29:33 GMT
       strict-transport-security:
       - max-age=15724800; includeSubDomains
       vary:
       - Accept-Encoding
       via:
-      - 1.1 draft-oms-5f5bbdf49d-548wj
+      - 1.1 draft-oms-89ccd7d5c-hg985
       x-content-type-options:
       - nosniff
     status:
