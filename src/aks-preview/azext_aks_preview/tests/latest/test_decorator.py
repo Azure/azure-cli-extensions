@@ -2699,7 +2699,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         # fail on mock HttpResponseError, max retry exceeded
         with self.assertRaises(AzCLIError), patch("time.sleep"), patch(
-            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc"
+            "azext_aks_preview.custom._put_managed_cluster_ensuring_permission"
         ), patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             side_effect=err_1,
@@ -2727,7 +2727,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         err_2 = HttpResponseError(response=resp)
         # fail on mock HttpResponseError
         with self.assertRaises(HttpResponseError), patch("time.sleep",), patch(
-            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc"
+            "azext_aks_preview.custom._put_managed_cluster_ensuring_permission"
         ), patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             side_effect=[err_1, err_2],
@@ -2736,7 +2736,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
 
         # return mc
         with patch(
-            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc",
+            "azext_aks_preview.custom._put_managed_cluster_ensuring_permission",
             return_value=mc_1,
         ), patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",

@@ -1959,7 +1959,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                     self.context.get_attach_acr(),
                     self.context.get_aks_custom_headers(),
                     self.context.get_no_wait())
-                return created_cluster
             # CloudError was raised before, but since the adoption of track 2 SDK,
             # HttpResponseError would be raised instead
             except (CloudError, HttpResponseError) as ex:
