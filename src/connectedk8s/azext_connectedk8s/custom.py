@@ -1917,7 +1917,7 @@ def client_side_proxy(cmd,
                                     summary='Unable to run client proxy executable')
             raise CLIInternalError("Failed to start proxy process." + str(e))
 
-        if not utils.is_cli_using_msal_auth():  # refresh token approach if cli is ADAL auth. This is for cli < 2.30.0
+        if not utils.is_cli_using_msal_auth():  # refresh token approach if cli is using ADAL auth. This is for cli < 2.30.0
             if user_type == 'user':
                 identity_data = {}
                 identity_data['refreshToken'] = creds
