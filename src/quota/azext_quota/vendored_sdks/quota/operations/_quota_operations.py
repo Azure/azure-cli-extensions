@@ -217,7 +217,7 @@ class quotaOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure_quota_extension_api.models.currentquotalimitbase]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.currentquotalimitbase"]
         lro_delay = kwargs.pop(
             'polling_interval',
@@ -229,7 +229,7 @@ class quotaOperations(object):
                 resource_name=resource_name,
                 scope=scope,
                 create_quota_request=create_quota_request,
-                cls=lambda x, y, z: x,
+                cls=lambda x,y,z: x,
                 **kwargs
             )
 
@@ -248,7 +248,7 @@ class quotaOperations(object):
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
 
-        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -361,7 +361,7 @@ class quotaOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~azure_quota_extension_api.models.currentquotalimitbase]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.currentquotalimitbase"]
         lro_delay = kwargs.pop(
             'polling_interval',
@@ -373,7 +373,7 @@ class quotaOperations(object):
                 resource_name=resource_name,
                 scope=scope,
                 create_quota_request=create_quota_request,
-                cls=lambda x, y, z: x,
+                cls=lambda x,y,z: x,
                 **kwargs
             )
 
@@ -392,7 +392,7 @@ class quotaOperations(object):
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
 
-        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:

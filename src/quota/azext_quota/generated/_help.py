@@ -97,38 +97,34 @@ example](https://techcommunity.microsoft.com/t5/azure-governance-and-management/
 70). 2. Use this PUT operation to update the quota limit. Please check the URI in location header for the detailed \
 status of the request."
     parameters:
-      - name: --limitobject
+      - name: --limit-object
         short-summary: "The resource quota limit value."
         long-summary: |
-            Usage: --limitobject value=XX limit-type=XX limit-object-type=XX
-
+            Usage: --limit-object value=XX limit-type=XX limit-object-type=XX
             value: Required. The quota/limit value
             limit-type: The quota or usages limit types.
             limit-object-type: Required. The limit object type.
     examples:
       - name: Quotas_PutRequest_ForNetwork
         text: |-
-               az quota create --properties "{\\"name\\":{\\"value\\":\\"MinPublicIpInterNetworkPrefixLength\\"},\\"lim\
-it\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"MinPublicIpInterNetworkPrefixLength\
-\\"}" --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3\
-/providers/Microsoft.Network/locations/eastus"
+               az quota create --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-00\
+00-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+--limit-object value=10 limit-object-type=LimitValue --resource-type MinPublicIpInterNetworkPrefixLength
       - name: Quotas_PutRequest_ForNetwork_StandardSkuPublicIpAddressesResource
         text: |-
-               az quota create --properties "{\\"name\\":{\\"value\\":\\"StandardSkuPublicIpAddresses\\"},\\"limit\\":{\
-\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"PublicIpAddresses\\"}" --resource-name \
-"StandardSkuPublicIpAddresses" --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Network/\
-locations/eastus"
+               az quota create --resource-name "StandardSkuPublicIpAddresses" --scope "subscriptions/00000000-0000-0000\
+-0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+--limit-object value=10 limit-object-type=LimitValue --resource-type PublicIpAddresses
       - name: Quotas_Put_Request_ForCompute
         text: |-
-               az quota create --properties "{\\"name\\":{\\"value\\":\\"standardFSv2Family\\"},\\"limit\\":{\\"limitOb\
-jectType\\":\\"LimitValue\\",\\"value\\":10}}" --resource-name "standardFSv2Family" --scope \
-"subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus"
+               az quota create --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
+00000000/providers/Microsoft.Compute/locations/eastus" \
+--limit-object value=10 limit-object-type=LimitValue
       - name: Quotas_Request_ForMachineLearningServices_LowPriorityResource
         text: |-
-               az quota create --properties "{\\"name\\":{\\"value\\":\\"TotalLowPriorityCores\\"},\\"limit\\":{\\"limi\
-tObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"lowPriority\\"}" --resource-name \
-"TotalLowPriorityCores" --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.MachineLearning\
-Services/locations/eastus"
+               az quota create  --resource-name "TotalLowPriorityCores" --scope "subscriptions/00000000-0000-0000-0000-\
+000000000000/providers/Microsoft.MachineLearning/Services/locations/eastus" \
+--limit-object value=10 limit-object-type=LimitValue --resource-type lowPriority
 """
 
 helps['quota update'] = """
@@ -139,26 +135,23 @@ These steps are detailed in [this example](https://techcommunity.microsoft.com/t
 -the-new-quota-rest-api/ba-p/2183670). 2. Use this PUT operation to update the quota limit. Please check the URI in \
 location header for the detailed status of the request."
     parameters:
-      - name: --limitobject
+      - name: --limit-object
         short-summary: "The resource quota limit value."
         long-summary: |
-            Usage: --limitobject value=XX limit-type=XX limit-object-type=XX
-
+            Usage: --limit-object value=XX limit-type=XX limit-object-type=XX
             value: Required. The quota/limit value
             limit-type: The quota or usages limit types.
             limit-object-type: Required. The limit object type.
     examples:
       - name: Quotas_Request_PatchForCompute
         text: |-
-               az quota update --properties "{\\"name\\":{\\"value\\":\\"standardFSv2Family\\"},\\"limit\\":{\\"limitOb\
-jectType\\":\\"LimitValue\\",\\"value\\":10}}" --resource-name "standardFSv2Family" --scope \
-"subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus"
+               az quota update --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
+00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue
       - name: Quotas_Request_PatchForNetwork
         text: |-
-               az quota update --properties "{\\"name\\":{\\"value\\":\\"MinPublicIpInterNetworkPrefixLength\\"},\\"lim\
-it\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"MinPublicIpInterNetworkPrefixLength\
-\\"}" --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3\
-/providers/Microsoft.Network/locations/eastus"
+               az quota update --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-00\
+00-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+--limit-object value=10 limit-object-type=LimitValue --resource-type MinPublicIpInterNetworkPrefixLength
 """
 
 helps['quota wait'] = """
@@ -167,59 +160,59 @@ helps['quota wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the quota is successfully created.
         text: |-
-               az quota wait --resource-name "MinPublicIpInterNetworkPrefixLength" --scope \
-"subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" --created
+               az quota wait --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-0000\
+-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" --created
       - name: Pause executing next line of CLI script until the quota is successfully updated.
         text: |-
-               az quota wait --resource-name "MinPublicIpInterNetworkPrefixLength" --scope \
-"subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" --updated
+               az quota wait --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-0000\
+-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" --updated
 """
 
-helps['quota quotarequeststatus'] = """
+helps['quota request status'] = """
     type: group
-    short-summary: Manage quotarequeststatus with quota
+    short-summary: Manage quota request status with quota
 """
 
-helps['quota quotarequeststatus list'] = """
+helps['quota request status list'] = """
     type: command
     short-summary: "For the specified scope, get the current quota requests for a one year period ending at the time \
 is made. Use the **oData** filter to select quota requests."
     examples:
       - name: QuotaRequestHistory
         text: |-
-               az quota quotarequeststatus list --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/M\
+               az quota request status list --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/M\
 icrosoft.Compute/locations/eastus"
 """
 
-helps['quota quotarequeststatus show'] = """
+helps['quota request status show'] = """
     type: command
     short-summary: "Get the quota request details and status by quota request ID for the resources of the resource \
 provider at a specific location. The quota request ID **id** is returned in the response of the PUT operation."
     examples:
       - name: QuotaRequestFailed
         text: |-
-               az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" --scope \
+               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
       - name: QuotaRequestInProgress
         text: |-
-               az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" --scope \
+               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
       - name: QuotaRequestStatus
         text: |-
-               az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" --scope \
-"subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus"
+               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
+"subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
 """
 
-helps['quota quotaoperation'] = """
+helps['quota operation'] = """
     type: group
-    short-summary: Manage quotaoperation with quota
+    short-summary: Manage quota operation with quota
 """
 
-helps['quota quotaoperation list'] = """
+helps['quota operation list'] = """
     type: command
     short-summary: "List all the operations supported by the Microsoft.Quota resource provider."
     examples:
       - name: GetOperations
         text: |-
-               az quota quotaoperation list
+               az quota operation list
 """

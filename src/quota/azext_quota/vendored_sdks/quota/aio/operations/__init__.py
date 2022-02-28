@@ -8,8 +8,8 @@
 
 from ._usages_operations import usagesOperations
 from ._quota_operations import quotaOperations
-from ._quotarequeststatus_operations import quotarequeststatusOperations
-from ._quotaoperation_operations import quotaoperationOperations
+from ._quota_request_status_operations import quotarequeststatusOperations
+from ._quota_operation_operations import quotaoperationOperations
 
 __all__ = [
     'usagesOperations',

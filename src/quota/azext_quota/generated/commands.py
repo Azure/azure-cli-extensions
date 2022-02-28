@@ -23,14 +23,14 @@ quota_quota = CliCommandType(
 
 
 quota_quotaoperation = CliCommandType(
-    operations_tmpl='azext_quota.vendored_sdks.quota.operations._quotaoperation_operations#quotaoperationOperations.{}',
+    operations_tmpl='azext_quota.vendored_sdks.quota.operations._quota_operation_operations#quotaOperationOperations.{}',
     client_factory=cf_quotaoperation,
 )
 
 
 quota_quotarequeststatus = CliCommandType(
     operations_tmpl=(
-        'azext_quota.vendored_sdks.quota.operations._quotarequeststatus_operations#quotarequeststatusOperations.{}'
+        'azext_quota.vendored_sdks.quota.operations._quota_request_status_operations#quotaRequestStatusOperations.{}'
     ),
     client_factory=cf_quotarequeststatus,
 )
@@ -43,7 +43,7 @@ quota_usage = CliCommandType(
 
 
 def load_command_table(self, _):
-    # is_experimental=True
+
     with self.command_group('quota', quota_quota, client_factory=cf_quota, is_experimental=True) as g:
         g.custom_command('list', 'quota_list')
         g.custom_show_command('show', 'quota_show')

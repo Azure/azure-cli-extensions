@@ -33,24 +33,22 @@ def load_arguments(self, _):
     with self.argument_context('quota create') as c:
         c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
         c.argument('scope', type=str, help='The target Azure resource URI.')
-        c.argument('limit', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
+        c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
                    arg_group='Limit')
-        c.argument('name', type=str, help='Resource type name.')
+        c.argument('name', type=str, help=' the resource type name.')
         c.argument('value', type=int, help='Resource type name.')
         c.argument('resource_type', type=str, help='Resource type name.')
-        c.argument('properties', type=validate_file_or_dict, help='Additional properties for the specific resource '
-                   'provider.')
+        c.argument('properties', type=validate_file_or_dict, help='Additional properties for the specific resource provider.')
 
     with self.argument_context('quota update') as c:
         c.argument('resource_name', type=str, help='The resource name for a given resource provider.')
         c.argument('scope', type=str, help='The target Azure resource URI.')
-        c.argument('limit', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
+        c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
                    arg_group='Limit')
         c.argument('name', type=str, help='Resource type name.')
         c.argument('value', type=int, help='Resource type name.')
         c.argument('resource_type', type=str, help='Resource type name.')
-        c.argument('properties', type=validate_file_or_dict, help='Additional properties for the specific resource '
-                                                                  'provider.')
+        c.argument('properties', type=validate_file_or_dict, help='Additional properties for the specific resource provider.')
         c.ignore('create_quota_request')
 
     with self.argument_context('quota wait') as c:
@@ -59,7 +57,8 @@ def load_arguments(self, _):
 
     with self.argument_context('quota request status list') as c:
         c.argument('scope', type=str, help='The target Azure resource URI.')
-        c.argument('filter_', options_list=['--filter'], type=str, help='')
+        c.argument('filter', options_list=['--filter'], type=str, help='')
+        c.argument('top', type=int, help='Number of records to return.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')

@@ -26,25 +26,27 @@ class QuotaScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_quota', location='eastus')
     def test_quota_crud(self, resource_group):
         self.kwargs.update({
-            'resource_name': 'StandardSkuPublicIpAddresses',
-            'resource_type': 'PublicIpAddresses',
+            'resource_name': 'MinPublicIpInterNetworkPrefixLength',
+            'resource_type': 'MinPublicIpInterNetworkPrefixLength',
             'sub':  '/subscriptions/{}/providers/Microsoft.Network/locations/eastus'.format(self.get_subscription_id())
         })
 
-        self.cmd('network public-ip create -g {rg} -n {resource_name} --sku Standard')
-        self.cmd('quota create --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --value 10 --limit LimitValue',
-                 checks=[self.check('properties.name.value', 'StandardSkuPublicIpAddresses')])
-        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type}')
+        quota = self.cmd('quota show --resource-name {resource_name} --scope {sub}').get_output_in_json()
+        self.kwargs['value'] = quota['properties']['limit']['value'] + 1
+
+        quota_create = self.cmd('quota create --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
+                 checks=[self.check('properties.limit.value', '{value}')]).get_output_in_json()
+        self.kwargs['id'] = quota_create['id']
+        self.kwargs['value'] = quota['properties']['limit']['value'] + 2
+        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
+                 checks=[self.check('properties.limit.value', '{value}')])
         self.cmd('quota list --scope {sub}')
-        self.cmd('quota show --resource-name {resource_name} --scope {sub}')
+        self.cmd('quota show --resource-name {resource_name} --scope {sub}',
+                 checks=[self.check('properties.limit.value', '{value}')])
 
         self.cmd('quota usage show --resource-name {resource_name} --scope {sub}')
         self.cmd('quota usage list --scope {sub}')
 
-        self.cmd('quota request status show --resource-name {resource_name} --scope {sub}')
         self.cmd('quota request status list --scope {sub}')
 
         self.cmd('quota operation list')
-
-
-

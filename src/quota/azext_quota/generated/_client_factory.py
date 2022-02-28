@@ -26,6 +26,8 @@ def cf_quota(cli_ctx, *_):
 
 
 def cf_quotarequeststatus(cli_ctx, *_):
+
+
     return cf_quota_cl(cli_ctx).quotarequeststatus
 
 

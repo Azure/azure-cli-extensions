@@ -40,14 +40,14 @@ def quota_show(client,
 def quota_create(client,
                  resource_name,
                  scope,
-                 limitobject=None,
+                 limit_object=None,
                  resource_type=None,
                  properties=None,
                  value=None,
                  no_wait=False):
     all_limit = []
-    if limitobject is not None:
-        all_limit.append(limitobject)
+    if limit_object is not None:
+        all_limit.append(limit_object)
     if len(all_limit) > 1:
         raise CLIError('at most one of  limit object is needed for limit!')
     limit = all_limit[0] if len(all_limit) == 1 else None
@@ -56,9 +56,7 @@ def quota_create(client,
     create_quota_request['properties'] = {}
     create_quota_request['properties']['limit'] = {}
     if limit is not None:
-        create_quota_request['properties']['limit']['limit_object_type'] = limit
-    if value is not None:
-        create_quota_request['properties']['limit']['value'] = value
+        create_quota_request['properties']['limit'] = limit
     if properties is not None:
         create_quota_request['properties']['properties'] = properties
     create_quota_request['properties']['name'] = {}
@@ -79,24 +77,22 @@ def quota_create(client,
 def quota_update(client,
                  resource_name,
                  scope,
-                 limitobject=None,
+                 limit_object=None,
                  resource_type=None,
                  properties=None,
                  value=None,
                  no_wait=False):
     all_limit = []
-    if limitobject is not None:
-        all_limit.append(limitobject)
+    if limit_object is not None:
+        all_limit.append(limit_object)
     if len(all_limit) > 1:
-        raise CLIError('at most one of  limitobject is needed for limit!')
+        raise CLIError('at most one of  limit object is needed for limit!')
     limit = all_limit[0] if len(all_limit) == 1 else None
     create_quota_request = {}
     create_quota_request['properties'] = {}
     create_quota_request['properties']['limit'] = {}
     if limit is not None:
-        create_quota_request['properties']['limit']['limit_object_type'] = limit
-    if value is not None:
-        create_quota_request['properties']['limit']['value'] = value
+        create_quota_request['properties']['limit'] = limit
     if properties is not None:
         create_quota_request['properties']['properties'] = properties
     create_quota_request['properties']['name'] = {}
@@ -116,19 +112,19 @@ def quota_update(client,
 
 def quota_request_status_list(client,
                               scope,
-                              filter_=None,
+                              filter=None,
                               top=None,
-                              skiptoken=None):
+                              skip_token=None):
     return client.list(scope=scope,
-                       filter=filter_,
+                       filter=filter,
                        top=top,
-                       skiptoken=skiptoken)
+                       skiptoken=skip_token)
 
 
 def quota_request_status_show(client,
-                              id_,
+                              id,
                               scope):
-    return client.get(id=id_,
+    return client.get(id=id,
                       scope=scope)
 
 

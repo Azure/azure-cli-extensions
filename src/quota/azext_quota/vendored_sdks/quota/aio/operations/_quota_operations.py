@@ -210,7 +210,7 @@ class quotaOperations:
         :rtype: ~azure.core.polling.AsyncLROPoller[~azure_quota_extension_api.models.currentquotalimitbase]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.currentquotalimitbase"]
         lro_delay = kwargs.pop(
             'polling_interval',
@@ -241,7 +241,7 @@ class quotaOperations:
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -352,7 +352,7 @@ class quotaOperations:
         :rtype: ~azure.core.polling.AsyncLROPoller[~azure_quota_extension_api.models.currentquotalimitbase]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', False)  # type: Union[bool, AsyncPollingMethod]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.currentquotalimitbase"]
         lro_delay = kwargs.pop(
             'polling_interval',
@@ -383,7 +383,7 @@ class quotaOperations:
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:

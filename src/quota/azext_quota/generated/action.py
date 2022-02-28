@@ -22,7 +22,7 @@ from knack.util import CLIError
 class AddLimitobject(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.limitobject = action
+        namespace.limit_object = action
 
     def get_action(self, values, option_string):
         try:
