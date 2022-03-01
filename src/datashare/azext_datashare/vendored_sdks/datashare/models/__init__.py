@@ -36,6 +36,7 @@ try:
     from ._models_py3 import DataShareErrorInfo
     from ._models_py3 import DefaultDto
     from ._models_py3 import DimensionProperties
+    from ._models_py3 import EmailRegistration
     from ._models_py3 import Identity
     from ._models_py3 import Invitation
     from ._models_py3 import InvitationList
@@ -43,6 +44,8 @@ try:
     from ._models_py3 import KustoClusterDataSetMapping
     from ._models_py3 import KustoDatabaseDataSet
     from ._models_py3 import KustoDatabaseDataSetMapping
+    from ._models_py3 import KustoTableDataSet
+    from ._models_py3 import KustoTableDataSetMapping
     from ._models_py3 import OperationList
     from ._models_py3 import OperationMetaLogSpecification
     from ._models_py3 import OperationMetaMetricSpecification
@@ -66,15 +69,19 @@ try:
     from ._models_py3 import ShareSynchronizationList
     from ._models_py3 import SourceShareSynchronizationSetting
     from ._models_py3 import SourceShareSynchronizationSettingList
-    from ._models_py3 import SqlDBTableDataSet
-    from ._models_py3 import SqlDBTableDataSetMapping
+    from ._models_py3 import SqlDbTableDataSet
+    from ._models_py3 import SqlDbTableDataSetMapping
     from ._models_py3 import SqlDwTableDataSet
     from ._models_py3 import SqlDwTableDataSetMapping
+    from ._models_py3 import SynapseWorkspaceSqlPoolTableDataSet
+    from ._models_py3 import SynapseWorkspaceSqlPoolTableDataSetMapping
     from ._models_py3 import SynchronizationDetails
     from ._models_py3 import SynchronizationDetailsList
     from ._models_py3 import SynchronizationSetting
     from ._models_py3 import SynchronizationSettingList
     from ._models_py3 import Synchronize
+    from ._models_py3 import SystemData
+    from ._models_py3 import TableLevelSharingProperties
     from ._models_py3 import Trigger
     from ._models_py3 import TriggerList
 except (SyntaxError, ImportError):
@@ -107,6 +114,7 @@ except (SyntaxError, ImportError):
     from ._models import DataShareErrorInfo  # type: ignore
     from ._models import DefaultDto  # type: ignore
     from ._models import DimensionProperties  # type: ignore
+    from ._models import EmailRegistration  # type: ignore
     from ._models import Identity  # type: ignore
     from ._models import Invitation  # type: ignore
     from ._models import InvitationList  # type: ignore
@@ -114,6 +122,8 @@ except (SyntaxError, ImportError):
     from ._models import KustoClusterDataSetMapping  # type: ignore
     from ._models import KustoDatabaseDataSet  # type: ignore
     from ._models import KustoDatabaseDataSetMapping  # type: ignore
+    from ._models import KustoTableDataSet  # type: ignore
+    from ._models import KustoTableDataSetMapping  # type: ignore
     from ._models import OperationList  # type: ignore
     from ._models import OperationMetaLogSpecification  # type: ignore
     from ._models import OperationMetaMetricSpecification  # type: ignore
@@ -137,31 +147,43 @@ except (SyntaxError, ImportError):
     from ._models import ShareSynchronizationList  # type: ignore
     from ._models import SourceShareSynchronizationSetting  # type: ignore
     from ._models import SourceShareSynchronizationSettingList  # type: ignore
-    from ._models import SqlDBTableDataSet  # type: ignore
-    from ._models import SqlDBTableDataSetMapping  # type: ignore
+    from ._models import SqlDbTableDataSet  # type: ignore
+    from ._models import SqlDbTableDataSetMapping  # type: ignore
     from ._models import SqlDwTableDataSet  # type: ignore
     from ._models import SqlDwTableDataSetMapping  # type: ignore
+    from ._models import SynapseWorkspaceSqlPoolTableDataSet  # type: ignore
+    from ._models import SynapseWorkspaceSqlPoolTableDataSetMapping  # type: ignore
     from ._models import SynchronizationDetails  # type: ignore
     from ._models import SynchronizationDetailsList  # type: ignore
     from ._models import SynchronizationSetting  # type: ignore
     from ._models import SynchronizationSettingList  # type: ignore
     from ._models import Synchronize  # type: ignore
+    from ._models import SystemData  # type: ignore
+    from ._models import TableLevelSharingProperties  # type: ignore
     from ._models import Trigger  # type: ignore
     from ._models import TriggerList  # type: ignore
 
 from ._data_share_management_client_enums import (
+    CreatedByType,
+    DataSetKind,
+    DataSetMappingKind,
     DataSetMappingStatus,
     DataSetType,
     InvitationStatus,
-    Kind,
+    LastModifiedByType,
     OutputType,
     ProvisioningState,
     RecurrenceInterval,
+    RegistrationStatus,
     ShareKind,
     ShareSubscriptionStatus,
+    SourceShareSynchronizationSettingKind,
     Status,
     SynchronizationMode,
+    SynchronizationSettingKind,
+    TriggerKind,
     TriggerStatus,
+    Type,
 )
 
 __all__ = [
@@ -194,6 +216,7 @@ __all__ = [
     'DataShareErrorInfo',
     'DefaultDto',
     'DimensionProperties',
+    'EmailRegistration',
     'Identity',
     'Invitation',
     'InvitationList',
@@ -201,6 +224,8 @@ __all__ = [
     'KustoClusterDataSetMapping',
     'KustoDatabaseDataSet',
     'KustoDatabaseDataSetMapping',
+    'KustoTableDataSet',
+    'KustoTableDataSetMapping',
     'OperationList',
     'OperationMetaLogSpecification',
     'OperationMetaMetricSpecification',
@@ -224,27 +249,39 @@ __all__ = [
     'ShareSynchronizationList',
     'SourceShareSynchronizationSetting',
     'SourceShareSynchronizationSettingList',
-    'SqlDBTableDataSet',
-    'SqlDBTableDataSetMapping',
+    'SqlDbTableDataSet',
+    'SqlDbTableDataSetMapping',
     'SqlDwTableDataSet',
     'SqlDwTableDataSetMapping',
+    'SynapseWorkspaceSqlPoolTableDataSet',
+    'SynapseWorkspaceSqlPoolTableDataSetMapping',
     'SynchronizationDetails',
     'SynchronizationDetailsList',
     'SynchronizationSetting',
     'SynchronizationSettingList',
     'Synchronize',
+    'SystemData',
+    'TableLevelSharingProperties',
     'Trigger',
     'TriggerList',
+    'CreatedByType',
+    'DataSetKind',
+    'DataSetMappingKind',
     'DataSetMappingStatus',
     'DataSetType',
     'InvitationStatus',
-    'Kind',
+    'LastModifiedByType',
     'OutputType',
     'ProvisioningState',
     'RecurrenceInterval',
+    'RegistrationStatus',
     'ShareKind',
     'ShareSubscriptionStatus',
+    'SourceShareSynchronizationSettingKind',
     'Status',
     'SynchronizationMode',
+    'SynchronizationSettingKind',
+    'TriggerKind',
     'TriggerStatus',
+    'Type',
 ]

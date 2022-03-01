@@ -12,12 +12,10 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
-
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import ManagedClusterPropertiesAutoScalerProfile
 
 from ._helpers import (_fuzzy_match)
 
@@ -223,6 +221,13 @@ def validate_spot_max_price(namespace):
                 "default price to be up-to on-demand")
 
 
+def validate_message_of_the_day(namespace):
+    """Validates message of the day can only be used on Linux."""
+    if namespace.message_of_the_day is not None and namespace.message_of_the_day != "":
+        if namespace.os_type is not None and namespace.os_type != "Linux":
+            raise ArgumentUsageError('--message-of-the-day can only be set for linux nodepools')
+
+
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
@@ -287,35 +292,6 @@ def validate_nodepool_tags(ns):
         for item in ns.nodepool_tags:
             tags_dict.update(validate_tag(item))
         ns.nodepool_tags = tags_dict
-
-
-def validate_cluster_autoscaler_profile(namespace):
-    """ Validates that cluster autoscaler profile is acceptable by:
-        1. Extracting the key[=value] format to map
-        2. Validating that the key isn't empty and that the key is valid
-        Empty strings pass validation
-    """
-    _extract_cluster_autoscaler_params(namespace)
-    if namespace.cluster_autoscaler_profile is not None:
-        for key in namespace.cluster_autoscaler_profile.keys():
-            _validate_cluster_autoscaler_key(key)
-
-
-def _validate_cluster_autoscaler_key(key):
-    if not key:
-        raise CLIError('Empty key specified for cluster-autoscaler-profile')
-    valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
-    if key not in valid_keys:
-        raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)
-
-
-def _extract_cluster_autoscaler_params(namespace):
-    """ Extracts multiple space-separated cluster autoscaler parameters in key[=value] format """
-    if isinstance(namespace.cluster_autoscaler_profile, list):
-        params_dict = {}
-        for item in namespace.cluster_autoscaler_profile:
-            params_dict.update(validate_tag(item))
-        namespace.cluster_autoscaler_profile = params_dict
 
 
 def validate_nodepool_labels(namespace):
@@ -517,3 +493,17 @@ def validate_snapshot_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")
+
+
+def validate_host_group_id(namespace):
+    if namespace.host_group_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.host_group_id):
+            raise InvalidArgumentValueError("--host-group-id is not a valid Azure resource ID.")
+
+
+def validate_crg_id(namespace):
+    if namespace.crg_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.crg_id):
+            raise InvalidArgumentValueError("--crg-id is not a valid Azure resource ID.")

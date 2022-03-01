@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.1.15
+++++++++++++++++++
+* `az monitor app-insights web-test`: Create/list/update/show/delete Application Insights Web Test.
+
 0.1.14
 ++++++++++++++++++
 

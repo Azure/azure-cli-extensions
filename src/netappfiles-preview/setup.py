@@ -41,7 +41,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/netappfiles-preview',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/netappfiles-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_netappfiles_preview': ['azext_metadata.json']},

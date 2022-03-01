@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DataFactoryManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/datafactory',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/datafactory',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

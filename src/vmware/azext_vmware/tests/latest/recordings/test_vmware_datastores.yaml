@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 18 Nov 2021 21:47:37 GMT
+      - Tue, 08 Feb 2022 17:28:50 GMT
       server:
       - Rocket
     status:
@@ -62,7 +62,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 18 Nov 2021 21:47:42 GMT
+      - Tue, 08 Feb 2022 17:28:55 GMT
       server:
       - Rocket
     status:
@@ -94,7 +94,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 18 Nov 2021 21:47:46 GMT
+      - Tue, 08 Feb 2022 17:28:59 GMT
       server:
       - Rocket
     status:
@@ -126,7 +126,44 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 18 Nov 2021 21:47:50 GMT
+      - Tue, 08 Feb 2022 17:29:03 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"diskPoolVolume": {"targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target",
+      "lunName": "lun0", "mountOption": "ATTACH"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware datastore disk-pool-volume create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '272'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --private-cloud --cluster --target-id --lun-name --mount-option
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2021-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"}}}'
+    headers:
+      content-length:
+      - '479'
+      content-type:
+      - application/json
+      date:
+      - Tue, 08 Feb 2022 17:29:07 GMT
       server:
       - Rocket
     status:
