@@ -70,6 +70,8 @@ def build(cmd, target_id=None, project=None):
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
+    print(f"Building project...")
+
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
@@ -180,6 +182,8 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
 
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
+
+    print("Submitting job...")
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
