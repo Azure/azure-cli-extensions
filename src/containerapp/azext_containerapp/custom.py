@@ -34,7 +34,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary)
+                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _add_or_update_traffic_Weights)
 
 logger = get_logger(__name__)
 
@@ -459,7 +459,7 @@ def update_containerapp(cmd,
                         ingress=None,
                         target_port=None,
                         transport=None,
-                        # traffic_weights=None,
+                        traffic_weights=None,
                         revisions_mode=None,
                         secrets=None,
                         env_vars=None,
@@ -499,7 +499,7 @@ def update_containerapp(cmd,
 
     update_map = {}
     update_map['secrets'] = secrets is not None
-    update_map['ingress'] = ingress or target_port or transport
+    update_map['ingress'] = ingress or target_port or transport or traffic_weights
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
     update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command or args
@@ -597,23 +597,31 @@ def update_containerapp(cmd,
         containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = revisions_mode
 
     if update_map["ingress"]:
+        if "ingress" not in containerapp_def["properties"]["configuration"]:
+            containerapp_def["properties"]["configuration"]["ingress"] = {}
+
         external_ingress = None
         if ingress is not None:
             if ingress.lower() == "internal":
                 external_ingress = False
             elif ingress.lower() == "external":
                 external_ingress = True
-        containerapp_def["properties"]["configuration"]["external"] = external_ingress
+
+        if external_ingress is not None:
+            containerapp_def["properties"]["configuration"]["ingress"]["external"] = external_ingress
 
         if target_port is not None:
-            containerapp_def["properties"]["configuration"]["targetPort"] = target_port
+            containerapp_def["properties"]["configuration"]["ingress"]["targetPort"] = target_port
 
-        config = containerapp_def["properties"]["configuration"]
+        config = containerapp_def["properties"]["configuration"]["ingress"]
         if (config["targetPort"] is not None and config["external"] is None) or (config["targetPort"] is None and config["external"] is not None):
             raise ValidationError("Usage error: must specify --target-port with --ingress")
 
         if transport is not None:
-            containerapp_def["properties"]["configuration"]["transport"] = transport
+            containerapp_def["properties"]["configuration"]["ingress"]["transport"] = transport
+
+        if traffic_weights is not None:
+            containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = _add_or_update_traffic_Weights(containerapp_def, traffic_weights)
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 

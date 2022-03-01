@@ -393,3 +393,39 @@ def update_nested_dictionary(orig_dict, new_dict):
             if new_dict[key] is not None:
                 orig_dict[key] = new_dict[key]
     return orig_dict
+
+
+def _is_valid_weight(weight):
+    try:
+        n = int(weight)
+        if n >= 0 and n <= 100:
+            return True
+        return False
+    except ValueError:
+        return False
+
+
+def _add_or_update_traffic_Weights(containerapp_def, list_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    for new_weight in list_weights:
+        key_val = new_weight.split('=', 1)
+        is_existing = False
+
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=weight <revision2>=<weigh2> ...\"')
+
+        if not _is_valid_weight(key_val[1]):
+            raise ValidationError('Traffic weights must be integers between 0 and 100')
+
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if existing_weight["revisionName"].lower() == new_weight[0].lower():
+                is_existing = True
+                existing_weight["weight"] = int(key_val[1])
+
+        if not is_existing:
+            containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
+                "revisionName": key_val[0],
+                "weight": int(key_val[1])
+            })
