@@ -51,12 +51,14 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
 
     op_call = ssh_utils.write_ssh_config
 
+    # if the folder doesn't exist, this extension won't create a new one.
+    config_folder = os.path.dirname(config_session.config_path)
+    if not os.path.isdir(config_folder):
+        raise azclierror.InvalidArgumentValueError(f"Config file destination folder {config_folder} "
+                                                   "does not exist.")
+
     # Default credential location
     if not credentials_folder:
-        config_folder = os.path.dirname(config_session.config_path)
-        if not os.path.isdir(config_folder):
-            raise azclierror.InvalidArgumentValueError(f"Config file destination folder {config_folder} "
-                                                       "does not exist.")
         folder_name = config_session.ip
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
