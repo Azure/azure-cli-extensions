@@ -133,7 +133,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # Attach copied managed disk to new vm
                 logger.info('Attaching copied disk to repair VM as data disk...')
                 attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} " \
-                               .format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
+                                       .format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
                 _call_az_command(attach_disk_command)
 
             # Handle encrypted VM cases
