@@ -120,7 +120,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:   
                 # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
                 create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
-            
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
