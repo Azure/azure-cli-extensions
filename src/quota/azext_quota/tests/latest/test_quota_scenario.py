@@ -46,6 +46,8 @@ class QuotaScenarioTest(ScenarioTest):
         self.cmd('quota usage show --resource-name {resource_name} --scope {sub}')
         self.cmd('quota usage list --scope {sub}')
 
-        self.cmd('quota request status list --scope {sub}')
+        quota_request_name = self.cmd('quota request status list --scope {sub} --query [].name').get_output_in_json()
+        self.kwargs['name'] = quota_request_name[0]
+        self.cmd('quota request status show --scope {sub} --name {name}')
 
         self.cmd('quota operation list')

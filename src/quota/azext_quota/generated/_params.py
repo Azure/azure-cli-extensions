@@ -63,7 +63,7 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     with self.argument_context('quota request status show') as c:
-        c.argument('id', options_list=['--id'], type=str, help='Quota request ID.')
+        c.argument('name', type=str, help='Quota request ID.')
         c.argument('scope', type=str, help='The target Azure resource URI.')
 
     with self.argument_context('quota operation list') as c:

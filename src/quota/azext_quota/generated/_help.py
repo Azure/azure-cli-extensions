@@ -196,15 +196,15 @@ provider at a specific location. The quota request ID **id** is returned in the 
     examples:
       - name: QuotaRequestFailed
         text: |-
-               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
+               az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
       - name: QuotaRequestInProgress
         text: |-
-               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
+               az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
       - name: QuotaRequestStatus
         text: |-
-               az quota request status show --id "00000000-0000-0000-0000-000000000000" --scope \
+               az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
 """
 

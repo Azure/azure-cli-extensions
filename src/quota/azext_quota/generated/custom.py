@@ -117,9 +117,9 @@ def quota_request_status_list(client,
 
 
 def quota_request_status_show(client,
-                              id,
+                              name,
                               scope):
-    return client.get(id=id,
+    return client.get(id=name,
                       scope=scope)
 
 
