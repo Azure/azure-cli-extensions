@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AzureQuotaExtensionAPI Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/quota',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/quota',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
