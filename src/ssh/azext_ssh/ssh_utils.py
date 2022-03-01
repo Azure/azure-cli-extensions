@@ -153,8 +153,9 @@ def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
 
 def _print_error_messages_from_ssh_log(log_file, connection_status):
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
-        if "debug1: Authentication succeeded" not in ssh_log.read() or connection_status != 0:
-            for line in ssh_log.readlines():
+        log_text = ssh_log.read()
+        if "debug1: Authentication succeeded" not in log_text or connection_status != 0:
+            for line in log_text.splitlines():
                 if "debug1:" not in line:
                     print(line)
         ssh_log.close()
@@ -168,6 +169,8 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
         if os.path.isfile(ssh_path):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
+        logger.warning("Could not find %s in provided --ssh-client-folder %s. "
+                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
 
     ssh_path = ssh_command
 
