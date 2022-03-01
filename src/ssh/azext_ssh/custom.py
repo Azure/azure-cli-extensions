@@ -129,7 +129,6 @@ def _do_ssh_op(cmd, op_info, credentials_folder, op_call):
 
     op_call(op_info, delete_keys, delete_cert)
 
-
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
     cloudtoscope = {
         "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",

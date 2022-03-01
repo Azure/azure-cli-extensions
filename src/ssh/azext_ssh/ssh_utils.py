@@ -43,7 +43,7 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
 
     command = [_get_ssh_client_path(ssh_client_folder=ssh_info.ssh_client_folder), ssh_info.get_host()]
     command = command + ssh_info.build_args() + ssh_arg_list
-
+    
     logger.debug("Running ssh command %s", ' '.join(command))
     connection_status = subprocess.call(command, shell=platform.system() == 'Windows')
 
@@ -97,7 +97,7 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         mode = 'w'
     else:
         mode = 'a'
-
+    print(type(config_text))
     with open(config_info.config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(config_text))
 
@@ -198,7 +198,7 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
         ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
-        logger.debug("Platform architecture: %s", str(platform.architecture()[0]))
+        logger.debug("Platform architecture: %s", platform_architecture)
         logger.debug("OS architecture: %s", os_architecture)
         logger.debug("System Root: %s", system_root)
         logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
