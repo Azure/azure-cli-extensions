@@ -70,7 +70,7 @@ def build(cmd, target_id=None, project=None):
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
-    print(f"Building project...")
+    print("Building project...")
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
