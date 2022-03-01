@@ -105,39 +105,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table = transform_output(json.loads(test_job_results))
         self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
 
-        # # Call with output from a failed job      <<<<< Couldn't get the """ notation to work  :-(
-        # test_job_results = """
-        # '{
-        #     "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",
-        #     "cancellationTime": null,
-        #     "containerUri": "https://foo...",
-        #     "costEstimate": null,
-        #     "creationTime": "2022-02-25T18:56:53.275035+00:00",
-        #     "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",
-        #     "errorData": {
-        #         "code": "InsufficientResources",
-        #         "message": "Too many qubits requested"
-        #     },
-        #     "id": "11111111-2222-3333-4444-555555555555",
-        #     "inputDataFormat": "microsoft.ionq-ir.v2",
-        #     "inputDataUri": "https://bar...",
-        #     "inputParams": {
-        #         "shots": "500"
-        #     },
-        #     "isCancelling": false,
-        #     "metadata": {
-        #         "entryPointInput": "{\"Qubits\":null}",
-        #         "outputMappingBlobUri": "https://baz..."
-        #     },
-        #     "name": "",
-        #     "outputDataFormat": "microsoft.quantum-results.v1",
-        #     "outputDataUri": "https://quux...",
-        #     "providerId": "ionq",
-        #     "status": "Failed",
-        #     "tags": [],
-        #     "target": "ionq.simulator"
-        # }'"""
-
         # Call with output from a failed job
         test_job_results = \
         '{\
@@ -207,9 +174,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
         }'
 
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table['Status'], "Not found")
-        self.assertEquals(table['Error Code'], "Not found")
-        self.assertEquals(table['Error Message'], "Not found")
-        self.assertEquals(table['Target'], "Not found")
-        self.assertEquals(table['Job ID'], "Not found")
-        self.assertEquals(table['Submission Time'], "Not found")
+        notFound = "Not found"
+        self.assertEquals(table['Status'], notFound)
+        self.assertEquals(table['Error Code'], notFound)
+        self.assertEquals(table['Error Message'], notFound)
+        self.assertEquals(table['Target'], notFound)
+        self.assertEquals(table['Job ID'], notFound)
+        self.assertEquals(table['Submission Time'], notFound)
