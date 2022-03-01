@@ -1,0 +1,1263 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Quotas","name":"StandardSkuPublicIpAddresses"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '486'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:08:57 GMT
+      ms-requestid:
+      - sgSqYClAF0GAeiExdv9qDA.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"limit": {"limitObjectType": "LimitValue", "value": 6000},
+      "name": {"value": "StandardSkuPublicIpAddresses"}, "resourceType": "PublicIPAddresses"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '163'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"properties":{},"provisioningState":"InProgress","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/416043c9-f625-409a-81fb-80d666baa8c0","type":"Microsoft.Quota/Quotas","name":"416043c9-f625-409a-81fb-80d666baa8c0"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '477'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:09:00 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - ItwaeRqiBUi-YizSjJkd1Q.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '24'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0","name":"416043c9-f625-409a-81fb-80d666baa8c0","startTime":"2022-02-28T07:08:59Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:09:31 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - Kj6zsRp6CUycFBmcCJ1BqA.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0","name":"416043c9-f625-409a-81fb-80d666baa8c0","startTime":"2022-02-28T07:08:59Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:10:02 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - 26BkiebXiUKy7q_okdIcTA.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '98'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0","name":"416043c9-f625-409a-81fb-80d666baa8c0","startTime":"2022-02-28T07:08:59Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:10:32 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - AJA0FKkmnEaLfWurrE6ptg.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '97'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0","name":"416043c9-f625-409a-81fb-80d666baa8c0","startTime":"2022-02-28T07:08:59Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:11:02 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - tHEXHIN1AU-H8YqsSIftdw.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '96'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/416043c9-f625-409a-81fb-80d666baa8c0","name":"416043c9-f625-409a-81fb-80d666baa8c0","startTime":"2022-02-28T07:08:59Z","status":"Succeeded","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:11:33 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/416043c9-f625-409a-81fb-80d666baa8c0?api-version=2021-03-15-preview
+      ms-requestid:
+      - USCRrQgZbkSNXXtA9bW6MA.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '95'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Quotas","name":"StandardSkuPublicIpAddresses"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '486'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:11:33 GMT
+      ms-requestid:
+      - xWq-iv_GoEmyBAmZZF1Ldw.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"limit": {"limitObjectType": "LimitValue", "value": 6000},
+      "name": {"value": "StandardSkuPublicIpAddresses"}, "resourceType": "PublicIPAddresses"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '163'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"properties":{},"provisioningState":"InProgress","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","type":"Microsoft.Quota/Quotas","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '477'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:11:37 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - e7xXciL-F0SG4cliIJJsVw.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '24'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","startTime":"2022-02-28T07:11:35Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:12:07 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - JH6y_5ZhZUWGlAbW4XUZBA.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","startTime":"2022-02-28T07:11:35Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:12:38 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - syyo4hOCnkCTjNQeZMM7Ag.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '98'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","startTime":"2022-02-28T07:11:35Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:13:09 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - 7eMRxyEV20SmR4_d_dOQ6A.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '97'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","startTime":"2022-02-28T07:11:35Z","status":"InProgress","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '330'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:13:39 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - lS8Ssf34JU6OAwTEVYYiZQ.0
+      operation-location:
+      - https://management.azure.com/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '96'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/operationsStatus/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","startTime":"2022-02-28T07:11:35Z","status":"Succeeded","type":"Microsoft.Quota/OperationsStatus"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:10 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d?api-version=2021-03-15-preview
+      ms-requestid:
+      - gXL1HidLvUWgU2zaDVZ47w.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '95'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope --resource-type --limit-object
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Quotas","name":"StandardSkuPublicIpAddresses"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '486'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:10 GMT
+      ms-requestid:
+      - 7Kb8KuXs_EGIxWAwkiUrnA.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"VirtualNetworks","localizedValue":"Virtual
+        Networks"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/VirtualNetworks","type":"Microsoft.Quota/Quotas","name":"VirtualNetworks"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"StaticPublicIPAddresses","localizedValue":"Static
+        Public IP Addresses"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StaticPublicIPAddresses","type":"Microsoft.Quota/Quotas","name":"StaticPublicIPAddresses"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5000},"name":{"value":"NetworkSecurityGroups","localizedValue":"Network
+        Security Groups"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/NetworkSecurityGroups","type":"Microsoft.Quota/Quotas","name":"NetworkSecurityGroups"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"PublicIPAddresses","localizedValue":"Public
+        IP Addresses"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PublicIPAddresses","type":"Microsoft.Quota/Quotas","name":"PublicIPAddresses"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"InternalPublicIPAddresses","localizedValue":"Internal
+        Public IP Addresses - Basic"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/InternalPublicIPAddresses","type":"Microsoft.Quota/Quotas","name":"InternalPublicIPAddresses"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5},"name":{"value":"CustomIpPrefixes","localizedValue":"Custom
+        Ip Prefixes"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/CustomIpPrefixes","type":"Microsoft.Quota/Quotas","name":"CustomIpPrefixes"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":2147483647},"name":{"value":"PublicIpPrefixes","localizedValue":"Public
+        Ip Prefixes"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PublicIpPrefixes","type":"Microsoft.Quota/Quotas","name":"PublicIpPrefixes"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":2147483647},"name":{"value":"NatGateways","localizedValue":"Nat
+        Gateways"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/NatGateways","type":"Microsoft.Quota/Quotas","name":"NatGateways"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":65536},"name":{"value":"NetworkInterfaces","localizedValue":"Network
+        Interfaces"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/NetworkInterfaces","type":"Microsoft.Quota/Quotas","name":"NetworkInterfaces"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":65536},"name":{"value":"PrivateEndpoints","localizedValue":"Private
+        Endpoints"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PrivateEndpoints","type":"Microsoft.Quota/Quotas","name":"PrivateEndpoints"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":2147483647},"name":{"value":"PrivateEndpointRedirectMaps","localizedValue":"Private
+        Endpoint Redirect Maps"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PrivateEndpointRedirectMaps","type":"Microsoft.Quota/Quotas","name":"PrivateEndpointRedirectMaps"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"LoadBalancers","localizedValue":"Load
+        Balancers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/LoadBalancers","type":"Microsoft.Quota/Quotas","name":"LoadBalancers"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":800},"name":{"value":"PrivateLinkServices","localizedValue":"Private
+        Link Services"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PrivateLinkServices","type":"Microsoft.Quota/Quotas","name":"PrivateLinkServices"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"ApplicationGateways","localizedValue":"Application
+        Gateways"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/ApplicationGateways","type":"Microsoft.Quota/Quotas","name":"ApplicationGateways"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":200},"name":{"value":"RouteTables","localizedValue":"Route
+        Tables"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RouteTables","type":"Microsoft.Quota/Quotas","name":"RouteTables"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"RouteFilters","localizedValue":"Route
+        Filters"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RouteFilters","type":"Microsoft.Quota/Quotas","name":"RouteFilters"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1},"name":{"value":"NetworkWatchers","localizedValue":"Network
+        Watchers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/NetworkWatchers","type":"Microsoft.Quota/Quotas","name":"NetworkWatchers"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10000},"name":{"value":"PacketCaptures","localizedValue":"Packet
+        Captures"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PacketCaptures","type":"Microsoft.Quota/Quotas","name":"PacketCaptures"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":3000},"name":{"value":"ApplicationSecurityGroups","localizedValue":"Application
+        Security Groups."},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/ApplicationSecurityGroups","type":"Microsoft.Quota/Quotas","name":"ApplicationSecurityGroups"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1},"name":{"value":"DdosProtectionPlans","localizedValue":"DDoS
+        Protection Plans."},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/DdosProtectionPlans","type":"Microsoft.Quota/Quotas","name":"DdosProtectionPlans"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":200},"name":{"value":"DdosCustomPolicies","localizedValue":"DDoS
+        customized policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/DdosCustomPolicies","type":"Microsoft.Quota/Quotas","name":"DdosCustomPolicies"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":500},"name":{"value":"ServiceEndpointPolicies","localizedValue":"Service
+        Endpoint Policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/ServiceEndpointPolicies","type":"Microsoft.Quota/Quotas","name":"ServiceEndpointPolicies"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":200},"name":{"value":"NetworkIntentPolicies","localizedValue":"Network
+        Intent Policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/NetworkIntentPolicies","type":"Microsoft.Quota/Quotas","name":"NetworkIntentPolicies"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"StandardSkuLoadBalancers","localizedValue":"Standard
+        Sku Load Balancers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuLoadBalancers","type":"Microsoft.Quota/Quotas","name":"StandardSkuLoadBalancers"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Quotas","name":"StandardSkuPublicIpAddresses"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":128},"name":{"value":"AuxiliaryModeEnabledNetworkInterfaces","localizedValue":"Auxiliary
+        Mode Enabled Network Interfaces"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/AuxiliaryModeEnabledNetworkInterfaces","type":"Microsoft.Quota/Quotas","name":"AuxiliaryModeEnabledNetworkInterfaces"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":20},"name":{"value":"DnsServersPerVirtualNetwork","localizedValue":"DNS
+        servers per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/DnsServersPerVirtualNetwork","type":"Microsoft.Quota/Quotas","name":"DnsServersPerVirtualNetwork"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5},"name":{"value":"CustomDnsServersPerP2SVpnGateway","localizedValue":"Custom
+        DNS servers per P2SVpnGateway"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/CustomDnsServersPerP2SVpnGateway","type":"Microsoft.Quota/Quotas","name":"CustomDnsServersPerP2SVpnGateway"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":3000},"name":{"value":"SubnetsPerVirtualNetwork","localizedValue":"Subnets
+        per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SubnetsPerVirtualNetwork","type":"Microsoft.Quota/Quotas","name":"SubnetsPerVirtualNetwork"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":65536},"name":{"value":"IPConfigurationsPerVirtualNetwork","localizedValue":"IP
+        Configurations per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/IPConfigurationsPerVirtualNetwork","type":"Microsoft.Quota/Quotas","name":"IPConfigurationsPerVirtualNetwork"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":500},"name":{"value":"PeeringsPerVirtualNetwork","localizedValue":"Peerings
+        per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/PeeringsPerVirtualNetwork","type":"Microsoft.Quota/Quotas","name":"PeeringsPerVirtualNetwork"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1000},"name":{"value":"SecurityRulesPerNetworkSecurityGroup","localizedValue":"Security
+        rules per Network Security Group"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SecurityRulesPerNetworkSecurityGroup","type":"Microsoft.Quota/Quotas","name":"SecurityRulesPerNetworkSecurityGroup"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":100},"name":{"value":"SecurityRulesPerNetworkIntentPolicy","localizedValue":"Security
+        rules per Network Intent Policy"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SecurityRulesPerNetworkIntentPolicy","type":"Microsoft.Quota/Quotas","name":"SecurityRulesPerNetworkIntentPolicy"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":200},"name":{"value":"RoutesPerNetworkIntentPolicy","localizedValue":"Routes
+        per Network Intent Policy"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RoutesPerNetworkIntentPolicy","type":"Microsoft.Quota/Quotas","name":"RoutesPerNetworkIntentPolicy"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":4000},"name":{"value":"SecurityRuleAddressesOrPortsPerNetworkSecurityGroup","localizedValue":"Security
+        rules addresses or ports per Network Security Group"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SecurityRuleAddressesOrPortsPerNetworkSecurityGroup","type":"Microsoft.Quota/Quotas","name":"SecurityRuleAddressesOrPortsPerNetworkSecurityGroup"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":250},"name":{"value":"InboundRulesPerLoadBalancer","localizedValue":"Inbound
+        Rules per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/InboundRulesPerLoadBalancer","type":"Microsoft.Quota/Quotas","name":"InboundRulesPerLoadBalancer"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":200},"name":{"value":"FrontendIPConfigurationPerLoadBalancer","localizedValue":"Frontend
+        IP Configurations per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/FrontendIPConfigurationPerLoadBalancer","type":"Microsoft.Quota/Quotas","name":"FrontendIPConfigurationPerLoadBalancer"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5},"name":{"value":"OutboundRulesPerLoadBalancer","localizedValue":"Outbound
+        Rules per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/OutboundRulesPerLoadBalancer","type":"Microsoft.Quota/Quotas","name":"OutboundRulesPerLoadBalancer"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":400},"name":{"value":"RoutesPerRouteTable","localizedValue":"Routes
+        per Route Table"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RoutesPerRouteTable","type":"Microsoft.Quota/Quotas","name":"RoutesPerRouteTable"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":25},"name":{"value":"RoutesWithServiceTagPerRouteTable","localizedValue":"Routes
+        with service tag per Route Table"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RoutesWithServiceTagPerRouteTable","type":"Microsoft.Quota/Quotas","name":"RoutesWithServiceTagPerRouteTable"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":256},"name":{"value":"SecondaryIPConfigurationsPerNetworkInterface","localizedValue":"Secondary
+        IP Configurations per Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SecondaryIPConfigurationsPerNetworkInterface","type":"Microsoft.Quota/Quotas","name":"SecondaryIPConfigurationsPerNetworkInterface"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":500},"name":{"value":"SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface","localizedValue":"Secondary
+        IP Configurations per PrivateEndpoint Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface","type":"Microsoft.Quota/Quotas","name":"SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":300},"name":{"value":"InboundNatOrLbRulesPerNetworkInterface","localizedValue":"Inbound
+        rules per Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/InboundNatOrLbRulesPerNetworkInterface","type":"Microsoft.Quota/Quotas","name":"InboundNatOrLbRulesPerNetworkInterface"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1},"name":{"value":"RouteFilterRulesPerRouteFilter","localizedValue":"Route
+        filter rules per Route Filter"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RouteFilterRulesPerRouteFilter","type":"Microsoft.Quota/Quotas","name":"RouteFilterRulesPerRouteFilter"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1},"name":{"value":"RouteFiltersPerExpressRouteBgpPeering","localizedValue":"Route
+        filters per Express route BGP Peering"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/RouteFiltersPerExpressRouteBgpPeering","type":"Microsoft.Quota/Quotas","name":"RouteFiltersPerExpressRouteBgpPeering"},{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":28},"name":{"value":"MinPublicIpInterNetworkPrefixLength","localizedValue":"Public
+        IPv4 Prefix Length"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/MinPublicIpInterNetworkPrefixLength","type":"Microsoft.Quota/Quotas","name":"MinPublicIpInterNetworkPrefixLength"}]}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '22051'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:12 GMT
+      ms-requestid:
+      - jQwQI0b9eEeXOIn2pUnr2Q.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotas/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Quotas","name":"StandardSkuPublicIpAddresses"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '486'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:14 GMT
+      ms-requestid:
+      - Q1ezCUwE-0ClxhxNHAbilQ.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota usage show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/StandardSkuPublicIpAddresses?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Usages","name":"StandardSkuPublicIpAddresses"}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '454'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:16 GMT
+      ms-requestid:
+      - yMFsJOJRLUeoHrkfpjk_Rw.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota usage list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"VirtualNetworks","localizedValue":"Virtual
+        Networks"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/VirtualNetworks","type":"Microsoft.Quota/Usages","name":"VirtualNetworks"},{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"StaticPublicIPAddresses","localizedValue":"Static
+        Public IP Addresses"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/StaticPublicIPAddresses","type":"Microsoft.Quota/Usages","name":"StaticPublicIPAddresses"},{"properties":{"usages":{"UsagesType":"Independent","Value":8},"name":{"value":"NetworkSecurityGroups","localizedValue":"Network
+        Security Groups"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/NetworkSecurityGroups","type":"Microsoft.Quota/Usages","name":"NetworkSecurityGroups"},{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"PublicIPAddresses","localizedValue":"Public
+        IP Addresses"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PublicIPAddresses","type":"Microsoft.Quota/Usages","name":"PublicIPAddresses"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"InternalPublicIPAddresses","localizedValue":"Internal
+        Public IP Addresses - Basic"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/InternalPublicIPAddresses","type":"Microsoft.Quota/Usages","name":"InternalPublicIPAddresses"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"CustomIpPrefixes","localizedValue":"Custom
+        Ip Prefixes"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/CustomIpPrefixes","type":"Microsoft.Quota/Usages","name":"CustomIpPrefixes"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PublicIpPrefixes","localizedValue":"Public
+        Ip Prefixes"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PublicIpPrefixes","type":"Microsoft.Quota/Usages","name":"PublicIpPrefixes"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"NatGateways","localizedValue":"Nat
+        Gateways"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/NatGateways","type":"Microsoft.Quota/Usages","name":"NatGateways"},{"properties":{"usages":{"UsagesType":"Independent","Value":-4},"name":{"value":"NetworkInterfaces","localizedValue":"Network
+        Interfaces"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/NetworkInterfaces","type":"Microsoft.Quota/Usages","name":"NetworkInterfaces"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PrivateEndpoints","localizedValue":"Private
+        Endpoints"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PrivateEndpoints","type":"Microsoft.Quota/Usages","name":"PrivateEndpoints"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PrivateEndpointRedirectMaps","localizedValue":"Private
+        Endpoint Redirect Maps"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PrivateEndpointRedirectMaps","type":"Microsoft.Quota/Usages","name":"PrivateEndpointRedirectMaps"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"LoadBalancers","localizedValue":"Load
+        Balancers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/LoadBalancers","type":"Microsoft.Quota/Usages","name":"LoadBalancers"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PrivateLinkServices","localizedValue":"Private
+        Link Services"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PrivateLinkServices","type":"Microsoft.Quota/Usages","name":"PrivateLinkServices"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"ApplicationGateways","localizedValue":"Application
+        Gateways"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/ApplicationGateways","type":"Microsoft.Quota/Usages","name":"ApplicationGateways"},{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"RouteTables","localizedValue":"Route
+        Tables"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RouteTables","type":"Microsoft.Quota/Usages","name":"RouteTables"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RouteFilters","localizedValue":"Route
+        Filters"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RouteFilters","type":"Microsoft.Quota/Usages","name":"RouteFilters"},{"properties":{"usages":{"UsagesType":"Independent","Value":1},"name":{"value":"NetworkWatchers","localizedValue":"Network
+        Watchers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/NetworkWatchers","type":"Microsoft.Quota/Usages","name":"NetworkWatchers"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PacketCaptures","localizedValue":"Packet
+        Captures"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PacketCaptures","type":"Microsoft.Quota/Usages","name":"PacketCaptures"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"ApplicationSecurityGroups","localizedValue":"Application
+        Security Groups."},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/ApplicationSecurityGroups","type":"Microsoft.Quota/Usages","name":"ApplicationSecurityGroups"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"DdosProtectionPlans","localizedValue":"DDoS
+        Protection Plans."},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/DdosProtectionPlans","type":"Microsoft.Quota/Usages","name":"DdosProtectionPlans"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"DdosCustomPolicies","localizedValue":"DDoS
+        customized policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/DdosCustomPolicies","type":"Microsoft.Quota/Usages","name":"DdosCustomPolicies"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"ServiceEndpointPolicies","localizedValue":"Service
+        Endpoint Policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/ServiceEndpointPolicies","type":"Microsoft.Quota/Usages","name":"ServiceEndpointPolicies"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"NetworkIntentPolicies","localizedValue":"Network
+        Intent Policies"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/NetworkIntentPolicies","type":"Microsoft.Quota/Usages","name":"NetworkIntentPolicies"},{"properties":{"usages":{"UsagesType":"Independent","Value":4},"name":{"value":"StandardSkuLoadBalancers","localizedValue":"Standard
+        Sku Load Balancers"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/StandardSkuLoadBalancers","type":"Microsoft.Quota/Usages","name":"StandardSkuLoadBalancers"},{"properties":{"usages":{"UsagesType":"Independent","Value":2},"name":{"value":"StandardSkuPublicIpAddresses","localizedValue":"Public
+        IP Addresses - Standard"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/StandardSkuPublicIpAddresses","type":"Microsoft.Quota/Usages","name":"StandardSkuPublicIpAddresses"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"AuxiliaryModeEnabledNetworkInterfaces","localizedValue":"Auxiliary
+        Mode Enabled Network Interfaces"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/AuxiliaryModeEnabledNetworkInterfaces","type":"Microsoft.Quota/Usages","name":"AuxiliaryModeEnabledNetworkInterfaces"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"DnsServersPerVirtualNetwork","localizedValue":"DNS
+        servers per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/DnsServersPerVirtualNetwork","type":"Microsoft.Quota/Usages","name":"DnsServersPerVirtualNetwork"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"CustomDnsServersPerP2SVpnGateway","localizedValue":"Custom
+        DNS servers per P2SVpnGateway"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/CustomDnsServersPerP2SVpnGateway","type":"Microsoft.Quota/Usages","name":"CustomDnsServersPerP2SVpnGateway"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SubnetsPerVirtualNetwork","localizedValue":"Subnets
+        per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SubnetsPerVirtualNetwork","type":"Microsoft.Quota/Usages","name":"SubnetsPerVirtualNetwork"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"IPConfigurationsPerVirtualNetwork","localizedValue":"IP
+        Configurations per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/IPConfigurationsPerVirtualNetwork","type":"Microsoft.Quota/Usages","name":"IPConfigurationsPerVirtualNetwork"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"PeeringsPerVirtualNetwork","localizedValue":"Peerings
+        per Virtual Network"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/PeeringsPerVirtualNetwork","type":"Microsoft.Quota/Usages","name":"PeeringsPerVirtualNetwork"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SecurityRulesPerNetworkSecurityGroup","localizedValue":"Security
+        rules per Network Security Group"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SecurityRulesPerNetworkSecurityGroup","type":"Microsoft.Quota/Usages","name":"SecurityRulesPerNetworkSecurityGroup"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SecurityRulesPerNetworkIntentPolicy","localizedValue":"Security
+        rules per Network Intent Policy"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SecurityRulesPerNetworkIntentPolicy","type":"Microsoft.Quota/Usages","name":"SecurityRulesPerNetworkIntentPolicy"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RoutesPerNetworkIntentPolicy","localizedValue":"Routes
+        per Network Intent Policy"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RoutesPerNetworkIntentPolicy","type":"Microsoft.Quota/Usages","name":"RoutesPerNetworkIntentPolicy"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SecurityRuleAddressesOrPortsPerNetworkSecurityGroup","localizedValue":"Security
+        rules addresses or ports per Network Security Group"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SecurityRuleAddressesOrPortsPerNetworkSecurityGroup","type":"Microsoft.Quota/Usages","name":"SecurityRuleAddressesOrPortsPerNetworkSecurityGroup"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"InboundRulesPerLoadBalancer","localizedValue":"Inbound
+        Rules per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/InboundRulesPerLoadBalancer","type":"Microsoft.Quota/Usages","name":"InboundRulesPerLoadBalancer"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"FrontendIPConfigurationPerLoadBalancer","localizedValue":"Frontend
+        IP Configurations per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/FrontendIPConfigurationPerLoadBalancer","type":"Microsoft.Quota/Usages","name":"FrontendIPConfigurationPerLoadBalancer"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"OutboundRulesPerLoadBalancer","localizedValue":"Outbound
+        Rules per Load Balancer"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/OutboundRulesPerLoadBalancer","type":"Microsoft.Quota/Usages","name":"OutboundRulesPerLoadBalancer"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RoutesPerRouteTable","localizedValue":"Routes
+        per Route Table"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RoutesPerRouteTable","type":"Microsoft.Quota/Usages","name":"RoutesPerRouteTable"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RoutesWithServiceTagPerRouteTable","localizedValue":"Routes
+        with service tag per Route Table"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RoutesWithServiceTagPerRouteTable","type":"Microsoft.Quota/Usages","name":"RoutesWithServiceTagPerRouteTable"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SecondaryIPConfigurationsPerNetworkInterface","localizedValue":"Secondary
+        IP Configurations per Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SecondaryIPConfigurationsPerNetworkInterface","type":"Microsoft.Quota/Usages","name":"SecondaryIPConfigurationsPerNetworkInterface"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface","localizedValue":"Secondary
+        IP Configurations per PrivateEndpoint Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface","type":"Microsoft.Quota/Usages","name":"SecondaryIPConfigurationsPerPrivateEndpointNetworkInterface"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"InboundNatOrLbRulesPerNetworkInterface","localizedValue":"Inbound
+        rules per Network Interface"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/InboundNatOrLbRulesPerNetworkInterface","type":"Microsoft.Quota/Usages","name":"InboundNatOrLbRulesPerNetworkInterface"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RouteFilterRulesPerRouteFilter","localizedValue":"Route
+        filter rules per Route Filter"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RouteFilterRulesPerRouteFilter","type":"Microsoft.Quota/Usages","name":"RouteFilterRulesPerRouteFilter"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"RouteFiltersPerExpressRouteBgpPeering","localizedValue":"Route
+        filters per Express route BGP Peering"},"properties":{},"unit":"Count","isQuotaApplicable":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/RouteFiltersPerExpressRouteBgpPeering","type":"Microsoft.Quota/Usages","name":"RouteFiltersPerExpressRouteBgpPeering"},{"properties":{"usages":{"UsagesType":"Independent","Value":0},"name":{"value":"MinPublicIpInterNetworkPrefixLength","localizedValue":"Public
+        IPv4 Prefix Length"},"properties":{},"unit":"Count","isQuotaApplicable":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/usages/MinPublicIpInterNetworkPrefixLength","type":"Microsoft.Quota/Usages","name":"MinPublicIpInterNetworkPrefixLength"}]}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '20600'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:16 GMT
+      ms-requestid:
+      - RqYsPqMqUUu4j-MSlrXw-Q.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota request status list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"message":"Request completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T07:11:35Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/db1d6e7d-6845-4d08-b6e6-ac74cb292f6d","type":"Microsoft.Quota/QuotaRequests","name":"db1d6e7d-6845-4d08-b6e6-ac74cb292f6d"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T07:08:59Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"416043c9-f625-409a-81fb-80d666baa8c0"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/416043c9-f625-409a-81fb-80d666baa8c0","type":"Microsoft.Quota/QuotaRequests","name":"416043c9-f625-409a-81fb-80d666baa8c0"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T07:03:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":28},"message":"Request
+        failed.","name":{"value":"MINPUBLICIPINTERNETWORKPREFIXLENGTH"},"provisioningState":"Failed","subRequestId":"0ab8d104-9850-4dfa-bcc8-44eb57e519a1"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0ab8d104-9850-4dfa-bcc8-44eb57e519a1","type":"Microsoft.Quota/QuotaRequests","name":"0ab8d104-9850-4dfa-bcc8-44eb57e519a1"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T06:59:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"388fafae-1990-42c7-a6da-9f3ed91139cf"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/388fafae-1990-42c7-a6da-9f3ed91139cf","type":"Microsoft.Quota/QuotaRequests","name":"388fafae-1990-42c7-a6da-9f3ed91139cf"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T06:41:26Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6005},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"9ee623b0-9deb-4cb5-b176-360b5876b663"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/9ee623b0-9deb-4cb5-b176-360b5876b663","type":"Microsoft.Quota/QuotaRequests","name":"9ee623b0-9deb-4cb5-b176-360b5876b663"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T06:40:07Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"f0b09e0b-fd92-4881-b3c5-bbab28e54c6c"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/f0b09e0b-fd92-4881-b3c5-bbab28e54c6c","type":"Microsoft.Quota/QuotaRequests","name":"f0b09e0b-fd92-4881-b3c5-bbab28e54c6c"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T06:39:29Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"9421d545-e26f-44aa-ab71-85c8080f689d"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/9421d545-e26f-44aa-ab71-85c8080f689d","type":"Microsoft.Quota/QuotaRequests","name":"9421d545-e26f-44aa-ab71-85c8080f689d"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T03:43:32Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":29},"message":"Request
+        failed.","name":{"value":"MINPUBLICIPINTERNETWORKPREFIXLENGTH"},"provisioningState":"Failed","subRequestId":"99235687-b72b-427b-8201-1f3a05536b15"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/99235687-b72b-427b-8201-1f3a05536b15","type":"Microsoft.Quota/QuotaRequests","name":"99235687-b72b-427b-8201-1f3a05536b15"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T03:38:49Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"471b03f6-ffa5-43f7-ac22-4d453ea97edd"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/471b03f6-ffa5-43f7-ac22-4d453ea97edd","type":"Microsoft.Quota/QuotaRequests","name":"471b03f6-ffa5-43f7-ac22-4d453ea97edd"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T03:36:10Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"b707c412-d0ab-4378-8fef-a953363e68f8"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/b707c412-d0ab-4378-8fef-a953363e68f8","type":"Microsoft.Quota/QuotaRequests","name":"b707c412-d0ab-4378-8fef-a953363e68f8"},{"properties":{"error":{"code":"CapacityRisks","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T03:33:19Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"5906333d-4cc8-4302-8dc8-35f6a69b89d5"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/5906333d-4cc8-4302-8dc8-35f6a69b89d5","type":"Microsoft.Quota/QuotaRequests","name":"5906333d-4cc8-4302-8dc8-35f6a69b89d5"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:30:38Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":6000},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"bc94365e-a64a-46e7-bb1b-4d3c56ad847b"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/bc94365e-a64a-46e7-bb1b-4d3c56ad847b","type":"Microsoft.Quota/QuotaRequests","name":"bc94365e-a64a-46e7-bb1b-4d3c56ad847b"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:29:35Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5014},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"a93fc3a2-297e-40c1-aeef-8db98d885f73"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/a93fc3a2-297e-40c1-aeef-8db98d885f73","type":"Microsoft.Quota/QuotaRequests","name":"a93fc3a2-297e-40c1-aeef-8db98d885f73"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-28T03:29:23Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"68ce2b39-0fba-47c8-93e9-b733ef7f2461"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/68ce2b39-0fba-47c8-93e9-b733ef7f2461","type":"Microsoft.Quota/QuotaRequests","name":"68ce2b39-0fba-47c8-93e9-b733ef7f2461"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:27:29Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5013},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"4e2d8a7e-4789-4c2c-aa1b-bfa8d4d95f18"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/4e2d8a7e-4789-4c2c-aa1b-bfa8d4d95f18","type":"Microsoft.Quota/QuotaRequests","name":"4e2d8a7e-4789-4c2c-aa1b-bfa8d4d95f18"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:20:40Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5012},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"79cced6a-aa28-4325-91a8-f85cbb7e25bf"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/79cced6a-aa28-4325-91a8-f85cbb7e25bf","type":"Microsoft.Quota/QuotaRequests","name":"79cced6a-aa28-4325-91a8-f85cbb7e25bf"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:18:34Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5011},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"5a8c54ac-567a-4147-bab3-7505eab77f74"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/5a8c54ac-567a-4147-bab3-7505eab77f74","type":"Microsoft.Quota/QuotaRequests","name":"5a8c54ac-567a-4147-bab3-7505eab77f74"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:14:30Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5010},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"48ed7eba-8e51-444e-b94c-a02aca4ce235"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/48ed7eba-8e51-444e-b94c-a02aca4ce235","type":"Microsoft.Quota/QuotaRequests","name":"48ed7eba-8e51-444e-b94c-a02aca4ce235"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:12:55Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5009},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"75e9e4b0-8626-4fcf-b544-50b279e81a95"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/75e9e4b0-8626-4fcf-b544-50b279e81a95","type":"Microsoft.Quota/QuotaRequests","name":"75e9e4b0-8626-4fcf-b544-50b279e81a95"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:04:11Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5008},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"199cf466-0698-4d8f-b1d8-d597f6eddc9c"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/199cf466-0698-4d8f-b1d8-d597f6eddc9c","type":"Microsoft.Quota/QuotaRequests","name":"199cf466-0698-4d8f-b1d8-d597f6eddc9c"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-28T03:01:34Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5007},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"8ffaf9c5-aa2c-497a-8d17-45033e6727ac"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/8ffaf9c5-aa2c-497a-8d17-45033e6727ac","type":"Microsoft.Quota/QuotaRequests","name":"8ffaf9c5-aa2c-497a-8d17-45033e6727ac"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T09:30:20Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5006},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"f62c59bc-ebe3-42bd-bff0-ffed15bf3443"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/f62c59bc-ebe3-42bd-bff0-ffed15bf3443","type":"Microsoft.Quota/QuotaRequests","name":"f62c59bc-ebe3-42bd-bff0-ffed15bf3443"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T09:28:13Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5005},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"02705c36-9265-43c0-8f00-c807a5b61ead"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/02705c36-9265-43c0-8f00-c807a5b61ead","type":"Microsoft.Quota/QuotaRequests","name":"02705c36-9265-43c0-8f00-c807a5b61ead"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T09:23:20Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5004},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"0d28e2c1-a537-4b66-8299-c9e6700905db"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0d28e2c1-a537-4b66-8299-c9e6700905db","type":"Microsoft.Quota/QuotaRequests","name":"0d28e2c1-a537-4b66-8299-c9e6700905db"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T09:16:14Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"d3476aa3-205a-4b35-810c-c9ddc67a889f"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/d3476aa3-205a-4b35-810c-c9ddc67a889f","type":"Microsoft.Quota/QuotaRequests","name":"d3476aa3-205a-4b35-810c-c9ddc67a889f"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T09:12:35Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5003},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"0c620091-d56f-4fce-bad4-1b93b53f70fd"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0c620091-d56f-4fce-bad4-1b93b53f70fd","type":"Microsoft.Quota/QuotaRequests","name":"0c620091-d56f-4fce-bad4-1b93b53f70fd"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T09:06:15Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5002},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"e3f39452-49fe-4c92-b57c-96afcb156887"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/e3f39452-49fe-4c92-b57c-96afcb156887","type":"Microsoft.Quota/QuotaRequests","name":"e3f39452-49fe-4c92-b57c-96afcb156887"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T09:02:27Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"81307942-0331-452a-8c8f-aef6387c0e5b"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/81307942-0331-452a-8c8f-aef6387c0e5b","type":"Microsoft.Quota/QuotaRequests","name":"81307942-0331-452a-8c8f-aef6387c0e5b"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T08:54:49Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"53ef385e-2abe-4c12-904b-1e3546f731ca"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/53ef385e-2abe-4c12-904b-1e3546f731ca","type":"Microsoft.Quota/QuotaRequests","name":"53ef385e-2abe-4c12-904b-1e3546f731ca"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T08:43:47Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5001},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"522c20b3-1d57-4db0-b31f-127a640256d5"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/522c20b3-1d57-4db0-b31f-127a640256d5","type":"Microsoft.Quota/QuotaRequests","name":"522c20b3-1d57-4db0-b31f-127a640256d5"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T08:39:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"ca0e0a1b-6e4e-41fd-b834-74e12694ebc9"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/ca0e0a1b-6e4e-41fd-b834-74e12694ebc9","type":"Microsoft.Quota/QuotaRequests","name":"ca0e0a1b-6e4e-41fd-b834-74e12694ebc9"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T08:35:23Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":1001},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"6b550e01-e9e4-4b8d-afef-984ee5094961"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/6b550e01-e9e4-4b8d-afef-984ee5094961","type":"Microsoft.Quota/QuotaRequests","name":"6b550e01-e9e4-4b8d-afef-984ee5094961"},{"properties":{"message":"Request
+        completed.","provisioningState":"Succeeded","requestSubmitTime":"2022-02-25T08:21:25Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":5000},"message":"Request
+        completed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Succeeded","subRequestId":"568c7e46-4c23-4570-9257-becd489b26b6"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/568c7e46-4c23-4570-9257-becd489b26b6","type":"Microsoft.Quota/QuotaRequests","name":"568c7e46-4c23-4570-9257-becd489b26b6"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T07:54:49Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"f68cb3c5-6247-434f-8171-cd300eb577f2"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/f68cb3c5-6247-434f-8171-cd300eb577f2","type":"Microsoft.Quota/QuotaRequests","name":"f68cb3c5-6247-434f-8171-cd300eb577f2"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T07:50:05Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"fe1e1d84-f3ae-4b35-8ec7-a1eb04df7828"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/fe1e1d84-f3ae-4b35-8ec7-a1eb04df7828","type":"Microsoft.Quota/QuotaRequests","name":"fe1e1d84-f3ae-4b35-8ec7-a1eb04df7828"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T07:46:50Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"0c0cb399-78f5-4e75-8581-5ba97af6263a"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0c0cb399-78f5-4e75-8581-5ba97af6263a","type":"Microsoft.Quota/QuotaRequests","name":"0c0cb399-78f5-4e75-8581-5ba97af6263a"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T07:27:31Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"75e0d5a1-a9a2-459c-a3a1-f87e0a922f36"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/75e0d5a1-a9a2-459c-a3a1-f87e0a922f36","type":"Microsoft.Quota/QuotaRequests","name":"75e0d5a1-a9a2-459c-a3a1-f87e0a922f36"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:57:10Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"23a70310-6b29-4bb3-bec2-2c43dd5b2c75"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/23a70310-6b29-4bb3-bec2-2c43dd5b2c75","type":"Microsoft.Quota/QuotaRequests","name":"23a70310-6b29-4bb3-bec2-2c43dd5b2c75"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:55:04Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"48ea4521-9368-48a7-8512-efb5220edb15"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/48ea4521-9368-48a7-8512-efb5220edb15","type":"Microsoft.Quota/QuotaRequests","name":"48ea4521-9368-48a7-8512-efb5220edb15"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:48:41Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"1b68961c-0db8-416e-8c78-33daa3a73cca"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/1b68961c-0db8-416e-8c78-33daa3a73cca","type":"Microsoft.Quota/QuotaRequests","name":"1b68961c-0db8-416e-8c78-33daa3a73cca"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:22:59Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"83c9f63a-a1dc-4019-abbd-8804ebd42191"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/83c9f63a-a1dc-4019-abbd-8804ebd42191","type":"Microsoft.Quota/QuotaRequests","name":"83c9f63a-a1dc-4019-abbd-8804ebd42191"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:19:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"e63bbe59-4e9d-4d0e-916b-43f85786b133"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/e63bbe59-4e9d-4d0e-916b-43f85786b133","type":"Microsoft.Quota/QuotaRequests","name":"e63bbe59-4e9d-4d0e-916b-43f85786b133"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-25T06:13:28Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"ba1483fe-017c-4917-a3e7-46e15da03997"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/ba1483fe-017c-4917-a3e7-46e15da03997","type":"Microsoft.Quota/QuotaRequests","name":"ba1483fe-017c-4917-a3e7-46e15da03997"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-24T02:31:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"9f5ae1bb-a3b1-4cb9-8dae-f54971b6294f"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/9f5ae1bb-a3b1-4cb9-8dae-f54971b6294f","type":"Microsoft.Quota/QuotaRequests","name":"9f5ae1bb-a3b1-4cb9-8dae-f54971b6294f"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-24T01:13:00Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"a3bd8a63-c198-41a3-8776-d019d0e26f18"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/a3bd8a63-c198-41a3-8776-d019d0e26f18","type":"Microsoft.Quota/QuotaRequests","name":"a3bd8a63-c198-41a3-8776-d019d0e26f18"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:17:12Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"9a8a8fd6-4e0a-475b-bd76-029970a29420"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/9a8a8fd6-4e0a-475b-bd76-029970a29420","type":"Microsoft.Quota/QuotaRequests","name":"9a8a8fd6-4e0a-475b-bd76-029970a29420"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:15:39Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"8f763b44-5340-4ff3-8e79-69823508b91d"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/8f763b44-5340-4ff3-8e79-69823508b91d","type":"Microsoft.Quota/QuotaRequests","name":"8f763b44-5340-4ff3-8e79-69823508b91d"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:15:03Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"939ec8a8-9474-4bfd-b035-5b39248bca29"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/939ec8a8-9474-4bfd-b035-5b39248bca29","type":"Microsoft.Quota/QuotaRequests","name":"939ec8a8-9474-4bfd-b035-5b39248bca29"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:11:00Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"14b000f4-0962-43e5-a9c3-11b4715354d6"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/14b000f4-0962-43e5-a9c3-11b4715354d6","type":"Microsoft.Quota/QuotaRequests","name":"14b000f4-0962-43e5-a9c3-11b4715354d6"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:07:24Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"0483820e-44c4-4be0-861b-0860aab8e961"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0483820e-44c4-4be0-861b-0860aab8e961","type":"Microsoft.Quota/QuotaRequests","name":"0483820e-44c4-4be0-861b-0860aab8e961"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:05:24Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"e6d854b4-ea18-4d16-b64a-c7f6d5d1aff5"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/e6d854b4-ea18-4d16-b64a-c7f6d5d1aff5","type":"Microsoft.Quota/QuotaRequests","name":"e6d854b4-ea18-4d16-b64a-c7f6d5d1aff5"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:04:17Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"f210746c-814e-4992-ae53-8cbf533bc784"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/f210746c-814e-4992-ae53-8cbf533bc784","type":"Microsoft.Quota/QuotaRequests","name":"f210746c-814e-4992-ae53-8cbf533bc784"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T09:03:47Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"e9f15963-cfca-4402-91f3-31c07ad51990"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/e9f15963-cfca-4402-91f3-31c07ad51990","type":"Microsoft.Quota/QuotaRequests","name":"e9f15963-cfca-4402-91f3-31c07ad51990"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T08:59:52Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"8f0b34db-fd3a-4868-895f-15f3b9520b74"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/8f0b34db-fd3a-4868-895f-15f3b9520b74","type":"Microsoft.Quota/QuotaRequests","name":"8f0b34db-fd3a-4868-895f-15f3b9520b74"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T08:58:47Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"1aae39f1-feb8-4cb9-95d4-955bed278cc8"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/1aae39f1-feb8-4cb9-95d4-955bed278cc8","type":"Microsoft.Quota/QuotaRequests","name":"1aae39f1-feb8-4cb9-95d4-955bed278cc8"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T08:06:57Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"7dbab79b-4589-4e25-976d-a490add48fb2"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/7dbab79b-4589-4e25-976d-a490add48fb2","type":"Microsoft.Quota/QuotaRequests","name":"7dbab79b-4589-4e25-976d-a490add48fb2"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:29:47Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"b0305d7b-eea8-4d4a-ae60-bfc303ddefd1"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/b0305d7b-eea8-4d4a-ae60-bfc303ddefd1","type":"Microsoft.Quota/QuotaRequests","name":"b0305d7b-eea8-4d4a-ae60-bfc303ddefd1"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:25:58Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"faf96597-60c4-4827-ba8b-2f2f7d963f8a"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/faf96597-60c4-4827-ba8b-2f2f7d963f8a","type":"Microsoft.Quota/QuotaRequests","name":"faf96597-60c4-4827-ba8b-2f2f7d963f8a"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:25:44Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"28b20d31-1077-4b42-94b4-edcc618cb276"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/28b20d31-1077-4b42-94b4-edcc618cb276","type":"Microsoft.Quota/QuotaRequests","name":"28b20d31-1077-4b42-94b4-edcc618cb276"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:21:19Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"03d8a101-caf7-4993-852f-2cec0447f03d"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/03d8a101-caf7-4993-852f-2cec0447f03d","type":"Microsoft.Quota/QuotaRequests","name":"03d8a101-caf7-4993-852f-2cec0447f03d"},{"properties":{"error":{"code":"QuotaReductionNotSupported","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:20:39Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":10},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"5f51c5bc-16a7-4737-9876-4bf8a1a457d3"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/5f51c5bc-16a7-4737-9876-4bf8a1a457d3","type":"Microsoft.Quota/QuotaRequests","name":"5f51c5bc-16a7-4737-9876-4bf8a1a457d3"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:18:37Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"76bf8263-f42f-4f95-a198-c52855fa4eeb"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/76bf8263-f42f-4f95-a198-c52855fa4eeb","type":"Microsoft.Quota/QuotaRequests","name":"76bf8263-f42f-4f95-a198-c52855fa4eeb"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:15:38Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"ef725d9f-c264-4fec-94f7-ba7178e71da2"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/ef725d9f-c264-4fec-94f7-ba7178e71da2","type":"Microsoft.Quota/QuotaRequests","name":"ef725d9f-c264-4fec-94f7-ba7178e71da2"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:12:14Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"6f1b0bc5-106e-4b79-a4f1-d84a1d21fb73"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/6f1b0bc5-106e-4b79-a4f1-d84a1d21fb73","type":"Microsoft.Quota/QuotaRequests","name":"6f1b0bc5-106e-4b79-a4f1-d84a1d21fb73"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T07:09:18Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"0989a3d1-9b5c-41ff-a29a-d32b3b940134"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/0989a3d1-9b5c-41ff-a29a-d32b3b940134","type":"Microsoft.Quota/QuotaRequests","name":"0989a3d1-9b5c-41ff-a29a-d32b3b940134"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T03:34:38Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"675c0d0b-cf35-4249-a91a-728a939ece51"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/675c0d0b-cf35-4249-a91a-728a939ece51","type":"Microsoft.Quota/QuotaRequests","name":"675c0d0b-cf35-4249-a91a-728a939ece51"},{"properties":{"error":{"code":"ContactSupport","message":"Request
+        failed."},"message":"Request failed.","provisioningState":"Failed","requestSubmitTime":"2022-02-23T03:33:10Z","value":[{"limit":{"limitObjectType":"LimitValue","limitType":"Independent","value":0},"message":"Request
+        failed.","name":{"value":"STANDARDSKUPUBLICIPADDRESSES"},"provisioningState":"Failed","subRequestId":"5e0581dd-e04b-43c5-9730-61ab771ede0a"}]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/providers/Microsoft.Quota/quotaRequests/5e0581dd-e04b-43c5-9730-61ab771ede0a","type":"Microsoft.Quota/QuotaRequests","name":"5e0581dd-e04b-43c5-9730-61ab771ede0a"}]}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '45999'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:18 GMT
+      ms-requestid:
+      - t5UXkqu6IkipQp070moAlA.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quota operation list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-azurequotaextensionapi/unknown Python/3.8.1 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Quota/operations?api-version=2021-03-15-preview
+  response:
+    body:
+      string: '{"value":[{"name":"Microsoft.Quota/quotas/read","display":{"provider":"Microsoft.Quota","resource":"Resource
+        Quota limit","operation":"Get resource Quota limit","description":"Get the
+        current Service limit or quota of the specified resource"}},{"name":"Microsoft.Quota/quotas/write","display":{"provider":"Microsoft.Quota","resource":"Resource
+        Quota limit","operation":"Creates resource Quota limit request","description":"Creates
+        the service limit or quota request for the specified resource"}},{"name":"Microsoft.Quota/quotaRequests/read","display":{"provider":"Microsoft.Quota","resource":"Resource
+        Quota limit request","operation":"Get Quota limit request","description":"Get
+        any service limit request for the specified resource"}},{"name":"Microsoft.Quota/usages/read","display":{"provider":"Microsoft.Quota","resource":"usages
+        information","operation":"Get the usages for providers","description":"Get
+        the usages for resource providers"}},{"name":"Microsoft.Quota/operations/read","display":{"provider":"Microsoft.Quota","resource":"Read
+        Operation","operation":"Get the Operations supported by Microsoft.Quota","description":"Get
+        the Operations supported by Microsoft.Quota"}},{"name":"Microsoft.Quota/register/action","display":{"provider":"Microsoft.Quota","resource":"Subscription
+        registration with Resource provider","operation":"Register the subscription
+        with Microsoft.Quota Resource Provider","description":"Register the subscription
+        with Microsoft.Quota Resource Provider"}}]}'
+    headers:
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '1490'
+      content-type:
+      - application/json
+      date:
+      - Mon, 28 Feb 2022 07:14:19 GMT
+      ms-requestid:
+      - sZrona8zdkyfGr5oLnUuWQ.0
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
