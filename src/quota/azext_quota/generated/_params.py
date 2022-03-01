@@ -36,7 +36,6 @@ def load_arguments(self, _):
         c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
                    arg_group='Limit')
         c.argument('name', type=str, help=' The resource type name.')
-        c.argument('value', type=int, help='The resource type name.')
         c.argument('resource_type', type=str, help='The resource type name.')
         c.argument('properties', type=validate_file_or_dict, help='The additional properties for the specific resource provider.')
 
@@ -46,7 +45,6 @@ def load_arguments(self, _):
         c.argument('limit_object', action=AddLimitobject, nargs='+', help='The resource quota limit value.',
                    arg_group='Limit')
         c.argument('name', type=str, help='The resource type name.')
-        c.argument('value', type=int, help='The resource type name.')
         c.argument('resource_type', type=str, help='Resource type name.')
         c.argument('properties', type=validate_file_or_dict, help='The additional properties for the specific resource provider.')
         c.ignore('create_quota_request')
