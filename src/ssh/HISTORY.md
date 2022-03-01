@@ -2,11 +2,13 @@ Release History
 ===============
 1.0.1
 -----
-* Added --ssh-client-folder
-* Fixed bug of when there are spaces in the paths
-* Abs path for config
-* Show error messages from the ssh log
-* Fix bug with config not being able to write non english characters
+* Added --ssh-client-folder parameter.
+* Fixed issues caused when there are spaces or non-english characters in paths provided by users.
+* Ensure all paths provided by users are converted to absolute paths.
+* Print OpenSSH error messages to console on "az ssh vm".
+* Print level1 SSH client log messages when running "az ssh vm" in debug mode.
+* Change "isPreview".
+* Correctly find pre-installed OpenSSH binaries on Windows 32bit machines.
 
 1.0.0
 -----
