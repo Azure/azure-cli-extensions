@@ -72,7 +72,6 @@ class ConfigSession():
             lines.append("\tIdentityFile \"" + self.private_key_file + "\"")
         if self.port:
             lines.append("\tPort " + self.port)
-        print(lines)
         return lines
 
     def _get_ip_entry(self):

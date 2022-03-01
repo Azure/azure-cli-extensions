@@ -43,7 +43,7 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
 
     command = [_get_ssh_client_path(ssh_client_folder=ssh_info.ssh_client_folder), ssh_info.get_host()]
     command = command + ssh_info.build_args() + ssh_arg_list
-    
+
     logger.debug("Running ssh command %s", ' '.join(command))
     connection_status = subprocess.call(command, shell=platform.system() == 'Windows')
 
@@ -97,7 +97,6 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         mode = 'w'
     else:
         mode = 'a'
-    print(type(config_text))
     with open(config_info.config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(config_text))
 

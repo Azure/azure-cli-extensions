@@ -11,7 +11,6 @@ import platform
 from azext_ssh import ssh_utils
 
 class SSHUtilsTests(unittest.TestCase):
-    '''
     @mock.patch('os.path.join')
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
     @mock.patch('subprocess.call')
@@ -257,4 +256,3 @@ class SSHUtilsTests(unittest.TestCase):
         mock_isfile.return_value = False
 
         self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils._get_ssh_client_path)
-    '''

@@ -15,7 +15,7 @@ from azext_ssh import ssh_utils
 
 
 class SshCustomCommandTest(unittest.TestCase):
-    '''
+
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.ssh_info.SSHSession')
@@ -325,7 +325,6 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_parser_obj.parse.side_effect = ValueError
 
         self.assertRaises(azclierror.FileOperationError, custom._get_modulus_exponent, 'file')
-    '''
 
 if __name__ == '__main__':
     unittest.main()
