@@ -109,15 +109,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if source_vm.zones:
                 zone = source_vm.zones[0]
                 copy_disk_command += ' --zone {zone}'.format(zone=zone)
-            
             # Copy OS Disk
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
-            
+            # For Linux the disk gets not attached at VM creation time. To prevent an incorrect boot state it is required to attach the disk after the VM got created.
             if is_linux:
-                # For Linux the disk gets not attached at VM creation time. To prevent an incorrect boot state it is required to attach the disk after the VM got created.
                 pass
-            else:   
+            else:
                 # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
                 create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
             # Validate create vm create command to validate parameters before runnning copy disk command
