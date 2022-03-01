@@ -95,13 +95,26 @@ def transform_output(results):
         return [one(key, histogram[key]) for key in histogram]
 
     elif 'errorData' in results:
-        status = results['status']
+        notFound = 'Not found'
+        status = notFound
+        errorCode = notFound
+        errorMessage = notFound
+        target = notFound
+        jobId = notFound
+        submissionTime = notFound
+        if 'status' in results:
+            status = results['status']
         errorData = results['errorData']
-        errorCode = errorData['code']
-        errorMessage = errorData['message']
-        target = results['target']
-        jobId = results['id']
-        submissionTime = results['creationTime']
+        if 'code' in errorData:
+            errorCode = errorData['code']
+        if 'message' in errorData:
+            errorMessage = errorData['message']
+        if 'target' in results:
+            target = results['target']
+        if 'id' in results:
+            jobId = results['id']
+        if 'creationTime' in results:
+            submissionTime = results['creationTime']
         return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
