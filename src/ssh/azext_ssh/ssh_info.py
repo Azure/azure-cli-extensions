@@ -64,7 +64,6 @@ class ConfigSession():
         lines = [""]
         if self.resource_group_name and self.vm_name:
             lines = lines + self._get_rg_and_vm_entry()
-        # default to all hosts for config
         lines = lines + self._get_ip_entry()
         return lines
 
