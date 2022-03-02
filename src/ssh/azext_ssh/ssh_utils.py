@@ -26,6 +26,8 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
     if ssh_info.ssh_args:
         ssh_arg_list = ssh_info.ssh_args
 
+    command = [_get_ssh_client_path('ssh', ssh_info.ssh_client_folder), ssh_info.get_host()]
+
     log_file = None
     if delete_keys or delete_cert:
         if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
@@ -41,7 +43,6 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
                                      ssh_info.private_key_file, ssh_info.public_key_file, log_file, True))
         cleanup_process.start()
 
-    command = [_get_ssh_client_path(ssh_client_folder=ssh_info.ssh_client_folder), ssh_info.get_host()]
     command = command + ssh_info.build_args() + ssh_arg_list
 
     logger.debug("Running ssh command %s", ' '.join(command))

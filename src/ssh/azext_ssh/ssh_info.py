@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import os
+from azure.cli.core import azclierror
 
 
 class SSHSession():
@@ -22,7 +23,9 @@ class SSHSession():
         self.ssh_client_folder = os.path.abspath(ssh_client_folder) if ssh_client_folder else None
 
     def get_host(self):
-        return self.local_user + "@" + self.ip
+        if self.local_user and self.ip:
+            return self.local_user + "@" + self.ip
+        raise azclierror.BadRequestError("Unable to determine host.")
 
     def build_args(self):
         private_key = []
@@ -57,11 +60,11 @@ class ConfigSession():
 
     def get_config_text(self):
         lines = [""]
+        if self.resource_group_name and self.vm_name and self.ip:
+            lines = lines + self._get_rg_and_vm_entry()
         # default to all hosts for config
         if not self.ip:
             self.ip = "*"
-        if self.resource_group_name and self.vm_name:
-            lines = lines + self._get_rg_and_vm_entry()
         lines = lines + self._get_ip_entry()
         return lines
 

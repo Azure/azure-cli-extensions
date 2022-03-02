@@ -44,7 +44,7 @@ class SSHUtilsTests(unittest.TestCase):
         ssh_utils.start_ssh_connection(op_info, True, True)
         mock_start.assert_called_once()
         mock_print_error.assert_called_once_with("/log/file/path", 0)
-        mock_path.assert_called_once_with(ssh_client_folder="client/folder")
+        mock_path.assert_called_once_with('ssh', 'client/folder')
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
     
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
@@ -72,7 +72,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         ssh_utils.start_ssh_connection(op_info, True, True)
 
-        mock_path.assert_called_once_with(ssh_client_folder="client/folder")
+        mock_path.assert_called_once_with('ssh', 'client/folder')
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
     @mock.patch.object(ssh_utils, 'get_certificate_start_and_end_times')
