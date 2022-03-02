@@ -8,6 +8,10 @@ import hashlib
 import json
 import tempfile
 
+import colorama
+from colorama import Fore
+from colorama import Style
+
 from knack import log
 from azure.cli.core import azclierror
 
@@ -22,7 +26,7 @@ logger = log.get_logger(__name__)
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
            ssh_client_folder=None, ssh_args=None):
-
+    
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
         ssh_args = ['-v'] if not ssh_args else ['-v'] + ssh_args
 
@@ -94,12 +98,14 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
                        "Please delete once this certificate is no longer being used.", keys_folder)
 
+    colorama.init()
     try:
         cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
-        logger.warning("Generated SSH certificate %s is valid until %s in local time.", cert_file, cert_expiration)
+        #logger.warning("Generated SSH certificate %s is valid until %s in local time.", cert_file, cert_expiration)
+        print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time." + Style.RESET_ALL)
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
-        print(cert_file + "\n")
+        print(Fore.GREEN + f"Generated SSH certificate {cert_file}." + Style.RESET_ALL)
 
 
 def _do_ssh_op(cmd, op_info, credentials_folder, op_call):
@@ -161,6 +167,8 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
 
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
+    
+    logger.debug("Generating certificate %s", cert_file)
     _write_cert_file(certificate, cert_file)
     # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
     username = ssh_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]

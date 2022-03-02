@@ -22,7 +22,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'cryptography'
+    'cryptography',
+    'colorama'
 ]
 
 setup(
