@@ -8,7 +8,7 @@
 from io import open
 from setuptools import setup, find_packages
 
-VERSION = "4.0.1"
+VERSION = "4.0.2"
 
 with open('README.md', encoding='utf-8') as f:
     readme = f.read()

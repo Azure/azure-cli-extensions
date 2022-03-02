@@ -265,7 +265,15 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
-    
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_build_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment=self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env='{"BP_JVM_VERSION": "8.*"}')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
+
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
@@ -435,6 +443,30 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_deployment_resource
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_clear_jvm_option_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='')
+        resource = self.patch_deployment_resource
+        self.assertEqual({"foo": "bar"}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_in_enterprise_with_new_set_env(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_env_and_jvm_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option', env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'}, resource.properties.deployment_settings.environment_variables)
 
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()

@@ -13,6 +13,8 @@ from ._outputs_operations import OutputsOperations
 from ._transformations_operations import TransformationsOperations
 from ._functions_operations import FunctionsOperations
 from ._subscriptions_operations import SubscriptionsOperations
+from ._clusters_operations import ClustersOperations
+from ._private_endpoints_operations import PrivateEndpointsOperations
 
 __all__ = [
     'Operations',
@@ -22,4 +24,6 @@ __all__ = [
     'TransformationsOperations',
     'FunctionsOperations',
     'SubscriptionsOperations',
+    'ClustersOperations',
+    'PrivateEndpointsOperations',
 ]
