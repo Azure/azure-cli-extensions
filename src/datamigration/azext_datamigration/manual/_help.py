@@ -30,10 +30,10 @@ helps['datamigration performance-data-collection'] = """
     examples:
       - name: Collect performance data of a given SQL Server using connection string.
         text: |-
-               az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-interation 5 --perf-query-interval 10 --static-query-interval 60
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-interation 5 --perf-query-interval 10 --static-query-interval 60 --new-console
       - name: Collect performance data of a given SQL Server using assessment config file.
         text: |-
-               az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
+               az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json" --new-console
 """
 
 helps['datamigration get-sku-recommendation'] = """

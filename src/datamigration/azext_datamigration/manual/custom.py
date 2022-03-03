@@ -62,7 +62,8 @@ def datamigration_performance_data_collection(connection_string=None,
                                               perf_query_interval=30,
                                               static_query_interval=3600,
                                               number_of_interation=20,
-                                              config_file_path=None):
+                                              config_file_path=None,
+                                              new_console=False):
 
     try:
 
@@ -83,11 +84,11 @@ def datamigration_performance_data_collection(connection_string=None,
             for param in parameterList:
                 if parameterList[param] is not None:
                     cmd += f' {param} "{parameterList[param]}"'
-            subprocess.call(cmd, shell=False)
+            subprocess.call(cmd, shell=False) if new_console is False else subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
         elif config_file_path is not None:
             helper.validate_config_file_path(config_file_path, "perfdatacollection")
             cmd = f'{exePath} --configFile "{config_file_path}"'
-            subprocess.call(cmd, shell=False)
+            subprocess.call(cmd, shell=False) if new_console is False else subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
         else:
             raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: sql_connection_string, config_file_path')
 

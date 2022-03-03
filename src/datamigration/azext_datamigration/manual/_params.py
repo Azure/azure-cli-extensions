@@ -27,6 +27,7 @@ def load_arguments(self, _):
         c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds.')
         c.argument('number_of_interation', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. Minimum: 2.')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
+        c.argument('new_console', help='Enable this parameter to start the execution of this command in new console')
 
     with self.argument_context('datamigration get-sku-recommendation') as c:
         c.argument('output_folder', type=str, help='Output folder where performance data of the SQL Server is stored. The value here must be the same as the one used in PerfDataCollection')
