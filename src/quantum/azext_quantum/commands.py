@@ -5,9 +5,13 @@
 
 # pylint: disable=line-too-long
 
+import logging
+
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+
+logger = logging.getLogger(__name__)
 
 
 def transform_targets(providers):
@@ -115,6 +119,7 @@ def transform_output(results):
             jobId = results['id']
         if 'creationTime' in results:
             submissionTime = results['creationTime']
+        logger.error("Job was not successful. Status: %s, Error Code: %s, Error Message: %s, Target: %s", status, errorCode, errorMessage, target)
         return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
