@@ -12,10 +12,9 @@ class ContainerappCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_containerapp._client_factory import cf_containerapp
         containerapp_custom = CliCommandType(
             operations_tmpl='azext_containerapp.custom#{}',
-            client_factory=cf_containerapp)
+            client_factory=None)
         super(ContainerappCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                   custom_command_type=containerapp_custom)
 

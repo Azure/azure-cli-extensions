@@ -32,7 +32,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _add_or_update_traffic_Weights,
+                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
                     _get_app_from_revision)
 
 logger = get_logger(__name__)
@@ -627,15 +627,11 @@ def update_containerapp(cmd,
         if target_port is not None:
             containerapp_def["properties"]["configuration"]["ingress"]["targetPort"] = target_port
 
-        config = containerapp_def["properties"]["configuration"]["ingress"]
-        if (config["targetPort"] is not None and config["external"] is None) or (config["targetPort"] is None and config["external"] is not None):
-            raise ValidationError("Usage error: must specify --target-port with --ingress")
-
         if transport is not None:
             containerapp_def["properties"]["configuration"]["ingress"]["transport"] = transport
 
         if traffic_weights is not None:
-            containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = _add_or_update_traffic_Weights(containerapp_def, traffic_weights)
+            _update_traffic_Weights(containerapp_def, traffic_weights)
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 

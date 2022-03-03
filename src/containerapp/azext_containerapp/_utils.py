@@ -405,8 +405,8 @@ def _is_valid_weight(weight):
         return False
 
 
-def _add_or_update_traffic_Weights(containerapp_def, list_weights):
-    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
+def _update_traffic_Weights(containerapp_def, list_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
 
     for new_weight in list_weights:
@@ -418,11 +418,6 @@ def _add_or_update_traffic_Weights(containerapp_def, list_weights):
 
         if not _is_valid_weight(key_val[1]):
             raise ValidationError('Traffic weights must be integers between 0 and 100')
-
-        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
-            if existing_weight["revisionName"].lower() == new_weight[0].lower():
-                is_existing = True
-                existing_weight["weight"] = int(key_val[1])
 
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({

@@ -10,7 +10,7 @@ from knack.util import CLIError
 
 
 # pylint: disable=inconsistent-return-statements
-def ex_handler_factory(creating_plan=False, no_throw=False):
+def ex_handler_factory(no_throw=False):
     def _polish_bad_errors(ex):
         import json
         from knack.util import CLIError
@@ -21,15 +21,6 @@ def ex_handler_factory(creating_plan=False, no_throw=False):
             elif 'Message' in content:
                 detail = content['Message']
 
-            if creating_plan:
-                if 'Requested features are not supported in region' in detail:
-                    detail = ("Plan with linux worker is not supported in current region. For " +
-                              "supported regions, please refer to https://docs.microsoft.com/"
-                              "azure/app-service-web/app-service-linux-intro")
-                elif 'Not enough available reserved instance servers to satisfy' in detail:
-                    detail = ("Plan with Linux worker can only be created in a group " +
-                              "which has never contained a Windows worker, and vice versa. " +
-                              "Please use a new resource group. Original error:" + detail)
             ex = CLIError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
@@ -81,11 +72,3 @@ def log_analytics_shared_key_client_factory(cli_ctx):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient).shared_keys
-
-def cf_containerapp(cli_ctx, *_):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    # TODO: Replace CONTOSO with the appropriate label and uncomment
-    # from azure.mgmt.CONTOSO import CONTOSOManagementClient
-    # return get_mgmt_service_client(cli_ctx, CONTOSOManagementClient)
-    return None

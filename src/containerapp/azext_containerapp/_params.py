@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument('ingress', validator=validate_ingress, options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="Ingress type that allows either internal or external traffic to the Containerapp.")
         c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
-        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the Containerapp. Space-separated values in 'revision_name=weight' format.")
+        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the Containerapp. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of containerapp replicas.")

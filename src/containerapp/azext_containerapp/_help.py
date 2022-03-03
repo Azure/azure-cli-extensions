@@ -218,7 +218,7 @@ helps['containerapp env update'] = """
 
 helps['containerapp env delete'] = """
     type: command
-    short-summary: Deletes a Containerapp Environment.
+    short-summary: Delete a Containerapp Environment.
     examples:
     - name: Delete Containerapp Environment.
       text: az containerapp env delete -g MyResourceGroup -n MyContainerappEnvironment
