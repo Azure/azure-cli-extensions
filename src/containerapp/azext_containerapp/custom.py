@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from platform import platform
-from turtle import update
 from azure.cli.core.azclierror import (RequiredArgumentMissingError, ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
@@ -503,7 +501,7 @@ def update_containerapp(cmd,
     update_map['ingress'] = ingress or target_port or transport or traffic_weights
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command or args
+    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
     update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
 
@@ -516,7 +514,10 @@ def update_containerapp(cmd,
     # Containers
     if update_map["container"]:
         if not image_name:
-            raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+            if len(containerapp_def["properties"]["template"]["containers"]) == 1:
+                image_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
+            else:
+                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
@@ -531,9 +532,15 @@ def update_containerapp(cmd,
                         c["env"] = []
                     _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
                 if startup_command is not None:
-                    c["command"] = startup_command
+                    if isinstance(startup_command, list) and not startup_command:
+                        c["command"] = None
+                    else:
+                        c["command"] = startup_command
                 if args is not None:
-                    c["args"] = args
+                    if isinstance(args, list) and not args:
+                        c["args"] = None
+                    else:
+                        c["args"] = args
                 if cpu is not None or memory is not None:
                     if "resources" in c and c["resources"]:
                         if cpu is not None:
@@ -563,9 +570,15 @@ def update_containerapp(cmd,
             if env_vars is not None:
                 container_def["env"] = parse_env_var_flags(env_vars)
             if startup_command is not None:
-                container_def["command"] = startup_command
+                if isinstance(startup_command, list) and not startup_command:
+                    container_def["command"] = None
+                else:
+                    container_def["command"] = startup_command
             if args is not None:
-                container_def["args"] = args
+                if isinstance(args, list) and not args:
+                    container_def["args"] = None
+                else:
+                    container_def["args"] = args
             if resources_def is not None:
                 container_def["resources"] = resources_def
 
