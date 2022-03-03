@@ -42,7 +42,7 @@ class JarSource(BaseSource):
             return {}
         original_source = deployment_resource.properties.source
         return {
-            'jvm_options': jvm_options or original_source.jvm_options,
+            'jvm_options': jvm_options if jvm_options is not None else original_source.jvm_options,
             'runtime_version': runtime_version or original_source.runtime_version,
             'version': original_source.version,
             'deployable_path': original_source.relative_path

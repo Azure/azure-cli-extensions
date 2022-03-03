@@ -3,18 +3,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from types import SimpleNamespace
 
-def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, models):
+
+def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, models: SimpleNamespace):
     """parse and build NAT gateway profile"""
     if not is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
         return None
 
-    # profile = ManagedClusterNATGatewayProfile()
-    profile = models.get("ManagedClusterNATGatewayProfile")()
+    profile = models.ManagedClusterNATGatewayProfile()
     return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models)
 
 
-def update_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models):
+def update_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models: SimpleNamespace):
     """parse and update an existing NAT gateway profile"""
     if not is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
         return profile
@@ -26,13 +27,13 @@ def is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
     return any([managed_outbound_ip_count, idle_timeout])
 
 
-def configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models):
+def configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models: SimpleNamespace):
     """configure a NAT Gateway with customer supplied values"""
     if not profile:
         return profile
 
     if managed_outbound_ip_count:
-        ManagedClusterManagedOutboundIPProfile = models.get("ManagedClusterManagedOutboundIPProfile")
+        ManagedClusterManagedOutboundIPProfile = models.ManagedClusterManagedOutboundIPProfile
         profile.managed_outbound_ip_profile = ManagedClusterManagedOutboundIPProfile(
             count=managed_outbound_ip_count
         )

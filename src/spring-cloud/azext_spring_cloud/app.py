@@ -184,8 +184,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
-    deployment_kwargs.update(deployment_factory.source_factory
-                             .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
+    deployment_kwargs.update(deployment_factory.get_update_backfill_options(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
     deployment_factory.source_factory.validate_source(**deployment_kwargs, **basic_kwargs)
@@ -198,7 +197,7 @@ def app_update(cmd, client, resource_group, service, name,
         pollers.append(client.deployments.begin_update(resource_group,
                                                        service,
                                                        name,
-                                                       DEFAULT_DEPLOYMENT_NAME,
+                                                       deployment.name,
                                                        deployment_resource))
     if no_wait:
         return
@@ -224,6 +223,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               build_env=None,
                builder=None,
                # deployment.settings
                env=None,
@@ -267,6 +267,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
@@ -309,6 +310,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      build_env=None,
                       builder=None,
                       # deployment.settings
                       skip_clone_settings=False,
@@ -357,6 +359,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
@@ -369,6 +372,10 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     kwargs['deployable_path'] = deploy.build_deployable_path(**kwargs)
     deployment_factory = deployment_selector(**kwargs)
     deployment_resource = deployment_factory.format_resource(**kwargs)
+    logger.warning('[{}/{}] Creating deployment in app "{}" (this operation can take a '
+                   'while to complete)'.format(kwargs['total_steps'],
+                                               kwargs['total_steps'],
+                                               app))
     return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                        resource_group, service, app, name,
                        deployment_resource)

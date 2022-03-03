@@ -394,8 +394,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
 
-            if preview:
-                run_command_params.append('preview_path="{}"'.format(preview))
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')

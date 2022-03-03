@@ -44,8 +44,8 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
         self.nat_gateway_models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
 
     def test_empty_arguments(self):
-        origin_profile = self.nat_gateway_models["ManagedClusterNATGatewayProfile"](
-            managed_outbound_ip_profile=self.nat_gateway_models["ManagedClusterManagedOutboundIPProfile"](
+        origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                 count=1
             ),
             idle_timeout_in_minutes=4
@@ -57,8 +57,8 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
         self.assertEqual(profile.idle_timeout_in_minutes, origin_profile.idle_timeout_in_minutes)
 
     def test_nonempty_arguments(self):
-        origin_profile = self.nat_gateway_models["ManagedClusterNATGatewayProfile"](
-            managed_outbound_ip_profile=self.nat_gateway_models["ManagedClusterManagedOutboundIPProfile"](
+        origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
                 count=1
             ),
             idle_timeout_in_minutes=4

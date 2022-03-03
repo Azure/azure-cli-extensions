@@ -79,7 +79,7 @@ def load_command_table(self, _):
         g.custom_command('config-zip', 'enable_zip_deploy_webapp')
 
     with self.command_group('functionapp') as g:
-        g.custom_command('create', 'create_function', exception_handler=ex_handler_factory())
+        g.custom_command('create', 'create_functionapp', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output)
         g.custom_command('restart', 'restart_webapp')
 

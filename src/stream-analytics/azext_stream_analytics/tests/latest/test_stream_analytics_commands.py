@@ -458,3 +458,80 @@ class StreamAnalyticsClientTest(ScenarioTest):
                 self.check("value[0].type", "Microsoft.StreamAnalytics/quotas")
             ]
         )
+
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_")
+    def test_cluster_crud(self):
+        self.kwargs.update({
+            "cluster": "cli-cluster",
+            "capacity1": 36,
+            "capacity2": 72,
+        })
+        # create a cluster
+        self.cmd(
+            "stream-analytics cluster create -n {cluster} -g {rg} --sku name=Default capacity={capacity1}",
+            checks=[
+                self.check("sku.capacity", 36),
+                self.check("type", "Microsoft.StreamAnalytics/clusters"),
+            ]
+        )
+        # retrieve/update a cluster
+        self.cmd(
+            "stream-analytics cluster list -g {rg}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].name", "{cluster}"),
+            ]
+        )
+        self.cmd("stream-analytics cluster update -n {cluster} -g {rg} --sku capacity={capacity2}")
+        self.cmd(
+            "stream-analytics cluster show -n {cluster} -g {rg}",
+            checks=[
+                self.check("sku.capacity", 72),
+                self.check("name", "{cluster}"),
+            ]
+        )
+        # delete a cluster
+        self.cmd("stream-analytics cluster delete -n {cluster} -g {rg} --yes")
+
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_")
+    @StorageAccountPreparer(name_prefix="pl", kind="StorageV2")
+    def test_private_endpoint_crud(self, storage_account):
+        self.kwargs.update({
+            "sa": storage_account,
+            "pe": "cli-pe",
+            "cluster": "cli-cluster",
+        })
+
+        self.cmd("stream-analytics cluster create -n {cluster} -g {rg} --sku name=Default capacity=36")
+        # prepare connections
+        self.kwargs["sa_id"] = self.cmd('storage account show -n {sa} -g {rg}').get_output_in_json()["id"]
+        self.kwargs["group_id"] = self.cmd("storage account private-link-resource list -g {rg} \
+                                           --account-name {sa}").get_output_in_json()[0]["groupId"]
+        self.kwargs["connections"] = json.dumps([{
+            "privateLinkServiceId": self.kwargs["sa_id"],
+            "groupIds": [self.kwargs["group_id"]]
+        }])
+        self.cmd(
+            "stream-analytics private-endpoint create -n {pe} -g {rg} \
+            --cluster-name {cluster} --connections '{connections}'",
+            checks=[
+                self.check("name", "{pe}"),
+                self.check("type", "Microsoft.StreamAnalytics/clusters/privateEndpoints"),
+            ]
+        )
+
+        self.cmd(
+            "stream-analytics private-endpoint list -g {rg} --cluster-name {cluster}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].name", "{pe}"),
+            ]
+        )
+        self.cmd(
+            "stream-analytics private-endpoint show -n {pe} -g {rg} --cluster-name {cluster}",
+            checks=[
+                self.check("name", "{pe}"),
+                self.check("type", "Microsoft.StreamAnalytics/clusters/privateEndpoints"),
+            ]
+        )
+        self.cmd("stream-analytics private-endpoint delete -n {pe} -g {rg} --cluster-name {cluster} --yes")

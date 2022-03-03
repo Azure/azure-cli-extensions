@@ -13,6 +13,58 @@ interactions:
       ParameterSetName:
       - -n -s -g
       User-Agent:
+      - AZURECLI/2.33.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"6cd9062ba20843ac97492d47595a0f6c","networkProfile":{"outboundIPs":{"publicIPs":["20.85.155.209","20.85.155.224"]}},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"qingyliu@microsoft.com","createdByType":"User","createdAt":"2022-02-24T04:37:08.3742023Z","lastModifiedBy":"qingyliu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-02-24T04:40:15.4945071Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '771'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Feb 2022 13:00:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - ebc692a4-c2cd-44f5-bba2-1b5e5f04cb14
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -s -g
+      User-Agent:
       - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2022-01-01-preview
@@ -27,7 +79,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:00:27 GMT
+      - Thu, 24 Feb 2022 13:00:27 GMT
       expires:
       - '-1'
       pragma:
@@ -75,7 +127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:00:28 GMT
+      - Thu, 24 Feb 2022 13:00:28 GMT
       expires:
       - '-1'
       pragma:
@@ -134,7 +186,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:00:29 GMT
+      - Thu, 24 Feb 2022 13:00:29 GMT
       expires:
       - '-1'
       location:
@@ -184,7 +236,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:00:59 GMT
+      - Thu, 24 Feb 2022 13:00:59 GMT
       expires:
       - '-1'
       pragma:
@@ -234,7 +286,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:00 GMT
+      - Thu, 24 Feb 2022 13:01:00 GMT
       expires:
       - '-1'
       pragma:
@@ -294,7 +346,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:07 GMT
+      - Thu, 24 Feb 2022 13:01:07 GMT
       expires:
       - '-1'
       location:
@@ -351,7 +403,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:08 GMT
+      - Thu, 24 Feb 2022 13:01:08 GMT
       expires:
       - '-1'
       location:
@@ -401,7 +453,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:39 GMT
+      - Thu, 24 Feb 2022 13:01:39 GMT
       expires:
       - '-1'
       pragma:
@@ -451,7 +503,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:39 GMT
+      - Thu, 24 Feb 2022 13:01:39 GMT
       expires:
       - '-1'
       pragma:
@@ -501,7 +553,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:40 GMT
+      - Thu, 24 Feb 2022 13:01:40 GMT
       expires:
       - '-1'
       pragma:
@@ -553,7 +605,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:01:49 GMT
+      - Thu, 24 Feb 2022 13:01:49 GMT
       expires:
       - '-1'
       pragma:
@@ -603,7 +655,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:00 GMT
+      - Thu, 24 Feb 2022 13:02:00 GMT
       expires:
       - '-1'
       pragma:
@@ -653,7 +705,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:10 GMT
+      - Thu, 24 Feb 2022 13:02:10 GMT
       expires:
       - '-1'
       pragma:
@@ -703,7 +755,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:11 GMT
+      - Thu, 24 Feb 2022 13:02:11 GMT
       expires:
       - '-1'
       pragma:
@@ -755,7 +807,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:14 GMT
+      - Thu, 24 Feb 2022 13:02:14 GMT
       expires:
       - '-1'
       pragma:
@@ -807,7 +859,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:15 GMT
+      - Thu, 24 Feb 2022 13:02:15 GMT
       expires:
       - '-1'
       pragma:
@@ -864,7 +916,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:19 GMT
+      - Thu, 24 Feb 2022 13:02:19 GMT
       expires:
       - '-1'
       pragma:
@@ -916,7 +968,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:21 GMT
+      - Thu, 24 Feb 2022 13:02:21 GMT
       expires:
       - '-1'
       pragma:
@@ -966,7 +1018,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:24 GMT
+      - Thu, 24 Feb 2022 13:02:24 GMT
       expires:
       - '-1'
       pragma:
@@ -1016,7 +1068,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:27 GMT
+      - Thu, 24 Feb 2022 13:02:27 GMT
       expires:
       - '-1'
       pragma:
@@ -1072,7 +1124,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:29 GMT
+      - Thu, 24 Feb 2022 13:02:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1124,7 +1176,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:31 GMT
+      - Thu, 24 Feb 2022 13:02:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1176,7 +1228,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:33 GMT
+      - Thu, 24 Feb 2022 13:02:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1226,7 +1278,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:36 GMT
+      - Thu, 24 Feb 2022 13:02:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1278,7 +1330,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:38 GMT
+      - Thu, 24 Feb 2022 13:02:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1328,7 +1380,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:41 GMT
+      - Thu, 24 Feb 2022 13:02:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1380,7 +1432,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:42 GMT
+      - Thu, 24 Feb 2022 13:02:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1435,7 +1487,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:43 GMT
+      - Thu, 24 Feb 2022 13:02:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1487,7 +1539,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:45 GMT
+      - Thu, 24 Feb 2022 13:02:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1539,7 +1591,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:48 GMT
+      - Thu, 24 Feb 2022 13:02:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1589,7 +1641,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 24 Dec 2021 13:02:50 GMT
+      - Thu, 24 Feb 2022 13:02:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1637,7 +1689,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:52 GMT
+      - Thu, 24 Feb 2022 13:02:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1690,7 +1742,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:54 GMT
+      - Thu, 24 Feb 2022 13:02:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1736,7 +1788,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:55 GMT
+      - Thu, 24 Feb 2022 13:02:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1786,7 +1838,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 24 Dec 2021 13:02:58 GMT
+      - Thu, 24 Feb 2022 13:02:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1835,7 +1887,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Dec 2021 13:02:59 GMT
+      - Thu, 24 Feb 2022 13:02:59 GMT
       expires:
       - '-1'
       pragma:

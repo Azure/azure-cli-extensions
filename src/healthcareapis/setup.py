@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools HealthcareApisManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/healthcareapis',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/healthcareapis',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

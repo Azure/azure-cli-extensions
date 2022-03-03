@@ -39,6 +39,7 @@ from azure.cli.core.commands.client_factory import (
 from azure.cli.core.util import (
     get_file_json,
     in_cloud_console,
+    read_file_content,
     sdk_no_wait,
     shell_safe_json_parse,
 )
@@ -129,7 +130,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_11_01_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -758,6 +759,9 @@ def aks_create(cmd,
                gmsa_root_domain_name=None,
                snapshot_id=None,
                enable_oidc_issuer=False,
+               host_group_id=None,
+               crg_id=None,
+               message_of_the_day=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1575,6 +1579,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       workload_runtime=None,
                       gpu_instance_profile=None,
                       snapshot_id=None,
+                      host_group_id=None,
+                      crg_id=None,
+                      message_of_the_day=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1650,7 +1657,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         mode=mode,
         workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile,
-        creation_data=creationData
+        creation_data=creationData,
+        host_group_id=host_group_id,
+        capacity_reservation_group_id=crg_id
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -1673,6 +1682,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     if linux_os_config:
         agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
+
+    if message_of_the_day:
+        agent_pool.message_of_the_day = _get_message_of_the_day(message_of_the_day)
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
@@ -1767,18 +1779,31 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          labels=None,
+                         node_taints=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    if node_taints is not None:
+        taints_array = []
+        if node_taints != '':
+            for taint in node_taints.split(','):
+                try:
+                    taint = taint.strip()
+                    taints_array.append(taint)
+                except ValueError:
+                    raise InvalidArgumentValueError(
+                        'Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
+        instance.node_taints = taints_array
 
     if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
@@ -2401,8 +2426,9 @@ def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
         '/managedClusters/{2}'.format(subscription_id,
                                       resource_group_name, name)
     diag_settings = diag_settings_client.list(aks_resource_id)
-    if diag_settings.value:
-        return diag_settings.value[0].storage_account_id
+    for _, diag_setting in enumerate(diag_settings):
+        if diag_setting:
+            return diag_setting.storage_account_id
 
     print("No diag settings specified")
     return None
@@ -2625,6 +2651,16 @@ def _put_managed_cluster_ensuring_permission(
 def _is_msi_cluster(managed_cluster):
     return (managed_cluster and managed_cluster.identity and
             (managed_cluster.identity.type.casefold() == "systemassigned" or managed_cluster.identity.type.casefold() == "userassigned"))
+
+
+def _get_message_of_the_day(file_path):
+    if not os.path.isfile(file_path):
+        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+    content = read_file_content(file_path)
+    if not content:
+        raise ArgumentUsageError("message of the day should point to a non-empty file if specified.")
+    content = base64.b64encode(bytes(content, 'ascii')).decode('ascii')
+    return content
 
 
 def _get_kubelet_config(file_path):

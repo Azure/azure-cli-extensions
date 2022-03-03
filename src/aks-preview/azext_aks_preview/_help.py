@@ -192,11 +192,11 @@ helps['aks create'] = """
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
-          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+          long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --network-plugin
           type: string
           short-summary: The Kubernetes network plugin to use.
-          long-summary: Specify "azure" for advanced networking configurations. Defaults to "kubenet".
+          long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
@@ -398,6 +398,15 @@ helps['aks create'] = """
         - name: --enable-oidc-issuer
           type: bool
           short-summary: (PREVIEW) Enable OIDC issuer.
+        - name: --crg-id
+          type: string
+          short-summary: The crg-id used to associate the new cluster with the existed Capacity Reservation Group resource.
+        - name: --host-group-id
+          type: string
+          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+        - name: --message-of-the-day
+          type: string
+          short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -453,6 +462,13 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: create a kubernetes cluster with a Capacity Reservation Group(CRG) ID.
+          text: az aks create -g MyResourceGroup -n MyMC --kubernetes-version 1.20.9 --node-vm-size VMSize --assign-identity CRG-RG-ID --enable-managed-identity --crg-id "subscriptions/SubID/resourceGroups/RGName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
+        - name: create a kubernetes cluster with support of hostgroup id.
+          text: az aks create -g MyResourceGroup -n MyMC --kubernetes-version 1.20.13 --location westus2 --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize --enable-managed-identity --assign-identity <user_assigned_identity_resource_id>
+        - name: Create a kubernetes cluster with no CNI installed.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
+
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -941,7 +957,7 @@ helps['aks nodepool add'] = """
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
-          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+          long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --node-zones --zones -z
           type: string array
           short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
@@ -977,7 +993,7 @@ helps['aks nodepool add'] = """
           short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
-          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
+          short-summary: The node taints for the node pool.
         - name: --priority
           type: string
           short-summary: The priority of the node pool.
@@ -1026,6 +1042,15 @@ helps['aks nodepool add'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to create this nodepool.
+        - name: --crg-id
+          type: string
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
+        - name: --host-group-id
+          type: string
+          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+        - name: --message-of-the-day
+          type: string
+          short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1037,6 +1062,10 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
         - name: create a kubernetes cluster with a snapshot id.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: create a nodepool with a Capacity Reservation Group(CRG) ID.
+          text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
+        - name: create a nodepool in an existing AKS cluster with host group id
+          text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize
 """
 
 helps['aks nodepool scale'] = """
@@ -1100,6 +1129,9 @@ helps['aks nodepool update'] = """
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

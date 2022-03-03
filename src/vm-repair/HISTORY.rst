@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.4.1
+++++++
+Fixing bug in preview parameter
+
 0.4.0
 ++++++
 Fixing issue in disk copy, removing floating point in disk name.
