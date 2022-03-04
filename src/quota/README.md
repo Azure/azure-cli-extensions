@@ -9,120 +9,104 @@ az extension add --name quota
 
 ### Included Features ###
 #### quota usage ####
-##### List #####
+##### List-UsagesForCompute #####
 ```
 az quota usage list \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus" 
 ```
-##### List #####
+##### List-UsagesForNetwork #####
 ```
 az quota usage list \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" 
 ```
-##### List #####
+##### List-UsagesMachineLearningServices #####
 ```
 az quota usage list \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus" 
 ```
-##### Show #####
+##### Show-UsagesRequestForCompute #####
 ```
 az quota usage show --resource-name "standardNDSFamily" \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus" 
 ```
-##### Show #####
+##### Show-UsagesRequestForNetwork #####
 ```
 az quota usage show --resource-name "MinPublicIpInterNetworkPrefixLength" \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" 
 ```
 #### quota ####
-##### Create #####
+##### Create-ForNetwork #####
 ```
-az quota create \
-    --properties "{\\"name\\":{\\"value\\":\\"MinPublicIpInterNetworkPrefixLength\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"MinPublicIpInterNetworkPrefixLength\\"}" \
-    --resource-name "MinPublicIpInterNetworkPrefixLength" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Network/locations/eastus" 
+az quota create --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-00\
+    00-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+    --limit-object value=10 limit-object-type=LimitValue --resource-type MinPublicIpInterNetworkPrefixLength
 ```
-##### Create #####
+##### Create-ForNetworkStandardSkuPublicIpAddressesResource #####
 ```
-az quota create \
-    --properties "{\\"name\\":{\\"value\\":\\"StandardSkuPublicIpAddresses\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"PublicIpAddresses\\"}" \
-    --resource-name "StandardSkuPublicIpAddresses" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Network/locations/eastus" 
+az quota create --resource-name "StandardSkuPublicIpAddresses" --scope "subscriptions/00000000-0000-0000\
+    -0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+    --limit-object value=10 limit-object-type=LimitValue --resource-type PublicIpAddresses
 ```
-##### Create #####
+##### Create-ForCompute #####
 ```
-az quota create \
-    --properties "{\\"name\\":{\\"value\\":\\"standardFSv2Family\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10}}" \
-    --resource-name "standardFSv2Family" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus" 
+az quota create --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
+    00000000/providers/Microsoft.Compute/locations/eastus" \
+    --limit-object value=10 limit-object-type=LimitValue --resource-type dedicated
 ```
-##### Create #####
+##### Create-MachineLearningServicesLowPriorityResource #####
 ```
-az quota create \
-    --properties "{\\"name\\":{\\"value\\":\\"TotalLowPriorityCores\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"lowPriority\\"}" \
-    --resource-name "TotalLowPriorityCores" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.MachineLearningServices/locations/eastus" 
+az quota create  --resource-name "TotalLowPriorityCores" --scope "subscriptions/00000000-0000-0000-0000-\
+    000000000000/providers/Microsoft.MachineLearning/Services/locations/eastus" \
+    --limit-object value=10 limit-object-type=LimitValue --resource-type lowPriority
 ```
-##### Show #####
+##### Show-ForNetwork #####
 ```
 az quota show --resource-name "MinPublicIpInterNetworkPrefixLength" \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" 
 ```
-##### List #####
-```
-az quota list --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
-```
-##### List #####
-```
-az quota list --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus"
-```
-##### List #####
-```
-az quota list \
-    --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus" 
-```
-##### Show #####
+##### Show-ForCompute #####
 ```
 az quota show --resource-name "standardNDSFamily" \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus" 
 ```
-##### Update #####
+##### List-QuotaLimitsForCompute #####
 ```
-az quota update \
-    --properties "{\\"name\\":{\\"value\\":\\"standardFSv2Family\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10}}" \
-    --resource-name "standardFSv2Family" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus" 
+az quota list --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
 ```
-##### Update #####
+##### List-QuotaLimitsForNetwork #####
 ```
-az quota update \
-    --properties "{\\"name\\":{\\"value\\":\\"MinPublicIpInterNetworkPrefixLength\\"},\\"limit\\":{\\"limitObjectType\\":\\"LimitValue\\",\\"value\\":10},\\"resourceType\\":\\"MinPublicIpInterNetworkPrefixLength\\"}" \
-    --resource-name "MinPublicIpInterNetworkPrefixLength" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Network/locations/eastus" 
+az quota list --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus"
 ```
-#### quota quotarequeststatus ####
-##### List #####
+##### List-QuotaLimitsMachineLearningServices #####
 ```
-az quota quotarequeststatus list \
+az quota list \
+    --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus" 
+```
+##### Update-ForCompute #####
+```
+az quota update --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
+    00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue 
+    --resource-type dedicated
+```
+##### Update-ForNetwork #####
+```
+az quota update --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-00\
+    00-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus" \
+    --limit-object value=10 limit-object-type=LimitValue --resource-type MinPublicIpInterNetworkPrefixLength 
+```
+#### quota request status ####
+##### List-QuotaRequestHistory #####
+```
+az quota request status list \
     --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus" 
 ```
 ##### Show #####
 ```
-az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" \
+az quota request status show --name "2B5C8515-37D8-4B6A-879B-CD641A2CF605" \
     --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus" 
 ```
-##### Show #####
-```
-az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" \
-    --scope "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus" 
-```
-##### Show #####
-```
-az quota quotarequeststatus show --id "2B5C8515-37D8-4B6A-879B-CD641A2CF605" \
-    --scope "subscriptions/D7EC67B3-7657-4966-BFFC-41EFD36BAAB3/providers/Microsoft.Compute/locations/eastus" 
-```
-#### quota quotaoperation ####
+#### quota operation ####
 ##### List #####
 ```
-az quota quotaoperation list
+az quota operation list
 ```

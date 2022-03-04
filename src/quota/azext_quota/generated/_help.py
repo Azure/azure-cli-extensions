@@ -119,7 +119,7 @@ status of the request."
         text: |-
                az quota create --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
 00000000/providers/Microsoft.Compute/locations/eastus" \
---limit-object value=10 limit-object-type=LimitValue
+--limit-object value=10 limit-object-type=LimitValue --resource-type dedicated
       - name: Quotas_Request_ForMachineLearningServices_LowPriorityResource
         text: |-
                az quota create  --resource-name "TotalLowPriorityCores" --scope "subscriptions/00000000-0000-0000-0000-\
@@ -146,7 +146,8 @@ location header for the detailed status of the request."
       - name: Quotas_Request_PatchForCompute
         text: |-
                az quota update --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
-00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue
+00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue 
+--resource-type dedicated
       - name: Quotas_Request_PatchForNetwork
         text: |-
                az quota update --resource-name "MinPublicIpInterNetworkPrefixLength" --scope "subscriptions/00000000-00\
@@ -194,15 +195,7 @@ helps['quota request status show'] = """
     short-summary: "Get the quota request details and status by quota request ID for the resources of the resource \
 provider at a specific location. The quota request ID **id** is returned in the response of the PUT operation."
     examples:
-      - name: QuotaRequestFailed
-        text: |-
-               az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
-"subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
-      - name: QuotaRequestInProgress
-        text: |-
-               az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
-"subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
-      - name: QuotaRequestStatus
+      - name: ShowQuotaRequest
         text: |-
                az quota request status show --name "00000000-0000-0000-0000-000000000000" --scope \
 "subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus"
