@@ -23,15 +23,18 @@ def _get_location_from_resource_group(cli_ctx, resource_group_name):
     return group.location
 
 
-def _validate_subscription_registered(cmd, resource_provider):
+def _validate_subscription_registered(cmd, resource_provider, subscription_id=None):
     providers_client = None
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
     try:
-        providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+        providers_client = providers_client_factory(cmd.cli_ctx, subscription_id)
         registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
 
         if not (registration_state and registration_state.lower() == 'registered'):
-            raise ValidationError('Subscription is not registered for the {} resource provider. Please run \"az provider register -n {} --wait\" to register your subscription.'.format(
-                resource_provider, resource_provider))
+            raise ValidationError('Subscription {} is not registered for the {} resource provider. Please run \"az provider register -n {} --wait\" to register your subscription.'.format(
+                subscription_id, resource_provider, resource_provider))
     except ValidationError as ex:
         raise ex
     except Exception:

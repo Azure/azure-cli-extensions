@@ -783,7 +783,12 @@ def create_managed_environment(cmd,
 
     # Microsoft.ContainerService RP registration is required for vnet enabled environments
     if infrastructure_subnet_resource_id is not None or app_subnet_resource_id is not None:
-        _validate_subscription_registered(cmd, "Microsoft.ContainerService")
+        if (is_valid_resource_id(app_subnet_resource_id)):
+            parsed_app_subnet_resource_id = parse_resource_id(app_subnet_resource_id)
+            subnet_subscription = parsed_app_subnet_resource_id["subscription"]
+            _validate_subscription_registered(cmd, "Microsoft.ContainerService", subnet_subscription)
+        else:
+            raise ValidationError('Subnet resource ID is invalid.')
 
     if logs_customer_id is None or logs_key is None:
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
