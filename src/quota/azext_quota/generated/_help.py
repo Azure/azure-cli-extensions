@@ -146,7 +146,7 @@ location header for the detailed status of the request."
       - name: Quotas_Request_PatchForCompute
         text: |-
                az quota update --resource-name "standardFSv2Family" --scope "subscriptions/00000000-0000-0000-0000-0000\
-00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue 
+00000000/providers/Microsoft.Compute/locations/eastus" --limit-object value=10 limit-object-type=LimitValue \
 --resource-type dedicated
       - name: Quotas_Request_PatchForNetwork
         text: |-
