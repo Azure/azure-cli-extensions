@@ -1727,9 +1727,10 @@ def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, 
                 found_cert = webapp_cert
     if found_cert:
         if len(found_cert.host_names) == 1 and not found_cert.host_names[0].startswith('*'):
-            return _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
-                                               found_cert.host_names[0], ssl_type,
-                                               certificate_thumbprint, slot)
+            _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
+                                        found_cert.host_names[0], ssl_type,
+                                        certificate_thumbprint, slot)
+            return show_webapp(cmd, resource_group_name, name, slot)
 
         query_result = list_hostnames(cmd, resource_group_name, name, slot)
         hostnames_in_webapp = [x.name.split('/')[-1] for x in query_result]
