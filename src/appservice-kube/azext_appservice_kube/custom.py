@@ -18,7 +18,6 @@ from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
     _rename_server_farm_props,
     get_site_configs,
-    get_webapp,
     _get_site_credential,
     _format_fx_version,
     _get_extension_version_functionapp,
@@ -472,7 +471,9 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         if kube.extended_location and kube.extended_location.type == "CustomLocation":
             parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
 
-        if parsed_custom_location_2["name"].lower() == custom_location_name.lower() and parsed_custom_location_2.get("resource_group").lower() == resource_group.lower():
+        matched_name = parsed_custom_location_2["name"].lower() == custom_location_name.lower()
+        matched_rg = parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()
+        if matched_name and matched_rg:
             kube_environment_id = kube.id
             break
 
