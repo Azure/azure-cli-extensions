@@ -15,6 +15,8 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
 
+from ._client_factory import cf_ags
+
 logger = get_logger(__name__)
 
 
@@ -43,7 +45,7 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
                    "managed identity and current CLI user", grafana_name)
 
-    subscription_scope = '/subscriptions/' + client._config.subscription_id
+    subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
 
     user_principal_id = _get_login_account_principal_id(cmd.cli_ctx)
     grafana_admin_role_id = resolve_role_id(cmd.cli_ctx, "Grafana Admin", subscription_scope)
@@ -66,13 +68,13 @@ def _get_login_account_principal_id(cli_ctx):
     client = GraphRbacManagementClient(cred, tenant_id,
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     assignee = profile.get_current_account_user()
-    result = list(client.users.list(filter="userPrincipalName eq '{}'".format(assignee)))
+    result = list(client.users.list(filter=f"userPrincipalName eq '{assignee}'"))
     if not result:
         result = list(client.service_principals.list(
-            filter="servicePrincipalNames/any(c:c eq '{}')".format(assignee)))
+            filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
     if not result:
-        raise CLIError(("Failed to retrieve principal id for '{}', which is needed to create a "
-                        "role assignment").format(assignee))
+        raise CLIError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
+                        f"role assignment"))
     return result[0].object_id
 
 
@@ -106,27 +108,20 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
 
 
 def list_grafana(cmd, resource_group_name=None):
-    filters = []
+    client = cf_ags(cmd.cli_ctx)
     if resource_group_name:
-        filters.append("resourceGroup eq '{}'".format(resource_group_name))
-    filters.append("resourceType eq 'Microsoft.Dashboard/grafana'")
-    odata_filter = " and ".join(filters)
-
-    expand = "createdTime,changedTime,provisioningState"
-    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-    resources = client.resources.list(filter=odata_filter, expand=expand)
-    return list(resources)
+        return client.grafana.list_by_resource_group(resource_group_name)
+    return client.grafana.list()
 
 
 def show_grafana(cmd, grafana_name, resource_group_name=None):
-    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-    return client.resources.get(resource_group_name, "Microsoft.Dashboard",
-                                "", "grafana", grafana_name, "2021-09-01-preview")
+    client = cf_ags(cmd.cli_ctx)
+    return client.grafana.get(resource_group_name, grafana_name)
 
 
 def delete_grafana(cmd, grafana_name, yes=False, resource_group_name=None):
     from azure.cli.core.util import user_confirmation
-    user_confirmation("Are you sure you want to delete the Grafana workspace '{}'?".format(grafana_name), yes)
+    user_confirmation(f"Are you sure you want to delete the Grafana workspace '{grafana_name}'?", yes)
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
     return client.resources.begin_delete(resource_group_name, "Microsoft.Dashboard",
                                          "", "grafana", grafana_name, "2021-09-01-preview")
@@ -234,14 +229,14 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder):
         if response.status_code >= 400:
             response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders")
             if response.status_code >= 400:
-                raise CLIError("Not found. Ex: {}".format(response.status_code))
+                raise CLIError(f"Not found. Ex: {response.status_code}")
             result = json.loads(response.content)
             result = [f for f in result if f["title"] == folder]
             if len(result) == 0:
-                raise CLIError("Not found. Ex: {}".format(response.status_code))
+                raise CLIError(f"Not found. Ex: {response.status_code}")
             if len(result) > 1:
-                raise CLIError(("More than one folder has the same title of '{}'. Please use other "
-                                "unique identifiers").format(folder))
+                raise CLIError((f"More than one folder has the same title of '{folder}'. Please use other "
+                                f"unique identifiers"))
             return result[0]
 
     return json.loads(response.content)
@@ -321,7 +316,7 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
                                      "get", "/api/datasources/uid/" + data_source,
                                      raise_for_error_status=False)
     if response.status_code >= 400:
-        raise CLIError("Not found. Ex: {}".format(response.status_code))
+        raise CLIError(f"Not found. Ex: {response.status_code}")
     return json.loads(response.content)
 
 
@@ -339,7 +334,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     endpoint = grafana_endpoints.get(grafana_name)
     if not endpoint:
         grafana = show_grafana(cmd, grafana_name, resource_group_name)
-        endpoint = grafana.properties["endpoint"]
+        endpoint = grafana.properties.endpoint
         grafana_endpoints[grafana_name] = endpoint
 
     from azure.cli.core._profile import Profile

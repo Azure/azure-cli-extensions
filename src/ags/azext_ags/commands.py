@@ -4,15 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+
 from ._validators import process_grafana_create_namespace
 
 
 def load_command_table(self, _):
-
-    # Add command type here
-    # ags_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_ags)
 
     with self.command_group('grafana', is_preview=True) as g:
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)

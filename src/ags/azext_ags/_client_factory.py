@@ -5,8 +5,6 @@
 
 def cf_ags(cli_ctx, *_):
     # pylint: disable=unused-argument
-    # from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    # TODO: Replace CONTOSO with the appropriate label and uncomment
-    # from azure.mgmt.CONTOSO import CONTOSOManagementClient
-    # return get_mgmt_service_client(cli_ctx, CONTOSOManagementClient)
-    pass
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_ags.vendored_sdks import DashboardManagementClient
+    return get_mgmt_service_client(cli_ctx, DashboardManagementClient)

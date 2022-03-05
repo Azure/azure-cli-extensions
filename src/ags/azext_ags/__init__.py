@@ -12,10 +12,8 @@ class AgsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_ags._client_factory import cf_ags
         ags_custom = CliCommandType(
-            operations_tmpl='azext_ags.custom#{}',
-            client_factory=cf_ags)
+            operations_tmpl='azext_ags.custom#{}')
         # pylint: disable=super-with-arguments
         super(AgsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                 custom_command_type=ags_custom)

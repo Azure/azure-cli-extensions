@@ -26,6 +26,6 @@ def process_missing_resource_group_parameter(cmd, namespace):
         if match:
             namespace.resource_group_name = parse_resource_id(match.id)["resource_group"]
         else:
-            raise CLIError(("Not able to find the Grafana workspace: '{}'. Please "
-                            "correct the name, or provide resource group name, or set CLI "
-                            "subscription the workspace belongs to").format(namespace.grafana_name))
+            raise CLIError((f"Not able to find the Grafana instance: '{namespace.grafana_name}'. Please "
+                            f"correct the name, or provide resource group name, or set CLI "
+                            f"subscription the workspace belongs to"))

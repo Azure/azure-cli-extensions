@@ -9,38 +9,28 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['grafana'] = """
     type: group
-    short-summary: Commands to manage Azure Managed Workspace for Grafana.
+    short-summary: Commands to manage Azure Grafana instanced.
     long-summary: For optimized experience, not all data plane Apis, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
 """
 
 helps['grafana create'] = """
     type: command
-    short-summary: Create a Azure Managed Workspace for Grafana.
+    short-summary: Create a Azure Managed Grafana instance.
 """
 
 helps['grafana list'] = """
     type: command
-    short-summary: List Azure Managed Workspace for Grafana.
+    short-summary: List Azure Managed Grafana instances.
 """
 
 helps['grafana delete'] = """
     type: command
-    short-summary: Delete a Azure Managed Workspace for Grafana.
+    short-summary: Delete a Azure Managed Grafana instance.
 """
 
 helps['grafana show'] = """
     type: command
-    short-summary: Show details of a Azure Managed Workspace for Grafana.
-"""
-
-helps['grafana update'] = """
-     type: command
-     short-summary: Update a Azure Managed Workspace for Grafana.
- """
-
-helps['grafana show'] = """
-    type: command
-    short-summary: Show details of a Azure Managed Workspace for Grafana.
+    short-summary: Show details of a Azure Managed Grafana instance.
 """
 
 helps['grafana data-source'] = """
