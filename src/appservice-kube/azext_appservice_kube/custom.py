@@ -513,19 +513,25 @@ def _get_custom_location_id_from_kube_env(kube):
 
 
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
+
+
     if appservice_plan_json.get("properties") and (appservice_plan_json["properties"].get("kubeEnvironmentProfile")
                                                    is None and kube_env is not None):
-        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env
+        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env.serialize()
 
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
-        appservice_plan_json["extendedLocation"] = extended_location
+        appservice_plan_json["extendedLocation"] = extended_location.serialize()
+
+    appservice_plan_json['type'] = 'Microsoft.Web/serverfarms'
+    if appservice_plan_json.get("extendedLocation") is not None:
+        appservice_plan_json["extendedLocation"]["type"] = "CustomLocation"
 
 
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                                   custom_location=None, app_service_environment=None, sku=None,
                                   number_of_workers=None, location=None, tags=None, no_wait=False):
-    HostingEnvironmentProfile, SkuDescription, AppServicePlan = cmd.get_models(
-        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan')
+    HostingEnvironmentProfile, SkuDescription, AppServicePlan, ExtendedLocation, KubeEnvironmentProfile = cmd.get_models(
+        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'ExtendedLocation', 'KubeEnvironmentProfile')
 
     sku = _normalize_sku(sku)
     _validate_asp_sku(app_service_environment, custom_location, sku)
@@ -561,16 +567,17 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     extended_location_envelope = None
     if kube_environment and (ase_def is None):
         kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
-        # kube_def = KubeEnvironmentProfile(id=kube_id)
-        kube_def = {"id": kube_id}
+        kube_def = KubeEnvironmentProfile(id=kube_id)
+        # kube_def = {"id": kube_id}
         kind = KUBE_ASP_KIND
         parsed_id = parse_resource_id(kube_id)
         kube_name = parsed_id.get("name")
         kube_rg = parsed_id.get("resource_group")
         if kube_name is not None and kube_rg is not None:
             kube_env = KubeEnvironmentClient.show(cmd=cmd, resource_group_name=kube_rg, name=kube_name)
-            extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env),
-                                          "type": "CustomLocation"}
+            extended_location_envelope = ExtendedLocation(name=_get_custom_location_id_from_kube_env(kube_env), type="CustomLocation")
+            # extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env),
+            #                               "type": "CustomLocation"}
 
             if kube_env is not None:
                 location = kube_env["location"]
