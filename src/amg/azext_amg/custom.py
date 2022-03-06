@@ -15,7 +15,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
 
-from ._client_factory import cf_ags
+from ._client_factory import cf_amg
 
 logger = get_logger(__name__)
 
@@ -108,14 +108,14 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
 
 
 def list_grafana(cmd, resource_group_name=None):
-    client = cf_ags(cmd.cli_ctx)
+    client = cf_amg(cmd.cli_ctx)
     if resource_group_name:
         return client.grafana.list_by_resource_group(resource_group_name)
     return client.grafana.list()
 
 
 def show_grafana(cmd, grafana_name, resource_group_name=None):
-    client = cf_ags(cmd.cli_ctx)
+    client = cf_amg(cmd.cli_ctx)
     return client.grafana.get(resource_group_name, grafana_name)
 
 
@@ -341,11 +341,11 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     profile = Profile(cli_ctx=cmd.cli_ctx)
     # this might be a cross tenant scenario, so pass subscription to get_raw_token
     subscription = get_subscription_id(cmd.cli_ctx)
-    ags_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3"
+    amg_first_party_app = ("7f525cdc-1f08-4afa-af7c-84709d42f5d3"
                            if "-ppe." in cmd.cli_ctx.cloud.endpoints.active_directory
                            else "ce34e7e5-485f-4d76-964f-b3d2b16d1e4f")
     creds, _, _ = profile.get_raw_token(subscription=subscription,
-                                        resource=ags_first_party_app)
+                                        resource=amg_first_party_app)
 
     headers = {
         "content-type": "application/json",

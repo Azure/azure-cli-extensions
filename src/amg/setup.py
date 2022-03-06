@@ -41,17 +41,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='ags',
+    name='amg',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Azure Managed Dashboard for Grafana Extension',
+    description='Microsoft Azure Command-Line Tools Azure Managed Grafana Extension',
     author='Microsoft Corporation',
     author_email='ad4g@microsoft.com',
-    # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ags',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/amg',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_ags': ['azext_metadata.json']},
+    package_data={'azext_amg': ['azext_metadata.json']},
 )

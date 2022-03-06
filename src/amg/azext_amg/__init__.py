@@ -5,27 +5,27 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_ags._help import helps  # pylint: disable=unused-import
+from azext_amg._help import helps  # pylint: disable=unused-import
 
 
-class AgsCommandsLoader(AzCommandsLoader):
+class AmgCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        ags_custom = CliCommandType(
-            operations_tmpl='azext_ags.custom#{}')
+        amg_custom = CliCommandType(
+            operations_tmpl='azext_amg.custom#{}')
         # pylint: disable=super-with-arguments
-        super(AgsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                custom_command_type=ags_custom)
+        super(AmgCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                custom_command_type=amg_custom)
 
     def load_command_table(self, args):
-        from azext_ags.commands import load_command_table
+        from azext_amg.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_ags._params import load_arguments
+        from azext_amg._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = AgsCommandsLoader
+COMMAND_LOADER_CLS = AmgCommandsLoader

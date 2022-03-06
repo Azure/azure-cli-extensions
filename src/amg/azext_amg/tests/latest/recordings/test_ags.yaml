@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - grafana show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.33.0 (MSI) azsdk-python-mgmt-dashboard/1.0.0b1 Python/3.8.8 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yugangw/providers/Microsoft.Dashboard/grafana/yugangweus2e?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yugangw/providers/Microsoft.Dashboard/grafana/yugangweus2e","name":"yugangweus2e","type":"microsoft.dashboard/grafana","sku":{"name":"Standard"},"location":"eastus2euap","tags":{},"systemData":{"createdBy":"yugangw@microsoft.com","createdByType":"User","createdAt":"2022-03-04T03:45:10.1825533Z","lastModifiedBy":"yugangw@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-04T03:45:10.1825533Z"},"identity":{"principalId":"f462ffcd-951a-4521-82b0-0cff25c5c18a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","grafanaVersion":"8.4.1","endpoint":"https://yugangweus2e.eus2e.azgrafana.io","zoneRedundancy":"Disabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 06 Mar 2022 17:57:03 GMT
+      etag:
+      - '"1300f618-0000-3400-0000-62218cef0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
