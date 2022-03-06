@@ -12,7 +12,6 @@
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -43,17 +42,6 @@
     <Compile Include="src\aem\azext_aem\_help.py" />
     <Compile Include="src\aem\azext_aem\__init__.py" />
     <Compile Include="src\aem\setup.py" />
-    <Compile Include="src\ags\azext_ags\commands.py" />
-    <Compile Include="src\ags\azext_ags\custom.py" />
-    <Compile Include="src\ags\azext_ags\tests\latest\test_ags_scenario.py" />
-    <Compile Include="src\ags\azext_ags\tests\latest\__init__.py" />
-    <Compile Include="src\ags\azext_ags\tests\__init__.py" />
-    <Compile Include="src\ags\azext_ags\_client_factory.py" />
-    <Compile Include="src\ags\azext_ags\_help.py" />
-    <Compile Include="src\ags\azext_ags\_params.py" />
-    <Compile Include="src\ags\azext_ags\_validators.py" />
-    <Compile Include="src\ags\azext_ags\__init__.py" />
-    <Compile Include="src\ags\setup.py" />
     <Compile Include="src\alias\azext_alias\alias.py" />
     <Compile Include="src\alias\azext_alias\argument.py" />
     <Compile Include="src\alias\azext_alias\custom.py" />
@@ -4669,6 +4657,7 @@
     <Content Include=".github\ISSUE_TEMPLATE.md" />
     <Content Include=".github\PULL_REQUEST_TEMPLATE.md" />
     <Content Include=".gitignore" />
+    <Content Include=".travis.yml" />
     <Content Include="CONTRIBUTING.rst" />
     <Content Include="docs\README.md" />
     <Content Include="LICENSE" />
@@ -4676,20 +4665,6 @@
     <Content Include="README.md" />
     <Content Include="src\aem\azext_aem\azext_metadata.json" />
     <Content Include="src\aem\readme.md" />
-    <Content Include="src\ags\ags.egg-info\dependency_links.txt" />
-    <Content Include="src\ags\ags.egg-info\PKG-INFO" />
-    <Content Include="src\ags\ags.egg-info\SOURCES.txt" />
-    <Content Include="src\ags\ags.egg-info\top_level.txt" />
-    <Content Include="src\ags\azext_ags\azext_metadata.json" />
-    <Content Include="src\ags\azext_ags\__pycache__\commands.cpython-38.pyc" />
-    <Content Include="src\ags\azext_ags\__pycache__\custom.cpython-38.pyc" />
-    <Content Include="src\ags\azext_ags\__pycache__\_client_factory.cpython-38.pyc" />
-    <Content Include="src\ags\azext_ags\__pycache__\_help.cpython-38.pyc" />
-    <Content Include="src\ags\azext_ags\__pycache__\_params.cpython-38.pyc" />
-    <Content Include="src\ags\azext_ags\__pycache__\__init__.cpython-38.pyc" />
-    <Content Include="src\ags\HISTORY.rst" />
-    <Content Include="src\ags\README.rst" />
-    <Content Include="src\ags\setup.cfg" />
     <Content Include="src\alias\azext_alias\azext_metadata.json" />
     <Content Include="src\azure-firewall\azext_firewall\azext_metadata.json" />
     <Content Include="src\azure-firewall\readme.md" />
@@ -4805,13 +4780,6 @@
     <Folder Include="src\aem\azext_aem" />
     <Folder Include="src\aem\azext_aem\tests" />
     <Folder Include="src\aem\azext_aem\tests\latest" />
-    <Folder Include="src\ags\" />
-    <Folder Include="src\ags\ags.egg-info\" />
-    <Folder Include="src\ags\azext_ags\" />
-    <Folder Include="src\ags\azext_ags\tests\" />
-    <Folder Include="src\ags\azext_ags\tests\latest\" />
-    <Folder Include="src\ags\azext_ags\vendored_sdks\" />
-    <Folder Include="src\ags\azext_ags\__pycache__\" />
     <Folder Include="src\alias" />
     <Folder Include="src\alias\azext_alias" />
     <Folder Include="src\alias\azext_alias\tests" />
