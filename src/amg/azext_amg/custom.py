@@ -24,7 +24,7 @@ grafana_endpoints = {}
 
 
 def create_grafana(cmd, resource_group_name, grafana_name,
-                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False):
+                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False, tags=None):
     from azure.cli.core.commands.arm import resolve_role_id
     from azure.cli.core.commands import LongRunningOperation
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
@@ -33,7 +33,8 @@ def create_grafana(cmd, resource_group_name, grafana_name,
             "name": "standard"
         },
         "location": location,
-        "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"}
+        "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
+        "tags": tags
     }
     poller = client.resources.begin_create_or_update(resource_group_name, "Microsoft.Dashboard", "",
                                                      "grafana", grafana_name, "2021-09-01-preview", resource)

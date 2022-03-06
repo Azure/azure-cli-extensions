@@ -15,27 +15,25 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class AgsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_ags(self, resource_group):
+    def test_amg_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': 'clitestamg',
+            'location': 'westeurope'
         })
 
-        self.cmd('grafana show -g yugangw -n yugangweus2e')
+        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('grafana list -g {rg}')
+        count = len(self.cmd('grafana list').get_output_in_json())
+        self.cmd('grafana show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags.foo', 'doo')
+        ])
 
-        #self.cmd('ags create -g {rg} -n {name} --tags foo=doo', checks=[
-        #    self.check('tags.foo', 'doo'),
-        #    self.check('name', '{name}')
-        #])
-        #self.cmd('ags update -g {rg} -n {name} --tags foo=boo', checks=[
-        #    self.check('tags.foo', 'boo')
-        #])
-        #count = len(self.cmd('ags list').get_output_in_json())
-        #self.cmd('ags show - {rg} -n {name}', checks=[
-        #    self.check('name', '{name}'),
-        #    self.check('resourceGroup', '{rg}'),
-        #    self.check('tags.foo', 'boo')
-        #])
-        #self.cmd('ags delete -g {rg} -n {name}')
-        #final_count = len(self.cmd('ags list').get_output_in_json())
-        #self.assertTrue(final_count, count - 1)
+        self.cmd('grafana delete -g {rg} -n {name} --yes')
+        final_count = len(self.cmd('grafana list').get_output_in_json())
+        self.assertTrue(final_count, count - 1)

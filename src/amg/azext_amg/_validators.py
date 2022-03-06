@@ -7,12 +7,13 @@ from msrestazure.tools import parse_resource_id
 
 from knack.util import CLIError
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_tags
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 
 
 def process_grafana_create_namespace(cmd, namespace):
+    validate_tags(namespace)
     if not namespace.location:
         get_default_location_from_resource_group(cmd, namespace)
 
