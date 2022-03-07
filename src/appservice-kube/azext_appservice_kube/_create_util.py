@@ -25,18 +25,12 @@ def get_site_availability(cmd, name):
 
 
 def get_app_details(cmd, name, resource_group):
+    from azure.core.exceptions import ResourceNotFoundError as E
     client = web_client_factory(cmd.cli_ctx)
     try:
         return client.web_apps.get(resource_group, name)
-    except:
+    except E:
         return None
-    # '''
-    # data = (list(filter(lambda x: name.lower() in x.name.lower(), client.web_apps.list())))
-    # _num_items = len(data)
-    # if _num_items > 0:
-    #     return data[0]
-    # return None
-    # '''
 
 
 # Portal uses the current_stack property in the app metadata to display the correct stack
