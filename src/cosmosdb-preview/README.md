@@ -197,7 +197,7 @@ az cosmosdb create \
     --resource-group "my-rg" \
     --name "my-db-account" \
     --enable-materialized-views true \
-    --capabilities "EnableCassandra"
+    --capabilities "EnableCassandra" "CassandraEnableMaterializedViews"
 ```
 
 #### Enable materialized views on a existing CosmosDB Account ####

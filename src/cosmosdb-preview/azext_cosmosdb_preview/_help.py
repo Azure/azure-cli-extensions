@@ -409,7 +409,7 @@ examples:
   - name: Create a new Azure Cosmos DB database account by restoring from an existing account in the given location
     text: az cosmosdb create -n restoredaccount -g mygroup --is-restore-request true --restore-source /subscriptions/2296c272-5d55-40d9-bc05-4d56dc2d7588/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/d056a4f8-044a-436f-80c8-cd3edbc94c68 --restore-timestamp 2020-07-13T16:03:41+0000 --locations regionName=westus failoverPriority=0 isZoneRedundant=False
   - name: Creates a new Azure Cosmos DB database account with materialized views and cassandra capability enabled.
-    text: az cosmosdb create --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --enable-materialized-views true --capabilities EnableCassandra
+    text: az cosmosdb create --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --enable-materialized-views true --capabilities EnableCassandra CassandraEnableMaterializedViews
 """
 
 helps['cosmosdb update'] = """
