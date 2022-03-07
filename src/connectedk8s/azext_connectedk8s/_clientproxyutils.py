@@ -92,8 +92,8 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_pr
         jwtToken = accessToken.token
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
-                                        summary='Failed to fetch access token using the PoP public key sent by client proxy')
-        close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' +  str(e))
+                                summary='Failed to fetch access token using the PoP public key sent by client proxy')
+        close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + str(e))
 
     jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenantId, "kid": kid}
     post_at_uri = f'https://localhost:{api_server_port}/identity/at'
@@ -128,4 +128,3 @@ def check_process(processName):
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
     return False
-
