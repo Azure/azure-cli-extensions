@@ -16,7 +16,6 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-
 def check_if_port_is_open(port):
     try:
         connections = net_connections(kind='inet')
@@ -42,7 +41,6 @@ def check_if_csp_is_running(clientproxy_process):
         return True
     else:
         return False
-
 
 
 def make_api_call_with_retries(uri, data, method, tls_verify, fault_type, summary, cli_error, clientproxy_process):
@@ -93,10 +91,9 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_pr
         accessToken = credential.get_token(consts.KAP_1P_Server_App_Scope, data=token_data)
         jwtToken = accessToken.token
     except Exception as e:
-        telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
+        telemetry.set_exception(exception=e, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
                                         summary='Failed to fetch access token using the PoP public key sent by client proxy')
-        close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + post_at_response.text)
-        
+        close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' +  str(e))
 
     jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenantId, "kid": kid}
     post_at_uri = f'https://localhost:{api_server_port}/identity/at'
@@ -119,6 +116,7 @@ def insert_token_in_kubeconfig(data, token):
     b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
     return b64kubeconfig
 
+
 def check_process(processName):
     '''
     Check if there is any running process that contains the given name processName.
@@ -130,3 +128,4 @@ def check_process(processName):
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
     return False
+

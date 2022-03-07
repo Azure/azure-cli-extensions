@@ -1931,14 +1931,14 @@ def client_side_proxy(cmd,
                 sys.stderr = f
 
                 clientproxyutils.make_api_call_with_retries(identity_uri, identity_data, "post", False, consts.Post_RefreshToken_Fault_Type,
-                                           'Unable to post refresh token details to clientproxy',
-                                           "Failed to pass refresh token details to proxy.", clientproxy_process)
+                                                            'Unable to post refresh token details to clientproxy',
+                                                            "Failed to pass refresh token details to proxy.", clientproxy_process)
                 sys.stderr = original_stderr
 
     if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
         kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
         post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
-        
+
         if post_at_response.status_code != 200:
             if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
                 telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
@@ -1959,8 +1959,8 @@ def client_side_proxy(cmd,
 
     # Posting hybrid connection details to proxy in order to get kubeconfig
     response = clientproxyutils.make_api_call_with_retries(uri, data, "post", False, consts.Post_Hybridconn_Fault_Type,
-                                          'Unable to post hybrid connection details to clientproxy',
-                                          "Failed to pass hybrid connection details to proxy.", clientproxy_process)
+                                                           'Unable to post hybrid connection details to clientproxy',
+                                                           "Failed to pass hybrid connection details to proxy.", clientproxy_process)
 
     if flag == 0:
         # Decoding kubeconfig into a string
