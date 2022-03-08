@@ -19,7 +19,7 @@ def load_arguments(self, _):
     with self.argument_context("grafana") as c:
         c.argument("tags", tags_type)
         c.argument("location", validator=get_default_location_from_resource_group)
-        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=process_missing_resource_group_parameter)
+        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], id_part=None, validator=process_missing_resource_group_parameter)
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
         c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
