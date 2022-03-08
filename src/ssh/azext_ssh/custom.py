@@ -62,8 +62,10 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                                                    "does not exist.")
 
     # Default credential location
+    # Add logic to test if credentials folder is valid
     if not credentials_folder:
-        folder_name = config_session.ip
+        # * is not a valid name for a folder in Windows. Treat this as a special case.
+        folder_name = config_session.ip if config_session.ip != "*" else "all_ips"
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
@@ -71,7 +73,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         credentials_folder = os.path.abspath(credentials_folder)
 
     _do_ssh_op(cmd, config_session, credentials_folder, op_call)
-
+   
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     if not cert_path and not public_key_file:
@@ -278,3 +280,5 @@ def _get_modulus_exponent(public_key_file):
     exponent = parser.exponent
 
     return modulus, exponent
+
+

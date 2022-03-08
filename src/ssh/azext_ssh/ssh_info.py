@@ -59,11 +59,12 @@ class ConfigSession():
         self.ssh_client_folder = os.path.abspath(ssh_client_folder) if ssh_client_folder else None
 
     def get_config_text(self):
-        if not self.ip:
-            raise azclierror.BadRequestError("Unable to create config file: No IP address.")
         lines = [""]
-        if self.resource_group_name and self.vm_name:
+        if self.resource_group_name and self.vm_name and self.ip:
             lines = lines + self._get_rg_and_vm_entry()
+        # default to all hosts for config
+        if not self.ip:
+            self.ip = "*"
         lines = lines + self._get_ip_entry()
         return lines
 
