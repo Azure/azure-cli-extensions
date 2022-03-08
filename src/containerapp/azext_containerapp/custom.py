@@ -496,7 +496,7 @@ def update_containerapp(cmd,
     update_map['ingress'] = ingress or target_port or transport or traffic_weights
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or image_name or env_vars is not None or cpu or memory or startup_command is not None or args is not None
     update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
     update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
 
@@ -523,9 +523,12 @@ def update_containerapp(cmd,
                 if image is not None:
                     c["image"] = image
                 if env_vars is not None:
-                    if "env" not in c or not c["env"]:
+                    if isinstance(env_vars, list) and not env_vars:
                         c["env"] = []
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                    else:
+                        if "env" not in c or not c["env"]:
+                            c["env"] = []
+                        _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
                 if startup_command is not None:
                     if isinstance(startup_command, list) and not startup_command:
                         c["command"] = None
