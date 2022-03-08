@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+
 def load_arguments(self, _):
 
     from knack.arguments import CLIArgumentType
@@ -25,7 +26,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
-        c.argument("skip_system_assigned_identity", arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
+        c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
 
     with self.argument_context("grafana delete") as c:
@@ -45,6 +46,7 @@ def load_arguments(self, _):
         c.argument("time_from", options_list=["--from"], help="start time in iso 8601, e.g. '2022-01-02T16:15:00'. Default: 1 hour early")
         c.argument("time_to", options_list=["--to"], help="end time in iso 8601, e.g. '2022-01-02T17:15:00'. Default: current time ")
         c.argument("max_data_points", help="Maximum amount of data points that dashboard panel can render")
+        c.argument("query_format", help="format of the resule, e.g. table, time_series")
         c.argument("internal_ms", help="The time interval in milliseconds of time series")
 
     with self.argument_context("grafana folder") as c:

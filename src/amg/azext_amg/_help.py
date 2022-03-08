@@ -42,44 +42,9 @@ helps['grafana data-source create'] = """
     type: command
     short-summary: Create a data source.
     examples:
-        - name: create a data source using Managed Service Identity
-          text: |
-            az grafana data-source create --definition '{
-              "access": "proxy",
-              "basicAuth": false,
-              "jsonData": {
-                "azureAuth": true,
-                "azureCredentials": {
-                  "authType": "msi"
-                },
-                "azureEndpointResourceId": "https://monitor.core.windows.net"
-              },
-              "name": "Geneva Datasource using MSI",
-              "type": "geneva-datasource",
-              "withCredentials": false
-            }'
-        - name: create a data source using Service Principal
-          text: |
-            az grafana data-source create --definition '{
-              "access": "proxy",
-              "basicAuth": false,
-              "jsonData": {
-                "azureAuth": true,
-                "azureCredentials": {
-                  "authType": "clientsecret",
-                  "azureCloud": "AzureCloud",
-                  "clientId": "fb31a2f5-9122-4be9-9705-xxxxxxxxxxxx",
-                  "tenantId": "72f988bf-86f1-41af-91ab-xxxxxxxxxxxx",
-                  "clientSecret": "xxxxxx"
-                },
-                "azureEndpointResourceId": "https://monitor.core.windows.net"
-              },
-              "name": "Geneva Datasource using Service principal",
-              "type": "geneva-datasource"
-            }'
         - name: create a data source of Azure SQL
           text: |
-            az grafana data-source create --definition '{
+            az grafana data-source create -n MyGrafana --definition '{
               "access": "proxy",
               "database": "testdb",
               "jsonData": {
@@ -100,26 +65,6 @@ helps['grafana data-source create'] = """
 helps['grafana data-source update'] = """
     type: command
     short-summary: Update a data source.
-    examples:
-        - name: update a data source's credentials (make sure either set "version" to the latest version, or omit it to overwrite the existing version)
-          text: |
-            az grafana data-source create --data-source "Geneva Datasource" --definition '{
-              "access": "proxy",
-              "basicAuth": false,
-              "jsonData": {
-                "azureAuth": true,
-                "azureCredentials": {
-                  "authType": "clientsecret",
-                  "azureCloud": "AzureCloud",
-                  "clientId": "fb31a2f5-9122-4be9-9705-xxxxxxxxxxxx",
-                  "tenantId": "72f988bf-86f1-41af-91ab-xxxxxxxxxxxx",
-                  "clientSecret": "newPassword"
-                },
-                "azureEndpointResourceId": "https://monitor.core.windows.net"
-              },
-              "name": "Geneva Datasource",
-              "type": "geneva-datasource"
-            }'
 """
 
 helps['grafana data-source show'] = """
@@ -191,10 +136,7 @@ helps['grafana dashboard show'] = """
     examples:
         - name: Get details of a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
-           az grafana dashboard show -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
-        - name: Get home dashboard
-          text: |
-           az grafana dashboard show -g MyResourceGroup -n MyGrafana --show-home-dashboard
+           az grafana dashboard show -g MyResourceGroup -n MyGrafana --dashboard VdrOA7jGz
 """
 
 helps['grafana dashboard delete'] = """
@@ -203,7 +145,7 @@ helps['grafana dashboard delete'] = """
     examples:
         - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
-           az grafana dashboard delete -g MyResourceGroup -n MyGrafana --uid VdrOA7jGz
+           az grafana dashboard delete -g MyResourceGroup -n MyGrafana --dashboard VdrOA7jGz
 """
 
 helps['grafana folder'] = """

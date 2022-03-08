@@ -20,13 +20,13 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_dashboard')
         g.custom_command('delete', 'delete_dashboard')
         g.custom_command('list', 'list_dashboards')
-        g.custom_command('show', 'show_dashboard')
+        g.custom_show_command('show', 'show_dashboard')
         g.custom_command('update', 'update_dashboard')
 
     with self.command_group('grafana data-source') as g:
         g.custom_command('create', 'create_data_source')
         g.custom_command('list', 'list_data_sources')
-        g.custom_command('show', 'show_data_source')
+        g.custom_show_command('show', 'show_data_source')
         g.custom_command('delete', 'delete_data_source')
         g.custom_command('query', 'query_data_source')
         g.custom_command('update', 'update_data_source')
@@ -34,11 +34,11 @@ def load_command_table(self, _):
     with self.command_group('grafana folder') as g:
         g.custom_command('create', 'create_folder')
         g.custom_command('list', 'list_folders')
-        g.custom_command('show', 'show_folder')
+        g.custom_show_command('show', 'show_folder')
         g.custom_command('delete', 'delete_folder')
         g.custom_command('update', 'update_folder')
 
     with self.command_group('grafana user') as g:
         g.custom_command('list', 'list_users')
-        g.custom_command('show', 'show_user')
+        g.custom_show_command('show', 'show_user')
         g.custom_command('actual-user', 'get_actual_user')
