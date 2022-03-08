@@ -5,8 +5,8 @@
 
 from distutils.filelist import findall
 from operator import is_
+from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError, RequiredArgumentMissingError)
-
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id
@@ -444,3 +444,18 @@ def _get_app_from_revision(revision):
     revision.pop()
     revision = "--".join(revision)
     return revision
+
+
+def _infer_acr_credentials(cmd, registry_server):
+    # If registry is Azure Container Registry, we can try inferring credentials
+    if '.azurecr.io' not in registry_server:
+        raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required.')
+    logger.warning('No credential was provided to access Azure Container Registry. Trying to look up credentials...')
+    parsed = urlparse(registry_server)
+    registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+
+    try:
+        registry_user, registry_pass = _get_acr_cred(cmd.cli_ctx, registry_name)
+        return (registry_user, registry_pass)
+    except Exception as ex:
+        raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry {}. Please provide the registry username and password'.format(registry_name))

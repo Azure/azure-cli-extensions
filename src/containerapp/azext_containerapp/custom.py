@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (RequiredArgumentMissingError, ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.util import sdk_no_wait
 from knack.util import CLIError
 from knack.log import get_logger
@@ -37,7 +37,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
-                    _get_app_from_revision, raise_missing_token_suggestion)
+                    _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials)
 
 logger = get_logger(__name__)
 
@@ -370,6 +370,11 @@ def create_containerapp(cmd,
     registries_def = None
     if registry_server is not None:
         registries_def = RegistryCredentialsModel
+
+        # Infer credentials if not supplied and its azurecr
+        if not registry_user or not registry_pass:
+            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
+
         registries_def["server"] = registry_server
         registries_def["username"] = registry_user
 
@@ -647,6 +652,10 @@ def update_containerapp(cmd,
 
         if not registry_server:
             raise ValidationError("Usage error: --registry-login-server is required when adding or updating a registry")
+
+        # Infer credentials if not supplied and its azurecr
+        if not registry_user or not registry_pass:
+            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
 
         # Check if updating existing registry
         updating_existing_registry = False
