@@ -7,7 +7,7 @@ from azure.cli.core import azclierror
 
 
 class SSHSession():
-
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file,
                  use_private_ip, local_user, cert_file, port, ssh_client_folder, ssh_args):
         self.resource_group_name = resource_group_name
@@ -41,7 +41,8 @@ class SSHSession():
 
 
 class ConfigSession():
-
+    # pylint: disable=too-few-public-methods
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, config_path, resource_group_name, vm_name, ssh_ip, public_key_file,
                  private_key_file, overwrite, use_private_ip, local_user, cert_file, port,
                  ssh_client_folder):

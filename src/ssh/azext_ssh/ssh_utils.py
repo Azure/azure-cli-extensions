@@ -80,6 +80,7 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
             items_to_delete = ""
 
         expiration = None
+        # pylint: disable=broad-except
         try:
             expiration = get_certificate_start_and_end_times(config_info.cert_file, config_info.ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
@@ -221,6 +222,7 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, lo
         match = False
         while (time.time() - t0) < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(CLEANUP_TIME_INTERVAL_IN_SECONDS)
+            # pylint: disable=bare-except
             try:
                 with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
                     match = "debug1: Authentication succeeded" in ssh_client_log.read()

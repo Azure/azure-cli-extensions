@@ -73,7 +73,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         credentials_folder = os.path.abspath(credentials_folder)
 
     _do_ssh_op(cmd, config_session, credentials_folder, op_call)
-   
+
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     if not cert_path and not public_key_file:
@@ -101,6 +101,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
                        "Please delete once this certificate is no longer being used.", keys_folder)
 
     colorama.init()
+    # pylint: disable=broad-except
     try:
         cert_expiration = ssh_utils.get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
         print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {cert_expiration} in local time."
@@ -280,5 +281,3 @@ def _get_modulus_exponent(public_key_file):
     exponent = parser.exponent
 
     return modulus, exponent
-
-
