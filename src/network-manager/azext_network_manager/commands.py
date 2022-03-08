@@ -17,7 +17,7 @@ from azext_network_manager._client_factory import (
     cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration,
     cf_securityuserconfiguration, cf_activesecurityuserrule,
     cf_scopeconnection, cf_staticmembers, cf_listeffectivevirtualnetwork,
-    cf_subscriptionconnection, cf_managementgroupconnection,cf_effectivevirtualnetwork)
+    cf_subscriptionconnection, cf_managementgroupconnection, cf_effectivevirtualnetwork)
 
 
 def load_command_table(self, _):
@@ -81,10 +81,10 @@ def load_command_table(self, _):
         client_factory=cf_subscriptionconnection
     )
 
-    network_managementgroupconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._management_group_network_manager_connections_operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
-        client_factory=cf_managementgroupconnection
-    )
+#    network_managementgroupconnection = CliCommandType(
+#        operations_tmpl='azext_network_manager.vendored_sdks.operations._management_group_network_manager_connections_operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
+#        client_factory=cf_managementgroupconnection
+#    )
 
     with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
         g.custom_command('create', 'network_manager_create')

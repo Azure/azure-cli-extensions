@@ -770,10 +770,9 @@ helps['network manager connection subscription create'] = """
     examples:
       - name: Create network manager connection
         text: |-
-               az network manager connection subscription create --connection-name "testNetworkManagerConnection" 
---description "A sample policy" --network-manager-id /subscriptions/00000000-0000-0000-0000-000000000000
+               az network manager connection subscription create --connection-name "testNetworkManagerConnection" \
+--description "A sample policy" --network-manager-id /subscriptions/00000000-0000-0000-0000-000000000000\
 /resourceGroups/rg1/providers/Microsoft.Network/networkManagers/testManagerName
-
 """
 
 helps['network manager connection subscription update'] = """
@@ -782,7 +781,7 @@ helps['network manager connection subscription update'] = """
     examples:
       - name: Update network manager connection
         text: |-
-               az network manager connection subscription update --connection-name "testNetworkManagerConnection" 
+               az network manager connection subscription update --connection-name "testNetworkManagerConnection" \
 --description "A sample policy"
 """
 
@@ -872,7 +871,7 @@ helps['network manager scope-connection show'] = """
     examples:
       - name: Get network manager scope-connection
         text: |-
-               az network manager scope-connection show --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection show --name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
@@ -882,7 +881,7 @@ helps['network manager scope-connection create'] = """
     examples:
       - name: Create network manager scope-connection
         text: |-
-               az network manager scope-connection create --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection create --name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
 --tenant-id 00000000-0000-0000-0000-000000000000 --resource-id /subscriptions/00000000-0000-0000-0000-000000000000
 """
@@ -893,7 +892,7 @@ helps['network manager scope-connection update'] = """
     examples:
       - name: Update network manager scope-connection
         text: |-
-               az network manager scope-connection update --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection update --name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy"
 """
 
@@ -903,7 +902,7 @@ helps['network manager scope-connection delete'] = """
     examples:
       - name: Delete network manager scope connection
         text: |-
-               az network manager scope-connection delete --scope-connection-name "TestScopeConnect" \
+               az network manager scope-connection delete --name "TestScopeConnect" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
@@ -929,7 +928,7 @@ helps['network manager group static-member show'] = """
       - name: Get network manager group static-member
         text: |-
                az network manager group static-member show --network-group-name "testNetworkManagerGroup" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember"
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" 
 """
 
 helps['network manager group static-member create'] = """
@@ -940,7 +939,7 @@ helps['network manager group static-member create'] = """
         text: |-
                az network manager group static-member create --network-group-name "testNetworkManagerGroup" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
---resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/
+--resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
 Microsoft.Network/virtualnetworks/virtual_network"
 """
 
@@ -952,7 +951,7 @@ helps['network manager group static-member update'] = """
         text: |-
                az network manager group static-member update --network-group-name "testNetworkManagerGroup" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
---resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/
+--resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
 Microsoft.Network/virtualnetworks/virtual_network"
 """
 
