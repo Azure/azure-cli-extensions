@@ -90,7 +90,7 @@ helps['containerapp update'] = """
               --registry-password mypassword
     - name: Update a Containerapp using a specified startup command and arguments
       text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --image MyContainerImage \\
               --command "/bin/sh"
               --args "-c", "while true; do echo hello; sleep 10;done"
