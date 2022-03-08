@@ -103,5 +103,22 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the managed Environment.')
 
+    with self.argument_context('containerapp github-action add') as c:
+        c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Defaults to "master" if not specified.')
+        c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
+        c.argument('registry_url', help='The url of the registry, e.g. myregistry.azurecr.io')
+        c.argument('registry_username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
+        c.argument('registry_password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
+        c.argument('docker_file_path', help='The dockerfile location, e.g. ./Dockerfile')
+        c.argument('service_principal_client_id', help='The service principal client ID. ')
+        c.argument('service_principal_client_secret', help='The service principal client secret.')
+        c.argument('service_principal_tenant_id', help='The service principal tenant ID.')
+
+    with self.argument_context('containerapp github-action delete') as c:
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
+        c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
+        
     with self.argument_context('containerapp revision') as c:
         c.argument('revision_name', type=str, help='Name of the revision')

@@ -180,3 +180,35 @@ ContainerApp = {
     },
     "tags": None
 }
+
+SourceControl = {
+    "properties": {
+        "repoUrl": None, 
+        "branch": None, 
+        "githubActionConfiguration": None # [GitHubActionConfiguration]
+    }
+
+}
+
+GitHubActionConfiguration = {
+    "registryInfo": None, # [RegistryInfo]
+    "azureCredentials": None, # [AzureCredentials]
+    "dockerfilePath": None, # str
+    "publishType": None, # str
+    "os": None, # str
+    "runtimeStack": None, # str
+    "runtimeVersion": None # str
+}
+
+RegistryInfo = {
+    "registryUrl": None, # str
+    "registryUserName": None, # str
+    "registryPassword": None # str
+}
+
+AzureCredentials = {
+    "clientId": None, # str
+    "clientSecret": None, # str
+    "tenantId": None, #str
+    "subscriptionId": None #str
+}

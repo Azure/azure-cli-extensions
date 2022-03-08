@@ -56,6 +56,11 @@ def load_command_table(self, _):
         # g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp github-action') as g:
+        g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())
+        g.custom_command('show', 'show_github_action',  exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_github_action',  exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp revision') as g:
         g.custom_command('activate', 'activate_revision')
         g.custom_command('deactivate', 'deactivate_revision')

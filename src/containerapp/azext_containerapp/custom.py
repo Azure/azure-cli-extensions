@@ -5,15 +5,19 @@
 
 from azure.cli.core.azclierror import (RequiredArgumentMissingError, ResourceNotFoundError, ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.util import sdk_no_wait
 from knack.util import CLIError
 from knack.log import get_logger
+from urllib.parse import urlparse
+
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient
 from ._sdk_models import *
+from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
     VnetConfiguration as VnetConfigurationModel,
@@ -27,13 +31,13 @@ from ._models import (
     Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
     Scale as ScaleModel,
-    Container as ContainerModel)
+    Container as ContainerModel, GitHubActionConfiguration, RegistryInfo as RegistryInfoModel, AzureCredentials as AzureCredentialsModel, SourceControl as SourceControlModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
-                    _get_app_from_revision)
+                    _get_app_from_revision, raise_missing_token_suggestion)
 
 logger = get_logger(__name__)
 
@@ -905,6 +909,195 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
     except CLIError as e:
+        handle_raw_exception(e)
+
+
+def create_or_update_github_action(cmd,
+                                   name,
+                                   resource_group_name,
+                                   repo_url,
+                                   registry_url=None,
+                                   registry_username=None,
+                                   registry_password=None,
+                                   branch=None,
+                                   token=None,
+                                   login_with_github=False,
+                                   docker_file_path=None,
+                                   service_principal_client_id=None,
+                                   service_principal_client_secret=None,
+                                   service_principal_tenant_id=None):
+    if not token and not login_with_github:
+        raise_missing_token_suggestion()
+    elif not token:
+        scopes = ["admin:repo_hook", "repo", "workflow"]
+        token = get_github_access_token(cmd, scopes)
+    elif token and login_with_github:
+        logger.warning("Both token and --login-with-github flag are provided. Will use provided token")
+
+    try:
+        # Verify github repo
+        from github import Github, GithubException
+        from github.GithubException import BadCredentialsException, UnknownObjectException
+
+        repo = None
+        repo = repo_url.split('/')
+        if len(repo) >= 2:
+            repo = '/'.join(repo[-2:])
+        
+        if repo:
+            g = Github(token)
+            github_repo = None
+            try:
+                github_repo = g.get_repo(repo)
+                if not github_repo.permissions.push or not github_repo.permissions.maintain:
+                    raise CLIError("The token does not have appropriate access rights to repository {}.".format(repo))
+                try:
+                    github_repo.get_branch(branch=branch)
+                except GithubException as e:
+                    error_msg = "Encountered GitHub error when accessing {} branch in {} repo.".format(branch, repo)
+                    if e.data and e.data['message']:
+                        error_msg += " Error: {}".format(e.data['message'])
+                    raise CLIError(error_msg)
+                logger.warning('Verified GitHub repo and branch')
+            except BadCredentialsException:
+                raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use "
+                            "the --token argument. Run 'az webapp deployment github-actions add --help' "
+                            "for more information.")
+            except GithubException as e:
+                error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
+                if e.data and e.data['message']:
+                    error_msg += " Error: {}".format(e.data['message'])
+                raise CLIError(error_msg)
+    except CLIError as clierror:
+        raise clierror
+    except Exception as ex:
+        # If exception due to github package missing, etc just continue without validating the repo and rely on api validation
+        pass
+
+    source_control_info = None
+
+    try:
+        #source_control_info = client.get_source_control_info(resource_group_name, name).properties
+        source_control_info = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+
+    except Exception as ex:
+        if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
+            raise RequiredArgumentMissingError('Service principal client ID, secret and tenant ID are required to add github actions for the first time. Please create one using the command \"az ad sp create-for-rbac --name \{name\} --role contributor --scopes /subscriptions/\{subscription\}/resourceGroups/\{resourceGroup\} --sdk-auth\"')
+        source_control_info = SourceControlModel
+
+    source_control_info["properties"]["repoUrl"] = repo_url
+
+    if branch:
+        source_control_info["properties"]["branch"] = branch
+    if not source_control_info["properties"]["branch"]:
+        source_control_info["properties"]["branch"] = "master"
+
+    azure_credentials = None
+
+    if service_principal_client_id or service_principal_client_secret or service_principal_tenant_id:
+        azure_credentials = AzureCredentialsModel
+        azure_credentials["clientId"] = service_principal_client_id
+        azure_credentials["clientSecret"] = service_principal_client_secret
+        azure_credentials["tenantId"] = service_principal_tenant_id
+        azure_credentials["subscriptionId"] = get_subscription_id(cmd.cli_ctx)
+
+    # Registry
+    if not registry_username or not registry_password:
+        # If registry is Azure Container Registry, we can try inferring credentials
+        if not registry_url or '.azurecr.io' not in registry_url:
+            raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
+        logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+        parsed = urlparse(registry_url)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+
+        try:
+            registry_username, registry_password = _get_acr_cred(cmd.cli_ctx, registry_name)
+        except Exception as ex:
+            raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password')
+
+    registry_info = RegistryInfoModel
+    registry_info["registryUrl"] = registry_url
+    registry_info["registryUserName"] = registry_username
+    registry_info["registryPassword"] = registry_password
+
+    github_action_configuration = GitHubActionConfiguration
+    github_action_configuration["registryInfo"] = registry_info
+    github_action_configuration["azureCredentials"] = azure_credentials
+    github_action_configuration["dockerfilePath"] = docker_file_path
+
+    source_control_info["properties"]["githubActionConfiguration"] = github_action_configuration
+
+    headers = ["x-ms-github-auxiliary={}".format(token)]
+
+    try: 
+        r = GitHubActionClient.create_or_update(cmd = cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers = headers)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+    
+        
+def show_github_action(cmd, name, resource_group_name):
+    try:
+        return GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_github_action(cmd, name, resource_group_name, token=None, login_with_github=False):
+    # Check if there is an existing source control to delete
+    try: 
+        github_action_config = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    repo_url = github_action_config["properties"]["repoUrl"]
+
+    if not token and not login_with_github:
+        raise_missing_token_suggestion()
+    elif not token:
+        scopes = ["admin:repo_hook", "repo", "workflow"]
+        token = get_github_access_token(cmd, scopes)
+    elif token and login_with_github:
+        logger.warning("Both token and --login-with-github flag are provided. Will use provided token")
+
+    # Check if PAT can access repo
+    try:
+        # Verify github repo
+        from github import Github, GithubException
+        from github.GithubException import BadCredentialsException, UnknownObjectException
+
+        repo = None
+        repo = repo_url.split('/')
+        if len(repo) >= 2:
+            repo = '/'.join(repo[-2:])
+        
+        if repo:
+            g = Github(token)
+            github_repo = None
+            try:
+                github_repo = g.get_repo(repo)
+                if not github_repo.permissions.push or not github_repo.permissions.maintain:
+                    raise CLIError("The token does not have appropriate access rights to repository {}.".format(repo))
+            except BadCredentialsException:
+                raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use "
+                            "the --token argument. Run 'az webapp deployment github-actions add --help' "
+                            "for more information.")
+            except GithubException as e:
+                error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
+                if e.data and e.data['message']:
+                    error_msg += " Error: {}".format(e.data['message'])
+                raise CLIError(error_msg)
+    except CLIError as clierror:
+        raise clierror
+    except Exception as ex:
+        # If exception due to github package missing, etc just continue without validating the repo and rely on api validation
+        pass
+        
+    headers = ["x-ms-github-auxiliary={}".format(token)]
+
+    try:
+        return GitHubActionClient.delete(cmd=cmd, resource_group_name=resource_group_name, name=name, headers=headers)
+    except Exception as e:
         handle_raw_exception(e)
 
 

@@ -2,8 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-from ast import NotEq
 import json
 import time
 import sys
@@ -523,3 +521,85 @@ class ManagedEnvironmentClient():
                 env_list.append(formatted)
 
         return env_list
+
+class GitHubActionClient():
+    @classmethod
+    def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(github_action_envelope), headers=headers)
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "inprogress")
+
+        return r.json()
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    #TODO
+    @classmethod
+    def delete(cls, cmd, resource_group_name, name, headers, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = NEW_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, headers=headers)
+
+        if no_wait:
+            return # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+
+            if r.status_code == 202:
+                from azure.cli.core.azclierror import ResourceNotFoundError
+                try:
+                    poll(cmd, request_url, "cancelled")
+                except ResourceNotFoundError:
+                    pass
+                logger.warning('Containerapp github action successfully deleted')
+        return
