@@ -761,7 +761,7 @@ helps['network manager connection subscription show'] = """
     examples:
       - name: Get network manager connection
         text: |-
-               az network manager connection subscription show --connection-name "testNetworkManagerConnection" 
+               az network manager connection subscription show --connection-name "testNetworkManagerConnection"
 """
 
 helps['network manager connection subscription create'] = """
@@ -791,7 +791,7 @@ helps['network manager connection subscription delete'] = """
     examples:
       - name: Delete network manager connection
         text: |-
-               az network manager connection subscription delete --connection-name "testNetworkManagerConnection" 
+               az network manager connection subscription delete --connection-name "testNetworkManagerConnection"
 """
 
 helps['network manager connection'] = """
@@ -928,7 +928,7 @@ helps['network manager group static-member show'] = """
       - name: Get network manager group static-member
         text: |-
                az network manager group static-member show --network-group-name "testNetworkManagerGroup" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" 
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember"
 """
 
 helps['network manager group static-member create'] = """

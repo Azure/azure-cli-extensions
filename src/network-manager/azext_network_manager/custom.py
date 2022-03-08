@@ -138,9 +138,9 @@ def network_manager_effect_vnet_list_by_network_group(cmd,
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.by_network_group(resource_group_name=resource_group_name,
-                                                                             network_manager_name=network_manager_name,
-                                                                             network_group_name=network_group_name,
-                                                                             parameters=parameters)
+                                   network_manager_name=network_manager_name,
+                                   network_group_name=network_group_name,
+                                   parameters=parameters)
 
 
 def network_manager_effect_vnet_list_by_network_manager(cmd,
@@ -1139,7 +1139,7 @@ def network_manager_group_static_member_create(client,
                                    parameters=parameters)
 
 
-def network_manager_group_static_member_update(instance,resource_id):
+def network_manager_group_static_member_update(instance, resource_id):
     if resource_id is not None:
         instance.resource_id = resource_id
     return instance
