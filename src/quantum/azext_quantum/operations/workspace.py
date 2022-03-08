@@ -186,6 +186,15 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
 
+    # >>>>> Temporary storage account parameter code
+    # TODO: Find out if the storage account already exists
+    # TODO: If it exists, get these parameters from a CLI core function [?], else use defaults
+    storage_account_sku = 'Standard_LRS'
+    storage_account_kind = 'Storage'
+    # storage_account_sku = 'Standard_RAGRS'
+    # storage_account_kind = 'StorageV2'
+    # <<<<< End of temporary storage account parameter code
+    
     parameters = {
         'quantumWorkspaceName': workspace_name,
         'location': location,
@@ -193,7 +202,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'providers': validated_providers,
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
-        'storageAccountLocation': location,
+        'storageAccountLocation': location,                                     # <<<<< Can this be different from the workspace location? <<<<< 
+        'storageAccountSku': storage_account_sku,
+        'storageAccountKind': storage_account_kind,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
     parameters = {k: {'value': v} for k, v in parameters.items()}
