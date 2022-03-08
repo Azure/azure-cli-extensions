@@ -267,7 +267,7 @@ def load_arguments(self, _):
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
-        c.argument('http_proxy_config', options_list=['--http-proxy-config'], type=str)
+        c.argument('http_proxy_config', type=str)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
