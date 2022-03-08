@@ -14,7 +14,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
         g.custom_command('delete', 'delete_grafana')
         g.custom_command('list', 'list_grafana')
-        g.custom_command('show', 'show_grafana')
+        g.custom_show_command('show', 'show_grafana')
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
