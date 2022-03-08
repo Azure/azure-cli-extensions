@@ -207,6 +207,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     credentials = _get_data_credentials(cmd.cli_ctx, info.subscription)
     arm_client = ResourceManagementClient(credentials, info.subscription)
 
+    # Show the first progress indicator dot before starting ARM template deployment
+    print('.', end='', flush=True)
+
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
         workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py
