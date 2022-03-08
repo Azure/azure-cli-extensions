@@ -14,12 +14,10 @@ from knack.util import CLIError
 from ._client_factory import (
     cf_networkmanagercommit,
     cf_networkmanagerdeploymentstatus,
+    cf_networkmanagementclient,
+    cf_activesecurityuserrule,
     cf_effectivevirtualnetwork,
-    cf_activeconnectivityconfiguration,
-    cf_effectiveconnectivityconfiguration,
-    cf_effectivesecurityadminrule,
-    cf_activesecurityadminrule,
-    cf_activesecurityuserrule
+    cf_listeffectivevirtualnetwork
 )
 
 
@@ -136,13 +134,13 @@ def network_manager_effect_vnet_list_by_network_group(cmd,
                                                       network_manager_name,
                                                       network_group_name,
                                                       skip_token=None):
-    client = cf_effectivevirtualnetwork(cmd.cli_ctx)
+    client = cf_listeffectivevirtualnetwork(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
-    return client.list_by_network_group(resource_group_name=resource_group_name,
-                                        network_manager_name=network_manager_name,
-                                        network_group_name=network_group_name,
-                                        parameters=parameters)
+    return client.by_network_group(resource_group_name=resource_group_name,
+                                                                             network_manager_name=network_manager_name,
+                                                                             network_group_name=network_group_name,
+                                                                             parameters=parameters)
 
 
 def network_manager_effect_vnet_list_by_network_manager(cmd,
@@ -169,13 +167,13 @@ def network_manager_active_config_list(cmd,
                                        network_manager_name,
                                        skip_token=None,
                                        regions=None):
-    client = cf_activeconnectivityconfiguration(cmd.cli_ctx)
+    client = cf_networkmanagementclient(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['regions'] = regions
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters)
+    return client.list_active_connectivity_configurations(resource_group_name=resource_group_name,
+                                                          network_manager_name=network_manager_name,
+                                                          parameters=parameters)
 
 
 def network_manager_effective_config_list(cmd,
@@ -183,12 +181,12 @@ def network_manager_effective_config_list(cmd,
                                           resource_group_name,
                                           virtual_network_name,
                                           skip_token=None):
-    client = cf_effectiveconnectivityconfiguration(cmd.cli_ctx)
+    client = cf_networkmanagementclient(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
-    return client.list(resource_group_name=resource_group_name,
-                       virtual_network_name=virtual_network_name,
-                       parameters=parameters)
+    return client.list_network_manager_effective_connectivity_configurations(resource_group_name=resource_group_name,
+                                                                             virtual_network_name=virtual_network_name,
+                                                                             parameters=parameters)
 
 
 def network_manager_effective_security_admin_rule_list(cmd,
@@ -196,12 +194,12 @@ def network_manager_effective_security_admin_rule_list(cmd,
                                                        resource_group_name,
                                                        virtual_network_name,
                                                        skip_token=None):
-    client = cf_effectivesecurityadminrule(cmd.cli_ctx)
+    client = cf_networkmanagementclient(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
-    return client.list(resource_group_name=resource_group_name,
-                       virtual_network_name=virtual_network_name,
-                       parameters=parameters)
+    return client.list_network_manager_effective_security_admin_rules(resource_group_name=resource_group_name,
+                                                                      virtual_network_name=virtual_network_name,
+                                                                      parameters=parameters)
 
 
 def network_manager_active_security_admin_rule_list(cmd,
@@ -210,13 +208,13 @@ def network_manager_active_security_admin_rule_list(cmd,
                                                     network_manager_name,
                                                     skip_token=None,
                                                     regions=None):
-    client = cf_activesecurityadminrule(cmd.cli_ctx)
+    client = cf_networkmanagementclient(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['region'] = regions
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters)
+    return client.list_active_security_admin_rules(resource_group_name=resource_group_name,
+                                                   network_manager_name=network_manager_name,
+                                                   parameters=parameters)
 
 
 def network_manager_active_security_user_rule_list(cmd,
@@ -976,24 +974,20 @@ def network_manager_perimeter_associable_resource_type_list(client,
 
 
 def network_manager_connection_subscription_list(client,
-                                                 resource_group_name,
                                                  top=None,
                                                  skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       top=top,
+    return client.list(top=top,
                        skip_token=skip_token)
 
 
 def network_manager_connection_subscription_create(client,
-                                                   resource_group_name,
                                                    network_manager_connection_name,
                                                    network_manager_id,
                                                    description=None):
     parameters = {}
     parameters['network_manager_id'] = network_manager_id
     parameters['description'] = description
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_connection_name=network_manager_connection_name,
+    return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
                                    parameters=parameters)
 
 
@@ -1005,27 +999,19 @@ def network_manager_connection_subscription_update(instance,
 
 
 def network_manager_connection_subscription_show(client,
-                                                 resource_group_name,
                                                  network_manager_connection_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_connection_name=network_manager_connection_name)
+    return client.get(network_manager_connection_name=network_manager_connection_name)
 
 
 def network_manager_connection_subscription_delete(client,
-                                                   resource_group_name,
                                                    network_manager_connection_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_connection_name=network_manager_connection_name)
+    return client.delete(network_manager_connection_name=network_manager_connection_name)
 
 
 def network_manager_connection_management_group_list(client,
-                                                     resource_group_name,
-                                                     management_group_id,
                                                      top=None,
                                                      skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       management_group_id=management_group_id,
-                       top=top,
+    return client.list(top=top,
                        skip_token=skip_token)
 
 
@@ -1088,9 +1074,11 @@ def network_manager_scope_connection_create(client,
                                             network_manager_name,
                                             scope_connection_name,
                                             tenant_id,
+                                            resource_id,
                                             description=None):
     parameters = {}
     parameters['tenant_id'] = tenant_id
+    parameters['resource_id'] = resource_id
     parameters['description'] = description
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -1099,12 +1087,9 @@ def network_manager_scope_connection_create(client,
 
 
 def network_manager_scope_connection_update(instance,
-                                            tenant_id,
                                             description=None):
     if description is not None:
         instance.description = description
-    if tenant_id is not None:
-        instance.tenant_id = tenant_id
     return instance
 
 
@@ -1143,8 +1128,10 @@ def network_manager_group_static_member_create(client,
                                                resource_group_name,
                                                network_manager_name,
                                                network_group_name,
-                                               static_member_name):
+                                               static_member_name,
+                                               resource_id):
     parameters = {}
+    parameters['resource_id'] = resource_id
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    network_group_name=network_group_name,
@@ -1152,7 +1139,9 @@ def network_manager_group_static_member_create(client,
                                    parameters=parameters)
 
 
-def network_manager_group_static_member_update(instance):
+def network_manager_group_static_member_update(instance,resource_id):
+    if resource_id is not None:
+        instance.resource_id = resource_id
     return instance
 
 

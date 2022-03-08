@@ -27,19 +27,17 @@ class NetworkScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(NetworkScenarioTest, self).__init__(*args, **kwargs)
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_crud', location='eastus2euap')
     def test_network_manager_crud(self, resource_group):
         self.kwargs.update({
             'name': 'TestNetworkManager',
-            'description': '"My Test Network Manager"',
-            'display_name': 'TestNetworkManager',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id())
         })
 
-        self.cmd('network manager create --name {name} --description {description} --display-name {display_name} '
+        self.cmd('network manager create --name {name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
                  '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
-                 ' subscriptions={sub} '
+                 'subscriptions={sub} '
                  '-l eastus2euap '
                  '--resource-group {rg}')
         
@@ -71,13 +69,14 @@ class NetworkScenarioTest(ScenarioTest):
                  '-l eastus2euap '
                  '--resource-group {rg}')
 
-        self.cmd('network manager group create --name {name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name {display_name} --member-type "{member_type}"  -g {rg} ')
+        self.cmd('network manager group create --name {name} --network-manager-name {manager_name} '
+                 '--description {description} --display-name {display_name} --member-type {member_type}  -g {rg} ')
 
         self.cmd('network manager group update -g {rg} --name {name} --network-manager-name {manager_name} --description "Desc changed."')
         self.cmd('network manager group show -g {rg} --name {name} --network-manager-name {manager_name}')
         self.cmd('network manager group list -g {rg} --network-manager-name {manager_name}')
-        self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --yes')
+        self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_member', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -100,16 +99,21 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name {display_name} --member-type "{member_type}"  -g {rg} ')
+                 '--display-name {display_name} --member-type {member_type}  -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
-                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
+                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" -g {rg}')
 
-        self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} --description "Desc changed."')
+        self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"')
         self.cmd('network manager group static-member show -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member list -g {rg} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member delete -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} --yes')
 
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='eastus2euap')
     def test_network_manager_security_user_config_crud(self, resource_group):
 
@@ -168,8 +172,8 @@ class NetworkScenarioTest(ScenarioTest):
         # test nm uncommit
         # self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} ')
 
-        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
-
+        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -183,7 +187,8 @@ class NetworkScenarioTest(ScenarioTest):
             'group_name': 'TestNetworkGroup',
             'description': '"A sample policy"',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-            'virtual_network': virtual_network
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
         })
 
 
@@ -216,6 +221,10 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
+        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -228,7 +237,8 @@ class NetworkScenarioTest(ScenarioTest):
             'group_name': 'TestNetworkGroup',
             'description': '"A sample policy"',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-            'virtual_network': virtual_network
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
@@ -259,10 +269,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
 
         self.cmd('network manager security-admin-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
-        self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
-        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
+        self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
-
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_crud(self, virtual_network, resource_group):
@@ -305,6 +316,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_collection_crud(self, virtual_network, resource_group):
@@ -356,7 +368,8 @@ class NetworkScenarioTest(ScenarioTest):
             'group_name': 'TestNetworkGroup',
             'description': '"A sample policy"',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-            'virtual_network': virtual_network
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
@@ -382,6 +395,9 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
  
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
+
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2euap')
     @VirtualNetworkPreparer()
@@ -392,7 +408,8 @@ class NetworkScenarioTest(ScenarioTest):
             'group_name': 'TestNetworkGroup',
             'description': '"A sample policy"',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-            'virtual_network': virtual_network
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
@@ -418,94 +435,97 @@ class NetworkScenarioTest(ScenarioTest):
         # Internal Server Error
         # self.cmd('network manager list-active-security-user-rule --network-manager-name {manager_name} -g {rg} --region eastus2euap')
 
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
-        @ResourceGroupPreparer(name_prefix='test_network_manager_scope_connection_crud', location='eastus2euap')
-        def test_network_manager_scope_connection(self, resource_group):
 
-            self.kwargs.update({
-                'connection_name': 'myTestScopeConnection',
-                'manager_name': 'TestNetworkManager',
-            })
+    @ResourceGroupPreparer(name_prefix='test_network_manager_scope_connection', location='eastus2euap')
+    def test_network_manager_scope_connection(self, resource_group):
+        tenant_id = self.cmd('account list --query "[?isDefault].tenantId" -o tsv').output.strip()
+        self.kwargs.update({
+            'connection_name': 'myTestScopeConnection',
+            'manager_name': 'TestNetworkManager',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'tenant_id': tenant_id
+        })
 
-            self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
                  '--resource-group {rg}')
 
-            self.cmd('network manager scope-connection create --resource-group {rg} --network-manager-name {manager_name} --name {connection_name} '
-                     '--description "My Test Network Manager Scope Connection"'
-                     '--tenant-id "testTenantId"'
-                     '--resource-id "testResourceId"')
+        self.cmd('network manager scope-connection create --resource-group {rg} --network-manager-name {manager_name} '
+                 '--name {connection_name} --description "My Test Network Manager Scope Connection" '
+                 '--tenant-id {tenant_id} --resource-id {sub}')
 
-            self.cmd('network manager scope-connection show -g {rg} --network-manager-name {manager_name} --name {connection_name} ')
+        self.cmd('network manager scope-connection show -g {rg} --network-manager-name {manager_name} --name {connection_name}')
 
-            self.cmd('network manager scope-connection update --g {rg} --network-manager-name {manager_name} --name {connection_name} '
-                 '--description "My Test Network Manager Scope Connection Updated Description"')
+        self.cmd('network manager scope-connection update -g {rg} --network-manager-name {manager_name} '
+                 '--name {connection_name} --description "My Test Network Manager Scope Connection Updated Description"')
 
-            self.cmd('network manager scope-connection list -g {rg} --network-manager-name {manager_name} ')
+        self.cmd('network manager scope-connection list -g {rg} --network-manager-name {manager_name} ')
 
-            self.cmd('network manager scope-connection delete -g {rg} --network-manager-name {manager_name} --name {connection_name} ')
+        self.cmd('network manager scope-connection delete -g {rg} --network-manager-name {manager_name} --name {connection_name} --yes')
 
-        @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2euap')
-        def test_network_manager_scope_connection(self, resource_group):
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
-            self.kwargs.update({
-                'subId': self.get_subscription_id(),
-                'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-                'manager_id': '/subscriptions/{}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{connection_name}'.format(self.get_subscription_id()),
-                'manager_name': 'TestNetworkManager',
-                'connection_name': 'myTestNetworkManagerConnection'
-            })
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connection_subscription', location='eastus2euap')
+    def test_network_manager_connection_subscription(self, resource_group):
 
-            self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
-                 '--network-manager-scopes '
-                 ' subscriptions={sub} '
-                 '-l eastus2euap '
-                 '--resource-group {rg}')
+        self.kwargs.update({
+            'subId': self.get_subscription_id(),
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'manager_name': 'TestNetworkManager',
+            'connection_name': 'myTestNetworkManagerConnection'
+        })
 
-            self.cmd('network manager connection create --subscriptionId {subId} --connection-name {connection_name} '
-                     '--description "My Test Network Manager Connection"'
-                     '--network-manager-id {manager_id}')
+        network_manager = self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                                   '--scope-accesses "SecurityAdmin" "Connectivity" '
+                                   '--network-manager-scopes '
+                                   ' subscriptions={sub} '
+                                   '-l eastus2euap '
+                                   '--resource-group {rg}').get_output_in_json()
+        self.kwargs['manager_id'] = network_manager['id']
+        self.cmd('network manager connection subscription create --connection-name {connection_name} --description "My Test Network Manager Connection" --network-manager-id {manager_id}')
 
-            self.cmd('network manager connection show --subscriptionId {subId} --connection-name {connection_name} ')
+        self.cmd('network manager connection subscription show --connection-name {connection_name} ')
 
-            self.cmd('network manager scope-connection update --subscriptionId {subId} --connection-name {connection_name} '
-                 '--description "My Test Network Manager Connection Updated Description"')
+        self.cmd('network manager connection subscription update --connection-name {connection_name} --description "My Test Network Manager Connection Updated Description"')
 
-            self.cmd('network manager scope-connection list --subscriptionId {subId} ')
+        self.cmd('network manager connection subscription list')
 
-            self.cmd('network manager scope-connection delete --subscriptionId {subId} --connection-name {connection_name} ')
+        self.cmd('network manager connection subscription delete --connection-name {connection_name} --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
-        @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2euap')
-        def test_network_manager_scope_connection(self, resource_group):
-
-            self.kwargs.update({
-                'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-                'manager_id': '/subscriptions/{}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{connection_name}'.format(self.get_subscription_id()),
-                'manager_name': 'TestNetworkManager',
-                'connection_name': 'myTestNetworkManagerConnection',
-                'mgId': 'testManagementGroupId'
-            })
-
-            self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
-                 '--network-manager-scopes '
-                 ' subscriptions={sub} '
-                 '-l eastus2euap '
-                 '--resource-group {rg}')
-
-            self.cmd('network manager connection create --management-group-id {mgId} --connection-name {connection_name} '
-                     '--description "My Test Network Manager Connection"'
-                     '--network-manager-id {manager_id}')
-
-            self.cmd('network manager connection show --management-group-id {mgId} --connection-name {connection_name} ')
-
-            self.cmd('network manager scope-connection update --management-group-id {mgId} --connection-name {connection_name} '
-                 '--description "My Test Network Manager Connection Updated Description"')
-
-            self.cmd('network manager scope-connection list --management-group-id {mgId} ')
-
-            self.cmd('network manager scope-connection delete --management-group-id {mgId} --connection-name {connection_name} ')
+#     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2euap')
+#     def test_network_manager_scope_connection(self, resource_group):
+#
+#         self.kwargs.update({
+#             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+#             'manager_id': '/subscriptions/{}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{connection_name}'.format(self.get_subscription_id()),
+#             'manager_name': 'TestNetworkManager',
+#             'connection_name': 'myTestNetworkManagerConnection',
+#             'mgId': 'testManagementGroupId'
+#         })
+#
+#         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+#              '--scope-accesses "SecurityAdmin" "Connectivity" '
+#              '--network-manager-scopes '
+#              ' subscriptions={sub} '
+#              '-l eastus2euap '
+#              '--resource-group {rg}')
+#
+#         self.cmd('network manager connection create --management-group-id {mgId} --connection-name {connection_name} '
+#                  '--description "My Test Network Manager Connection"'
+#                  '--network-manager-id {manager_id}')
+#
+#         self.cmd('network manager connection show --management-group-id {mgId} --connection-name {connection_name} ')
+#
+#         self.cmd('network manager scope-connection update --management-group-id {mgId} --connection-name {connection_name} '
+#                  '--description "My Test Network Manager Connection Updated Description"')
+#
+#         self.cmd('network manager scope-connection list --management-group-id {mgId} ')
+#
+#         self.cmd('network manager scope-connection delete --management-group-id {mgId} --connection-name {connection_name} ')
