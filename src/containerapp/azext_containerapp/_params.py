@@ -26,7 +26,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp') as c:
         c.argument('tags', arg_type=tags_type)
-        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment', '-e'], help="Name or resource ID of the containerapp's environment.")
+        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the containerapp's environment.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a containerapp. All other parameters will be ignored')
 
     # Container

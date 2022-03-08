@@ -312,15 +312,11 @@ def create_containerapp(cmd,
                         dapr_app_protocol=None,
                         # dapr_components=None,
                         revision_suffix=None,
-                        location=None,
                         startup_command=None,
                         args=None,
                         tags=None,
                         no_wait=False):
-    location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
-
     _validate_subscription_registered(cmd, "Microsoft.App")
-    _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
 
     if yaml:
         if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
@@ -350,13 +346,8 @@ def create_containerapp(cmd,
     if not managed_env_info:
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
 
-    if not location:
-        location = managed_env_info["location"]
-    elif location.lower() != managed_env_info["location"].lower():
-        raise ValidationError("The location \"{}\" of the containerapp must be the same as the Managed Environment location \"{}\"".format(
-            location,
-            managed_env_info["location"]
-        ))
+    location = managed_env_info["location"]
+    _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
 
     external_ingress = None
     if ingress is not None:
