@@ -571,6 +571,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_1.get_message_of_the_day(), "test_mc_message_of_the_day"
         )
 
+        # custom
         ctx_2 = AKSPreviewContext(
             self.cmd,
             {"message_of_the_day": "fake-path"},
@@ -580,6 +581,15 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # fail on invalid file path
         with self.assertRaises(InvalidArgumentValueError):
             ctx_2.get_message_of_the_day()
+
+        # custom
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"message_of_the_day": _get_test_data_file("invalidconfig.json")},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_message_of_the_day(), "W10=")
 
     def test_get_kubelet_config(self):
         # default
@@ -621,7 +631,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        # fail on invalid file path
+        # fail on invalid file content
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_kubelet_config()
 
@@ -665,7 +675,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        # fail on invalid file path
+        # fail on invalid file content
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_linux_os_config()
 
@@ -3422,7 +3432,9 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_3.context.attach_mc(mc_3)
         # fail on incomplete mc object (no windows profile)
-        with self.assertRaises(UnknownError):
+        with patch(
+            "azure.cli.command_modules.acs.decorator.AKSUpdateDecorator.update_windows_profile", return_value=mc_3
+        ), self.assertRaises(UnknownError):
             dec_3.update_windows_profile(mc_3)
 
     def test_update_pod_identity_profile(self):
