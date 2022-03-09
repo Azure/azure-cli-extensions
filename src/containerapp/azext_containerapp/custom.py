@@ -367,6 +367,11 @@ def create_containerapp(cmd,
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
 
+    # If ACR image and registry_server is not supplied, infer it
+    if image and '.azurecr.io' in image:
+        if not registry_server:
+            registry_server = image.split('/')[0]
+
     registries_def = None
     if registry_server is not None:
         registries_def = RegistryCredentialsModel
@@ -495,6 +500,11 @@ def update_containerapp(cmd,
 
     if not containerapp_def:
         raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    # If ACR image and registry_server is not supplied, infer it
+    if image and '.azurecr.io' in image:
+        if not registry_server:
+            registry_server = image.split('/')[0]
 
     update_map = {}
     update_map['secrets'] = secrets is not None
