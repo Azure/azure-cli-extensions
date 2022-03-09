@@ -8,6 +8,7 @@ import subprocess
 import time
 import multiprocessing as mp
 import datetime
+import re
 from azext_ssh import file_utils
 
 from knack import log
@@ -48,9 +49,6 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
     logger.debug("Running ssh command %s", ' '.join(command))
     connection_status = subprocess.call(command, shell=platform.system() == 'Windows')
 
-    if log_file:
-        _print_error_messages_from_ssh_log(log_file, connection_status)
-
     if delete_keys or delete_cert:
         if cleanup_process.is_alive():
             cleanup_process.terminate()
@@ -58,6 +56,9 @@ def start_ssh_connection(ssh_info, delete_keys, delete_cert):
             t0 = time.time()
             while cleanup_process.is_alive() and (time.time() - t0) < CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
                 time.sleep(1)
+
+        if log_file:
+            _print_error_messages_from_ssh_log(log_file, connection_status)
 
         # Make sure all files have been properly removed.
         _do_cleanup(delete_keys, delete_cert, ssh_info.cert_file, ssh_info.private_key_file, ssh_info.public_key_file)
@@ -156,11 +157,48 @@ def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
 def _print_error_messages_from_ssh_log(log_file, connection_status):
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
         log_text = ssh_log.read()
+        log_lines = log_text.splitlines()
         if "debug1: Authentication succeeded" not in log_text or connection_status != 0:
-            for line in log_text.splitlines():
+            for line in log_lines:
                 if "debug1:" not in line:
                     print(line)
+
+            if "Permission denied (publickey)." in log_text:
+                # pylint: disable=bare-except
+                # pylint: disable=too-many-boolean-expressions
+                # Check if OpenSSH client and server versions are incompatible
+                try:
+                    regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
+                    local_major, local_minor = re.findall(regex, log_lines[0])[0]
+                    remote_major, remote_minor = re.findall(regex, _get_line_that_contains("remote software version",
+                                                                                           log_lines))[0]
+                    local_major = int(local_major)
+                    local_minor = int(local_minor)
+                    remote_major = int(remote_major)
+                    remote_minor = int(remote_minor)
+                except:
+                    ssh_log.close()
+                    return
+
+                if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
+                   (local_major > 8 or (local_major == 8 and local_minor >= 8)):
+                    logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
+                                   "Version incompatible with OpenSSH client version %d.%d.",
+                                   remote_major, remote_minor, local_major, local_minor)
+
+                elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
+                     (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
+                    logger.warning("The OpenSSH client version %d.%d is too old."
+                                   "Version incompatible with OpenSSH server version %d.%d in the target VM .",
+                                   local_major, local_minor, remote_major, remote_minor)
         ssh_log.close()
+
+
+def _get_line_that_contains(substring, lines):
+    for line in lines:
+        if substring in line:
+            return line
+    return None
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
@@ -209,8 +247,10 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
 
         if not os.path.isfile(ssh_path):
             raise azclierror.UnclassifiedUserFault(
-                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
-                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse")
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". "
+                "Make sure OpenSSH is installed correctly: "
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse. "
+                "Or use --ssh-client-folder to provide folder path with ssh executables. ")
 
     return ssh_path
 
