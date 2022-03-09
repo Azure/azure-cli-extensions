@@ -2326,9 +2326,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         subnet_id = subnet_output["id"]
         assert subnet_id is not None
 
-        self.cmd(create_vm_cmd, checks=[
-            self.check('provisioningState', 'Succeeded')
-        ])
+        self.cmd(create_vm_cmd)
         
         self.kwargs.update({
             'vnet_subnet_id': subnet_id,
@@ -2336,7 +2334,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # use custom feature so it does not require subscription to regiter the feature
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --http-proxy-config={http_proxy_path} ' \
-                     '--ssh-key-value={ssh_key_value} --vnet-subnet-id {vnet_subnet_id} -o json'
+                     '--ssh-key-value={ssh_key_value} --enable-managed-identity --yes --vnet-subnet-id {vnet_subnet_id} -o json'
 
         self.cmd(create_cmd, checks=[
             self.check('httpProxyConfig.httpProxy', 'http://cli-proxy-vm:3128/'),
