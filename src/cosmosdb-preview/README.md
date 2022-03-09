@@ -7,9 +7,9 @@ This package provides commands to
 - List the different versions of databases and collections that were modified
 - Trigger a point in time restore on the Azure CosmosDB continuous mode backup accounts
 - Update the backup interval and backup retention of periodic mode backup accounts
-- Creating a new Azure Cosmos DB database account with materialized views
-- Updating an Azure Cosmos DB database account to enable materialized views
-- Creating/Deleting a cosmosdb materialized views builder service resource
+- Create a new Azure Cosmos DB database account with materialized views
+- Update an Azure Cosmos DB database account to enable materialized views
+- Create/Delete a cosmosdb materialized views builder service resource
 
 ## How to use ##
 
