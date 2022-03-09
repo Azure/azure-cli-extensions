@@ -183,13 +183,15 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                 if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
                    (local_major > 8 or (local_major == 8 and local_minor >= 8)):
                     logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
-                                   "Version incompatible with OpenSSH client version %d.%d.",
+                                   "Version incompatible with OpenSSH client version %d.%d. "
+                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
                                    remote_major, remote_minor, local_major, local_minor)
 
                 elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
                      (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
-                    logger.warning("The OpenSSH client version %d.%d is too old."
-                                   "Version incompatible with OpenSSH server version %d.%d in the target VM .",
+                    logger.warning("The OpenSSH client version %d.%d is too old. "
+                                   "Version incompatible with OpenSSH server version %d.%d in the target VM. "
+                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
                                    local_major, local_minor, remote_major, remote_minor)
         ssh_log.close()
 
@@ -249,7 +251,7 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
             raise azclierror.UnclassifiedUserFault(
                 "Could not find " + ssh_command + ".exe on path " + ssh_path + ". "
                 "Make sure OpenSSH is installed correctly: "
-                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse. "
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
                 "Or use --ssh-client-folder to provide folder path with ssh executables. ")
 
     return ssh_path
