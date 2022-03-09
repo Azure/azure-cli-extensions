@@ -4,7 +4,7 @@ Release History
 ===============
 0.15.0
 ++++++
-* Adding enable MaterializedViews parameter for create/update database account.
+* Add `--enable-materialized-views` parameter for create/update database account.
 
 0.14.0
 ++++++
