@@ -31,16 +31,20 @@ def build_get_request(
     subscription_id: str,
     resource_group_name: str,
     network_manager_name: str,
+    network_group_name: str,
+    static_member_name: str,
     **kwargs: Any
 ) -> HttpRequest:
     api_version = "2021-05-01-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
         "networkManagerName": _SERIALIZER.url("network_manager_name", network_manager_name, 'str'),
+        "networkGroupName": _SERIALIZER.url("network_group_name", network_group_name, 'str'),
+        "staticMemberName": _SERIALIZER.url("static_member_name", static_member_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -66,6 +70,8 @@ def build_create_or_update_request(
     subscription_id: str,
     resource_group_name: str,
     network_manager_name: str,
+    network_group_name: str,
+    static_member_name: str,
     *,
     json: JSONType = None,
     content: Any = None,
@@ -76,11 +82,13 @@ def build_create_or_update_request(
     api_version = "2021-05-01-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
         "networkManagerName": _SERIALIZER.url("network_manager_name", network_manager_name, 'str'),
+        "networkGroupName": _SERIALIZER.url("network_group_name", network_group_name, 'str'),
+        "staticMemberName": _SERIALIZER.url("static_member_name", static_member_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -110,19 +118,20 @@ def build_delete_request(
     subscription_id: str,
     resource_group_name: str,
     network_manager_name: str,
-    *,
-    force: Optional[bool] = None,
-    recursive: Optional[bool] = None,
+    network_group_name: str,
+    static_member_name: str,
     **kwargs: Any
 ) -> HttpRequest:
     api_version = "2021-05-01-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
         "networkManagerName": _SERIALIZER.url("network_manager_name", network_manager_name, 'str'),
+        "networkGroupName": _SERIALIZER.url("network_group_name", network_group_name, 'str'),
+        "staticMemberName": _SERIALIZER.url("static_member_name", static_member_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -130,10 +139,6 @@ def build_delete_request(
     # Construct parameters
     query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
     query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if force is not None:
-        query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
-    if recursive is not None:
-        query_parameters['recursive'] = _SERIALIZER.query("recursive", recursive, 'bool')
 
     # Construct headers
     header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -148,63 +153,25 @@ def build_delete_request(
     )
 
 
-def build_patch_request(
+def build_list_request(
     subscription_id: str,
     resource_group_name: str,
     network_manager_name: str,
+    network_group_name: str,
     *,
-    json: JSONType = None,
-    content: Any = None,
+    top: Optional[int] = None,
+    skip_token: Optional[str] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
-
     api_version = "2021-05-01-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
         "networkManagerName": _SERIALIZER.url("network_manager_name", network_manager_name, 'str'),
-    }
-
-    url = _format_url_section(url, **path_format_arguments)
-
-    # Construct parameters
-    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if content_type is not None:
-        header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
-    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="PATCH",
-        url=url,
-        params=query_parameters,
-        headers=header_parameters,
-        json=json,
-        content=content,
-        **kwargs
-    )
-
-
-def build_list_by_subscription_request(
-    subscription_id: str,
-    *,
-    top: Optional[int] = None,
-    skip_token: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    api_version = "2021-05-01-preview"
-    accept = "application/json"
-    # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/providers/Microsoft.Network/networkManagers')
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "networkGroupName": _SERIALIZER.url("network_group_name", network_group_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -229,48 +196,8 @@ def build_list_by_subscription_request(
         **kwargs
     )
 
-
-def build_list_request(
-    subscription_id: str,
-    resource_group_name: str,
-    *,
-    top: Optional[int] = None,
-    skip_token: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    api_version = "2021-05-01-preview"
-    accept = "application/json"
-    # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers')
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
-    }
-
-    url = _format_url_section(url, **path_format_arguments)
-
-    # Construct parameters
-    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if top is not None:
-        query_parameters['$top'] = _SERIALIZER.query("top", top, 'int', maximum=20, minimum=1)
-    if skip_token is not None:
-        query_parameters['$skipToken'] = _SERIALIZER.query("skip_token", skip_token, 'str')
-
-    # Construct headers
-    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=url,
-        params=query_parameters,
-        headers=header_parameters,
-        **kwargs
-    )
-
-class NetworkManagersOperations(object):
-    """NetworkManagersOperations operations.
+class StaticMembersOperations(object):
+    """StaticMembersOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -296,20 +223,26 @@ class NetworkManagersOperations(object):
         self,
         resource_group_name: str,
         network_manager_name: str,
+        network_group_name: str,
+        static_member_name: str,
         **kwargs: Any
-    ) -> "_models.NetworkManager":
-        """Gets the specified Network Manager.
+    ) -> "_models.StaticMember":
+        """Gets the specified static member.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
+        :param network_group_name: The name of the network group.
+        :type network_group_name: str
+        :param static_member_name: The name of the static member.
+        :type static_member_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager
+        :return: StaticMember, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.StaticMember
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.StaticMember"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -320,6 +253,8 @@ class NetworkManagersOperations(object):
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             network_manager_name=network_manager_name,
+            network_group_name=network_group_name,
+            static_member_name=static_member_name,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -332,14 +267,14 @@ class NetworkManagersOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('NetworkManager', pipeline_response)
+        deserialized = self._deserialize('StaticMember', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}'}  # type: ignore
 
 
     @distributed_trace
@@ -347,23 +282,29 @@ class NetworkManagersOperations(object):
         self,
         resource_group_name: str,
         network_manager_name: str,
-        parameters: "_models.NetworkManager",
+        network_group_name: str,
+        static_member_name: str,
+        parameters: "_models.StaticMember",
         **kwargs: Any
-    ) -> "_models.NetworkManager":
-        """Creates or updates a Network Manager.
+    ) -> "_models.StaticMember":
+        """Creates or updates a static member.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which network manager is.
-        :type parameters: ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager
+        :param network_group_name: The name of the network group.
+        :type network_group_name: str
+        :param static_member_name: The name of the static member.
+        :type static_member_name: str
+        :param parameters: Parameters supplied to the specify the static member to create.
+        :type parameters: ~azure.mgmt.network.v2021_05_01_preview.models.StaticMember
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager
+        :return: StaticMember, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.StaticMember
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.StaticMember"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -371,12 +312,14 @@ class NetworkManagersOperations(object):
 
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(parameters, 'NetworkManager')
+        _json = self._serialize.body(parameters, 'StaticMember')
 
         request = build_create_or_update_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             network_manager_name=network_manager_name,
+            network_group_name=network_group_name,
+            static_member_name=static_member_name,
             content_type=content_type,
             json=_json,
             template_url=self.create_or_update.metadata['url'],
@@ -392,17 +335,17 @@ class NetworkManagersOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('NetworkManager', pipeline_response)
+            deserialized = self._deserialize('StaticMember', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('NetworkManager', pipeline_response)
+            deserialized = self._deserialize('StaticMember', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}'}  # type: ignore
 
 
     @distributed_trace
@@ -410,24 +353,20 @@ class NetworkManagersOperations(object):
         self,
         resource_group_name: str,
         network_manager_name: str,
-        force: Optional[bool] = None,
-        recursive: Optional[bool] = None,
+        network_group_name: str,
+        static_member_name: str,
         **kwargs: Any
     ) -> None:
-        """Deletes a network manager.
+        """Deletes a static member.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
-        :param force: Deletes the resource even if it is part of a deployed configuration. If the
-         configuration has been deployed, the service will do a cleanup deployment in the background,
-         prior to the delete.
-        :type force: bool
-        :param recursive: Deletes the resource recursively. When present in a security configuration
-         delete, all rule collections and rules within the configuration will be deleted. When present
-         in a rule collection delete, all rules within the collection will be deleted.
-        :type recursive: bool
+        :param network_group_name: The name of the network group.
+        :type network_group_name: str
+        :param static_member_name: The name of the static member.
+        :type static_member_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -444,8 +383,8 @@ class NetworkManagersOperations(object):
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             network_manager_name=network_manager_name,
-            force=force,
-            recursive=recursive,
+            network_group_name=network_group_name,
+            static_member_name=static_member_name,
             template_url=self.delete.metadata['url'],
         )
         request = _convert_request(request)
@@ -461,158 +400,27 @@ class NetworkManagersOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers/{staticMemberName}'}  # type: ignore
 
-
-    @distributed_trace
-    def patch(
-        self,
-        resource_group_name: str,
-        network_manager_name: str,
-        parameters: "_models.PatchObject",
-        **kwargs: Any
-    ) -> "_models.NetworkManager":
-        """Patch NetworkManager.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which network manager is.
-        :type parameters: ~azure.mgmt.network.v2021_05_01_preview.models.PatchObject
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-
-        _json = self._serialize.body(parameters, 'PatchObject')
-
-        request = build_patch_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            network_manager_name=network_manager_name,
-            content_type=content_type,
-            json=_json,
-            template_url=self.patch.metadata['url'],
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('NetworkManager', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    patch.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
-
-
-    @distributed_trace
-    def list_by_subscription(
-        self,
-        top: Optional[int] = None,
-        skip_token: Optional[str] = None,
-        **kwargs: Any
-    ) -> Iterable["_models.NetworkManagerListResult"]:
-        """List all network managers in a subscription.
-
-        :param top: An optional query parameter which specifies the maximum number of records to be
-         returned by the server.
-        :type top: int
-        :param skip_token: SkipToken is only used if a previous operation returned a partial result. If
-         a previous response contains a nextLink element, the value of the nextLink element will include
-         a skipToken parameter that specifies a starting point to use for subsequent calls.
-        :type skip_token: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either NetworkManagerListResult or the result of
-         cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_by_subscription_request(
-                    subscription_id=self._config.subscription_id,
-                    top=top,
-                    skip_token=skip_token,
-                    template_url=self.list_by_subscription.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_by_subscription_request(
-                    subscription_id=self._config.subscription_id,
-                    top=top,
-                    skip_token=skip_token,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("NetworkManagerListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Network/networkManagers'}  # type: ignore
 
     @distributed_trace
     def list(
         self,
         resource_group_name: str,
+        network_manager_name: str,
+        network_group_name: str,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
         **kwargs: Any
-    ) -> Iterable["_models.NetworkManagerListResult"]:
-        """List network managers in a resource group.
+    ) -> Iterable["_models.StaticMemberListResult"]:
+        """Lists the specified static member.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
+        :param network_manager_name: The name of the network manager.
+        :type network_manager_name: str
+        :param network_group_name: The name of the network group.
+        :type network_group_name: str
         :param top: An optional query parameter which specifies the maximum number of records to be
          returned by the server.
         :type top: int
@@ -621,13 +429,13 @@ class NetworkManagersOperations(object):
          a skipToken parameter that specifies a starting point to use for subsequent calls.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either NetworkManagerListResult or the result of
+        :return: An iterator like instance of either StaticMemberListResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerListResult]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_05_01_preview.models.StaticMemberListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.StaticMemberListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -638,6 +446,8 @@ class NetworkManagersOperations(object):
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
+                    network_manager_name=network_manager_name,
+                    network_group_name=network_group_name,
                     top=top,
                     skip_token=skip_token,
                     template_url=self.list.metadata['url'],
@@ -650,6 +460,8 @@ class NetworkManagersOperations(object):
                 request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     resource_group_name=resource_group_name,
+                    network_manager_name=network_manager_name,
+                    network_group_name=network_group_name,
                     top=top,
                     skip_token=skip_token,
                     template_url=next_link,
@@ -660,7 +472,7 @@ class NetworkManagersOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("NetworkManagerListResult", pipeline_response)
+            deserialized = self._deserialize("StaticMemberListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -682,4 +494,4 @@ class NetworkManagersOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/networkGroups/{networkGroupName}/staticMembers'}  # type: ignore
