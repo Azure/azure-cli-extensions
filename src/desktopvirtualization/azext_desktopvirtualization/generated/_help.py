@@ -12,166 +12,465 @@
 from knack.help_files import helps
 
 
+helps['desktopvirtualization'] = '''
+    type: group
+    short-summary: Manage Desktop Virtualization API
+'''
+
 helps['desktopvirtualization workspace'] = """
     type: group
-    short-summary: desktopvirtualization workspace
+    short-summary: Manage workspace with desktopvirtualization
 """
 
 helps['desktopvirtualization workspace list'] = """
     type: command
-    short-summary: List workspaces in subscription.
+    short-summary: "List workspaces. And List workspaces in subscription."
     examples:
       - name: Workspace_ListByResourceGroup
         text: |-
-               az desktopvirtualization workspace list --resource-group "MyResourceGroup"
+               az desktopvirtualization workspace list --resource-group "resourceGroup1"
+      - name: Workspace_ListBySubscription
+        text: |-
+               az desktopvirtualization workspace list
 """
 
 helps['desktopvirtualization workspace show'] = """
     type: command
-    short-summary: Get a workspace.
+    short-summary: "Get a workspace."
     examples:
       - name: Workspace_Get
         text: |-
-               az desktopvirtualization workspace show --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace show --resource-group "resourceGroup1" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace create'] = """
     type: command
-    short-summary: Create or update a workspace.
+    short-summary: "Create a workspace."
+    parameters:
+      - name: --sku
+        short-summary: "The resource model definition representing SKU"
+        long-summary: |
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
+
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
+      - name: --plan
+        short-summary: "Plan for the resource."
+        long-summary: |
+            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
+
+            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
+            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
+            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
+OfferID specified for the artifact at the time of Data Market onboarding.
+            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
+product/artifact.
+            version: The version of the desired product/artifact.
     examples:
       - name: Workspace_Create
         text: |-
-               az desktopvirtualization workspace create --resource-group "MyResourceGroup" --location "centralus" \
---description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace create --resource-group "resourceGroup1" --location "centralus" \
+--description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace update'] = """
     type: command
-    short-summary: Update a workspace.
+    short-summary: "Update a workspace."
     examples:
       - name: Workspace_Update
         text: |-
-               az desktopvirtualization workspace update --resource-group "MyResourceGroup" --description "des1" \
---friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
+               az desktopvirtualization workspace update --resource-group "resourceGroup1" --description "des1" \
+--friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
 """
 
 helps['desktopvirtualization workspace delete'] = """
     type: command
-    short-summary: Remove a workspace.
+    short-summary: "Remove a workspace."
     examples:
       - name: Workspace_Delete
         text: |-
-               az desktopvirtualization workspace delete --resource-group "MyResourceGroup" --name "MyWorkspace"
+               az desktopvirtualization workspace delete --resource-group "resourceGroup1" --name "workspace1"
+"""
+
+helps['desktopvirtualization scaling-plan'] = """
+    type: group
+    short-summary: Manage scaling plan with desktopvirtualization
+"""
+
+helps['desktopvirtualization scaling-plan list'] = """
+    type: command
+    short-summary: "List scaling plan associated with hostpool. And List scaling plans. And List scaling plans in \
+subscription."
+    examples:
+      - name: UserSession_SendMessage_Post
+        text: |-
+               az desktopvirtualization scaling-plan list --host-pool-name "hostPool1" --resource-group \
+"resourceGroup1"
+      - name: ScalingPlans_ListByResourceGroup
+        text: |-
+               az desktopvirtualization scaling-plan list --resource-group "resourceGroup1"
+      - name: ScalingPlans_ListBySubscription
+        text: |-
+               az desktopvirtualization scaling-plan list
+"""
+
+helps['desktopvirtualization scaling-plan show'] = """
+    type: command
+    short-summary: "Get a scaling plan."
+    examples:
+      - name: ScalingPlans_Get
+        text: |-
+               az desktopvirtualization scaling-plan show --resource-group "resourceGroup1" --name "scalingPlan1"
+"""
+
+helps['desktopvirtualization scaling-plan create'] = """
+    type: command
+    short-summary: "Create or update a scaling plan."
+    parameters:
+      - name: --sku
+        short-summary: "The resource model definition representing SKU"
+        long-summary: |
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
+
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
+      - name: --plan
+        short-summary: "Plan for the resource."
+        long-summary: |
+            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
+
+            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
+            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
+            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
+OfferID specified for the artifact at the time of Data Market onboarding.
+            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
+product/artifact.
+            version: The version of the desired product/artifact.
+      - name: --schedules
+        short-summary: "List of ScalingSchedule definitions."
+        long-summary: |
+            Usage: --schedules name=XX days-of-week=XX ramp-up-start-time=XX ramp-up-load-balancing-algorithm=XX \
+ramp-up-minimum-hosts-pct=XX ramp-up-capacity-threshold-pct=XX peak-start-time=XX peak-load-balancing-algorithm=XX \
+ramp-down-start-time=XX ramp-down-load-balancing-algorithm=XX ramp-down-minimum-hosts-pct=XX \
+ramp-down-capacity-threshold-pct=XX ramp-down-force-logoff-users=XX ramp-down-stop-hosts-when=XX \
+ramp-down-wait-time-minutes=XX ramp-down-notification-message=XX off-peak-start-time=XX off-peak-load-balancing-algorit\
+hm=XX
+
+            name: Name of the scaling schedule.
+            days-of-week: Set of days of the week on which this schedule is active.
+            ramp-up-start-time: Starting time for ramp up period.
+            ramp-up-load-balancing-algorithm: Load balancing algorithm for ramp up period.
+            ramp-up-minimum-hosts-pct: Minimum host percentage for ramp up period.
+            ramp-up-capacity-threshold-pct: Capacity threshold for ramp up period.
+            peak-start-time: Starting time for peak period.
+            peak-load-balancing-algorithm: Load balancing algorithm for peak period.
+            ramp-down-start-time: Starting time for ramp down period.
+            ramp-down-load-balancing-algorithm: Load balancing algorithm for ramp down period.
+            ramp-down-minimum-hosts-pct: Minimum host percentage for ramp down period.
+            ramp-down-capacity-threshold-pct: Capacity threshold for ramp down period.
+            ramp-down-force-logoff-users: Should users be logged off forcefully from hosts.
+            ramp-down-stop-hosts-when: Specifies when to stop hosts during ramp down period.
+            ramp-down-wait-time-minutes: Number of minutes to wait to stop hosts during ramp down period.
+            ramp-down-notification-message: Notification message for users during ramp down period.
+            off-peak-start-time: Starting time for off-peak period.
+            off-peak-load-balancing-algorithm: Load balancing algorithm for off-peak period.
+
+            Multiple actions can be specified by using more than one --schedules argument.
+      - name: --host-pool-references
+        short-summary: "List of ScalingHostPoolReference definitions."
+        long-summary: |
+            Usage: --host-pool-references host-pool-arm-path=XX scaling-plan-enabled=XX
+
+            host-pool-arm-path: Arm path of referenced hostpool.
+            scaling-plan-enabled: Is the scaling plan enabled for this hostpool.
+
+            Multiple actions can be specified by using more than one --host-pool-references argument.
+    examples:
+      - name: ScalingPlans_Create
+        text: |-
+               az desktopvirtualization scaling-plan create --resource-group "resourceGroup1" --location "centralus" \
+--description "des1" --exclusion-tag "value" --friendly-name "friendly" --host-pool-references \
+host-pool-arm-path="/subscriptions/daefabc0-95b4-48b3-b645-8a753a63c4fa/resourceGroups/resourceGroup1/providers/Microso\
+ft.DesktopVirtualization/hostPools/hostPool1" scaling-plan-enabled=true --host-pool-type "Personal" --schedules \
+name="schedule1" days-of-week="Monday" days-of-week="Tuesday" days-of-week="Wednesday" days-of-week="Thursday" \
+days-of-week="Friday" off-peak-load-balancing-algorithm="DepthFirst" off-peak-start-time="2020-11-10T20:00:00.000Z" \
+peak-load-balancing-algorithm="BreadthFirst" peak-start-time="2020-11-10T08:00:00.000Z" ramp-down-capacity-threshold-pc\
+t=50 ramp-down-force-logoff-users=true ramp-down-load-balancing-algorithm="DepthFirst" ramp-down-minimum-hosts-pct=20 \
+ramp-down-notification-message="message" ramp-down-start-time="2020-11-10T18:00:00.000Z" \
+ramp-down-wait-time-minutes=30 ramp-up-capacity-threshold-pct=80 ramp-up-load-balancing-algorithm="DepthFirst" \
+ramp-up-minimum-hosts-pct=20 ramp-up-start-time="2020-11-10T06:00:00.000Z" --time-zone "" --tags tag1="value1" \
+tag2="value2" --name "scalingPlan1"
+"""
+
+helps['desktopvirtualization scaling-plan update'] = """
+    type: command
+    short-summary: "Update a scaling plan."
+    parameters:
+      - name: --schedules
+        short-summary: "List of ScalingSchedule definitions."
+        long-summary: |
+            Usage: --schedules name=XX days-of-week=XX ramp-up-start-time=XX ramp-up-load-balancing-algorithm=XX \
+ramp-up-minimum-hosts-pct=XX ramp-up-capacity-threshold-pct=XX peak-start-time=XX peak-load-balancing-algorithm=XX \
+ramp-down-start-time=XX ramp-down-load-balancing-algorithm=XX ramp-down-minimum-hosts-pct=XX \
+ramp-down-capacity-threshold-pct=XX ramp-down-force-logoff-users=XX ramp-down-stop-hosts-when=XX \
+ramp-down-wait-time-minutes=XX ramp-down-notification-message=XX off-peak-start-time=XX off-peak-load-balancing-algorit\
+hm=XX
+
+            name: Name of the scaling schedule.
+            days-of-week: Set of days of the week on which this schedule is active.
+            ramp-up-start-time: Starting time for ramp up period.
+            ramp-up-load-balancing-algorithm: Load balancing algorithm for ramp up period.
+            ramp-up-minimum-hosts-pct: Minimum host percentage for ramp up period.
+            ramp-up-capacity-threshold-pct: Capacity threshold for ramp up period.
+            peak-start-time: Starting time for peak period.
+            peak-load-balancing-algorithm: Load balancing algorithm for peak period.
+            ramp-down-start-time: Starting time for ramp down period.
+            ramp-down-load-balancing-algorithm: Load balancing algorithm for ramp down period.
+            ramp-down-minimum-hosts-pct: Minimum host percentage for ramp down period.
+            ramp-down-capacity-threshold-pct: Capacity threshold for ramp down period.
+            ramp-down-force-logoff-users: Should users be logged off forcefully from hosts.
+            ramp-down-stop-hosts-when: Specifies when to stop hosts during ramp down period.
+            ramp-down-wait-time-minutes: Number of minutes to wait to stop hosts during ramp down period.
+            ramp-down-notification-message: Notification message for users during ramp down period.
+            off-peak-start-time: Starting time for off-peak period.
+            off-peak-load-balancing-algorithm: Load balancing algorithm for off-peak period.
+
+            Multiple actions can be specified by using more than one --schedules argument.
+      - name: --host-pool-references
+        short-summary: "List of ScalingHostPoolReference definitions."
+        long-summary: |
+            Usage: --host-pool-references host-pool-arm-path=XX scaling-plan-enabled=XX
+
+            host-pool-arm-path: Arm path of referenced hostpool.
+            scaling-plan-enabled: Is the scaling plan enabled for this hostpool.
+
+            Multiple actions can be specified by using more than one --host-pool-references argument.
+    examples:
+      - name: ScalingPlans_Update
+        text: |-
+               az desktopvirtualization scaling-plan update --resource-group "resourceGroup1" --name "scalingPlan1" \
+--description "des1" --exclusion-tag "value" --friendly-name "friendly" --host-pool-references \
+host-pool-arm-path="/subscriptions/daefabc0-95b4-48b3-b645-8a753a63c4fa/resourceGroups/resourceGroup1/providers/Microso\
+ft.DesktopVirtualization/hostPools/hostPool1" scaling-plan-enabled=true --host-pool-type "Personal" --schedules \
+name="schedule1" days-of-week="Monday" days-of-week="Tuesday" days-of-week="Wednesday" days-of-week="Thursday" \
+days-of-week="Friday" off-peak-load-balancing-algorithm="DepthFirst" off-peak-start-time="2020-11-10T20:00:00.000Z" \
+peak-load-balancing-algorithm="BreadthFirst" peak-start-time="2020-11-10T08:00:00.000Z" ramp-down-capacity-threshold-pc\
+t=50 ramp-down-force-logoff-users=true ramp-down-load-balancing-algorithm="DepthFirst" ramp-down-minimum-hosts-pct=20 \
+ramp-down-notification-message="message" ramp-down-start-time="2020-11-10T18:00:00.000Z" \
+ramp-down-wait-time-minutes=30 ramp-up-capacity-threshold-pct=80 ramp-up-load-balancing-algorithm="DepthFirst" \
+ramp-up-minimum-hosts-pct=20 ramp-up-start-time="2020-11-10T06:00:00.000Z" --time-zone "" --tags tag1="value1" \
+tag2="value2"
+"""
+
+helps['desktopvirtualization scaling-plan delete'] = """
+    type: command
+    short-summary: "Remove a scaling plan."
+    examples:
+      - name: ScalingPlans_Delete
+        text: |-
+               az desktopvirtualization scaling-plan delete --resource-group "resourceGroup1" --name "scalingPlan1"
 """
 
 helps['desktopvirtualization applicationgroup'] = """
     type: group
-    short-summary: desktopvirtualization applicationgroup
+    short-summary: Manage application group with desktopvirtualization
 """
 
 helps['desktopvirtualization applicationgroup list'] = """
     type: command
-    short-summary: List applicationGroups in subscription.
+    short-summary: "List applicationGroups. And List applicationGroups in subscription."
     examples:
       - name: ApplicationGroup_ListByResourceGroup
         text: |-
                az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'" \
---resource-group "MyResourceGroup"
+--resource-group "resourceGroup1"
+      - name: ApplicationGroup_List
+        text: |-
+               az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'"
 """
 
 helps['desktopvirtualization applicationgroup show'] = """
     type: command
-    short-summary: Get an application group.
+    short-summary: "Get an application group."
     examples:
       - name: ApplicationGroup_Get
         text: |-
-               az desktopvirtualization applicationgroup show --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup show --name "applicationGroup1" --resource-group \
+"resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup create'] = """
     type: command
-    short-summary: Create or update an applicationGroup.
+    short-summary: "Create an applicationGroup."
+    parameters:
+      - name: --sku
+        short-summary: "The resource model definition representing SKU"
+        long-summary: |
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
+
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
+      - name: --plan
+        short-summary: "Plan for the resource."
+        long-summary: |
+            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
+
+            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
+            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
+            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
+OfferID specified for the artifact at the time of Data Market onboarding.
+            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
+product/artifact.
+            version: The version of the desired product/artifact.
+      - name: --migration-request
+        short-summary: "The registration info of HostPool."
+        long-summary: |
+            Usage: --migration-request operation=XX migration-path=XX
+
+            operation: The type of operation for migration.
+            migration-path: The path to the legacy object to migrate.
     examples:
       - name: ApplicationGroup_Create
         text: |-
                az desktopvirtualization applicationgroup create --location "centralus" --description "des1" \
 --application-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3\
--b645-8a753a63c4fa/resourceGroups/MyResourceGroup/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool" \
---tags tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+-b645-8a753a63c4fa/resourceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" \
+--migration-request migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{\
+sessionHostPool.Name}" operation="Start" --tags tag1="value1" tag2="value2" --name "applicationGroup1" \
+--resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup update'] = """
     type: command
-    short-summary: Update an applicationGroup.
+    short-summary: "Update an applicationGroup."
     examples:
       - name: ApplicationGroups_Update
         text: |-
                az desktopvirtualization applicationgroup update --description "des1" --friendly-name "friendly" --tags \
-tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
+tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization applicationgroup delete'] = """
     type: command
-    short-summary: Remove an applicationGroup.
+    short-summary: "Remove an applicationGroup."
     examples:
       - name: ApplicationGroup_Delete
         text: |-
-               az desktopvirtualization applicationgroup delete --name "MyApplicationGroup" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization applicationgroup delete --name "applicationGroup1" --resource-group \
+"resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool'] = """
     type: group
-    short-summary: desktopvirtualization hostpool
+    short-summary: Manage host pool with desktopvirtualization
 """
 
 helps['desktopvirtualization hostpool list'] = """
     type: command
-    short-summary: List hostPools in subscription.
+    short-summary: "List hostPools. And List hostPools in subscription."
     examples:
       - name: HostPool_ListByResourceGroup
         text: |-
-               az desktopvirtualization hostpool list --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool list --resource-group "resourceGroup1"
+      - name: HostPool_List
+        text: |-
+               az desktopvirtualization hostpool list
 """
 
 helps['desktopvirtualization hostpool show'] = """
     type: command
-    short-summary: Get a host pool.
+    short-summary: "Get a host pool."
     examples:
       - name: HostPool_Get
         text: |-
-               az desktopvirtualization hostpool show --name "MyHostPool" --resource-group "MyResourceGroup"
+               az desktopvirtualization hostpool show --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool create'] = """
     type: command
-    short-summary: Create or update a host pool.
+    short-summary: "Create a host pool."
     parameters:
+      - name: --sku
+        short-summary: "The resource model definition representing SKU"
+        long-summary: |
+            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
+
+            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
+            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
+tier, but is not required on a PUT.
+            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
+standalone code.
+            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
+here.
+            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
+is not possible for the resource this may be omitted.
+      - name: --plan
+        short-summary: "Plan for the resource."
+        long-summary: |
+            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
+
+            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
+            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
+            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
+OfferID specified for the artifact at the time of Data Market onboarding.
+            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
+product/artifact.
+            version: The version of the desired product/artifact.
       - name: --registration-info
-        short-summary: The registration info of HostPool.
+        short-summary: "The registration info of HostPool."
         long-summary: |
             Usage: --registration-info expiration-time=XX token=XX registration-token-operation=XX
 
             expiration-time: Expiration time of registration token.
             token: The registration token base64 encoded string.
             registration-token-operation: The type of resetting the token.
+      - name: --migration-request
+        short-summary: "The registration info of HostPool."
+        long-summary: |
+            Usage: --migration-request operation=XX migration-path=XX
+
+            operation: The type of operation for migration.
+            migration-path: The path to the legacy object to migrate.
     examples:
       - name: HostPool_Create
         text: |-
                az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name \
 "friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
---personal-desktop-assignment-type "Automatic" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" \
-registration-token-operation="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name \
-"MyHostPool" --resource-group "MyResourceGroup"
+--migration-request migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{\
+sessionHostPool.Name}" operation="Start" --personal-desktop-assignment-type "Automatic" --preferred-app-group-type \
+"Desktop" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
+--sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
+--ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
+tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool update'] = """
     type: command
-    short-summary: Update a host pool.
+    short-summary: "Update a host pool."
     parameters:
       - name: --registration-info
-        short-summary: The registration info of HostPool.
+        short-summary: "The registration info of HostPool."
         long-summary: |
             Usage: --registration-info expiration-time=XX registration-token-operation=XX
 
@@ -182,16 +481,132 @@ helps['desktopvirtualization hostpool update'] = """
         text: |-
                az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" \
 --load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" \
---registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context \
-"KeyVaultPath" --tags tag1="value1" tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
+--registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" \
+--sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
+--ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
+tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
     type: command
-    short-summary: Remove a host pool.
+    short-summary: "Remove a host pool."
     examples:
       - name: HostPool_Delete
         text: |-
-               az desktopvirtualization hostpool delete --force true --name "MyHostPool" --resource-group \
-"MyResourceGroup"
+               az desktopvirtualization hostpool delete --force true --name "hostPool1" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization hostpool retrieve-registration-token'] = """
+    type: command
+    short-summary: "Registration token of the host pool."
+    examples:
+      - name: HostPools_RetrieveRegistrationToken_Post
+        text: |-
+               az desktopvirtualization hostpool retrieve-registration-token --name "hostPool1" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package'] = """
+    type: group
+    short-summary: Manage msix package with desktopvirtualization
+"""
+
+helps['desktopvirtualization msix-package list'] = """
+    type: command
+    short-summary: "List MSIX packages in hostpool."
+    examples:
+      - name: MSIXPackage_List
+        text: |-
+               az desktopvirtualization msix-package list --host-pool-name "hostpool1" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package show'] = """
+    type: command
+    short-summary: "Get a msixpackage."
+    examples:
+      - name: MSIXPackage_Get
+        text: |-
+               az desktopvirtualization msix-package show --host-pool-name "hostpool1" --msix-package-full-name \
+"packagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package create'] = """
+    type: command
+    short-summary: "Create a MSIX package."
+    parameters:
+      - name: --package-dependencies
+        short-summary: "List of package dependencies."
+        long-summary: |
+            Usage: --package-dependencies dependency-name=XX publisher=XX min-version=XX
+
+            dependency-name: Name of package dependency.
+            publisher: Name of dependency publisher.
+            min-version: Dependency version required.
+
+            Multiple actions can be specified by using more than one --package-dependencies argument.
+      - name: --package-applications
+        short-summary: "List of package applications."
+        long-summary: |
+            Usage: --package-applications app-id=XX description=XX app-user-model-id=XX friendly-name=XX \
+icon-image-name=XX raw-icon=XX raw-png=XX
+
+            app-id: Package Application Id, found in appxmanifest.xml.
+            description: Description of Package Application.
+            app-user-model-id: Used to activate Package Application. Consists of Package Name and ApplicationID. Found \
+in appxmanifest.xml.
+            friendly-name: User friendly name.
+            icon-image-name: User friendly name.
+            raw-icon: the icon a 64 bit string as a byte array.
+            raw-png: the icon a 64 bit string as a byte array.
+
+            Multiple actions can be specified by using more than one --package-applications argument.
+    examples:
+      - name: MSIXPackage_Create
+        text: |-
+               az desktopvirtualization msix-package create --host-pool-name "hostpool1" --display-name "displayname" \
+--image-path "imagepath" --is-active false --is-regular-registration false --last-updated \
+"2008-09-22T14:01:54.9571247Z" --package-applications description="application-desc" app-id="ApplicationId" \
+app-user-model-id="AppUserModelId" friendly-name="friendlyname" icon-image-name="Apptile" \
+raw-icon="VGhpcyBpcyBhIHN0cmluZyB0byBoYXNo" raw-png="VGhpcyBpcyBhIHN0cmluZyB0byBoYXNo" --package-dependencies \
+dependency-name="MsixTest_Dependency_Name" min-version="version" publisher="PublishedName" --package-family-name \
+"MsixPackage_FamilyName" --package-name "MsixPackage_name" --package-relative-path "packagerelativepath" --version \
+"version" --msix-package-full-name "msixpackagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package update'] = """
+    type: command
+    short-summary: "Update an  MSIX Package."
+    examples:
+      - name: MSIXPackage_Update
+        text: |-
+               az desktopvirtualization msix-package update --host-pool-name "hostpool1" --display-name "displayname" \
+--is-active true --is-regular-registration false --msix-package-full-name "msixpackagefullname" --resource-group \
+"resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-package delete'] = """
+    type: command
+    short-summary: "Remove an MSIX Package."
+    examples:
+      - name: MSIXPackage_Delete
+        text: |-
+               az desktopvirtualization msix-package delete --host-pool-name "hostpool1" --msix-package-full-name \
+"packagefullname" --resource-group "resourceGroup1"
+"""
+
+helps['desktopvirtualization msix-image'] = """
+    type: group
+    short-summary: Manage msix image with desktopvirtualization
+"""
+
+helps['desktopvirtualization msix-image expand'] = """
+    type: command
+    short-summary: "Expands and Lists MSIX packages in an Image, given the Image Path."
+    examples:
+      - name: MsixImage_Expand
+        text: |-
+               az desktopvirtualization msix-image expand --host-pool-name "hostpool1" --uri "imagepath" \
+--resource-group "resourceGroup1"
 """

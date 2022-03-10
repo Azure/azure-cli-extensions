@@ -7,19 +7,24 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+
 # pylint: disable=protected-access
 
+# pylint: disable=no-self-use
+
+
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
 
 
-class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
+class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.registration_info = action
+        namespace.sku = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -31,12 +36,349 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'expiration-time':
-                d['expiration_time'] = v[0]
-            elif kl == 'token':
-                d['token'] = v[0]
-            elif kl == 'registration-token-operation':
-                d['registration_token_operation'] = v[0]
+
+            if kl == 'name':
+                d['name'] = v[0]
+
+            elif kl == 'tier':
+                d['tier'] = v[0]
+
+            elif kl == 'size':
+                d['size'] = v[0]
+
+            elif kl == 'family':
+                d['family'] = v[0]
+
+            elif kl == 'capacity':
+                d['capacity'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family,'
+                    ' capacity'.format(k)
+                )
+
+        return d
+
+
+class AddPlan(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.plan = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'name':
+                d['name'] = v[0]
+
+            elif kl == 'publisher':
+                d['publisher'] = v[0]
+
+            elif kl == 'product':
+                d['product'] = v[0]
+
+            elif kl == 'promotion-code':
+                d['promotion_code'] = v[0]
+
+            elif kl == 'version':
+                d['version'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter plan. All possible keys are: name, publisher,'
+                    ' product, promotion-code, version'.format(k)
+                )
+
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanCreateSchedules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanCreateSchedules, self).__call__(
+            parser, namespace, action, option_string
+        )
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'name':
+                d['name'] = v[0]
+
+            elif kl == 'days-of-week':
+                d['days_of_week'] = v
+
+            elif kl == 'ramp-up-start-time':
+                d['ramp_up_start_time'] = v[0]
+
+            elif kl == 'ramp-up-load-balancing-algorithm':
+                d['ramp_up_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-up-minimum-hosts-pct':
+                d['ramp_up_minimum_hosts_pct'] = v[0]
+
+            elif kl == 'ramp-up-capacity-threshold-pct':
+                d['ramp_up_capacity_threshold_pct'] = v[0]
+
+            elif kl == 'peak-start-time':
+                d['peak_start_time'] = v[0]
+
+            elif kl == 'peak-load-balancing-algorithm':
+                d['peak_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-down-start-time':
+                d['ramp_down_start_time'] = v[0]
+
+            elif kl == 'ramp-down-load-balancing-algorithm':
+                d['ramp_down_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-down-minimum-hosts-pct':
+                d['ramp_down_minimum_hosts_pct'] = v[0]
+
+            elif kl == 'ramp-down-capacity-threshold-pct':
+                d['ramp_down_capacity_threshold_pct'] = v[0]
+
+            elif kl == 'ramp-down-force-logoff-users':
+                d['ramp_down_force_logoff_users'] = v[0]
+
+            elif kl == 'ramp-down-stop-hosts-when':
+                d['ramp_down_stop_hosts_when'] = v[0]
+
+            elif kl == 'ramp-down-wait-time-minutes':
+                d['ramp_down_wait_time_minutes'] = v[0]
+
+            elif kl == 'ramp-down-notification-message':
+                d['ramp_down_notification_message'] = v[0]
+
+            elif kl == 'off-peak-start-time':
+                d['off_peak_start_time'] = v[0]
+
+            elif kl == 'off-peak-load-balancing-algorithm':
+                d['off_peak_load_balancing_algorithm'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter schedules. All possible keys are: name, days-of-week,'
+                    ' ramp-up-start-time, ramp-up-load-balancing-algorithm, ramp-up-minimum-hosts-pct,'
+                    ' ramp-up-capacity-threshold-pct, peak-start-time, peak-load-balancing-algorithm,'
+                    ' ramp-down-start-time, ramp-down-load-balancing-algorithm, ramp-down-minimum-hosts-pct,'
+                    ' ramp-down-capacity-threshold-pct, ramp-down-force-logoff-users, ramp-down-stop-hosts-when,'
+                    ' ramp-down-wait-time-minutes, ramp-down-notification-message, off-peak-start-time,'
+                    ' off-peak-load-balancing-algorithm'.format(k)
+                )
+
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanCreateHostPoolReferences(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanCreateHostPoolReferences, self).__call__(
+            parser, namespace, action, option_string
+        )
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'host-pool-arm-path':
+                d['host_pool_arm_path'] = v[0]
+
+            elif kl == 'scaling-plan-enabled':
+                d['scaling_plan_enabled'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter host-pool-references. All possible keys are:'
+                    ' host-pool-arm-path, scaling-plan-enabled'.format(k)
+                )
+
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanUpdateSchedules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanUpdateSchedules, self).__call__(
+            parser, namespace, action, option_string
+        )
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'name':
+                d['name'] = v[0]
+
+            elif kl == 'days-of-week':
+                d['days_of_week'] = v
+
+            elif kl == 'ramp-up-start-time':
+                d['ramp_up_start_time'] = v[0]
+
+            elif kl == 'ramp-up-load-balancing-algorithm':
+                d['ramp_up_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-up-minimum-hosts-pct':
+                d['ramp_up_minimum_hosts_pct'] = v[0]
+
+            elif kl == 'ramp-up-capacity-threshold-pct':
+                d['ramp_up_capacity_threshold_pct'] = v[0]
+
+            elif kl == 'peak-start-time':
+                d['peak_start_time'] = v[0]
+
+            elif kl == 'peak-load-balancing-algorithm':
+                d['peak_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-down-start-time':
+                d['ramp_down_start_time'] = v[0]
+
+            elif kl == 'ramp-down-load-balancing-algorithm':
+                d['ramp_down_load_balancing_algorithm'] = v[0]
+
+            elif kl == 'ramp-down-minimum-hosts-pct':
+                d['ramp_down_minimum_hosts_pct'] = v[0]
+
+            elif kl == 'ramp-down-capacity-threshold-pct':
+                d['ramp_down_capacity_threshold_pct'] = v[0]
+
+            elif kl == 'ramp-down-force-logoff-users':
+                d['ramp_down_force_logoff_users'] = v[0]
+
+            elif kl == 'ramp-down-stop-hosts-when':
+                d['ramp_down_stop_hosts_when'] = v[0]
+
+            elif kl == 'ramp-down-wait-time-minutes':
+                d['ramp_down_wait_time_minutes'] = v[0]
+
+            elif kl == 'ramp-down-notification-message':
+                d['ramp_down_notification_message'] = v[0]
+
+            elif kl == 'off-peak-start-time':
+                d['off_peak_start_time'] = v[0]
+
+            elif kl == 'off-peak-load-balancing-algorithm':
+                d['off_peak_load_balancing_algorithm'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter schedules. All possible keys are: name, days-of-week,'
+                    ' ramp-up-start-time, ramp-up-load-balancing-algorithm, ramp-up-minimum-hosts-pct,'
+                    ' ramp-up-capacity-threshold-pct, peak-start-time, peak-load-balancing-algorithm,'
+                    ' ramp-down-start-time, ramp-down-load-balancing-algorithm, ramp-down-minimum-hosts-pct,'
+                    ' ramp-down-capacity-threshold-pct, ramp-down-force-logoff-users, ramp-down-stop-hosts-when,'
+                    ' ramp-down-wait-time-minutes, ramp-down-notification-message, off-peak-start-time,'
+                    ' off-peak-load-balancing-algorithm'.format(k)
+                )
+
+        return d
+
+
+class AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences, self).__call__(
+            parser, namespace, action, option_string
+        )
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'host-pool-arm-path':
+                d['host_pool_arm_path'] = v[0]
+
+            elif kl == 'scaling-plan-enabled':
+                d['scaling_plan_enabled'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter host-pool-references. All possible keys are:'
+                    ' host-pool-arm-path, scaling-plan-enabled'.format(k)
+                )
+
+        return d
+
+
+class AddMigrationRequest(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.migration_request = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'operation':
+                d['operation'] = v[0]
+
+            elif kl == 'migration-path':
+                d['migration_path'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter migration-request. All possible keys are: operation,'
+                    ' migration-path'.format(k)
+                )
+
         return d
 
 
@@ -45,7 +387,7 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.registration_info = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -57,8 +399,137 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'expiration-time':
                 d['expiration_time'] = v[0]
+
             elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
+                    ' expiration-time, registration-token-operation'.format(k)
+                )
+
+        return d
+
+
+class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.registration_info = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'expiration-time':
+                d['expiration_time'] = v[0]
+
+            elif kl == 'token':
+                d['token'] = v[0]
+
+            elif kl == 'registration-token-operation':
+                d['registration_token_operation'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
+                    ' expiration-time, token, registration-token-operation'.format(k)
+                )
+
+        return d
+
+
+class AddPackageDependencies(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageDependencies, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'dependency-name':
+                d['dependency_name'] = v[0]
+
+            elif kl == 'publisher':
+                d['publisher'] = v[0]
+
+            elif kl == 'min-version':
+                d['min_version'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter package-dependencies. All possible keys are:'
+                    ' dependency-name, publisher, min-version'.format(k)
+                )
+
+        return d
+
+
+class AddPackageApplications(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddPackageApplications, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'app-id':
+                d['app_id'] = v[0]
+
+            elif kl == 'description':
+                d['description'] = v[0]
+
+            elif kl == 'app-user-model-id':
+                d['app_user_model_id'] = v[0]
+
+            elif kl == 'friendly-name':
+                d['friendly_name'] = v[0]
+
+            elif kl == 'icon-image-name':
+                d['icon_image_name'] = v[0]
+
+            elif kl == 'raw-icon':
+                d['raw_icon'] = v[0]
+
+            elif kl == 'raw-png':
+                d['raw_png'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter package-applications. All possible keys are: app-id,'
+                    ' description, app-user-model-id, friendly-name, icon-image-name, raw-icon, raw-png'.format(k)
+                )
+
         return d

@@ -11,17 +11,30 @@
 
 def cf_desktopvirtualization_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.desktopvirtualization import DesktopVirtualizationAPIClient
-    return get_mgmt_service_client(cli_ctx, DesktopVirtualizationAPIClient)
+    from azext_desktopvirtualization.vendored_sdks.desktopvirtualization import DesktopVirtualizationAPIClient
+    return get_mgmt_service_client(cli_ctx,
+                                   DesktopVirtualizationAPIClient)
 
 
 def cf_workspace(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).workspace
+    return cf_desktopvirtualization_cl(cli_ctx).workspaces
+
+
+def cf_scaling_plan(cli_ctx, *_):
+    return cf_desktopvirtualization_cl(cli_ctx).scaling_plans
 
 
 def cf_application_group(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).application_group
+    return cf_desktopvirtualization_cl(cli_ctx).application_groups
 
 
 def cf_host_pool(cli_ctx, *_):
-    return cf_desktopvirtualization_cl(cli_ctx).host_pool
+    return cf_desktopvirtualization_cl(cli_ctx).host_pools
+
+
+def cf_msix_package(cli_ctx, *_):
+    return cf_desktopvirtualization_cl(cli_ctx).msix_packages
+
+
+def cf_msix_image(cli_ctx, *_):
+    return cf_desktopvirtualization_cl(cli_ctx).msix_images

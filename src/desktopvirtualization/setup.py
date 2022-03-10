@@ -10,9 +10,9 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.1'
+VERSION = '0.1.0'
 try:
-    from .manual.version import VERSION
+    from azext_desktopvirtualization.manual.version import VERSION
 except ImportError:
     pass
 
@@ -31,8 +31,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_desktopvirtualization.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -47,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools DesktopVirtualizationAPIClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/desktopvirtualization',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/desktopvirtualization',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

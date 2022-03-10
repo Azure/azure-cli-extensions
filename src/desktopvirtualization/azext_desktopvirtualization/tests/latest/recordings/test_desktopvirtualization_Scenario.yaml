@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"location": "centralus", "tags": {"tag1": "value1", "tag2": "value2"},
+      "identity": {"type": "SystemAssigned"}, "properties": {"friendlyName": "friendly",
+      "description": "des1", "hostPoolType": "Pooled", "personalDesktopAssignmentType":
+      "Automatic", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+      "registrationInfo": {"expirationTime": "2022-03-20T05:38:08.189Z", "registrationTokenOperation":
+      "Update"}, "vmTemplate": "{json:json}", "ssoadfsAuthority": "https://adfs",
+      "ssoClientId": "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret",
+      "ssoSecretType": "SharedKey", "preferredAppGroupType": "Desktop", "startVMOnConnect":
+      false, "migrationRequest": {"operation": "Start", "migrationPath": "TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{sessionHostPool.Name}"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '831'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --description --friendly-name --host-pool-type --load-balancer-type
+        --max-session-limit --migration-request --personal-desktop-assignment-type
+        --preferred-app-group-type --registration-info --sso-client-id --sso-client-secret-key-vault-path
+        --sso-secret-type --ssoadfs-authority --start-vm-on-connect --vm-template
+        --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-desktopvirtualization/1.0.0b1 Python/3.9.5
+        (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1?api-version=2021-07-12
+  response:
+    body:
+      string: '{"error":{"code":"CannotSetResourceIdentity","message":"Resource type
+        ''Microsoft.DesktopVirtualization/hostpools'' does not support creation of
+        ''SystemAssigned'' resource identity. The supported types are ''None''."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '213'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Mar 2022 05:59:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 400
+      message: Bad Request
+version: 1
