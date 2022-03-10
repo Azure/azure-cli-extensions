@@ -47,3 +47,4 @@ def load_arguments(self, _):
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
         c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
+        c.argument('installed_ir_path', type=str, help='Version folder path in the Integration Runtime installated location. This should be provided when IR is installed but the command is failing to read it. Format: "<Parent-folder-path>\Microsoft Integration Runtime\<Version>"')

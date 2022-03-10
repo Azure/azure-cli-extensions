@@ -58,6 +58,9 @@ helps['datamigration register-integration-runtime'] = """
       - name: Install Integration Runtime and register a Sql Migration Service on it.
         text: |-
                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
+      - name: Read the Integration Runtime from given installation location.
+        text: |-
+               az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --installed-ir-path "D:\\My Softwares\\Microsoft Integration Runtime\\5.0"
 """
 
 helps['datamigration sql-managed-instance create'] = """

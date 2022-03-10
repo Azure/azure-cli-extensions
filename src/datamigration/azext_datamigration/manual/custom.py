@@ -163,7 +163,8 @@ def datamigration_get_sku_recommendation(output_folder=None,
 # Register Sql Migration Service on IR command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_register_ir(auth_key,
-                              ir_path=None):
+                              ir_path=None,
+                              installed_ir_path=None):
 
     helper.validate_os_env()
 
@@ -173,4 +174,4 @@ def datamigration_register_ir(auth_key,
     if ir_path is not None:
         helper.install_gateway(ir_path)
 
-    helper.register_ir(auth_key)
+    helper.register_ir(auth_key, installed_ir_path)

@@ -206,10 +206,13 @@ def install_gateway(path):
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to register Sql Migration Service on IR
 # -----------------------------------------------------------------------------------------------------------------
-def register_ir(key):
+def register_ir(key, installed_ir_path=None):
     print(f"Start to register IR with key: {key}")
 
-    cmdFilePath = get_cmd_file_path()
+    if installed_ir_path is None:
+        cmdFilePath = get_cmd_file_path()
+    else:
+        cmdFilePath = get_cmd_file_path_from_input(installed_ir_path)
 
     directoryPath = os.path.dirname(cmdFilePath)
     parentDirPath = os.path.dirname(directoryPath)
@@ -269,6 +272,22 @@ def get_cmd_file_path_static():
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
+
+    if not os.path.exists(diaCmdPath):
+        raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
+
+    return diaCmdPath
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to get DiaCmdPath using the installed IR path user has given
+# -----------------------------------------------------------------------------------------------------------------
+def get_cmd_file_path_from_input(installed_ir_path):
+
+    if not os.path.exists(installed_ir_path):
+        raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+    
+    # Create diaCmd default path and check if it is valid or not.
+    diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")
 
     if not os.path.exists(diaCmdPath):
         raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
