@@ -19,6 +19,9 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
@@ -37,6 +40,9 @@ def load_arguments(self, _):
                    help='Folder where new generated keys will be stored.')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
 
     with self.argument_context('ssh cert') as c:
         c.argument('cert_path', options_list=['--file', '-f'],
@@ -44,3 +50,6 @@ def load_arguments(self, _):
         c.argument('public_key_file', options_list=['--public-key-file', '-p'],
                    help='The RSA public key file path. If not provided, '
                    'generated key pair is stored in the same directory as --file.')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
