@@ -463,6 +463,8 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         custom_location_name = parsed_custom_location.get("name")
         resource_group = parsed_custom_location.get("resource_group")
 
+    _check_custom_location_exists(cmd, custom_location_name, resource_group)
+
     client = _get_kube_client(cmd)
     kube_envs = client.list_by_subscription()
 
@@ -482,6 +484,17 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         raise ResourceNotFoundError('Unable to find Kube Environment associated to the Custom Location')
 
     return kube_environment_id
+
+
+def _check_custom_location_exists(cmd, name, resource_group):
+    from azure.core.exceptions import ResourceNotFoundError as E
+    custom_location_client = customlocation_client_factory(cmd.cli_ctx)
+    try:
+        custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
+    except E as e:
+        custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
+        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        raise e
 
 
 def _get_custom_location_id_from_custom_location(cmd, custom_location_name, resource_group_name):
