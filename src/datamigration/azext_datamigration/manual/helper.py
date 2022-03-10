@@ -278,6 +278,7 @@ def get_cmd_file_path_static():
 
     return diaCmdPath
 
+
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to get DiaCmdPath using the installed IR path user has given
 # -----------------------------------------------------------------------------------------------------------------
@@ -285,7 +286,7 @@ def get_cmd_file_path_from_input(installed_ir_path):
 
     if not os.path.exists(installed_ir_path):
         raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
-    
+
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")
 
