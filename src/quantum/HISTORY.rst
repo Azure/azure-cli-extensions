@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.13.0
+++++++
+* [2022-03-03] Version intended to work with QDK version v0.23.195983
+* Fixed workspace race condition using an Azure Resource Manager template to synchronize deployment.
+
 0.12.0
 ++++++
 * [2022-01-26] Version intended to work with QDK version v0.22.187631

@@ -322,7 +322,7 @@ helps['network manager group delete'] = """
       - name: Delete Azure Virtual Network Manager Group
         text: |-
                az network manager group delete --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
---resource-group "rg1"
+--resource-group "rg1" --force
 """
 
 helps['network manager group list-effect-vnet'] = """
@@ -436,7 +436,7 @@ helps['network manager security-admin-config delete'] = """
       - name: Delete network manager security admin Configuration
         text: |-
                az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
+--network-manager-name "testNetworkManager" --resource-group "rg1" --force
 """
 
 helps['network manager security-admin-config rule-collection'] = """
@@ -739,4 +739,228 @@ helps['network manager security-user-config rule-collection rule delete'] = """
         text: |-
                az network manager security-user-config rule-collection rule delete --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule"
+"""
+
+helps['network manager connection subscription'] = """
+    type: group
+    short-summary: Manage subscription-group connection with network
+"""
+
+helps['network manager connection subscription list'] = """
+    type: command
+    short-summary: "List all network manager connections created by this subscription."
+    examples:
+      - name: List network manager connections in a network manager
+        text: |-
+               az network manager connection subscription list
+"""
+
+helps['network manager connection subscription show'] = """
+    type: command
+    short-summary: "Get a specified connection created by this subscription."
+    examples:
+      - name: Get network manager connection
+        text: |-
+               az network manager connection subscription show --connection-name "testNetworkManagerConnection"
+"""
+
+helps['network manager connection subscription create'] = """
+    type: command
+    short-summary: "Create a connection from this subscription to a cross tenant network manager."
+    examples:
+      - name: Create network manager connection
+        text: |-
+               az network manager connection subscription create --connection-name "testNetworkManagerConnection" \
+--description "A sample policy" --network-manager-id /subscriptions/00000000-0000-0000-0000-000000000000\
+/resourceGroups/rg1/providers/Microsoft.Network/networkManagers/testManagerName
+"""
+
+helps['network manager connection subscription update'] = """
+    type: command
+    short-summary: "Update a connection from this subscription to a cross tenant network manager."
+    examples:
+      - name: Update network manager connection
+        text: |-
+               az network manager connection subscription update --connection-name "testNetworkManagerConnection" \
+--description "A sample policy"
+"""
+
+helps['network manager connection subscription delete'] = """
+    type: command
+    short-summary: "Deletes a network manager connection."
+    examples:
+      - name: Delete network manager connection
+        text: |-
+               az network manager connection subscription delete --connection-name "testNetworkManagerConnection"
+"""
+
+helps['network manager connection'] = """
+    type: group
+    short-summary: Manage connection with network manager
+"""
+
+# helps['network manager connection management-group'] = """
+#     type: group
+#     short-summary: Manage management-group connection with network
+# """
+#
+# helps['network manager connection management-group list'] = """
+#     type: command
+#     short-summary: "List all network manager connections created by this management group."
+#     examples:
+#       - name: List management-group connections in a network manager
+#         text: |-
+#                az network manager connection management-group list --management-group-id "testManagementGroupId" \
+# --resource-group "rg1"
+# """
+#
+# helps['network manager connection management-group show'] = """
+#     type: command
+#     short-summary: "Get a specified connection created by this management group."
+#     examples:
+#       - name: Get network manager connection management-group
+#         text: |-
+#                az network manager connection management-group show --management-group-id "testManagementGroupId" \
+# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
+# """
+#
+# helps['network manager connection management-group create'] = """
+#     type: command
+#     short-summary: Create a connection to a cross tenant network manager"
+#     examples:
+#       - name: Create network manager connection management-group
+#         text: |-
+#                az network manager connection management-group create --management-group-id "testManagementGroupId" \
+# --connection-name "testNetworkManagerConnection" --resource-group "rg1" --network-manager "testNetworkManagerId" \
+# --description "A sample policy"
+# """
+#
+# helps['network manager connection management-group update'] = """
+#     type: command
+#     short-summary: "Update a connection to a cross tenant network manager"
+# """
+#
+# helps['network manager connection management-group delete'] = """
+#     type: command
+#     short-summary: "Delete specified pending connection created by this management group."
+#     examples:
+#       - name: Delete network manager connection management-group
+#         text: |-
+#                az network manager connection management-group delete --management-group-id "testManagementGroupId" \
+# --connection-name "testNetworkManagerConnection" --resource-group "rg1"
+# """
+
+helps['network manager scope-connection'] = """
+    type: group
+    short-summary: Manage scope connection with network
+"""
+
+helps['network manager scope-connection list'] = """
+    type: command
+    short-summary: "List all scope connections created by this network manager."
+    examples:
+      - name: List scope connections in a network manager
+        text: |-
+               az network manager scope-connection list --network-manager-name "testNetworkManager" --resource-group \
+"rg1"
+"""
+
+helps['network manager scope-connection show'] = """
+    type: command
+    short-summary: "Get specified scope connection created by this Network Manager."
+    examples:
+      - name: Get network manager scope-connection
+        text: |-
+               az network manager scope-connection show --name "TestScopeConnect" \
+--network-manager-name "testNetworkManager" --resource-group "rg1"
+"""
+
+helps['network manager scope-connection create'] = """
+    type: command
+    short-summary: "Creates scope connection from Network Manager."
+    examples:
+      - name: Create network manager scope-connection
+        text: |-
+               az network manager scope-connection create --name "TestScopeConnect" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
+--tenant-id 00000000-0000-0000-0000-000000000000 --resource-id /subscriptions/00000000-0000-0000-0000-000000000000
+"""
+
+helps['network manager scope-connection update'] = """
+    type: command
+    short-summary: "Update scope connection from Network Manager."
+    examples:
+      - name: Update network manager scope-connection
+        text: |-
+               az network manager scope-connection update --name "TestScopeConnect" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy"
+"""
+
+helps['network manager scope-connection delete'] = """
+    type: command
+    short-summary: "Delete the pending scope connection created by this network manager."
+    examples:
+      - name: Delete network manager scope connection
+        text: |-
+               az network manager scope-connection delete --name "TestScopeConnect" \
+--network-manager-name "testNetworkManager" --resource-group "rg1"
+"""
+
+helps['network manager group static-member'] = """
+    type: group
+    short-summary: Manage static members with network
+"""
+
+helps['network manager group static-member list'] = """
+    type: command
+    short-summary: "Lists the specified static member."
+    examples:
+      - name: List static member in a network manager
+        text: |-
+               az network manager group static-member list --network-manager-name "testNetworkManager" \
+--resource-group "rg1" --network-group-name "testNetworkManagerGroup"
+"""
+
+helps['network manager group static-member show'] = """
+    type: command
+    short-summary: "Gets the specified static member."
+    examples:
+      - name: Get network manager group static-member
+        text: |-
+               az network manager group static-member show --network-group-name "testNetworkManagerGroup" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember"
+"""
+
+helps['network manager group static-member create'] = """
+    type: command
+    short-summary: "Creates a static member."
+    examples:
+      - name: Create network manager security admin Configuration
+        text: |-
+               az network manager group static-member create --network-group-name "testNetworkManagerGroup" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
+--resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
+Microsoft.Network/virtualnetworks/virtual_network"
+"""
+
+helps['network manager group static-member update'] = """
+    type: command
+    short-summary: "Update a static member."
+    examples:
+      - name: Update network manager security admin Configuration
+        text: |-
+               az network manager group static-member update --network-group-name "testNetworkManagerGroup" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
+--resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
+Microsoft.Network/virtualnetworks/virtual_network"
+"""
+
+helps['network manager group static-member delete'] = """
+    type: command
+    short-summary: "Deletes a static member."
+    examples:
+      - name: Delete network manager group static-member
+        text: |-
+               az network manager group static-member delete --network-group-name "testNetworkManagerGroup" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember"
 """
