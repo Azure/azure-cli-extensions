@@ -2271,7 +2271,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_http_proxy_config(self, resource_group, resource_group_location):
