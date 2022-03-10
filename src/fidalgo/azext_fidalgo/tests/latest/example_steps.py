@@ -596,7 +596,6 @@ def step_dev_box_definition_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo dev-box-definition create '
-             '--location "centralus" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fidalgo/'
              'galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
              '--dev-box-definition-name "{myDevBoxDefinition}" '
@@ -605,7 +604,6 @@ def step_dev_box_definition_create(test, checks=None):
              checks=[])
     test.cmd('az fidalgo dev-box-definition wait --created '
              '--dev-box-definition-name "{myDevBoxDefinition}" '
-             '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -803,17 +801,18 @@ def step_network_setting_create(test, checks=None):
         checks = []
     test.cmd('az fidalgo network-setting create '
              '--location "centralus" '
+             '--domain-join-type "HybridAzureADJoin" '
              '--domain-name "mydomaincontroller.local" '
              '--domain-password "Password value for user" '
              '--domain-username "testuser@mydomaincontroller.local" '
              '--networking-resource-group-id "/subscriptions/{subscription_id}/resourceGroups/{rg_3}" '
              '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.Network/virtualNe'
              'tworks/{vn}/subnets/{subnets}" '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az fidalgo network-setting wait --created '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -824,7 +823,7 @@ def step_network_setting_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo network-setting show '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -835,7 +834,7 @@ def step_network_setting_show_health_detail(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo network-setting show-health-detail '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -866,7 +865,7 @@ def step_network_setting_list_health_detail(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo network-setting list-health-detail '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -878,7 +877,7 @@ def step_network_setting_update(test, checks=None):
         checks = []
     test.cmd('az fidalgo network-setting update '
              '--domain-password "New Password value for user" '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -889,7 +888,7 @@ def step_network_setting_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo network-setting delete -y '
-             '--name "{myNetworkSetting}" '
+             '--name "{myNetworkSetting2}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -969,6 +968,101 @@ def step_project_update(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /AttachedNetworks/put/AttachedNetworks_Create
+@try_manual
+def step_attached_network_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network create '
+             '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
+             '--network-connection-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsof'
+             't.Fidalgo/NetworkSettings/{myNetworkSetting}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /AttachedNetworks/get/AttachedNetworks_GetByDevCenter
+@try_manual
+def step_attached_network_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network show '
+             '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /AttachedNetworks/get/AttachedNetworks_GetByProject
+@try_manual
+def step_attached_network_show2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network show '
+             '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /AttachedNetworks/get/AttachedNetworks_ListByDevCenter
+@try_manual
+def step_attached_network_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network list '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /AttachedNetworks/get/AttachedNetworks_ListByProject
+@try_manual
+def step_attached_network_list2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network list '
+             '--project-name "{myProject}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /AttachedNetworks/delete/AttachedNetworks_Delete
+@try_manual
+def step_attached_network_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo attached-network delete -y '
+             '--attached-network-connection-name "{{attachedNetworkConnectionName}}" '
+             '--dev-center-name "{myDevCenter}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/get/DevBoxDefinitions_GetByProject
+@try_manual
+def step_dev_box_definition_show2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition show '
+             '--name "{myDevBoxDefinition}" '
+             '--project-name "{myProject3}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /DevBoxDefinitions/get/DevBoxDefinitions_ListByProject
+@try_manual
+def step_dev_box_definition_list2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az fidalgo dev-box-definition list '
+             '--project-name "{myProject3}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /Pools/put/Pools_CreateOrUpdate
 @try_manual
 def step_pool_create(test, checks=None):
@@ -976,11 +1070,8 @@ def step_pool_create(test, checks=None):
         checks = []
     test.cmd('az fidalgo pool create '
              '--location "centralus" '
-             '--machine-definition-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo'
-             '/machinedefinitions/{myMachineDefinition}" '
-             '--network-settings-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo/n'
-             'etworksettings/{myNetworkSetting}" '
-             '--name "medium" '
+             '--dev-box-definition-name "{myDevBoxDefinition}" '
+             '--network-connection-name "Network1-westus2" '
              '--pool-name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -1021,8 +1112,7 @@ def step_pool_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo pool update '
-             '--machine-definition-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo'
-             '/machinedefinitions/{myMachineDefinition}" '
+             '--dev-box-definition-name "{myDevBoxDefinition2}" '
              '--pool-name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',

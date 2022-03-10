@@ -24,6 +24,10 @@ def cf_project(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).projects
 
 
+def cf_attached_network(cli_ctx, *_):
+    return cf_fidalgo_cl(cli_ctx).attached_networks
+
+
 def cf_environment(cli_ctx, *_):
     return cf_fidalgo_cl(cli_ctx).environments
 

@@ -41,6 +41,13 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+class DomainJoinType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Azure Active Directory join type
+    """
+
+    HYBRID_AZURE_AD_JOIN = "HybridAzureADJoin"
+    AZURE_AD_JOIN = "AzureADJoin"
+
 class EnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enable or disable status. Indicates whether the property applied to is either enabled or
     disabled.

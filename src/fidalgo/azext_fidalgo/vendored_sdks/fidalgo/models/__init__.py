@@ -7,7 +7,8 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import AttachedNetworkConnectionProperties
+    from ._models_py3 import AttachedNetworkConnection
+    from ._models_py3 import AttachedNetworkListResult
     from ._models_py3 import AvailableOperations
     from ._models_py3 import Capability
     from ._models_py3 import Catalog
@@ -32,9 +33,7 @@ try:
     from ._models_py3 import DevBoxDefinitionUpdateProperties
     from ._models_py3 import DevCenter
     from ._models_py3 import DevCenterListResult
-    from ._models_py3 import DevCenterProperties
     from ._models_py3 import DevCenterUpdate
-    from ._models_py3 import DevCenterUpdateProperties
     from ._models_py3 import Environment
     from ._models_py3 import EnvironmentDeploy
     from ._models_py3 import EnvironmentListResult
@@ -99,7 +98,8 @@ try:
     from ._models_py3 import TrackedResourceUpdate
     from ._models_py3 import UserAssignedIdentitiesValue
 except (SyntaxError, ImportError):
-    from ._models import AttachedNetworkConnectionProperties  # type: ignore
+    from ._models import AttachedNetworkConnection  # type: ignore
+    from ._models import AttachedNetworkListResult  # type: ignore
     from ._models import AvailableOperations  # type: ignore
     from ._models import Capability  # type: ignore
     from ._models import Catalog  # type: ignore
@@ -124,9 +124,7 @@ except (SyntaxError, ImportError):
     from ._models import DevBoxDefinitionUpdateProperties  # type: ignore
     from ._models import DevCenter  # type: ignore
     from ._models import DevCenterListResult  # type: ignore
-    from ._models import DevCenterProperties  # type: ignore
     from ._models import DevCenterUpdate  # type: ignore
-    from ._models import DevCenterUpdateProperties  # type: ignore
     from ._models import Environment  # type: ignore
     from ._models import EnvironmentDeploy  # type: ignore
     from ._models import EnvironmentListResult  # type: ignore
@@ -194,6 +192,7 @@ except (SyntaxError, ImportError):
 from ._fidalgo_enums import (
     CatalogItemType,
     CreatedByType,
+    DomainJoinType,
     EnableStatus,
     HealthCheckStatus,
     ImageValidationStatus,
@@ -202,7 +201,8 @@ from ._fidalgo_enums import (
 )
 
 __all__ = [
-    'AttachedNetworkConnectionProperties',
+    'AttachedNetworkConnection',
+    'AttachedNetworkListResult',
     'AvailableOperations',
     'Capability',
     'Catalog',
@@ -227,9 +227,7 @@ __all__ = [
     'DevBoxDefinitionUpdateProperties',
     'DevCenter',
     'DevCenterListResult',
-    'DevCenterProperties',
     'DevCenterUpdate',
-    'DevCenterUpdateProperties',
     'Environment',
     'EnvironmentDeploy',
     'EnvironmentListResult',
@@ -295,6 +293,7 @@ __all__ = [
     'UserAssignedIdentitiesValue',
     'CatalogItemType',
     'CreatedByType',
+    'DomainJoinType',
     'EnableStatus',
     'HealthCheckStatus',
     'ImageValidationStatus',

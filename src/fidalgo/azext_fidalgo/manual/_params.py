@@ -226,8 +226,6 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('network_connections', type=validate_file_or_dict, help='Dictionary of '
-                   '<AttachedNetworkConnectionProperties> Expected value: json-string/json-file/@json-file.')
         c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
@@ -245,8 +243,6 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('network_connections', type=validate_file_or_dict, help='Dictionary of '
-                   '<AttachedNetworkConnectionProperties> Expected value: json-string/json-file/@json-file.')
         c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned', 'None']),
                    help='The type of identity used for the resource. The type \'SystemAssigned, UserAssigned\' '
@@ -319,6 +315,48 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', options_list=['--name', '-n', '--project-name'], type=str, help='The name of the '
                    'project.', id_part='name')
+
+    with self.argument_context('fidalgo attached-network list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('project_name', type=str, help='The name of the project.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+
+    with self.argument_context('fidalgo attached-network show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('project_name', type=str, help='The name of the project.', id_part='name')
+        c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
+                   id_part='child_name_1')
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+
+    with self.argument_context('fidalgo attached-network create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.')
+        c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.')
+        c.argument('network_connection_resource_id', type=str, help='The resource ID of the NetworkConnection you want '
+                   'to attach.')
+
+    with self.argument_context('fidalgo attached-network update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
+                   id_part='child_name_1')
+        c.argument('network_connection_resource_id', type=str, help='The resource ID of the NetworkConnection you want '
+                   'to attach.')
+
+    with self.argument_context('fidalgo attached-network delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
+        c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
+                   id_part='child_name_1')
+
+    with self.argument_context('fidalgo attached-network wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('project_name', type=str, help='The name of the project.', id_part='name')
+        c.argument('attached_network_connection_name', type=str, help='The name of the attached NetworkConnection.',
+                   id_part='child_name_1')
+        c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
 
     with self.argument_context('fidalgo admin environment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -628,17 +666,17 @@ def load_arguments(self, _):
     with self.argument_context('fidalgo admin devbox-definition create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.')
-        c.argument('dev_box_definition_name', type=str, help='The name of the Dev Box definition.')
+        c.argument('dev_box_definition_name', options_list=['--name', '-n', '--dev-box-definition-name'], type=str, help='The name of the Dev Box definition.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
+                    validator=get_default_location_from_resource_group)
         c.argument('image_reference', action=AddImageReference, nargs='+', help='Image reference information.')
         c.argument('sku_name', type=str, help='The name of the SKU.', arg_group='Sku')
 
     with self.argument_context('fidalgo admin devbox-definition update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
-        c.argument('dev_box_definition_name', type=str, help='The name of the Dev Box definition.',
+        c.argument('dev_box_definition_name', options_list=['--name', '-n', '--dev-box-definition-name'], type=str, help='The name of the Dev Box definition.',
                    id_part='child_name_1')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -692,7 +730,9 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('machine_definition_id', type=str, required=True, help='Resource Id of a Machine Definition')
+        c.argument('dev_box_definition_name', type=str, help='Name of a Dev Box definition in parent Project of this Pool')
         c.argument('network_settings_id', type=str, required=True, help='Resource Id of a Network Settings resource')
+        c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
         c.argument('sku_name', type=str, required=True, help='The name of the SKU.', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool update') as c:
@@ -704,7 +744,9 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
-        c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
+        c.argument('dev_box_definition_name', type=str, help='Name of a Dev Box definition in parent Project of this Pool')
+        c.argument('network_settings_id', type=str, required=True, help='Resource Id of a Network Settings resource')
+        c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
         c.argument('sku_name', type=str, help='The name of the SKU.', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool delete') as c:
@@ -785,6 +827,8 @@ def load_arguments(self, _):
         c.argument('domain_password', type=str, help='The password for the account used to join domain')
         c.argument('networking_resource_group_name', type=str, help='The name for the managed resource group where NICs will be '
                    'placed.')
+        c.argument('domain_join_type', arg_type=get_enum_type(['HybridAzureADJoin', 'AzureADJoin']), help='AAD Join '
+                   'type.')
 
     with self.argument_context('fidalgo admin network-setting update') as c:
         c.argument('resource_group_name', resource_group_name_type)

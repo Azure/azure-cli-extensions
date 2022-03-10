@@ -34,7 +34,6 @@ def fidalgo_dev_center_create(client,
                               dev_center_name,
                               location,
                               tags=None,
-                              network_connections=None,
                               type_=None,
                               user_assigned_identities=None,
                               no_wait=False):
@@ -42,8 +41,6 @@ def fidalgo_dev_center_create(client,
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
-    if network_connections is not None:
-        body['network_connections'] = network_connections
     body['identity'] = {}
     if type_ is not None:
         body['identity']['type'] = type_
@@ -63,7 +60,6 @@ def fidalgo_dev_center_update(client,
                               dev_center_name,
                               tags=None,
                               location=None,
-                              network_connections=None,
                               type_=None,
                               user_assigned_identities=None,
                               no_wait=False):
@@ -72,8 +68,6 @@ def fidalgo_dev_center_update(client,
         body['tags'] = tags
     if location is not None:
         body['location'] = location
-    if network_connections is not None:
-        body['network_connections'] = network_connections
     body['identity'] = {}
     if type_ is not None:
         body['identity']['type'] = type_
@@ -169,6 +163,80 @@ def fidalgo_project_delete(client,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        project_name=project_name)
+
+
+def fidalgo_attached_network_list(client,
+                                  resource_group_name,
+                                  project_name=None,
+                                  top=None,
+                                  dev_center_name=None):
+    if resource_group_name and project_name is not None:
+        return client.list_by_project(resource_group_name=resource_group_name,
+                                      project_name=project_name,
+                                      top=top)
+    return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                     dev_center_name=dev_center_name,
+                                     top=top)
+
+
+def fidalgo_attached_network_show(client,
+                                  resource_group_name,
+                                  attached_network_connection_name,
+                                  project_name=None,
+                                  dev_center_name=None):
+    if resource_group_name and project_name is not None and attached_network_connection_name is not None:
+        return client.get_by_project(resource_group_name=resource_group_name,
+                                     project_name=project_name,
+                                     attached_network_connection_name=attached_network_connection_name)
+    return client.get_by_dev_center(resource_group_name=resource_group_name,
+                                    dev_center_name=dev_center_name,
+                                    attached_network_connection_name=attached_network_connection_name)
+
+
+def fidalgo_attached_network_create(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    attached_network_connection_name,
+                                    network_connection_resource_id=None,
+                                    no_wait=False):
+    body = {}
+    if network_connection_resource_id is not None:
+        body['network_connection_resource_id'] = network_connection_resource_id
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       attached_network_connection_name=attached_network_connection_name,
+                       body=body)
+
+
+def fidalgo_attached_network_update(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    attached_network_connection_name,
+                                    network_connection_resource_id=None,
+                                    no_wait=False):
+    body = {}
+    if network_connection_resource_id is not None:
+        body['network_connection_resource_id'] = network_connection_resource_id
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       attached_network_connection_name=attached_network_connection_name,
+                       body=body)
+
+
+def fidalgo_attached_network_delete(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    attached_network_connection_name,
+                                    no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       dev_center_name=dev_center_name,
+                       attached_network_connection_name=attached_network_connection_name)
 
 
 def fidalgo_environment_list(client,
@@ -703,35 +771,40 @@ def fidalgo_mapping_delete(client,
 
 def fidalgo_dev_box_definition_list(client,
                                     resource_group_name,
-                                    dev_center_name,
-                                    top=None):
-    return client.list_by_dev_center(resource_group_name=resource_group_name,
-                                     dev_center_name=dev_center_name,
-                                     top=top)
+                                    dev_center_name=None,
+                                    top=None,
+                                    project_name=None):
+    if resource_group_name and dev_center_name is not None:
+        return client.list_by_dev_center(resource_group_name=resource_group_name,
+                                         dev_center_name=dev_center_name,
+                                         top=top)
+    return client.list_by_project(resource_group_name=resource_group_name,
+                                  project_name=project_name,
+                                  top=top)
 
 
 def fidalgo_dev_box_definition_show(client,
                                     resource_group_name,
-                                    dev_center_name,
-                                    dev_box_definition_name):
-    return client.get(resource_group_name=resource_group_name,
-                      dev_center_name=dev_center_name,
-                      dev_box_definition_name=dev_box_definition_name)
+                                    dev_box_definition_name,
+                                    dev_center_name=None,
+                                    project_name=None):
+    if resource_group_name and dev_center_name is not None and dev_box_definition_name is not None:
+        return client.get(resource_group_name=resource_group_name,
+                          dev_center_name=dev_center_name,
+                          dev_box_definition_name=dev_box_definition_name)
+    return client.get_by_project(resource_group_name=resource_group_name,
+                                 project_name=project_name,
+                                 dev_box_definition_name=dev_box_definition_name)
 
 
 def fidalgo_dev_box_definition_create(client,
                                       resource_group_name,
                                       dev_center_name,
                                       dev_box_definition_name,
-                                      location,
-                                      tags=None,
                                       image_reference=None,
                                       name=None,
                                       no_wait=False):
     body = {}
-    if tags is not None:
-        body['tags'] = tags
-    body['location'] = location
     if image_reference is not None:
         body['image_reference'] = image_reference
     body['sku'] = {}
@@ -751,16 +824,10 @@ def fidalgo_dev_box_definition_update(client,
                                       resource_group_name,
                                       dev_center_name,
                                       dev_box_definition_name,
-                                      tags=None,
-                                      location=None,
                                       image_reference=None,
                                       name=None,
                                       no_wait=False):
     body = {}
-    if tags is not None:
-        body['tags'] = tags
-    if location is not None:
-        body['location'] = location
     if image_reference is not None:
         body['image_reference'] = image_reference
     body['sku'] = {}
@@ -825,7 +892,9 @@ def fidalgo_pool_create(client,
                         location,
                         tags=None,
                         machine_definition_id=None,
+                        dev_box_definition_name=None,
                         network_settings_id=None,
+                        network_connection_name=None,
                         name=None,
                         no_wait=False):
     body = {}
@@ -834,8 +903,12 @@ def fidalgo_pool_create(client,
     body['location'] = location
     if machine_definition_id is not None:
         body['machine_definition_id'] = machine_definition_id
+    if dev_box_definition_name is not None:
+        body['dev_box_definition_name'] = dev_box_definition_name
     if network_settings_id is not None:
         body['network_settings_id'] = network_settings_id
+    if network_connection_name is not None:
+        body['network_connection_name'] = network_connection_name
     body['sku'] = {}
     if name is not None:
         body['sku']['name'] = name
@@ -856,7 +929,9 @@ def fidalgo_pool_update(client,
                         tags=None,
                         location=None,
                         machine_definition_id=None,
+                        dev_box_definition_name=None,
                         network_settings_id=None,
+                        network_connection_name=None,
                         name=None,
                         no_wait=False):
     body = {}
@@ -866,8 +941,12 @@ def fidalgo_pool_update(client,
         body['location'] = location
     if machine_definition_id is not None:
         body['machine_definition_id'] = machine_definition_id
+    if dev_box_definition_name is not None:
+        body['dev_box_definition_name'] = dev_box_definition_name
     if network_settings_id is not None:
         body['network_settings_id'] = network_settings_id
+    if network_connection_name is not None:
+        body['network_connection_name'] = network_connection_name
     body['sku'] = {}
     if name is not None:
         body['sku']['name'] = name
@@ -988,6 +1067,7 @@ def fidalgo_network_setting_create(client,
                                    domain_username=None,
                                    domain_password=None,
                                    networking_resource_group_name=None,
+                                   domain_join_type=None,
                                    no_wait=False):
     body = {}
     if tags is not None:
@@ -1007,6 +1087,8 @@ def fidalgo_network_setting_create(client,
         body['domain_password'] = domain_password
     if networking_resource_group_name is not None:
         body['networking_resource_group_name'] = networking_resource_group_name
+    if domain_join_type is not None:
+        body['domain_join_type'] = domain_join_type
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,

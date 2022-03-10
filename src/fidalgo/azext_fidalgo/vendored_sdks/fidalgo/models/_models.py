@@ -9,34 +9,132 @@
 import msrest.serialization
 
 
-class AttachedNetworkConnectionProperties(msrest.serialization.Model):
-    """Additional properties for the Network Connection.
+class Resource(msrest.serialization.Model):
+    """Resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar location: The geo-location where the resource lives.
-    :vartype location: str
-    :param health_check_status: Health check status values. Possible values include: "Pending",
-     "Running", "Passed", "Failed", "Warning", "Unknown".
-    :type health_check_status: str or ~fidalgo.models.HealthCheckStatus
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
     """
 
     _validation = {
-        'location': {'readonly': True},
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
     }
 
     _attribute_map = {
-        'location': {'key': 'location', 'type': 'str'},
-        'health_check_status': {'key': 'healthCheckStatus', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(AttachedNetworkConnectionProperties, self).__init__(**kwargs)
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class AttachedNetworkConnection(Resource):
+    """Represents an attached NetworkConnection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~fidalgo.models.SystemData
+    :ivar provisioning_state: The provisioning state of the resource.
+    :vartype provisioning_state: str
+    :param network_connection_resource_id: The resource ID of the NetworkConnection you want to
+     attach.
+    :type network_connection_resource_id: str
+    :ivar location: The geo-location where the NetworkConnection resource specified in
+     'networkConnectionResourceId' property lives.
+    :vartype location: str
+    :ivar health_check_status: Health check status values. Possible values include: "Pending",
+     "Running", "Passed", "Failed", "Warning", "Unknown".
+    :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'location': {'readonly': True},
+        'health_check_status': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'network_connection_resource_id': {'key': 'properties.networkConnectionResourceId', 'type': 'str'},
+        'location': {'key': 'properties.location', 'type': 'str'},
+        'health_check_status': {'key': 'properties.healthCheckStatus', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AttachedNetworkConnection, self).__init__(**kwargs)
+        self.system_data = None
+        self.provisioning_state = None
+        self.network_connection_resource_id = kwargs.get('network_connection_resource_id', None)
         self.location = None
-        self.health_check_status = kwargs.get('health_check_status', None)
+        self.health_check_status = None
+
+
+class AttachedNetworkListResult(msrest.serialization.Model):
+    """Results of the Attached Networks list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~fidalgo.models.AttachedNetworkConnection]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[AttachedNetworkConnection]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AttachedNetworkListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
 
 
 class AvailableOperations(msrest.serialization.Model):
@@ -97,43 +195,6 @@ class Capability(msrest.serialization.Model):
         super(Capability, self).__init__(**kwargs)
         self.name = None
         self.value = None
-
-
-class Resource(msrest.serialization.Model):
-    """Resource.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
 
 
 class Catalog(Resource):
@@ -639,58 +700,11 @@ class DeploymentHistoryResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives.
-    :type location: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'location': {'required': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
-        self.location = kwargs['location']
-
-
-class DevBoxDefinition(TrackedResource):
+class DevBoxDefinition(Resource):
     """Represents a definition for a Developer Machine.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
@@ -699,10 +713,6 @@ class DevBoxDefinition(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives.
-    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
     :param image_reference: Image reference information.
@@ -726,7 +736,6 @@ class DevBoxDefinition(TrackedResource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'image_validation_status': {'readonly': True},
@@ -738,8 +747,6 @@ class DevBoxDefinition(TrackedResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
@@ -865,36 +872,9 @@ class DevBoxDefinitionProperties(DevBoxDefinitionUpdateProperties):
         self.active_image_reference = None
 
 
-class TrackedResourceUpdate(msrest.serialization.Model):
-    """Base tracked resource type for PATCH updates.
-
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: The geo-location where the resource lives.
-    :type location: str
-    """
-
-    _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(TrackedResourceUpdate, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
-        self.location = kwargs.get('location', None)
-
-
-class DevBoxDefinitionUpdate(TrackedResourceUpdate):
+class DevBoxDefinitionUpdate(msrest.serialization.Model):
     """Partial update of a Dev Box definition resource.
 
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: The geo-location where the resource lives.
-    :type location: str
     :param image_reference: Image reference information.
     :type image_reference: ~fidalgo.models.ImageReference
     :param sku: The SKU for Dev Boxes created using this definition.
@@ -902,8 +882,6 @@ class DevBoxDefinitionUpdate(TrackedResourceUpdate):
     """
 
     _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
         'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
     }
@@ -915,6 +893,51 @@ class DevBoxDefinitionUpdate(TrackedResourceUpdate):
         super(DevBoxDefinitionUpdate, self).__init__(**kwargs)
         self.image_reference = kwargs.get('image_reference', None)
         self.sku = kwargs.get('sku', None)
+
+
+class TrackedResource(Resource):
+    """The resource model definition for a ARM tracked top level resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(TrackedResource, self).__init__(**kwargs)
+        self.tags = kwargs.get('tags', None)
+        self.location = kwargs['location']
 
 
 class DevCenter(TrackedResource):
@@ -940,8 +963,6 @@ class DevCenter(TrackedResource):
     :vartype system_data: ~fidalgo.models.SystemData
     :param identity: Managed identity properties.
     :type identity: ~fidalgo.models.IdentityProperties
-    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
-    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -963,7 +984,6 @@ class DevCenter(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'identity': {'key': 'identity', 'type': 'IdentityProperties'},
-        'network_connections': {'key': 'properties.networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -974,7 +994,6 @@ class DevCenter(TrackedResource):
         super(DevCenter, self).__init__(**kwargs)
         self.system_data = None
         self.identity = kwargs.get('identity', None)
-        self.network_connections = kwargs.get('network_connections', None)
         self.provisioning_state = None
 
 
@@ -1008,51 +1027,27 @@ class DevCenterListResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class DevCenterUpdateProperties(msrest.serialization.Model):
-    """Properties of the devcenter.
+class TrackedResourceUpdate(msrest.serialization.Model):
+    """Base tracked resource type for PATCH updates.
 
-    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
-    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
     """
 
     _attribute_map = {
-        'network_connections': {'key': 'networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(DevCenterUpdateProperties, self).__init__(**kwargs)
-        self.network_connections = kwargs.get('network_connections', None)
-
-
-class DevCenterProperties(DevCenterUpdateProperties):
-    """Properties of the devcenter.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
-    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
-    :ivar provisioning_state: The provisioning state of the resource.
-    :vartype provisioning_state: str
-    """
-
-    _validation = {
-        'provisioning_state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'network_connections': {'key': 'networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(DevCenterProperties, self).__init__(**kwargs)
-        self.provisioning_state = None
+        super(TrackedResourceUpdate, self).__init__(**kwargs)
+        self.tags = kwargs.get('tags', None)
+        self.location = kwargs.get('location', None)
 
 
 class DevCenterUpdate(TrackedResourceUpdate):
@@ -1064,15 +1059,12 @@ class DevCenterUpdate(TrackedResourceUpdate):
     :type location: str
     :param identity: Managed identity properties.
     :type identity: ~fidalgo.models.IdentityProperties
-    :param network_connections: Dictionary of :code:`<AttachedNetworkConnectionProperties>`.
-    :type network_connections: dict[str, ~fidalgo.models.AttachedNetworkConnectionProperties]
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'IdentityProperties'},
-        'network_connections': {'key': 'properties.networkConnections', 'type': '{AttachedNetworkConnectionProperties}'},
     }
 
     def __init__(
@@ -1081,7 +1073,6 @@ class DevCenterUpdate(TrackedResourceUpdate):
     ):
         super(DevCenterUpdate, self).__init__(**kwargs)
         self.identity = kwargs.get('identity', None)
-        self.network_connections = kwargs.get('network_connections', None)
 
 
 class Environment(TrackedResource):
@@ -1887,8 +1878,13 @@ class ImageListResult(msrest.serialization.Model):
 class ImageReference(msrest.serialization.Model):
     """Image reference information.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param id: Image resource ID.
     :type id: str
+    :ivar exact_version: The actual version of the image after use. When id references a gallery
+     image latest version, this will indicate the actual version in use.
+    :vartype exact_version: str
     :param publisher: The image publisher.
     :type publisher: str
     :param offer: The image offer.
@@ -1897,8 +1893,13 @@ class ImageReference(msrest.serialization.Model):
     :type sku: str
     """
 
+    _validation = {
+        'exact_version': {'readonly': True},
+    }
+
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
+        'exact_version': {'key': 'exactVersion', 'type': 'str'},
         'publisher': {'key': 'publisher', 'type': 'str'},
         'offer': {'key': 'offer', 'type': 'str'},
         'sku': {'key': 'sku', 'type': 'str'},
@@ -1910,6 +1911,7 @@ class ImageReference(msrest.serialization.Model):
     ):
         super(ImageReference, self).__init__(**kwargs)
         self.id = kwargs.get('id', None)
+        self.exact_version = None
         self.publisher = kwargs.get('publisher', None)
         self.offer = kwargs.get('offer', None)
         self.sku = kwargs.get('sku', None)
@@ -2462,6 +2464,9 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
     :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
     :param networking_resource_group_name: The name for resource group where NICs will be placed.
     :type networking_resource_group_name: str
+    :param domain_join_type: AAD Join type. Possible values include: "HybridAzureADJoin",
+     "AzureADJoin".
+    :type domain_join_type: str or ~fidalgo.models.DomainJoinType
     """
 
     _validation = {
@@ -2479,6 +2484,7 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'health_check_status': {'key': 'healthCheckStatus', 'type': 'str'},
         'networking_resource_group_name': {'key': 'networkingResourceGroupName', 'type': 'str'},
+        'domain_join_type': {'key': 'domainJoinType', 'type': 'str'},
     }
 
     def __init__(
@@ -2489,6 +2495,7 @@ class NetworkProperties(NetworkSettingsUpdateProperties):
         self.provisioning_state = None
         self.health_check_status = None
         self.networking_resource_group_name = kwargs.get('networking_resource_group_name', None)
+        self.domain_join_type = kwargs.get('domain_join_type', None)
 
 
 class NetworkSettings(TrackedResource):
@@ -2535,6 +2542,9 @@ class NetworkSettings(TrackedResource):
     :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
     :param networking_resource_group_name: The name for resource group where NICs will be placed.
     :type networking_resource_group_name: str
+    :param domain_join_type: AAD Join type. Possible values include: "HybridAzureADJoin",
+     "AzureADJoin".
+    :type domain_join_type: str or ~fidalgo.models.DomainJoinType
     """
 
     _validation = {
@@ -2563,6 +2573,7 @@ class NetworkSettings(TrackedResource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'health_check_status': {'key': 'properties.healthCheckStatus', 'type': 'str'},
         'networking_resource_group_name': {'key': 'properties.networkingResourceGroupName', 'type': 'str'},
+        'domain_join_type': {'key': 'properties.domainJoinType', 'type': 'str'},
     }
 
     def __init__(
@@ -2580,6 +2591,7 @@ class NetworkSettings(TrackedResource):
         self.provisioning_state = None
         self.health_check_status = None
         self.networking_resource_group_name = kwargs.get('networking_resource_group_name', None)
+        self.domain_join_type = kwargs.get('domain_join_type', None)
 
 
 class NetworkSettingsListResult(msrest.serialization.Model):
@@ -2837,8 +2849,12 @@ class Pool(TrackedResource):
     :type sku: ~fidalgo.models.Sku
     :param machine_definition_id: Resource Id of a Machine Definition.
     :type machine_definition_id: str
+    :param dev_box_definition_name: Name of a Dev Box definition in parent Project of this Pool.
+    :type dev_box_definition_name: str
     :param network_settings_id: Resource Id of a Network Settings resource.
     :type network_settings_id: str
+    :param network_connection_name: Name of a Network Connection in parent Project of this Pool.
+    :type network_connection_name: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -2861,7 +2877,9 @@ class Pool(TrackedResource):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'machine_definition_id': {'key': 'properties.machineDefinitionId', 'type': 'str'},
+        'dev_box_definition_name': {'key': 'properties.devBoxDefinitionName', 'type': 'str'},
         'network_settings_id': {'key': 'properties.networkSettingsId', 'type': 'str'},
+        'network_connection_name': {'key': 'properties.networkConnectionName', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -2873,7 +2891,9 @@ class Pool(TrackedResource):
         self.system_data = None
         self.sku = kwargs.get('sku', None)
         self.machine_definition_id = kwargs.get('machine_definition_id', None)
+        self.dev_box_definition_name = kwargs.get('dev_box_definition_name', None)
         self.network_settings_id = kwargs.get('network_settings_id', None)
+        self.network_connection_name = kwargs.get('network_connection_name', None)
         self.provisioning_state = None
 
 
@@ -2915,14 +2935,20 @@ class PoolUpdateProperties(msrest.serialization.Model):
     :type sku: ~fidalgo.models.Sku
     :param machine_definition_id: Resource Id of a Machine Definition.
     :type machine_definition_id: str
+    :param dev_box_definition_name: Name of a Dev Box definition in parent Project of this Pool.
+    :type dev_box_definition_name: str
     :param network_settings_id: Resource Id of a Network Settings resource.
     :type network_settings_id: str
+    :param network_connection_name: Name of a Network Connection in parent Project of this Pool.
+    :type network_connection_name: str
     """
 
     _attribute_map = {
         'sku': {'key': 'sku', 'type': 'Sku'},
         'machine_definition_id': {'key': 'machineDefinitionId', 'type': 'str'},
+        'dev_box_definition_name': {'key': 'devBoxDefinitionName', 'type': 'str'},
         'network_settings_id': {'key': 'networkSettingsId', 'type': 'str'},
+        'network_connection_name': {'key': 'networkConnectionName', 'type': 'str'},
     }
 
     def __init__(
@@ -2932,7 +2958,9 @@ class PoolUpdateProperties(msrest.serialization.Model):
         super(PoolUpdateProperties, self).__init__(**kwargs)
         self.sku = kwargs.get('sku', None)
         self.machine_definition_id = kwargs.get('machine_definition_id', None)
+        self.dev_box_definition_name = kwargs.get('dev_box_definition_name', None)
         self.network_settings_id = kwargs.get('network_settings_id', None)
+        self.network_connection_name = kwargs.get('network_connection_name', None)
 
 
 class PoolProperties(PoolUpdateProperties):
@@ -2945,8 +2973,12 @@ class PoolProperties(PoolUpdateProperties):
     :type sku: ~fidalgo.models.Sku
     :param machine_definition_id: Resource Id of a Machine Definition.
     :type machine_definition_id: str
+    :param dev_box_definition_name: Name of a Dev Box definition in parent Project of this Pool.
+    :type dev_box_definition_name: str
     :param network_settings_id: Resource Id of a Network Settings resource.
     :type network_settings_id: str
+    :param network_connection_name: Name of a Network Connection in parent Project of this Pool.
+    :type network_connection_name: str
     :ivar provisioning_state: The provisioning state of the resource.
     :vartype provisioning_state: str
     """
@@ -2958,7 +2990,9 @@ class PoolProperties(PoolUpdateProperties):
     _attribute_map = {
         'sku': {'key': 'sku', 'type': 'Sku'},
         'machine_definition_id': {'key': 'machineDefinitionId', 'type': 'str'},
+        'dev_box_definition_name': {'key': 'devBoxDefinitionName', 'type': 'str'},
         'network_settings_id': {'key': 'networkSettingsId', 'type': 'str'},
+        'network_connection_name': {'key': 'networkConnectionName', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
     }
 
@@ -2982,8 +3016,12 @@ class PoolUpdate(TrackedResourceUpdate):
     :type sku: ~fidalgo.models.Sku
     :param machine_definition_id: Resource Id of a Machine Definition.
     :type machine_definition_id: str
+    :param dev_box_definition_name: Name of a Dev Box definition in parent Project of this Pool.
+    :type dev_box_definition_name: str
     :param network_settings_id: Resource Id of a Network Settings resource.
     :type network_settings_id: str
+    :param network_connection_name: Name of a Network Connection in parent Project of this Pool.
+    :type network_connection_name: str
     """
 
     _attribute_map = {
@@ -2991,7 +3029,9 @@ class PoolUpdate(TrackedResourceUpdate):
         'location': {'key': 'location', 'type': 'str'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
         'machine_definition_id': {'key': 'properties.machineDefinitionId', 'type': 'str'},
+        'dev_box_definition_name': {'key': 'properties.devBoxDefinitionName', 'type': 'str'},
         'network_settings_id': {'key': 'properties.networkSettingsId', 'type': 'str'},
+        'network_connection_name': {'key': 'properties.networkConnectionName', 'type': 'str'},
     }
 
     def __init__(
@@ -3001,7 +3041,9 @@ class PoolUpdate(TrackedResourceUpdate):
         super(PoolUpdate, self).__init__(**kwargs)
         self.sku = kwargs.get('sku', None)
         self.machine_definition_id = kwargs.get('machine_definition_id', None)
+        self.dev_box_definition_name = kwargs.get('dev_box_definition_name', None)
         self.network_settings_id = kwargs.get('network_settings_id', None)
+        self.network_connection_name = kwargs.get('network_connection_name', None)
 
 
 class Project(TrackedResource):

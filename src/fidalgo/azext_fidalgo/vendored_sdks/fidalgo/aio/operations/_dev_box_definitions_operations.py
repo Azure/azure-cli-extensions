@@ -568,3 +568,144 @@ class DevBoxDefinitionsOperations:
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/devcenters/{devCenterName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore
+
+    def list_by_project(
+        self,
+        resource_group_name: str,
+        project_name: str,
+        top: Optional[int] = None,
+        **kwargs
+    ) -> AsyncIterable["models.DevBoxDefinitionListResult"]:
+        """List Dev Box definitions configured for a project.
+
+        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :type resource_group_name: str
+        :param project_name: The name of the project.
+        :type project_name: str
+        :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
+        :type top: int
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DevBoxDefinitionListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~fidalgo.models.DevBoxDefinitionListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinitionListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01-privatepreview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_project.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DevBoxDefinitionListResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    list_by_project.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/projects/{projectName}/devboxdefinitions'}  # type: ignore
+
+    async def get_by_project(
+        self,
+        resource_group_name: str,
+        project_name: str,
+        dev_box_definition_name: str,
+        **kwargs
+    ) -> "models.DevBoxDefinition":
+        """Gets a Dev Box definition configured for a project.
+
+        :param resource_group_name: Name of the resource group within the Azure subscription.
+        :type resource_group_name: str
+        :param project_name: The name of the project.
+        :type project_name: str
+        :param dev_box_definition_name: The name of the Dev Box definition.
+        :type dev_box_definition_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DevBoxDefinition, or the result of cls(response)
+        :rtype: ~fidalgo.models.DevBoxDefinition
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxDefinition"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01-privatepreview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_by_project.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'devBoxDefinitionName': self._serialize.url("dev_box_definition_name", dev_box_definition_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DevBoxDefinition', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_by_project.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Fidalgo/projects/{projectName}/devboxdefinitions/{devBoxDefinitionName}'}  # type: ignore

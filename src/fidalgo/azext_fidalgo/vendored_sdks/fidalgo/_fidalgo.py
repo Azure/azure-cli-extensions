@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 from ._configuration import FidalgoConfiguration
 from .operations import DevCentersOperations
 from .operations import ProjectsOperations
+from .operations import AttachedNetworksOperations
 from .operations import EnvironmentsOperations
 from .operations import DeploymentsOperations
 from .operations import EnvironmentTypesOperations
@@ -46,6 +47,8 @@ class Fidalgo(object):
     :vartype dev_centers: fidalgo.operations.DevCentersOperations
     :ivar projects: ProjectsOperations operations
     :vartype projects: fidalgo.operations.ProjectsOperations
+    :ivar attached_networks: AttachedNetworksOperations operations
+    :vartype attached_networks: fidalgo.operations.AttachedNetworksOperations
     :ivar environments: EnvironmentsOperations operations
     :vartype environments: fidalgo.operations.EnvironmentsOperations
     :ivar deployments: DeploymentsOperations operations
@@ -106,6 +109,8 @@ class Fidalgo(object):
         self.dev_centers = DevCentersOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.projects = ProjectsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.attached_networks = AttachedNetworksOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.environments = EnvironmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)

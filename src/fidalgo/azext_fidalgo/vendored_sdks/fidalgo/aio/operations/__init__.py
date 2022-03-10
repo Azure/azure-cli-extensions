@@ -8,6 +8,7 @@
 
 from ._dev_centers_operations import DevCentersOperations
 from ._projects_operations import ProjectsOperations
+from ._attached_networks_operations import AttachedNetworksOperations
 from ._environments_operations import EnvironmentsOperations
 from ._deployments_operations import DeploymentsOperations
 from ._environment_types_operations import EnvironmentTypesOperations
@@ -28,6 +29,7 @@ from ._network_settings_operations import NetworkSettingsOperations
 __all__ = [
     'DevCentersOperations',
     'ProjectsOperations',
+    'AttachedNetworksOperations',
     'EnvironmentsOperations',
     'DeploymentsOperations',
     'EnvironmentTypesOperations',

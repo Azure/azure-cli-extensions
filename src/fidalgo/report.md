@@ -9,6 +9,7 @@
 ### <a name="CommandGroups">Command groups in `az fidalgo` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
+|az fidalgo attached-network|AttachedNetworks|[commands](#CommandsInAttachedNetworks)|
 |az fidalgo catalog|Catalogs|[commands](#CommandsInCatalogs)|
 |az fidalgo catalog-item|CatalogItems|[commands](#CommandsInCatalogItems)|
 |az fidalgo deployment|Deployments|[commands](#CommandsInDeployments)|
@@ -28,6 +29,17 @@
 |az fidalgo sku|Skus|[commands](#CommandsInSkus)|
 
 ## COMMANDS
+### <a name="CommandsInAttachedNetworks">Commands in `az fidalgo attached-network` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az fidalgo attached-network list](#AttachedNetworksListByProject)|ListByProject|[Parameters](#ParametersAttachedNetworksListByProject)|[Example](#ExamplesAttachedNetworksListByProject)|
+|[az fidalgo attached-network list](#AttachedNetworksListByDevCenter)|ListByDevCenter|[Parameters](#ParametersAttachedNetworksListByDevCenter)|[Example](#ExamplesAttachedNetworksListByDevCenter)|
+|[az fidalgo attached-network show](#AttachedNetworksGetByProject)|GetByProject|[Parameters](#ParametersAttachedNetworksGetByProject)|[Example](#ExamplesAttachedNetworksGetByProject)|
+|[az fidalgo attached-network show](#AttachedNetworksGetByDevCenter)|GetByDevCenter|[Parameters](#ParametersAttachedNetworksGetByDevCenter)|[Example](#ExamplesAttachedNetworksGetByDevCenter)|
+|[az fidalgo attached-network create](#AttachedNetworksCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersAttachedNetworksCreateOrUpdate#Create)|[Example](#ExamplesAttachedNetworksCreateOrUpdate#Create)|
+|[az fidalgo attached-network update](#AttachedNetworksCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersAttachedNetworksCreateOrUpdate#Update)|Not Found|
+|[az fidalgo attached-network delete](#AttachedNetworksDelete)|Delete|[Parameters](#ParametersAttachedNetworksDelete)|[Example](#ExamplesAttachedNetworksDelete)|
+
 ### <a name="CommandsInCatalogs">Commands in `az fidalgo catalog` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -57,7 +69,9 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az fidalgo dev-box-definition list](#DevBoxDefinitionsListByDevCenter)|ListByDevCenter|[Parameters](#ParametersDevBoxDefinitionsListByDevCenter)|[Example](#ExamplesDevBoxDefinitionsListByDevCenter)|
+|[az fidalgo dev-box-definition list](#DevBoxDefinitionsListByProject)|ListByProject|[Parameters](#ParametersDevBoxDefinitionsListByProject)|[Example](#ExamplesDevBoxDefinitionsListByProject)|
 |[az fidalgo dev-box-definition show](#DevBoxDefinitionsGet)|Get|[Parameters](#ParametersDevBoxDefinitionsGet)|[Example](#ExamplesDevBoxDefinitionsGet)|
+|[az fidalgo dev-box-definition show](#DevBoxDefinitionsGetByProject)|GetByProject|[Parameters](#ParametersDevBoxDefinitionsGetByProject)|[Example](#ExamplesDevBoxDefinitionsGetByProject)|
 |[az fidalgo dev-box-definition create](#DevBoxDefinitionsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDevBoxDefinitionsCreateOrUpdate#Create)|[Example](#ExamplesDevBoxDefinitionsCreateOrUpdate#Create)|
 |[az fidalgo dev-box-definition update](#DevBoxDefinitionsUpdate)|Update|[Parameters](#ParametersDevBoxDefinitionsUpdate)|[Example](#ExamplesDevBoxDefinitionsUpdate)|
 |[az fidalgo dev-box-definition delete](#DevBoxDefinitionsDelete)|Delete|[Parameters](#ParametersDevBoxDefinitionsDelete)|[Example](#ExamplesDevBoxDefinitionsDelete)|
@@ -176,6 +190,102 @@
 
 
 ## COMMAND DETAILS
+### group `az fidalgo attached-network`
+#### <a name="AttachedNetworksListByProject">Command `az fidalgo attached-network list`</a>
+
+##### <a name="ExamplesAttachedNetworksListByProject">Example</a>
+```
+az fidalgo attached-network list --project-name "{projectName}" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksListByProject">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--project-name**|string|The name of the project.|project_name|projectName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="AttachedNetworksListByDevCenter">Command `az fidalgo attached-network list`</a>
+
+##### <a name="ExamplesAttachedNetworksListByDevCenter">Example</a>
+```
+az fidalgo attached-network list --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksListByDevCenter">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
+#### <a name="AttachedNetworksGetByProject">Command `az fidalgo attached-network show`</a>
+
+##### <a name="ExamplesAttachedNetworksGetByProject">Example</a>
+```
+az fidalgo attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" --project-name \
+"{projectName}" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksGetByProject">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--project-name**|string|The name of the project.|project_name|projectName|
+|**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
+
+#### <a name="AttachedNetworksGetByDevCenter">Command `az fidalgo attached-network show`</a>
+
+##### <a name="ExamplesAttachedNetworksGetByDevCenter">Example</a>
+```
+az fidalgo attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksGetByDevCenter">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
+
+#### <a name="AttachedNetworksCreateOrUpdate#Create">Command `az fidalgo attached-network create`</a>
+
+##### <a name="ExamplesAttachedNetworksCreateOrUpdate#Create">Example</a>
+```
+az fidalgo attached-network create --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--network-connection-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Fidalgo/Networ\
+kSettings/{networkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
+|**--network-connection-resource-id**|string|The resource ID of the NetworkConnection you want to attach.|network_connection_resource_id|networkConnectionResourceId|
+
+#### <a name="AttachedNetworksCreateOrUpdate#Update">Command `az fidalgo attached-network update`</a>
+
+
+##### <a name="ParametersAttachedNetworksCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
+|**--network-connection-resource-id**|string|The resource ID of the NetworkConnection you want to attach.|network_connection_resource_id|networkConnectionResourceId|
+
+#### <a name="AttachedNetworksDelete">Command `az fidalgo attached-network delete`</a>
+
+##### <a name="ExamplesAttachedNetworksDelete">Example</a>
+```
+az fidalgo attached-network delete --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1"
+```
+##### <a name="ParametersAttachedNetworksDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
+|**--attached-network-connection-name**|string|The name of the attached NetworkConnection.|attached_network_connection_name|attachedNetworkConnectionName|
+
 ### group `az fidalgo catalog`
 #### <a name="CatalogsListByDevCenter">Command `az fidalgo catalog list`</a>
 
@@ -391,6 +501,19 @@ az fidalgo dev-box-definition list --dev-center-name "Contoso" --resource-group 
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
 
+#### <a name="DevBoxDefinitionsListByProject">Command `az fidalgo dev-box-definition list`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsListByProject">Example</a>
+```
+az fidalgo dev-box-definition list --project-name "ContosoProject" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsListByProject">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--project-name**|string|The name of the project.|project_name|projectName|
+|**--top**|integer|The maximum number of resources to return from the operation. Example: '$top=10'.|top|$top|
+
 #### <a name="DevBoxDefinitionsGet">Command `az fidalgo dev-box-definition show`</a>
 
 ##### <a name="ExamplesDevBoxDefinitionsGet">Example</a>
@@ -404,13 +527,26 @@ az fidalgo dev-box-definition show --name "WebDevBox" --dev-center-name "Contoso
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
 
+#### <a name="DevBoxDefinitionsGetByProject">Command `az fidalgo dev-box-definition show`</a>
+
+##### <a name="ExamplesDevBoxDefinitionsGetByProject">Example</a>
+```
+az fidalgo dev-box-definition show --name "WebDevBox" --project-name "ContosoProject" --resource-group "rg1"
+```
+##### <a name="ParametersDevBoxDefinitionsGetByProject">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--project-name**|string|The name of the project.|project_name|projectName|
+|**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+
 #### <a name="DevBoxDefinitionsCreateOrUpdate#Create">Command `az fidalgo dev-box-definition create`</a>
 
 ##### <a name="ExamplesDevBoxDefinitionsCreateOrUpdate#Create">Example</a>
 ```
-az fidalgo dev-box-definition create --location "centralus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c\
-9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/1\
-.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+az fidalgo dev-box-definition create --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceG\
+roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/1.0.0" \
+--dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersDevBoxDefinitionsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -418,8 +554,6 @@ az fidalgo dev-box-definition create --location "centralus" --image-reference id
 |**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
-|**--location**|string|The geo-location where the resource lives|location|location|
-|**--tags**|dictionary|Resource tags.|tags|tags|
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--name**|string|The name of the SKU.|name|name|
 
@@ -437,8 +571,6 @@ roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampl
 |**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
-|**--tags**|dictionary|Resource tags.|tags|tags|
-|**--location**|string|The geo-location where the resource lives|location|location|
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--name**|string|The name of the SKU.|name|name|
 
@@ -507,7 +639,6 @@ az fidalgo dev-center create --type "UserAssigned" --user-assigned-identities "{
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--network-connections**|dictionary|Dictionary of <AttachedNetworkConnectionProperties>|network_connections|networkConnections|
 |**--type**|choice|The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a user assigned identity. The type 'None' will remove any identities from the resource.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -524,7 +655,6 @@ az fidalgo dev-center update --tags CostCode="12345" --name "Contoso" --resource
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--network-connections**|dictionary|Dictionary of <AttachedNetworkConnectionProperties>|network_connections|networkConnections|
 |**--type**|choice|The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a user assigned identity. The type 'None' will remove any identities from the resource.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -1061,11 +1191,12 @@ az fidalgo network-setting show --name "{networkSettingName}" --resource-group "
 
 ##### <a name="ExamplesNetworkSettingsCreateOrUpdate#Create">Example</a>
 ```
-az fidalgo network-setting create --location "centralus" --domain-name "mydomaincontroller.local" --domain-password \
-"Password value for user" --domain-username "testuser@mydomaincontroller.local" --networking-resource-group-id \
-"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG" --subnet-id \
-"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetwor\
-ks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group "rg1"
+az fidalgo network-setting create --location "centralus" --domain-join-type "HybridAzureADJoin" --domain-name \
+"mydomaincontroller.local" --domain-password "Password value for user" --domain-username \
+"testuser@mydomaincontroller.local" --networking-resource-group-id "/subscriptions/00000000-0000-0000-0000-000000000000\
+/resourceGroups/ExampleRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
+oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group \
+"rg1"
 ```
 ##### <a name="ParametersNetworkSettingsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1081,6 +1212,7 @@ ks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group "
 |**--domain-username**|string|The username of an Active Directory account (user or service account) that has permissions to create computer objects in Active Directory. Required format: admin@contoso.com.|domain_username|domainUsername|
 |**--domain-password**|string|The password for the account used to join domain|domain_password|domainPassword|
 |**--networking-resource-group-name**|string|The name for resource group where NICs will be placed.|networking_resource_group_name|networkingResourceGroupName|
+|**--domain-join-type**|choice|AAD Join type.|domain_join_type|domainJoinType|
 
 #### <a name="NetworkSettingsUpdate">Command `az fidalgo network-setting update`</a>
 
@@ -1184,10 +1316,8 @@ az fidalgo pool show --name "{poolName}" --project-name "{projectName}" --resour
 
 ##### <a name="ExamplesPoolsCreateOrUpdate#Create">Example</a>
 ```
-az fidalgo pool create --location "centralus" --machine-definition-id "/subscriptions/{subscriptionId}/resourceGroups/r\
-g1/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --network-settings-id \
-"/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Fidalgo/networksettings/{networkSettingName}" \
---name "medium" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+az fidalgo pool create --location "centralus" --dev-box-definition-name "WebDevBox" --network-connection-name \
+"Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -1198,15 +1328,16 @@ g1/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --net
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--machine-definition-id**|string|Resource Id of a Machine Definition|machine_definition_id|machineDefinitionId|
+|**--dev-box-definition-name**|string|Name of a Dev Box definition in parent Project of this Pool|dev_box_definition_name|devBoxDefinitionName|
 |**--network-settings-id**|string|Resource Id of a Network Settings resource|network_settings_id|networkSettingsId|
+|**--network-connection-name**|string|Name of a Network Connection in parent Project of this Pool|network_connection_name|networkConnectionName|
 |**--name**|string|The name of the SKU.|name|name|
 
 #### <a name="PoolsUpdate">Command `az fidalgo pool update`</a>
 
 ##### <a name="ExamplesPoolsUpdate">Example</a>
 ```
-az fidalgo pool update --machine-definition-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.\
-Fidalgo/machinedefinitions/{machineDefinitionName}" --pool-name "{poolName}" --project-name "{projectName}" \
+az fidalgo pool update --dev-box-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name "{projectName}" \
 --resource-group "rg1"
 ```
 ##### <a name="ParametersPoolsUpdate">Parameters</a> 
@@ -1218,7 +1349,9 @@ Fidalgo/machinedefinitions/{machineDefinitionName}" --pool-name "{poolName}" --p
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--machine-definition-id**|string|Resource Id of a Machine Definition|machine_definition_id|machineDefinitionId|
+|**--dev-box-definition-name**|string|Name of a Dev Box definition in parent Project of this Pool|dev_box_definition_name|devBoxDefinitionName|
 |**--network-settings-id**|string|Resource Id of a Network Settings resource|network_settings_id|networkSettingsId|
+|**--network-connection-name**|string|Name of a Network Connection in parent Project of this Pool|network_connection_name|networkConnectionName|
 |**--name**|string|The name of the SKU.|name|name|
 
 #### <a name="PoolsDelete">Command `az fidalgo pool delete`</a>

@@ -415,6 +415,82 @@ helps['fidalgo admin project wait'] = """
                az fidalgo admin project wait --name "{projectName}" --resource-group "rg1" --deleted
 """
 
+helps['fidalgo admin attached-network'] = """
+    type: group
+    short-summary: Manage attached network with fidalgo
+"""
+
+helps['fidalgo admin attached-network list'] = """
+    type: command
+    short-summary: "Lists the attached NetworkConnections for a Project. And Lists the attached NetworkConnections for \
+a DevCenter."
+    examples:
+      - name: AttachedNetworks_ListByProject
+        text: |-
+               az fidalgo admin attached-network list --project-name "{projectName}" --resource-group "rg1"
+      - name: AttachedNetworks_ListByDevCenter
+        text: |-
+               az fidalgo admin attached-network list --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin attached-network show'] = """
+    type: command
+    short-summary: "Gets an attached NetworkConnection. And Gets an attached NetworkConnection."
+    examples:
+      - name: AttachedNetworks_GetByProject
+        text: |-
+               az fidalgo admin attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--project-name "{projectName}" --resource-group "rg1"
+      - name: AttachedNetworks_GetByDevCenter
+        text: |-
+               az fidalgo admin attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin attached-network create'] = """
+    type: command
+    short-summary: "Create an attached NetworkConnection."
+    examples:
+      - name: AttachedNetworks_Create
+        text: |-
+               az fidalgo admin attached-network create --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--network-connection-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Fidalgo/Networ\
+kSettings/{networkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin attached-network update'] = """
+    type: command
+    short-summary: "Update an attached NetworkConnection."
+"""
+
+helps['fidalgo admin attached-network delete'] = """
+    type: command
+    short-summary: "Un-attach a NetworkConnection."
+    examples:
+      - name: AttachedNetworks_Delete
+        text: |-
+               az fidalgo admin attached-network delete --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1"
+"""
+
+helps['fidalgo admin attached-network wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the fidalgo admin attached-network is met.
+    examples:
+      - name: Pause executing next line of CLI script until the fidalgo admin attached-network is successfully created.
+        text: |-
+               az fidalgo admin attached-network wait --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1" --created
+      - name: Pause executing next line of CLI script until the fidalgo admin attached-network is successfully updated.
+        text: |-
+               az fidalgo admin attached-network wait --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1" --updated
+      - name: Pause executing next line of CLI script until the fidalgo admin attached-network is successfully deleted.
+        text: |-
+               az fidalgo admin attached-network wait --attached-network-connection-name "{attachedNetworkConnectionName}" \
+--dev-center-name "Contoso" --resource-group "rg1" --deleted
+"""
+
 helps['fidalgo admin environment'] = """
     type: group
     short-summary: Manage environment with fidalgo
@@ -984,54 +1060,22 @@ helps['fidalgo admin pool show'] = """
 helps['fidalgo admin pool create'] = """
     type: command
     short-summary: "Create a machine pool."
-    parameters:
-      - name: --sku
-        short-summary: "The SKU for the virtual machine. Defines the type of virtual machines used in the pool."
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU.
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
     examples:
       - name: Pools_CreateOrUpdate
         text: |-
-               az fidalgo admin pool create --location "centralus" --machine-definition-id "/subscriptions/{subscriptionId}/r\
-esourceGroups/rg1/providers/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --network-settings-id \
-"/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Fidalgo/networksettings/{networkSettingName}" \
---sku name="medium" --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+               az fidalgo pool create --location "centralus" --dev-box-definition-name "WebDevBox" \
+--network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group \
+"rg1"
 """
 
 helps['fidalgo admin pool update'] = """
     type: command
     short-summary: "Partially updates a machine pool."
-    parameters:
-      - name: --sku
-        short-summary: "The SKU for the virtual machine. Defines the type of virtual machines used in the pool."
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU.
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
     examples:
       - name: Pools_Update
         text: |-
-               az fidalgo admin pool update --machine-definition-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/provi\
-ders/Microsoft.Fidalgo/machinedefinitions/{machineDefinitionName}" --name "{poolName}" --project-name "{projectName}" \
---resource-group "rg1"
+               az fidalgo pool update --dev-box-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name \
+"{projectName}" --resource-group "rg1"
 """
 
 helps['fidalgo admin pool delete'] = """
@@ -1185,11 +1229,12 @@ helps['fidalgo admin network-setting create'] = """
     examples:
       - name: NetworkSettings_CreateOrUpdate
         text: |-
-               az fidalgo admin network-setting create --location "centralus" --domain-name "mydomaincontroller.local" \
---domain-password "Password value for user" --domain-username "testuser@mydomaincontroller.local" \
---networking-resource-group-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG" \
---subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/v\
-irtualNetworks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group "rg1"
+               az fidalgo admin network-setting create --location "centralus" --domain-join-type "HybridAzureADJoin" \
+--domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username \
+"testuser@mydomaincontroller.local" --networking-resource-group-id "/subscriptions/00000000-0000-0000-0000-000000000000\
+/resourceGroups/ExampleRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/pr\
+oviders/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkSettingName}" --resource-group \
+"rg1"
 """
 
 helps['fidalgo admin network-setting update'] = """

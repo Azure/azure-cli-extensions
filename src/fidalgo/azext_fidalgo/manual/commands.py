@@ -9,6 +9,7 @@ from azext_fidalgo.manual._client_factory import *
 from azext_fidalgo.generated._client_factory import (
     cf_dev_center,
     cf_project,
+    cf_attached_network,
     cf_environment,
     cf_deployment,
     cf_environment_type,
@@ -84,6 +85,14 @@ def load_command_table(self, _):
     )
 
     #control plane
+
+    fidalgo_attached_network = CliCommandType(
+        operations_tmpl=(
+            'azext_fidalgo.vendored_sdks.fidalgo.operations._attached_networks_operations#AttachedNetworksOperations.{}'
+        ),
+        client_factory=cf_attached_network,
+    )
+
     fidalgo_catalog = CliCommandType(
         operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo.operations._catalogs_operations#CatalogsOperations.{}',
         client_factory=cf_catalog,
@@ -186,6 +195,7 @@ def load_command_table(self, _):
     )
 
 
+
     fidalgo_sku = CliCommandType(
         operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo.operations._skus_operations#SkusOperations.{}',
         client_factory=cf_sku,
@@ -235,6 +245,16 @@ def load_command_table(self, _):
         g.custom_command('list', 'fidalgo_environment_type_list_dp')
     
     #control plane
+    with self.command_group(
+        'fidalgo admin attached-network', fidalgo_attached_network, client_factory=cf_attached_network
+    ) as g:
+        g.custom_command('list', 'fidalgo_attached_network_list')
+        g.custom_show_command('show', 'fidalgo_attached_network_show')
+        g.custom_command('create', 'fidalgo_attached_network_create', supports_no_wait=True)
+        g.custom_command('update', 'fidalgo_attached_network_update', supports_no_wait=True)
+        g.custom_command('delete', 'fidalgo_attached_network_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'fidalgo_attached_network_show')
+
     with self.command_group('fidalgo admin catalog', fidalgo_catalog, client_factory=cf_catalog) as g:
         g.custom_command('list', 'fidalgo_catalog_list')
         g.custom_show_command('show', 'fidalgo_catalog_show')
@@ -271,8 +291,6 @@ def load_command_table(self, _):
         g.custom_command('update', 'fidalgo_dev_center_update', supports_no_wait=True)
         g.custom_command('delete', 'fidalgo_dev_center_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'fidalgo_dev_center_show')
-        g.custom_command('attach-network', 'fidalgo_dev_center_attach_network', supports_no_wait=True)
-        g.custom_command('detach-network', 'fidalgo_dev_center_detach_network', supports_no_wait=True)
 
     with self.command_group('fidalgo admin environment', fidalgo_environment, client_factory=cf_environment) as g:
         g.custom_command('list', 'fidalgo_environment_list')
