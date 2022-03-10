@@ -247,7 +247,7 @@ def get_cmd_file_path():
             diaCmdPath = get_cmd_file_path_static()
             return diaCmdPath
         except FileNotFoundError as e:
-            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command") from e
+            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command or use --installed-ir-path parameter to provide the installed IR location.") from e
         except IndexError as e:
             raise FileOperationError("IR is not properly installed. Please re-install it and re-run this command") from e
 
