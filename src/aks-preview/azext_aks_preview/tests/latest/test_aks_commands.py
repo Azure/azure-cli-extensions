@@ -264,13 +264,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
-                     '-a ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 ' \
+                     '-a ingress-appgw --appgw-subnet-cidr 10.232.0.0/16 ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
+                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.232.0.0/16")
         ])
 
     @AllowLargeResponse()
@@ -284,13 +284,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
-                     '-a ingress-appgw --appgw-subnet-prefix 10.2.0.0/16 ' \
+                     '-a ingress-appgw --appgw-subnet-prefix 10.232.0.0/16 ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ingressApplicationGateway.enabled', True),
             self.check(
-                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
+                'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.232.0.0/16")
         ])
 
     @live_only()
@@ -1347,7 +1347,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_create_add_nodepool_with_motd(self, resource_group, resource_group_location):
-        acs_base_dir = os.getenv("ACS_BASE_DIR", None)
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
         node_pool_name_second = self.create_random_name('c', 6)
@@ -3232,9 +3231,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd('aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} --node-taints "" ')
 
         # nodepool show
-        show_nodepool = self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} -o json').get_output_in_json()
-        # TODO/xinyue: temp fix for the assertion, but we need to decide whether to put an empty list or a list with one empty string when trying to delete node taints
-        assert show_nodepool["nodeTaints"] == []
+        self.cmd('aks nodepool show --resource-group={resource_group} --cluster-name={name} --name={nodepool1_name} -o json', checks=[
+            self.check('nodeTaints', None)
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')

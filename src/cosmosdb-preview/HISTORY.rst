@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.15.0
+++++++
+* Add `--enable-materialized-views` parameter for create/update database account.
+
 0.14.0
 ++++++
 * List the different versions of databases and graphs that were modified for a gremlin database account.
