@@ -113,7 +113,7 @@ helps['grafana dashboard create'] = """
 
 helps['grafana dashboard update'] = """
     type: command
-    short-summary: Update a new dashboard.
+    short-summary: Update a dashboard.
     examples:
         - name: Update a dashboard with definition in a json file. For quick start, get existing configuration from "az grafana dashboard show", and apply changes.
                 "version" field need to be updated, and "overwrite" field should be true.

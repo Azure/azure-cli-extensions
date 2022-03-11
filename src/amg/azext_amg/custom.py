@@ -138,21 +138,55 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None):
     return json.loads(response.content)
 
 
-def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None):
+def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None, overwrite=None):
     definition = _try_load_file_content(definition)
     data = json.loads(definition)
+    if "dashboard" in data:
+        payload = data
+    else:
+        logger.info("Adjust input by adding 'dashboard' field")
+        payload = {}
+        payload["dashboard"] = data
+
     if title:
-        data['dashboard']['title'] = title
+        payload['dashboard']['title'] = title
+
     if folder:
         folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
-        data['folderId'] = folder["id"]
+        payload['folderId'] = folder["id"]
+
+    payload["overwrite"] = overwrite or False
+
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
-                             data)
+                             payload)
     return json.loads(response.content)
 
 
-def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None):
-    return create_dashboard(cmd, grafana_name, definition, folder=folder, resource_group_name=resource_group_name)
+def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
+    return create_dashboard(cmd, grafana_name, definition, folder=folder,
+                            resource_group_name=resource_group_name,
+                            overwrite=overwrite)
+
+
+def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
+    definition = _try_load_file_content(definition)
+    data = json.loads(definition)
+    if "dashboard" in data:
+        payload = data
+    else:
+        logger.info("Adjust input by adding 'dashboard' field")
+        payload = {}
+        payload["dashboard"] = data
+
+    if folder:
+        folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
+        payload['folderId'] = folder["id"]
+
+    payload["overwrite"] = overwrite or False
+
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
+                             payload)
+    return json.loads(response.content)
 
 
 def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None):

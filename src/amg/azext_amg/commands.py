@@ -22,6 +22,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_dashboards')
         g.custom_show_command('show', 'show_dashboard')
         g.custom_command('update', 'update_dashboard')
+        g.custom_command('import', 'import_dashboard')
 
     with self.command_group('grafana data-source') as g:
         g.custom_command('create', 'create_data_source')
