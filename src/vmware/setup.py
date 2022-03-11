@@ -8,7 +8,7 @@
 from io import open
 from setuptools import setup, find_packages
 
-VERSION = "4.0.1"
+VERSION = "4.0.2"
 
 with open('README.md', encoding='utf-8') as f:
     readme = f.read()
@@ -24,7 +24,7 @@ setup(
     license='MIT',
     author='Microsoft',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/az-vmware-cli',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/vmware',
     packages=find_packages(exclude=["tests"]),
     install_requires=[],
     package_data={'azext_vmware': ['azext_metadata.json']}

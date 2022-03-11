@@ -28,7 +28,7 @@ def gateway_update(cmd, client, resource_group, service,
                    issuer_uri=None,
                    api_title=None,
                    api_description=None,
-                   api_documentation_location=None,
+                   api_doc_location=None,
                    api_version=None,
                    server_url=None,
                    allowed_origins=None,
@@ -42,16 +42,20 @@ def gateway_update(cmd, client, resource_group, service,
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
 
     sso_properties = gateway.properties.sso_properties
-    if scope and client_id and client_secret and issuer_uri:
-        sso_properties = models.SsoProperties(
-            scope=scope,
-            client_id=client_id,
-            client_secret=client_secret,
-            issuer_uri=issuer_uri,
-        )
+    if scope is not None and client_id is not None and client_secret is not None and issuer_uri is not None:
+        if not client_id and not client_secret and not issuer_uri:
+            # clear SSO properties
+            sso_properties = None
+        else:
+            sso_properties = models.SsoProperties(
+                scope=scope,
+                client_id=client_id,
+                client_secret=client_secret,
+                issuer_uri=issuer_uri,
+            )
 
     api_metadata_properties = _update_api_metadata(
-        gateway.properties.api_metadata_properties, api_title, api_description, api_documentation_location, api_version, server_url)
+        gateway.properties.api_metadata_properties, api_title, api_description, api_doc_location, api_version, server_url)
 
     cors_properties = _update_cors(
         gateway.properties.cors_properties, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
@@ -83,12 +87,15 @@ def gateway_show(cmd, client, resource_group, service):
     return client.gateways.get(resource_group, service, DEFAULT_NAME)
 
 
-def gateway_clear(cmd, client, resource_group, service):
+def gateway_clear(cmd, client, resource_group, service, no_wait=False):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
     properties = models.GatewayProperties()
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier)
     gateway_resource = models.GatewayResource(properties=properties, sku=sku)
-    return client.gateways.begin_create_or_update(resource_group, service, DEFAULT_NAME, gateway_resource)
+
+    logger.warning(LOG_RUNNING_PROMPT)
+    return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
+                       resource_group, service, DEFAULT_NAME, gateway_resource)
 
 
 def gateway_custom_domain_show(cmd, client, resource_group, service, domain_name):
@@ -158,38 +165,38 @@ def gateway_route_config_remove(cmd, client, resource_group, service, name):
 
 
 def _update_api_metadata(existing, api_title, api_description, api_documentation_location, version, server_url):
-    if not any([api_title, api_description, api_documentation_location, version, server_url]):
-        return None
+    if api_title is None and api_description is None and api_documentation_location is None and version is None and server_url is None:
+        return existing
     api_metadata = models.GatewayApiMetadataProperties() if existing is None else existing
-    if api_title:
+    if api_title is not None:
         api_metadata.title = api_title
-    if api_description:
+    if api_description is not None:
         api_metadata.description = api_description
-    if api_documentation_location:
+    if api_documentation_location is not None:
         api_metadata.documentation = api_documentation_location
-    if version:
+    if version is not None:
         api_metadata.version = version
-    if server_url:
+    if server_url is not None:
         api_metadata.server_url = server_url
     return api_metadata
 
 
 def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
-    if not any([allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers]):
-        return None
+    if allowed_origins is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
+        return existing
     cors = existing if existing is not None else models.GatewayCorsProperties()
-    if allowed_origins:
-        cors.allowed_origins = allowed_origins.split(",")
-    if allowed_methods:
-        cors.allowed_methods = allowed_methods.split(",")
-    if allowed_headers:
-        cors.allowed_headers = allowed_headers.split(",")
+    if allowed_origins is not None:
+        cors.allowed_origins = allowed_origins.split(",") if allowed_origins else None
+    if allowed_methods is not None:
+        cors.allowed_methods = allowed_methods.split(",") if allowed_methods else None
+    if allowed_headers is not None:
+        cors.allowed_headers = allowed_headers.split(",") if allowed_headers else None
     if max_age:
         cors.max_age = max_age
     if allow_credentials is not None:
         cors.allow_credentials = allow_credentials
-    if exposed_headers:
-        cors.exposed_headers = exposed_headers.split(",")
+    if exposed_headers is not None:
+        cors.exposed_headers = exposed_headers.split(",") if exposed_headers else None
     return cors
 
 

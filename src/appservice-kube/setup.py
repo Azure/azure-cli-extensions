@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.2'
+VERSION = '0.1.5'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -50,12 +50,14 @@ setup(
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/appservice-kube',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
     scripts=['azext_appservice_kube/getfunctionsjson.sh'],
-    package_data={'azext_appservice_kube': ['azext_metadata.json']},
+    package_data={'azext_appservice_kube': ['azext_metadata.json',
+                                            'resources/LinuxFunctionsStacks.json',
+                                            'resources/WindowsFunctionsStacks.json']},
 )

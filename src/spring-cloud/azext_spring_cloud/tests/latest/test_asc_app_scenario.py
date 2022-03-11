@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import tempfile
 
 from knack.util import CLIError
 from azure.cli.testsdk import (ScenarioTest, record_only)
@@ -221,3 +222,48 @@ class BlueGreenTest(ScenarioTest):
         ])
 
         self.cmd('spring-cloud app delete -n {app} -g {rg} -s {serviceName}')
+
+
+@record_only()
+class I2aTLSTest(ScenarioTest):
+    def test_app_i2a_tls(self):
+        self.kwargs.update({
+            'app': 'test-i2atls-app',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli'
+        })
+
+        self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName}')
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true', checks=[
+            self.check('properties.enableEndToEndTls', True)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls false', checks=[
+            self.check('properties.enableEndToEndTls', False)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls true', checks=[
+            self.check('properties.enableEndToEndTls', True)
+        ])
+
+        self.cmd('spring-cloud app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls false', checks=[
+            self.check('properties.enableEndToEndTls', False)
+        ])
+
+
+@record_only()
+class GenerateDumpTest(ScenarioTest):
+    def test_generate_deployment_dump(self):
+        file_path = os.path.join(tempfile.gettempdir(), 'dumpfile.txt')
+        self.kwargs.update({
+            'app': 'test-app-dump',
+            'deployment': 'default',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+            'path': file_path
+        })
+        result = self.cmd('spring-cloud app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
+        self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
+        self.assertTrue(self.kwargs['instance'])
+        self.cmd('spring-cloud app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')

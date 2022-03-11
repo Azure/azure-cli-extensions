@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import os
 import time
 from types import SimpleNamespace
@@ -23,6 +24,7 @@ from azure.cli.command_modules.acs.decorator import (
 )
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
+    AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
@@ -31,7 +33,8 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import get_file_json
+from azure.cli.core.util import get_file_json, read_file_content
+from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from msrestazure.azure_exceptions import CloudError
@@ -77,6 +80,7 @@ LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
+ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
 Snapshot = TypeVar("Snapshot")
 
 
@@ -110,34 +114,39 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
-        # init nat gateway models
-        self.init_nat_gateway_models()
+        self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
+            "ManagedClusterOIDCIssuerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        # holder for nat gateway related models
+        self.__nat_gateway_models = None
         # holder for pod identity related models
         self.__pod_identity_models = None
 
-    # TODO: convert this to @property
-    def init_nat_gateway_models(self) -> None:
-        """Initialize models used by nat gateway.
+    @property
+    def nat_gateway_models(self) -> SimpleNamespace:
+        """Get nat gateway related models.
 
-        The models are stored in a dictionary, the key is the model name and the value is the model type.
+        The models are stored in a SimpleNamespace object, could be accessed by the dot operator like
+        `nat_gateway_models.ManagedClusterNATGatewayProfile`.
 
-        :return: None
+        :return: SimpleNamespace
         """
-        nat_gateway_models = {}
-        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
-            "ManagedClusterNATGatewayProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
-            "ManagedClusterManagedOutboundIPProfile",
-            resource_type=self.resource_type,
-            operation_group="managed_clusters",
-        )
-        self.nat_gateway_models = nat_gateway_models
-        # Note: Uncomment the followings to add these models as class attributes.
-        # for model_name, model_type in nat_gateway_models.items():
-        #     setattr(self, model_name, model_type)
+        if self.__nat_gateway_models is None:
+            nat_gateway_models = {}
+            nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+                "ManagedClusterNATGatewayProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+                "ManagedClusterManagedOutboundIPProfile",
+                resource_type=self.resource_type,
+                operation_group="managed_clusters",
+            )
+            self.__nat_gateway_models = SimpleNamespace(**nat_gateway_models)
+        return self.__nat_gateway_models
 
     @property
     def pod_identity_models(self) -> SimpleNamespace:
@@ -235,16 +244,15 @@ class AKSPreviewContext(AKSContext):
                     "when setting --enable-windows-gmsa."
                 )
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
-    def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+    def _get_vm_set_type(self, read_only: bool = False) -> Union[str, None]:
         """Internal function to dynamically obtain the value of vm_set_type according to the context.
 
         Note: Inherited and extended in aks-preview to add support for the deprecated option --enable-vmss.
 
         :return: string or None
         """
-        vm_set_type = super()._get_vm_set_type(read_only, **kwargs)
+        vm_set_type = super()._get_vm_set_type(read_only)
 
         # TODO: Remove the below section when we deprecate the --enable-vmss flag, kept for back-compatibility only.
         # read the original value passed by the command
@@ -362,6 +370,41 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return gpu_instance_profile
+
+    def get_message_of_the_day(self) -> Union[str, None]:
+        """Obtain the value of message_of_the_day.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        message_of_the_day = None
+        message_of_the_day_file_path = self.raw_param.get("message_of_the_day")
+
+        if message_of_the_day_file_path:
+            if not os.path.isfile(message_of_the_day_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        message_of_the_day_file_path
+                    )
+                )
+            message_of_the_day = read_file_content(message_of_the_day_file_path)
+            message_of_the_day = base64.b64encode(bytes(message_of_the_day, 'ascii')).decode('ascii')
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile and
+                hasattr(agent_pool_profile, "message_of_the_day") and  # backward compatibility
+                agent_pool_profile.message_of_the_day is not None
+            ):
+                message_of_the_day = agent_pool_profile.message_of_the_day
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return message_of_the_day
 
     def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
         """Obtain the value of kubelet_config.
@@ -612,10 +655,9 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_disable_pod_security_policy(enable_validation=True)
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_enable_managed_identity(
-        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+        self, enable_validation: bool = False, read_only: bool = False
     ) -> bool:
         """Internal function to obtain the value of enable_managed_identity.
 
@@ -626,7 +668,7 @@ class AKSPreviewContext(AKSContext):
 
         :return: bool
         """
-        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only, **kwargs)
+        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only)
         # additional validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
@@ -882,10 +924,9 @@ class AKSPreviewContext(AKSContext):
         return no_wait
 
     # TOOD: may remove this function after the fix for the internal function get merged and released
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_workspace_resource_id(
-        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+        self, enable_validation: bool = False, read_only: bool = False
     ) -> Union[str, None]:  # pragma: no cover
         """Internal function to dynamically obtain the value of workspace_resource_id according to the context.
 
@@ -1075,14 +1116,12 @@ class AKSPreviewContext(AKSContext):
 
         return count_ipv6
 
-    # TODO: remove **kwargs
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
         read_only: bool = False,
         load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
-        **kwargs,
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
@@ -1347,6 +1386,24 @@ class AKSPreviewContext(AKSContext):
             self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
         return snapshot
 
+    def get_host_group_id(self) -> Union[str, None]:
+        return self._get_host_group_id()
+
+    def _get_host_group_id(self) -> Union[str, None]:
+        raw_value = self.raw_param.get("host_group_id")
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.host_group_id
+        if value_obtained_from_mc is not None:
+            host_group_id = value_obtained_from_mc
+        else:
+            host_group_id = raw_value
+        return host_group_id
+
     def _get_kubernetes_version(self, read_only: bool = False) -> str:
         """Internal function to dynamically obtain the value of kubernetes_version according to the context.
 
@@ -1492,6 +1549,33 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_node_vm_size()
 
+    def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
+        """Obtain the value of oidc_issuer_profile based on the user input.
+
+        :return: ManagedClusterOIDCIssuerProfile
+        """
+        enable_flag_value = bool(self.raw_param.get("enable_oidc_issuer"))
+        if not enable_flag_value:
+            # enable flag not set, return a None profile, server side will backfill the default/existing value
+            return None
+
+        profile = self.models.ManagedClusterOIDCIssuerProfile()
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if self.mc.oidc_issuer_profile is not None:
+                profile = self.mc.oidc_issuer_profile
+        profile.enabled = True
+
+        return profile
+
+    def get_crg_id(self) -> str:
+        """Obtain the values of crg_id.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        crg_id = self.raw_param.get("crg_id")
+        return crg_id
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -1540,6 +1624,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         agent_pool_profile.gpu_instance_profile = (
             self.context.get_gpu_instance_profile()
         )
+        agent_pool_profile.message_of_the_day = (
+            self.context.get_message_of_the_day()
+        )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
 
@@ -1551,6 +1638,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 source_resource_id=snapshot_id
             )
         agent_pool_profile.creation_data = creation_data
+        agent_pool_profile.host_group_id = self.context.get_host_group_id()
+        agent_pool_profile.capacity_reservation_group_id = self.context.get_crg_id()
 
         mc.agent_pool_profiles = [agent_pool_profile]
         return mc
@@ -1799,6 +1888,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
+    def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up OIDC issuer profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -1817,6 +1915,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
+        mc = self.set_up_oidc_issuer_profile(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -1835,7 +1934,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         # Due to SPN replication latency, we do a few retries here
         max_retry = 30
-        retry_exception = Exception(None)
+        error_msg = ""
         for _ in range(0, max_retry):
             try:
                 if self.context.get_intermediate("monitoring") and self.context.get_enable_msi_auth_for_monitoring():
@@ -1853,13 +1952,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                         create_dcra=True,
                     )
                 return created_cluster
-            except CloudError as ex:
-                retry_exception = ex
+            # CloudError was raised before, but since the adoption of track 2 SDK,
+            # HttpResponseError would be raised instead
+            except (CloudError, HttpResponseError) as ex:
+                error_msg = str(ex)
                 if 'not found in Active Directory tenant' in ex.message:
                     time.sleep(3)
                 else:
                     raise ex
-        raise retry_exception
+        raise AzCLIError("Maximum number of retries exceeded. " + error_msg)
 
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
@@ -1911,7 +2012,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         # some parameters support the use of empty string or dictionary to update/remove previously set values
         is_default = (
             self.context.get_cluster_autoscaler_profile() is None and
-            self.context.get_api_server_authorized_ip_ranges() is None
+            self.context.get_api_server_authorized_ip_ranges() is None and
+            self.context.get_nodepool_labels() is None
         )
 
         if not is_changed and is_default:
@@ -1963,7 +2065,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--enable-public-fqdn" or '
                 '"--disable-public-fqdn"'
                 '"--enble-windows-gmsa" or '
-                '"--nodepool-labels".'
+                '"--nodepool-labels" or '
+                '"--enable-oidc-issuer".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2078,6 +2181,17 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             _update_addon_pod_identity(mc, enable=False, models=self.models.pod_identity_models)
         return mc
 
+    def update_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update OIDC issuer profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2109,6 +2223,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
+        mc = self.update_oidc_issuer_profile(mc)
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:

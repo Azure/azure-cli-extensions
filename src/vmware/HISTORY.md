@@ -1,5 +1,9 @@
 # Release History
 
+## 4.0.2 (2022-02)
+
+- Update `az vmware datastore disk-pool-volume create` to only accept one argument for --mount-option
+
 ## 4.0.1 (2021-11)
 
 - Fix publishing extension

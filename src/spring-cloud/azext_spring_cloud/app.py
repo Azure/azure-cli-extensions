@@ -6,9 +6,9 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
 from .custom import app_get
-from ._utils import (get_spring_cloud_sku, wait_till_end)
+from ._utils import (get_spring_cloud_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
                                   deployment_source_options_from_resource,
@@ -75,6 +75,7 @@ def app_create(cmd, client, resource_group, service, name,
         'enable_temporary_disk': True,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
+        'public': assign_endpoint,
         'loaded_public_certificate_file': loaded_public_certificate_file
     }
     create_deployment_kwargs = {
@@ -88,6 +89,7 @@ def app_create(cmd, client, resource_group, service, name,
         'jvm_options': jvm_options,
     }
     update_app_kwargs = {
+        'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
     }
 
@@ -124,7 +126,7 @@ def app_update(cmd, client, resource_group, service, name,
                # app
                assign_endpoint=None,
                enable_persistent_storage=None,
-               enable_end_to_end_tls=None,
+               enable_ingress_to_app_tls=None,
                https_only=None,
                persistent_storage=None,
                loaded_public_certificate_file=None,
@@ -135,6 +137,7 @@ def app_update(cmd, client, resource_group, service, name,
                # deployment.settings
                env=None,
                disable_probe=None,
+               config_file_patterns=None,
                # general
                no_wait=False):
     '''app_update
@@ -149,45 +152,56 @@ def app_update(cmd, client, resource_group, service, name,
         'resource_group': resource_group,
         'service': service,
         'app': name,
-        'deployment': deployment.name,
+        'sku': deployment.sku if deployment else get_spring_cloud_sku(client, resource_group, service),
+        'deployment': deployment.name if deployment else None,
         'deployment_resource': deployment,
-        'sku': deployment.sku
     }
 
     deployment_kwargs = {
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
-        'source_type': deployment.properties.source.type
+        'source_type': deployment.properties.source.type if deployment else None
     }
+
     app_kwargs = {
         'public': assign_endpoint,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'loaded_public_certificate_file': loaded_public_certificate_file,
-        'enable_end_to_end_tls': enable_end_to_end_tls,
+        'enable_end_to_end_tls': enable_ingress_to_app_tls,
         'https_only': https_only,
     }
 
+    if deployment is None:
+        updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
+        if updated_deployment_kwargs:
+            raise ArgumentUsageError('{} cannot be set when there is no active deployment.'
+                                     .format(convert_argument_to_parameter_list(updated_deployment_kwargs.keys())))
+
     deployment_factory = deployment_selector(**deployment_kwargs, **basic_kwargs)
     app_factory = app_selector(**basic_kwargs)
-    deployment_kwargs.update(deployment_factory.source_factory
-                             .fulfilled_options_from_original_source_info(**deployment_kwargs, **basic_kwargs))
+    deployment_kwargs.update(deployment_factory.get_update_backfill_options(**deployment_kwargs, **basic_kwargs))
 
     app_resource = app_factory.format_resource(**app_kwargs, **basic_kwargs)
+    deployment_factory.source_factory.validate_source(**deployment_kwargs, **basic_kwargs)
     deployment_resource = deployment_factory.format_resource(**deployment_kwargs, **basic_kwargs)
 
-    app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
-    poller = client.deployments.begin_update(resource_group,
-                                             service,
-                                             name,
-                                             DEFAULT_DEPLOYMENT_NAME,
-                                             deployment_resource)
+    pollers = [
+        client.apps.begin_update(resource_group, service, name, app_resource)
+    ]
+    if deployment:
+        pollers.append(client.deployments.begin_update(resource_group,
+                                                       service,
+                                                       name,
+                                                       deployment.name,
+                                                       deployment_resource))
     if no_wait:
         return
-    wait_till_end(cmd, app_poller, poller)
+    wait_till_end(cmd, *pollers)
     return app_get(cmd, client, resource_group, service, name)
 
 
@@ -209,10 +223,12 @@ def app_deploy(cmd, client, resource_group, service, name,
                registry_password=None,
                container_command=None,
                container_args=None,
+               build_env=None,
                builder=None,
                # deployment.settings
                env=None,
                disable_probe=None,
+               config_file_patterns=None,
                # general
                no_wait=False):
     '''app_deploy
@@ -236,6 +252,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'deployment_resource': deployment,
         'sku': deployment.sku,
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
@@ -250,6 +267,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'registry_password': registry_password,
         'container_command': container_command,
         'container_args': container_args,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
@@ -292,6 +310,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       registry_password=None,
                       container_command=None,
                       container_args=None,
+                      build_env=None,
                       builder=None,
                       # deployment.settings
                       skip_clone_settings=False,
@@ -300,6 +319,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       disable_probe=None,
+                      config_file_patterns=None,
                       # general
                       no_wait=False):
     '''deployment_create
@@ -321,6 +341,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'app': app,
         'deployment': name,
         'disable_probe': disable_probe,
+        'config_file_patterns': config_file_patterns,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
@@ -338,6 +359,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'cpu': cpu,
         'memory': memory,
         'instance_count': instance_count,
+        'build_env': build_env,
         'builder': builder,
         'no_wait': no_wait
     }
@@ -350,6 +372,10 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     kwargs['deployable_path'] = deploy.build_deployable_path(**kwargs)
     deployment_factory = deployment_selector(**kwargs)
     deployment_resource = deployment_factory.format_resource(**kwargs)
+    logger.warning('[{}/{}] Creating deployment in app "{}" (this operation can take a '
+                   'while to complete)'.format(kwargs['total_steps'],
+                                               kwargs['total_steps'],
+                                               app))
     return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                        resource_group, service, app, name,
                        deployment_resource)

@@ -339,6 +339,7 @@ class AzureMLKubernetes(DefaultExtension):
         enable_inference = str(enable_inference).lower() == 'true'
 
         if enable_inference:
+            logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
             self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings, release_namespace)
             self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):

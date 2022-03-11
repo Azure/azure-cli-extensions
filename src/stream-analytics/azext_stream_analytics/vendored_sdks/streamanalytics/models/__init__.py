@@ -30,7 +30,12 @@ try:
     from ._models_py3 import BlobReferenceInputDataSourceProperties
     from ._models_py3 import BlobStreamInputDataSource
     from ._models_py3 import BlobStreamInputDataSourceProperties
+    from ._models_py3 import Cluster
     from ._models_py3 import ClusterInfo
+    from ._models_py3 import ClusterJob
+    from ._models_py3 import ClusterJobListResult
+    from ._models_py3 import ClusterListResult
+    from ._models_py3 import ClusterSku
     from ._models_py3 import Compression
     from ._models_py3 import CsvSerialization
     from ._models_py3 import DiagnosticCondition
@@ -73,6 +78,11 @@ try:
     from ._models_py3 import ParquetSerialization
     from ._models_py3 import PowerBiOutputDataSource
     from ._models_py3 import PowerBiOutputDataSourceProperties
+    from ._models_py3 import PrivateEndpoint
+    from ._models_py3 import PrivateEndpointListResult
+    from ._models_py3 import PrivateLinkConnectionState
+    from ._models_py3 import PrivateLinkServiceConnection
+    from ._models_py3 import ProxyResource
     from ._models_py3 import ReferenceInputDataSource
     from ._models_py3 import ReferenceInputProperties
     from ._models_py3 import Resource
@@ -121,7 +131,12 @@ except (SyntaxError, ImportError):
     from ._models import BlobReferenceInputDataSourceProperties  # type: ignore
     from ._models import BlobStreamInputDataSource  # type: ignore
     from ._models import BlobStreamInputDataSourceProperties  # type: ignore
+    from ._models import Cluster  # type: ignore
     from ._models import ClusterInfo  # type: ignore
+    from ._models import ClusterJob  # type: ignore
+    from ._models import ClusterJobListResult  # type: ignore
+    from ._models import ClusterListResult  # type: ignore
+    from ._models import ClusterSku  # type: ignore
     from ._models import Compression  # type: ignore
     from ._models import CsvSerialization  # type: ignore
     from ._models import DiagnosticCondition  # type: ignore
@@ -164,6 +179,11 @@ except (SyntaxError, ImportError):
     from ._models import ParquetSerialization  # type: ignore
     from ._models import PowerBiOutputDataSource  # type: ignore
     from ._models import PowerBiOutputDataSourceProperties  # type: ignore
+    from ._models import PrivateEndpoint  # type: ignore
+    from ._models import PrivateEndpointListResult  # type: ignore
+    from ._models import PrivateLinkConnectionState  # type: ignore
+    from ._models import PrivateLinkServiceConnection  # type: ignore
+    from ._models import ProxyResource  # type: ignore
     from ._models import ReferenceInputDataSource  # type: ignore
     from ._models import ReferenceInputProperties  # type: ignore
     from ._models import Resource  # type: ignore
@@ -191,12 +211,15 @@ except (SyntaxError, ImportError):
 
 from ._stream_analytics_management_client_enums import (
     AuthenticationMode,
+    ClusterProvisioningState,
+    ClusterSkuName,
     CompatibilityLevel,
     CompressionType,
     ContentStoragePolicy,
     Encoding,
     EventSerializationType,
     EventsOutOfOrderPolicy,
+    JobState,
     JobType,
     JsonOutputSerializationFormat,
     OutputErrorPolicy,
@@ -229,7 +252,12 @@ __all__ = [
     'BlobReferenceInputDataSourceProperties',
     'BlobStreamInputDataSource',
     'BlobStreamInputDataSourceProperties',
+    'Cluster',
     'ClusterInfo',
+    'ClusterJob',
+    'ClusterJobListResult',
+    'ClusterListResult',
+    'ClusterSku',
     'Compression',
     'CsvSerialization',
     'DiagnosticCondition',
@@ -272,6 +300,11 @@ __all__ = [
     'ParquetSerialization',
     'PowerBiOutputDataSource',
     'PowerBiOutputDataSourceProperties',
+    'PrivateEndpoint',
+    'PrivateEndpointListResult',
+    'PrivateLinkConnectionState',
+    'PrivateLinkServiceConnection',
+    'ProxyResource',
     'ReferenceInputDataSource',
     'ReferenceInputProperties',
     'Resource',
@@ -297,12 +330,15 @@ __all__ = [
     'TrackedResource',
     'Transformation',
     'AuthenticationMode',
+    'ClusterProvisioningState',
+    'ClusterSkuName',
     'CompatibilityLevel',
     'CompressionType',
     'ContentStoragePolicy',
     'Encoding',
     'EventSerializationType',
     'EventsOutOfOrderPolicy',
+    'JobState',
     'JobType',
     'JsonOutputSerializationFormat',
     'OutputErrorPolicy',

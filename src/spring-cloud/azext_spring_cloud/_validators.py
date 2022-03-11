@@ -12,7 +12,7 @@ import zipfile
 from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 from knack.validators import DefaultStr
 from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
@@ -46,7 +46,14 @@ def validate_sku(cmd, namespace):
     if namespace.sku.lower() == 'enterprise':
         _validate_saas_provider(cmd, namespace)
         _validate_terms(cmd, namespace)
-    namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
+    else:
+        _check_tanzu_components_not_enable(cmd, namespace)
+    normalize_sku(cmd, namespace)
+
+
+def normalize_sku(cmd, namespace):
+    if namespace.sku:
+        namespace.sku = models.Sku(name=_get_sku_name(namespace.sku), tier=namespace.sku)
 
 
 def _validate_saas_provider(cmd, namespace):
@@ -71,6 +78,18 @@ def _validate_terms(cmd, namespace):
                                         'Run "az term accept --publisher vmware-inc '
                                         '--product azure-spring-cloud-vmware-tanzu-2 '
                                         '--plan tanzu-asc-ent-mtr" to accept the term.')
+
+
+def _check_tanzu_components_not_enable(cmd, namespace):
+    suffix = 'can only be used for Azure Spring Cloud Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
+    if namespace.enable_application_configuration_service:
+        raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_service_registry:
+        raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
+    if namespace.enable_gateway:
+        raise ArgumentUsageError('--enable-gateway {}'.format(suffix))
+    if namespace.enable_api_portal:
+        raise ArgumentUsageError('--enable-api-portal {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
