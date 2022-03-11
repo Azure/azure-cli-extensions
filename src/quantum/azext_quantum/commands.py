@@ -119,7 +119,8 @@ def transform_output(results):
             jobId = results['id']
         if 'creationTime' in results:
             submissionTime = results['creationTime']
-        logger.error("Job was not successful. Status: %s, Error Code: %s, Error Message: %s, Target: %s", status, errorCode, errorMessage, target)
+        # >>>>>logger.error("Job was not successful. Status: %s, Error Code: %s, Error Message: %s, Target: %s", status, errorCode, errorMessage, target)
+        logger.error("Job was not successful. Job ID: %s, Status: %s, Error Code: %s, Error Message: %s, Target: %s", jobId, status, errorCode, errorMessage, target)
         return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results

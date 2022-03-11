@@ -241,9 +241,8 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         logger.debug("Downloading job results blob into %s", path)
 
         if job.status != "Succeeded":
-            # return f"Job status: {job.status}. Output only available if Succeeded."
-            return job  # If "-o table" was specified, this allows transform_output in commands.py
-            #             to format the output, so the error info is shown.  If "-o json" or no "-o"
+            return job  # If "-o table" is specified, this allows transform_output() in commands.py
+            #             to format the output, so the error info is shown. If "-o json" or no "-o"
             #             parameter is specified, then the full JSON job output is displayed, being
             #             consistent with other commands.
 
