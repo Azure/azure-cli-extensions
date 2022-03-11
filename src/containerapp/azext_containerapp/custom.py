@@ -13,6 +13,8 @@ from urllib.parse import urlparse
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
+from azure.cli.command_modules.appservice.custom import _get_acr_cred
+from urllib.parse import urlparse
 
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient
@@ -37,7 +39,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
-                    _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials)
+                    _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret)
 
 logger = get_logger(__name__)
 
@@ -85,7 +87,7 @@ def create_deserializer():
     return Deserializer(deserializer)
 
 
-def update_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerapp) != dict:
         raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
@@ -111,6 +113,14 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
     if not current_containerapp_def:
         raise ValidationError("The containerapp '{}' does not exist".format(name))
+
+    # Change which revision we update from
+    if from_revision:
+        try:
+            r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
+        except CLIError as e:
+            handle_raw_exception(e)
+        current_containerapp_def["properties"]["template"] = r["properties"]["template"]
 
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
     try:
@@ -1158,4 +1168,589 @@ def deactivate_revision(cmd, resource_group_name, revision_name, name=None):
         return ContainerAppClient.deactivate_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+def copy_revision(cmd,
+                        name,
+                        resource_group_name,
+                        from_revision=None,
+                        #label=None,
+                        yaml=None,
+                        image=None,
+                        image_name=None,
+                        min_replicas=None,
+                        max_replicas=None,
+                        env_vars=None,
+                        cpu=None,
+                        memory=None,
+                        revision_suffix=None,
+                        startup_command=None,
+                        traffic_weights=None,
+                        args=None,
+                        tags=None,
+                        no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if not from_revision:
+        from_revision = containerapp_def["properties"]["latestRevisionName"]
+
+    if yaml:
+        if image or min_replicas or max_replicas or\
+            env_vars or cpu or memory or \
+            startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, from_revision=from_revision, no_wait=no_wait)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
+    except CLIError as e:
+        # Error handle the case where revision not found?
+        handle_raw_exception(e)
+
+    containerapp_def["properties"]["template"] = r["properties"]["template"]
+
+    update_map = {}
+    update_map['ingress'] = traffic_weights
+    update_map['scale'] = min_replicas or max_replicas
+    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['configuration'] =  update_map['ingress']
+
+    if tags:
+        _add_or_update_tags(containerapp_def, tags)
+
+    if revision_suffix is not None:
+        containerapp_def["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    # Containers
+    if update_map["container"]:
+        if not image_name:
+            if len(containerapp_def["properties"]["template"]["containers"]) == 1:
+                image_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
+            else:
+                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+
+        # Check if updating existing container
+        updating_existing_container = False
+        for c in containerapp_def["properties"]["template"]["containers"]:
+            if c["name"].lower() == image_name.lower():
+                updating_existing_container = True
+
+                if image is not None:
+                    c["image"] = image
+                if env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                if startup_command is not None:
+                    if isinstance(startup_command, list) and not startup_command:
+                        c["command"] = None
+                    else:
+                        c["command"] = startup_command
+                if args is not None:
+                    if isinstance(args, list) and not args:
+                        c["args"] = None
+                    else:
+                        c["args"] = args
+                if cpu is not None or memory is not None:
+                    if "resources" in c and c["resources"]:
+                        if cpu is not None:
+                            c["resources"]["cpu"] = cpu
+                        if memory is not None:
+                            c["resources"]["memory"] = memory
+                    else:
+                        c["resources"] = {
+                            "cpu": cpu,
+                            "memory": memory
+                        }
+
+        # If not updating existing container, add as new container
+        if not updating_existing_container:
+            if image is None:
+                raise ValidationError("Usage error: --image is required when adding a new container")
+
+            resources_def = None
+            if cpu is not None or memory is not None:
+                resources_def = ContainerResourcesModel
+                resources_def["cpu"] = cpu
+                resources_def["memory"] = memory
+
+            container_def = ContainerModel
+            container_def["name"] = image_name
+            container_def["image"] = image
+            if env_vars is not None:
+                container_def["env"] = parse_env_var_flags(env_vars)
+            if startup_command is not None:
+                if isinstance(startup_command, list) and not startup_command:
+                    container_def["command"] = None
+                else:
+                    container_def["command"] = startup_command
+            if args is not None:
+                if isinstance(args, list) and not args:
+                    container_def["args"] = None
+                else:
+                    container_def["args"] = args
+            if resources_def is not None:
+                container_def["resources"] = resources_def
+
+            containerapp_def["properties"]["template"]["containers"].append(container_def)
+
+    # Scale
+    if update_map["scale"]:
+        if "scale" not in containerapp_def["properties"]["template"]:
+            containerapp_def["properties"]["template"]["scale"] = {}
+        if min_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
+
+    # Configuration
+    if update_map["ingress"]:
+        if "ingress" not in containerapp_def["properties"]["configuration"]:
+            containerapp_def["properties"]["configuration"]["ingress"] = {}
+
+        if traffic_weights is not None:
+            _update_traffic_Weights(containerapp_def, traffic_weights)
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = mode.lower()
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["activeRevisionsMode"]
+    except Exception as e: 
+        handle_raw_exception(e)
+
+def show_ingress(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return containerapp_def["properties"]["configuration"]["ingress"]
+    except:
+        raise CLIError("The containerapp '{}' does not have ingress enabled.".format(name))
+
+def enable_ingress(cmd, name, resource_group_name, type, target_port, transport, allow_insecure=False, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    external_ingress = None
+    if type is not None:
+        if type.lower() == "internal":
+            external_ingress = False
+        elif type.lower() == "external":
+            external_ingress = True
+
+    ingress_def = None
+    if target_port is not None and type is not None:
+        ingress_def = IngressModel
+        ingress_def["external"] = external_ingress
+        ingress_def["targetPort"] = target_port
+        ingress_def["transport"] = transport
+        ingress_def["allowInsecure"] = allow_insecure
+ 
+    containerapp_def["properties"]["configuration"]["ingress"] = ingress_def
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["ingress"]
+    except Exception as e: 
+        handle_raw_exception(e)
+
+def disable_ingress(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    containerapp_def["properties"]["configuration"]["ingress"] = None
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("Ingress has been disabled successfully.")
+        return 
+    except Exception as e: 
+        handle_raw_exception(e)
+
+def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        containerapp_def["properties"]["configuration"]["ingress"]
+    except: 
+        raise CLIError("Ingress must be enabled to set ingress traffic. Try running `az containerapp ingress -h` for more info.")
+
+    if traffic_weights is not None:
+         _update_traffic_Weights(containerapp_def, traffic_weights)
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["ingress"]["traffic"]
+    except Exception as e: 
+        handle_raw_exception(e)
+
+def show_ingress_traffic(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
+    except: 
+        raise CLIError("Ingress must be enabled to show ingress traffic. Try running `az containerapp ingress -h` for more info.")
+
+def show_registry(cmd, name, resource_group_name, server):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        containerapp_def["properties"]["configuration"]["registries"]
+    except: 
+        raise CLIError("The containerapp {} has no assigned registries.".format(name))
+
+    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+
+    for r in registries_def:
+        if r['server'].lower() == server.lower():
+            return r
+    raise CLIError("The containerapp {} does not have specified registry assigned.".format(name))
+
+def list_registry(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return containerapp_def["properties"]["configuration"]["registries"]
+    except: 
+        raise CLIError("The containerapp {} has no assigned registries.".format(name))
+
+def set_registry(cmd, name, resource_group_name, server, username=None, password=None, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    registries_def = None
+    registry = None
+
+    if "registries" not in containerapp_def["properties"]["configuration"]:
+        containerapp_def["properties"]["configuration"]["registries"] = []
+
+    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+
+    if not username or not password:
+        # If registry is Azure Container Registry, we can try inferring credentials
+        if '.azurecr.io' not in server:
+            raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
+        logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+        parsed = urlparse(server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+
+        try:
+            username, password = _get_acr_cred(cmd.cli_ctx, registry_name)
+        except Exception as ex:
+            raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password')
+
+    # Check if updating existing registry
+    updating_existing_registry = False
+    for r in registries_def:
+        if r['server'].lower() == server.lower():
+            logger.warning("Updating existing registry.")
+            updating_existing_registry = True
+            if username:
+                r["username"] = username
+            if password:
+                r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                    containerapp_def["properties"]["configuration"]["secrets"],
+                    r["username"],
+                    r["server"],
+                    password,
+                    update_existing_secret=True)
+
+    # If not updating existing registry, add as new registry
+    if not updating_existing_registry:
+        registry = RegistryCredentialsModel
+        registry["server"] = server
+        registry["username"] = username
+        registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+            containerapp_def["properties"]["configuration"]["secrets"],
+            username,
+            server,
+            password,
+            update_existing_secret=True)
+            # Should this be false? ^
+
+        registries_def.append(registry)
+   
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        return r["properties"]["configuration"]["registries"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+def delete_registry(cmd, name, resource_group_name, server, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    registries_def = None
+    registry = None
+
+    try:
+        containerapp_def["properties"]["configuration"]["registries"]
+    except: 
+        raise CLIError("The containerapp {} has no assigned registries.".format(name))
+
+    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+
+    wasRemoved = False
+    for i in range(0, len(registries_def)):
+        r = registries_def[i]
+        if r['server'].lower() == server.lower():
+            registries_def.pop(i)
+            _remove_registry_secret(containerapp_def=containerapp_def, server=server, username=r["username"])
+            wasRemoved = True
+            break
+
+    if not wasRemoved:
+        raise CLIError("Containerapp does not have registry server {} assigned.".format(server))
+
+    if len(containerapp_def["properties"]["configuration"]["registries"]) == 0:
+        containerapp_def["properties"]["configuration"].pop("registries")
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("Registry successfully removed.")
+        return r["properties"]["configuration"]["registries"]
+    # No registries to return, so return nothing
+    except Exception as e:
+        return
+
+def list_secrets(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)["value"]
+    except: 
+        raise CLIError("The containerapp {} has no assigned secrets.".format(name))
+
+def show_secret(cmd, name, resource_group_name, secret_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    r = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    for secret in r["value"]:
+        if secret["name"].lower() == secret_name.lower():
+            return secret
+    raise CLIError("The containerapp {} does not have a secret assigned with name {}.".format(name, secret_name))
+
+def delete_secrets(cmd, name, resource_group_name, secret_names, no_wait = False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    for secret_name in secret_names:
+        wasRemoved = False
+        for secret in containerapp_def["properties"]["configuration"]["secrets"]:
+            if secret["name"].lower() == secret_name.lower():
+                _remove_secret(containerapp_def, secret_name=secret["name"])
+                wasRemoved = True
+                break
+        if not wasRemoved:
+            raise CLIError("The containerapp {} does not have a secret assigned with name {}.".format(name, secret_name))
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("Secret(s) successfully removed.")
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        # No secrets to return
+        except:
+            pass
+    except Exception as e:
+        handle_raw_exception(e)
+
+def set_secrets(cmd, name, resource_group_name, secrets, 
+                #secrets=None,
+                #yaml=None, 
+                no_wait = False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    # if not yaml and not secrets:
+    #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
+
+    # if not secrets:
+    #     secrets = []
+    
+    # if yaml:
+    #     yaml_secrets = load_yaml_file(yaml).split(' ')
+    #     try:
+    #         parse_secret_flags(yaml_secrets)
+    #     except:
+    #         raise CLIError("YAML secrets must be a list of secrets in key=value format, delimited by new line.")
+    #     for secret in yaml_secrets:
+    #         secrets.append(secret.strip())
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+    _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
+
+    try:
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["properties"]["configuration"]["secrets"]
+    except Exception as e:
+        handle_raw_exception(e)
+
 

@@ -121,4 +121,22 @@ def load_arguments(self, _):
         c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
         
     with self.argument_context('containerapp revision') as c:
-        c.argument('revision_name', type=str, help='Name of the revision')
+        c.argument('revision_name', options_list=['--revision'], type=str, help='Name of the revision.')
+
+    with self.argument_context('containerapp revision copy') as c:
+        c.argument('from_revision', type=str, help='Revision to copy from. Default: latest revision.')
+
+    with self.argument_context('containerapp ingress') as c:
+        c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
+        c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="Ingress type that allows either internal or external traffic to the Containerapp.")
+        c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+        c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
+
+    with self.argument_context('containerapp ingress traffic') as c:
+        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the Containerapp. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+
+    with self.argument_context('containerapp secret set') as c:
+        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the containerapp. Space-separated values in 'key=value' format.")
+
+    with self.argument_context('containerapp secret delete') as c:
+        c.argument('secret_names', nargs='+', help="A list of secret(s) for the containerapp. Space-separated secret values names.")

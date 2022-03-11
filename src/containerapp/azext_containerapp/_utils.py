@@ -300,6 +300,23 @@ def _add_or_update_secrets(containerapp_def, add_secrets):
         if not is_existing:
             containerapp_def["properties"]["configuration"]["secrets"].append(new_secret)
 
+def _remove_registry_secret(containerapp_def, server, username):
+    if (urlparse(server).hostname is not None):
+        registry_secret_name = "{server}-{user}".format(server=urlparse(server).hostname.replace('.', ''), user=username.lower())
+    else:
+        registry_secret_name = "{server}-{user}".format(server=server.replace('.', ''), user=username.lower())
+        
+    _remove_secret(containerapp_def, secret_name=registry_secret_name)
+
+def _remove_secret(containerapp_def, secret_name):
+    if "secrets" not in containerapp_def["properties"]["configuration"]:
+        containerapp_def["properties"]["configuration"]["secrets"] = []
+
+    for i in range(0, len(containerapp_def["properties"]["configuration"]["secrets"])):
+        existing_secret = containerapp_def["properties"]["configuration"]["secrets"][i]
+        if existing_secret["name"].lower() == secret_name.lower():
+            containerapp_def["properties"]["configuration"]["secrets"].pop(i)
+            break
 
 def _add_or_update_env_vars(existing_env_vars, new_env_vars):
     for new_env_var in new_env_vars:

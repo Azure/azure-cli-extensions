@@ -137,7 +137,7 @@ Ingress = {
     "transport": None, # 'auto', 'http', 'http2'
     "traffic": None, # TrafficWeight
     "customDomains": None, # [CustomDomain]
-    # "allowInsecure": None
+    "allowInsecure": None # Boolean
 }
 
 RegistryCredentials = {

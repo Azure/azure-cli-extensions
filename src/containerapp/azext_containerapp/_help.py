@@ -189,6 +189,24 @@ helps['containerapp revision deactivate'] = """
           az containerapp revision deactivate --revision-name MyContainerappRevision -g MyResourceGroup
 """
 
+helps['containerapp revision mode set'] = """
+    type: command
+    short-summary: Set the revision mode of a Containerapp.
+    examples:
+    - name: Set the revision mode of a Containerapp.
+      text: |
+          az containerapp revision set --mode Single -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp revision copy'] = """
+    type: command
+    short-summary: Create a revision based on a previous revision.
+    examples:
+    - name: Create a revision based on a previous revision.
+      text: |
+          az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group
@@ -244,6 +262,159 @@ helps['containerapp env list'] = """
       text: |
           az containerapp env list -g MyResourceGroup
 """
+
+# Ingress Commands
+helps['containerapp ingress'] = """
+    type: group
+    short-summary: Commands to manage Containerapp ingress.
+"""
+
+helps['containerapp ingress traffic'] = """
+    type: subgroup
+    short-summary: Commands to manage Containerapp ingress traffic.
+"""
+
+helps['containerapp ingress show'] = """
+    type: command
+    short-summary: Show details of a Containerapp ingress.
+    examples:
+    - name: Show the details of a Containerapp ingress.
+      text: |
+          az containerapp ingress show -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress enable'] = """
+    type: command
+    short-summary: Enable Containerapp ingress.
+    examples:
+    - name: Enable Containerapp ingress.
+      text: |
+          az containerapp ingress enable -n MyContainerapp -g MyResourceGroup --type external --allow-insecure --target-port 80 --transport auto
+"""
+
+helps['containerapp ingress disable'] = """
+    type: command
+    short-summary: Disable Containerapp ingress.
+    examples:
+    - name: Disable Containerapp ingress.
+      text: |
+          az containerapp ingress disable -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress traffic'] = """
+    type: group
+    short-summary: Commands to manage Containerapp ingress traffic.
+"""
+
+helps['containerapp ingress traffic set'] = """
+    type: command
+    short-summary: Set Containerapp ingress traffic.
+    examples:
+    - name: Set Containerapp ingress traffic.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=100
+"""
+
+helps['containerapp ingress traffic show'] = """
+    type: command
+    short-summary: Show Containerapp ingress traffic.
+    examples:
+    - name: Show Containerapp ingress traffic.
+      text: |
+          az containerapp ingress traffic show -n MyContainerapp -g MyResourceGroup 
+"""
+
+# Registry Commands
+helps['containerapp registry'] = """
+    type: group
+    short-summary: Commands to manage Containerapp registries.
+"""
+
+helps['containerapp registry show'] = """
+    type: command
+    short-summary: Show details of a Containerapp registry.
+    examples:
+    - name: Show the details of a Containerapp registry.
+      text: |
+          az containerapp registry show -n MyContainerapp -g MyResourceGroup --server MyContainerappRegistry.azurecr.io
+"""
+
+helps['containerapp registry list'] = """
+    type: command
+    short-summary: List registries assigned to a Containerapp.
+    examples:
+    - name: Show the details of a Containerapp registry.
+      text: |
+          az containerapp registry list -n MyContainerapp -g MyResourceGroup 
+"""
+
+helps['containerapp registry set'] = """
+    type: command
+    short-summary: Add or update a Containerapp registry.
+    examples:
+    - name: Add a registry to a Containerapp.
+      text: |
+          az containerapp registry set -n MyContainerapp -g MyResourceGroup --server MyContainerappRegistry.azurecr.io
+    - name: Update a Containerapp registry.
+      text: |
+          az containerapp registry set -n MyContainerapp -g MyResourceGroup --server MyExistingContainerappRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+  
+"""
+
+helps['containerapp registry delete'] = """
+    type: command
+    short-summary: Delete a registry from a Containerapp.
+    examples:
+    - name: Delete a registry from a Containerapp.
+      text: |
+          az containerapp registry delete -n MyContainerapp -g MyResourceGroup --server MyContainerappRegistry.azurecr.io
+"""
+
+# Secret Commands
+helps['containerapp secret'] = """
+    type: group
+    short-summary: Commands to manage Containerapp secrets.
+"""
+
+helps['containerapp secret show'] = """
+    type: command
+    short-summary: Show details of a Containerapp secret.
+    examples:
+    - name: Show the details of a Containerapp secret.
+      text: |
+          az containerapp secret show -n MyContainerapp -g MyResourceGroup --secret-name MySecret
+"""
+
+helps['containerapp secret list'] = """
+    type: command
+    short-summary: List the secrets of a Containerapp.
+    examples:
+    - name: List the secrets of a Containerapp.
+      text: |
+          az containerapp secret list -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp secret delete'] = """
+    type: command
+    short-summary: Delete secrets from a Containerapp.
+    examples:
+    - name: Delete secrets from a Containerapp.
+      text: |
+          az containerapp secret delete -n MyContainerapp -g MyResourceGroup --secret-names MySecret MySecret2
+"""
+
+helps['containerapp secret set'] = """
+    type: command
+    short-summary: Create/update Containerapp secrets.
+    examples:
+    - name: Add a secret to a Containerapp.
+      text: |
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName=MySecretValue 
+    - name: Update a Containerapp secret.
+      text: |
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue 
+"""
+
 helps['containerapp github-action add'] = """
     type: command
     short-summary: Adds GitHub Actions to the Containerapp
