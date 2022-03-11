@@ -336,8 +336,8 @@ def create_containerapp(cmd,
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
-    if image is None:
-        raise RequiredArgumentMissingError('Usage error: --image is required if not using --yaml')
+    if not image:
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 
     if managed_env is None:
         raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
@@ -671,7 +671,7 @@ def update_containerapp(cmd,
         registries_def = containerapp_def["properties"]["configuration"]["registries"]
 
         if not registry_server:
-            raise ValidationError("Usage error: --registry-login-server is required when adding or updating a registry")
+            raise ValidationError("Usage error: --registry-server is required when adding or updating a registry")
 
         # Infer credentials if not supplied and its azurecr
         if not registry_user or not registry_pass:
@@ -696,7 +696,7 @@ def update_containerapp(cmd,
         # If not updating existing registry, add as new registry
         if not updating_existing_registry:
             if not(registry_server is not None and registry_user is not None and registry_pass is not None):
-                raise ValidationError("Usage error: --registry-login-server, --registry-password and --registry-username are required when adding a registry")
+                raise ValidationError("Usage error: --registry-server, --registry-password and --registry-username are required when adding a registry")
 
             registry = RegistryCredentialsModel
             registry["server"] = registry_server

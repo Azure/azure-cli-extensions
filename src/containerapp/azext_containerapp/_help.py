@@ -26,7 +26,7 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image MyContainerImage -e MyContainerappEnv \\
               --secrets mysecret=escapefromtarkov,anothersecret=isadifficultgame \\
-              --environment-variables myenvvar=foo,anotherenvvar=bar \\
+              --env-vars myenvvar=foo,anotherenvvar=bar \\
               --query properties.configuration.ingress.fqdn
     - name: Create a Containerapp that only accepts internal traffic
       text: |
@@ -39,7 +39,7 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image MyContainerImage -e MyContainerappEnv \\
               --secrets mypassword=verysecurepassword \\
-              --registry-login-server MyRegistryServerAddress \\
+              --registry-server MyRegistryServerAddress \\
               --registry-username MyUser \\
               --registry-password mypassword \\
               --query properties.configuration.ingress.fqdn
@@ -75,7 +75,7 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --secrets mysecret=secretfoo,anothersecret=secretbar
-              --environment-variables myenvvar=foo,anotherenvvar=secretref:mysecretname
+              --env-vars myenvvar=foo,anotherenvvar=secretref:mysecretname
     - name: Update a Containerapp's ingress setting to internal
       text: |
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
@@ -85,7 +85,7 @@ helps['containerapp update'] = """
           az containerapp update -n MyContainerapp -g MyResourceGroup \\
               --image MyNewContainerImage \\
               --secrets mypassword=verysecurepassword \\
-              --registry-login-server MyRegistryServerAddress \\
+              --registry-server MyRegistryServerAddress \\
               --registry-username MyUser \\
               --registry-password mypassword
     - name: Update a Containerapp using a specified startup command and arguments
