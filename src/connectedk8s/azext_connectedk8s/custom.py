@@ -1935,20 +1935,22 @@ def client_side_proxy(cmd,
                                                             "Failed to pass refresh token details to proxy.", clientproxy_process)
                 sys.stderr = original_stderr
 
-    if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-        kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
-        post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
+    if token is None:
+        if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+            kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, "gTYVsmkQfNwajR0w-v6A3ekPkiI7Wcz2T5ZCb7hwHTU", clientproxy_process)
 
-        if post_at_response.status_code != 200:
-            if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
-                telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
-                                        summary='PoP public key has expired')
-                kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
-                clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
-            else:
-                telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
-                                        summary='Failed to post access token to client proxy')
-                clientproxyutils.close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + post_at_response.text)
+            if post_at_response.status_code != 200:
+                if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
+                    telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
+                                            summary='PoP public key has expired')
+                    kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
+                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
+                else:
+                    telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
+                                            summary='Failed to post access token to client proxy')
+                    clientproxyutils.close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + post_at_response.text)
+
     data = prepare_clientproxy_data(response)
     expiry = data['hybridConnectionConfig']['expirationTime']
 
