@@ -469,13 +469,11 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     kube_envs = client.list_by_subscription()
 
     for kube in kube_envs:
-        parsed_custom_location_2 = None
-
         if kube.extended_location and kube.extended_location.type == "CustomLocation":
             if is_valid_resource_id(kube.extended_location.name):
-                parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
-                matched_name = parsed_custom_location_2["name"].lower() == custom_location_name.lower()
-                matched_rg = parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()
+                candidate_custom_location = parse_resource_id(kube.extended_location.name)
+                matched_name = candidate_custom_location.get("name", "").lower() == custom_location_name.lower()
+                matched_rg = candidate_custom_location.get("resource_group", "").lower() == resource_group.lower()
                 if matched_name and matched_rg:
                     kube_environment_id = kube.id
                     break
