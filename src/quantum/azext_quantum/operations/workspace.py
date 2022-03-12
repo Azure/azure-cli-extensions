@@ -201,6 +201,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
                 storage_account_sku = storage_account_info.sku.name
                 storage_account_kind = storage_account_info.kind
                 storage_account_location = storage_account_info.location
+                break
     
     parameters = {
         'quantumWorkspaceName': workspace_name,
