@@ -168,6 +168,7 @@ def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
 
 def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
+    import copy
     data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
     if "dashboard" in data:
         payload = data
@@ -184,16 +185,17 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
     payload["inputs"] = []
 
+    # provide parameter values for datasource
     data_sources = list_data_sources(cmd, grafana_name, resource_group_name)
     for parameter in payload["dashboard"].get('__inputs', []):
         if parameter.get("type") == "datasource":
             match = next((d for d in data_sources if d["type"] == parameter["pluginId"]), None)
             if match:
-                clone = parameter.copy()
+                clone = copy.deepcopy(parameter)
                 clone["value"] = match["uid"]
                 payload["inputs"].append(clone)
             else:
-                logger.warning("No data source was found matching required input of %s", parameter['pluginId'])
+                logger.warning("No data source was found matching the required parameter of %s", parameter['pluginId'])
 
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
                              payload)
