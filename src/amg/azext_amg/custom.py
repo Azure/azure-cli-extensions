@@ -139,8 +139,7 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None):
 
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None, overwrite=None):
-    definition = _try_load_file_content(definition)
-    data = json.loads(definition)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
     if "dashboard" in data:
         payload = data
     else:
@@ -169,8 +168,7 @@ def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
 
 def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
-    definition = _try_load_file_content(definition)
-    data = json.loads(definition)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
     if "dashboard" in data:
         payload = data
     else:
@@ -184,9 +182,42 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
     payload["overwrite"] = overwrite or False
 
+    payload["inputs"] = []
+
+    data_sources = list_data_sources(cmd, grafana_name, resource_group_name)
+    for parameter in payload["dashboard"].get('__inputs', []):
+        if parameter.get("type") == "datasource":
+            match = next((d for d in data_sources if d["type"] == parameter["pluginId"]), None)
+            if match:
+                clone = parameter.copy()
+                clone["value"] = match["uid"]
+                payload["inputs"].append(clone)
+            else:
+                logger.warning("No data source was found matching required input of %s", parameter['pluginId'])
+
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
                              payload)
     return json.loads(response.content)
+
+
+def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition):
+    try:  # see whether it is a gallery id
+        _ = int(definition)
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/gnet/dashboards/" + definition)
+        return json.loads(response.content)["json"]
+    except ValueError:
+        pass
+
+    if definition.lower().startswith("https://"):
+        response = requests.get(definition, verify=(not should_disable_connection_verify()))
+        if response.status_code == 200:
+            definition = json.loads(response.content.decode())
+        else:
+            raise CLIError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
+    else:
+        definition = json.loads(_try_load_file_content(definition))
+
+    return definition
 
 
 def delete_dashboard(cmd, grafana_name, uid, resource_group_name=None):

@@ -34,7 +34,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
-        c.argument("definition", help="The complete dashboard model in json string, or a path to a file with such json string")
+        c.argument("definition", help="The complete dashboard model in json string, a file path/url or Grafana gallery id")
         c.argument("title", help="title of a dashboard")
         c.argument('overwrite', arg_type=get_three_state_flag(), help='Overwrite a dashboard with same uid')
 
