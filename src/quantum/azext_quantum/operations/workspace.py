@@ -9,6 +9,8 @@ import os.path
 import json
 import time
 
+from azure.cli.command_modules.storage.operations.account import list_storage_accounts
+
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.models import DeploymentMode
 
@@ -186,14 +188,19 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
 
-    # >>>>> Temporary storage account parameter code
-    # TODO: Find out if the storage account already exists
-    # TODO: If it exists, get these parameters from a CLI core function [?], else use defaults
+    # Set default storage account parameters in case the storage account does not exist yet
     storage_account_sku = 'Standard_LRS'
     storage_account_kind = 'Storage'
-    # storage_account_sku = 'Standard_RAGRS'
-    # storage_account_kind = 'StorageV2'
-    # <<<<< End of temporary storage account parameter code
+    storage_account_location = location
+
+    # Look for info on existing storage account
+    storage_account_list = list_storage_accounts(cmd, resource_group_name)
+    if storage_account_list:
+        for storage_account_info in storage_account_list:
+            if storage_account_info.name == storage_account:
+                storage_account_sku = storage_account_info.sku.name
+                storage_account_kind = storage_account_info.kind
+                storage_account_location = storage_account_info.location
     
     parameters = {
         'quantumWorkspaceName': workspace_name,
@@ -202,7 +209,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'providers': validated_providers,
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
-        'storageAccountLocation': location,                                     # <<<<< Can this be different from the workspace location? <<<<< 
+        'storageAccountLocation': storage_account_location, 
         'storageAccountSku': storage_account_sku,
         'storageAccountKind': storage_account_kind,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
