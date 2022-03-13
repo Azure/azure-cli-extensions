@@ -29,14 +29,14 @@ def load_arguments(self, _):
         c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
 
-    with self.argument_context("grafana delete") as c:
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
-        c.argument("definition", help="The complete dashboard model in json string, a file path/url or Grafana gallery id")
+        c.argument("definition", help="The complete dashboard model in json string, a path or url to a file with such content")
         c.argument("title", help="title of a dashboard")
         c.argument('overwrite', arg_type=get_three_state_flag(), help='Overwrite a dashboard with same uid')
+
+    with self.argument_context("grafana dashboard import") as c:
+        c.argument("definition", help="The complete dashboard model in json string, Grafana gallery id, a path or url to a file with such content")
 
     with self.argument_context("grafana data-source") as c:
         c.argument("data_source", help="name, id, uid which can identify a data source. CLI will search in the order of name, id, and uid, till finds a match")

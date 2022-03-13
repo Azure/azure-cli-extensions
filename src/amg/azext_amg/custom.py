@@ -8,12 +8,12 @@ import requests
 
 from msrestazure.azure_exceptions import CloudError
 
-from knack.util import CLIError
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 
 from ._client_factory import cf_amg
 
@@ -74,8 +74,8 @@ def _get_login_account_principal_id(cli_ctx):
         result = list(client.service_principals.list(
             filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
     if not result:
-        raise CLIError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
-                        f"role assignment"))
+        raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
+                                f"role assignment"))
     return result[0].object_id
 
 
@@ -120,9 +120,7 @@ def show_grafana(cmd, grafana_name, resource_group_name=None):
     return client.grafana.get(resource_group_name, grafana_name)
 
 
-def delete_grafana(cmd, grafana_name, yes=False, resource_group_name=None):
-    from azure.cli.core.util import user_confirmation
-    user_confirmation(f"Are you sure you want to delete the Grafana workspace '{grafana_name}'?", yes)
+def delete_grafana(cmd, grafana_name, resource_group_name=None):
     client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
     return client.resources.begin_delete(resource_group_name, "Microsoft.Dashboard",
                                          "", "grafana", grafana_name, "2021-09-01-preview")
@@ -139,7 +137,7 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None):
 
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None, overwrite=None):
-    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import=False)
     if "dashboard" in data:
         payload = data
     else:
@@ -169,7 +167,7 @@ def update_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
 
 def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_name=None, overwrite=None):
     import copy
-    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition)
+    data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import=True)
     if "dashboard" in data:
         payload = data
     else:
@@ -202,20 +200,23 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     return json.loads(response.content)
 
 
-def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition):
-    try:  # see whether it is a gallery id
-        _ = int(definition)
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/gnet/dashboards/" + definition)
-        return json.loads(response.content)["json"]
-    except ValueError:
-        pass
+def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, for_import):
+    import re
 
-    if definition.lower().startswith("https://"):
+    if for_import:
+        try:  # see whether it is a gallery id
+            int(definition)
+            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/gnet/dashboards/" + definition)
+            return json.loads(response.content)["json"]
+        except ValueError:
+            pass
+
+    if re.match(r"^[a-z]+://", definition.lower()):
         response = requests.get(definition, verify=(not should_disable_connection_verify()))
         if response.status_code == 200:
             definition = json.loads(response.content.decode())
         else:
-            raise CLIError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
+            raise ArgumentUsageError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
     else:
         definition = json.loads(_try_load_file_content(definition))
 
@@ -297,14 +298,14 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder):
         if response.status_code >= 400:
             response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders")
             if response.status_code >= 400:
-                raise CLIError(f"Not found. Ex: {response.status_code}")
+                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
             result = json.loads(response.content)
             result = [f for f in result if f["title"] == folder]
             if len(result) == 0:
-                raise CLIError(f"Not found. Ex: {response.status_code}")
+                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
             if len(result) > 1:
-                raise CLIError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                f"unique identifiers"))
+                raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
+                                          f"unique identifiers"))
             return result[0]
 
     return json.loads(response.content)
@@ -324,7 +325,7 @@ def show_user(cmd, grafana_name, user, resource_group_name=None):
     if "@" in user:
         uri = "/api/org/users/lookup?loginOrEmail="
     else:
-        raise CLIError("Searching by id other than login name or email is not yet supported")
+        raise ArgumentUsageError("Searching by id other than login name or email is not yet supported")
 
     response = _send_request(cmd, resource_group_name, grafana_name, "get", uri + user)
     return json.loads(response.content)
@@ -384,7 +385,7 @@ def _find_data_source(cmd, resource_group_name, grafana_name, data_source):
                                      "get", "/api/datasources/uid/" + data_source,
                                      raise_for_error_status=False)
     if response.status_code >= 400:
-        raise CLIError(f"Not found. Ex: {response.status_code}")
+        raise ArgumentUsageError(f"Couldn't found data source {data_source}. Ex: {response.status_code}")
     return json.loads(response.content)
 
 
@@ -425,6 +426,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
                                 url=endpoint + path,
                                 headers=headers,
                                 json=body,
+                                timeout=60,
                                 verify=(not should_disable_connection_verify()))
     if response.status_code >= 400:
         if raise_for_error_status:

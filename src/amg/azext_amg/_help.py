@@ -121,6 +121,19 @@ helps['grafana dashboard update'] = """
             az grafana dashboard update -g MyResourceGroup -n MyGrafana --definition @c:\\temp\\dashboard.json
 """
 
+helps['grafana dashboard import'] = """
+    type: command
+    short-summary: import a dashboard.
+    long-summary: CLI command will fill in required parameters for data sources if configured
+    examples:
+        - name: import the dashboard of "AKS Container Insights" from Grafana gallery.
+          text: |
+            az grafana dashboard import -g MyResourceGroup -n MyGrafana --definition 12180
+        - name: import a dashboard from a file.
+          text: |
+             az grafana dashboard import -g MyResourceGroup -n MyGrafana --definition @c:\\temp\\dashboard.json
+"""
+
 helps['grafana dashboard list'] = """
     type: command
     short-summary: List all dashboards of an instance.
