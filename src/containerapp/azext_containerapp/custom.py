@@ -749,39 +749,6 @@ def update_containerapp(cmd,
         handle_raw_exception(e)
 
 
-def scale_containerapp(cmd, name, resource_group_name, min_replicas=None, max_replicas=None, no_wait=False):
-    containerapp_def = None
-    try:
-        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerapp_def:
-        raise CLIError("The containerapp '{}' does not exist".format(name))
-
-    if "scale" not in containerapp_def["properties"]["template"]:
-        containerapp_def["properties"]["template"]["scale"] = {}
-
-    if min_replicas is not None:
-        containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
-
-    if max_replicas is not None:
-        containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
-
-    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-
-    try:
-        r = ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp scale in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
-
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
-
-
 def show_containerapp(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
