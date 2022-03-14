@@ -43,7 +43,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
+                    _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                     _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret, 
                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists)
 
@@ -495,10 +495,6 @@ def update_containerapp(cmd,
                         container_name=None,
                         min_replicas=None,
                         max_replicas=None,
-                        ingress=None,
-                        target_port=None,
-                        transport=None,
-                        traffic_weights=None,
                         revisions_mode=None,
                         secrets=None,
                         env_vars=None,
@@ -507,11 +503,6 @@ def update_containerapp(cmd,
                         registry_server=None,
                         registry_user=None,
                         registry_pass=None,
-                        dapr_enabled=None,
-                        dapr_app_port=None,
-                        dapr_app_id=None,
-                        dapr_app_protocol=None,
-                        # dapr_components=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -520,9 +511,9 @@ def update_containerapp(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
-        if image or min_replicas or max_replicas or target_port or ingress or\
+        if image or min_replicas or max_replicas or\
             revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
-            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
+            registry_user or registry_pass or\
             startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
@@ -546,12 +537,10 @@ def update_containerapp(cmd,
 
     update_map = {}
     update_map['secrets'] = secrets is not None
-    update_map['ingress'] = ingress or target_port or transport or traffic_weights
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
     update_map['container'] = image or container_name or env_vars is not None or cpu or memory or startup_command is not None or args is not None
-    update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
-    update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
+    update_map['configuration'] = update_map['secrets'] or update_map['registries'] or revisions_mode is not None
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -644,45 +633,9 @@ def update_containerapp(cmd,
         if max_replicas is not None:
             containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
 
-    # Dapr
-    if update_map["dapr"]:
-        if "dapr" not in containerapp_def["properties"]["template"]:
-            containerapp_def["properties"]["template"]["dapr"] = {}
-        if dapr_enabled is not None:
-            containerapp_def["properties"]["template"]["dapr"]["daprEnabled"] = dapr_enabled
-        if dapr_app_id is not None:
-            containerapp_def["properties"]["template"]["dapr"]["appId"] = dapr_app_id
-        if dapr_app_port is not None:
-            containerapp_def["properties"]["template"]["dapr"]["appPort"] = dapr_app_port
-        if dapr_app_protocol is not None:
-            containerapp_def["properties"]["template"]["dapr"]["appProtocol"] = dapr_app_protocol
-
     # Configuration
     if revisions_mode is not None:
         containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = revisions_mode
-
-    if update_map["ingress"]:
-        if "ingress" not in containerapp_def["properties"]["configuration"]:
-            containerapp_def["properties"]["configuration"]["ingress"] = {}
-
-        external_ingress = None
-        if ingress is not None:
-            if ingress.lower() == "internal":
-                external_ingress = False
-            elif ingress.lower() == "external":
-                external_ingress = True
-
-        if external_ingress is not None:
-            containerapp_def["properties"]["configuration"]["ingress"]["external"] = external_ingress
-
-        if target_port is not None:
-            containerapp_def["properties"]["configuration"]["ingress"]["targetPort"] = target_port
-
-        if transport is not None:
-            containerapp_def["properties"]["configuration"]["ingress"]["transport"] = transport
-
-        if traffic_weights is not None:
-            _update_traffic_Weights(containerapp_def, traffic_weights)
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
@@ -1331,24 +1284,23 @@ def deactivate_revision(cmd, resource_group_name, revision_name, name=None):
         handle_raw_exception(e)
 
 def copy_revision(cmd,
-                        name,
-                        resource_group_name,
-                        from_revision=None,
-                        #label=None,
-                        yaml=None,
-                        image=None,
-                        container_name=None,
-                        min_replicas=None,
-                        max_replicas=None,
-                        env_vars=None,
-                        cpu=None,
-                        memory=None,
-                        revision_suffix=None,
-                        startup_command=None,
-                        traffic_weights=None,
-                        args=None,
-                        tags=None,
-                        no_wait=False):
+                  name,
+                  resource_group_name,
+                  from_revision=None,
+                  #label=None,
+                  yaml=None,
+                  image=None,
+                  container_name=None,
+                  min_replicas=None,
+                  max_replicas=None,
+                  env_vars=None,
+                  cpu=None,
+                  memory=None,
+                  revision_suffix=None,
+                  startup_command=None,
+                  args=None,
+                  tags=None,
+                  no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if not from_revision:
@@ -1387,10 +1339,8 @@ def copy_revision(cmd,
                         e["value"] = ""
 
     update_map = {}
-    update_map['ingress'] = traffic_weights
     update_map['scale'] = min_replicas or max_replicas
     update_map['container'] = image or container_name or env_vars or cpu or memory or startup_command is not None or args is not None
-    update_map['configuration'] =  update_map['ingress']
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -1479,14 +1429,6 @@ def copy_revision(cmd,
             containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
         if max_replicas is not None:
             containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
-
-    # Configuration
-    if update_map["ingress"]:
-        if "ingress" not in containerapp_def["properties"]["configuration"]:
-            containerapp_def["properties"]["configuration"]["ingress"] = {}
-
-        if traffic_weights is not None:
-            _update_traffic_Weights(containerapp_def, traffic_weights)
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
@@ -1621,7 +1563,7 @@ def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait
         raise CLIError("Ingress must be enabled to set ingress traffic. Try running `az containerapp ingress -h` for more info.")
 
     if traffic_weights is not None:
-         _update_traffic_Weights(containerapp_def, traffic_weights)
+        _update_traffic_weights(containerapp_def, traffic_weights)
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 

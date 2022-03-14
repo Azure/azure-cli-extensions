@@ -459,7 +459,7 @@ def _is_valid_weight(weight):
         return False
 
 
-def _update_traffic_Weights(containerapp_def, list_weights):
+def _update_traffic_weights(containerapp_def, list_weights):
     if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
 
