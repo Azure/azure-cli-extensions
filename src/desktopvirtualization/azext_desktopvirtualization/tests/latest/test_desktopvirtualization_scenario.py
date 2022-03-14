@@ -23,19 +23,6 @@ from .example_steps import step_applicationgroup_list
 from .example_steps import step_applicationgroup_list2
 from .example_steps import step_applicationgroup_update
 from .example_steps import step_applicationgroup_delete
-from .example_steps import step_msix_image_expand
-from .example_steps import step_msix_package_create
-from .example_steps import step_msix_package_show
-from .example_steps import step_msix_package_list
-from .example_steps import step_msix_package_update
-from .example_steps import step_msix_package_delete
-from .example_steps import step_scaling_plan_create
-from .example_steps import step_scaling_plan_show
-from .example_steps import step_scaling_plan_list
-from .example_steps import step_scaling_plan_list2
-from .example_steps import step_scaling_plan_list3
-from .example_steps import step_scaling_plan_update
-from .example_steps import step_scaling_plan_delete
 from .example_steps import step_hostpool_delete
 from .example_steps import step_workspace_create
 from .example_steps import step_workspace_show
@@ -169,48 +156,6 @@ def call_scenario(test):
     ])
     step_applicationgroup_delete(test, checks=[])
 
-    # Message: ActivityId: e3190f1b-a36e-4ea3-956a-fc14d5371574 Error: No Session Hosts available for operation
-    # step_msix_image_expand(test, checks=[])
-    # step_msix_package_create(test, checks=[])
-    # step_msix_package_show(test, checks=[])
-    # step_msix_package_list(test, checks=[])
-    # step_msix_package_update(test, checks=[])
-    # step_msix_package_delete(test, checks=[])
-    # only Pooled Host Pools are supported.Personal Host Pools will be included in a future release.Go to: https://go.microsoft.com/fwlink/?linkid=2146741
-    step_scaling_plan_create(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("description", "des1", case_sensitive=False),
-        test.check("exclusionTag", "value", case_sensitive=False),
-        test.check("friendlyName", "friendly", case_sensitive=False),
-        test.check("hostPoolType", "Personal", case_sensitive=False),
-        test.check("timeZone", "", case_sensitive=False),
-        test.check("name", "{myScalingPlan}", case_sensitive=False),
-    ])
-    step_scaling_plan_show(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("description", "des1", case_sensitive=False),
-        test.check("exclusionTag", "value", case_sensitive=False),
-        test.check("friendlyName", "friendly", case_sensitive=False),
-        test.check("hostPoolType", "Personal", case_sensitive=False),
-        test.check("timeZone", "UTC", case_sensitive=False),
-    ])
-    step_scaling_plan_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_scaling_plan_list2(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_scaling_plan_list3(test, checks=[])
-    step_scaling_plan_update(test, checks=[
-        test.check("location", "centralus", case_sensitive=False),
-        test.check("description", "des1", case_sensitive=False),
-        test.check("exclusionTag", "value", case_sensitive=False),
-        test.check("friendlyName", "friendly", case_sensitive=False),
-        test.check("hostPoolType", "Personal", case_sensitive=False),
-        test.check("timeZone", "UTC", case_sensitive=False),
-        test.check("name", "{myScalingPlan}", case_sensitive=False),
-    ])
-    step_scaling_plan_delete(test, checks=[])
     step_hostpool_delete(test, checks=[])
     step_workspace_create(test, checks=[
         test.check("location", "centralus", case_sensitive=False),

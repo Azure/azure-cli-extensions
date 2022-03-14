@@ -21,10 +21,6 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azext_desktopvirtualization.action import (
     AddSku,
     AddPlan,
-    AddDesktopvirtualizationScalingPlanCreateSchedules,
-    AddDesktopvirtualizationScalingPlanCreateHostPoolReferences,
-    AddDesktopvirtualizationScalingPlanUpdateSchedules,
-    AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences,
     AddMigrationRequest,
     AddDesktopvirtualizationHostpoolCreateRegistrationInfo,
     AddDesktopvirtualizationHostpoolUpdateRegistrationInfo,
@@ -76,63 +72,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
                    'the workspace', id_part='name')
-
-    with self.argument_context('desktopvirtualization scaling-plan list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-
-    with self.argument_context('desktopvirtualization scaling-plan show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('scaling_plan_name', options_list=['--name', '-n', '--scaling-plan-name'], type=str, help='The name '
-                   'of the scaling plan.', id_part='name')
-
-    with self.argument_context('desktopvirtualization scaling-plan create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('scaling_plan_name', options_list=['--name', '-n', '--scaling-plan-name'], type=str, help='The name '
-                   'of the scaling plan.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('managed_by', type=str, help='The fully qualified resource ID of the resource that manages this '
-                   'resource. Indicates if this resource is managed by another Azure resource. If this is present, '
-                   'complete mode deployment will not delete the resource if it is removed from the template since it '
-                   'is managed by another resource.')
-        c.argument('kind', type=str, help='Metadata used by portal/tooling/etc to render different UX experiences for '
-                   'resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, '
-                   'the resource provider must validate and persist this value.')
-        c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='The resource model definition representing SKU')
-        c.argument('plan', action=AddPlan, nargs='+', help='Plan for the resource.')
-        c.argument('description', type=str, help='Description of scaling plan.')
-        c.argument('friendly_name', type=str, help='User friendly name of scaling plan.')
-        c.argument('time_zone', type=str, help='Timezone of the scaling plan.')
-        c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled', 'BYODesktop']), help='HostPool type '
-                   'for desktop.')
-        c.argument('exclusion_tag', type=str, help='Exclusion tag for scaling plan.')
-        c.argument('schedules', action=AddDesktopvirtualizationScalingPlanCreateSchedules, nargs='+', help='List of '
-                   'ScalingSchedule definitions.')
-        c.argument('host_pool_references', action=AddDesktopvirtualizationScalingPlanCreateHostPoolReferences,
-                   nargs='+', help='List of ScalingHostPoolReference definitions.')
-
-    with self.argument_context('desktopvirtualization scaling-plan update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('scaling_plan_name', options_list=['--name', '-n', '--scaling-plan-name'], type=str, help='The name '
-                   'of the scaling plan.', id_part='name')
-        c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of scaling plan.')
-        c.argument('friendly_name', type=str, help='User friendly name of scaling plan.')
-        c.argument('time_zone', type=str, help='Timezone of the scaling plan.')
-        c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled', 'BYODesktop']), help='HostPool type '
-                   'for desktop.')
-        c.argument('exclusion_tag', type=str, help='Exclusion tag for scaling plan.')
-        c.argument('schedules', action=AddDesktopvirtualizationScalingPlanUpdateSchedules, nargs='+', help='List of '
-                   'ScalingSchedule definitions.')
-        c.argument('host_pool_references', action=AddDesktopvirtualizationScalingPlanUpdateHostPoolReferences,
-                   nargs='+', help='List of ScalingHostPoolReference definitions.')
-
-    with self.argument_context('desktopvirtualization scaling-plan delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('scaling_plan_name', options_list=['--name', '-n', '--scaling-plan-name'], type=str, help='The name '
-                   'of the scaling plan.', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -278,58 +217,3 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
                    'the host pool within the specified resource group', id_part='name')
-
-    with self.argument_context('desktopvirtualization msix-package list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-
-    with self.argument_context('desktopvirtualization msix-package show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
-                   'package within specified hostpool')
-
-    with self.argument_context('desktopvirtualization msix-package create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
-                   'package within specified hostpool')
-        c.argument('image_path', type=str, help='VHD/CIM image path on Network Share.')
-        c.argument('package_name', type=str, help='Package Name from appxmanifest.xml.')
-        c.argument('package_family_name', type=str, help='Package Family Name from appxmanifest.xml. Contains Package '
-                   'Name and Publisher name.')
-        c.argument('display_name', type=str, help='User friendly Name to be displayed in the portal.')
-        c.argument('package_relative_path', type=str, help='Relative Path to the package inside the image.')
-        c.argument('is_regular_registration', arg_type=get_three_state_flag(), help='Specifies how to register Package '
-                   'in feed.')
-        c.argument('is_active', arg_type=get_three_state_flag(), help='Make this version of the package the active one '
-                   'across the hostpool.')
-        c.argument('package_dependencies', action=AddPackageDependencies, nargs='+', help='List of package '
-                   'dependencies.')
-        c.argument('version', type=str, help='Package Version found in the appxmanifest.xml.')
-        c.argument('last_updated', help='Date Package was last updated, found in the appxmanifest.xml.')
-        c.argument('package_applications', action=AddPackageApplications, nargs='+', help='List of package '
-                   'applications.')
-
-    with self.argument_context('desktopvirtualization msix-package update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
-                   'package within specified hostpool')
-        c.argument('is_active', arg_type=get_three_state_flag(), help='Set a version of the package to be active '
-                   'across hostpool.')
-        c.argument('is_regular_registration', arg_type=get_three_state_flag(), help='Set Registration mode. Regular or '
-                   'Delayed.')
-        c.argument('display_name', type=str, help='Display name for MSIX Package.')
-
-    with self.argument_context('desktopvirtualization msix-package delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group')
-        c.argument('msix_package_full_name', type=str, help='The version specific package full name of the MSIX '
-                   'package within specified hostpool')
-
-    with self.argument_context('desktopvirtualization msix-image expand') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', type=str, help='The name of the host pool within the specified resource group',
-                   id_part='name')
-        c.argument('uri', type=str, help='URI to Image')
