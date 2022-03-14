@@ -181,6 +181,24 @@ ContainerApp = {
     "tags": None
 }
 
+DaprComponent = {
+    "properties": {
+        "componentType": None, #String
+        "version": None,
+        "ignoreErrors": None, 
+        "initTimeout": None,
+        "secrets": None,
+        "metadata": None,
+        "scopes": None
+    }
+}
+
+DaprMetadata = {
+    "key": None, #str
+    "value": None, #str
+    "secret_ref": None #str
+}
+
 SourceControl = {
     "properties": {
         "repoUrl": None, 

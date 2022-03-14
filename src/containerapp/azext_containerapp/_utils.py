@@ -414,6 +414,23 @@ def _remove_readonly_attributes(containerapp_def):
         elif unneeded_property in containerapp_def['properties']:
             del containerapp_def['properties'][unneeded_property]
 
+def _remove_dapr_readonly_attributes(daprcomponent_def):
+    unneeded_properties = [
+        "id",
+        "name",
+        "type",
+        "systemData",
+        "provisioningState",
+        "latestRevisionName",
+        "latestRevisionFqdn",
+        "customDomainVerificationId",
+        "outboundIpAddresses",
+        "fqdn"
+    ]
+
+    for unneeded_property in unneeded_properties:
+        if unneeded_property in daprcomponent_def:
+            del daprcomponent_def[unneeded_property]
 
 def update_nested_dictionary(orig_dict, new_dict):
     # Recursively update a nested dictionary. If the value is a list, replace the old list with new list
