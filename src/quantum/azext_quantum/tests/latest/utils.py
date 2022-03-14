@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-TEST_SUBS_DEFAULT = "916dfd6d-030c-4bd9-b579-7bb6d1926e97"
-TEST_RG_DEFAULT = "e2e-scenarios"
-TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
+TEST_SUBS_DEFAULT = "677fc922-91d0-4bf6-9b06-4274d319a0fa"
+TEST_RG_DEFAULT = "aqua-live-test-westus2"
+TEST_WORKSPACE_DEFAULT = "ws-aqua-live-test-westus2"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
-TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
-TEST_WORKSPACE_DEFAULT_STORAGE2 = "e2etestsgrs"
+TEST_WORKSPACE_DEFAULT_STORAGE = "sttestwestus2"
+TEST_WORKSPACE_DEFAULT_STORAGE2 = "sttestwestus2grs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
 TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
 
