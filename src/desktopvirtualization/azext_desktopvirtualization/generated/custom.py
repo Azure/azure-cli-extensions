@@ -47,7 +47,7 @@ def desktopvirtualization_workspace_create(client,
         workspace['kind'] = kind
     if tags is not None:
         workspace['tags'] = tags
-    workspace['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
+    # workspace['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
     if sku is not None:
         workspace['sku'] = sku
     if plan is not None:
@@ -134,7 +134,7 @@ def desktopvirtualization_scaling_plan_create(client,
         scaling_plan['kind'] = kind
     if tags is not None:
         scaling_plan['tags'] = tags
-    scaling_plan['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
+    # scaling_plan['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
     if sku is not None:
         scaling_plan['sku'] = sku
     if plan is not None:
@@ -237,7 +237,7 @@ def desktopvirtualization_applicationgroup_create(client,
         application_group['kind'] = kind
     if tags is not None:
         application_group['tags'] = tags
-    application_group['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
+    # application_group['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
     if sku is not None:
         application_group['sku'] = sku
     if plan is not None:
@@ -330,7 +330,7 @@ def desktopvirtualization_hostpool_create(client,
         host_pool['kind'] = kind
     if tags is not None:
         host_pool['tags'] = tags
-    host_pool['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
+    # host_pool['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
     if sku is not None:
         host_pool['sku'] = sku
     if plan is not None:
