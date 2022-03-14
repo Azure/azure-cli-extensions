@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension
+# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements
 
 import os.path
 import json
@@ -204,7 +204,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
                 storage_account_kind = storage_account_info.kind
                 storage_account_location = storage_account_info.location
                 break
-    
+
     parameters = {
         'quantumWorkspaceName': workspace_name,
         'location': location,
@@ -212,7 +212,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         'providers': validated_providers,
         'storageAccountName': storage_account,
         'storageAccountId': _get_storage_account_path(info, storage_account),
-        'storageAccountLocation': storage_account_location, 
+        'storageAccountLocation': storage_account_location,
         'storageAccountSku': storage_account_sku,
         'storageAccountKind': storage_account_kind,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
