@@ -14,151 +14,89 @@ from knack.help_files import helps
 
 helps['desktopvirtualization'] = '''
     type: group
-    short-summary: Manage Desktop Virtualization API
+    short-summary: Manage Desktop Virtualization
 '''
 
 helps['desktopvirtualization workspace'] = """
     type: group
-    short-summary: Manage workspace with desktopvirtualization
+    short-summary: desktopvirtualization workspace
 """
 
 helps['desktopvirtualization workspace list'] = """
     type: command
-    short-summary: "List workspaces. And List workspaces in subscription."
+    short-summary: List workspaces in subscription.
     examples:
       - name: Workspace_ListByResourceGroup
         text: |-
-               az desktopvirtualization workspace list --resource-group "resourceGroup1"
-      - name: Workspace_ListBySubscription
-        text: |-
-               az desktopvirtualization workspace list
+               az desktopvirtualization workspace list --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization workspace show'] = """
     type: command
-    short-summary: "Get a workspace."
+    short-summary: Get a workspace.
     examples:
       - name: Workspace_Get
         text: |-
-               az desktopvirtualization workspace show --resource-group "resourceGroup1" --name "workspace1"
+               az desktopvirtualization workspace show --resource-group "MyResourceGroup" --name "MyWorkspace"
 """
 
 helps['desktopvirtualization workspace create'] = """
     type: command
-    short-summary: "Create a workspace."
-    parameters:
-      - name: --sku
-        short-summary: "The resource model definition representing SKU"
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
-      - name: --plan
-        short-summary: "Plan for the resource."
-        long-summary: |
-            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
-
-            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
-            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
-            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
-OfferID specified for the artifact at the time of Data Market onboarding.
-            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
-product/artifact.
-            version: The version of the desired product/artifact.
+    short-summary: Create a workspace.
     examples:
       - name: Workspace_Create
         text: |-
-               az desktopvirtualization workspace create --resource-group "resourceGroup1" --location "centralus" \
---description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
+               az desktopvirtualization workspace create --resource-group "MyResourceGroup" --location "centralus" \
+--description "des1" --friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
 """
 
 helps['desktopvirtualization workspace update'] = """
     type: command
-    short-summary: "Update a workspace."
+    short-summary: Update a workspace.
     examples:
       - name: Workspace_Update
         text: |-
-               az desktopvirtualization workspace update --resource-group "resourceGroup1" --description "des1" \
---friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "workspace1"
+               az desktopvirtualization workspace update --resource-group "MyResourceGroup" --description "des1" \
+--friendly-name "friendly" --tags tag1="value1" tag2="value2" --name "MyWorkspace"
 """
 
 helps['desktopvirtualization workspace delete'] = """
     type: command
-    short-summary: "Remove a workspace."
+    short-summary: Remove a workspace.
     examples:
       - name: Workspace_Delete
         text: |-
-               az desktopvirtualization workspace delete --resource-group "resourceGroup1" --name "workspace1"
+               az desktopvirtualization workspace delete --resource-group "MyResourceGroup" --name "MyWorkspace"
 """
-
-
 
 helps['desktopvirtualization applicationgroup'] = """
     type: group
-    short-summary: Manage application group with desktopvirtualization
+    short-summary: desktopvirtualization applicationgroup
 """
 
 helps['desktopvirtualization applicationgroup list'] = """
     type: command
-    short-summary: "List applicationGroups. And List applicationGroups in subscription."
+    short-summary: List applicationGroups in subscription.
     examples:
       - name: ApplicationGroup_ListByResourceGroup
         text: |-
                az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'" \
---resource-group "resourceGroup1"
-      - name: ApplicationGroup_List
-        text: |-
-               az desktopvirtualization applicationgroup list --filter "applicationGroupType eq \'RailApplication\'"
+--resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization applicationgroup show'] = """
     type: command
-    short-summary: "Get an application group."
+    short-summary: Get an application group.
     examples:
       - name: ApplicationGroup_Get
         text: |-
-               az desktopvirtualization applicationgroup show --name "applicationGroup1" --resource-group \
-"resourceGroup1"
+               az desktopvirtualization applicationgroup show --name "MyApplicationGroup" --resource-group \
+"MyResourceGroup"
 """
 
 helps['desktopvirtualization applicationgroup create'] = """
     type: command
-    short-summary: "Create an applicationGroup."
-    parameters:
-      - name: --sku
-        short-summary: "The resource model definition representing SKU"
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
-      - name: --plan
-        short-summary: "Plan for the resource."
-        long-summary: |
-            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
-
-            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
-            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
-            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
-OfferID specified for the artifact at the time of Data Market onboarding.
-            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
-product/artifact.
-            version: The version of the desired product/artifact.
+    short-summary: Create an applicationGroup.
       - name: --migration-request
         short-summary: "The registration info of HostPool."
         long-summary: |
@@ -171,90 +109,61 @@ product/artifact.
         text: |-
                az desktopvirtualization applicationgroup create --location "centralus" --description "des1" \
 --application-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3\
--b645-8a753a63c4fa/resourceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" \
+-b645-8a753a63c4fa/resourceGroups/MyResourceGroup/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool" \
 --migration-request migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{\
-sessionHostPool.Name}" operation="Start" --tags tag1="value1" tag2="value2" --name "applicationGroup1" \
---resource-group "resourceGroup1"
+sessionHostPool.Name}" operation="Start" --tags tag1="value1" tag2="value2" --name "MyApplicationGroup" \
+--resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization applicationgroup update'] = """
     type: command
-    short-summary: "Update an applicationGroup."
+    short-summary: Update an applicationGroup.
     examples:
       - name: ApplicationGroups_Update
         text: |-
                az desktopvirtualization applicationgroup update --description "des1" --friendly-name "friendly" --tags \
-tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
+tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization applicationgroup delete'] = """
     type: command
-    short-summary: "Remove an applicationGroup."
+    short-summary: Remove an applicationGroup.
     examples:
       - name: ApplicationGroup_Delete
         text: |-
-               az desktopvirtualization applicationgroup delete --name "applicationGroup1" --resource-group \
-"resourceGroup1"
+               az desktopvirtualization applicationgroup delete --name "MyApplicationGroup" --resource-group \
+"MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool'] = """
     type: group
-    short-summary: Manage host pool with desktopvirtualization
+    short-summary: desktopvirtualization hostpool
 """
 
 helps['desktopvirtualization hostpool list'] = """
     type: command
-    short-summary: "List hostPools. And List hostPools in subscription."
+    short-summary: List hostPools in subscription.
     examples:
       - name: HostPool_ListByResourceGroup
         text: |-
-               az desktopvirtualization hostpool list --resource-group "resourceGroup1"
-      - name: HostPool_List
-        text: |-
-               az desktopvirtualization hostpool list
+               az desktopvirtualization hostpool list --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool show'] = """
     type: command
-    short-summary: "Get a host pool."
+    short-summary: Get a host pool.
     examples:
       - name: HostPool_Get
         text: |-
-               az desktopvirtualization hostpool show --name "hostPool1" --resource-group "resourceGroup1"
+               az desktopvirtualization hostpool show --name "MyHostPool" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool create'] = """
     type: command
-    short-summary: "Create a host pool."
+    short-summary: Create a host pool.
     parameters:
-      - name: --sku
-        short-summary: "The resource model definition representing SKU"
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
-      - name: --plan
-        short-summary: "Plan for the resource."
-        long-summary: |
-            Usage: --plan name=XX publisher=XX product=XX promotion-code=XX version=XX
-
-            name: Required. A user defined name of the 3rd Party Artifact that is being procured.
-            publisher: Required. The publisher of the 3rd Party Artifact that is being bought. E.g. NewRelic
-            product: Required. The 3rd Party artifact that is being procured. E.g. NewRelic. Product maps to the \
-OfferID specified for the artifact at the time of Data Market onboarding.
-            promotion-code: A publisher provided promotion code as provisioned in Data Market for the said \
-product/artifact.
-            version: The version of the desired product/artifact.
       - name: --registration-info
-        short-summary: "The registration info of HostPool."
+        short-summary: The registration info of HostPool.
         long-summary: |
             Usage: --registration-info expiration-time=XX token=XX registration-token-operation=XX
 
@@ -278,15 +187,15 @@ sessionHostPool.Name}" operation="Start" --personal-desktop-assignment-type "Aut
 "Desktop" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
 --sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
 --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
-tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
+tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool update'] = """
     type: command
-    short-summary: "Update a host pool."
+    short-summary: Update a host pool.
     parameters:
       - name: --registration-info
-        short-summary: "The registration info of HostPool."
+        short-summary: The registration info of HostPool.
         long-summary: |
             Usage: --registration-info expiration-time=XX registration-token-operation=XX
 
@@ -300,25 +209,25 @@ helps['desktopvirtualization hostpool update'] = """
 --registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" \
 --sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
 --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
-tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
+tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
     type: command
-    short-summary: "Remove a host pool."
+    short-summary: Remove a host pool.
     examples:
       - name: HostPool_Delete
         text: |-
-               az desktopvirtualization hostpool delete --force true --name "hostPool1" --resource-group \
-"resourceGroup1"
+               az desktopvirtualization hostpool delete --force true --name "MyHostPool" --resource-group \
+"MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool retrieve-registration-token'] = """
     type: command
-    short-summary: "Registration token of the host pool."
+    short-summary: Registration token of the host pool.
     examples:
       - name: HostPools_RetrieveRegistrationToken_Post
         text: |-
-               az desktopvirtualization hostpool retrieve-registration-token --name "hostPool1" --resource-group \
-"resourceGroup1"
+               az desktopvirtualization hostpool retrieve-registration-token --name "MyHostPool" --resource-group \
+"MyResourceGroup"
 """

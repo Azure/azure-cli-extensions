@@ -19,13 +19,9 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_desktopvirtualization.action import (
-    AddSku,
-    AddPlan,
     AddMigrationRequest,
     AddDesktopvirtualizationHostpoolCreateRegistrationInfo,
-    AddDesktopvirtualizationHostpoolUpdateRegistrationInfo,
-    AddPackageDependencies,
-    AddPackageApplications
+    AddDesktopvirtualizationHostpoolUpdateRegistrationInfo
 )
 
 
@@ -36,33 +32,24 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization workspace show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
-                   'the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization workspace create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
-                   'the workspace')
+        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the workspace')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('managed_by', type=str, help='The fully qualified resource ID of the resource that manages this '
-                   'resource. Indicates if this resource is managed by another Azure resource. If this is present, '
-                   'complete mode deployment will not delete the resource if it is removed from the template since it '
-                   'is managed by another resource.')
-        c.argument('kind', type=str, help='Metadata used by portal/tooling/etc to render different UX experiences for '
-                   'resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, '
-                   'the resource provider must validate and persist this value.')
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='The resource model definition representing SKU')
-        c.argument('plan', action=AddPlan, nargs='+', help='Plan for the resource.')
         c.argument('description', type=str, help='Description of Workspace.')
         c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
         c.argument('application_group_references', nargs='+', help='List of applicationGroup resource Ids.')
 
     with self.argument_context('desktopvirtualization workspace update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
-                   'the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the workspace', id_part='name')
         c.argument('tags', tags_type)
         c.argument('description', type=str, help='Description of Workspace.')
         c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
@@ -70,46 +57,37 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization workspace delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n', '--workspace-name'], type=str, help='The name of '
-                   'the workspace', id_part='name')
+        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('filter_', options_list=['--filter'], type=str, help='OData filter expression. Valid properties for '
-                   'filtering are applicationGroupType.')
+        c.argument('filter', type=str,
+                   help='OData filter expression. Valid properties for filtering are applicationGroupType.')
 
     with self.argument_context('desktopvirtualization applicationgroup show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
                    help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
                    help='The name of the application group')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('managed_by', type=str, help='The fully qualified resource ID of the resource that manages this '
-                   'resource. Indicates if this resource is managed by another Azure resource. If this is present, '
-                   'complete mode deployment will not delete the resource if it is removed from the template since it '
-                   'is managed by another resource.')
-        c.argument('kind', type=str, help='Metadata used by portal/tooling/etc to render different UX experiences for '
-                   'resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, '
-                   'the resource provider must validate and persist this value.')
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='The resource model definition representing SKU')
-        c.argument('plan', action=AddPlan, nargs='+', help='Plan for the resource.')
         c.argument('description', type=str, help='Description of ApplicationGroup.')
         c.argument('friendly_name', type=str, help='Friendly name of ApplicationGroup.')
         c.argument('host_pool_arm_path', type=str, help='HostPool arm path of ApplicationGroup.')
-        c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']), help='Resource Type of '
-                   'ApplicationGroup.')
-        c.argument('migration_request', action=AddMigrationRequest, nargs='+', help='The registration info of '
-                   'HostPool.')
+        c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']),
+                   help='Resource Type of ApplicationGroup.')
+        c.argument('migration_request', action=AddMigrationRequest, nargs='+',
+                   help='The registration info of HostPool.')
 
     with self.argument_context('desktopvirtualization applicationgroup update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
                    help='The name of the application group', id_part='name')
         c.argument('tags', tags_type)
         c.argument('description', type=str, help='Description of ApplicationGroup.')
@@ -117,7 +95,7 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization applicationgroup delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n', '--application-group-name'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
                    help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool list') as c:
@@ -125,29 +103,20 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization hostpool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
-                   'the host pool within the specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the host pool within the specified resource group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
-                   'the host pool within the specified resource group')
+        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the host pool within the specified resource group')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('managed_by', type=str, help='The fully qualified resource ID of the resource that manages this '
-                   'resource. Indicates if this resource is managed by another Azure resource. If this is present, '
-                   'complete mode deployment will not delete the resource if it is removed from the template since it '
-                   'is managed by another resource.')
-        c.argument('kind', type=str, help='Metadata used by portal/tooling/etc to render different UX experiences for '
-                   'resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, '
-                   'the resource provider must validate and persist this value.')
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='The resource model definition representing SKU')
-        c.argument('plan', action=AddPlan, nargs='+', help='Plan for the resource.')
         c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
         c.argument('description', type=str, help='Description of HostPool.')
-        c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled', 'BYODesktop']), help='HostPool type '
-                   'for desktop.')
+        c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled', 'BYODesktop']),
+                   help='HostPool type for desktop.')
         c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']),
                    help='PersonalDesktopAssignment type for HostPool.')
         c.argument('custom_rdp_property', type=str, help='Custom rdp property of HostPool.')
@@ -161,24 +130,24 @@ def load_arguments(self, _):
         c.argument('vm_template', type=str, help='VM template for sessionhosts configuration within hostpool.')
         c.argument('ssoadfs_authority', type=str,
                    help='URL to customer ADFS server for signing WVD SSO certificates.')
-        c.argument('sso_client_id', type=str, help='ClientId for the registered Relying Party used to issue WVD SSO '
-                   'certificates.')
-        c.argument('sso_client_secret_key_vault_path', type=str, help='Path to Azure KeyVault storing the secret used '
-                   'for communication to ADFS.')
-        c.argument('sso_secret_type', arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault',
-                                                              'CertificateInKeyVault']), help='The type of single sign '
-                   'on Secret Type.')
+        c.argument('sso_client_id', type=str,
+                   help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
+        c.argument('sso_client_secret_key_vault_path', type=str,
+                   help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
+        c.argument('sso_secret_type',
+                   arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
+                   help='The type of single sign on Secret Type.')
         c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
                    help='The type of preferred application group type, default to Desktop Application Group')
-        c.argument('start_vm_on_connect', arg_type=get_three_state_flag(), help='The flag to turn on/off '
-                   'StartVMOnConnect feature.')
-        c.argument('migration_request', action=AddMigrationRequest, nargs='+', help='The registration info of '
-                   'HostPool.')
+        c.argument('start_vm_on_connect', arg_type=get_three_state_flag(),
+                   help='The flag to turn on/off StartVMOnConnect feature.')
+        c.argument('migration_request', action=AddMigrationRequest, nargs='+',
+                   help='The registration info of HostPool.')
 
     with self.argument_context('desktopvirtualization hostpool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
-                   'the host pool within the specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the host pool within the specified resource group', id_part='name')
         c.argument('tags', tags_type)
         c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
         c.argument('description', type=str, help='Description of HostPool.')
@@ -195,25 +164,25 @@ def load_arguments(self, _):
         c.argument('vm_template', type=str, help='VM template for sessionhosts configuration within hostpool.')
         c.argument('ssoadfs_authority', type=str,
                    help='URL to customer ADFS server for signing WVD SSO certificates.')
-        c.argument('sso_client_id', type=str, help='ClientId for the registered Relying Party used to issue WVD SSO '
-                   'certificates.')
+        c.argument('sso_client_id', type=str,
+                   help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
         c.argument('sso_client_secret_key_vault_path', type=str, help='Path to Azure KeyVault storing the secret used '
                    'for communication to ADFS.')
-        c.argument('sso_secret_type', arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault',
-                                                              'CertificateInKeyVault']), help='The type of single sign '
-                   'on Secret Type.')
+        c.argument('sso_secret_type',
+                   arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
+                   help='The type of single sign on Secret Type.')
         c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
                    help='The type of preferred application group type, default to Desktop Application Group')
-        c.argument('start_vm_on_connect', arg_type=get_three_state_flag(), help='The flag to turn on/off '
-                   'StartVMOnConnect feature.')
+        c.argument('start_vm_on_connect', arg_type=get_three_state_flag(),
+                   help='The flag to turn on/off StartVMOnConnect feature.')
 
     with self.argument_context('desktopvirtualization hostpool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
-                   'the host pool within the specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the host pool within the specified resource group', id_part='name')
         c.argument('force', arg_type=get_three_state_flag(), help='Force flag to delete sessionHost.')
 
     with self.argument_context('desktopvirtualization hostpool retrieve-registration-token') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n', '--host-pool-name'], type=str, help='The name of '
-                   'the host pool within the specified resource group', id_part='name')
+        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the host pool within the specified resource group', id_part='name')

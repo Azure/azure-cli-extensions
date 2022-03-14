@@ -30,28 +30,15 @@ def desktopvirtualization_workspace_create(client,
                                            resource_group_name,
                                            workspace_name,
                                            location=None,
-                                           managed_by=None,
-                                           kind=None,
                                            tags=None,
-                                           sku=None,
-                                           plan=None,
                                            description=None,
                                            friendly_name=None,
                                            application_group_references=None):
     workspace = {}
     if location is not None:
         workspace['location'] = location
-    if managed_by is not None:
-        workspace['managed_by'] = managed_by
-    if kind is not None:
-        workspace['kind'] = kind
     if tags is not None:
         workspace['tags'] = tags
-    # workspace['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
-    if sku is not None:
-        workspace['sku'] = sku
-    if plan is not None:
-        workspace['plan'] = plan
     if description is not None:
         workspace['description'] = description
     if friendly_name is not None:
@@ -93,11 +80,11 @@ def desktopvirtualization_workspace_delete(client,
 
 def desktopvirtualization_applicationgroup_list(client,
                                                 resource_group_name=None,
-                                                filter_=None):
+                                                filter=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
-                                             filter=filter_)
-    return client.list_by_subscription(filter=filter_)
+                                             filter=filter)
+    return client.list_by_subscription(filter=filter)
 
 
 def desktopvirtualization_applicationgroup_show(client,
@@ -113,28 +100,15 @@ def desktopvirtualization_applicationgroup_create(client,
                                                   host_pool_arm_path,
                                                   application_group_type,
                                                   location=None,
-                                                  managed_by=None,
-                                                  kind=None,
                                                   tags=None,
-                                                  sku=None,
-                                                  plan=None,
                                                   description=None,
                                                   friendly_name=None,
                                                   migration_request=None):
     application_group = {}
     if location is not None:
         application_group['location'] = location
-    if managed_by is not None:
-        application_group['managed_by'] = managed_by
-    if kind is not None:
-        application_group['kind'] = kind
     if tags is not None:
         application_group['tags'] = tags
-    # application_group['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
-    if sku is not None:
-        application_group['sku'] = sku
-    if plan is not None:
-        application_group['plan'] = plan
     if description is not None:
         application_group['description'] = description
     if friendly_name is not None:
@@ -194,11 +168,7 @@ def desktopvirtualization_hostpool_create(client,
                                           load_balancer_type,
                                           preferred_app_group_type,
                                           location=None,
-                                          managed_by=None,
-                                          kind=None,
                                           tags=None,
-                                          sku=None,
-                                          plan=None,
                                           friendly_name=None,
                                           description=None,
                                           personal_desktop_assignment_type=None,
@@ -217,17 +187,8 @@ def desktopvirtualization_hostpool_create(client,
     host_pool = {}
     if location is not None:
         host_pool['location'] = location
-    if managed_by is not None:
-        host_pool['managed_by'] = managed_by
-    if kind is not None:
-        host_pool['kind'] = kind
     if tags is not None:
         host_pool['tags'] = tags
-    # host_pool['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
-    if sku is not None:
-        host_pool['sku'] = sku
-    if plan is not None:
-        host_pool['plan'] = plan
     if friendly_name is not None:
         host_pool['friendly_name'] = friendly_name
     if description is not None:

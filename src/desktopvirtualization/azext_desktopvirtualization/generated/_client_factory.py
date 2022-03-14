@@ -12,8 +12,7 @@
 def cf_desktopvirtualization_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_desktopvirtualization.vendored_sdks.desktopvirtualization import DesktopVirtualizationAPIClient
-    return get_mgmt_service_client(cli_ctx,
-                                   DesktopVirtualizationAPIClient)
+    return get_mgmt_service_client(cli_ctx, DesktopVirtualizationAPIClient)
 
 
 def cf_workspace(cli_ctx, *_):

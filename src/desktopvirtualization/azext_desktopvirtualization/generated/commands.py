@@ -40,20 +40,16 @@ desktopvirtualization_workspace = CliCommandType(
 
 def load_command_table(self, _):
 
-    with self.command_group(
-        'desktopvirtualization applicationgroup',
-        desktopvirtualization_application_group,
-        client_factory=cf_application_group,
-    ) as g:
+    with self.command_group('desktopvirtualization applicationgroup', desktopvirtualization_application_group,
+                            client_factory=cf_application_group) as g:
         g.custom_command('list', 'desktopvirtualization_applicationgroup_list')
         g.custom_show_command('show', 'desktopvirtualization_applicationgroup_show')
         g.custom_command('create', 'desktopvirtualization_applicationgroup_create')
         g.custom_command('update', 'desktopvirtualization_applicationgroup_update')
         g.custom_command('delete', 'desktopvirtualization_applicationgroup_delete', confirmation=True)
 
-    with self.command_group(
-        'desktopvirtualization hostpool', desktopvirtualization_host_pool, client_factory=cf_host_pool
-    ) as g:
+    with self.command_group('desktopvirtualization hostpool', desktopvirtualization_host_pool,
+                            client_factory=cf_host_pool) as g:
         g.custom_command('list', 'desktopvirtualization_hostpool_list')
         g.custom_show_command('show', 'desktopvirtualization_hostpool_show')
         g.custom_command('create', 'desktopvirtualization_hostpool_create')
@@ -61,9 +57,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'desktopvirtualization_hostpool_delete', confirmation=True)
         g.custom_command('retrieve-registration-token', 'desktopvirtualization_hostpool_retrieve_registration_token')
 
-    with self.command_group(
-        'desktopvirtualization workspace', desktopvirtualization_workspace, client_factory=cf_workspace
-    ) as g:
+    with self.command_group('desktopvirtualization workspace', desktopvirtualization_workspace,
+                            client_factory=cf_workspace) as g:
         g.custom_command('list', 'desktopvirtualization_workspace_list')
         g.custom_show_command('show', 'desktopvirtualization_workspace_show')
         g.custom_command('create', 'desktopvirtualization_workspace_create')

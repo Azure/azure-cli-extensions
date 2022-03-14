@@ -19,90 +19,6 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
-class AddSku(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.sku = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == 'name':
-                d['name'] = v[0]
-
-            elif kl == 'tier':
-                d['tier'] = v[0]
-
-            elif kl == 'size':
-                d['size'] = v[0]
-
-            elif kl == 'family':
-                d['family'] = v[0]
-
-            elif kl == 'capacity':
-                d['capacity'] = v[0]
-
-            else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family,'
-                    ' capacity'.format(k)
-                )
-
-        return d
-
-
-class AddPlan(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.plan = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == 'name':
-                d['name'] = v[0]
-
-            elif kl == 'publisher':
-                d['publisher'] = v[0]
-
-            elif kl == 'product':
-                d['product'] = v[0]
-
-            elif kl == 'promotion-code':
-                d['promotion_code'] = v[0]
-
-            elif kl == 'version':
-                d['version'] = v[0]
-
-            else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter plan. All possible keys are: name, publisher,'
-                    ' product, promotion-code, version'.format(k)
-                )
-
-        return d
-
-
 class AddMigrationRequest(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -131,39 +47,6 @@ class AddMigrationRequest(argparse.Action):
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter migration-request. All possible keys are: operation,'
                     ' migration-path'.format(k)
-                )
-
-        return d
-
-
-class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.registration_info = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == 'expiration-time':
-                d['expiration_time'] = v[0]
-
-            elif kl == 'registration-token-operation':
-                d['registration_token_operation'] = v[0]
-
-            else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
-                    ' expiration-time, registration-token-operation'.format(k)
                 )
 
         return d
@@ -205,10 +88,11 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
         return d
 
 
-class AddPackageDependencies(argparse._AppendAction):
+
+class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddPackageDependencies, self).__call__(parser, namespace, action, option_string)
+        namespace.registration_info = action
 
     def get_action(self, values, option_string):
         try:
@@ -223,67 +107,16 @@ class AddPackageDependencies(argparse._AppendAction):
             kl = k.lower()
             v = properties[k]
 
-            if kl == 'dependency-name':
-                d['dependency_name'] = v[0]
+            if kl == 'expiration-time':
+                d['expiration_time'] = v[0]
 
-            elif kl == 'publisher':
-                d['publisher'] = v[0]
-
-            elif kl == 'min-version':
-                d['min_version'] = v[0]
+            elif kl == 'registration-token-operation':
+                d['registration_token_operation'] = v[0]
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for parameter package-dependencies. All possible keys are:'
-                    ' dependency-name, publisher, min-version'.format(k)
-                )
-
-        return d
-
-
-class AddPackageApplications(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddPackageApplications, self).__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == 'app-id':
-                d['app_id'] = v[0]
-
-            elif kl == 'description':
-                d['description'] = v[0]
-
-            elif kl == 'app-user-model-id':
-                d['app_user_model_id'] = v[0]
-
-            elif kl == 'friendly-name':
-                d['friendly_name'] = v[0]
-
-            elif kl == 'icon-image-name':
-                d['icon_image_name'] = v[0]
-
-            elif kl == 'raw-icon':
-                d['raw_icon'] = v[0]
-
-            elif kl == 'raw-png':
-                d['raw_png'] = v[0]
-
-            else:
-                raise CLIError(
-                    'Unsupported Key {} is provided for parameter package-applications. All possible keys are: app-id,'
-                    ' description, app-user-model-id, friendly-name, icon-image-name, raw-icon, raw-png'.format(k)
+                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
+                    ' expiration-time, registration-token-operation'.format(k)
                 )
 
         return d
