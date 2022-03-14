@@ -479,7 +479,7 @@ helps['containerapp github-action show'] = """
 # Dapr Commands
 helps['containerapp dapr'] = """
     type: group
-    short-summary: Commands to manage Containerapp dapr.
+    short-summary: Commands to manage dapr.
 """
 
 helps['containerapp dapr enable'] = """
