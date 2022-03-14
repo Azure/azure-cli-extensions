@@ -234,9 +234,11 @@ def call_scenario(test):
 
 # Test class for Scenario
 @try_manual
-class DesktopvirtualizationScenarioTest(ScenarioTest):
+class DesktopVirtualizationAPIClientScenarioTest(ScenarioTest):
+# class DesktopvirtualizationScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
-        super(DesktopvirtualizationScenarioTest, self).__init__(*args, **kwargs)
+        super(DesktopVirtualizationAPIClientScenarioTest, self).__init__(*args, **kwargs)
+        # super(DesktopvirtualizationScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
@@ -251,7 +253,8 @@ class DesktopvirtualizationScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestdesktopvirtualization_resourceGroup1'[:7], key='rg',
                            parameter_name='rg')
-    def test_desktopvirtualization_Scenario(self, rg):
+    def test_desktopvirtualization(self, rg):
+    # def test_desktopvirtualization_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)
         raise_if()
