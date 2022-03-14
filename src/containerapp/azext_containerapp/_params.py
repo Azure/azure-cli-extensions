@@ -86,7 +86,7 @@ def load_arguments(self, _):
         c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
-        c.argument('instrumentation_key', options_list=['--instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')
+        c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_subnet_resource_id', type=str, options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components. This subnet must be in the same VNET as the subnet defined in appSubnetResourceId.')

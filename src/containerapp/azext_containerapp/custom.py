@@ -45,7 +45,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
                     _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret, 
-                    _ensure_identity_resource_id, _remove_dapr_readonly_attributes)
+                    _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists)
 
 logger = get_logger(__name__)
 
@@ -384,11 +384,6 @@ def create_containerapp(cmd,
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
 
-    # If ACR image and registry_server is not supplied, infer it
-    if image and '.azurecr.io' in image:
-        if not registry_server:
-            registry_server = image.split('/')[0]
-
     registries_def = None
     if registry_server is not None:
         registries_def = RegistryCredentialsModel
@@ -549,11 +544,6 @@ def update_containerapp(cmd,
                     if "value" not in e:
                         e["value"] = ""
 
-    # If ACR image and registry_server is not supplied, infer it
-    if image and '.azurecr.io' in image:
-        if not registry_server:
-            registry_server = image.split('/')[0]
-
     update_map = {}
     update_map['secrets'] = secrets is not None
     update_map['ingress'] = ingress or target_port or transport or traffic_weights
@@ -712,7 +702,7 @@ def update_containerapp(cmd,
             raise ValidationError("Usage error: --registry-server is required when adding or updating a registry")
 
         # Infer credentials if not supplied and its azurecr
-        if registry_user is None or registry_pass is None:
+        if (registry_user is None or registry_pass is None) and not _registry_exists(containerapp_def, registry_server):
             registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
 
         # Check if updating existing registry
