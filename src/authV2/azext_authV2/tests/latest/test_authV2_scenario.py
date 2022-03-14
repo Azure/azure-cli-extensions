@@ -6,6 +6,7 @@
 import os
 import unittest
 
+from azure.cli.core.azclierror import AzCLIError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
@@ -13,6 +14,69 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class Authv2ScenarioTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix='cli_test_authV2')
+    def test_authV2_clientsecret_param_combinations(self, resource_group):
+        webapp_name = self.create_random_name('webapp-authentication-test', 40)
+        plan_name = self.create_random_name('webapp-authentication-plan', 40)
+        self.cmd(
+            'appservice plan create -g {} -n {} --sku S1'.format(resource_group, plan_name))
+        self.cmd(
+            'webapp create -g {} -n {} --plan {}'.format(resource_group, webapp_name, plan_name))
+        self.cmd('webapp auth config-version show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
+            JMESPathCheck('configVersion', 'v1')
+        ])
+
+        # testing show command for newly created app and initial fields
+        self.cmd('webapp auth show -g {} -n {}'.format(resource_group, webapp_name)).assert_with_checks([
+            JMESPathCheck('properties', {})
+        ])
+
+        # # update and verify
+        self.cmd('webapp auth update -g {} -n {} --enabled true --runtime-version 1.2.8'
+                .format(resource_group, webapp_name)).assert_with_checks([
+                    JMESPathCheck('platform', "{'enabled': True, 'runtimeVersion': '1.2.8'}")
+        ])
+        
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --client-secret-setting-name test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret-setting-name test --thumbprint test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --client-secret and --thumbprint cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --thumbprint test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --client-secret and --san cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret test --san test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --client-secret-setting-name and --san cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --client-secret-setting-name test --san test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --thumbprint and --san cannot both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --thumbprint test --san test2'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --san and --certificate-issuer must both be '
+                       'configured to non empty strings'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --san test'
+                .format(resource_group, webapp_name))
+
+        with self.assertRaisesRegexp(AzCLIError, 'Usage Error: --issuer and --tenant-id cannot be configured '
+                       'to non empty strings at the same time.'):
+            self.cmd('webapp auth Microsoft update -g {} -n {} --issuer test --tenant-id test2'
+                .format(resource_group, webapp_name))
 
     @ResourceGroupPreparer(name_prefix='cli_test_authV2')
     def test_authV2_auth(self, resource_group):
