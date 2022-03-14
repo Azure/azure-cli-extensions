@@ -307,7 +307,7 @@ def create_containerapp(cmd,
                         resource_group_name,
                         yaml=None,
                         image=None,
-                        image_name=None,
+                        container_name=None,
                         managed_env=None,
                         min_replicas=None,
                         max_replicas=None,
@@ -445,7 +445,7 @@ def create_containerapp(cmd,
         resources_def["memory"] = memory
 
     container_def = ContainerModel
-    container_def["name"] = image_name if image_name else name
+    container_def["name"] = container_name if container_name else name
     container_def["image"] = image
     if env_vars is not None:
         container_def["env"] = parse_env_var_flags(env_vars)
@@ -497,7 +497,7 @@ def update_containerapp(cmd,
                         resource_group_name,
                         yaml=None,
                         image=None,
-                        image_name=None,
+                        container_name=None,
                         min_replicas=None,
                         max_replicas=None,
                         ingress=None,
@@ -551,7 +551,7 @@ def update_containerapp(cmd,
     update_map['ingress'] = ingress or target_port or transport or traffic_weights
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or image_name or env_vars is not None or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or env_vars is not None or cpu or memory or startup_command is not None or args is not None
     update_map['dapr'] = dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol
     update_map['configuration'] = update_map['secrets'] or update_map['ingress'] or update_map['registries'] or revisions_mode is not None
 
@@ -563,16 +563,16 @@ def update_containerapp(cmd,
 
     # Containers
     if update_map["container"]:
-        if not image_name:
+        if not container_name:
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
-                image_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
+                container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
                 raise ValidationError("Usage error: --image-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
         for c in containerapp_def["properties"]["template"]["containers"]:
-            if c["name"].lower() == image_name.lower():
+            if c["name"].lower() == container_name.lower():
                 updating_existing_container = True
 
                 if image is not None:
@@ -618,7 +618,7 @@ def update_containerapp(cmd,
                 resources_def["memory"] = memory
 
             container_def = ContainerModel
-            container_def["name"] = image_name
+            container_def["name"] = container_name
             container_def["image"] = image
             if env_vars is not None:
                 container_def["env"] = parse_env_var_flags(env_vars)
@@ -1372,7 +1372,7 @@ def copy_revision(cmd,
                         #label=None,
                         yaml=None,
                         image=None,
-                        image_name=None,
+                        container_name=None,
                         min_replicas=None,
                         max_replicas=None,
                         env_vars=None,
@@ -1416,7 +1416,7 @@ def copy_revision(cmd,
     update_map = {}
     update_map['ingress'] = traffic_weights
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or image_name or env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['configuration'] =  update_map['ingress']
 
     if tags:
@@ -1427,16 +1427,16 @@ def copy_revision(cmd,
 
     # Containers
     if update_map["container"]:
-        if not image_name:
+        if not container_name:
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
-                image_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
+                container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
                 raise ValidationError("Usage error: --image-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
         for c in containerapp_def["properties"]["template"]["containers"]:
-            if c["name"].lower() == image_name.lower():
+            if c["name"].lower() == container_name.lower():
                 updating_existing_container = True
 
                 if image is not None:
@@ -1479,7 +1479,7 @@ def copy_revision(cmd,
                 resources_def["memory"] = memory
 
             container_def = ContainerModel
-            container_def["name"] = image_name
+            container_def["name"] = container_name
             container_def["image"] = image
             if env_vars is not None:
                 container_def["env"] = parse_env_var_flags(env_vars)
