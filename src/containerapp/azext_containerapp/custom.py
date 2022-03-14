@@ -1013,7 +1013,7 @@ def create_or_update_github_action(cmd,
     if branch:
         source_control_info["properties"]["branch"] = branch
     if not source_control_info["properties"]["branch"]:
-        source_control_info["properties"]["branch"] = "master"
+        source_control_info["properties"]["branch"] = "main"
 
     azure_credentials = None
 
