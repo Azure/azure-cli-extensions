@@ -128,7 +128,7 @@ class ContainerAppClient():
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, name, no_wait=False):
+    def delete(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -142,24 +142,8 @@ class ContainerAppClient():
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
-        if no_wait:
-            return # API doesn't return JSON (it returns no content)
-        elif r.status_code in [200, 201, 202, 204]:
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
-
-            if r.status_code == 202:
-                from azure.cli.core.azclierror import ResourceNotFoundError
-                try:
-                    poll(cmd, request_url, "cancelled")
-                except ResourceNotFoundError:
-                    pass
-                logger.warning('Containerapp successfully deleted')
+        if r.status_code == 202:
+            logger.warning('Containerapp successfully deleted')
         return
 
     @classmethod
