@@ -25,6 +25,8 @@ from ..vendored_sdks.azure_mgmt_quantum.models import Provider
 from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
+DEFAULT_STORAGE_SKU = 'Standard_LRS'
+DEFAULT_STORAGE_KIND = 'Storage'
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 60
@@ -189,8 +191,8 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
 
     # Set default storage account parameters in case the storage account does not exist yet
-    storage_account_sku = 'Standard_LRS'
-    storage_account_kind = 'Storage'
+    storage_account_sku = DEFAULT_STORAGE_SKU
+    storage_account_kind = DEFAULT_STORAGE_KIND
     storage_account_location = location
 
     # Look for info on existing storage account
