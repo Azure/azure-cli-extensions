@@ -100,11 +100,7 @@ migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenan
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--application-group-name**|string|The name of the application group|application_group_name|applicationGroupName|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--managed-by**|string|The fully qualified resource ID of the resource that manages this resource. Indicates if this resource is managed by another Azure resource. If this is present, complete mode deployment will not delete the resource if it is removed from the template since it is managed by another resource.|managed_by|managedBy|
-|**--kind**|string|Metadata used by portal/tooling/etc to render different UX experiences for resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, the resource provider must validate and persist this value.|kind|kind|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--sku**|object|The resource model definition representing SKU|sku|sku|
-|**--plan**|object|Plan for the resource.|plan|plan|
 |**--host-pool-arm-path**|string|HostPool arm path of ApplicationGroup.|host_pool_arm_path|hostPoolArmPath|
 |**--application-group-type**|choice|Resource Type of ApplicationGroup.|application_group_type|applicationGroupType|
 |**--description**|string|Description of ApplicationGroup.|description|description|
@@ -192,11 +188,7 @@ tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--host-pool-name**|string|The name of the host pool within the specified resource group|host_pool_name|hostPoolName|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--managed-by**|string|The fully qualified resource ID of the resource that manages this resource. Indicates if this resource is managed by another Azure resource. If this is present, complete mode deployment will not delete the resource if it is removed from the template since it is managed by another resource.|managed_by|managedBy|
-|**--kind**|string|Metadata used by portal/tooling/etc to render different UX experiences for resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, the resource provider must validate and persist this value.|kind|kind|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--sku**|object|The resource model definition representing SKU|sku|sku|
-|**--plan**|object|Plan for the resource.|plan|plan|
 |**--host-pool-type**|choice|HostPool type for desktop.|host_pool_type|hostPoolType|
 |**--load-balancer-type**|choice|The type of the load balancer.|load_balancer_type|loadBalancerType|
 |**--preferred-app-group-type**|choice|The type of preferred application group type, default to Desktop Application Group|preferred_app_group_type|preferredAppGroupType|
@@ -322,11 +314,7 @@ az desktopvirtualization workspace create --resource-group "resourceGroup1" --lo
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--workspace-name**|string|The name of the workspace|workspace_name|workspaceName|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--managed-by**|string|The fully qualified resource ID of the resource that manages this resource. Indicates if this resource is managed by another Azure resource. If this is present, complete mode deployment will not delete the resource if it is removed from the template since it is managed by another resource.|managed_by|managedBy|
-|**--kind**|string|Metadata used by portal/tooling/etc to render different UX experiences for resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, the resource provider must validate and persist this value.|kind|kind|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--sku**|object|The resource model definition representing SKU|sku|sku|
-|**--plan**|object|Plan for the resource.|plan|plan|
 |**--description**|string|Description of Workspace.|description|description|
 |**--friendly-name**|string|Friendly name of Workspace.|friendly_name|friendlyName|
 |**--application-group-references**|array|List of applicationGroup resource Ids.|application_group_references|applicationGroupReferences|
