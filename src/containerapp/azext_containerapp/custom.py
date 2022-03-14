@@ -33,13 +33,19 @@ from ._models import (
     Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
     Scale as ScaleModel,
-    Container as ContainerModel, GitHubActionConfiguration, RegistryInfo as RegistryInfoModel, AzureCredentials as AzureCredentialsModel, SourceControl as SourceControlModel)
+    Container as ContainerModel, 
+    GitHubActionConfiguration, 
+    RegistryInfo as RegistryInfoModel, 
+    AzureCredentials as AzureCredentialsModel, 
+    SourceControl as SourceControlModel,
+    ManagedServiceIdentity as ManagedServiceIdentityModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_list_of_strings, parse_env_var_flags,
                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_Weights,
-                    _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret)
+                    _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret, 
+                    _ensure_identity_resource_id)
 
 logger = get_logger(__name__)
 
@@ -325,7 +331,8 @@ def create_containerapp(cmd,
                         startup_command=None,
                         args=None,
                         tags=None,
-                        no_wait=False):
+                        no_wait=False,
+                        assign_identity=[]):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
@@ -403,6 +410,28 @@ def create_containerapp(cmd,
     config_def["ingress"] = ingress_def
     config_def["registries"] = [registries_def] if registries_def is not None else None
 
+    # Identity actions
+    identity_def = ManagedServiceIdentityModel
+    identity_def["type"] = "None"
+
+    assign_system_identity = '[system]' in assign_identity
+    assign_user_identities = [x for x in assign_identity if x != '[system]']
+
+    if assign_system_identity and assign_user_identities:
+        identity_def["type"] = "SystemAssigned, UserAssigned"
+    elif assign_system_identity: 
+        identity_def["type"] = "SystemAssigned"
+    elif assign_user_identities: 
+        identity_def["type"] = "UserAssigned"
+
+    if assign_user_identities:
+        identity_def["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
+            identity_def["userAssignedIdentities"][r] = {}
+    
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
         scale_def = ScaleModel
@@ -445,6 +474,7 @@ def create_containerapp(cmd,
 
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
+    containerapp_def["identity"] = identity_def
     containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
@@ -935,6 +965,172 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
+def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    # if no identities, then assign system by default
+    if not identities:
+        identities = ['[system]']
+        logger.warning('Identities not specified. Assigning managed system identity.')
+    
+    identities = [x.lower() for x in identities]
+    assign_system_identity = '[system]' in identities 
+    assign_user_identities = [x for x in identities if x != '[system]']
+
+    containerapp_def = None
+
+    # Get containerapp properties of CA we are updating
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    # If identity not returned
+    try: 
+        containerapp_def["identity"]
+        containerapp_def["identity"]["type"]
+    except:
+        containerapp_def["identity"] = {}
+        containerapp_def["identity"]["type"] = "None"
+
+    if assign_system_identity and containerapp_def["identity"]["type"].__contains__("SystemAssigned"):
+        logger.warning("System identity is already assigned to containerapp")
+
+    # Assign correct type
+    try:
+        if containerapp_def["identity"]["type"] != "None": 
+            if containerapp_def["identity"]["type"] == "SystemAssigned" and assign_user_identities:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+            if containerapp_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+        else: 
+            if assign_system_identity and assign_user_identities:
+                containerapp_def["identity"]["type"] = "SystemAssigned,UserAssigned"
+            elif assign_system_identity: 
+                containerapp_def["identity"]["type"] = "SystemAssigned"
+            elif assign_user_identities: 
+                containerapp_def["identity"]["type"] = "UserAssigned"
+    except: 
+        # Always returns "type": "None" when CA has no previous identities 
+        pass
+    
+    if assign_user_identities:
+        try: 
+            containerapp_def["identity"]["userAssignedIdentities"]
+        except: 
+            containerapp_def["identity"]["userAssignedIdentities"] = {}
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        
+        for r in assign_user_identities:
+            old_id = r
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
+            try:
+                containerapp_def["identity"]["userAssignedIdentities"][r]
+                logger.warning("User identity {} is already assigned to containerapp".format(old_id))
+            except:
+                containerapp_def["identity"]["userAssignedIdentities"][r] = {}  
+
+    try:
+        r = ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        # If identity is not returned, do nothing
+        return r["identity"]
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+    
+def remove_managed_identity(cmd, name, resource_group_name, identities, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    identities = [x.lower() for x in identities]
+    remove_system_identity = '[system]' in identities
+    remove_user_identities = [x for x in identities if x != '[system]']
+    remove_id_size = len(remove_user_identities)
+
+    # Remove duplicate identities that are passed and notify
+    remove_user_identities = list(set(remove_user_identities))
+    if remove_id_size != len(remove_user_identities):
+        logger.warning("At least one identity was passed twice.")
+        
+    containerapp_def = None
+    # Get containerapp properties of CA we are updating
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    # If identity not returned
+    try: 
+        containerapp_def["identity"]
+        containerapp_def["identity"]["type"]
+    except:
+        containerapp_def["identity"] = {}
+        containerapp_def["identity"]["type"] = "None"
+
+    if containerapp_def["identity"]["type"] == "None":
+        raise CLIError("The containerapp {} has no system or user assigned identities.".format(name))
+
+    if remove_system_identity:
+        if containerapp_def["identity"]["type"] == "UserAssigned":
+            raise CLIError("The containerapp {} has no system assigned identities.".format(name))
+        containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    if remove_user_identities:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        try: 
+            containerapp_def["identity"]["userAssignedIdentities"]
+        except: 
+            containerapp_def["identity"]["userAssignedIdentities"] = {}
+        for id in remove_user_identities:
+            given_id = id
+            id = _ensure_identity_resource_id(subscription_id, resource_group_name, id)
+            wasRemoved = False
+
+            for old_user_identity in containerapp_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == id.lower():
+                    containerapp_def["identity"]["userAssignedIdentities"].pop(old_user_identity)
+                    wasRemoved = True
+                    break
+
+            if not wasRemoved:
+                raise CLIError("The containerapp does not have specified user identity '{}' assigned, so it cannot be removed.".format(given_id))
+
+        if containerapp_def["identity"]["userAssignedIdentities"] == {}:
+            containerapp_def["identity"]["userAssignedIdentities"] = None
+            containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+    
+    try:
+        r = ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        return r["identity"]
+    except Exception as e:
+        handle_raw_exception(e)
+    
+    
+def show_managed_identity(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    try:
+        return r["identity"]
+    except: 
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]
 def create_or_update_github_action(cmd,
                                    name,
                                    resource_group_name,

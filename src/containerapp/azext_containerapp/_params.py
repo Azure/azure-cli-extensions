@@ -66,6 +66,9 @@ def load_arguments(self, _):
         c.argument('ingress', validator=validate_ingress, options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
+    
+    with self.argument_context('containerapp create') as c:
+        c.argument('assign_identity', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity.")
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
 
     with self.argument_context('containerapp scale') as c:
@@ -102,6 +105,12 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
+
+    with self.argument_context('containerapp identity') as c:
+        c.argument('identities', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity.")
+
+    with self.argument_context('containerapp identity assign') as c:
+        c.argument('identities', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity. Default is '[system]'.")
 
     with self.argument_context('containerapp github-action add') as c:
         c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')
