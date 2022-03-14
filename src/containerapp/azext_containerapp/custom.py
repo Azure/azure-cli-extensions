@@ -394,7 +394,7 @@ def create_containerapp(cmd,
         registries_def = RegistryCredentialsModel
 
         # Infer credentials if not supplied and its azurecr
-        if not registry_user or not registry_pass:
+        if registry_user is None or registry_pass is None:
             registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
 
         registries_def["server"] = registry_server
@@ -540,6 +540,14 @@ def update_containerapp(cmd,
 
     if not containerapp_def:
         raise CLIError("The containerapp '{}' does not exist".format(name))
+
+    # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
+    if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
+        for container in containerapp_def["properties"]["template"]["containers"]:
+            if "env" in container:
+                for e in container["env"]:
+                    if "value" not in e:
+                        e["value"] = ""
 
     # If ACR image and registry_server is not supplied, infer it
     if image and '.azurecr.io' in image:
@@ -704,7 +712,7 @@ def update_containerapp(cmd,
             raise ValidationError("Usage error: --registry-server is required when adding or updating a registry")
 
         # Infer credentials if not supplied and its azurecr
-        if not registry_user or not registry_pass:
+        if registry_user is None or registry_pass is None:
             registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
 
         # Check if updating existing registry
@@ -1221,7 +1229,7 @@ def create_or_update_github_action(cmd,
         azure_credentials["subscriptionId"] = get_subscription_id(cmd.cli_ctx)
 
     # Registry
-    if not registry_username or not registry_password:
+    if registry_username is None or registry_password is None:
         # If registry is Azure Container Registry, we can try inferring credentials
         if not registry_url or '.azurecr.io' not in registry_url:
             raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
@@ -1412,6 +1420,14 @@ def copy_revision(cmd,
         handle_raw_exception(e)
 
     containerapp_def["properties"]["template"] = r["properties"]["template"]
+
+    # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
+    if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
+        for container in containerapp_def["properties"]["template"]["containers"]:
+            if "env" in container:
+                for e in container["env"]:
+                    if "value" not in e:
+                        e["value"] = ""
 
     update_map = {}
     update_map['ingress'] = traffic_weights
