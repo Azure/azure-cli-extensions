@@ -36,6 +36,21 @@ def not_support_enterprise(cmd, namespace):
         raise ClientRequestError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
 
 
+def validate_build_env(cmd, namespace):
+    if namespace.build_env is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-env' only supports for Enterprise tier Spring instance.")
+
+
+def validate_target_module(cmd, namespace):
+    if namespace.target_module is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--target-module' doesn't support for Enterprise tier Spring instance.")
+
+
+def validate_runtime_version(cmd, namespace):
+    if namespace.runtime_version is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--runtime-version' doesn't support for Enterprise tier Spring instance.")
+
+
 def validate_builder_create(cmd, namespace):
     client = get_client(cmd)
     try:

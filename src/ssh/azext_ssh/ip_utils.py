@@ -36,7 +36,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
                 if public_ip and public_ip.ip_address:
                     return public_ip.ip_address
             if ip_config.private_ip_address:
-                private_ips += ip_config.private_ip_address
+                private_ips.append(ip_config.private_ip_address)
 
     if len(private_ips) > 0:
         logger.warning("No public IP detected, attempting private IP (you must bring your own connectivity).")
