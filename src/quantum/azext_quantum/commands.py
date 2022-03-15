@@ -100,25 +100,14 @@ def transform_output(results):
 
     elif 'errorData' in results:
         notFound = 'Not found'
-        status = notFound
-        errorCode = notFound
-        errorMessage = notFound
-        target = notFound
-        jobId = notFound
-        submissionTime = notFound
-        if 'status' in results:
-            status = results['status']
         errorData = results['errorData']
-        if 'code' in errorData:
-            errorCode = errorData['code']
-        if 'message' in errorData:
-            errorMessage = errorData['message']
-        if 'target' in results:
-            target = results['target']
-        if 'id' in results:
-            jobId = results['id']
-        if 'creationTime' in results:
-            submissionTime = results['creationTime']
+        status = results.get('status', notFound)
+        errorCode = errorData.get('code', notFound)
+        errorMessage = errorData.get('message', notFound)
+        target = results.get('target', notFound)
+        jobId = results.get('id', notFound)
+        submissionTime = results.get('creationTime', notFound)
+
         logger.error("Job was not successful. Job ID: %s, Status: %s, Error Code: %s, Error Message: %s, Target: %s", jobId, status, errorCode, errorMessage, target)
         return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
