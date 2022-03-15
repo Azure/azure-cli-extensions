@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.5
+++++++
+
+* Using MSAL based auth for CLI version >= 2.30.0
+
 1.2.4
 ++++++
 
