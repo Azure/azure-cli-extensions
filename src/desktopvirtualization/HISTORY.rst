@@ -10,7 +10,7 @@ Release History
 0.2.0
 ++++++
 * Bump version to 2021-07-12.
-* Update: host_pool_name max length up to 64 characters long.
+* Update: host_pool_name max length up to 64 characters long to Fix [19298](https://github.com/Azure/azure-cli/issues/19298)
 * `az desktopvirtualization workspace create` Change: `--location` required to False
 * `az desktopvirtualization applicationgroup create` Change: `--location` required to False
 * `az desktopvirtualization hostpool create` Change `--preferred-app-group-type` required to True
