@@ -6,39 +6,43 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
-from ._configuration_async import CostManagementClientConfiguration
-from .operations_async import ViewOperations
-from .operations_async import AlertOperations
-from .operations_async import ForecastOperations
-from .operations_async import DimensionOperations
-from .operations_async import QueryOperations
-from .operations_async import ExportOperations
-from .operations_async import OperationOperations
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from azure.core.credentials_async import AsyncTokenCredential
+
+from ._configuration import CostManagementClientConfiguration
+from .operations import ViewsOperations
+from .operations import AlertsOperations
+from .operations import ForecastOperations
+from .operations import DimensionsOperations
+from .operations import QueryOperations
+from .operations import Operations
+from .operations import ExportsOperations
 from .. import models
 
 
 class CostManagementClient(object):
     """CostManagementClient.
 
-    :ivar view: ViewOperations operations
-    :vartype view: azure.mgmt.costmanagement.aio.operations_async.ViewOperations
-    :ivar alert: AlertOperations operations
-    :vartype alert: azure.mgmt.costmanagement.aio.operations_async.AlertOperations
+    :ivar views: ViewsOperations operations
+    :vartype views: azure.mgmt.costmanagement.aio.operations.ViewsOperations
+    :ivar alerts: AlertsOperations operations
+    :vartype alerts: azure.mgmt.costmanagement.aio.operations.AlertsOperations
     :ivar forecast: ForecastOperations operations
-    :vartype forecast: azure.mgmt.costmanagement.aio.operations_async.ForecastOperations
-    :ivar dimension: DimensionOperations operations
-    :vartype dimension: azure.mgmt.costmanagement.aio.operations_async.DimensionOperations
+    :vartype forecast: azure.mgmt.costmanagement.aio.operations.ForecastOperations
+    :ivar dimensions: DimensionsOperations operations
+    :vartype dimensions: azure.mgmt.costmanagement.aio.operations.DimensionsOperations
     :ivar query: QueryOperations operations
-    :vartype query: azure.mgmt.costmanagement.aio.operations_async.QueryOperations
-    :ivar export: ExportOperations operations
-    :vartype export: azure.mgmt.costmanagement.aio.operations_async.ExportOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.costmanagement.aio.operations_async.OperationOperations
+    :vartype query: azure.mgmt.costmanagement.aio.operations.QueryOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.costmanagement.aio.operations.Operations
+    :ivar exports: ExportsOperations operations
+    :vartype exports: azure.mgmt.costmanagement.aio.operations.ExportsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param str base_url: Service URL
@@ -59,19 +63,19 @@ class CostManagementClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.view = ViewOperations(
+        self.views = ViewsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.alert = AlertOperations(
+        self.alerts = AlertsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.forecast = ForecastOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.dimension = DimensionOperations(
+        self.dimensions = DimensionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.query = QueryOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.export = ExportOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.exports = ExportsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
