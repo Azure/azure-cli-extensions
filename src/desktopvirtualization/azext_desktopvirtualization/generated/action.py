@@ -55,7 +55,6 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
         return d
 
 
-
 class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)

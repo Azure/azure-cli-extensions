@@ -9,8 +9,8 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-import azext_desktopvirtualization._help
 from azure.cli.core import AzCommandsLoader
+import azext_desktopvirtualization._help
 
 
 class DesktopVirtualizationAPIClientCommandsLoader(AzCommandsLoader):
@@ -21,8 +21,7 @@ class DesktopVirtualizationAPIClientCommandsLoader(AzCommandsLoader):
         desktopvirtualization_custom = CliCommandType(
             operations_tmpl='azext_desktopvirtualization.custom#{}',
             client_factory=cf_desktopvirtualization_cl)
-        parent = super(DesktopVirtualizationAPIClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=desktopvirtualization_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=desktopvirtualization_custom)
 
     def load_command_table(self, args):
         from azext_desktopvirtualization.generated.commands import load_command_table

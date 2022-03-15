@@ -129,12 +129,13 @@ def load_arguments(self, _):
                    help='URL to customer ADFS server for signing WVD SSO certificates.')
         c.argument('sso_client_id', type=str,
                    help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
-        c.argument('sso_client_secret_key_vault_path', type=str,
-                   help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
+        c.argument('sso_client_secret_key_vault_path', options_list=['--sso-client-secret-key-vault-path', '-p'],
+                   type=str, help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
         c.argument('sso_secret_type',
                    arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
                    help='The type of single sign on Secret Type.')
-        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
+        c.argument('preferred_app_group_type', options_list=['--preferred-app-group-type', '-t'],
+                   arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
                    help='The type of preferred application group type, default to Desktop Application Group')
         c.argument('start_vm_on_connect', arg_type=get_three_state_flag(),
                    help='The flag to turn on/off StartVMOnConnect feature.')
@@ -161,12 +162,13 @@ def load_arguments(self, _):
                    help='URL to customer ADFS server for signing WVD SSO certificates.')
         c.argument('sso_client_id', type=str,
                    help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
-        c.argument('sso_client_secret_key_vault_path', type=str, help='Path to Azure KeyVault storing the secret used '
-                   'for communication to ADFS.')
+        c.argument('sso_client_secret_key_vault_path', options_list=['--sso-client-secret-key-vault-path', '-p'],
+                   type=str, help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
         c.argument('sso_secret_type',
                    arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
                    help='The type of single sign on Secret Type.')
-        c.argument('preferred_app_group_type', arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
+        c.argument('preferred_app_group_type', options_list=['--preferred-app-group-type', '-t'],
+                   arg_type=get_enum_type(['None', 'Desktop', 'RailApplications']),
                    help='The type of preferred application group type, default to Desktop Application Group')
         c.argument('start_vm_on_connect', arg_type=get_three_state_flag(),
                    help='The flag to turn on/off StartVMOnConnect feature.')

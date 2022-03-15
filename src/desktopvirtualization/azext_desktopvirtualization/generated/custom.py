@@ -180,10 +180,11 @@ def desktopvirtualization_hostpool_create(client,
                                           sso_client_secret_key_vault_path=None,
                                           sso_secret_type=None,
                                           start_vm_on_connect=None):
-    host_pool = {}
-	host_pool['host_pool_type'] = host_pool_type
-	host_pool['load_balancer_type'] = load_balancer_type
-	host_pool['preferred_app_group_type'] = preferred_app_group_type
+    host_pool = {
+        'host_pool_type': host_pool_type,
+        'load_balancer_type': load_balancer_type,
+        'preferred_app_group_type': preferred_app_group_type
+    }
     if location is not None:
         host_pool['location'] = location
     if tags is not None:
