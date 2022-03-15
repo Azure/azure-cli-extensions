@@ -839,7 +839,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
-               enable_oidc_issuer=False):
+               enable_oidc_issuer=False,
+               http_proxy_config=None):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
