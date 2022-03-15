@@ -64,18 +64,10 @@ def call_scenario(test):
         test.check("hostPoolType", "Pooled", case_sensitive=False),
         test.check("loadBalancerType", "BreadthFirst", case_sensitive=False),
         test.check("maxSessionLimit", 999999),
-        # test.check("migrationRequest.migrationPath", "TenantGroups/{{defaultV1TenantGroup.Name}}/Tenants/{{defaultV1Ten"
-        #            "ant.Name}}/HostPools/{{sessionHostPool.Name}}", case_sensitive=False),
-        # test.check("migrationRequest.operation", "Start", case_sensitive=False),
-        test.check("personalDesktopAssignmentType", None, case_sensitive=False),
-        # test.check("personalDesktopAssignmentType", "Automatic", case_sensitive=False),
         test.check("preferredAppGroupType", "Desktop", case_sensitive=False),
         test.check("ssoClientId", "client", case_sensitive=False),
         test.check("ssoClientSecretKeyVaultPath", "https://keyvault/secret", case_sensitive=False),
         test.check("ssoSecretType", "SharedKey", case_sensitive=False),
-        # test.check("ssoadfsAuthority", "https://adfs", case_sensitive=False),
-        # test.check("startVMOnConnect", False),
-        # test.check("vmTemplate", "{{json:json}}", case_sensitive=False),
         test.check("name", "{myHostPool}", case_sensitive=False),
     ])
     step_hostpool_show(test, checks=[
@@ -85,15 +77,10 @@ def call_scenario(test):
         test.check("hostPoolType", "Pooled", case_sensitive=False),
         test.check("loadBalancerType", "BreadthFirst", case_sensitive=False),
         test.check("maxSessionLimit", 999999),
-        test.check("personalDesktopAssignmentType", None, case_sensitive=False),
-        # test.check("personalDesktopAssignmentType", "Automatic", case_sensitive=False),
         test.check("preferredAppGroupType", "Desktop", case_sensitive=False),
         test.check("ssoClientId", "client", case_sensitive=False),
         test.check("ssoClientSecretKeyVaultPath", "https://keyvault/secret", case_sensitive=False),
         test.check("ssoSecretType", "SharedKey", case_sensitive=False),
-        # test.check("ssoadfsAuthority", "https://adfs", case_sensitive=False),
-        # test.check("startVMOnConnect", False),
-        # test.check("vmTemplate", "{{json:json}}", case_sensitive=False),
         test.check("name", "{myHostPool}", case_sensitive=False),
     ])
     step_hostpool_list(test, checks=[
@@ -109,15 +96,10 @@ def call_scenario(test):
         test.check("hostPoolType", "Pooled", case_sensitive=False),
         test.check("loadBalancerType", "BreadthFirst", case_sensitive=False),
         test.check("maxSessionLimit", 999999),
-        test.check("personalDesktopAssignmentType", None, case_sensitive=False),
-        # test.check("personalDesktopAssignmentType", "Automatic", case_sensitive=False),
         test.check("preferredAppGroupType", "Desktop", case_sensitive=False),
         test.check("ssoClientId", "client", case_sensitive=False),
         test.check("ssoClientSecretKeyVaultPath", "https://keyvault/secret", case_sensitive=False),
         test.check("ssoSecretType", "SharedKey", case_sensitive=False),
-        # test.check("ssoadfsAuthority", "https://adfs", case_sensitive=False),
-        # test.check("startVMOnConnect", False),
-        # test.check("vmTemplate", "{{json:json}}", case_sensitive=False),
         test.check("name", "{myHostPool}", case_sensitive=False),
     ])
     step_hostpool_retrieve_registration_token(test, checks=[])
@@ -129,9 +111,6 @@ def call_scenario(test):
         test.check("friendlyName", "friendly", case_sensitive=False),
         test.check("hostPoolArmPath", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Desktop"
                    "Virtualization/hostPools/{myHostPool}", case_sensitive=False),
-        # test.check("migrationRequest.migrationPath", "TenantGroups/{{defaultV1TenantGroup.Name}}/Tenants/{{defaultV1Ten"
-        #            "ant.Name}}/HostPools/{{sessionHostPool.Name}}", case_sensitive=False),
-        # test.check("migrationRequest.operation", "Start", case_sensitive=False),
         test.check("name", "{myApplicationGroup}", case_sensitive=False),
     ])
     step_applicationgroup_show(test, checks=[

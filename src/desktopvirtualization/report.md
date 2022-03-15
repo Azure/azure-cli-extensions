@@ -90,9 +90,7 @@ az desktopvirtualization applicationgroup show --name "applicationGroup1" --reso
 ```
 az desktopvirtualization applicationgroup create --location "centralus" --description "des1" --application-group-type \
 "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3-b645-8a753a63c4fa/resour\
-ceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" --migration-request \
-migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{sessionHostPool.Name\
-}" operation="Start" --tags tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
+ceGroups/resourceGroup1/providers/Microsoft.DesktopVirtualization/hostPools/hostPool1" --tags tag1="value1" tag2="value2" --name "applicationGroup1" --resource-group "resourceGroup1"
 ```
 ##### <a name="ParametersApplicationGroupsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -105,7 +103,6 @@ migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenan
 |**--application-group-type**|choice|Resource Type of ApplicationGroup.|application_group_type|applicationGroupType|
 |**--description**|string|Description of ApplicationGroup.|description|description|
 |**--friendly-name**|string|Friendly name of ApplicationGroup.|friendly_name|friendlyName|
-|**--migration-request**|object|The registration info of HostPool.|migration_request|migrationRequest|
 
 #### <a name="ApplicationGroupsUpdate">Command `az desktopvirtualization applicationgroup update`</a>
 
@@ -174,9 +171,8 @@ az desktopvirtualization hostpool show --name "hostPool1" --resource-group "reso
 ##### <a name="ExamplesHostPoolsCreateOrUpdate#Create">Example</a>
 ```
 az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name "friendly" \
---host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 --migration-request \
-migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{sessionHostPool.Name\
-}" operation="Start" --personal-desktop-assignment-type "Automatic" --preferred-app-group-type "Desktop" \
+--host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
+--personal-desktop-assignment-type "Automatic" --preferred-app-group-type "Desktop" \
 --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
 --sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
 --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
@@ -206,7 +202,6 @@ tag2="value2" --name "hostPool1" --resource-group "resourceGroup1"
 |**--sso-client-secret-key-vault-path**|string|Path to Azure KeyVault storing the secret used for communication to ADFS.|sso_client_secret_key_vault_path|ssoClientSecretKeyVaultPath|
 |**--sso-secret-type**|choice|The type of single sign on Secret Type.|sso_secret_type|ssoSecretType|
 |**--start-vm-on-connect**|boolean|The flag to turn on/off StartVMOnConnect feature.|start_vm_on_connect|startVMOnConnect|
-|**--migration-request**|object|The registration info of HostPool.|migration_request|migrationRequest|
 
 #### <a name="HostPoolsUpdate">Command `az desktopvirtualization hostpool update`</a>
 

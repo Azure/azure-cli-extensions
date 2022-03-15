@@ -19,7 +19,6 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azext_desktopvirtualization.action import (
-    AddMigrationRequest,
     AddDesktopvirtualizationHostpoolCreateRegistrationInfo,
     AddDesktopvirtualizationHostpoolUpdateRegistrationInfo
 )
@@ -82,8 +81,6 @@ def load_arguments(self, _):
         c.argument('host_pool_arm_path', type=str, help='HostPool arm path of ApplicationGroup.')
         c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']),
                    help='Resource Type of ApplicationGroup.')
-        c.argument('migration_request', action=AddMigrationRequest, nargs='+',
-                   help='The registration info of HostPool.')
 
     with self.argument_context('desktopvirtualization applicationgroup update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -141,8 +138,6 @@ def load_arguments(self, _):
                    help='The type of preferred application group type, default to Desktop Application Group')
         c.argument('start_vm_on_connect', arg_type=get_three_state_flag(),
                    help='The flag to turn on/off StartVMOnConnect feature.')
-        c.argument('migration_request', action=AddMigrationRequest, nargs='+',
-                   help='The registration info of HostPool.')
 
     with self.argument_context('desktopvirtualization hostpool update') as c:
         c.argument('resource_group_name', resource_group_name_type)

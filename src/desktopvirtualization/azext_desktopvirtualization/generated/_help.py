@@ -97,22 +97,13 @@ helps['desktopvirtualization applicationgroup show'] = """
 helps['desktopvirtualization applicationgroup create'] = """
     type: command
     short-summary: Create an applicationGroup.
-      - name: --migration-request
-        short-summary: "The registration info of HostPool."
-        long-summary: |
-            Usage: --migration-request operation=XX migration-path=XX
-
-            operation: The type of operation for migration.
-            migration-path: The path to the legacy object to migrate.
     examples:
       - name: ApplicationGroup_Create
         text: |-
                az desktopvirtualization applicationgroup create --location "centralus" --description "des1" \
 --application-group-type "RemoteApp" --friendly-name "friendly" --host-pool-arm-path "/subscriptions/daefabc0-95b4-48b3\
 -b645-8a753a63c4fa/resourceGroups/MyResourceGroup/providers/Microsoft.DesktopVirtualization/hostPools/MyHostPool" \
---migration-request migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{\
-sessionHostPool.Name}" operation="Start" --tags tag1="value1" tag2="value2" --name "MyApplicationGroup" \
---resource-group "MyResourceGroup"
+--tags tag1="value1" tag2="value2" --name "MyApplicationGroup" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization applicationgroup update'] = """
@@ -170,21 +161,19 @@ helps['desktopvirtualization hostpool create'] = """
             expiration-time: Expiration time of registration token.
             token: The registration token base64 encoded string.
             registration-token-operation: The type of resetting the token.
-      - name: --migration-request
-        short-summary: "The registration info of HostPool."
+      - name: --host-pool-type
+        short-summary: HostPool type for desktop.
         long-summary: |
-            Usage: --migration-request operation=XX migration-path=XX
-
-            operation: The type of operation for migration.
-            migration-path: The path to the legacy object to migrate.
+            Personal: Users will be assigned a SessionHost either by administrators (PersonalDesktopAssignmentType = Direct) or upon connecting to the pool (PersonalDesktopAssignmentType = Automatic). They will always be redirected to their assigned SessionHost.
+            Pooled: Users get a new (random) SessionHost every time it connects to the HostPool.
+            BYODesktop: Users assign their own machines, load balancing logic remains the same as Personal. --personal-desktop-ssignment-type must be Direct.
     examples:
       - name: HostPool_Create
         text: |-
                az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name \
 "friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
---migration-request migration-path="TenantGroups/{defaultV1TenantGroup.Name}/Tenants/{defaultV1Tenant.Name}/HostPools/{\
-sessionHostPool.Name}" operation="Start" --personal-desktop-assignment-type "Automatic" --preferred-app-group-type \
-"Desktop" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
+--personal-desktop-assignment-type "Automatic" --preferred-app-group-type "Desktop" \
+--registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
 --sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
 --ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
 tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"

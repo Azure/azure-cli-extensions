@@ -102,8 +102,7 @@ def desktopvirtualization_applicationgroup_create(client,
                                                   location=None,
                                                   tags=None,
                                                   description=None,
-                                                  friendly_name=None,
-                                                  migration_request=None):
+                                                  friendly_name=None):
     application_group = {}
     if location is not None:
         application_group['location'] = location
@@ -115,8 +114,6 @@ def desktopvirtualization_applicationgroup_create(client,
         application_group['friendly_name'] = friendly_name
     application_group['host_pool_arm_path'] = host_pool_arm_path
     application_group['application_group_type'] = application_group_type
-    if migration_request is not None:
-        application_group['migration_request'] = migration_request
     return client.create_or_update(resource_group_name=resource_group_name,
                                    application_group_name=application_group_name,
                                    application_group=application_group)
@@ -182,9 +179,11 @@ def desktopvirtualization_hostpool_create(client,
                                           sso_client_id=None,
                                           sso_client_secret_key_vault_path=None,
                                           sso_secret_type=None,
-                                          start_vm_on_connect=None,
-                                          migration_request=None):
+                                          start_vm_on_connect=None):
     host_pool = {}
+	host_pool['host_pool_type'] = host_pool_type
+	host_pool['load_balancer_type'] = load_balancer_type
+	host_pool['preferred_app_group_type'] = preferred_app_group_type
     if location is not None:
         host_pool['location'] = location
     if tags is not None:
@@ -193,14 +192,12 @@ def desktopvirtualization_hostpool_create(client,
         host_pool['friendly_name'] = friendly_name
     if description is not None:
         host_pool['description'] = description
-    host_pool['host_pool_type'] = host_pool_type
     if personal_desktop_assignment_type is not None:
         host_pool['personal_desktop_assignment_type'] = personal_desktop_assignment_type
     if custom_rdp_property is not None:
         host_pool['custom_rdp_property'] = custom_rdp_property
     if max_session_limit is not None:
         host_pool['max_session_limit'] = max_session_limit
-    host_pool['load_balancer_type'] = load_balancer_type
     if ring is not None:
         host_pool['ring'] = ring
     if validation_environment is not None:
@@ -217,11 +214,8 @@ def desktopvirtualization_hostpool_create(client,
         host_pool['sso_client_secret_key_vault_path'] = sso_client_secret_key_vault_path
     if sso_secret_type is not None:
         host_pool['sso_secret_type'] = sso_secret_type
-    host_pool['preferred_app_group_type'] = preferred_app_group_type
     if start_vm_on_connect is not None:
         host_pool['start_vm_on_connect'] = start_vm_on_connect
-    if migration_request is not None:
-        host_pool['migration_request'] = migration_request
     return client.create_or_update(resource_group_name=resource_group_name,
                                    host_pool_name=host_pool_name,
                                    host_pool=host_pool)
