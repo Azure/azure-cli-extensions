@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.8.1
+0.8.1(2022-03-15)
 ++++++++++++++++++
 * `az storage account create/update`: Support `--key-vault-federated-identity-client-id` and `--allowed-copy-scope`
 
