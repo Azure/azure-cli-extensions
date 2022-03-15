@@ -8,14 +8,16 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals option_length_too_long
 
 from azure.cli.core.commands import CliCommandType
 from azext_network_manager._client_factory import (
-    cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus, cf_effectivevirtualnetwork,
-    cf_activeconnectivityconfiguration, cf_connectivityconfiguration, cf_networkgroup, cf_userrule,
-    cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration, cf_securityuserconfiguration,
-    cf_activesecurityadminrule, cf_activesecurityuserrule, cf_effectiveconnectivityconfiguration, cf_effectivesecurityadminrule)
+    cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus,
+    cf_connectivityconfiguration, cf_networkgroup, cf_userrule,
+    cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration,
+    cf_securityuserconfiguration, cf_activesecurityuserrule,
+    cf_scopeconnection, cf_staticmembers, cf_listeffectivevirtualnetwork,
+    cf_subscriptionconnection, cf_managementgroupconnection, cf_effectivevirtualnetwork)
 
 
 def load_command_table(self, _):
@@ -63,6 +65,26 @@ def load_command_table(self, _):
         operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collections_operations#UserRuleCollectionsOperations.{}',
         client_factory=cf_userrulecollection
     )
+
+    network_scopeconnection = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._scope_connections_operations#ScopeConnectionsOperations.{}',
+        client_factory=cf_scopeconnection
+    )
+
+    network_staticmembers = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._static_members_operations#StaticMembersOperations.{}',
+        client_factory=cf_staticmembers
+    )
+
+    network_subscriptionconnection = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._subscription_network_manager_connections_operations#SubscriptionNetworkManagerConnectionsOperations.{}',
+        client_factory=cf_subscriptionconnection
+    )
+
+#    network_managementgroupconnection = CliCommandType(
+#        operations_tmpl='azext_network_manager.vendored_sdks.operations._management_group_network_manager_connections_operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
+#        client_factory=cf_managementgroupconnection
+#    )
 
     with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
         g.custom_command('create', 'network_manager_create')
@@ -135,3 +157,31 @@ def load_command_table(self, _):
         g.custom_command('list', 'network_manager_user_rule_collection_list')
         g.custom_show_command('show', 'network_manager_user_rule_collection_show')
         g.custom_command('delete', 'network_manager_user_rule_collection_delete', confirmation=True)
+
+    with self.command_group('network manager connection subscription', network_subscriptionconnection, client_factory=cf_subscriptionconnection) as g:
+        g.custom_command('create', 'network_manager_connection_subscription_create')
+        g.generic_update_command('update', custom_func_name='network_manager_connection_subscription_update')
+        g.custom_command('list', 'network_manager_connection_subscription_list')
+        g.custom_show_command('show', 'network_manager_connection_subscription_show')
+        g.custom_command('delete', 'network_manager_connection_subscription_delete', confirmation=True)
+
+#    with self.command_group('network manager connection management-group', network_managementgroupconnection, client_factory=cf_managementgroupconnection) as g:
+#        g.custom_command('create', 'network_manager_connection_management_group_create')
+#        g.generic_update_command('update', setter_arg_name='connection_management_group', custom_func_name='network_manager_connection_management_group_update')
+#        g.custom_command('list', 'network_manager_connection_management_group_list')
+#        g.custom_show_command('show', 'network_manager_connection_management_group_show')
+#        g.custom_command('delete', 'network_manager_connection_management_group_delete', confirmation=True)
+
+    with self.command_group('network manager scope-connection', network_scopeconnection, client_factory=cf_scopeconnection) as g:
+        g.custom_command('create', 'network_manager_scope_connection_create')
+        g.generic_update_command('update', custom_func_name='network_manager_scope_connection_update')
+        g.custom_command('list', 'network_manager_scope_connection_list')
+        g.custom_show_command('show', 'network_manager_scope_connection_show')
+        g.custom_command('delete', 'network_manager_scope_connection_delete', confirmation=True)
+
+    with self.command_group('network manager group static-member', network_staticmembers, client_factory=cf_staticmembers) as g:
+        g.custom_command('create', 'network_manager_group_static_member_create')
+        g.generic_update_command('update', custom_func_name='network_manager_group_static_member_update')
+        g.custom_command('list', 'network_manager_group_static_member_list')
+        g.custom_show_command('show', 'network_manager_group_static_member_show')
+        g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)

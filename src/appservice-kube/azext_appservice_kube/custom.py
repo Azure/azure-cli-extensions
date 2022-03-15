@@ -18,7 +18,6 @@ from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
     _rename_server_farm_props,
     get_site_configs,
-    get_webapp,
     _get_site_credential,
     _format_fx_version,
     _get_extension_version_functionapp,
@@ -46,9 +45,10 @@ from azure.cli.command_modules.appservice.custom import (
     update_app_settings,
     list_hostnames,
     _convert_camel_to_snake_case,
-    _get_content_share_name)
+    _get_content_share_name,
+    get_app_service_plan_from_webapp)
 from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
-from azure.cli.command_modules.appservice.utils import retryable_method
+from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
@@ -70,7 +70,7 @@ from ._client_factory import web_client_factory, ex_handler_factory, customlocat
 
 logger = get_logger(__name__)
 
-# pylint: disable=too-many-locals,too-many-lines
+# pylint: disable=too-many-locals,too-many-lines,consider-using-f-string
 
 
 # TODO remove and replace with calls to KubeEnvironmentsOperations once the SDK gets updated
@@ -472,7 +472,9 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         if kube.extended_location and kube.extended_location.type == "CustomLocation":
             parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
 
-        if parsed_custom_location_2["name"].lower() == custom_location_name.lower() and parsed_custom_location_2.get("resource_group").lower() == resource_group.lower():
+        matched_name = parsed_custom_location_2["name"].lower() == custom_location_name.lower()
+        matched_rg = parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()
+        if matched_name and matched_rg:
             kube_environment_id = kube.id
             break
 
@@ -515,17 +517,20 @@ def _get_custom_location_id_from_kube_env(kube):
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
     if appservice_plan_json.get("properties") and (appservice_plan_json["properties"].get("kubeEnvironmentProfile")
                                                    is None and kube_env is not None):
-        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env
+        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env.serialize()
 
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
-        appservice_plan_json["extendedLocation"] = extended_location
+        appservice_plan_json["extendedLocation"] = extended_location.serialize()
+
+    appservice_plan_json['type'] = 'Microsoft.Web/serverfarms'
+    if appservice_plan_json.get("extendedLocation") is not None:
+        appservice_plan_json["extendedLocation"]["type"] = "CustomLocation"
 
 
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                                   custom_location=None, app_service_environment=None, sku=None,
                                   number_of_workers=None, location=None, tags=None, no_wait=False):
-    HostingEnvironmentProfile, SkuDescription, AppServicePlan = cmd.get_models(
-        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan')
+    HostingEnvironmentProfile, SkuDescription, AppServicePlan, ExtendedLocation, KubeEnvironmentProfile = cmd.get_models('HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'ExtendedLocation', 'KubeEnvironmentProfile')  # pylint: disable=line-too-long
 
     sku = _normalize_sku(sku)
     _validate_asp_sku(app_service_environment, custom_location, sku)
@@ -561,16 +566,15 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     extended_location_envelope = None
     if kube_environment and (ase_def is None):
         kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
-        # kube_def = KubeEnvironmentProfile(id=kube_id)
-        kube_def = {"id": kube_id}
+        kube_def = KubeEnvironmentProfile(id=kube_id)
         kind = KUBE_ASP_KIND
         parsed_id = parse_resource_id(kube_id)
         kube_name = parsed_id.get("name")
         kube_rg = parsed_id.get("resource_group")
         if kube_name is not None and kube_rg is not None:
             kube_env = KubeEnvironmentClient.show(cmd=cmd, resource_group_name=kube_rg, name=kube_name)
-            extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env),
-                                          "type": "CustomLocation"}
+            extended_location_envelope = ExtendedLocation(name=_get_custom_location_id_from_kube_env(kube_env),
+                                                          type="CustomLocation")
 
             if kube_env is not None:
                 location = kube_env["location"]
@@ -895,6 +899,74 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         webapp.identity = identity
 
     return webapp
+
+
+def update_webapp(cmd, instance, client_affinity_enabled=None, https_only=None, minimum_elastic_instance_count=None,
+                  prewarmed_instance_count=None):
+    if 'function' in instance.kind:
+        raise ValidationError("please use 'az functionapp update' to update this function app")
+    if minimum_elastic_instance_count or prewarmed_instance_count:
+        args = ["--minimum-elastic-instance-count", "--prewarmed-instance-count"]
+        plan = get_app_service_plan_from_webapp(cmd, instance)
+        sku = _normalize_sku(plan.sku.name)
+        if get_sku_tier(sku) not in ["PREMIUMV2", "PREMIUMV3"]:
+            raise ValidationError("{} are only supported for elastic premium V2/V3 SKUs".format(str(args)))
+        if not plan.elastic_scale_enabled:
+            raise ValidationError("Elastic scale is not enabled on the App Service Plan. Please update the plan ")
+        if (minimum_elastic_instance_count or 0) > plan.maximum_elastic_worker_count:
+            raise ValidationError("--minimum-elastic-instance-count: Minimum elastic instance count is greater than "
+                                  "the app service plan's maximum Elastic worker count. "
+                                  "Please choose a lower count or update the plan's maximum ")
+        if (prewarmed_instance_count or 0) > plan.maximum_elastic_worker_count:
+            raise ValidationError("--prewarmed-instance-count: Prewarmed instance count is greater than "
+                                  "the app service plan's maximum Elastic worker count. "
+                                  "Please choose a lower count or update the plan's maximum ")
+    from azure.mgmt.web.models import SkuDescription
+
+    if client_affinity_enabled is not None:
+        instance.client_affinity_enabled = client_affinity_enabled == 'true'
+    if https_only is not None:
+        instance.https_only = https_only == 'true'
+
+    if minimum_elastic_instance_count is not None:
+        from azure.mgmt.web.models import SiteConfig
+        # Need to create a new SiteConfig object to ensure that the new property is included in request body
+        conf = SiteConfig(**instance.site_config.as_dict())
+        conf.minimum_elastic_instance_count = minimum_elastic_instance_count
+        instance.site_config = conf
+
+    if prewarmed_instance_count is not None:
+        instance.site_config.pre_warmed_instance_count = prewarmed_instance_count
+
+    client = web_client_factory(cmd.cli_ctx)
+    plan_parsed = parse_resource_id(instance.server_farm_id)
+    plan_info = client.app_service_plans.get(plan_parsed['resource_group'], plan_parsed['name'])
+
+    is_kube = _is_webapp_kube(instance.extended_location, plan_info, SkuDescription)
+    has_custom_location_id = instance.extended_location and is_valid_resource_id(instance.extended_location.name)
+    if is_kube and has_custom_location_id:
+        custom_location_id = instance.extended_location.name
+        instance.enable_additional_properties_sending()
+        extended_loc = {'name': custom_location_id, 'type': 'CustomLocation'}
+        instance.additional_properties["extendedLocation"] = extended_loc
+
+    return instance
+
+
+# for generic updater
+def get_webapp(cmd, resource_group_name, name, slot=None):
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
+
+
+def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: disable=unused-argument
+    instance = kwargs['parameters']
+    client = web_client_factory(cmd.cli_ctx)
+    updater = client.web_apps.begin_create_or_update_slot if slot else client.web_apps.begin_create_or_update
+    kwargs = dict(resource_group_name=resource_group_name, name=name, site_envelope=instance)
+    if slot:
+        kwargs['slot'] = slot
+
+    return updater(**kwargs)
 
 
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
@@ -1727,9 +1799,10 @@ def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, 
                 found_cert = webapp_cert
     if found_cert:
         if len(found_cert.host_names) == 1 and not found_cert.host_names[0].startswith('*'):
-            return _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
-                                               found_cert.host_names[0], ssl_type,
-                                               certificate_thumbprint, slot)
+            _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
+                                        found_cert.host_names[0], ssl_type,
+                                        certificate_thumbprint, slot)
+            return show_webapp(cmd, resource_group_name, name, slot)
 
         query_result = list_hostnames(cmd, resource_group_name, name, slot)
         hostnames_in_webapp = [x.name.split('/')[-1] for x in query_result]

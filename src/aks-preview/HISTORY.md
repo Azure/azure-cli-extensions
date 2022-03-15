@@ -3,12 +3,16 @@
 Release History
 ===============
 
+0.5.57
+++++++
+* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
+
 0.5.56
 ++++++
 * Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
 
 0.5.55
-+++++
+++++++
 * Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
 
 0.5.54
