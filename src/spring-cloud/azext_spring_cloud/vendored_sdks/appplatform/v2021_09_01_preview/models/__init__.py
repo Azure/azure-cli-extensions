@@ -180,6 +180,7 @@ except (SyntaxError, ImportError):
     from ._models import UserSourceInfo  # type: ignore
 
 from ._app_platform_management_client_enums import (
+    ActionType,
     AppResourceProvisioningState,
     ConfigServerState,
     CreatedByType,
@@ -286,6 +287,7 @@ __all__ = [
     'TestKeys',
     'TrackedResource',
     'UserSourceInfo',
+    'ActionType',
     'AppResourceProvisioningState',
     'ConfigServerState',
     'CreatedByType',

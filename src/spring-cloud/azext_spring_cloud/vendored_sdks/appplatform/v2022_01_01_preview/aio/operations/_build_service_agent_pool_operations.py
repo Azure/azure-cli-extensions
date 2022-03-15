@@ -195,7 +195,7 @@ class BuildServiceAgentPoolOperations:
         service_name: str,
         build_service_name: str,
         agent_pool_name: str,
-        pool_size: "_models.BuildServiceAgentPoolSizeProperties",
+        agent_pool_resource: "_models.BuildServiceAgentPoolResource",
         **kwargs: Any
     ) -> "_models.BuildServiceAgentPoolResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.BuildServiceAgentPoolResource"]
@@ -228,7 +228,7 @@ class BuildServiceAgentPoolOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(pool_size, 'BuildServiceAgentPoolSizeProperties')
+        body_content = self._serialize.body(agent_pool_resource, 'BuildServiceAgentPoolResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -256,7 +256,7 @@ class BuildServiceAgentPoolOperations:
         service_name: str,
         build_service_name: str,
         agent_pool_name: str,
-        pool_size: "_models.BuildServiceAgentPoolSizeProperties",
+        agent_pool_resource: "_models.BuildServiceAgentPoolResource",
         **kwargs: Any
     ) -> AsyncLROPoller["_models.BuildServiceAgentPoolResource"]:
         """Create or update build service agent pool.
@@ -270,8 +270,8 @@ class BuildServiceAgentPoolOperations:
         :type build_service_name: str
         :param agent_pool_name: The name of the build service agent pool resource.
         :type agent_pool_name: str
-        :param pool_size: Parameters for the update operation.
-        :type pool_size: ~azure.mgmt.appplatform.v2022_01_01_preview.models.BuildServiceAgentPoolSizeProperties
+        :param agent_pool_resource: Parameters for the update operation.
+        :type agent_pool_resource: ~azure.mgmt.appplatform.v2022_01_01_preview.models.BuildServiceAgentPoolResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -295,7 +295,7 @@ class BuildServiceAgentPoolOperations:
                 service_name=service_name,
                 build_service_name=build_service_name,
                 agent_pool_name=agent_pool_name,
-                pool_size=pool_size,
+                agent_pool_resource=agent_pool_resource,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
