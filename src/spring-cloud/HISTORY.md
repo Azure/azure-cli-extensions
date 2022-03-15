@@ -1,5 +1,25 @@
 Release History
 ===============
+3.0.1
+---
+* `az spring-cloud app deploy` has new preview argument "--build-env" to specify build module and jvm version and so on.
+* Raise error when `az spring-cloud app deploy` setting "--target-modules" and "--runtime-version for enterprise tier.
+* Fix the jvm option clearance in enterprise tier.
+
+3.0.0
+---
+* New preview argument `az spring-cloud create` has new argument "--sku=Enterprise" to support Azure Spring Cloud Enterprise creation.
+* New preview argument `az spring-cloud create` has new argument "--zone-redundant" to support creating Azure Spring Cloud in Azure availability zone.
+* New preview command group `az spring-cloud api-portal` to manage API portal in Azure Spring Cloud Enterprise tier.
+* New preview command group `az spring-cloud application-configuration-service` to manage Application Configuration Service in Azure Spring Cloud Enterprise tier.
+* New preview command group `az spring-cloud gateway` to manage gateway in Azure Spring Cloud Enterprise tier.
+* New preview command group `az spring-cloud service-registry` to mmanage Service Registry in Azure Spring Cloud Enterprise tier. 
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeploymentName", use "properties.activeDeployment.name" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.createdTime", use "systemData.createdAt" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.jvmOptions", use "properties.activeDeployment.properties.source.jvmOptions" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.runtimeVersion", use "properties.activeDeployment.properties.source.runtimeVersion" instead.
+* [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.netCoreMainEntryPath", use "properties.activeDeployment.properties.source.netCoreMainEntryPath" instead.
+
 2.12.3
 ---
 * Fix the deploy jar failure.

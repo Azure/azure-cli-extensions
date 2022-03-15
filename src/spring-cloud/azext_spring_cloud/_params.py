@@ -20,7 +20,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_routes, validate_gateway_instance_count,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
-                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets)
+                                     validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
+                                     validate_build_env, validate_target_module, validate_runtime_version)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
@@ -268,7 +269,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
             c.argument('runtime_version', arg_type=get_enum_type(SupportedRuntimeValue),
-                       help='Runtime version of used language')
+                       help='Runtime version of used language', validator=validate_runtime_version)
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
@@ -303,7 +304,8 @@ def load_arguments(self, _):
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
             c.argument(
-                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.', arg_group='Source Code deploy')
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.',
+                arg_group='Source Code deploy', validator=validate_target_module)
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
             c.argument(
@@ -318,6 +320,8 @@ def load_arguments(self, _):
                 'container_command', help='The command of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
                 'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
+            c.argument(
+                'build_env', help='The key-value pairs of env used in build phase.', validator=validate_build_env)
 
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)

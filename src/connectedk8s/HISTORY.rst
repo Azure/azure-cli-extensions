@@ -2,6 +2,16 @@
 
 Release History
 ===============
+1.2.5
+++++++
+
+* Using MSAL based auth for CLI version >= 2.30.0
+
+1.2.4
+++++++
+
+* Custom cert changes, using "userValues.txt" for existing values in update command instead of --reuse-values, fix to wait for LRO to complete before starting agent installation/deletion
+
 1.2.3
 ++++++
 

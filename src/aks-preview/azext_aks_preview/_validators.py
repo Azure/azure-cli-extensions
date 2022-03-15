@@ -12,7 +12,7 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
@@ -219,6 +219,13 @@ def validate_spot_max_price(namespace):
             raise CLIError(
                 "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
                 "default price to be up-to on-demand")
+
+
+def validate_message_of_the_day(namespace):
+    """Validates message of the day can only be used on Linux."""
+    if namespace.message_of_the_day is not None and namespace.message_of_the_day != "":
+        if namespace.os_type is not None and namespace.os_type != "Linux":
+            raise ArgumentUsageError('--message-of-the-day can only be set for linux nodepools')
 
 
 def validate_acr(namespace):
@@ -486,6 +493,13 @@ def validate_snapshot_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError("--snapshot-id is not a valid Azure resource ID.")
+
+
+def validate_host_group_id(namespace):
+    if namespace.host_group_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.host_group_id):
+            raise InvalidArgumentValueError("--host-group-id is not a valid Azure resource ID.")
 
 
 def validate_crg_id(namespace):
