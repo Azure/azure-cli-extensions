@@ -407,6 +407,12 @@ helps['aks create'] = """
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
+        - name: --enable-azure-keyvault-kms
+          type: bool
+          short-summary: (PREVIEW) Enable Azure KeyVault Key Management Service.
+        - name: --azure-keyvault-kms-key-id
+          type: string
+          short-summary: (PREVIEW) Identifier of Azure Key Vault key.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -677,6 +683,9 @@ helps['aks update'] = """
         - name: --http-proxy-config
           type: string
           short-summary: HTTP Proxy configuration for this cluster.
+        - name: --enable-azure-keyvault-kms
+          type: bool
+          short-summary: (PREVIEW) Enable Azure KeyVault Key Management Service.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster

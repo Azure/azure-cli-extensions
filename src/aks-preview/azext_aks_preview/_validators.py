@@ -367,7 +367,7 @@ def validate_label(label):
 
 
 def validate_max_surge(namespace):
-    """validates parameters like max surge are postive integers or percents. less strict than RP"""
+    """validates parameters like max surge are positive integers or percents. less strict than RP"""
     if namespace.max_surge is None:
         return
     int_or_percent = namespace.max_surge
@@ -507,3 +507,18 @@ def validate_crg_id(namespace):
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.crg_id):
             raise InvalidArgumentValueError("--crg-id is not a valid Azure resource ID.")
+
+
+def validate_azure_keyvault_kms_key_id(namespace):
+    key_id = namespace.azure_keyvault_kms_key_id
+    if key_id:
+        err_msg = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+                  'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        https_prefix = "https://"
+        if not key_id.startswith(https_prefix):
+            raise InvalidArgumentValueError(err_msg)
+
+        segments = key_id[len(https_prefix):].split("/")
+        if len(segments) != 4 or segments[1] != "keys":
+            raise InvalidArgumentValueError(err_msg)

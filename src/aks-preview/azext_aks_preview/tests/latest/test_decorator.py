@@ -1675,6 +1675,164 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_crg_id(), None)
 
+    def test_get_enable_azure_keyvault_kms(self):
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_enable_azure_keyvault_kms())
+        
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_azure_keyvault_kms(), False)
+
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_2.attach_mc(mc)
+        self.assertEqual(ctx_2.get_enable_azure_keyvault_kms(), True)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_3.attach_mc(mc)
+        self.assertEqual(ctx_3.get_enable_azure_keyvault_kms(), False)
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_enable_azure_keyvault_kms()
+
+    def test_get_azure_keyvault_kms_key_id(self):
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_id())
+        
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_azure_keyvault_kms_key_id(), key_id_1)
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        key_id_2 = "https://fakekeyvault2.vault.azure.net/secrets/fakekeyname2/fakekeyversion2"
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_2,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_2.attach_mc(mc)
+        self.assertEqual(ctx_2.get_azure_keyvault_kms_key_id(), key_id_2)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_2,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        ctx_3.attach_mc(mc)
+        self.assertEqual(ctx_3.get_azure_keyvault_kms_key_id(), key_id_1)
+
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_azure_keyvault_kms_key_id()
+
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_azure_keyvault_kms": False,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_5.get_azure_keyvault_kms_key_id()
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -2574,6 +2732,49 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         updated_mc = dec.set_up_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
+
+    def test_set_up_azure_keyvault_kms(self):
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location"
+        )
+        dec_mc_1 = dec_1.set_up_azure_keyvault_kms(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location"
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_mc_2 = dec_2.set_up_azure_keyvault_kms(mc_2)
+
+        ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_construct_mc_preview_profile(self):
         import inspect
@@ -3609,6 +3810,53 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         updated_mc = dec.update_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
+
+    def test_update_azure_keyvault_kms(self):
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_azure_keyvault_kms(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_keyvault_kms": True,
+                "azure_keyvault_kms_key_id": key_id_1,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_azure_keyvault_kms(mc_2)
+
+        ground_truth_azure_keyvault_kms_profile_2 = self.models.AzureKeyVaultKms(
+            enabled=True,
+            key_id=key_id_1,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            azure_key_vault_kms=ground_truth_azure_keyvault_kms_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_patch_mc(self):
         # custom value

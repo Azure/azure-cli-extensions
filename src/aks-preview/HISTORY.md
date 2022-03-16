@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.58
+++++++
+* Add support for enabling Azure KeyVault KMS with `--enable-azure-keyvault-kms` flag.
+
 0.5.57
 ++++++
 * Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
