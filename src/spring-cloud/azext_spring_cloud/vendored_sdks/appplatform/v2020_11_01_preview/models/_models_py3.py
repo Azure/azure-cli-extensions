@@ -1818,22 +1818,32 @@ class NetworkProfileOutboundIPs(msrest.serialization.Model):
 class OperationDetail(msrest.serialization.Model):
     """Operation detail payload.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param name: Name of the operation.
     :type name: str
     :param is_data_action: Indicates whether the operation is a data action.
     :type is_data_action: bool
     :param display: Display of the operation.
     :type display: ~azure.mgmt.appplatform.v2020_11_01_preview.models.OperationDisplay
+    :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
+     internal only APIs. Possible values include: "Internal".
+    :vartype action_type: str or ~azure.mgmt.appplatform.v2020_11_01_preview.models.ActionType
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
     :type properties: ~azure.mgmt.appplatform.v2020_11_01_preview.models.OperationProperties
     """
 
+    _validation = {
+        'action_type': {'readonly': True},
+    }
+
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'action_type': {'key': 'actionType', 'type': 'str'},
         'origin': {'key': 'origin', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'OperationProperties'},
     }
@@ -1852,6 +1862,7 @@ class OperationDetail(msrest.serialization.Model):
         self.name = name
         self.is_data_action = is_data_action
         self.display = display
+        self.action_type = None
         self.origin = origin
         self.properties = properties
 

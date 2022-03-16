@@ -1983,8 +1983,8 @@ class ClusterResourceProperties(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar provisioning_state: Provisioning state of the Service. Possible values include:
-     "Creating", "Updating", "Deleting", "Deleted", "Succeeded", "Failed", "Moving", "Moved",
-     "MoveFailed".
+     "Creating", "Updating", "Starting", "Stopping", "Deleting", "Deleted", "Succeeded", "Failed",
+     "Moving", "Moved", "MoveFailed".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_01_01_preview.models.ProvisioningState
     :param network_profile: Network profile of the Service.
@@ -2666,7 +2666,7 @@ class ContentCertificateProperties(CertificateProperties):
     :vartype subject_name: str
     :ivar dns_names: The domain list of certificate.
     :vartype dns_names: list[str]
-    :param content: Required. The content of uploaded certificate.
+    :param content: The content of uploaded certificate.
     :type content: str
     """
 
@@ -2679,7 +2679,6 @@ class ContentCertificateProperties(CertificateProperties):
         'activate_date': {'readonly': True},
         'subject_name': {'readonly': True},
         'dns_names': {'readonly': True},
-        'content': {'required': True},
     }
 
     _attribute_map = {
@@ -2697,7 +2696,7 @@ class ContentCertificateProperties(CertificateProperties):
     def __init__(
         self,
         *,
-        content: str,
+        content: Optional[str] = None,
         **kwargs
     ):
         super(ContentCertificateProperties, self).__init__(**kwargs)
@@ -4049,7 +4048,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
     :type relative_path: str
     :param runtime_version: Runtime version of the Jar file.
     :type runtime_version: str
-    :param jvm_options: Runtime version of the Jar file.
+    :param jvm_options: JVM parameter.
     :type jvm_options: str
     """
 
@@ -4074,7 +4073,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         jvm_options: Optional[str] = None,
         **kwargs
     ):
-        super(JarUploadedUserSourceInfo, self).__init__(version=version, relative_path=relative_path, jvm_options=jvm_options, **kwargs)
+        super(JarUploadedUserSourceInfo, self).__init__(version=version, relative_path=relative_path, **kwargs)
         self.type = 'Jar'  # type: str
         self.runtime_version = runtime_version
         self.jvm_options = jvm_options
@@ -4688,22 +4687,32 @@ class NetworkProfileOutboundIPs(msrest.serialization.Model):
 class OperationDetail(msrest.serialization.Model):
     """Operation detail payload.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param name: Name of the operation.
     :type name: str
     :param is_data_action: Indicates whether the operation is a data action.
     :type is_data_action: bool
     :param display: Display of the operation.
     :type display: ~azure.mgmt.appplatform.v2022_01_01_preview.models.OperationDisplay
+    :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
+     internal only APIs. Possible values include: "Internal".
+    :vartype action_type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.ActionType
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
     :type properties: ~azure.mgmt.appplatform.v2022_01_01_preview.models.OperationProperties
     """
 
+    _validation = {
+        'action_type': {'readonly': True},
+    }
+
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'action_type': {'key': 'actionType', 'type': 'str'},
         'origin': {'key': 'origin', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'OperationProperties'},
     }
@@ -4722,6 +4731,7 @@ class OperationDetail(msrest.serialization.Model):
         self.name = name
         self.is_data_action = is_data_action
         self.display = display
+        self.action_type = None
         self.origin = origin
         self.properties = properties
 
