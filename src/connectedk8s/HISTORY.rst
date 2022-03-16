@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.6
+++++++
+
+* Add 'packaging' as a dependency in the extension
+
 1.2.5
 ++++++
 
