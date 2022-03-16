@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.6
+++++++
+
+* Update minCliCoreVersion to 2.23.0
+
 1.2.5
 ++++++
 
