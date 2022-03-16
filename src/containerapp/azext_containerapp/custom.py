@@ -45,7 +45,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                     _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret, 
-                    _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists)
+                    _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists, _remove_env_vars, _update_revision_env_secretrefs)
 
 logger = get_logger(__name__)
 
@@ -126,8 +126,10 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
             r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
         except CLIError as e:
             handle_raw_exception(e)
+        
+        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
         current_containerapp_def["properties"]["template"] = r["properties"]["template"]
-
+    
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
@@ -497,7 +499,10 @@ def update_containerapp(cmd,
                         max_replicas=None,
                         revisions_mode=None,
                         secrets=None,
-                        env_vars=None,
+                        set_env_vars=None,
+                        remove_env_vars=None,
+                        replace_env_vars=None,
+                        remove_all_env_vars=False,
                         cpu=None,
                         memory=None,
                         registry_server=None,
@@ -512,7 +517,7 @@ def update_containerapp(cmd,
 
     if yaml:
         if image or min_replicas or max_replicas or\
-            revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
+            revisions_mode or secrets or set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or registry_server or\
             registry_user or registry_pass or\
             startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
@@ -539,7 +544,7 @@ def update_containerapp(cmd,
     update_map['secrets'] = secrets is not None
     update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or container_name or env_vars is not None or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['configuration'] = update_map['secrets'] or update_map['registries'] or revisions_mode is not None
 
     if tags:
@@ -564,13 +569,28 @@ def update_containerapp(cmd,
 
                 if image is not None:
                     c["image"] = image
-                if env_vars is not None:
-                    if isinstance(env_vars, list) and not env_vars:
+
+                if set_env_vars is not None:
+                    if "env" not in c or not c["env"]:
                         c["env"] = []
-                    else:
-                        if "env" not in c or not c["env"]:
-                            c["env"] = []
-                        _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+                if replace_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
+
+                if remove_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _remove_env_vars(c["env"], remove_env_vars)
+
+                if remove_all_env_vars:
+                    c["env"] = []
+
                 if startup_command is not None:
                     if isinstance(startup_command, list) and not startup_command:
                         c["command"] = None
@@ -607,8 +627,23 @@ def update_containerapp(cmd,
             container_def = ContainerModel
             container_def["name"] = container_name
             container_def["image"] = image
-            if env_vars is not None:
-                container_def["env"] = parse_env_var_flags(env_vars)
+            container_def["env"] = []
+
+            if set_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+            if replace_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
+
+            if remove_env_vars is not None:
+                # env vars
+                _remove_env_vars(container_def["env"], remove_env_vars)
+
+            if remove_all_env_vars:
+                container_def["env"] = []
+
             if startup_command is not None:
                 if isinstance(startup_command, list) and not startup_command:
                     container_def["command"] = None
@@ -1284,16 +1319,19 @@ def deactivate_revision(cmd, resource_group_name, revision_name, name=None):
         handle_raw_exception(e)
 
 def copy_revision(cmd,
-                  name,
                   resource_group_name,
                   from_revision=None,
                   #label=None,
+                  name=None,
                   yaml=None,
                   image=None,
                   container_name=None,
                   min_replicas=None,
                   max_replicas=None,
-                  env_vars=None,
+                  set_env_vars=None,
+                  replace_env_vars=None,
+                  remove_env_vars=None,
+                  remove_all_env_vars=False,
                   cpu=None,
                   memory=None,
                   revision_suffix=None,
@@ -1303,12 +1341,16 @@ def copy_revision(cmd,
                   no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    if not from_revision:
-        from_revision = containerapp_def["properties"]["latestRevisionName"]
+    if not name and not from_revision:
+        raise RequiredArgumentMissingError('Usage error: --name is required if not using --from-revision.')
+
+    if not name:
+        name = _get_app_from_revision(from_revision)
 
     if yaml:
         if image or min_replicas or max_replicas or\
-            env_vars or cpu or memory or \
+            set_env_vars or replace_env_vars or remove_env_vars or \
+            remove_all_env_vars or cpu or memory or \
             startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, from_revision=from_revision, no_wait=no_wait)
@@ -1322,13 +1364,15 @@ def copy_revision(cmd,
     if not containerapp_def:
         raise CLIError("The containerapp '{}' does not exist".format(name))
 
-    try:
-        r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
-    except CLIError as e:
-        # Error handle the case where revision not found?
-        handle_raw_exception(e)
+    if from_revision:
+        try:
+            r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
+        except CLIError as e:
+            # Error handle the case where revision not found?
+            handle_raw_exception(e)
 
-    containerapp_def["properties"]["template"] = r["properties"]["template"]
+        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
+        containerapp_def["properties"]["template"] = r["properties"]["template"]
 
     # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
     if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
@@ -1340,7 +1384,7 @@ def copy_revision(cmd,
 
     update_map = {}
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or container_name or env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or set_env_vars or replace_env_vars or remove_env_vars or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -1364,10 +1408,28 @@ def copy_revision(cmd,
 
                 if image is not None:
                     c["image"] = image
-                if env_vars is not None:
+
+                if set_env_vars is not None:
                     if "env" not in c or not c["env"]:
                         c["env"] = []
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+                if replace_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
+
+                if remove_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _remove_env_vars(c["env"], remove_env_vars)
+
+                if remove_all_env_vars:
+                    c["env"] = []
+
                 if startup_command is not None:
                     if isinstance(startup_command, list) and not startup_command:
                         c["command"] = None
@@ -1404,8 +1466,22 @@ def copy_revision(cmd,
             container_def = ContainerModel
             container_def["name"] = container_name
             container_def["image"] = image
-            if env_vars is not None:
-                container_def["env"] = parse_env_var_flags(env_vars)
+
+            if set_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+            if replace_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
+
+            if remove_env_vars is not None:
+                # env vars
+                _remove_env_vars(container_def["env"], remove_env_vars)
+
+            if remove_all_env_vars:
+                container_def["env"] = []
+
             if startup_command is not None:
                 if isinstance(startup_command, list) and not startup_command:
                     container_def["command"] = None
@@ -1706,7 +1782,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
     except Exception as e:
         handle_raw_exception(e)
 
-def delete_registry(cmd, name, resource_group_name, server, no_wait=False):
+def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None
@@ -1789,7 +1865,7 @@ def show_secret(cmd, name, resource_group_name, secret_name):
             return secret
     raise CLIError("The containerapp {} does not have a secret assigned with name {}.".format(name, secret_name))
 
-def delete_secrets(cmd, name, resource_group_name, secret_names, no_wait = False):
+def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait = False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None

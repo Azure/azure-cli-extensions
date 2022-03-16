@@ -145,13 +145,13 @@ helps['containerapp revision deactivate'] = """
           az containerapp revision deactivate -n MyContainerapp -g MyResourceGroup --revision-name MyContainerappRevision
 """
 
-helps['containerapp revision mode set'] = """
+helps['containerapp revision set-mode'] = """
     type: command
     short-summary: Set the revision mode of a container app.
     examples:
     - name: Set a container app to single revision mode.
       text: |
-          az containerapp revision mode set-n MyContainerapp -g MyResourceGroup --mode Single 
+          az containerapp revision set-mode -n MyContainerapp -g MyResourceGroup --mode Single 
 """
 
 helps['containerapp revision copy'] = """
@@ -162,15 +162,6 @@ helps['containerapp revision copy'] = """
       text: |
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup \\
               --from-revision PreviousRevisionName --cpu 0.75 --memory 1.5Gi
-"""
-
-helps['containerapp revision mode set'] = """
-    type: command
-    short-summary: Set the revision mode of a Containerapp.
-    examples:
-    - name: Set the revision mode of a Containerapp.
-      text: |
-          az containerapp revision set --mode Single -n MyContainerapp -g MyResourceGroup
 """
 
 helps['containerapp revision copy'] = """
@@ -236,6 +227,47 @@ helps['containerapp env list'] = """
     - name: List environments by resource group.
       text: |
           az containerapp env list -g MyResourceGroup
+"""
+
+helps['containerapp env dapr-component'] = """
+    type: group
+    short-summary: Commands to manage Container App environment dapr components.
+"""
+
+helps['containerapp env dapr-component list'] = """
+    type: command
+    short-summary: List dapr components for a Containerapp environment.
+    examples:
+    - name: List dapr components for a Containerapp environment.
+      text: |
+          az containerapp env dapr-component list -g MyResourceGroup --environment-name MyEnvironment
+"""
+
+helps['containerapp env dapr-component show'] = """
+    type: command
+    short-summary: Show the details of a dapr component.
+    examples:
+    - name: Show the details of a dapr component.
+      text: |
+          az containerapp env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
+"""
+
+helps['containerapp env dapr-component set'] = """
+    type: command
+    short-summary: Create or update a dapr component.
+    examples:
+    - name: Create a dapr component.
+      text: |
+          az containerapp env dapr-component set -g MyResourceGroup --environment-name MyEnv --yaml MyYAMLPath --name MyDaprName
+"""
+
+helps['containerapp env dapr-component remove'] = """
+    type: command
+    short-summary: Remove a dapr componenet from a Containerapp environment.
+    examples:
+    - name: Remove a dapr componenet from a Containerapp environment.
+      text: |
+          az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
 """
 
 # Identity Commands
@@ -374,13 +406,13 @@ helps['containerapp registry set'] = """
   
 """
 
-helps['containerapp registry delete'] = """
+helps['containerapp registry remove'] = """
     type: command
     short-summary: Remove a container registry's details.
     examples:
     - name: Remove a registry from a Containerapp.
       text: |
-          az containerapp registry delete -n MyContainerapp -g MyResourceGroup --server MyContainerappRegistry.azurecr.io
+          az containerapp registry remove -n MyContainerapp -g MyResourceGroup --server MyContainerappRegistry.azurecr.io
 """
 
 # Secret Commands
@@ -407,13 +439,13 @@ helps['containerapp secret list'] = """
           az containerapp secret list -n MyContainerapp -g MyResourceGroup
 """
 
-helps['containerapp secret delete'] = """
+helps['containerapp secret remove'] = """
     type: command
-    short-summary: Delete secrets from a container app.
+    short-summary: Remove secrets from a container app.
     examples:
-    - name: Delete secrets from a container app.
+    - name: Remove secrets from a container app.
       text: |
-          az containerapp secret delete -n MyContainerapp -g MyResourceGroup --secret-names MySecret MySecret2
+          az containerapp secret remove -n MyContainerapp -g MyResourceGroup --secret-names MySecret MySecret2
 """
 
 helps['containerapp secret set'] = """
@@ -503,40 +535,4 @@ helps['containerapp dapr disable'] = """
     - name: Disable Dapr for a container app.
       text: |
           az containerapp dapr disable -n MyContainerapp -g MyResourceGroup
-"""
-
-helps['containerapp dapr list'] = """
-    type: command
-    short-summary: List Dapr components.
-    examples:
-    - name: List Dapr components for a Container Apps environment.
-      text: |
-          az containerapp dapr list -g MyResourceGroup --environment-name MyEnvironment
-"""
-
-helps['containerapp dapr show'] = """
-    type: command
-    short-summary: Show the details of a Dapr component.
-    examples:
-    - name: Show the details of a Dapr component.
-      text: |
-          az containerapp dapr show -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
-"""
-
-helps['containerapp dapr set'] = """
-    type: command
-    short-summary: Create or update a Dapr component.
-    examples:
-    - name: Create a Dapr component.
-      text: |
-          az containerapp dapr set -g MyResourceGroup --environment-name MyEnv --yaml my-component.yaml --name MyDaprName
-"""
-
-helps['containerapp dapr remove'] = """
-    type: command
-    short-summary: Remove a Dapr component.
-    examples:
-    - name: Remove a Dapr component.
-      text: |
-          az containerapp dapr delete -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
 """

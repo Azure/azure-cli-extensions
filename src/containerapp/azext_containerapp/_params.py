@@ -40,6 +40,13 @@ def load_arguments(self, _):
         c.argument('args', nargs='*', options_list=['--args'], help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('revision_suffix', type=str, options_list=['--revision-suffix'], help='User friendly suffix that is appended to the revision name')
 
+    # Env vars
+    with self.argument_context('containerapp', arg_group='Environment variables (Creates new revision)') as c:
+        c.argument('set_env_vars', options_list=['--set-env-vars, --env-vars'], nargs='*', help="A list of environment variable(s) to add to the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
+        c.argument('remove_env_vars', nargs='*', help="A list of environment variable(s) to remove from container. Space-separated env var name values.")
+        c.argument('replace_env_vars', nargs='*', help="A list of environment variable(s) to replace from the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
+        c.argument('remove_all_env_vars', help="Option to remove all environment variable(s) from the container.")
+
     # Scale
     with self.argument_context('containerapp', arg_group='Scale (Creates new revision)') as c:
         c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of replicas.")
@@ -147,12 +154,21 @@ def load_arguments(self, _):
     with self.argument_context('containerapp secret set') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format.")
 
-    with self.argument_context('containerapp secret delete') as c:
+    with self.argument_context('containerapp secret remove') as c:
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
 
-    with self.argument_context('containerapp dapr') as c:
-        c.argument('dapr_app_id', help="The Dapr app id.")
-        c.argument('dapr_app_port', help="The port Dapr uses to talk to the application.")
-        c.argument('dapr_app_protocol', help="The protocol Dapr uses to talk to the application. Allowed values: grpc, http.")
-        c.argument('dapr_component_name', help="The Dapr component name.")
-        c.argument('environment_name', help="The Container Apps environment name.")
+    with self.argument_context('containerapp env dapr-component') as c:
+        c.argument('dapr_app_id', help="The dapr app id.")
+        c.argument('dapr_app_port', help="The port of your app.")
+        c.argument('dapr_app_protocol', help="Tells Dapr which protocol your application is using.  Allowed values: grpc, http.")
+        c.argument('dapr_component_name', help="The dapr component name.")
+        c.argument('environment_name', options_list=['--name','-n'], help="The environment name.")
+
+    with self.argument_context('containerapp revision set-mode') as c:
+        c.argument('mode', arg_type=get_enum_type(['single', 'multiple']), help="The active revisions mode for the container app.")
+
+    with self.argument_context('containerapp registry') as c:
+        c.argument('server', help="The container registry server, e.g. myregistry.azurecr.io")
+        c.argument('username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
+        c.argument('password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
+
