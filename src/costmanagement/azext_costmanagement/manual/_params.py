@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.parameters import (
-    get_three_state_flag,
     get_enum_type
 )
 from azext_costmanagement.action import (
@@ -41,9 +40,9 @@ def load_arguments(self, _):
                    options_list='--time-period',
                    nargs='+',
                    help='Has time period for pulling data for the query. '
-                         'Expect value: from=TIMESTAMP1 to=TIMESTAMP2. '
-                         'The timestamp format is like 2020-05-01T00:00:00.'
-                         'The TIMESTAMP1 must in the future and TIMESTAMP2 must be greater than TIMESTAMP1')
+                        'Expect value: from=TIMESTAMP1 to=TIMESTAMP2. '
+                        'The timestamp format is like 2020-05-01T00:00:00.'
+                        'The TIMESTAMP1 must in the future and TIMESTAMP2 must be greater than TIMESTAMP1')
         c.argument('definition_dataset_configuration',
                    action=AddDatasetConfiguration,
                    options_list='--dataset-configuration',

@@ -22,10 +22,10 @@ class CostManagementExportTest(ScenarioTest):
         })
 
         export_name = self.create_random_name('ep', 15)
-        type = 'Usage' # 'Usage' is the default export type
+        type = 'Usage'  # 'Usage' is the default export type
         storage_container = 'export'
         timeframe = 'TheLastMonth'
-        schedule_status = 'Inactive' # 'Inactive' is the default schedule status
+        schedule_status = 'Inactive'  # 'Inactive' is the default schedule status
         storage_account_id = '/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account_name}'.format(
             sub=self.get_subscription_id(),
             rg=resource_group,
@@ -94,7 +94,7 @@ class CostManagementExportTest(ScenarioTest):
         })
 
         export_name = self.create_random_name('ep', 15)
-        type = 'Usage' # 'Usage' is the default export type
+        type = 'Usage'  # 'Usage' is the default export type
         storage_container = 'export'
         timeframe = 'TheLastMonth'
         recurrence = 'Weekly'

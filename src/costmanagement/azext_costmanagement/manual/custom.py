@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def costmanagement_export_create(client,
                                  scope,
                                  export_name,
@@ -19,7 +20,7 @@ def costmanagement_export_create(client,
 
     export_parameters = {}
 
-    export_parameters['format'] = 'Csv' # Currently only 'Csv' is supported.
+    export_parameters['format'] = 'Csv'  # Currently only 'Csv' is supported.
 
     export_parameters['delivery_info'] = {}
     export_parameters['delivery_info']['destination'] = {}
@@ -32,7 +33,7 @@ def costmanagement_export_create(client,
     export_parameters['definition']['timeframe'] = definition_timeframe
     export_parameters['definition']['time_period'] = definition_time_period
     export_parameters['definition']['data_set'] = {}
-    export_parameters['definition']['data_set']['granularity'] = 'Daily' # Currently only 'Daily' is supported.
+    export_parameters['definition']['data_set']['granularity'] = 'Daily'  # Currently only 'Daily' is supported.
     export_parameters['definition']['data_set']['configuration'] = definition_dataset_configuration
 
     export_parameters['schedule'] = {}
