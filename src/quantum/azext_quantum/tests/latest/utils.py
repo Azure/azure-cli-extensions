@@ -8,7 +8,7 @@ TEST_RG_DEFAULT = "aqua-live-test-westus2"
 TEST_WORKSPACE_DEFAULT = "ws-aqua-live-test-westus2"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
 TEST_WORKSPACE_DEFAULT_STORAGE = "sttestwestus2"
-TEST_WORKSPACE_DEFAULT_STORAGE2 = "sttestwestus2grs"
+TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "sttestwestus2grs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
 TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
 
@@ -31,8 +31,8 @@ def get_test_workspace_location():
 def get_test_workspace_storage():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
 
-def get_test_workspace_storage2():
-    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE2", TEST_WORKSPACE_DEFAULT_STORAGE2)
+def get_test_workspace_storage_grs():
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE_GRS", TEST_WORKSPACE_DEFAULT_STORAGE_GRS)
 
 def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)
