@@ -469,36 +469,36 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
                         yes=False, tenant_id=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if client_secret_setting_name is not None and client_secret_certificate_thumbprint is not None:
         raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if client_secret is not None and client_secret_certificate_thumbprint is not None:
         raise ArgumentUsageError('Usage Error: --client-secret and --thumbprint cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if client_secret is not None and client_secret_certificate_san is not None:
         raise ArgumentUsageError('Usage Error: --client-secret and --san cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if client_secret_setting_name is not None and client_secret_certificate_san is not None:
         raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --san cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if client_secret_certificate_thumbprint is not None and client_secret_certificate_san is not None:
         raise ArgumentUsageError('Usage Error: --thumbprint and --san cannot both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None) or
             (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
         raise ArgumentUsageError('Usage Error: --san and --certificate-issuer must both be '
-                         'configured to non empty strings')
+                                 'configured to non empty strings')
 
     if issuer is not None and (tenant_id is not None):
         raise ArgumentUsageError('Usage Error: --issuer and --tenant-id cannot be configured '
-                         'to non empty strings at the same time.')
+                                 'to non empty strings at the same time.')
 
     is_new_aad_app = False
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
