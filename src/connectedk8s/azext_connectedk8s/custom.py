@@ -1937,7 +1937,6 @@ def client_side_proxy(cmd,
 
     if token is None:
         if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
-            print("using msal auth")
             kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
             post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, "gTYVsmkQfNwajR0w-v6A3ekPkiI7Wcz2T5ZCb7hwHTU", clientproxy_process)
 
