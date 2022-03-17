@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.7
+++++++
+
+* Avoid using packaging module and revert minCliCoreVersion to 2.16.0
+
 1.2.6
 ++++++
 

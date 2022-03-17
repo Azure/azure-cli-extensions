@@ -27,7 +27,6 @@ from azext_connectedk8s._client_factory import _resource_client_factory, _resour
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
-from packaging import version
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
@@ -459,13 +458,27 @@ def az_cli(args_str):
     return True
 
 
+# def is_cli_using_msal_auth():
+#     response_cli_version = az_cli("version --output json")
+#     try:
+#         cli_version = response_cli_version['azure-cli']
+#     except Exception as ex:
+#         raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+#     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
+#         return True
+#     else:
+#         return False
+
 def is_cli_using_msal_auth():
     response_cli_version = az_cli("version --output json")
     try:
         cli_version = response_cli_version['azure-cli']
     except Exception as ex:
         raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
-    if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
-        return True
-    else:
-        return False
+    v1 = cli_version
+    v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
+    for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
+        if i == j:
+            continue
+        return i > j
+    return len(v1.split(".")) == len(v2.split("."))
