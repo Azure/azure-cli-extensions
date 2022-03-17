@@ -481,4 +481,4 @@ def is_cli_using_msal_auth():
         if i == j:
             continue
         return i > j
-    return len(v1.split(".")) > len(v2.split("."))
+    return len(v1.split(".")) >= len(v2.split("."))
