@@ -6,6 +6,13 @@ jobs:
 - job: ${{ parameters.jobName}}
   pool:
     vmImage: 'ubuntu-latest'
+  variables:
+    ${{ if eq(variables['IS_PRIVATE_BRANCH'], 'False') }}:
+      EXTENSION_NAME: "k8s-extension"
+      EXTENSION_FILE_NAME: "k8s_extension"
+    ${{ if ne(variables['IS_PRIVATE_BRANCH'], 'False') }}:
+      EXTENSION_NAME: "k8s-extension-private"
+      EXTENSION_FILE_NAME: "k8s_extension_private"
   steps:
   - bash: |
       echo "Installing helm3"
@@ -19,33 +26,9 @@ jobs:
       sudo mv ./kubectl /usr/local/bin/kubectl
       kubectl version --client
     displayName: "Setup the VM with helm3 and kubectl" 
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.6'
-    inputs:
-      versionSpec: 3.6
-  - bash: |
-      set -ev
-      echo "Building extension ${EXTENSION_NAME}..."
-
-      # prepare and activate virtualenv
-      pip install virtualenv
-      python3 -m venv env/
-      source env/bin/activate
-
-      # clone azure-cli
-      git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-      pip install --upgrade pip
-      pip install -q azdev
-
-      ls $(CLI_REPO_PATH)
-
-      azdev --version
-      azdev setup -c ../azure-cli -r $(CLI_REPO_PATH) -e $(EXTENSION_NAME)
-      azdev extension build $(EXTENSION_NAME)
-    workingDirectory: $(CLI_REPO_PATH)
-    displayName: "Setup and Build Extension with azdev"
-      
+  - template: ./build-extension.yml
+    parameters:
+      CLI_REPO_PATH: $(CLI_REPO_PATH)   
   - bash: |
       K8S_EXTENSION_VERSION=$(ls ${EXTENSION_FILE_NAME}* | cut -d "-" -f2)
       echo "##vso[task.setvariable variable=K8S_EXTENSION_VERSION]$K8S_EXTENSION_VERSION"
@@ -64,11 +47,11 @@ jobs:
                       --arg AKS_CLUSTER_NAME "$AKS_CLUSTER_NAME" \
                       --arg ARC_CLUSTER_NAME "$ARC_CLUSTER_NAME" \
                       --arg K8S_EXTENSION_VERSION "$K8S_EXTENSION_VERSION" \
-                      '{subscriptionId: $SUB_ID, resourceGroup: $RG, aksClusterName: $AKS_CLUSTER_NAME, arcClusterName: $ARC_CLUSTER_NAME, extensionVersion: {"k8s-extension": $K8S_EXTENSION_VERSION, connectedk8s: "1.0.0"}}')
+                      '{subscriptionId: $SUB_ID, resourceGroup: $RG, aksClusterName: $AKS_CLUSTER_NAME, arcClusterName: $ARC_CLUSTER_NAME, extensionVersion: {"k8s-extension": $K8S_EXTENSION_VERSION, "k8s-extension-private": $K8S_EXTENSION_VERSION, connectedk8s: "1.0.0"}}')
       echo $JSON_STRING > settings.json
       cat settings.json
     workingDirectory: $(TEST_PATH)
-    displayName: "Generate a settings.json file"
+    displayName: "Generate a settings.json file"  
 
   - bash : |
       echo "Downloading the kind script"
@@ -98,10 +81,9 @@ jobs:
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        .\Test.ps1 -CI -Path ${{ parameters.path }} -Type k8s-extension
+        .\Test.ps1 -CI -Path ${{ parameters.path }} -Type $(EXTENSION_NAME)
       workingDirectory: $(TEST_PATH)
     continueOnError: true
-    condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
 
   - task: PublishTestResults@2
     inputs:

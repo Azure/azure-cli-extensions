@@ -20,9 +20,6 @@ stages:
     RESOURCE_GROUP: "K8sPartnerExtensionTest"
     BASE_CLUSTER_NAME: "k8s-extension-cluster"
     IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private'), eq(variables['System.PullRequest.TargetBranch'], 'k8s-extension/private'))]
-
-    EXTENSION_NAME: "k8s-extension"
-    EXTENSION_FILE_NAME: "k8s_extension"
   jobs:
   - template: ./templates/run-test.yml
     parameters:
@@ -54,58 +51,13 @@ stages:
     displayName: "Build and Publish the Extension Artifact"
     variables: 
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
-    steps:
-    - bash: |
-        echo "Using the private preview of k8s-extension to build..."
-
-        cp $(CLI_REPO_PATH)/src/k8s-extension $(CLI_REPO_PATH)/src/k8s-extension-private -r
-        mv $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private
-        cp $(CLI_REPO_PATH)/src/k8s-extension-private/setup_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/setup.py
-        cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private/consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private/consts.py
-
-        EXTENSION_NAME="k8s-extension-private"
-        EXTENSION_FILE_NAME="k8s_extension_private"
-
-        echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
-        echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
-      condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'True'))
-      displayName: "Copy Files, Set Variables for k8s-extension-private"
-    - bash: |
-        echo "Using the public version of k8s-extension to build..."
-
-        EXTENSION_NAME="k8s-extension"
-        EXTENSION_FILE_NAME="k8s_extension"
-
-        echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
-        echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
-      condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
-      displayName: "Copy Files, Set Variables for k8s-extension"
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
-      inputs:
-        versionSpec: 3.6
-    - bash: |
-        set -ev
-        echo "Building extension ${EXTENSION_NAME}..."
-
-        # prepare and activate virtualenv
-        pip install virtualenv
-        python3 -m venv env/
-        source env/bin/activate
-
-        # clone azure-cli
-        git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-
-        pip install --upgrade pip
-        pip install -q azdev
-
-        ls $(CLI_REPO_PATH)
-
-        azdev --version
-        azdev setup -c ../azure-cli -r $(CLI_REPO_PATH) -e $(EXTENSION_NAME)
-        azdev extension build $(EXTENSION_NAME)
       workingDirectory: $(CLI_REPO_PATH)
       displayName: "Setup and Build Extension with azdev"
+    steps:
+    - template: ./templates/build-extension.yml
+      parameters:
+        CLI_REPO_PATH: $(CLI_REPO_PATH)
+        IS_PRIVATE_BRANCH: $(IS_PRIVATE_BRANCH)
     - task: PublishBuildArtifacts@1
       inputs: 
         pathToPublish: $(CLI_REPO_PATH)/dist
