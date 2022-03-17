@@ -25,7 +25,7 @@ def load_arguments(self, _):
         c.argument('output_folder', type=str, help='Output folder to store performance data')
         c.argument('perf_query_interval', type=int, help='Interval at which to query performance data, in seconds.')
         c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds.')
-        c.argument('number_of_interation', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. Minimum: 2.')
+        c.argument('number_of_iteration', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. Minimum: 2.')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
 
     with self.argument_context('datamigration get-sku-recommendation') as c:

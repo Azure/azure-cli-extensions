@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+ ++++++
+ * Fix TypeError on 'az webapp create'
+
 0.1.5
  ++++++
  * SSL bind bug fix

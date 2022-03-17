@@ -61,7 +61,7 @@ def datamigration_performance_data_collection(connection_string=None,
                                               output_folder=None,
                                               perf_query_interval=30,
                                               static_query_interval=3600,
-                                              number_of_interation=20,
+                                              number_of_iteration=20,
                                               config_file_path=None):
 
     try:
@@ -77,7 +77,7 @@ def datamigration_performance_data_collection(connection_string=None,
                 "--outputFolder": output_folder,
                 "--perfQueryIntervalInSec": perf_query_interval,
                 "--staticQueryIntervalInSec": static_query_interval,
-                "--numberOfIterations": number_of_interation
+                "--numberOfIterations": number_of_iteration
             }
             cmd = f'{exePath} PerfDataCollection --sqlConnectionStrings {connection_string}'
             for param in parameterList:
