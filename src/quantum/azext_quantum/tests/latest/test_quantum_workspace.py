@@ -8,12 +8,12 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
-
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage2, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities
 from ..._version_check_helper import check_version
 from datetime import datetime
-from ...__init__ import CLI_REPORTED_VERSION 
+from ...__init__ import CLI_REPORTED_VERSION
+from ...operations.workspace import _validate_storage_account, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -144,4 +144,22 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         message = check_version(test_config, test_none_version, test_today)
         assert message is None
-     
+
+    def test_validate_storage_account(self):
+        # Calls with valid parameters should not raise errors
+        _validate_storage_account('tier', 'Standard', SUPPORTED_STORAGE_SKU_TIERS)
+        _validate_storage_account('kind', 'Storage', SUPPORTED_STORAGE_KINDS)
+        _validate_storage_account('kind', 'StorageV2', SUPPORTED_STORAGE_KINDS)
+
+        # Invalid parameters should raise errors
+        try:
+             _validate_storage_account('tier', 'Premium', SUPPORTED_STORAGE_SKU_TIERS)
+             assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "Storage account tier 'Premium' is not supported.\nStorage account tier currently supported: Standard"
+
+        try:
+             _validate_storage_account('kind', 'BlobStorage', SUPPORTED_STORAGE_KINDS)
+             assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "Storage account kind 'BlobStorage' is not supported.\nStorage account kinds currently supported: Storage, StorageV2"

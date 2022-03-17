@@ -162,7 +162,6 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
         for item in supported_tiers_or_kinds:
             tier_or_kind_list += f"{item}, "
         plural = 's' if len(supported_tiers_or_kinds) != 1 else ''
-
         raise InvalidArgumentValueError(f"Storage account {tier_or_kind_msg_text} '{tier_or_kind}' is not supported.\n"
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
