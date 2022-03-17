@@ -474,7 +474,7 @@ def is_cli_using_msal_auth():
     try:
         cli_version = response_cli_version['azure-cli']
     except Exception as ex:
-       raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+        raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
     v1 = cli_version
     v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
     for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
