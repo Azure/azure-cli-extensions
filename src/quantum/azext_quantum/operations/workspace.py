@@ -157,7 +157,7 @@ def _create_role_assignment(cmd, quantum_workspace):
 
 
 def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tiers_or_kinds):
-    if not tier_or_kind in supported_tiers_or_kinds:
+    if tier_or_kind not in supported_tiers_or_kinds:
         tier_or_kind_list = ''
         for item in supported_tiers_or_kinds:
             tier_or_kind_list += f"{item}, "
