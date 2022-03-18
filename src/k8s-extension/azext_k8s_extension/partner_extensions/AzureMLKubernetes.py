@@ -10,7 +10,7 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
-from azext_k8s_extension.utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models

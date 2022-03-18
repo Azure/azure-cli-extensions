@@ -5,7 +5,7 @@
 
 # pylint: disable=unused-argument,too-many-locals
 
-from azext_k8s_extension.utils import (
+from .utils import (
     get_cluster_rp_api_version,
     is_dogfood_cluster,
     read_config_settings_file,
