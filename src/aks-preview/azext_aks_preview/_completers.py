@@ -63,10 +63,17 @@ def get_vm_sizes(cli_ctx, location):
 
 
 @Completer
-def get_ossku_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
-    """Return the list of allowed os-sku values"""
+def get_cluster_ossku_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
+    """Return the list of allowed os-sku values when create cluster"""
 
     return ["Ubuntu", "CBLMariner"]
+
+
+@Completer
+def get_nodepool_ossku_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
+    """Return the list of allowed os-sku values when add nodepool"""
+
+    return ["Ubuntu", "CBLMariner", "Windows2019", "Windows2022"]
 
 
 def _get_location(cli_ctx, namespace):

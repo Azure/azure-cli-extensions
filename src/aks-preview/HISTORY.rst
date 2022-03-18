@@ -13,7 +13,11 @@ Pending
 +++++++
 * Update to use 2022-04-02-preview api version.
 
-0.5.67 (NOT RELEASED)
+0.5.68
+++++++
+* * Add option `Windows2019`, `Windows2022` to `--os-sku` for `az aks nodepool add`.
+
+0.5.67
 +++++++++++++++++++++
 * Add support for csi drivers extensibility.
 
@@ -46,7 +50,7 @@ Pending
 ++++++
 
 * Update to use 2022-03-02-preview api version.
-* Add support for `--format` parameter in `az aks get-credentials` command.  
+* Add support for `--format` parameter in `az aks get-credentials` command.
 
 0.5.60
 ++++++
