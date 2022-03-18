@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -13,7 +14,6 @@ from knack.util import CLIError
 def ex_handler_factory(no_throw=False):
     def _polish_bad_errors(ex):
         import json
-        from knack.util import CLIError
         try:
             content = json.loads(ex.response.content)
             if 'message' in content:
@@ -63,10 +63,12 @@ def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups
 
+
 def log_analytics_client_factory(cli_ctx):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient).workspaces
+
 
 def log_analytics_shared_key_client_factory(cli_ctx):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient

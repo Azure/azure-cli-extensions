@@ -2,9 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
-from unicodedata import name
-from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError)
+from azure.cli.core.azclierror import (ValidationError)
 
 
 def _is_number(s):
@@ -13,6 +13,7 @@ def _is_number(s):
         return True
     except ValueError:
         return False
+
 
 def validate_memory(namespace):
     memory = namespace.memory
@@ -26,13 +27,15 @@ def validate_memory(namespace):
         if not valid:
             raise ValidationError("Usage error: --memory must be a number ending with \"Gi\"")
 
+
 def validate_cpu(namespace):
     if namespace.cpu:
         cpu = namespace.cpu
         try:
             float(cpu)
-        except ValueError:
-            raise ValidationError("Usage error: --cpu must be a number eg. \"0.5\"")
+        except ValueError as e:
+            raise ValidationError("Usage error: --cpu must be a number eg. \"0.5\"") from e
+
 
 def validate_managed_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -48,6 +51,7 @@ def validate_managed_env_name_or_id(cmd, namespace):
                 name=namespace.managed_env
             )
 
+
 def validate_registry_server(namespace):
     if "create" in namespace.command.lower():
         if namespace.registry_server:
@@ -55,11 +59,13 @@ def validate_registry_server(namespace):
                 if ".azurecr.io" not in namespace.registry_server:
                     raise ValidationError("Usage error: --registry-server, --registry-password and --registry-username are required together if not using Azure Container Registry")
 
+
 def validate_registry_user(namespace):
     if "create" in namespace.command.lower():
         if namespace.registry_user:
             if not namespace.registry_server or (not namespace.registry_pass and ".azurecr.io" not in namespace.registry_server):
                 raise ValidationError("Usage error: --registry-server, --registry-password and --registry-username are required together if not using Azure Container Registry")
+
 
 def validate_registry_pass(namespace):
     if "create" in namespace.command.lower():
@@ -67,11 +73,13 @@ def validate_registry_pass(namespace):
             if not namespace.registry_server or (not namespace.registry_user and ".azurecr.io" not in namespace.registry_server):
                 raise ValidationError("Usage error: --registry-server, --registry-password and --registry-username are required together if not using Azure Container Registry")
 
+
 def validate_target_port(namespace):
     if "create" in namespace.command.lower():
         if namespace.target_port:
             if not namespace.ingress:
                 raise ValidationError("Usage error: must specify --ingress with --target-port")
+
 
 def validate_ingress(namespace):
     if "create" in namespace.command.lower():

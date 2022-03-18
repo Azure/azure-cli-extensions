@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=consider-using-f-string
 
 from azure.cli.core.azclierror import (ValidationError, CLIInternalError, UnclassifiedUserFault)
 from knack.log import get_logger
@@ -21,6 +22,7 @@ GITHUB_OAUTH_SCOPES = [
     "repo",
     "workflow"
 ]
+
 
 def get_github_access_token(cmd, scope_list=None):  # pylint: disable=unused-argument
     if scope_list:
@@ -81,6 +83,6 @@ def get_github_access_token(cmd, scope_list=None):  # pylint: disable=unused-arg
                 return parsed_confirmation_response['access_token'][0]
     except Exception as e:
         raise CLIInternalError(
-            'Error: {}. Please try again, or retrieve personal access token from the Github website'.format(e))
+            'Error: {}. Please try again, or retrieve personal access token from the Github website'.format(e)) from e
 
     raise UnclassifiedUserFault('Activation did not happen in time. Please try again')

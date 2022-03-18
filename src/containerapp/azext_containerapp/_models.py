@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long, too-many-statements, super-with-arguments
 
 VnetConfiguration = {
     "infrastructureSubnetId": None,
@@ -17,7 +18,7 @@ ManagedEnvironment = {
     "tags": None,
     "properties": {
         "daprAIInstrumentationKey": None,
-        "vnetConfiguration": None, # VnetConfiguration
+        "vnetConfiguration": None,  # VnetConfiguration
         "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None
     }
@@ -63,15 +64,15 @@ Container = {
     "name": None,
     "command": None,
     "args": None,
-    "env": None, # [EnvironmentVar]
-    "resources": None, # ContainerResources
-    "volumeMounts": None, # [VolumeMount]
+    "env": None,  # [EnvironmentVar]
+    "resources": None,  # ContainerResources
+    "volumeMounts": None,  # [VolumeMount]
 }
 
 Volume = {
     "name": None,
-    "storageType": "EmptyDir", # AzureFile or EmptyDir
-    "storageName": None # None for EmptyDir, otherwise name of storage resource
+    "storageType": "EmptyDir",  # AzureFile or EmptyDir
+    "storageName": None  # None for EmptyDir, otherwise name of storage resource
 }
 
 ScaleRuleAuth = {
@@ -82,25 +83,25 @@ ScaleRuleAuth = {
 QueueScaleRule = {
     "queueName": None,
     "queueLength": None,
-    "auth": None # ScaleRuleAuth
+    "auth": None  # ScaleRuleAuth
 }
 
 CustomScaleRule = {
     "type": None,
     "metadata": {},
-    "auth": None # ScaleRuleAuth
+    "auth": None  # ScaleRuleAuth
 }
 
 HttpScaleRule = {
     "metadata": {},
-    "auth": None # ScaleRuleAuth
+    "auth": None  # ScaleRuleAuth
 }
 
 ScaleRule = {
     "name": None,
-    "azureQueue": None, # QueueScaleRule
-    "customScaleRule": None, # CustomScaleRule
-    "httpScaleRule": None, # HttpScaleRule
+    "azureQueue": None,  # QueueScaleRule
+    "customScaleRule": None,  # CustomScaleRule
+    "httpScaleRule": None,  # HttpScaleRule
 }
 
 Secret = {
@@ -111,7 +112,7 @@ Secret = {
 Scale = {
     "minReplicas": None,
     "maxReplicas": None,
-    "rules": [] # list of ScaleRule
+    "rules": []  # list of ScaleRule
 }
 
 TrafficWeight = {
@@ -126,7 +127,7 @@ BindingType = {
 
 CustomDomain = {
     "name": None,
-    "bindingType": None, # BindingType
+    "bindingType": None,  # BindingType
     "certificateId": None
 }
 
@@ -134,9 +135,9 @@ Ingress = {
     "fqdn": None,
     "external": False,
     "targetPort": None,
-    "transport": None, # 'auto', 'http', 'http2'
-    "traffic": None, # TrafficWeight
-    "customDomains": None # [CustomDomain]
+    "transport": None,  # 'auto', 'http', 'http2'
+    "traffic": None,  # TrafficWeight
+    "customDomains": None  # [CustomDomain]
 }
 
 RegistryCredentials = {
@@ -147,17 +148,17 @@ RegistryCredentials = {
 
 Template = {
     "revisionSuffix": None,
-    "containers": None, # [Container]
+    "containers": None,  # [Container]
     "scale": Scale,
     "dapr": Dapr,
-    "volumes": None # [Volume]
+    "volumes": None  # [Volume]
 }
 
 Configuration = {
-    "secrets": None, # [Secret]
-    "activeRevisionsMode": None, # 'multiple' or 'single'
-    "ingress": None, # Ingress
-    "registries": None # [RegistryCredentials]
+    "secrets": None,  # [Secret]
+    "activeRevisionsMode": None,  # 'multiple' or 'single'
+    "ingress": None,  # Ingress
+    "registries": None  # [RegistryCredentials]
 }
 
 UserAssignedIdentity = {
@@ -165,26 +166,26 @@ UserAssignedIdentity = {
 }
 
 ManagedServiceIdentity = {
-    "type": None, # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
-    "userAssignedIdentities": None # {string: UserAssignedIdentity}
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }
 
 ContainerApp = {
     "location": None,
-    "identity": None, # ManagedServiceIdentity
+    "identity": None,  # ManagedServiceIdentity
     "properties": {
         "managedEnvironmentId": None,
-        "configuration": None, # Configuration
-        "template": None # Template
+        "configuration": None,  # Configuration
+        "template": None  # Template
     },
     "tags": None
 }
 
 DaprComponent = {
     "properties": {
-        "componentType": None, #String
+        "componentType": None,  # String
         "version": None,
-        "ignoreErrors": None, 
+        "ignoreErrors": None,
         "initTimeout": None,
         "secrets": None,
         "metadata": None,
@@ -193,39 +194,39 @@ DaprComponent = {
 }
 
 DaprMetadata = {
-    "key": None, #str
-    "value": None, #str
-    "secret_ref": None #str
+    "key": None,  # str
+    "value": None,  # str
+    "secret_ref": None  # str
 }
 
 SourceControl = {
     "properties": {
-        "repoUrl": None, 
-        "branch": None, 
-        "githubActionConfiguration": None # [GitHubActionConfiguration]
+        "repoUrl": None,
+        "branch": None,
+        "githubActionConfiguration": None  # [GitHubActionConfiguration]
     }
 
 }
 
 GitHubActionConfiguration = {
-    "registryInfo": None, # [RegistryInfo]
-    "azureCredentials": None, # [AzureCredentials]
-    "dockerfilePath": None, # str
-    "publishType": None, # str
-    "os": None, # str
-    "runtimeStack": None, # str
-    "runtimeVersion": None # str
+    "registryInfo": None,  # [RegistryInfo]
+    "azureCredentials": None,  # [AzureCredentials]
+    "dockerfilePath": None,  # str
+    "publishType": None,  # str
+    "os": None,  # str
+    "runtimeStack": None,  # str
+    "runtimeVersion": None  # str
 }
 
 RegistryInfo = {
-    "registryUrl": None, # str
-    "registryUserName": None, # str
-    "registryPassword": None # str
+    "registryUrl": None,  # str
+    "registryUserName": None,  # str
+    "registryPassword": None  # str
 }
 
 AzureCredentials = {
-    "clientId": None, # str
-    "clientSecret": None, # str
-    "tenantId": None, #str
-    "subscriptionId": None #str
+    "clientId": None,  # str
+    "clientSecret": None,  # str
+    "tenantId": None,  # str
+    "subscriptionId": None  # str
 }

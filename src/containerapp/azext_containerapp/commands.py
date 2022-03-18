@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+# pylint: disable=line-too-long, too-many-statements, bare-except
+# from azure.cli.core.commands import CliCommandType
+# from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 
 
@@ -15,7 +15,7 @@ def transform_containerapp_output(app):
 
     try:
         result['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
-    except Exception:
+    except:
         result['fqdn'] = None
 
     return result
@@ -48,7 +48,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('delete', 'delete_containerapp', exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_containerapp', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env') as g:
         g.custom_command('show', 'show_managed_environment')
@@ -70,8 +70,8 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_github_action',  exception_handler=ex_handler_factory())
-        g.custom_command('delete', 'delete_github_action',  exception_handler=ex_handler_factory())
+        g.custom_command('show', 'show_github_action', exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_github_action', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp revision') as g:
         g.custom_command('activate', 'activate_revision')
@@ -86,7 +86,7 @@ def load_command_table(self, _):
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('show', 'show_ingress')
-    
+
     with self.command_group('containerapp ingress traffic') as g:
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
         g.custom_command('show', 'show_ingress_traffic')
@@ -106,4 +106,3 @@ def load_command_table(self, _):
     with self.command_group('containerapp dapr') as g:
         g.custom_command('enable', 'enable_dapr', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
-

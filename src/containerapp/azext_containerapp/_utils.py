@@ -2,15 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument
 
-from distutils.filelist import findall
-from operator import is_
+from urllib.parse import urlparse
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
-from azure.cli.core.azclierror import (ResourceNotFoundError, ValidationError, RequiredArgumentMissingError)
+from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id
-from urllib.parse import urlparse
 
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
@@ -38,7 +37,7 @@ def _validate_subscription_registered(cmd, resource_provider, subscription_id=No
                 subscription_id, resource_provider, resource_provider))
     except ValidationError as ex:
         raise ex
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
 
 
@@ -62,7 +61,7 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
                     location, resource_provider, resource_type))
     except ValidationError as ex:
         raise ex
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
 
 
@@ -76,7 +75,7 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
                 raise ValidationError("Environment variables must be in the format \"<key>=<value>\" \"<key>=secretref:<value>\" ...\".")
             raise ValidationError("Environment variables must be in the format \"<key>=<value>\" \"<key>=secretref:<value>\" ...\".")
         if key_val[0] in env_pairs:
-            raise ValidationError("Duplicate environment variable {env} found, environment variable names must be unique.".format(env = key_val[0]))
+            raise ValidationError("Duplicate environment variable {env} found, environment variable names must be unique.".format(env=key_val[0]))
         value = key_val[1].split('secretref:')
         env_pairs[key_val[0]] = value
 
@@ -104,7 +103,7 @@ def parse_secret_flags(secret_list):
         if len(key_val) != 2:
             raise ValidationError("--secrets: must be in format \"<key>=<value>,<key>=<value>,...\"")
         if key_val[0] in secret_pairs:
-            raise ValidationError("--secrets: duplicate secret {secret} found, secret names must be unique.".format(secret = key_val[0]))
+            raise ValidationError("--secrets: duplicate secret {secret} found, secret names must be unique.".format(secret=key_val[0]))
         secret_pairs[key_val[0]] = key_val[1]
 
     secret_var_def = []
@@ -116,12 +115,22 @@ def parse_secret_flags(secret_list):
 
     return secret_var_def
 
+
 def _update_revision_env_secretrefs(containers, name):
     for container in containers:
-        if "env" in container: 
+        if "env" in container:
             for var in container["env"]:
                 if "secretRef" in var:
                     var["secretRef"] = var["secretRef"].replace("{}-".format(name), "")
+
+
+def _update_revision_env_secretrefs(containers, name):
+    for container in containers:
+        if "env" in container:
+            for var in container["env"]:
+                if "secretRef" in var:
+                    var["secretRef"] = var["secretRef"].replace("{}-".format(name), "")
+
 
 def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_server, registry_pass, update_existing_secret=False):
     if registry_pass.startswith("secretref:"):
@@ -139,32 +148,33 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
         return registry_pass
     else:
         # If user passed in registry password
-            if (urlparse(registry_server).hostname is not None):
-                registry_secret_name = "{server}-{user}".format(server=urlparse(registry_server).hostname.replace('.', ''), user=registry_user.lower())
-            else:
-                registry_secret_name = "{server}-{user}".format(server=registry_server.replace('.', ''), user=registry_user.lower())
-            
-            for secret in secrets_list:
-                if secret['name'].lower() == registry_secret_name.lower():
-                    if secret['value'].lower() != registry_pass.lower():
-                        if update_existing_secret:
-                            secret['value'] = registry_pass
-                        else:
-                            raise ValidationError('Found secret with name \"{}\" but value does not equal the supplied registry password.'.format(registry_secret_name))
-                    return registry_secret_name
+        if urlparse(registry_server).hostname is not None:
+            registry_secret_name = "{server}-{user}".format(server=urlparse(registry_server).hostname.replace('.', ''), user=registry_user.lower())
+        else:
+            registry_secret_name = "{server}-{user}".format(server=registry_server.replace('.', ''), user=registry_user.lower())
 
-            logger.warning('Adding registry password as a secret with name \"{}\"'.format(registry_secret_name))
-            secrets_list.append({
-                "name": registry_secret_name,
-                "value": registry_pass
-            })
+        for secret in secrets_list:
+            if secret['name'].lower() == registry_secret_name.lower():
+                if secret['value'].lower() != registry_pass.lower():
+                    if update_existing_secret:
+                        secret['value'] = registry_pass
+                    else:
+                        raise ValidationError('Found secret with name \"{}\" but value does not equal the supplied registry password.'.format(registry_secret_name))
+                return registry_secret_name
 
-            return registry_secret_name
+        logger.warning('Adding registry password as a secret with name \"{}\"'.format(registry_secret_name))  # pylint: disable=logging-format-interpolation
+        secrets_list.append({
+            "name": registry_secret_name,
+            "value": registry_pass
+        })
+
+        return registry_secret_name
 
 
 def parse_list_of_strings(comma_separated_string):
     comma_separated = comma_separated_string.split(',')
     return [s.strip() for s in comma_separated]
+
 
 def raise_missing_token_suggestion():
     pat_documentation = "https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line"
@@ -172,6 +182,7 @@ def raise_missing_token_suggestion():
                                        "If you need to create a Github Personal Access Token, "
                                        "please run with the '--login-with-github' flag or follow "
                                        "the steps found at the following link:\n{0}".format(pat_documentation))
+
 
 def _get_default_log_analytics_location(cmd):
     default_location = "eastus"
@@ -184,19 +195,22 @@ def _get_default_log_analytics_location(cmd):
             if res and getattr(res, 'resource_type', "") == "workspaces":
                 res_locations = getattr(res, 'locations', [])
 
-        if len(res_locations):
+        if len(res_locations) > 0:
             location = res_locations[0].lower().replace(" ", "").replace("(", "").replace(")", "")
             if location:
                 return location
 
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return default_location
     return default_location
 
+
 # Generate random 4 character string
 def _new_tiny_guid():
-    import random, string
+    import random
+    import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
 
 # Follow same naming convention as Portal
 def _generate_log_analytics_workspace_name(resource_group_name):
@@ -229,7 +243,7 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
             log_analytics_location = location
             try:
                 _ensure_location_allowed(cmd, log_analytics_location, "Microsoft.OperationalInsights", "workspaces")
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 log_analytics_location = _get_default_log_analytics_location(cmd)
 
             from azure.cli.core.commands import LongRunningOperation
@@ -237,7 +251,7 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
 
             workspace_name = _generate_log_analytics_workspace_name(resource_group_name)
             workspace_instance = Workspace(location=log_analytics_location)
-            logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))
+            logger.warning("Generating a Log Analytics workspace with name \"{}\"".format(workspace_name))  # pylint: disable=logging-format-interpolation
 
             poller = log_analytics_client.begin_create_or_update(resource_group_name, workspace_name, workspace_instance)
             log_analytics_workspace = LongRunningOperation(cmd.cli_ctx)(poller)
@@ -248,10 +262,10 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
                 resource_group_name=resource_group_name).primary_shared_key
 
         except Exception as ex:
-            raise ValidationError("Unable to generate a Log Analytics workspace. You can use \"az monitor log-analytics workspace create\" to create one and supply --logs-customer-id and --logs-key")
+            raise ValidationError("Unable to generate a Log Analytics workspace. You can use \"az monitor log-analytics workspace create\" to create one and supply --logs-customer-id and --logs-key") from ex
     elif logs_customer_id is None:
         raise ValidationError("Usage error: Supply the --logs-customer-id associated with the --logs-key")
-    elif logs_key is None: # Try finding the logs-key
+    elif logs_key is None:  # Try finding the logs-key
         log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
         log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
 
@@ -285,10 +299,11 @@ def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
         secrets = []
         try:
             secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             handle_raw_exception(e)
 
         containerapp_def["properties"]["configuration"]["secrets"] = secrets["value"]
+
 
 def _ensure_identity_resource_id(subscription_id, resource_group, resource):
     from msrestazure.tools import resource_id, is_valid_resource_id
@@ -301,6 +316,7 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
                        type='userAssignedIdentities',
                        name=resource)
 
+
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
@@ -312,27 +328,30 @@ def _add_or_update_secrets(containerapp_def, add_secrets):
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
                 break
-        
+
         if not is_existing:
             containerapp_def["properties"]["configuration"]["secrets"].append(new_secret)
 
+
 def _remove_registry_secret(containerapp_def, server, username):
-    if (urlparse(server).hostname is not None):
+    if urlparse(server).hostname is not None:
         registry_secret_name = "{server}-{user}".format(server=urlparse(server).hostname.replace('.', ''), user=username.lower())
     else:
         registry_secret_name = "{server}-{user}".format(server=server.replace('.', ''), user=username.lower())
-        
+
     _remove_secret(containerapp_def, secret_name=registry_secret_name)
+
 
 def _remove_secret(containerapp_def, secret_name):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
 
-    for i in range(0, len(containerapp_def["properties"]["configuration"]["secrets"])):
-        existing_secret = containerapp_def["properties"]["configuration"]["secrets"][i]
+    for index, value in enumerate(containerapp_def["properties"]["configuration"]["secrets"]):
+        existing_secret = value
         if existing_secret["name"].lower() == secret_name.lower():
-            containerapp_def["properties"]["configuration"]["secrets"].pop(i)
+            containerapp_def["properties"]["configuration"]["secrets"].pop(index)
             break
+
 
 def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
     for new_env_var in new_env_vars:
@@ -343,7 +362,7 @@ def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
             if existing_env_var["name"].lower() == new_env_var["name"].lower():
                 is_existing = True
                 if is_add:
-                    logger.warning("Environment variable {} already exists. Replacing environment variable value.".format(new_env_var["name"]))
+                    logger.warning("Environment variable {} already exists. Replacing environment variable value.".format(new_env_var["name"]))  # pylint: disable=logging-format-interpolation
 
                 if "value" in new_env_var:
                     existing_env_var["value"] = new_env_var["value"]
@@ -359,16 +378,17 @@ def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
         # If not updating existing env var, add it as a new env var
         if not is_existing:
             if not is_add:
-                logger.warning("Environment variable {} does not exist. Adding as new environment variable.".format(new_env_var["name"]))
+                logger.warning("Environment variable {} does not exist. Adding as new environment variable.".format(new_env_var["name"]))  # pylint: disable=logging-format-interpolation
             existing_env_vars.append(new_env_var)
+
 
 def _remove_env_vars(existing_env_vars, remove_env_vars):
     for old_env_var in remove_env_vars:
 
         # Check if updating existing env var
         is_existing = False
-        for i in range(0, len(existing_env_vars)):
-            existing_env_var = existing_env_vars[i]
+        for i, value in enumerate(existing_env_vars):
+            existing_env_var = value
             if existing_env_var["name"].lower() == old_env_var.lower():
                 is_existing = True
                 existing_env_vars.pop(i)
@@ -376,7 +396,25 @@ def _remove_env_vars(existing_env_vars, remove_env_vars):
 
         # If not updating existing env var, add it as a new env var
         if not is_existing:
-            logger.warning("Environment variable {} does not exist.".format(old_env_var))
+            logger.warning("Environment variable {} does not exist.".format(old_env_var))  # pylint: disable=logging-format-interpolation
+
+
+def _remove_env_vars(existing_env_vars, remove_env_vars):
+    for old_env_var in remove_env_vars:
+
+        # Check if updating existing env var
+        is_existing = False
+        for index, value in enumerate(existing_env_vars):
+            existing_env_var = value
+            if existing_env_var["name"].lower() == old_env_var.lower():
+                is_existing = True
+                existing_env_vars.pop(index)
+                break
+
+        # If not updating existing env var, add it as a new env var
+        if not is_existing:
+            logger.warning("Environment variable {} does not exist.".format(old_env_var))  # pylint: disable=logging-format-interpolation
+
 
 def _add_or_update_tags(containerapp_def, tags):
     if 'tags' not in containerapp_def:
@@ -439,6 +477,7 @@ def _remove_readonly_attributes(containerapp_def):
         elif unneeded_property in containerapp_def['properties']:
             del containerapp_def['properties'][unneeded_property]
 
+
 def _remove_dapr_readonly_attributes(daprcomponent_def):
     unneeded_properties = [
         "id",
@@ -457,13 +496,14 @@ def _remove_dapr_readonly_attributes(daprcomponent_def):
         if unneeded_property in daprcomponent_def:
             del daprcomponent_def[unneeded_property]
 
+
 def update_nested_dictionary(orig_dict, new_dict):
     # Recursively update a nested dictionary. If the value is a list, replace the old list with new list
     import collections
 
     for key, val in new_dict.items():
         if isinstance(val, collections.Mapping):
-            tmp = update_nested_dictionary(orig_dict.get(key, { }), val)
+            tmp = update_nested_dictionary(orig_dict.get(key, {}), val)
             orig_dict[key] = tmp
         elif isinstance(val, list):
             if new_dict[key]:
@@ -477,7 +517,7 @@ def update_nested_dictionary(orig_dict, new_dict):
 def _is_valid_weight(weight):
     try:
         n = int(weight)
-        if n >= 0 and n <= 100:
+        if 0 <= n <= 100:
             return True
         return False
     except ValueError:
@@ -527,7 +567,7 @@ def _infer_acr_credentials(cmd, registry_server):
         registry_user, registry_pass = _get_acr_cred(cmd.cli_ctx, registry_name)
         return (registry_user, registry_pass)
     except Exception as ex:
-        raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry {}. Please provide the registry username and password'.format(registry_name))
+        raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry {}. Please provide the registry username and password'.format(registry_name)) from ex
 
 
 def _registry_exists(containerapp_def, registry_server):

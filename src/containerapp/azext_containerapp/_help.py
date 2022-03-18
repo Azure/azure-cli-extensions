@@ -151,7 +151,7 @@ helps['containerapp revision set-mode'] = """
     examples:
     - name: Set a container app to single revision mode.
       text: |
-          az containerapp revision set-mode -n MyContainerapp -g MyResourceGroup --mode Single 
+          az containerapp revision set-mode -n MyContainerapp -g MyResourceGroup --mode Single
 """
 
 helps['containerapp revision copy'] = """
@@ -368,7 +368,7 @@ helps['containerapp ingress traffic show'] = """
     examples:
     - name: Show a container app's ingress traffic configuration.
       text: |
-          az containerapp ingress traffic show -n MyContainerapp -g MyResourceGroup 
+          az containerapp ingress traffic show -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands
@@ -392,7 +392,7 @@ helps['containerapp registry list'] = """
     examples:
     - name: List container registries configured in a container app.
       text: |
-          az containerapp registry list -n MyContainerapp -g MyResourceGroup 
+          az containerapp registry list -n MyContainerapp -g MyResourceGroup
 """
 
 helps['containerapp registry set'] = """
@@ -403,7 +403,6 @@ helps['containerapp registry set'] = """
       text: |
           az containerapp registry set -n MyContainerapp -g MyResourceGroup \\
               --server MyExistingContainerappRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
-  
 """
 
 helps['containerapp registry remove'] = """
@@ -454,10 +453,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2 
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue 
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue
 """
 
 helps['containerapp github-action'] = """

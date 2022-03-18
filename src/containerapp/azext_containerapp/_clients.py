@@ -2,11 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, super-with-arguments, too-many-instance-attributes, consider-using-f-string, no-else-return, no-self-use
+
 import json
 import time
 import sys
 
-from sys import api_version
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
@@ -15,8 +16,8 @@ logger = get_logger(__name__)
 
 API_VERSION = "2021-03-01"
 NEW_API_VERSION = "2022-01-01-preview"
-POLLING_TIMEOUT = 60 # how many seconds before exiting
-POLLING_SECONDS = 2 # how many seconds between requests
+POLLING_TIMEOUT = 60  # how many seconds before exiting
+POLLING_SECONDS = 2  # how many seconds between requests
 
 
 class PollingAnimation():
@@ -37,7 +38,7 @@ class PollingAnimation():
         sys.stdout.write("\033[K")
 
 
-def poll(cmd, request_url, poll_if_status):
+def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-return-statements
     try:
         start = time.time()
         end = time.time() + POLLING_TIMEOUT
@@ -53,19 +54,17 @@ def poll(cmd, request_url, poll_if_status):
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             r2 = r.json()
 
-            if not "properties" in r2 or not "provisioningState" in r2["properties"] or not r2["properties"]["provisioningState"].lower() == poll_if_status:
+            if "properties" not in r2 or "provisioningState" not in r2["properties"] or not r2["properties"]["provisioningState"].lower() == poll_if_status:
                 break
             start = time.time()
 
         animation.flush()
         return r.json()
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         animation.flush()
 
-        if poll_if_status == "scheduledfordelete": # Catch "not found" errors if polling for delete
-            return
-
-        raise e
+        if not poll_if_status == "scheduledfordelete":  # Catch "not found" errors if polling for delete
+            raise e
 
 
 class ContainerAppClient():
@@ -144,7 +143,6 @@ class ContainerAppClient():
 
         if r.status_code == 202:
             logger.warning('Containerapp successfully deleted')
-        return
 
     @classmethod
     def show(cls, cmd, resource_group_name, name):
@@ -222,7 +220,6 @@ class ContainerAppClient():
 
     @classmethod
     def list_secrets(cls, cmd, resource_group_name, name):
-        secrets = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
@@ -338,6 +335,7 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+
 class ManagedEnvironmentClient():
     @classmethod
     def create(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
@@ -413,7 +411,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
         if no_wait:
-            return # API doesn't return JSON (it returns no content)
+            return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
             request_url = url_fmt.format(
@@ -506,6 +504,7 @@ class ManagedEnvironmentClient():
 
         return env_list
 
+
 class GitHubActionClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
@@ -552,7 +551,6 @@ class GitHubActionClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
-    #TODO
     @classmethod
     def delete(cls, cmd, resource_group_name, name, headers, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -569,7 +567,7 @@ class GitHubActionClient():
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, headers=headers)
 
         if no_wait:
-            return # API doesn't return JSON (it returns no content)
+            return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
             request_url = url_fmt.format(
@@ -588,10 +586,10 @@ class GitHubActionClient():
                 logger.warning('Containerapp github action successfully deleted')
         return
 
+
 class DaprComponentClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
-        #create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.App/managedEnvironments/{environmentName}/daprComponents/{name}'}
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = NEW_API_VERSION
@@ -639,7 +637,7 @@ class DaprComponentClient():
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
         if no_wait:
-            return # API doesn't return JSON (it returns no content)
+            return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}?api-version={}"
             request_url = url_fmt.format(
@@ -705,4 +703,3 @@ class DaprComponentClient():
                 app_list.append(formatted)
 
         return app_list
-
