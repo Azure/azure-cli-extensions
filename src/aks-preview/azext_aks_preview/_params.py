@@ -24,7 +24,8 @@ from knack.arguments import CLIArgumentType
 from ._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
-    get_ossku_completion_list,
+    get_cluster_ossku_completion_list,
+    get_nodepool_ossku_completion_list,
     get_vm_size_completion_list,
 )
 from ._consts import (
@@ -48,6 +49,8 @@ from ._consts import (
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_WINDOWS2019,
+    CONST_OS_SKU_WINDOWS2022,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
@@ -116,7 +119,7 @@ node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SP
 node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
-node_os_skus = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER]
+node_os_skus = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
 gpu_instance_profiles = [
@@ -243,7 +246,7 @@ def load_arguments(self, _):
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('node_vm_size', options_list=[
                    '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-        c.argument('os_sku', completer=get_ossku_completion_list)
+        c.argument('os_sku', completer=get_cluster_ossku_completion_list)
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
         c.argument('enable_node_public_ip', action='store_true')
@@ -411,7 +414,7 @@ def load_arguments(self, _):
                        '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('os_type')
             c.argument('os_sku', options_list=[
-                       '--os-sku'], completer=get_ossku_completion_list)
+                       '--os-sku'], completer=get_nodepool_ossku_completion_list)
             c.argument('vnet_subnet_id',
                        validator=validate_vnet_subnet_id)
             c.argument('pod_subnet_id',
