@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 VERSION = "unknown"
 
-class FidalgoDataplaneClientConfiguration(Configuration):
+class FidalgoDataplaneClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
     """Configuration for FidalgoDataplaneClient.
 
     Note that all parameters used to create this instance are saved as instance
@@ -27,7 +27,8 @@ class FidalgoDataplaneClientConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that overriding this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. Default value is "2021-09-01-privatepreview". Note that
+     overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 

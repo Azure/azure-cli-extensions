@@ -12,7 +12,6 @@ try:
     from ._models_py3 import ActionRequest
     from ._models_py3 import Artifact
     from ._models_py3 import ArtifactListResult
-    from ._models_py3 import Assignment
     from ._models_py3 import CatalogItem
     from ._models_py3 import CatalogItemAction
     from ._models_py3 import CatalogItemListResult
@@ -24,13 +23,17 @@ try:
     from ._models_py3 import EnvironmentType
     from ._models_py3 import EnvironmentTypeListResult
     from ._models_py3 import EnvironmentUpdate
+    from ._models_py3 import HardwareProfile
+    from ._models_py3 import ImageReference
+    from ._models_py3 import OSDisk
     from ._models_py3 import Pool
     from ._models_py3 import PoolListResult
     from ._models_py3 import Project
     from ._models_py3 import ProjectListResult
     from ._models_py3 import ProvisioningError
-    from ._models_py3 import RdpConnection
+    from ._models_py3 import RemoteConnection
     from ._models_py3 import ScheduledTask
+    from ._models_py3 import StorageProfile
     from ._models_py3 import VirtualMachine
     from ._models_py3 import VirtualMachineListResult
 except (SyntaxError, ImportError):
@@ -39,7 +42,6 @@ except (SyntaxError, ImportError):
     from ._models import ActionRequest  # type: ignore
     from ._models import Artifact  # type: ignore
     from ._models import ArtifactListResult  # type: ignore
-    from ._models import Assignment  # type: ignore
     from ._models import CatalogItem  # type: ignore
     from ._models import CatalogItemAction  # type: ignore
     from ._models import CatalogItemListResult  # type: ignore
@@ -51,13 +53,17 @@ except (SyntaxError, ImportError):
     from ._models import EnvironmentType  # type: ignore
     from ._models import EnvironmentTypeListResult  # type: ignore
     from ._models import EnvironmentUpdate  # type: ignore
+    from ._models import HardwareProfile  # type: ignore
+    from ._models import ImageReference  # type: ignore
+    from ._models import OSDisk  # type: ignore
     from ._models import Pool  # type: ignore
     from ._models import PoolListResult  # type: ignore
     from ._models import Project  # type: ignore
     from ._models import ProjectListResult  # type: ignore
     from ._models import ProvisioningError  # type: ignore
-    from ._models import RdpConnection  # type: ignore
+    from ._models import RemoteConnection  # type: ignore
     from ._models import ScheduledTask  # type: ignore
+    from ._models import StorageProfile  # type: ignore
     from ._models import VirtualMachine  # type: ignore
     from ._models import VirtualMachineListResult  # type: ignore
 
@@ -66,6 +72,7 @@ from ._fidalgo_dataplane_client_enums import (
     ActionType,
     OsType,
     ParameterType,
+    PowerState,
     ScheduledTaskType,
 )
 
@@ -75,7 +82,6 @@ __all__ = [
     'ActionRequest',
     'Artifact',
     'ArtifactListResult',
-    'Assignment',
     'CatalogItem',
     'CatalogItemAction',
     'CatalogItemListResult',
@@ -87,18 +93,23 @@ __all__ = [
     'EnvironmentType',
     'EnvironmentTypeListResult',
     'EnvironmentUpdate',
+    'HardwareProfile',
+    'ImageReference',
+    'OSDisk',
     'Pool',
     'PoolListResult',
     'Project',
     'ProjectListResult',
     'ProvisioningError',
-    'RdpConnection',
+    'RemoteConnection',
     'ScheduledTask',
+    'StorageProfile',
     'VirtualMachine',
     'VirtualMachineListResult',
     'ActionState',
     'ActionType',
     'OsType',
     'ParameterType',
+    'PowerState',
     'ScheduledTaskType',
 ]

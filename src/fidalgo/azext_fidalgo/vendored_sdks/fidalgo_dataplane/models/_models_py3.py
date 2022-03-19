@@ -258,31 +258,6 @@ class ArtifactListResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class Assignment(msrest.serialization.Model):
-    """An assignment request.
-
-    :ivar new_owner: Identifier of new owner.
-    :vartype new_owner: str
-    """
-
-    _attribute_map = {
-        'new_owner': {'key': 'newOwner', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        new_owner: Optional[str] = None,
-        **kwargs
-    ):
-        """
-        :keyword new_owner: Identifier of new owner.
-        :paramtype new_owner: str
-        """
-        super(Assignment, self).__init__(**kwargs)
-        self.new_owner = new_owner
-
-
 class CatalogItem(msrest.serialization.Model):
     """A catalog item.
 
@@ -838,6 +813,107 @@ class EnvironmentTypeListResult(msrest.serialization.Model):
         self.next_link = None
 
 
+class HardwareProfile(msrest.serialization.Model):
+    """Hardware specifications for the virtual machine.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar sku_name: The name of the SKU.
+    :vartype sku_name: str
+    :ivar v_cp_us: The number of vCPUs available for the Virtual Machine.
+    :vartype v_cp_us: int
+    :ivar memory_gb: The amount of memory available for the Virtual Machine.
+    :vartype memory_gb: int
+    """
+
+    _validation = {
+        'sku_name': {'readonly': True},
+        'v_cp_us': {'readonly': True},
+        'memory_gb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'sku_name': {'key': 'skuName', 'type': 'str'},
+        'v_cp_us': {'key': 'vCPUs', 'type': 'int'},
+        'memory_gb': {'key': 'memoryGB', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(HardwareProfile, self).__init__(**kwargs)
+        self.sku_name = None
+        self.v_cp_us = None
+        self.memory_gb = None
+
+
+class ImageReference(msrest.serialization.Model):
+    """Specifies information about the image used.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: The name of the image used.
+    :vartype name: str
+    :ivar version: The version of the image.
+    :vartype version: str
+    :ivar published_date: The datetime that the backing image version was published.
+    :vartype published_date: ~datetime.datetime
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'version': {'readonly': True},
+        'published_date': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
+        'published_date': {'key': 'publishedDate', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(ImageReference, self).__init__(**kwargs)
+        self.name = None
+        self.version = None
+        self.published_date = None
+
+
+class OSDisk(msrest.serialization.Model):
+    """Settings for the operating system disk.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar disk_size_gb: The size of the OS Disk in gigabytes.
+    :vartype disk_size_gb: int
+    """
+
+    _validation = {
+        'disk_size_gb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'disk_size_gb': {'key': 'diskSizeGB', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(OSDisk, self).__init__(**kwargs)
+        self.disk_size_gb = None
+
+
 class Pool(msrest.serialization.Model):
     """A pool of DevBox Virtual Machines.
 
@@ -850,18 +926,30 @@ class Pool(msrest.serialization.Model):
     :ivar os_type: The operating system type of the virtual machines in this pool. Possible values
      include: "Windows".
     :vartype os_type: str or ~azure.fidalgo.models.OsType
+    :ivar hardware_profile: Hardware settings for the virtual machines created in this pool.
+    :vartype hardware_profile: ~azure.fidalgo.models.HardwareProfile
+    :ivar storage_profile: Storage settings for virtual machine created in this pool.
+    :vartype storage_profile: ~azure.fidalgo.models.StorageProfile
+    :ivar image_reference: Image settings for virtual machines create in this pool.
+    :vartype image_reference: ~azure.fidalgo.models.ImageReference
     """
 
     _validation = {
         'name': {'readonly': True},
         'location': {'readonly': True},
         'os_type': {'readonly': True},
+        'hardware_profile': {'readonly': True},
+        'storage_profile': {'readonly': True},
+        'image_reference': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
+        'hardware_profile': {'key': 'hardwareProfile', 'type': 'HardwareProfile'},
+        'storage_profile': {'key': 'storageProfile', 'type': 'StorageProfile'},
+        'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
     }
 
     def __init__(
@@ -874,6 +962,9 @@ class Pool(msrest.serialization.Model):
         self.name = None
         self.location = None
         self.os_type = None
+        self.hardware_profile = None
+        self.storage_profile = None
+        self.image_reference = None
 
 
 class PoolListResult(msrest.serialization.Model):
@@ -1004,29 +1095,36 @@ class ProvisioningError(msrest.serialization.Model):
         self.message = None
 
 
-class RdpConnection(msrest.serialization.Model):
-    """Represents the content of a .rdp file.
+class RemoteConnection(msrest.serialization.Model):
+    """Provides RDP connection information.
 
-    :ivar contents: The contents of the .rdp file.
-    :vartype contents: str
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar web_url: URL to open a browser based RDP session.
+    :vartype web_url: str
+    :ivar rdp_connection_url: Link to open a Remote Desktop session.
+    :vartype rdp_connection_url: str
     """
 
+    _validation = {
+        'web_url': {'readonly': True},
+        'rdp_connection_url': {'readonly': True},
+    }
+
     _attribute_map = {
-        'contents': {'key': 'contents', 'type': 'str'},
+        'web_url': {'key': 'webUrl', 'type': 'str'},
+        'rdp_connection_url': {'key': 'rdpConnectionUrl', 'type': 'str'},
     }
 
     def __init__(
         self,
-        *,
-        contents: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword contents: The contents of the .rdp file.
-        :paramtype contents: str
         """
-        super(RdpConnection, self).__init__(**kwargs)
-        self.contents = contents
+        super(RemoteConnection, self).__init__(**kwargs)
+        self.web_url = None
+        self.rdp_connection_url = None
 
 
 class ScheduledTask(msrest.serialization.Model):
@@ -1106,6 +1204,31 @@ class ScheduledTask(msrest.serialization.Model):
         self.time_zone = time_zone
 
 
+class StorageProfile(msrest.serialization.Model):
+    """Storage settings for the Virtual Machine's disks.
+
+    :ivar os_disk: Settings for the operating system disk.
+    :vartype os_disk: ~azure.fidalgo.models.OSDisk
+    """
+
+    _attribute_map = {
+        'os_disk': {'key': 'osDisk', 'type': 'OSDisk'},
+    }
+
+    def __init__(
+        self,
+        *,
+        os_disk: Optional["OSDisk"] = None,
+        **kwargs
+    ):
+        """
+        :keyword os_disk: Settings for the operating system disk.
+        :paramtype os_disk: ~azure.fidalgo.models.OSDisk
+        """
+        super(StorageProfile, self).__init__(**kwargs)
+        self.os_disk = os_disk
+
+
 class VirtualMachine(msrest.serialization.Model):
     """A DevBox virtual machine.
 
@@ -1115,6 +1238,8 @@ class VirtualMachine(msrest.serialization.Model):
 
     :ivar name: Display name for the virtual machine.
     :vartype name: str
+    :ivar project_name: Name of the project this Virtual Machine belongs to.
+    :vartype project_name: str
     :ivar pool_name: Required. The name of the virtual machine pool this machine belongs to.
     :vartype pool_name: str
     :ivar provisioning_state: The current provisioning state of the virtual machine.
@@ -1122,6 +1247,9 @@ class VirtualMachine(msrest.serialization.Model):
     :ivar action_state: The current action state of the virtual machine. This is state is based on
      previous action performed by user.
     :vartype action_state: str
+    :ivar power_state: The current power state of the virtual machine. Possible values include:
+     "Unknown", "Stopped", "Running", "Hibernated".
+    :vartype power_state: str or ~azure.fidalgo.models.PowerState
     :ivar error_details: Provisioning or action error details. Populated only for error states.
     :vartype error_details: ~azure.fidalgo.models.ProvisioningError
     :ivar location: Azure region where this virtual machines is located. This will be the same
@@ -1132,28 +1260,48 @@ class VirtualMachine(msrest.serialization.Model):
     :vartype os_type: str or ~azure.fidalgo.models.OsType
     :ivar owner: User identifier of the user this vm is assigned to.
     :vartype owner: str
+    :ivar hardware_profile: Information about the Virtual Machine's hardware resources.
+    :vartype hardware_profile: ~azure.fidalgo.models.HardwareProfile
+    :ivar storage_profile: Storage settings for this Virtual Machine.
+    :vartype storage_profile: ~azure.fidalgo.models.StorageProfile
+    :ivar image_reference: Information about the image used for this Virtual Machine.
+    :vartype image_reference: ~azure.fidalgo.models.ImageReference
+    :ivar created_time: Creation time of this virtual machine.
+    :vartype created_time: ~datetime.datetime
     """
 
     _validation = {
         'name': {'readonly': True},
+        'project_name': {'readonly': True},
         'pool_name': {'required': True},
         'provisioning_state': {'readonly': True},
         'action_state': {'readonly': True},
+        'power_state': {'readonly': True},
         'error_details': {'readonly': True},
         'location': {'readonly': True},
         'os_type': {'readonly': True},
         'owner': {'readonly': True},
+        'hardware_profile': {'readonly': True},
+        'storage_profile': {'readonly': True},
+        'image_reference': {'readonly': True},
+        'created_time': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
+        'project_name': {'key': 'projectName', 'type': 'str'},
         'pool_name': {'key': 'poolName', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'action_state': {'key': 'actionState', 'type': 'str'},
+        'power_state': {'key': 'powerState', 'type': 'str'},
         'error_details': {'key': 'errorDetails', 'type': 'ProvisioningError'},
         'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'owner': {'key': 'owner', 'type': 'str'},
+        'hardware_profile': {'key': 'hardwareProfile', 'type': 'HardwareProfile'},
+        'storage_profile': {'key': 'storageProfile', 'type': 'StorageProfile'},
+        'image_reference': {'key': 'imageReference', 'type': 'ImageReference'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -1168,13 +1316,19 @@ class VirtualMachine(msrest.serialization.Model):
         """
         super(VirtualMachine, self).__init__(**kwargs)
         self.name = None
+        self.project_name = None
         self.pool_name = pool_name
         self.provisioning_state = None
         self.action_state = None
+        self.power_state = None
         self.error_details = None
         self.location = None
         self.os_type = None
         self.owner = None
+        self.hardware_profile = None
+        self.storage_profile = None
+        self.image_reference = None
+        self.created_time = None
 
 
 class VirtualMachineListResult(msrest.serialization.Model):

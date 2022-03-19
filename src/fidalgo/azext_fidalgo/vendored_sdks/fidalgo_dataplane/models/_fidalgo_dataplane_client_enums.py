@@ -48,6 +48,15 @@ class ParameterType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     OBJECT = "object"
     STRING = "string"
 
+class PowerState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The power states of a Virtual Machine.
+    """
+
+    UNKNOWN = "Unknown"
+    STOPPED = "Stopped"
+    RUNNING = "Running"
+    HIBERNATED = "Hibernated"
+
 class ScheduledTaskType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The supported types for a scheduled task.
     """

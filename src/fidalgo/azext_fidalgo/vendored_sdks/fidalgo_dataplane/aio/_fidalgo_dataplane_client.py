@@ -9,9 +9,10 @@
 from copy import deepcopy
 from typing import Any, Awaitable, TYPE_CHECKING
 
+from msrest import Deserializer, Serializer
+
 from azure.core import AsyncPipelineClient
 from azure.core.rest import AsyncHttpResponse, HttpRequest
-from msrest import Deserializer, Serializer
 
 from .. import models
 from ._configuration import FidalgoDataplaneClientConfiguration
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-class FidalgoDataplaneClient:
+class FidalgoDataplaneClient:    # pylint: disable=too-many-instance-attributes
     """FidalgoDataplaneClient.
 
     :ivar project: ProjectOperations operations
@@ -42,7 +43,7 @@ class FidalgoDataplaneClient:
     :vartype environment_type: azure.fidalgo.aio.operations.EnvironmentTypeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :keyword api_version: Api Version. The default value is "2021-09-01-privatepreview". Note that
+    :keyword api_version: Api Version. Default value is "2021-09-01-privatepreview". Note that
      overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
