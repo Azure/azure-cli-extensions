@@ -596,6 +596,7 @@ def step_dev_box_definition_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az fidalgo dev-box-definition create '
+             '--location "centralus" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fidalgo/'
              'galleries/{myGallery4}/images/{myImage3}/version/1.0.0" '
              '--dev-box-definition-name "{myDevBoxDefinition}" '

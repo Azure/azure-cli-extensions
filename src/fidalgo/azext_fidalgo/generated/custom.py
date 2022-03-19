@@ -801,10 +801,15 @@ def fidalgo_dev_box_definition_create(client,
                                       resource_group_name,
                                       dev_center_name,
                                       dev_box_definition_name,
+                                      location,
+                                      tags=None,
                                       image_reference=None,
                                       name=None,
                                       no_wait=False):
     body = {}
+    if tags is not None:
+        body['tags'] = tags
+    body['location'] = location
     if image_reference is not None:
         body['image_reference'] = image_reference
     body['sku'] = {}
@@ -824,10 +829,16 @@ def fidalgo_dev_box_definition_update(client,
                                       resource_group_name,
                                       dev_center_name,
                                       dev_box_definition_name,
+                                      tags=None,
+                                      location=None,
                                       image_reference=None,
                                       name=None,
                                       no_wait=False):
     body = {}
+    if tags is not None:
+        body['tags'] = tags
+    if location is not None:
+        body['location'] = location
     if image_reference is not None:
         body['image_reference'] = image_reference
     body['sku'] = {}

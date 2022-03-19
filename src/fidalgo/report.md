@@ -544,9 +544,9 @@ az fidalgo dev-box-definition show --name "WebDevBox" --project-name "ContosoPro
 
 ##### <a name="ExamplesDevBoxDefinitionsCreateOrUpdate#Create">Example</a>
 ```
-az fidalgo dev-box-definition create --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceG\
-roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/1.0.0" \
---dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+az fidalgo dev-box-definition create --location "centralus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c\
+9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampleImage/version/1\
+.0.0" --dev-box-definition-name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 ```
 ##### <a name="ParametersDevBoxDefinitionsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -554,6 +554,8 @@ roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampl
 |**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--tags**|dictionary|Resource tags.|tags|tags|
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--name**|string|The name of the SKU.|name|name|
 
@@ -571,6 +573,8 @@ roups/Example/providers/Microsoft.Fidalgo/galleries/contosogallery/images/exampl
 |**--resource-group-name**|string|Name of the resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--dev-center-name**|string|The name of the devcenter.|dev_center_name|devCenterName|
 |**--dev-box-definition-name**|string|The name of the Dev Box definition.|dev_box_definition_name|devBoxDefinitionName|
+|**--tags**|dictionary|Resource tags.|tags|tags|
+|**--location**|string|The geo-location where the resource lives|location|location|
 |**--image-reference**|object|Image reference information.|image_reference|imageReference|
 |**--name**|string|The name of the SKU.|name|name|
 

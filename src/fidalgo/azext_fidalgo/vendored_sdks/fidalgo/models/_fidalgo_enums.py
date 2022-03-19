@@ -42,7 +42,7 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     KEY = "Key"
 
 class DomainJoinType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Azure Active Directory join type
+    """Active Directory join type
     """
 
     HYBRID_AZURE_AD_JOIN = "HybridAzureADJoin"

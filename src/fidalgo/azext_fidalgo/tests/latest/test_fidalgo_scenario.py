@@ -247,16 +247,19 @@ def call_scenario(test):
     step_catalog_delete(test, checks=[])
     step_deployment_list(test, checks=[])
     step_dev_box_definition_create(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fid"
                    "algo/galleries/{myGallery4}/images/{myImage3}/version/1.0.0", case_sensitive=False),
         test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
     ])
     step_dev_box_definition_show(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fid"
                    "algo/galleries/{myGallery4}/images/{myImage3}/version/1.0.0", case_sensitive=False),
         test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
     ])
     step_dev_box_definition_show2(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fid"
                    "algo/galleries/{myGallery4}/images/{myImage3}/version/1.0.0", case_sensitive=False),
         test.check("name", "{myDevBoxDefinition}", case_sensitive=False),
@@ -266,6 +269,7 @@ def call_scenario(test):
     ])
     step_dev_box_definition_list2(test, checks=[])
     step_dev_box_definition_update(test, checks=[
+        test.check("location", "centralus", case_sensitive=False),
         test.check("imageReference.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Fid"
                    "algo/galleries/{myGallery4}/images/{myImage3}/version/2.0.0", case_sensitive=False),
         test.check("name", "{myDevBoxDefinition}", case_sensitive=False),

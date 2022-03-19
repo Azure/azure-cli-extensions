@@ -71,9 +71,9 @@ class AttachedNetworkConnection(Resource):
     :param network_connection_resource_id: The resource ID of the NetworkConnection you want to
      attach.
     :type network_connection_resource_id: str
-    :ivar location: The geo-location where the NetworkConnection resource specified in
-     'networkConnectionResourceId' property lives.
-    :vartype location: str
+    :ivar network_connection_location: The geo-location where the NetworkConnection resource
+     specified in 'networkConnectionResourceId' property lives.
+    :vartype network_connection_location: str
     :ivar health_check_status: Health check status values. Possible values include: "Pending",
      "Running", "Passed", "Failed", "Warning", "Unknown".
     :vartype health_check_status: str or ~fidalgo.models.HealthCheckStatus
@@ -85,7 +85,7 @@ class AttachedNetworkConnection(Resource):
         'type': {'readonly': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
-        'location': {'readonly': True},
+        'network_connection_location': {'readonly': True},
         'health_check_status': {'readonly': True},
     }
 
@@ -96,7 +96,7 @@ class AttachedNetworkConnection(Resource):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'network_connection_resource_id': {'key': 'properties.networkConnectionResourceId', 'type': 'str'},
-        'location': {'key': 'properties.location', 'type': 'str'},
+        'network_connection_location': {'key': 'properties.networkConnectionLocation', 'type': 'str'},
         'health_check_status': {'key': 'properties.healthCheckStatus', 'type': 'str'},
     }
 
@@ -110,7 +110,7 @@ class AttachedNetworkConnection(Resource):
         self.system_data = None
         self.provisioning_state = None
         self.network_connection_resource_id = network_connection_resource_id
-        self.location = None
+        self.network_connection_location = None
         self.health_check_status = None
 
 
@@ -744,10 +744,12 @@ class DeploymentHistoryResult(msrest.serialization.Model):
         self.next_link = None
 
 
-class DevBoxDefinition(Resource):
-    """Represents a definition for a Developer Machine.
+class TrackedResource(Resource):
+    """The resource model definition for a ARM tracked top level resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
 
     :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
@@ -757,6 +759,58 @@ class DevBoxDefinition(Resource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(TrackedResource, self).__init__(**kwargs)
+        self.tags = tags
+        self.location = location
+
+
+class DevBoxDefinition(TrackedResource):
+    """Represents a definition for a Developer Machine.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
+     Microsoft.Storage/storageAccounts.
+    :vartype type: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~fidalgo.models.SystemData
     :param image_reference: Image reference information.
@@ -780,6 +834,7 @@ class DevBoxDefinition(Resource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
         'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'image_validation_status': {'readonly': True},
@@ -791,6 +846,8 @@ class DevBoxDefinition(Resource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
         'sku': {'key': 'properties.sku', 'type': 'Sku'},
@@ -803,11 +860,13 @@ class DevBoxDefinition(Resource):
     def __init__(
         self,
         *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
         image_reference: Optional["ImageReference"] = None,
         sku: Optional["Sku"] = None,
         **kwargs
     ):
-        super(DevBoxDefinition, self).__init__(**kwargs)
+        super(DevBoxDefinition, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
         self.image_reference = image_reference
         self.sku = sku
@@ -925,64 +984,16 @@ class DevBoxDefinitionProperties(DevBoxDefinitionUpdateProperties):
         self.active_image_reference = None
 
 
-class DevBoxDefinitionUpdate(msrest.serialization.Model):
-    """Partial update of a Dev Box definition resource.
+class TrackedResourceUpdate(msrest.serialization.Model):
+    """Base tracked resource type for PATCH updates.
 
-    :param image_reference: Image reference information.
-    :type image_reference: ~fidalgo.models.ImageReference
-    :param sku: The SKU for Dev Boxes created using this definition.
-    :type sku: ~fidalgo.models.Sku
-    """
-
-    _attribute_map = {
-        'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
-        'sku': {'key': 'properties.sku', 'type': 'Sku'},
-    }
-
-    def __init__(
-        self,
-        *,
-        image_reference: Optional["ImageReference"] = None,
-        sku: Optional["Sku"] = None,
-        **kwargs
-    ):
-        super(DevBoxDefinitionUpdate, self).__init__(**kwargs)
-        self.image_reference = image_reference
-        self.sku = sku
-
-
-class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Fully qualified resource Id for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
-    :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives.
+    :param location: The geo-location where the resource lives.
     :type location: str
     """
 
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'location': {'required': True},
-    }
-
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
     }
@@ -990,13 +1001,47 @@ class TrackedResource(Resource):
     def __init__(
         self,
         *,
-        location: str,
         tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
         **kwargs
     ):
-        super(TrackedResource, self).__init__(**kwargs)
+        super(TrackedResourceUpdate, self).__init__(**kwargs)
         self.tags = tags
         self.location = location
+
+
+class DevBoxDefinitionUpdate(TrackedResourceUpdate):
+    """Partial update of a Dev Box definition resource.
+
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives.
+    :type location: str
+    :param image_reference: Image reference information.
+    :type image_reference: ~fidalgo.models.ImageReference
+    :param sku: The SKU for Dev Boxes created using this definition.
+    :type sku: ~fidalgo.models.Sku
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'image_reference': {'key': 'properties.imageReference', 'type': 'ImageReference'},
+        'sku': {'key': 'properties.sku', 'type': 'Sku'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
+        image_reference: Optional["ImageReference"] = None,
+        sku: Optional["Sku"] = None,
+        **kwargs
+    ):
+        super(DevBoxDefinitionUpdate, self).__init__(tags=tags, location=location, **kwargs)
+        self.image_reference = image_reference
+        self.sku = sku
 
 
 class DevCenter(TrackedResource):
@@ -1088,32 +1133,6 @@ class DevCenterListResult(msrest.serialization.Model):
         super(DevCenterListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
-
-
-class TrackedResourceUpdate(msrest.serialization.Model):
-    """Base tracked resource type for PATCH updates.
-
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: The geo-location where the resource lives.
-    :type location: str
-    """
-
-    _attribute_map = {
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        tags: Optional[Dict[str, str]] = None,
-        location: Optional[str] = None,
-        **kwargs
-    ):
-        super(TrackedResourceUpdate, self).__init__(**kwargs)
-        self.tags = tags
-        self.location = location
 
 
 class DevCenterUpdate(TrackedResourceUpdate):
