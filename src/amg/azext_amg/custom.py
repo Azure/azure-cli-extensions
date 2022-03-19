@@ -206,7 +206,8 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
     if for_import:
         try:  # see whether it is a gallery id
             int(definition)
-            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/gnet/dashboards/" + definition)
+            response = _send_request(cmd, resource_group_name, grafana_name, "get",
+                                     "/api/gnet/dashboards/" + definition)
             return json.loads(response.content)["json"]
         except ValueError:
             pass
@@ -322,13 +323,12 @@ def list_users(cmd, grafana_name, resource_group_name=None):
 
 
 def show_user(cmd, grafana_name, user, resource_group_name=None):
-    if "@" in user:
-        uri = "/api/org/users/lookup?loginOrEmail="
-    else:
-        raise ArgumentUsageError("Searching by id other than login name or email is not yet supported")
+    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name)
+    match = next((u for u in users if u['name'].lower() == user.lower()), None)
 
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", uri + user)
-    return json.loads(response.content)
+    if match:
+        return match
+    raise ArgumentUsageError(f"Could't find the user '{user}'")
 
 
 def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=None,
