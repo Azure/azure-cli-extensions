@@ -85,13 +85,13 @@ helps['fidalgo dev virtual-machine delete'] = """
                az fidalgo dev virtual-machine delete --name "MyDevBox" --project-name "{projectName}" --dev-center "{devCenter}"
 """
 
-helps['fidalgo dev virtual-machine get-rdp-file-content'] = """
+helps['fidalgo dev virtual-machine get-remote-connection'] = """
     type: command
-    short-summary: "Gets a string that represents the contents of the RDP file for the virtual machine."
+    short-summary: "Gets a remote connection information for the virtual machine."
     examples:
-      - name: VirtualMachine_GetRdpFileContents
+      - name: VirtualMachine_GetRemoteConnection
         text: |-
-               az fidalgo dev virtual-machine get-rdp-file-content --name "MyDevBox" --project-name "{projectName}" --dev-center "{devCenter}"
+               az fidalgo dev virtual-machine get-remote-connection --name "MyDevBox" --project-name "{projectName}" --dev-center "{devCenter}"
 """
 
 helps['fidalgo dev virtual-machine list'] = """

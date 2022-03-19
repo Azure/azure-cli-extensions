@@ -266,30 +266,13 @@ def fidalgo_virtual_machine_delete(client,
                          fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
 
 
-def fidalgo_virtual_machine_assign(client,
-                                   project_name,
-                                   virtual_machine_name,
-                                   new_owner,
-                                   dev_center,
-                                   user_id='me',
-                                   fidalgo_dns_suffix=None):
-    body = {}
-    body['new_owner'] = new_owner
-    return client.assign(project_name=project_name,
-                         user_id=user_id,
-                         virtual_machine_name=virtual_machine_name,
-                         body=body,
-                         dev_center=dev_center,
-                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
-
-
-def fidalgo_virtual_machine_get_rdp_file_content(client,
+def fidalgo_virtual_machine_get_remote_connection(client,
                                                  project_name,
                                                  virtual_machine_name,
                                                  dev_center,
                                                  user_id='me',
                                                  fidalgo_dns_suffix=None):
-    return client.get_rdp_file_contents(project_name=project_name,
+    return client.get_remote_connection(project_name=project_name,
                                         user_id=user_id,
                                         virtual_machine_name=virtual_machine_name,
                                         dev_center=dev_center,

@@ -220,29 +220,28 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'fidalgo_virtual_machine_show')
         g.custom_command('create', 'fidalgo_virtual_machine_create')
         g.custom_command('delete', 'fidalgo_virtual_machine_delete', confirmation=True)
-        g.custom_command('assign', 'fidalgo_virtual_machine_assign')
-        g.custom_command('get-rdp-file-content', 'fidalgo_virtual_machine_get_rdp_file_content')
+        g.custom_command('get-remote-connection', 'fidalgo_virtual_machine_get_remote_connection')
         g.custom_command('start', 'fidalgo_virtual_machine_start')
         g.custom_command('stop', 'fidalgo_virtual_machine_stop')
 
-    with self.command_group('fidalgo dev catalog-item', fidalgo_catalog_item_dp, client_factory=cf_catalog_item_dp) as g:
-        g.custom_command('list', 'fidalgo_catalog_item_list_dp')
+    # with self.command_group('fidalgo dev catalog-item', fidalgo_catalog_item_dp, client_factory=cf_catalog_item_dp) as g:
+    #     g.custom_command('list', 'fidalgo_catalog_item_list_dp')
 
-    with self.command_group('fidalgo dev deployment', fidalgo_deployment_dp, client_factory=cf_deployment_dp) as g:
-        g.custom_command('list', 'fidalgo_deployment_list_dp')
+    # with self.command_group('fidalgo dev deployment', fidalgo_deployment_dp, client_factory=cf_deployment_dp) as g:
+    #     g.custom_command('list', 'fidalgo_deployment_list_dp')
 
-    with self.command_group('fidalgo dev environment', fidalgo_environment_dp, client_factory=cf_environment_dp) as g:
-        g.custom_command('list', 'fidalgo_environment_list_dp')
-        g.custom_show_command('show', 'fidalgo_environment_show_dp')
-        g.custom_command('create', 'fidalgo_environment_create_dp')
-        g.custom_command('update', 'fidalgo_environment_update_dp')
-        g.custom_command('delete', 'fidalgo_environment_delete_dp', confirmation=True)
-        g.custom_command('deploy', 'fidalgo_environment_deploy_dp')
+    # with self.command_group('fidalgo dev environment', fidalgo_environment_dp, client_factory=cf_environment_dp) as g:
+    #     g.custom_command('list', 'fidalgo_environment_list_dp')
+    #     g.custom_show_command('show', 'fidalgo_environment_show_dp')
+    #     g.custom_command('create', 'fidalgo_environment_create_dp')
+    #     g.custom_command('update', 'fidalgo_environment_update_dp')
+    #     g.custom_command('delete', 'fidalgo_environment_delete_dp', confirmation=True)
+    #     g.custom_command('deploy', 'fidalgo_environment_deploy_dp')
 
-    with self.command_group(
-        'fidalgo dev environment-type', fidalgo_environment_type_dp, client_factory=cf_environment_type_dp
-    ) as g:
-        g.custom_command('list', 'fidalgo_environment_type_list_dp')
+    # with self.command_group(
+    #     'fidalgo dev environment-type', fidalgo_environment_type_dp, client_factory=cf_environment_type_dp
+    # ) as g:
+    #     g.custom_command('list', 'fidalgo_environment_type_list_dp')
     
     #control plane
     with self.command_group(

@@ -98,7 +98,7 @@ def load_arguments(self, _):
         c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
-    with self.argument_context('fidalgo dev virtual-machine get-rdp-file-content') as c:
+    with self.argument_context('fidalgo dev virtual-machine get-remote-connection') as c:
         c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
