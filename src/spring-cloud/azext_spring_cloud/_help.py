@@ -271,10 +271,14 @@ helps['spring-cloud app identity assign'] = """
 
 helps['spring-cloud app identity remove'] = """
     type: command
-    short-summary: Remove managed service identity from an app.
+    short-summary: Remove managed identity from an app.
     examples:
-    - name: Remove the system assigned identity from an app.
-      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
+    - name: Remove the system-assigned managed identity from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
+    - name: Remove the system-assigned and user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --user-assigned UserAssignedManagedIdentityResourceId1 UserAssignedManagedIdentityResourceId2
+    - name: Remove all user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --user-assigned
 """
 
 helps['spring-cloud app identity show'] = """
