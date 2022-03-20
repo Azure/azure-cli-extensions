@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_cloud_20220101preview,
+from ._client_factory import (cf_spring_cloud_20220301preview,
+                              cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
@@ -31,7 +32,7 @@ def load_command_table(self, _):
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring_cloud.app#{}',
-        client_factory=cf_spring_cloud_20220101preview
+        client_factory=cf_spring_cloud_20220301preview
     )
 
     service_registry_cmd_group = CliCommandType(
@@ -139,7 +140,7 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
-    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220301preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign')
         g.custom_command('remove', 'app_identity_remove')
