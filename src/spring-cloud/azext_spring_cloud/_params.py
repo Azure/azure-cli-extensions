@@ -245,7 +245,7 @@ def load_arguments(self, _):
                    help="Remove system-assigned managed identity.")
         c.argument('user_assigned',
                    nargs='*',
-                   help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove all user-assigned managed identities.")
+                   help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
 
 
     def prepare_logs_argument(c):
