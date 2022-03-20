@@ -445,7 +445,7 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
     return app
 
 
-def app_identity_remove(cmd, client, resource_group, service, name):
+def app_identity_remove(cmd, client, resource_group, service, name, system_assigned=None, user_assigned=None):
     app_resource = models_20220101preview.AppResource()
     identity = models_20220101preview.ManagedIdentityProperties(type="none")
     properties = models_20220101preview.AppResourceProperties()

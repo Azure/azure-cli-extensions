@@ -21,6 +21,7 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_spring_cloud_gateway_output,
                             transform_api_portal_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
+from ._app_validator import (validate_app_identity_remove_or_warning)
 
 
 # pylint: disable=too-many-statements
@@ -141,7 +142,8 @@ def load_command_table(self, _):
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
     with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220301preview,
-                            exception_handler=handle_asc_exception) as g:
+                            exception_handler=handle_asc_exception,
+                            validator=validate_app_identity_remove_or_warning) as g:
         g.custom_command('assign', 'app_identity_assign')
         g.custom_command('remove', 'app_identity_remove')
         g.custom_show_command('show', 'app_identity_show')

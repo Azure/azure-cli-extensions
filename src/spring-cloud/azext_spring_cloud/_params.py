@@ -239,6 +239,15 @@ def load_arguments(self, _):
         c.argument('scope', help="The scope the managed identity has access to")
         c.argument('role', help="Role name or id the managed identity will be assigned")
 
+    with self.argument_context('spring-cloud app identity remove') as c:
+        c.argument('system_assigned',
+                   arg_type=get_three_state_flag(),
+                   help="Remove system-assigned managed identity.")
+        c.argument('user_assigned',
+                   nargs='*',
+                   help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove all user-assigned managed identities.")
+
+
     def prepare_logs_argument(c):
         '''`app log tail` is deprecated. `app logs` is the new choice. They share the same command processor.'''
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
