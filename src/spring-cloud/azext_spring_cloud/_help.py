@@ -276,7 +276,7 @@ helps['spring-cloud app identity remove'] = """
     - name: Remove the system-assigned managed identity from an app.
       text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
     - name: Remove the system-assigned and user-assigned managed identities from an app.
-      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --user-assigned UserAssignedManagedIdentityResourceId1 UserAssignedManagedIdentityResourceId2
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --user-assigned IdentityResourceId1 IdentityResourceId2
     - name: Remove all user-assigned managed identities from an app.
       text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --user-assigned
 """
