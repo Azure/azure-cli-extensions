@@ -533,6 +533,8 @@ class SnapshotType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
     #: The snapshot is a snapshot of a node pool.
     NODE_POOL = "NodePool"
+    #: The snapshot is a snapshot of a managed cluster.
+    MANAGED_CLUSTER = "ManagedCluster"
 
 class UpgradeChannel(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """For more information see `setting the AKS cluster auto-upgrade channel

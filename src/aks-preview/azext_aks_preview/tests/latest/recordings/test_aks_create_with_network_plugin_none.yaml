@@ -1,14 +1,14 @@
 interactions:
 - request:
     body: '{"location": "westus2", "identity": {"type": "SystemAssigned"}, "properties":
-      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitest4lj6ceu2j-8ecadf",
+      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitesthx7levw2y-8ecadf",
       "agentPoolProfiles": [{"count": 3, "vmSize": "Standard_DS2_v2", "workloadRuntime":
       "OCIContainer", "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
       "mode": "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular",
       "scaleSetEvictionPolicy": "Delete", "spotMaxPrice": -1.0, "enableEncryptionAtHost":
       false, "enableUltraSSD": false, "enableFIPS": false, "name": "nodepool1"}],
       "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys": [{"keyData":
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJjZSgmQbO+3p9iGhxgy6d1c/TszedUmiHvDgFZgZcp7KMhP8xZspw/0Q0rP/6vcoWPb4qysTLIzX3kr/L752/j+DEE5A+N80r7sm5/6qmeLyT5guyFOCO4YydKddTlTxaizHZo1+P/wcS57NHvpon9vx08TiJXnxvzRTAlaJcsg+fvgLywa7IxyQ8zdMZub8oYlMS23BNoY92EOhD4ppmqpWuUYG/QG9UM70TYt5td9BmJlo0ZHGZNt1FLhhEug87M0F7KEkqTN8KxyGJJJ0AfS4VGg0+6+xRz00aywV6VBClLZpjiavgQrZVqqduXhSkJbWsKDx6dKbZgG49tK6x
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCumQ7QuaQdPndgxn9hQULXqCXVDEmxKAKAKqkLYTy/yXSHURHnIap9+bhoGn9qwtBL9Ue2NNWSgNO/Qig3evn4cGgK5cDl+Q6NKKlEmyObga4JWBFrFKYu/apHCkPqQZClsX98qvcmDVOfoKpCp2KhaEPdA6uQPZRSpDYSlnAUUm0uOc/JL+9ka7lIpw9JNEuts+oVdeUjbB7nSLvjJx65I8XrhRJHszl2CyQg24t/sP1iCkiQLajnMIM6qfifdltiQJ3HZ6BL3SY69jG5prXBb3kINq+mcZwIe/N/OUeJRznRHr38wVKbzZuaPosWDSceMscoNIUB8bgOiqmVc1mz
       azcli_aks_live_test@example.com\n"}]}}, "addonProfiles": {}, "enableRBAC": true,
       "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "none",
       "outboundType": "loadBalancer", "loadBalancerSku": "standard"}, "disableLocalAccounts":
@@ -29,10 +29,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2022-01-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2022-02-02-preview
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -40,8 +40,8 @@ interactions:
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Creating\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.21.9\",\n   \"currentKubernetesVersion\": \"1.21.9\",\n   \"dnsPrefix\":
-        \"cliakstest-clitest4lj6ceu2j-8ecadf\",\n   \"fqdn\": \"cliakstest-clitest4lj6ceu2j-8ecadf-3e106360.hcp.westus2.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-clitest4lj6ceu2j-8ecadf-3e106360.portal.hcp.westus2.azmk8s.io\",\n
+        \"cliakstest-clitesthx7levw2y-8ecadf\",\n   \"fqdn\": \"cliakstest-clitesthx7levw2y-8ecadf-a1cf2639.hcp.westus2.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitesthx7levw2y-8ecadf-a1cf2639.portal.hcp.westus2.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -51,10 +51,10 @@ interactions:
         \"1.21.9\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
-        \"AKSUbuntu-1804gen2containerd-2022.02.01\",\n     \"enableFIPS\": false\n
+        \"AKSUbuntu-1804gen2containerd-2022.03.02\",\n     \"enableFIPS\": false\n
         \   }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n
         \   \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa
-        AAAAB3NzaC1yc2EAAAADAQABAAABAQDJjZSgmQbO+3p9iGhxgy6d1c/TszedUmiHvDgFZgZcp7KMhP8xZspw/0Q0rP/6vcoWPb4qysTLIzX3kr/L752/j+DEE5A+N80r7sm5/6qmeLyT5guyFOCO4YydKddTlTxaizHZo1+P/wcS57NHvpon9vx08TiJXnxvzRTAlaJcsg+fvgLywa7IxyQ8zdMZub8oYlMS23BNoY92EOhD4ppmqpWuUYG/QG9UM70TYt5td9BmJlo0ZHGZNt1FLhhEug87M0F7KEkqTN8KxyGJJJ0AfS4VGg0+6+xRz00aywV6VBClLZpjiavgQrZVqqduXhSkJbWsKDx6dKbZgG49tK6x
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQCumQ7QuaQdPndgxn9hQULXqCXVDEmxKAKAKqkLYTy/yXSHURHnIap9+bhoGn9qwtBL9Ue2NNWSgNO/Qig3evn4cGgK5cDl+Q6NKKlEmyObga4JWBFrFKYu/apHCkPqQZClsX98qvcmDVOfoKpCp2KhaEPdA6uQPZRSpDYSlnAUUm0uOc/JL+9ka7lIpw9JNEuts+oVdeUjbB7nSLvjJx65I8XrhRJHszl2CyQg24t/sP1iCkiQLajnMIM6qfifdltiQJ3HZ6BL3SY69jG5prXBb3kINq+mcZwIe/N/OUeJRznRHr38wVKbzZuaPosWDSceMscoNIUB8bgOiqmVc1mz
         azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
         {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\n   },\n   \"nodeResourceGroup\":
         \"MC_clitest000001_cliakstest000001_westus2\",\n   \"enableRBAC\": true,\n
@@ -71,7 +71,7 @@ interactions:
         \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:06:04 GMT
+      - Mon, 21 Mar 2022 04:53:09 GMT
       expires:
       - '-1'
       pragma:
@@ -91,7 +91,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -109,23 +109,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:06:34 GMT
+      - Mon, 21 Mar 2022 04:53:40 GMT
       expires:
       - '-1'
       pragma:
@@ -157,23 +157,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:07:04 GMT
+      - Mon, 21 Mar 2022 04:54:10 GMT
       expires:
       - '-1'
       pragma:
@@ -205,23 +205,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:07:33 GMT
+      - Mon, 21 Mar 2022 04:54:40 GMT
       expires:
       - '-1'
       pragma:
@@ -253,23 +253,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:08:03 GMT
+      - Mon, 21 Mar 2022 04:55:10 GMT
       expires:
       - '-1'
       pragma:
@@ -301,23 +301,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:08:34 GMT
+      - Mon, 21 Mar 2022 04:55:40 GMT
       expires:
       - '-1'
       pragma:
@@ -349,23 +349,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:09:04 GMT
+      - Mon, 21 Mar 2022 04:56:10 GMT
       expires:
       - '-1'
       pragma:
@@ -397,23 +397,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:09:34 GMT
+      - Mon, 21 Mar 2022 04:56:40 GMT
       expires:
       - '-1'
       pragma:
@@ -445,23 +445,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:10:04 GMT
+      - Mon, 21 Mar 2022 04:57:10 GMT
       expires:
       - '-1'
       pragma:
@@ -493,23 +493,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:10:34 GMT
+      - Mon, 21 Mar 2022 04:57:40 GMT
       expires:
       - '-1'
       pragma:
@@ -541,23 +541,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:11:05 GMT
+      - Mon, 21 Mar 2022 04:58:10 GMT
       expires:
       - '-1'
       pragma:
@@ -589,24 +589,24 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/43e06db4-725b-452c-8dc1-efd4f8a75307?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f1d2d819-a636-421f-a497-cedf8dc2d882?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b46de043-5b72-2c45-8dc1-efd4f8a75307\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2022-02-16T08:06:04.0466666Z\",\n  \"endTime\":
-        \"2022-02-16T08:11:15.7909262Z\"\n }"
+      string: "{\n  \"name\": \"19d8d2f1-36a6-1f42-a497-cedf8dc2d882\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-03-21T04:53:10.26Z\",\n  \"endTime\":
+        \"2022-03-21T04:58:21.8787416Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '170'
+      - '165'
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:11:34 GMT
+      - Mon, 21 Mar 2022 04:58:40 GMT
       expires:
       - '-1'
       pragma:
@@ -638,10 +638,10 @@ interactions:
       ParameterSetName:
       - --resource-group --name --network-plugin --location --ssh-key-value -o
       User-Agent:
-      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-containerservice/16.5.0 Python/3.8.10
-        (Linux-5.11.0-1028-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
+        (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2022-01-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2022-02-02-preview
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\",\n
@@ -649,8 +649,8 @@ interactions:
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.21.9\",\n   \"currentKubernetesVersion\": \"1.21.9\",\n   \"dnsPrefix\":
-        \"cliakstest-clitest4lj6ceu2j-8ecadf\",\n   \"fqdn\": \"cliakstest-clitest4lj6ceu2j-8ecadf-3e106360.hcp.westus2.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-clitest4lj6ceu2j-8ecadf-3e106360.portal.hcp.westus2.azmk8s.io\",\n
+        \"cliakstest-clitesthx7levw2y-8ecadf\",\n   \"fqdn\": \"cliakstest-clitesthx7levw2y-8ecadf-a1cf2639.hcp.westus2.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitesthx7levw2y-8ecadf-a1cf2639.portal.hcp.westus2.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -660,17 +660,17 @@ interactions:
         \"1.21.9\",\n     \"enableNodePublicIP\": false,\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
-        \"AKSUbuntu-1804gen2containerd-2022.02.01\",\n     \"enableFIPS\": false\n
+        \"AKSUbuntu-1804gen2containerd-2022.03.02\",\n     \"enableFIPS\": false\n
         \   }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n
         \   \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa
-        AAAAB3NzaC1yc2EAAAADAQABAAABAQDJjZSgmQbO+3p9iGhxgy6d1c/TszedUmiHvDgFZgZcp7KMhP8xZspw/0Q0rP/6vcoWPb4qysTLIzX3kr/L752/j+DEE5A+N80r7sm5/6qmeLyT5guyFOCO4YydKddTlTxaizHZo1+P/wcS57NHvpon9vx08TiJXnxvzRTAlaJcsg+fvgLywa7IxyQ8zdMZub8oYlMS23BNoY92EOhD4ppmqpWuUYG/QG9UM70TYt5td9BmJlo0ZHGZNt1FLhhEug87M0F7KEkqTN8KxyGJJJ0AfS4VGg0+6+xRz00aywV6VBClLZpjiavgQrZVqqduXhSkJbWsKDx6dKbZgG49tK6x
+        AAAAB3NzaC1yc2EAAAADAQABAAABAQCumQ7QuaQdPndgxn9hQULXqCXVDEmxKAKAKqkLYTy/yXSHURHnIap9+bhoGn9qwtBL9Ue2NNWSgNO/Qig3evn4cGgK5cDl+Q6NKKlEmyObga4JWBFrFKYu/apHCkPqQZClsX98qvcmDVOfoKpCp2KhaEPdA6uQPZRSpDYSlnAUUm0uOc/JL+9ka7lIpw9JNEuts+oVdeUjbB7nSLvjJx65I8XrhRJHszl2CyQg24t/sP1iCkiQLajnMIM6qfifdltiQJ3HZ6BL3SY69jG5prXBb3kINq+mcZwIe/N/OUeJRznRHr38wVKbzZuaPosWDSceMscoNIUB8bgOiqmVc1mz
         azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
         {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\n   },\n   \"nodeResourceGroup\":
         \"MC_clitest000001_cliakstest000001_westus2\",\n   \"enableRBAC\": true,\n
         \  \"enablePodSecurityPolicy\": false,\n   \"networkProfile\": {\n    \"networkPlugin\":
         \"none\",\n    \"loadBalancerSku\": \"Standard\",\n    \"loadBalancerProfile\":
         {\n     \"managedOutboundIPs\": {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\":
-        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/e0479c9f-ffe6-461b-9b39-aa82628b2348\"\n
+        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/7bed74e6-c686-481f-99f1-612c91afac5d\"\n
         \     }\n     ]\n    },\n    \"serviceCidr\": \"10.0.0.0/16\",\n    \"dnsServiceIP\":
         \"10.0.0.10\",\n    \"dockerBridgeCidr\": \"172.17.0.1/16\",\n    \"outboundType\":
         \"loadBalancer\",\n    \"serviceCidrs\": [\n     \"10.0.0.0/16\"\n    ],\n
@@ -691,7 +691,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 16 Feb 2022 08:11:35 GMT
+      - Mon, 21 Mar 2022 04:58:40 GMT
       expires:
       - '-1'
       pragma:

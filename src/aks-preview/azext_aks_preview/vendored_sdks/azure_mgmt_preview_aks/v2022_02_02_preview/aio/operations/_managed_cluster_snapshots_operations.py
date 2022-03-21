@@ -20,18 +20,18 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._snapshots_operations import build_create_or_update_request, build_delete_request, build_get_request, build_list_by_resource_group_request, build_list_request, build_update_tags_request
+from ...operations._managed_cluster_snapshots_operations import build_create_or_update_request, build_delete_request, build_get_request, build_list_by_resource_group_request, build_list_request, build_update_tags_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class SnapshotsOperations:
-    """SnapshotsOperations async operations.
+class ManagedClusterSnapshotsOperations:
+    """ManagedClusterSnapshotsOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,18 +50,19 @@ class SnapshotsOperations:
     def list(
         self,
         **kwargs: Any
-    ) -> AsyncIterable["_models.SnapshotListResult"]:
-        """Gets a list of snapshots in the specified subscription.
+    ) -> AsyncIterable["_models.ManagedClusterSnapshotListResult"]:
+        """Gets a list of managed cluster snapshots in the specified subscription.
 
-        Gets a list of snapshots in the specified subscription.
+        Gets a list of managed cluster snapshots in the specified subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either SnapshotListResult or the result of cls(response)
+        :return: An iterator like instance of either ManagedClusterSnapshotListResult or the result of
+         cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.SnapshotListResult]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshotListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SnapshotListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterSnapshotListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -88,7 +89,7 @@ class SnapshotsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("SnapshotListResult", pipeline_response)
+            deserialized = self._deserialize("ManagedClusterSnapshotListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -110,27 +111,28 @@ class SnapshotsOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/snapshots'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/managedclustersnapshots'}  # type: ignore
 
     @distributed_trace
     def list_by_resource_group(
         self,
         resource_group_name: str,
         **kwargs: Any
-    ) -> AsyncIterable["_models.SnapshotListResult"]:
-        """Lists snapshots in the specified subscription and resource group.
+    ) -> AsyncIterable["_models.ManagedClusterSnapshotListResult"]:
+        """Lists managed cluster snapshots in the specified subscription and resource group.
 
-        Lists snapshots in the specified subscription and resource group.
+        Lists managed cluster snapshots in the specified subscription and resource group.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either SnapshotListResult or the result of cls(response)
+        :return: An iterator like instance of either ManagedClusterSnapshotListResult or the result of
+         cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.SnapshotListResult]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshotListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SnapshotListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterSnapshotListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -159,7 +161,7 @@ class SnapshotsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("SnapshotListResult", pipeline_response)
+            deserialized = self._deserialize("ManagedClusterSnapshotListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -181,7 +183,7 @@ class SnapshotsOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/snapshots'}  # type: ignore
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclustersnapshots'}  # type: ignore
 
     @distributed_trace_async
     async def get(
@@ -189,21 +191,21 @@ class SnapshotsOperations:
         resource_group_name: str,
         resource_name: str,
         **kwargs: Any
-    ) -> "_models.Snapshot":
-        """Gets a snapshot.
+    ) -> "_models.ManagedClusterSnapshot":
+        """Gets a managed cluster snapshot.
 
-        Gets a snapshot.
+        Gets a managed cluster snapshot.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.Snapshot
+        :return: ManagedClusterSnapshot, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterSnapshot"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -226,14 +228,14 @@ class SnapshotsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Snapshot', pipeline_response)
+        deserialized = self._deserialize('ManagedClusterSnapshot', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/snapshots/{resourceName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclustersnapshots/{resourceName}'}  # type: ignore
 
 
     @distributed_trace_async
@@ -241,25 +243,26 @@ class SnapshotsOperations:
         self,
         resource_group_name: str,
         resource_name: str,
-        parameters: "_models.Snapshot",
+        parameters: "_models.ManagedClusterSnapshot",
         **kwargs: Any
-    ) -> "_models.Snapshot":
-        """Creates or updates a snapshot.
+    ) -> "_models.ManagedClusterSnapshot":
+        """Creates or updates a managed cluster snapshot.
 
-        Creates or updates a snapshot.
+        Creates or updates a managed cluster snapshot.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
-        :param parameters: The snapshot to create or update.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.Snapshot
+        :param parameters: The managed cluster snapshot to create or update.
+        :type parameters:
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshot
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.Snapshot
+        :return: ManagedClusterSnapshot, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterSnapshot"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -267,7 +270,7 @@ class SnapshotsOperations:
 
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(parameters, 'Snapshot')
+        _json = self._serialize.body(parameters, 'ManagedClusterSnapshot')
 
         request = build_create_or_update_request(
             subscription_id=self._config.subscription_id,
@@ -288,17 +291,17 @@ class SnapshotsOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('Snapshot', pipeline_response)
+            deserialized = self._deserialize('ManagedClusterSnapshot', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('Snapshot', pipeline_response)
+            deserialized = self._deserialize('ManagedClusterSnapshot', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/snapshots/{resourceName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclustersnapshots/{resourceName}'}  # type: ignore
 
 
     @distributed_trace_async
@@ -308,23 +311,23 @@ class SnapshotsOperations:
         resource_name: str,
         parameters: "_models.TagsObject",
         **kwargs: Any
-    ) -> "_models.Snapshot":
-        """Updates tags on a snapshot.
+    ) -> "_models.ManagedClusterSnapshot":
+        """Updates tags on a managed cluster snapshot.
 
-        Updates tags on a snapshot.
+        Updates tags on a managed cluster snapshot.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
-        :param parameters: Parameters supplied to the Update snapshot Tags operation.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.TagsObject
+        :param parameters: Parameters supplied to the Update managed cluster snapshot Tags operation.
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.Snapshot
+        :return: ManagedClusterSnapshot, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterSnapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterSnapshot"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -352,14 +355,14 @@ class SnapshotsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Snapshot', pipeline_response)
+        deserialized = self._deserialize('ManagedClusterSnapshot', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    update_tags.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/snapshots/{resourceName}'}  # type: ignore
+    update_tags.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclustersnapshots/{resourceName}'}  # type: ignore
 
 
     @distributed_trace_async
@@ -369,11 +372,11 @@ class SnapshotsOperations:
         resource_name: str,
         **kwargs: Any
     ) -> None:
-        """Deletes a snapshot.
+        """Deletes a managed cluster snapshot.
 
-        Deletes a snapshot.
+        Deletes a managed cluster snapshot.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -408,5 +411,5 @@ class SnapshotsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/snapshots/{resourceName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedclustersnapshots/{resourceName}'}  # type: ignore
 

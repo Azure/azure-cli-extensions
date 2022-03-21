@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-03-21T04:29:01Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-03-21T04:22:22Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:02 GMT
+      - Mon, 21 Mar 2022 04:22:22 GMT
       expires:
       - '-1'
       pragma:
@@ -68,15 +68,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\",\r\n
-        \ \"etag\": \"W/\\\"816fa3cb-568c-48e6-8538-068972c0dad8\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"8ada09df-0374-4ffe-99d5-5877f0b661f3\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"b531ad09-a7f8-40b2-af7e-80c4c211356a\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"74739f1a-b882-46de-b93e-a80646c74629\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"11.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\",\r\n
-        \       \"etag\": \"W/\\\"816fa3cb-568c-48e6-8538-068972c0dad8\\\"\",\r\n
+        \       \"etag\": \"W/\\\"8ada09df-0374-4ffe-99d5-5877f0b661f3\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -87,7 +87,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/e113f841-8430-42e5-b068-8421c41c0272?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/27109188-b499-450d-920e-0f0e318eb7cd?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
@@ -95,7 +95,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:02 GMT
+      - Mon, 21 Mar 2022 04:22:23 GMT
       expires:
       - '-1'
       pragma:
@@ -108,7 +108,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2ee5f4c7-b064-481f-a50d-5543974fc24f
+      - 07d2cafe-fe10-4d52-a583-38c149a7aec1
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -130,7 +130,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/e113f841-8430-42e5-b068-8421c41c0272?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/27109188-b499-450d-920e-0f0e318eb7cd?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -142,7 +142,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:05 GMT
+      - Mon, 21 Mar 2022 04:22:26 GMT
       expires:
       - '-1'
       pragma:
@@ -159,7 +159,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fc8fe55f-6df1-4780-bd19-55d3e1ffd004
+      - 7bf1d100-e57e-431f-8481-02defb546029
     status:
       code: 200
       message: OK
@@ -183,15 +183,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\",\r\n
-        \ \"etag\": \"W/\\\"bf18786a-bf30-4912-9218-9118da8edcae\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"850914e9-0e8a-43e2-b5e2-5766a0781946\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"b531ad09-a7f8-40b2-af7e-80c4c211356a\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"74739f1a-b882-46de-b93e-a80646c74629\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"11.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\",\r\n
-        \       \"etag\": \"W/\\\"bf18786a-bf30-4912-9218-9118da8edcae\\\"\",\r\n
+        \       \"etag\": \"W/\\\"850914e9-0e8a-43e2-b5e2-5766a0781946\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -206,9 +206,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:06 GMT
+      - Mon, 21 Mar 2022 04:22:26 GMT
       etag:
-      - W/"bf18786a-bf30-4912-9218-9118da8edcae"
+      - W/"850914e9-0e8a-43e2-b5e2-5766a0781946"
       expires:
       - '-1'
       pragma:
@@ -225,7 +225,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f346c259-b4fa-4174-8f08-6aba58b363f7
+      - dee4c25d-6723-452f-8d1e-37fde90fc6c0
     status:
       code: 200
       message: OK
@@ -249,15 +249,15 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\",\r\n
-        \ \"etag\": \"W/\\\"bf18786a-bf30-4912-9218-9118da8edcae\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"850914e9-0e8a-43e2-b5e2-5766a0781946\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"b531ad09-a7f8-40b2-af7e-80c4c211356a\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"74739f1a-b882-46de-b93e-a80646c74629\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"11.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\",\r\n
-        \       \"etag\": \"W/\\\"bf18786a-bf30-4912-9218-9118da8edcae\\\"\",\r\n
+        \       \"etag\": \"W/\\\"850914e9-0e8a-43e2-b5e2-5766a0781946\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -272,9 +272,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:06 GMT
+      - Mon, 21 Mar 2022 04:22:26 GMT
       etag:
-      - W/"bf18786a-bf30-4912-9218-9118da8edcae"
+      - W/"850914e9-0e8a-43e2-b5e2-5766a0781946"
       expires:
       - '-1'
       pragma:
@@ -291,7 +291,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ccd8a8fb-b306-49ff-8a98-3dd2e2382971
+      - f151957f-beae-4512-b2d6-823845822f97
     status:
       code: 200
       message: OK
@@ -327,22 +327,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\",\r\n
-        \ \"etag\": \"W/\\\"48c9dd2e-3c6c-4ee8-9129-15851621f1d7\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"439a23f7-4d46-4e3d-9b31-e7a73d7da185\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"b531ad09-a7f8-40b2-af7e-80c4c211356a\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"74739f1a-b882-46de-b93e-a80646c74629\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"11.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\",\r\n
-        \       \"etag\": \"W/\\\"48c9dd2e-3c6c-4ee8-9129-15851621f1d7\\\"\",\r\n
+        \       \"etag\": \"W/\\\"439a23f7-4d46-4e3d-9b31-e7a73d7da185\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
         \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
         \     },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\",\r\n
-        \       \"etag\": \"W/\\\"48c9dd2e-3c6c-4ee8-9129-15851621f1d7\\\"\",\r\n
+        \       \"etag\": \"W/\\\"439a23f7-4d46-4e3d-9b31-e7a73d7da185\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -353,7 +353,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/deeb774f-8077-479f-bc3a-0724ae23778e?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/56b3062e-58f6-4a41-8eec-4c2e28c8f768?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
@@ -361,7 +361,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:08 GMT
+      - Mon, 21 Mar 2022 04:22:28 GMT
       expires:
       - '-1'
       pragma:
@@ -378,7 +378,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3d1a03bb-1088-444d-a234-9f0d58158210
+      - 60573f82-d8fb-4df2-afb9-0cce38ebc319
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -400,7 +400,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/deeb774f-8077-479f-bc3a-0724ae23778e?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/56b3062e-58f6-4a41-8eec-4c2e28c8f768?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -412,7 +412,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:11 GMT
+      - Mon, 21 Mar 2022 04:22:31 GMT
       expires:
       - '-1'
       pragma:
@@ -429,7 +429,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 55f44f19-5366-4029-92ee-f5f4bffdb090
+      - 0636ce2b-7321-41fb-844a-4b5276db38f7
     status:
       code: 200
       message: OK
@@ -453,22 +453,22 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cliakstest000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003\",\r\n
-        \ \"etag\": \"W/\\\"74ef30ab-1ff2-48db-b3d7-909a7da8c887\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"b87ee55c-6e35-4785-9ee8-1e3c5c761428\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"b531ad09-a7f8-40b2-af7e-80c4c211356a\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"74739f1a-b882-46de-b93e-a80646c74629\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"11.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"aks-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet\",\r\n
-        \       \"etag\": \"W/\\\"74ef30ab-1ff2-48db-b3d7-909a7da8c887\\\"\",\r\n
+        \       \"etag\": \"W/\\\"b87ee55c-6e35-4785-9ee8-1e3c5c761428\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"11.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
         \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
         \     },\r\n      {\r\n        \"name\": \"appgw-subnet\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\",\r\n
-        \       \"etag\": \"W/\\\"74ef30ab-1ff2-48db-b3d7-909a7da8c887\\\"\",\r\n
+        \       \"etag\": \"W/\\\"b87ee55c-6e35-4785-9ee8-1e3c5c761428\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"11.0.1.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -483,9 +483,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:11 GMT
+      - Mon, 21 Mar 2022 04:22:31 GMT
       etag:
-      - W/"74ef30ab-1ff2-48db-b3d7-909a7da8c887"
+      - W/"b87ee55c-6e35-4785-9ee8-1e3c5c761428"
       expires:
       - '-1'
       pragma:
@@ -502,7 +502,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d4918f66-115f-4fde-8411-0c3c96b67634
+      - 1ee10bf5-0258-4752-bce6-2e9db146a9c6
     status:
       code: 200
       message: OK
@@ -514,19 +514,18 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - aks create
+      - network public-ip create
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --allocation-method --sku -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-03-21T04:29:01Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-03-21T04:22:22Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -535,7 +534,878 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:10 GMT
+      - Mon, 21 Mar 2022 04:22:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "sku": {"name": "Standard"}, "properties": {"publicIPAllocationMethod":
+      "Static", "publicIPAddressVersion": "IPv4", "idleTimeoutInMinutes": 4}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network public-ip create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '167'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --allocation-method --sku -o
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip?api-version=2021-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"appgw-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip\",\r\n
+        \ \"etag\": \"W/\\\"68d0a70c-a542-4674-8beb-6a4fb2e506b6\\\"\",\r\n  \"location\":
+        \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
+        \   \"resourceGuid\": \"a5a67590-c631-45e4-bab9-bf7ff5fe5b0d\",\r\n    \"publicIPAddressVersion\":
+        \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\":
+        4,\r\n    \"ipTags\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
+        \ \"sku\": {\r\n    \"name\": \"Standard\",\r\n    \"tier\": \"Regional\"\r\n
+        \ }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/43dcc1f8-64fb-4f3d-93e2-8b85100dfd5f?api-version=2021-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '630'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 41146d48-6b65-46cd-bfa2-4a1d3eb96e88
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network public-ip create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --allocation-method --sku -o
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/operations/43dcc1f8-64fb-4f3d-93e2-8b85100dfd5f?api-version=2021-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9c2a996a-cf12-4ed0-a8f0-32380b1afac5
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network public-ip create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --allocation-method --sku -o
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip?api-version=2021-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"appgw-ip\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip\",\r\n
+        \ \"etag\": \"W/\\\"b4bb25cc-5448-4a3b-af8b-a9e5c7930c14\\\"\",\r\n  \"location\":
+        \"westus2\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"resourceGuid\": \"a5a67590-c631-45e4-bab9-bf7ff5fe5b0d\",\r\n    \"ipAddress\":
+        \"20.112.21.202\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"publicIPAllocationMethod\":
+        \"Static\",\r\n    \"idleTimeoutInMinutes\": 4,\r\n    \"ipTags\": []\r\n
+        \ },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n  \"sku\":
+        {\r\n    \"name\": \"Standard\",\r\n    \"tier\": \"Regional\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '666'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:33 GMT
+      etag:
+      - W/"b4bb25cc-5448-4a3b-af8b-a9e5c7930c14"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - bcb79c29-cdef-4068-a4b8-cebf4c58b017
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-03-21T04:22:22Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '305'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceGroup%20eq%20%27clitest000001%27%20and%20name%20eq%20%27cliakstest000003%27%20and%20resourceType%20eq%20%27Microsoft.Network%2FvirtualNetworks%27&api-version=2021-04-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2fvirtualNetworks%27&api-version=2021-04-01&%24skiptoken=eyJuZXh0TWFya2VyIjoiW3tcInRva2VuXCI6XCIrUklEOn5mN045QVB2UEs4WWpEbkVWQUFCZ0FRPT0jUlQ6MSNUUkM6MTAwMCNJU1Y6MiNJRU86NjU1NTEjRlBDOkFnakVWUUFBZ0FVQUFBUVFBQUFBRkFBQXhGVUFBSUFGQUFEQUFDRU9xRE5yZ0FIQUJBRWJnQUxBV0FRbEFHK0FBY0EvQVBJQTRBQUFDRStBRVFCVURLK0FaSUJoQURBQUV3QUFrSUkxOE4zVEFNaVdXQUFrQVBxQURJQWVnQ0NCQThBZ0lBSUFDQkFjZ0JhQUlRQW9BREVBK0FWTWdBUEFtQUVBQUdBQkZvQWlnSDZDZzRDVUFKaUpCQWhBQUFNQUhZQUJ3QVVBTG9BQndBVUJ3UVlBa0NJQUFLUUNBUDZCQWNBSUJDRUFNZ0hSQmdBTUZBQUE0R29LZ1A4SEFISUFBT0FQQUNJQWNBZ0FCQ0lBQUVnQkFMTUJrcUtRRUZBQXo0QUJnTVZWQUFDQUJRQUFRQUNuREFEQUFOaHg1NzRBN05lOWRnTUFkZ0FBOEFjQTRFRHdKd0IzTFFqL2dBZkFXQW5EQUFBQkFBQTBEQ2FJQVFBekFCQUlBQ0FJQU9NQkFKQkJEZ2dBeDFVQUFJQUZBQUFRQU1HWkQ0QUJ3SWdFYW9BQndJSUFrNExOVlFBQWdBVUFBRHdBSVNzR0FETUFnQU1BSUNOQ1RJQUN3RkhGbUJCQkFnQi9jZ0FPQUFBQks0QmhBQVlJQVlVbWdBVEFBUUVRQWtBQUFBZ1hnQVNBajRBMWd3dUEwRlVBQUlBRkFBQkdBSCtDQUlBL2dBUEFCUUFBWUFaRVZBQUFna0tGQlNFQkFISUJBTUFmQUUrQUFzQURBQ0FBSFlDQ0FFSUFBQkR5aE9hQVBJQUV3QUNFQUNRQUVBQUlJUUFBQnZhQ0RJRFNWUUFBZ0FVQUFKQUE0UkdTQUNJQUJCRUlBSUlNa0FBQUFUdUFBY0FpQkJFQ0FNQkJBTUFDRVFCUVZsVUFRQ0FFQklCQUVjR0FBRUVDd0IraUFBNEFBQ0FpQUFCa0FRRDFoQWJBQ0JBQXFDZ1FRQUVBQUFZQU5BQUF3QUVBQUVnYkFFTUF3QVFsU1NnRWZvRU1nRklBQU9BUEFHRUFBQTRRZ0IrQUlnQUFGQUFJRDRRUWdMdUFESUFGd0NDQWdBSkFBQUNBQWdDWGdRcUEwMVVBQUlBRkFBQ1dBTUV2QmdBekFCd0FBQ0FUQ1YyQUE4Q29wQ3dBRWdEaUFRRDhBUUJ5QUlBREFFQlZnSUlBQURBUUFPZUNBY0NnQlJTQUZBQkVDZ0FFQUFTQUFEcUFDb0FCZ0RhQUJZQTBnQVRBUkFBd0FBSUFnQUFmZ0FMQUFRRUFKYk1BZ0lBU0FnZ0FRUUFjQUJFQU1FMDBBQUF3Qm9NVEFnRUEwb0JyZ0JLQVVRQWdCaklBaEJBSUFKRUErQU16Z0FIQUJFQkJBSUFGSVlBWGdOUlZBQUNBQlFBQVlBQTJoQVhBQUxBQUFJZ1FRSWdRQUZNQ0FHQUlBQWdBSVFCQUJUTUFBSkJRSUFRQVpBQ0NLRWtvQUFSQUJJRUI4QWRTQUFCd0FBUW9nRUVBSkJCeEFVQWdIWUFEd0FrQUFBZ2hBZHVCRG9BRXdBZ0NLQkFBQUFBS0tJQUFnR1NDQ0lEc1Z3QUFnQVVBQUFnQUlqOUFEOU1BZjREdFZ3QUFnQVVBQUFZQTA0Q0JHR0FESUZnQUFJQUZBQUFDQVArK0lWZ0FBSUFGQUFBR0FEMnFVUWdBWUMxWkFBQ0FCUUFBQWdDd3VUSlpBQUNBQlFBQUJBRGhDd3dBVkZrQUFJQUZBQUFDQUltR2JGa0FBSUFGQUFBRUFJV0tBNEJ4V1FBQWdBVUFBQVFBZ1RNQVVObGFBQUNBQlFBQUJBQXhKZ0JnM2xvQUFJQUZBQUFPQU9PZkhZQUR3QUJDQUFBUEFCMkIzbHNBQUlBRkFBQU1BT0lhQUdBZ0FEaUFBY0JnSXVaYkFBQ0FCUUFBRUFDcXRTNkFBWUJZZ0FIQUlCQWhBSUFRWmx3QUFJQUZBQUFVQU5TUXk0Z1RBQURDQUFFUWdCSUFnQUVBQ09lQWFWd0FBSUFGQUFBQ0FGR2NhMXdBQUlBRkFBQTRBRE1rd0FjQWxBSUF3UURJQWU2QVE0SHZnd0xBQUVud0FOS0FWSUMramdMQUFJRVFBR3VCQXNDNEFGQmdrUUJBMEZFQUZSQWlnRTZCYkZ3QUFJQUZBQUFLQUdJS0FPSU9BTW1BWjVkdlhBQUFnQVVBQUFvQVFUZ1FCeUVBSFFDeWduQmNBQUNBQlFBQUpBQnlGZ0Q0Qi93UlFCOEEwNEFIZ0FqQVFFRUJKQ2dZSUExUUhJWUJXZ2dRQ0ZFQVFBR2JYQUFBZ0FVQUFCQUFVUTJBQXhFQUFCY0JnY0dCZ1JNd0FKNWNBQUNBQlFBQUVBQXB1UWVBRG9BQndBa0FNb0FBZ0VlQnBWd0FBSUFGQUFBS0FGSVVBZ0lDQURFQVNnQUVFQUFBQUJRQUFBSUFCS0U9XCIsXCJyYW5nZVwiOntcIm1pblwiOlwiMDVDMUVGQ0JFMTI3NjRcIixcIm1heFwiOlwiRkZcIn19XSJ9"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2960'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27cliakstest000003%27+and+resourceType+eq+%27Microsoft.Network%2FvirtualNetworks%27&api-version=2021-04-01&%24skiptoken=eyJuZXh0TWFya2VyIjoiW3tcInRva2VuXCI6XCIrUklEOn5mN045QVB2UEs4WWpEbkVWQUFCZ0FRPT0jUlQ6MSNUUkM6MTAwMCNJU1Y6MiNJRU86NjU1NTEjRlBDOkFnakVWUUFBZ0FVQUFBUVFBQUFBRkFBQXhGVUFBSUFGQUFEQUFDRU9xRE5yZ0FIQUJBRWJnQUxBV0FRbEFHK0FBY0EvQVBJQTRBQUFDRStBRVFCVURLK0FaSUJoQURBQUV3QUFrSUkxOE4zVEFNaVdXQUFrQVBxQURJQWVnQ0NCQThBZ0lBSUFDQkFjZ0JhQUlRQW9BREVBK0FWTWdBUEFtQUVBQUdBQkZvQWlnSDZDZzRDVUFKaUpCQWhBQUFNQUhZQUJ3QVVBTG9BQndBVUJ3UVlBa0NJQUFLUUNBUDZCQWNBSUJDRUFNZ0hSQmdBTUZBQUE0R29LZ1A4SEFISUFBT0FQQUNJQWNBZ0FCQ0lBQUVnQkFMTUJrcUtRRUZBQXo0QUJnTVZWQUFDQUJRQUFRQUNuREFEQUFOaHg1NzRBN05lOWRnTUFkZ0FBOEFjQTRFRHdKd0IzTFFqL2dBZkFXQW5EQUFBQkFBQTBEQ2FJQVFBekFCQUlBQ0FJQU9NQkFKQkJEZ2dBeDFVQUFJQUZBQUFRQU1HWkQ0QUJ3SWdFYW9BQndJSUFrNExOVlFBQWdBVUFBRHdBSVNzR0FETUFnQU1BSUNOQ1RJQUN3RkhGbUJCQkFnQi9jZ0FPQUFBQks0QmhBQVlJQVlVbWdBVEFBUUVRQWtBQUFBZ1hnQVNBajRBMWd3dUEwRlVBQUlBRkFBQkdBSCtDQUlBL2dBUEFCUUFBWUFaRVZBQUFna0tGQlNFQkFISUJBTUFmQUUrQUFzQURBQ0FBSFlDQ0FFSUFBQkR5aE9hQVBJQUV3QUNFQUNRQUVBQUlJUUFBQnZhQ0RJRFNWUUFBZ0FVQUFKQUE0UkdTQUNJQUJCRUlBSUlNa0FBQUFUdUFBY0FpQkJFQ0FNQkJBTUFDRVFCUVZsVUFRQ0FFQklCQUVjR0FBRUVDd0IraUFBNEFBQ0FpQUFCa0FRRDFoQWJBQ0JBQXFDZ1FRQUVBQUFZQU5BQUF3QUVBQUVnYkFFTUF3QVFsU1NnRWZvRU1nRklBQU9BUEFHRUFBQTRRZ0IrQUlnQUFGQUFJRDRRUWdMdUFESUFGd0NDQWdBSkFBQUNBQWdDWGdRcUEwMVVBQUlBRkFBQ1dBTUV2QmdBekFCd0FBQ0FUQ1YyQUE4Q29wQ3dBRWdEaUFRRDhBUUJ5QUlBREFFQlZnSUlBQURBUUFPZUNBY0NnQlJTQUZBQkVDZ0FFQUFTQUFEcUFDb0FCZ0RhQUJZQTBnQVRBUkFBd0FBSUFnQUFmZ0FMQUFRRUFKYk1BZ0lBU0FnZ0FRUUFjQUJFQU1FMDBBQUF3Qm9NVEFnRUEwb0JyZ0JLQVVRQWdCaklBaEJBSUFKRUErQU16Z0FIQUJFQkJBSUFGSVlBWGdOUlZBQUNBQlFBQVlBQTJoQVhBQUxBQUFJZ1FRSWdRQUZNQ0FHQUlBQWdBSVFCQUJUTUFBSkJRSUFRQVpBQ0NLRWtvQUFSQUJJRUI4QWRTQUFCd0FBUW9nRUVBSkJCeEFVQWdIWUFEd0FrQUFBZ2hBZHVCRG9BRXdBZ0NLQkFBQUFBS0tJQUFnR1NDQ0lEc1Z3QUFnQVVBQUFnQUlqOUFEOU1BZjREdFZ3QUFnQVVBQUFZQTA0Q0JHR0FESUZnQUFJQUZBQUFDQVArK0lWZ0FBSUFGQUFBR0FEMnFVUWdBWUMxWkFBQ0FCUUFBQWdDd3VUSlpBQUNBQlFBQUJBRGhDd3dBVkZrQUFJQUZBQUFDQUltR2JGa0FBSUFGQUFBRUFJV0tBNEJ4V1FBQWdBVUFBQVFBZ1RNQVVObGFBQUNBQlFBQUJBQXhKZ0JnM2xvQUFJQUZBQUFPQU9PZkhZQUR3QUJDQUFBUEFCMkIzbHNBQUlBRkFBQU1BT0lhQUdBZ0FEaUFBY0JnSXVaYkFBQ0FCUUFBRUFDcXRTNkFBWUJZZ0FIQUlCQWhBSUFRWmx3QUFJQUZBQUFVQU5TUXk0Z1RBQURDQUFFUWdCSUFnQUVBQ09lQWFWd0FBSUFGQUFBQ0FGR2NhMXdBQUlBRkFBQTRBRE1rd0FjQWxBSUF3UURJQWU2QVE0SHZnd0xBQUVud0FOS0FWSUMramdMQUFJRVFBR3VCQXNDNEFGQmdrUUJBMEZFQUZSQWlnRTZCYkZ3QUFJQUZBQUFLQUdJS0FPSU9BTW1BWjVkdlhBQUFnQVVBQUFvQVFUZ1FCeUVBSFFDeWduQmNBQUNBQlFBQUpBQnlGZ0Q0Qi93UlFCOEEwNEFIZ0FqQVFFRUJKQ2dZSUExUUhJWUJXZ2dRQ0ZFQVFBR2JYQUFBZ0FVQUFCQUFVUTJBQXhFQUFCY0JnY0dCZ1JNd0FKNWNBQUNBQlFBQUVBQXB1UWVBRG9BQndBa0FNb0FBZ0VlQnBWd0FBSUFGQUFBS0FGSVVBZ0lDQURFQVNnQUVFQUFBQUJRQUFBSUFCS0U9XCIsXCJyYW5nZVwiOntcIm1pblwiOlwiMDVDMUVGQ0JFMTI3NjRcIixcIm1heFwiOlwiRkZcIn19XSJ9
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003","name":"cliakstest000003","type":"Microsoft.Network/virtualNetworks","location":"westus2","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '262'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceGroup%20eq%20%27clitest000001%27%20and%20name%20eq%20%27appgw-ip%27%20and%20resourceType%20eq%20%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2021-04-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2fpublicIPAddresses%27&api-version=2021-04-01&%24skiptoken=eyJuZXh0TWFya2VyIjoiW3tcInRva2VuXCI6XCIrUklEOn5mN045QVB2UEs4WWpEbkVWQUFCZ0FRPT0jUlQ6MSNUUkM6MTAwMCNJU1Y6MiNJRU86NjU1NTEjRlBDOkFnakVWUUFBZ0FVQUFBUVFBQUFBRkFBQXhGVUFBSUFGQUFEQUFDRU9xRE5yZ0FIQUJBRWJnQUxBV0FRbEFHK0FBY0EvQVBJQTRBQUFDRStBRVFCVURLK0FaSUJoQURBQUV3QUFrSUkxOE4zVEFNaVdXQUFrQVBxQURJQWVnQ0NCQThBZ0lBSUFDQkFjZ0JhQUlRQW9BREVBK0FWTWdBUEFtQUVBQUdBQkZvQWlnSDZDZzRDVUFKaUpCQWhBQUFNQUhZQUJ3QVVBTG9BQndBVUJ3UVlBa0NJQUFLUUNBUDZCQWNBSUJDRUFNZ0hSQmdBTUZBQUE0R29LZ1A4SEFISUFBT0FQQUNJQWNBZ0FCQ0lBQUVnQkFMTUJrcUtRRUZBQXo0QUJnTVZWQUFDQUJRQUFRQUNuREFEQUFOaHg1NzRBN05lOWRnTUFkZ0FBOEFjQTRFRHdKd0IzTFFqL2dBZkFXQW5EQUFBQkFBQTBEQ2FJQVFBekFCQUlBQ0FJQU9NQkFKQkJEZ2dBeDFVQUFJQUZBQUFRQU1HWkQ0QUJ3SWdFYW9BQndJSUFrNExOVlFBQWdBVUFBRHdBSVNzR0FETUFnQU1BSUNOQ1RJQUN3RkhGbUJCQkFnQi9jZ0FPQUFBQks0QmhBQVlJQVlVbWdBVEFBUUVRQWtBQUFBZ1hnQVNBajRBMWd3dUEwRlVBQUlBRkFBQkdBSCtDQUlBL2dBUEFCUUFBWUFaRVZBQUFna0tGQlNFQkFISUJBTUFmQUUrQUFzQURBQ0FBSFlDQ0FFSUFBQkR5aE9hQVBJQUV3QUNFQUNRQUVBQUlJUUFBQnZhQ0RJRFNWUUFBZ0FVQUFKQUE0UkdTQUNJQUJCRUlBSUlNa0FBQUFUdUFBY0FpQkJFQ0FNQkJBTUFDRVFCUVZsVUFRQ0FFQklCQUVjR0FBRUVDd0IraUFBNEFBQ0FpQUFCa0FRRDFoQWJBQ0JBQXFDZ1FRQUVBQUFZQU5BQUF3QUVBQUVnYkFFTUF3QVFsU1NnRWZvRU1nRklBQU9BUEFHRUFBQTRRZ0IrQUlnQUFGQUFJRDRRUWdMdUFESUFGd0NDQWdBSkFBQUNBQWdDWGdRcUEwMVVBQUlBRkFBQ1dBTUV2QmdBekFCd0FBQ0FUQ1YyQUE4Q29wQ3dBRWdEaUFRRDhBUUJ5QUlBREFFQlZnSUlBQURBUUFPZUNBY0NnQlJTQUZBQkVDZ0FFQUFTQUFEcUFDb0FCZ0RhQUJZQTBnQVRBUkFBd0FBSUFnQUFmZ0FMQUFRRUFKYk1BZ0lBU0FnZ0FRUUFjQUJFQU1FMDBBQUF3Qm9NVEFnRUEwb0JyZ0JLQVVRQWdCaklBaEJBSUFKRUErQU16Z0FIQUJFQkJBSUFGSVlBWGdOUlZBQUNBQlFBQVlBQTJoQVhBQUxBQUFJZ1FRSWdRQUZNQ0FHQUlBQWdBSVFCQUJUTUFBSkJRSUFRQVpBQ0NLRWtvQUFSQUJJRUI4QWRTQUFCd0FBUW9nRUVBSkJCeEFVQWdIWUFEd0FrQUFBZ2hBZHVCRG9BRXdBZ0NLQkFBQUFBS0tJQUFnR1NDQ0lEc1Z3QUFnQVVBQUFnQUlqOUFEOU1BZjREdFZ3QUFnQVVBQUFZQTA0Q0JHR0FESUZnQUFJQUZBQUFDQVArK0lWZ0FBSUFGQUFBR0FEMnFVUWdBWUMxWkFBQ0FCUUFBQWdDd3VUSlpBQUNBQlFBQUJBRGhDd3dBVkZrQUFJQUZBQUFDQUltR2JGa0FBSUFGQUFBRUFJV0tBNEJ4V1FBQWdBVUFBQVFBZ1RNQVVObGFBQUNBQlFBQUJBQXhKZ0JnM2xvQUFJQUZBQUFPQU9PZkhZQUR3QUJDQUFBUEFCMkIzbHNBQUlBRkFBQU1BT0lhQUdBZ0FEaUFBY0JnSXVaYkFBQ0FCUUFBRUFDcXRTNkFBWUJZZ0FIQUlCQWhBSUFRWmx3QUFJQUZBQUFVQU5TUXk0Z1RBQURDQUFFUWdCSUFnQUVBQ09lQWFWd0FBSUFGQUFBQ0FGR2NhMXdBQUlBRkFBQTRBRE1rd0FjQWxBSUF3UURJQWU2QVE0SHZnd0xBQUVud0FOS0FWSUMramdMQUFJRVFBR3VCQXNDNEFGQmdrUUJBMEZFQUZSQWlnRTZCYkZ3QUFJQUZBQUFLQUdJS0FPSU9BTW1BWjVkdlhBQUFnQVVBQUFvQVFUZ1FCeUVBSFFDeWduQmNBQUNBQlFBQUpBQnlGZ0Q0Qi93UlFCOEEwNEFIZ0FqQVFFRUJKQ2dZSUExUUhJWUJXZ2dRQ0ZFQVFBR2JYQUFBZ0FVQUFCQUFVUTJBQXhFQUFCY0JnY0dCZ1JNd0FKNWNBQUNBQlFBQUVBQXB1UWVBRG9BQndBa0FNb0FBZ0VlQnBWd0FBSUFGQUFBS0FGSVVBZ0lDQURFQVNnQUVFQUFBQUJRQUFBSUFCS0U9XCIsXCJyYW5nZVwiOntcIm1pblwiOlwiMDVDMUVGQ0JFMTI3NjRcIixcIm1heFwiOlwiRkZcIn19XSJ9"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2954'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?%24filter=resourceGroup+eq+%27clitest000001%27+and+name+eq+%27appgw-ip%27+and+resourceType+eq+%27Microsoft.Network%2FpublicIPAddresses%27&api-version=2021-04-01&%24skiptoken=eyJuZXh0TWFya2VyIjoiW3tcInRva2VuXCI6XCIrUklEOn5mN045QVB2UEs4WWpEbkVWQUFCZ0FRPT0jUlQ6MSNUUkM6MTAwMCNJU1Y6MiNJRU86NjU1NTEjRlBDOkFnakVWUUFBZ0FVQUFBUVFBQUFBRkFBQXhGVUFBSUFGQUFEQUFDRU9xRE5yZ0FIQUJBRWJnQUxBV0FRbEFHK0FBY0EvQVBJQTRBQUFDRStBRVFCVURLK0FaSUJoQURBQUV3QUFrSUkxOE4zVEFNaVdXQUFrQVBxQURJQWVnQ0NCQThBZ0lBSUFDQkFjZ0JhQUlRQW9BREVBK0FWTWdBUEFtQUVBQUdBQkZvQWlnSDZDZzRDVUFKaUpCQWhBQUFNQUhZQUJ3QVVBTG9BQndBVUJ3UVlBa0NJQUFLUUNBUDZCQWNBSUJDRUFNZ0hSQmdBTUZBQUE0R29LZ1A4SEFISUFBT0FQQUNJQWNBZ0FCQ0lBQUVnQkFMTUJrcUtRRUZBQXo0QUJnTVZWQUFDQUJRQUFRQUNuREFEQUFOaHg1NzRBN05lOWRnTUFkZ0FBOEFjQTRFRHdKd0IzTFFqL2dBZkFXQW5EQUFBQkFBQTBEQ2FJQVFBekFCQUlBQ0FJQU9NQkFKQkJEZ2dBeDFVQUFJQUZBQUFRQU1HWkQ0QUJ3SWdFYW9BQndJSUFrNExOVlFBQWdBVUFBRHdBSVNzR0FETUFnQU1BSUNOQ1RJQUN3RkhGbUJCQkFnQi9jZ0FPQUFBQks0QmhBQVlJQVlVbWdBVEFBUUVRQWtBQUFBZ1hnQVNBajRBMWd3dUEwRlVBQUlBRkFBQkdBSCtDQUlBL2dBUEFCUUFBWUFaRVZBQUFna0tGQlNFQkFISUJBTUFmQUUrQUFzQURBQ0FBSFlDQ0FFSUFBQkR5aE9hQVBJQUV3QUNFQUNRQUVBQUlJUUFBQnZhQ0RJRFNWUUFBZ0FVQUFKQUE0UkdTQUNJQUJCRUlBSUlNa0FBQUFUdUFBY0FpQkJFQ0FNQkJBTUFDRVFCUVZsVUFRQ0FFQklCQUVjR0FBRUVDd0IraUFBNEFBQ0FpQUFCa0FRRDFoQWJBQ0JBQXFDZ1FRQUVBQUFZQU5BQUF3QUVBQUVnYkFFTUF3QVFsU1NnRWZvRU1nRklBQU9BUEFHRUFBQTRRZ0IrQUlnQUFGQUFJRDRRUWdMdUFESUFGd0NDQWdBSkFBQUNBQWdDWGdRcUEwMVVBQUlBRkFBQ1dBTUV2QmdBekFCd0FBQ0FUQ1YyQUE4Q29wQ3dBRWdEaUFRRDhBUUJ5QUlBREFFQlZnSUlBQURBUUFPZUNBY0NnQlJTQUZBQkVDZ0FFQUFTQUFEcUFDb0FCZ0RhQUJZQTBnQVRBUkFBd0FBSUFnQUFmZ0FMQUFRRUFKYk1BZ0lBU0FnZ0FRUUFjQUJFQU1FMDBBQUF3Qm9NVEFnRUEwb0JyZ0JLQVVRQWdCaklBaEJBSUFKRUErQU16Z0FIQUJFQkJBSUFGSVlBWGdOUlZBQUNBQlFBQVlBQTJoQVhBQUxBQUFJZ1FRSWdRQUZNQ0FHQUlBQWdBSVFCQUJUTUFBSkJRSUFRQVpBQ0NLRWtvQUFSQUJJRUI4QWRTQUFCd0FBUW9nRUVBSkJCeEFVQWdIWUFEd0FrQUFBZ2hBZHVCRG9BRXdBZ0NLQkFBQUFBS0tJQUFnR1NDQ0lEc1Z3QUFnQVVBQUFnQUlqOUFEOU1BZjREdFZ3QUFnQVVBQUFZQTA0Q0JHR0FESUZnQUFJQUZBQUFDQVArK0lWZ0FBSUFGQUFBR0FEMnFVUWdBWUMxWkFBQ0FCUUFBQWdDd3VUSlpBQUNBQlFBQUJBRGhDd3dBVkZrQUFJQUZBQUFDQUltR2JGa0FBSUFGQUFBRUFJV0tBNEJ4V1FBQWdBVUFBQVFBZ1RNQVVObGFBQUNBQlFBQUJBQXhKZ0JnM2xvQUFJQUZBQUFPQU9PZkhZQUR3QUJDQUFBUEFCMkIzbHNBQUlBRkFBQU1BT0lhQUdBZ0FEaUFBY0JnSXVaYkFBQ0FCUUFBRUFDcXRTNkFBWUJZZ0FIQUlCQWhBSUFRWmx3QUFJQUZBQUFVQU5TUXk0Z1RBQURDQUFFUWdCSUFnQUVBQ09lQWFWd0FBSUFGQUFBQ0FGR2NhMXdBQUlBRkFBQTRBRE1rd0FjQWxBSUF3UURJQWU2QVE0SHZnd0xBQUVud0FOS0FWSUMramdMQUFJRVFBR3VCQXNDNEFGQmdrUUJBMEZFQUZSQWlnRTZCYkZ3QUFJQUZBQUFLQUdJS0FPSU9BTW1BWjVkdlhBQUFnQVVBQUFvQVFUZ1FCeUVBSFFDeWduQmNBQUNBQlFBQUpBQnlGZ0Q0Qi93UlFCOEEwNEFIZ0FqQVFFRUJKQ2dZSUExUUhJWUJXZ2dRQ0ZFQVFBR2JYQUFBZ0FVQUFCQUFVUTJBQXhFQUFCY0JnY0dCZ1JNd0FKNWNBQUNBQlFBQUVBQXB1UWVBRG9BQndBa0FNb0FBZ0VlQnBWd0FBSUFGQUFBS0FGSVVBZ0lDQURFQVNnQUVFQUFBQUJRQUFBSUFCS0U9XCIsXCJyYW5nZVwiOntcIm1pblwiOlwiMDVDMUVGQ0JFMTI3NjRcIixcIm1heFwiOlwiRkZcIn19XSJ9
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip","name":"appgw-ip","type":"Microsoft.Network/publicIPAddresses","sku":{"name":"Standard"},"location":"westus2"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '266'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "parameters": {}, "variables": {"appGwID": "[resourceId(''Microsoft.Network/applicationGateways'',
+      ''appgw'')]"}, "resources": [{"type": "Microsoft.Network/applicationGateways",
+      "name": "appgw", "location": "westus2", "tags": {}, "apiVersion": "2021-05-01",
+      "dependsOn": [], "properties": {"backendAddressPools": [{"name": "appGatewayBackendPool"}],
+      "backendHttpSettingsCollection": [{"name": "appGatewayBackendHttpSettings",
+      "properties": {"Port": 80, "Protocol": "Http", "CookieBasedAffinity": "disabled",
+      "connectionDraining": {"enabled": false, "drainTimeoutInSec": 1}}}], "frontendIPConfigurations":
+      [{"name": "appGatewayFrontendIP", "properties": {"publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip"}}}],
+      "frontendPorts": [{"name": "appGatewayFrontendPort", "properties": {"Port":
+      80}}], "gatewayIPConfigurations": [{"name": "appGatewayFrontendIP", "properties":
+      {"subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet"}}}],
+      "httpListeners": [{"name": "appGatewayHttpListener", "properties": {"FrontendIpConfiguration":
+      {"Id": "[concat(variables(''appGwID''), ''/frontendIPConfigurations/appGatewayFrontendIP'')]"},
+      "FrontendPort": {"Id": "[concat(variables(''appGwID''), ''/frontendPorts/appGatewayFrontendPort'')]"},
+      "Protocol": "http", "SslCertificate": null}}], "sku": {"name": "Standard_v2",
+      "tier": "Standard_v2", "capacity": 2}, "requestRoutingRules": [{"Name": "rule1",
+      "properties": {"RuleType": "Basic", "httpListener": {"id": "[concat(variables(''appGwID''),
+      ''/httpListeners/appGatewayHttpListener'')]"}, "backendAddressPool": {"id":
+      "[concat(variables(''appGwID''), ''/backendAddressPools/appGatewayBackendPool'')]"},
+      "backendHttpSettings": {"id": "[concat(variables(''appGwID''), ''/backendHttpSettingsCollection/appGatewayBackendHttpSettings'')]"}}}],
+      "privateLinkConfigurations": []}, "zones": null}], "outputs": {"applicationGateway":
+      {"type": "object", "value": "[reference(''appgw'')]"}}}, "parameters": {}, "mode":
+      "incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2320'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_vh8RvoDiatObTKzeWZj7aUvtUMxpgkMf","name":"ag_deploy_vh8RvoDiatObTKzeWZj7aUvtUMxpgkMf","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6094353580476963116","parameters":{},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2022-03-21T04:22:36.0087272Z","duration":"PT0.0002381S","correlationId":"cc9c3f3f-4a79-430b-82d7-54ee6fde7bd2","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"applicationGateways","locations":["westus2"]}]}],"dependencies":[]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_vh8RvoDiatObTKzeWZj7aUvtUMxpgkMf/operationStatuses/08585537703299926287?api-version=2021-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '658'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:22:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:23:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:23:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:24:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:24:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:25:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:25:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:26:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:26:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585537703299926287?api-version=2021-04-01
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:27:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network application-gateway create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --public-ip-address --subnet
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/ag_deploy_vh8RvoDiatObTKzeWZj7aUvtUMxpgkMf","name":"ag_deploy_vh8RvoDiatObTKzeWZj7aUvtUMxpgkMf","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6094353580476963116","parameters":{},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2022-03-21T04:26:37.2754487Z","duration":"PT4M1.2669596S","correlationId":"cc9c3f3f-4a79-430b-82d7-54ee6fde7bd2","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"applicationGateways","locations":["westus2"]}]}],"dependencies":[],"outputs":{"applicationGateway":{"type":"Object","value":{"provisioningState":"Succeeded","resourceGuid":"f61b71a8-df4d-41ed-abe2-84d1f332f28f","sku":{"name":"Standard_v2","tier":"Standard_v2","capacity":2},"operationalState":"Running","gatewayIPConfigurations":[{"name":"appGatewayFrontendIP","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/gatewayIPConfigurations/appGatewayFrontendIP","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet"}},"type":"Microsoft.Network/applicationGateways/gatewayIPConfigurations"}],"sslCertificates":[],"trustedRootCertificates":[],"trustedClientCertificates":[],"sslProfiles":[],"frontendIPConfigurations":[{"name":"appGatewayFrontendIP","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/frontendIPConfigurations/appGatewayFrontendIP","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","type":"Microsoft.Network/applicationGateways/frontendIPConfigurations","properties":{"provisioningState":"Succeeded","privateIPAllocationMethod":"Dynamic","publicIPAddress":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/appgw-ip"},"httpListeners":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/httpListeners/appGatewayHttpListener"}]}}],"frontendPorts":[{"name":"appGatewayFrontendPort","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/frontendPorts/appGatewayFrontendPort","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","port":80,"httpListeners":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/httpListeners/appGatewayHttpListener"}]},"type":"Microsoft.Network/applicationGateways/frontendPorts"}],"backendAddressPools":[{"name":"appGatewayBackendPool","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/backendAddressPools/appGatewayBackendPool","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","backendAddresses":[],"requestRoutingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/requestRoutingRules/rule1"}]},"type":"Microsoft.Network/applicationGateways/backendAddressPools"}],"loadDistributionPolicies":[],"backendHttpSettingsCollection":[{"name":"appGatewayBackendHttpSettings","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/backendHttpSettingsCollection/appGatewayBackendHttpSettings","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","port":80,"protocol":"Http","cookieBasedAffinity":"Disabled","connectionDraining":{"enabled":false,"drainTimeoutInSec":1},"pickHostNameFromBackendAddress":false,"requestTimeout":30,"requestRoutingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/requestRoutingRules/rule1"}]},"type":"Microsoft.Network/applicationGateways/backendHttpSettingsCollection"}],"httpListeners":[{"name":"appGatewayHttpListener","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/httpListeners/appGatewayHttpListener","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","frontendIPConfiguration":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/frontendIPConfigurations/appGatewayFrontendIP"},"frontendPort":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/frontendPorts/appGatewayFrontendPort"},"protocol":"Http","hostNames":[],"requireServerNameIndication":false,"requestRoutingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/requestRoutingRules/rule1"}]},"type":"Microsoft.Network/applicationGateways/httpListeners"}],"urlPathMaps":[],"requestRoutingRules":[{"name":"rule1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/requestRoutingRules/rule1","etag":"W/\"c0e89407-bc1d-4f4e-bed3-dcca8549d299\"","properties":{"provisioningState":"Succeeded","ruleType":"Basic","httpListener":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/httpListeners/appGatewayHttpListener"},"backendAddressPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/backendAddressPools/appGatewayBackendPool"},"backendHttpSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw/backendHttpSettingsCollection/appGatewayBackendHttpSettings"}},"type":"Microsoft.Network/applicationGateways/requestRoutingRules"}],"probes":[],"rewriteRuleSets":[],"redirectConfigurations":[],"privateLinkConfigurations":[],"privateEndpointConnections":[]}}},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6891'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:27:06 GMT
       expires:
       - '-1'
       pragma:
@@ -561,8 +1431,51 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"cause":"automation","date":"2022-03-21T04:22:22Z","deletion_due_time":"1648095875","deletion_marked_by":"gc","product":"azurecli"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '364'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Mar 2022 04:27:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
@@ -581,7 +1494,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:11 GMT
+      - Mon, 21 Mar 2022 04:27:07 GMT
       expires:
       - '-1'
       pragma:
@@ -601,7 +1514,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "westus2", "identity": {"type": "SystemAssigned"}, "properties":
-      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitestacqrxksc7-8ecadf",
+      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitesthh5xunahq-8ecadf",
       "agentPoolProfiles": [{"count": 3, "vmSize": "Standard_DS2_v2", "workloadRuntime":
       "OCIContainer", "vnetSubnetID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet",
       "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
@@ -611,8 +1524,7 @@ interactions:
       "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys": [{"keyData":
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCumQ7QuaQdPndgxn9hQULXqCXVDEmxKAKAKqkLYTy/yXSHURHnIap9+bhoGn9qwtBL9Ue2NNWSgNO/Qig3evn4cGgK5cDl+Q6NKKlEmyObga4JWBFrFKYu/apHCkPqQZClsX98qvcmDVOfoKpCp2KhaEPdA6uQPZRSpDYSlnAUUm0uOc/JL+9ka7lIpw9JNEuts+oVdeUjbB7nSLvjJx65I8XrhRJHszl2CyQg24t/sP1iCkiQLajnMIM6qfifdltiQJ3HZ6BL3SY69jG5prXBb3kINq+mcZwIe/N/OUeJRznRHr38wVKbzZuaPosWDSceMscoNIUB8bgOiqmVc1mz
       azcli_aks_live_test@example.com\n"}]}}, "addonProfiles": {"ingressApplicationGateway":
-      {"enabled": true, "config": {"applicationGatewayName": "gateway", "subnetId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet"}}},
+      {"enabled": true, "config": {"applicationGatewayId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw"}}},
       "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
       "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
       "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
@@ -627,12 +1539,12 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1872'
+      - '1819'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
@@ -645,8 +1557,8 @@ interactions:
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Creating\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.21.9\",\n   \"currentKubernetesVersion\": \"1.21.9\",\n   \"dnsPrefix\":
-        \"cliakstest-clitestacqrxksc7-8ecadf\",\n   \"fqdn\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.hcp.westus2.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.portal.hcp.westus2.azmk8s.io\",\n
+        \"cliakstest-clitesthh5xunahq-8ecadf\",\n   \"fqdn\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.hcp.westus2.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.portal.hcp.westus2.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -663,9 +1575,8 @@ interactions:
         azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
         {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\n   },\n   \"addonProfiles\":
         {\n    \"ingressApplicationGateway\": {\n     \"enabled\": true,\n     \"config\":
-        {\n      \"applicationGatewayName\": \"gateway\",\n      \"effectiveApplicationGatewayId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/applicationGateways/gateway\",\n
-        \     \"subnetId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\n
+        {\n      \"applicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\",\n
+        \     \"effectiveApplicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\"\n
         \    }\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\",\n
         \  \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\":
         {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"standard\",\n
@@ -681,15 +1592,15 @@ interactions:
         {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
-      - '3757'
+      - '3668'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:29:14 GMT
+      - Mon, 21 Mar 2022 04:27:10 GMT
       expires:
       - '-1'
       pragma:
@@ -701,7 +1612,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -717,8 +1628,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
@@ -731,8 +1642,8 @@ interactions:
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Creating\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.21.9\",\n   \"currentKubernetesVersion\": \"1.21.9\",\n   \"dnsPrefix\":
-        \"cliakstest-clitestacqrxksc7-8ecadf\",\n   \"fqdn\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.hcp.westus2.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.portal.hcp.westus2.azmk8s.io\",\n
+        \"cliakstest-clitesthh5xunahq-8ecadf\",\n   \"fqdn\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.hcp.westus2.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.portal.hcp.westus2.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -749,9 +1660,8 @@ interactions:
         azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
         {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\n   },\n   \"addonProfiles\":
         {\n    \"ingressApplicationGateway\": {\n     \"enabled\": true,\n     \"config\":
-        {\n      \"applicationGatewayName\": \"gateway\",\n      \"effectiveApplicationGatewayId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/applicationGateways/gateway\",\n
-        \     \"subnetId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\n
+        {\n      \"applicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\",\n
+        \     \"effectiveApplicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\"\n
         \    }\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\",\n
         \  \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\":
         {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"standard\",\n
@@ -769,11 +1679,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '3757'
+      - '3668'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:29:15 GMT
+      - Mon, 21 Mar 2022 04:27:11 GMT
       expires:
       - '-1'
       pragma:
@@ -803,8 +1713,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
@@ -824,7 +1734,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:15 GMT
+      - Mon, 21 Mar 2022 04:27:12 GMT
       expires:
       - '-1'
       pragma:
@@ -861,18 +1771,18 @@ interactions:
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/c9669440-60f8-448d-a4f7-da6562a6ab73?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/5db2b4b4-20bc-4426-87f6-e4dda11da854?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"error":{"code":"PrincipalNotFound","message":"Principal a461092a39e7471e98cc6f66633421cc
+      string: '{"error":{"code":"PrincipalNotFound","message":"Principal 15859437e3d84e8fafb0fa9a96a2b775
         does not exist in the directory 72f988bf-86f1-41af-91ab-2d7cd011db47."}}'
     headers:
       cache-control:
@@ -882,7 +1792,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:15 GMT
+      - Mon, 21 Mar 2022 04:27:12 GMT
       expires:
       - '-1'
       pragma:
@@ -894,7 +1804,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 400
       message: Bad Request
@@ -910,8 +1820,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
@@ -931,7 +1841,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:18 GMT
+      - Mon, 21 Mar 2022 04:27:14 GMT
       expires:
       - '-1'
       pragma:
@@ -968,18 +1878,18 @@ interactions:
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/1ad6d894-37a0-490c-a338-f634ca67caa1?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/f2efa8da-57d4-4d8c-9330-904edb7a0d45?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"error":{"code":"PrincipalNotFound","message":"Principal a461092a39e7471e98cc6f66633421cc
+      string: '{"error":{"code":"PrincipalNotFound","message":"Principal 15859437e3d84e8fafb0fa9a96a2b775
         does not exist in the directory 72f988bf-86f1-41af-91ab-2d7cd011db47."}}'
     headers:
       cache-control:
@@ -989,7 +1899,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:18 GMT
+      - Mon, 21 Mar 2022 04:27:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1017,8 +1927,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
@@ -1038,7 +1948,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:23 GMT
+      - Mon, 21 Mar 2022 04:27:18 GMT
       expires:
       - '-1'
       pragma:
@@ -1075,18 +1985,18 @@ interactions:
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/53bb4d0a-cb43-45e8-9e5c-377e20769591?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/2d03cab4-68aa-48c2-82c9-4c13dc615e4d?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"00000000-0000-0000-0000-000000000001","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet","condition":null,"conditionVersion":null,"createdOn":"2022-03-21T04:29:23.4719011Z","updatedOn":"2022-03-21T04:29:23.8781615Z","createdBy":null,"updatedBy":"119e1aeb-4592-42d6-9507-c66df857924f","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/53bb4d0a-cb43-45e8-9e5c-377e20769591","type":"Microsoft.Authorization/roleAssignments","name":"53bb4d0a-cb43-45e8-9e5c-377e20769591"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"00000000-0000-0000-0000-000000000001","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet","condition":null,"conditionVersion":null,"createdOn":"2022-03-21T04:27:19.5976056Z","updatedOn":"2022-03-21T04:27:19.9569812Z","createdBy":null,"updatedBy":"119e1aeb-4592-42d6-9507-c66df857924f","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleAssignments/2d03cab4-68aa-48c2-82c9-4c13dc615e4d","type":"Microsoft.Authorization/roleAssignments","name":"2d03cab4-68aa-48c2-82c9-4c13dc615e4d"}'
     headers:
       cache-control:
       - no-cache
@@ -1095,7 +2005,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:29:24 GMT
+      - Mon, 21 Mar 2022 04:27:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1123,26 +2033,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:29:45 GMT
+      - Mon, 21 Mar 2022 04:27:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1172,26 +2082,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:30:15 GMT
+      - Mon, 21 Mar 2022 04:28:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1221,26 +2131,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:30:45 GMT
+      - Mon, 21 Mar 2022 04:28:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1270,26 +2180,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:31:14 GMT
+      - Mon, 21 Mar 2022 04:29:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1319,26 +2229,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:31:45 GMT
+      - Mon, 21 Mar 2022 04:29:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1368,26 +2278,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:32:15 GMT
+      - Mon, 21 Mar 2022 04:30:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1417,26 +2327,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '121'
+      - '126'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:32:45 GMT
+      - Mon, 21 Mar 2022 04:30:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1466,27 +2376,27 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/f943dcb7-4d63-4fec-8ab3-1a498f94c578?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/9ec665ef-2d00-4a25-a5b2-30a90f27a988?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"b7dc43f9-634d-ec4f-8ab3-1a498f94c578\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2022-03-21T04:29:15.26Z\",\n  \"endTime\":
-        \"2022-03-21T04:33:02.3014738Z\"\n }"
+      string: "{\n  \"name\": \"ef65c69e-002d-254a-a5b2-30a90f27a988\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2022-03-21T04:27:11.4466666Z\",\n  \"endTime\":
+        \"2022-03-21T04:30:46.2212787Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '165'
+      - '170'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:33:15 GMT
+      - Mon, 21 Mar 2022 04:31:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1516,8 +2426,8 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerservice/17.0.0b Python/3.8.10
         (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29)
@@ -1530,8 +2440,8 @@ interactions:
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
         \"1.21.9\",\n   \"currentKubernetesVersion\": \"1.21.9\",\n   \"dnsPrefix\":
-        \"cliakstest-clitestacqrxksc7-8ecadf\",\n   \"fqdn\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.hcp.westus2.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-clitestacqrxksc7-8ecadf-acc67fc8.portal.hcp.westus2.azmk8s.io\",\n
+        \"cliakstest-clitesthh5xunahq-8ecadf\",\n   \"fqdn\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.hcp.westus2.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitesthh5xunahq-8ecadf-63bd28a3.portal.hcp.westus2.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -1548,16 +2458,15 @@ interactions:
         azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\":
         {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\n   },\n   \"addonProfiles\":
         {\n    \"ingressApplicationGateway\": {\n     \"enabled\": true,\n     \"config\":
-        {\n      \"applicationGatewayName\": \"gateway\",\n      \"effectiveApplicationGatewayId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/applicationGateways/gateway\",\n
-        \     \"subnetId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet\"\n
+        {\n      \"applicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\",\n
+        \     \"effectiveApplicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/applicationGateways/appgw\"\n
         \    },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ingressapplicationgateway-cliakstest000002\",\n
         \     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n      \"objectId\":\"00000000-0000-0000-0000-000000000001\"\n
         \    }\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\",\n
         \  \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\":
         {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"Standard\",\n
         \   \"loadBalancerProfile\": {\n     \"managedOutboundIPs\": {\n      \"count\":
-        1\n     },\n     \"effectiveOutboundIPs\": [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/publicIPAddresses/2478b30d-cd58-4e05-9bd6-c1817d7c67d6\"\n
+        1\n     },\n     \"effectiveOutboundIPs\": [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/publicIPAddresses/a3516728-e6f9-4f4a-a613-f2c1eb40b360\"\n
         \     }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\":
         \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\":
         \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\",\n    \"podCidrs\":
@@ -1575,11 +2484,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '4784'
+      - '4695'
       content-type:
       - application/json
       date:
-      - Mon, 21 Mar 2022 04:33:15 GMT
+      - Mon, 21 Mar 2022 04:31:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1609,28 +2518,29 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2018-01-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
-        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2021-11-11T20:13:44.6328966Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
+      string: '{"value":[{"properties":{"roleName":"Contributor","type":"BuiltInRole","description":"Grants
+        full access to manage all resources, but does not allow you to assign roles
+        in Azure RBAC, manage assignments in Azure Blueprints, or share image galleries.","assignableScopes":["/"],"permissions":[{"actions":["*"],"notActions":["Microsoft.Authorization/*/Delete","Microsoft.Authorization/*/Write","Microsoft.Authorization/elevateAccess/Action","Microsoft.Blueprint/blueprintAssignments/write","Microsoft.Blueprint/blueprintAssignments/delete","Microsoft.Compute/galleries/share/action"],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-02-02T21:55:09.8806423Z","updatedOn":"2021-11-11T20:13:28.6061853Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","type":"Microsoft.Authorization/roleDefinitions","name":"b24988ac-6180-42a0-ab88-20f7382dd24c"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '873'
+      - '984'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:33:16 GMT
+      - Mon, 21 Mar 2022 04:31:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1649,7 +2559,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
       "principalId":"00000000-0000-0000-0000-000000000001"}}'
     headers:
       Accept:
@@ -1667,27 +2577,27 @@ interactions:
       Cookie:
       - x-ms-gateway-slice=Production
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --vnet-subnet-id -a --appgw-name
-        --appgw-subnet-id --yes --ssh-key-value -o
+      - -n -g --enable-managed-identity --vnet-subnet-id -a --appgw-id --yes --ssh-key-value
+        -o
       User-Agent:
       - python/3.8.10 (Linux-5.13.0-1017-azure-x86_64-with-glibc2.29) msrest/0.6.21
         msrest_azure/0.6.4 azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.34.1
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet/providers/Microsoft.Authorization/roleAssignments/3772ddcf-2aa1-4c90-b2fc-b28453854c92?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Authorization/roleAssignments/bb54762b-fe1a-4b74-8867-a440428f85ac?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"00000000-0000-0000-0000-000000000001","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet","condition":null,"conditionVersion":null,"createdOn":"2022-03-21T04:33:16.5429294Z","updatedOn":"2022-03-21T04:33:16.8086081Z","createdBy":null,"updatedBy":"119e1aeb-4592-42d6-9507-c66df857924f","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/appgw-subnet/providers/Microsoft.Authorization/roleAssignments/3772ddcf-2aa1-4c90-b2fc-b28453854c92","type":"Microsoft.Authorization/roleAssignments","name":"3772ddcf-2aa1-4c90-b2fc-b28453854c92"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"00000000-0000-0000-0000-000000000001","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","condition":null,"conditionVersion":null,"createdOn":"2022-03-21T04:31:13.0956296Z","updatedOn":"2022-03-21T04:31:13.3612565Z","createdBy":null,"updatedBy":"119e1aeb-4592-42d6-9507-c66df857924f","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Authorization/roleAssignments/bb54762b-fe1a-4b74-8867-a440428f85ac","type":"Microsoft.Authorization/roleAssignments","name":"bb54762b-fe1a-4b74-8867-a440428f85ac"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1045'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Mar 2022 04:33:19 GMT
+      - Mon, 21 Mar 2022 04:31:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1699,7 +2609,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1197'
     status:
       code: 201
       message: Created
