@@ -713,11 +713,11 @@ def list_containerapp(cmd, resource_group_name=None):
         handle_raw_exception(e)
 
 
-def delete_containerapp(cmd, name, resource_group_name):
+def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     try:
-        return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name)
+        return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
     except CLIInternalError as e:
         handle_raw_exception(e)
 
