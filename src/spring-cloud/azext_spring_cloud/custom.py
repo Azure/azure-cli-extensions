@@ -16,11 +16,12 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri)
+from ._utils import (get_portal_uri, wait_till_end)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2022_01_01_preview import models as models_20220101preview
+from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
@@ -445,17 +446,130 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
     return app
 
 
-def app_identity_remove(cmd, client, resource_group, service, name, system_assigned=None, user_assigned=None):
-    app_resource = models_20220101preview.AppResource()
-    identity = models_20220101preview.ManagedIdentityProperties(type="none")
-    properties = models_20220101preview.AppResourceProperties()
-    resource = client.services.get(resource_group, service)
-    location = resource.location
+def app_identity_remove(cmd,
+                        client,
+                        resource_group,
+                        service,
+                        name,
+                        system_assigned=None,
+                        user_assigned=None):
+    """
+    Note: Always use sync method to operate managed identity to avoid data inconsistency.
+    :param system_assigned: 1) None or False: Don't change system-assigned managed identity.
+                            2) True: remove system-assigned managed identity
+    :param user_assigned: 1) None: Don't change user-assigned managed identities.
+                          2) An empty list: remove all user-assigned managed identities.
+                          3) A non-empty list of user-assigned managed identity resource id to remove.
+    """
+    app = client.apps.get(resource_group, service, name)
 
-    app_resource.identity = identity
-    app_resource.properties = properties
-    app_resource.location = location
-    return client.apps.begin_update(resource_group, service, name, app_resource)
+    if not app.identity:
+        logger.debug("Skip remove managed identity since no identities assigned to app.")
+        return
+    if not app.identity.type:
+        raise CLIError("Invalid existed identity type {}.".format(app.identity.type))
+    if app.identity.type == models_20220301preview.ManagedIdentityType.NONE:
+        logger.debug("Skip remove managed identity since identity type is {}.".format(app.identity.type))
+        return
+
+    # TODO(jiec): For back-compatible, convert to remove system-assigned only case. Remove code after migration.
+    if system_assigned is None and user_assigned is None:
+        system_assigned = True
+
+    new_user_identities = _get_new_user_identities_for_remove(app.identity.user_assigned_identities, user_assigned)
+    new_identity_type = _get_new_identity_type_for_remove(app.identity.type, system_assigned, new_user_identities)
+    user_identity_payload = _get_user_identity_payload_for_remove(new_identity_type, user_assigned)
+
+    target_identity = models_20220301preview.ManagedIdentityProperties()
+    target_identity.type=new_identity_type
+    target_identity.user_assigned_identities = user_identity_payload
+
+    app_resource = models_20220301preview.AppResource()
+    app_resource.identity = target_identity
+
+    poller = client.apps.begin_update(resource_group, service, name, app_resource)
+    wait_till_end(cmd, poller)
+    return client.apps.get(resource_group, service, name)
+
+
+def _get_new_user_identities_for_remove(exist_user_identity_dict, user_identity_list_to_remove):
+    """
+    :param exist_user_identity_dict: A dict from user-assigned managed identity resource id to identity objecct.
+    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed identity resource id to remove.
+    :return A list of string of user-assigned managed identity resource ID.
+    """
+    if not exist_user_identity_dict:
+        return []
+
+    # None
+    if user_identity_list_to_remove is None:
+        return list(exist_user_identity_dict.keys())
+
+    # Empty list means remove all user-assigned managed identities
+    if len(user_identity_list_to_remove) == 0:
+        return []
+
+    # Non-empty list
+    new_identities = []
+    for id in exist_user_identity_dict.keys():
+        if not id.lower() in user_identity_list_to_remove:
+            new_identities.append(id)
+
+    return new_identities
+
+
+def _get_new_identity_type_for_remove(exist_identity_type, is_remove_system_identity, new_user_identities):
+    new_identity_type = exist_identity_type
+
+    exist_identity_type = exist_identity_type.lower()
+    new_identity_type = exist_identity_type
+
+    if exist_identity_type == models_20220301preview.ManagedIdentityType.NONE.lower():
+        new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+    elif exist_identity_type == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED.lower():
+        if is_remove_system_identity:
+            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        else:
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+    elif exist_identity_type == models_20220301preview.ManagedIdentityType.USER_ASSIGNED.lower():
+        if not new_user_identities:
+            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        else:
+            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+    elif exist_identity_type == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED.lower():
+        if is_remove_system_identity and not new_user_identities:
+            new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        elif not is_remove_system_identity and not new_user_identities:
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+        elif is_remove_system_identity and new_user_identities:
+            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+        else:
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+
+    return new_identity_type
+
+
+def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_to_remove):
+    """
+    :param new_identity_type: ManagedIdentityType
+    :param user_identity_list_to_remove: None, an empty list or a list of string of user-assigned managed identity resource id to remove.
+    :return None object or a non-empty dict from user-assigned managed identity resource id to None object
+    """
+    user_identity_payload = {}
+    if new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
+                               models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+        # empty list means remove all user-assigned managed identites
+        if user_identity_list_to_remove is not None and len(user_identity_list_to_remove) == 0:
+            raise CLIError("Target identity type should not be {}, when remove all user-assigned managed identities.".format(new_identity_type))
+        # non-empty list
+        elif not user_identity_list_to_remove:
+            for id in user_identity_list_to_remove:
+                user_identity_payload[id] = None
+
+    if not user_identity_payload:
+        user_identity_payload = None
+
+    return user_identity_payload
 
 
 def app_identity_show(cmd, client, resource_group, service, name):
