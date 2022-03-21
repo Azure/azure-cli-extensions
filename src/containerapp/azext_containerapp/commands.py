@@ -44,32 +44,32 @@ def transform_revision_list_output(revs):
 
 def load_command_table(self, _):
     with self.command_group('containerapp') as g:
-        g.custom_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
+        g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_containerapp', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env') as g:
-        g.custom_command('show', 'show_managed_environment')
+        g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')
-        g.custom_command('show', 'show_dapr_component')
+        g.custom_show_command('show', 'show_dapr_component')
         g.custom_command('set', 'create_or_update_dapr_component')
         g.custom_command('remove', 'remove_dapr_component')
 
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_managed_identity')
+        g.custom_show_command('show', 'show_managed_identity')
 
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_github_action', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_github_action', exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_github_action', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp revision') as g:
@@ -77,28 +77,28 @@ def load_command_table(self, _):
         g.custom_command('deactivate', 'deactivate_revision')
         g.custom_command('list', 'list_revisions', table_transformer=transform_revision_list_output, exception_handler=ex_handler_factory())
         g.custom_command('restart', 'restart_revision')
-        g.custom_command('show', 'show_revision', table_transformer=transform_revision_output, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_revision', table_transformer=transform_revision_output, exception_handler=ex_handler_factory())
         g.custom_command('copy', 'copy_revision', exception_handler=ex_handler_factory())
         g.custom_command('set-mode', 'set_revision_mode', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_ingress', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_ingress')
+        g.custom_show_command('show', 'show_ingress')
 
     with self.command_group('containerapp ingress traffic') as g:
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_ingress_traffic')
+        g.custom_show_command('show', 'show_ingress_traffic')
 
     with self.command_group('containerapp registry') as g:
         g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'show_registry')
+        g.custom_show_command('show', 'show_registry')
         g.custom_command('list', 'list_registry')
         g.custom_command('remove', 'remove_registry', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp secret') as g:
         g.custom_command('list', 'list_secrets')
-        g.custom_command('show', 'show_secret')
+        g.custom_show_command('show', 'show_secret')
         g.custom_command('remove', 'remove_secrets', exception_handler=ex_handler_factory())
         g.custom_command('set', 'set_secrets', exception_handler=ex_handler_factory())
 
