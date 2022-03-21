@@ -147,6 +147,10 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
     UserAssignedIdentity,
 )
 
+from .aks_app_commands.aksappcommands import (
+    aks_web_app_init
+)
+
 logger = get_logger(__name__)
 
 
@@ -2784,7 +2788,10 @@ def _get_http_proxy_config(file_path):
 
     return config_object
 
-
+def aks_app_init():
+    print("I am called to init")
+    aks_web_app_init()
+    
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
                          binding_selector=None,
