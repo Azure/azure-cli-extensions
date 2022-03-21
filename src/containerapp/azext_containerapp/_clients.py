@@ -65,7 +65,7 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
 
         delete_statuses = ["scheduledfordelete", "cancelled"]
 
-        if poll_if_status not in delete_statuses: # Catch "not found" errors if polling for delete
+        if poll_if_status not in delete_statuses:  # Catch "not found" errors if polling for delete
             raise e
 
 
@@ -144,7 +144,7 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
         if no_wait:
-            return # API doesn't return JSON (it returns no content)
+            return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
             request_url = url_fmt.format(
@@ -161,7 +161,6 @@ class ContainerAppClient():
                 except ResourceNotFoundError:
                     pass
                 logger.warning('Containerapp successfully deleted')
-
 
     @classmethod
     def show(cls, cmd, resource_group_name, name):
