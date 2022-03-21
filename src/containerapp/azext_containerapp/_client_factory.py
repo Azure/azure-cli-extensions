@@ -6,8 +6,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-
-from knack.util import CLIError
+from azure.cli.core.azclierror import CLIInternalError
 
 
 # pylint: disable=inconsistent-return-statements
@@ -21,7 +20,7 @@ def ex_handler_factory(no_throw=False):
             elif 'Message' in content:
                 detail = content['Message']
 
-            ex = CLIError(detail)
+            ex = CLIInternalError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:
@@ -45,13 +44,13 @@ def handle_raw_exception(e):
             if 'code' in jsonError and 'message' in jsonError:
                 code = jsonError['code']
                 message = jsonError['message']
-                raise CLIError('({}) {}'.format(code, message))
+                raise CLIInternalError('({}) {}'.format(code, message))
         elif "Message" in jsonError:
             message = jsonError["Message"]
-            raise CLIError(message)
+            raise CLIInternalError(message)
         elif "message" in jsonError:
             message = jsonError["message"]
-            raise CLIError(message)
+            raise CLIInternalError(message)
     raise e
 
 

@@ -124,7 +124,7 @@ helps['containerapp revision restart'] = """
     examples:
     - name: Restart a revision.
       text: |
-          az containerapp revision restart -n MyContainerapp -g MyResourceGroup --revision-name MyContainerappRevision
+          az containerapp revision restart -n MyContainerapp -g MyResourceGroup --revision MyContainerappRevision
 """
 
 helps['containerapp revision activate'] = """
@@ -133,7 +133,7 @@ helps['containerapp revision activate'] = """
     examples:
     - name: Activate a revision.
       text: |
-          az containerapp revision activate -n MyContainerapp -g MyResourceGroup --revision-name MyContainerappRevision
+          az containerapp revision activate -g MyResourceGroup --revision MyContainerappRevision
 """
 
 helps['containerapp revision deactivate'] = """
@@ -142,7 +142,7 @@ helps['containerapp revision deactivate'] = """
     examples:
     - name: Deactivate a revision.
       text: |
-          az containerapp revision deactivate -n MyContainerapp -g MyResourceGroup --revision-name MyContainerappRevision
+          az containerapp revision deactivate -g MyResourceGroup --revision MyContainerappRevision
 """
 
 helps['containerapp revision set-mode'] = """
@@ -158,10 +158,15 @@ helps['containerapp revision copy'] = """
     type: command
     short-summary: Create a revision based on a previous revision.
     examples:
-    - name: Create a revision based on a previous revision.
+    - name: Create a revision based on the latest revision.
       text: |
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup \\
+              --cpu 0.75 --memory 1.5Gi
+    - name: Create a revision based on a previous revision.
+      text: |
+          az containerapp revision copy -g MyResourceGroup \\
               --from-revision PreviousRevisionName --cpu 0.75 --memory 1.5Gi
+
 """
 
 helps['containerapp revision copy'] = """
@@ -231,7 +236,7 @@ helps['containerapp env list'] = """
 
 helps['containerapp env dapr-component'] = """
     type: group
-    short-summary: Commands to manage Container App environment dapr components.
+    short-summary: Commmands to manage dapr components on the Container App environment.
 """
 
 helps['containerapp env dapr-component list'] = """
@@ -284,6 +289,9 @@ helps['containerapp identity assign'] = """
     - name: Assign system identity.
       text: |
           az containerapp identity assign
+    - name: Assign user identity.
+      text: |
+          az containerapp identity assign --identities myAssignedId
     - name: Assign system and user identity.
       text: |
           az containerapp identity assign --identities [system] myAssignedId

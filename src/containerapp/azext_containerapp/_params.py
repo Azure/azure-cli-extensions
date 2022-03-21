@@ -21,7 +21,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp') as c:
         # Base arguments
-        c.argument('name', name_type, metavar='NAME', id_part='name')
+        c.argument('name', name_type, metavar='NAME', id_part='name', help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
@@ -43,7 +43,7 @@ def load_arguments(self, _):
 
     # Env vars
     with self.argument_context('containerapp', arg_group='Environment variables (Creates new revision)') as c:
-        c.argument('set_env_vars', options_list=['--set-env-vars, --env-vars'], nargs='*', help="A list of environment variable(s) to add to the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
+        c.argument('set_env_vars', nargs='*', help="A list of environment variable(s) to add to the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('remove_env_vars', nargs='*', help="A list of environment variable(s) to remove from container. Space-separated env var name values.")
         c.argument('replace_env_vars', nargs='*', help="A list of environment variable(s) to replace from the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('remove_all_env_vars', help="Option to remove all environment variable(s) from the container.")
@@ -97,7 +97,7 @@ def load_arguments(self, _):
         c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
-        c.argument('infrastructure_subnet_resource_id', type=str, options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components. This subnet must be in the same VNET as the subnet defined in appSubnetResourceId.')
+        c.argument('infrastructure_subnet_resource_id', type=str, options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components and user app containers.')
         c.argument('app_subnet_resource_id', type=str, options_list=['--app-subnet-resource-id'], help='Resource ID of a subnet that Container App containers are injected into. This subnet must be in the same VNET as the subnet defined in infrastructureSubnetResourceId.')
         c.argument('docker_bridge_cidr', type=str, options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
         c.argument('platform_reserved_cidr', type=str, options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
