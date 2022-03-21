@@ -39,6 +39,7 @@ from azure.cli.core.commands.client_factory import (
 from azure.cli.core.util import (
     get_file_json,
     in_cloud_console,
+    read_file_content,
     sdk_no_wait,
     shell_safe_json_parse,
 )
@@ -760,6 +761,7 @@ def aks_create(cmd,
                enable_oidc_issuer=False,
                host_group_id=None,
                crg_id=None,
+               message_of_the_day=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -837,7 +839,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
-               enable_oidc_issuer=False):
+               enable_oidc_issuer=False,
+               http_proxy_config=None):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
@@ -1579,6 +1582,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       snapshot_id=None,
                       host_group_id=None,
                       crg_id=None,
+                      message_of_the_day=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1679,6 +1683,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     if linux_os_config:
         agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
+
+    if message_of_the_day:
+        agent_pool.message_of_the_day = _get_message_of_the_day(message_of_the_day)
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
@@ -2420,8 +2427,9 @@ def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
         '/managedClusters/{2}'.format(subscription_id,
                                       resource_group_name, name)
     diag_settings = diag_settings_client.list(aks_resource_id)
-    if diag_settings.value:
-        return diag_settings.value[0].storage_account_id
+    for _, diag_setting in enumerate(diag_settings):
+        if diag_setting:
+            return diag_setting.storage_account_id
 
     print("No diag settings specified")
     return None
@@ -2644,6 +2652,16 @@ def _put_managed_cluster_ensuring_permission(
 def _is_msi_cluster(managed_cluster):
     return (managed_cluster and managed_cluster.identity and
             (managed_cluster.identity.type.casefold() == "systemassigned" or managed_cluster.identity.type.casefold() == "userassigned"))
+
+
+def _get_message_of_the_day(file_path):
+    if not os.path.isfile(file_path):
+        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+    content = read_file_content(file_path)
+    if not content:
+        raise ArgumentUsageError("message of the day should point to a non-empty file if specified.")
+    content = base64.b64encode(bytes(content, 'ascii')).decode('ascii')
+    return content
 
 
 def _get_kubelet_config(file_path):

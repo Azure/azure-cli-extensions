@@ -11,29 +11,12 @@
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
 
-import ctypes
-import json
 import os
-import platform
 import subprocess
-import time
-import urllib.request
-from zipfile import ZipFile
-from azure.cli.core.azclierror import CLIInternalError
-from azure.cli.core.azclierror import FileOperationError
-from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azure.cli.core.azclierror import UnclassifiedUserFault
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Common helper function to validate if the commands are running on Windows.
-# -----------------------------------------------------------------------------------------------------------------
-def validate_os_env():
-
-    if not platform.system().__contains__('Windows'):
-        raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+from azext_datamigration.manual import helper
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -46,39 +29,18 @@ def datamigration_assessment(connection_string=None,
 
     try:
 
-        validate_os_env()
-
-        defaultOutputFolder = get_default_output_folder()
-
-        # Assigning base folder path
-        baseFolder = os.path.join(defaultOutputFolder, "Downloads")
-        exePath = os.path.join(baseFolder, "SqlAssessment.Console.csproj", "SqlAssessment.exe")
-
-        # Creating base folder structure
-        if not os.path.exists(baseFolder):
-            os.makedirs(baseFolder)
-
-        testPath = os.path.exists(exePath)
-
-        # Downloading console app zip and extracting it
-        if not testPath:
-            zipSource = "https://sqlassess.blob.core.windows.net/app/SqlAssessment.zip"
-            zipDestination = os.path.join(baseFolder, "SqlAssessment.zip")
-
-            urllib.request.urlretrieve(zipSource, filename=zipDestination)
-            with ZipFile(zipDestination, 'r') as zipFile:
-                zipFile.extractall(path=baseFolder)
+        defaultOutputFolder, exePath = helper.console_app_setup()
 
         if connection_string is not None and config_file_path is not None:
             raise MutuallyExclusiveArgumentError("Both connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
         if connection_string is not None:
-            connection_string = ", ".join(f"\"{i}\"" for i in connection_string)
+            connection_string = " ".join(f"\"{i}\"" for i in connection_string)
             cmd = f'{exePath} Assess --sqlConnectionStrings {connection_string} ' if output_folder is None else f'{exePath} Assess --sqlConnectionStrings {connection_string} --outputFolder "{output_folder}" '
             cmd += '--overwrite False' if overwrite is False else ''
             subprocess.call(cmd, shell=False)
         elif config_file_path is not None:
-            validate_config_file_path(config_file_path)
+            helper.validate_config_file_path(config_file_path, "assess")
             cmd = f'{exePath} --configFile "{config_file_path}"'
             subprocess.call(cmd, shell=False)
         else:
@@ -93,38 +55,107 @@ def datamigration_assessment(connection_string=None,
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Assessment helper function to test whether the given cofig_file_path is valid and has valid action specified.
+# Performance Data Collection Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
-def validate_config_file_path(path):
+def datamigration_performance_data_collection(connection_string=None,
+                                              output_folder=None,
+                                              perf_query_interval=30,
+                                              static_query_interval=3600,
+                                              number_of_iteration=20,
+                                              config_file_path=None):
 
-    if not os.path.exists(path):
-        raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
-
-    # JSON file
-    with open(path, "r", encoding=None) as f:
-        configJson = json.loads(f.read())
     try:
-        if not configJson['action'].strip().lower() == "assess":
-            raise FileOperationError("The desired action in config file was invalid. Please use \"Assess\" for action property in config file")
-    except KeyError as e:
-        raise FileOperationError("Invalid schema of config file. Please ensure that this is a properly formatted config file.") from e
+
+        defaultOutputFolder, exePath = helper.console_app_setup()
+
+        if connection_string is not None and config_file_path is not None:
+            raise MutuallyExclusiveArgumentError("Both sql_connection_string and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
+
+        if connection_string is not None:
+            connection_string = " ".join(f"\"{i}\"" for i in connection_string)
+            parameterList = {
+                "--outputFolder": output_folder,
+                "--perfQueryIntervalInSec": perf_query_interval,
+                "--staticQueryIntervalInSec": static_query_interval,
+                "--numberOfIterations": number_of_iteration
+            }
+            cmd = f'{exePath} PerfDataCollection --sqlConnectionStrings {connection_string}'
+            for param in parameterList:
+                if parameterList[param] is not None:
+                    cmd += f' {param} "{parameterList[param]}"'
+            subprocess.call(cmd, shell=False)
+        elif config_file_path is not None:
+            helper.validate_config_file_path(config_file_path, "perfdatacollection")
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+        else:
+            raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: sql_connection_string, config_file_path')
+
+        # Printing log file path
+        logFilePath = os.path.join(defaultOutputFolder, "Logs")
+        print(f"Event and Error Logs Folder Path: {logFilePath}")
+
+    except Exception as e:
+        raise e
 
 
 # -----------------------------------------------------------------------------------------------------------------
-# Assessment helper function to return the default output folder path depending on OS environment.
+#  Get SKU Recommendation Command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
-def get_default_output_folder():
+def datamigration_get_sku_recommendation(output_folder=None,
+                                         target_platform="Any",
+                                         target_sql_instance=None,
+                                         target_percentile=95,
+                                         scaling_factor=100,
+                                         start_time=None,
+                                         end_time=None,
+                                         overwrite=False,
+                                         display_result=False,
+                                         elastic_strategy=False,
+                                         database_allow_list=None,
+                                         database_deny_list=None,
+                                         config_file_path=None):
 
-    osPlatform = platform.system()
+    try:
+        defaultOutputFolder, exePath = helper.console_app_setup()
 
-    if osPlatform.__contains__('Linux'):
-        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlAssessment")
-    elif osPlatform.__contains__('Darwin'):
-        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlAssessment")
-    else:
-        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlAssessment")
+        if output_folder is not None and config_file_path is not None:
+            raise MutuallyExclusiveArgumentError("Both output_folder and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
 
-    return defaultOutputPath
+        if config_file_path is not None:
+            helper.validate_config_file_path(config_file_path, "getskurecommendation")
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+        else:
+            parameterList = {
+                "--outputFolder": output_folder,
+                "--targetPlatform": target_platform,
+                "--targetSqlInstance": target_sql_instance,
+                "--scalingFactor": scaling_factor,
+                "--targetPercentile": target_percentile,
+                "--startTime": start_time,
+                "--endTime": end_time,
+                "--overwrite": overwrite,
+                "--displayResult": display_result,
+                "--elasticStrategy": elastic_strategy,
+                "--databaseAllowList": database_allow_list,
+                "--databaseDenyList": database_deny_list
+            }
+            cmd = f'{exePath} GetSkuRecommendation'
+            for param in parameterList:
+                if parameterList[param] is not None and not param.__contains__("List"):
+                    cmd += f' {param} "{parameterList[param]}"'
+                elif param.__contains__("List") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
+            subprocess.call(cmd, shell=False)
+
+        # Printing log file path
+        logFilePath = os.path.join(defaultOutputFolder, "Logs")
+        print(f"Event and Error Logs Folder Path: {logFilePath}")
+
+    except Exception as e:
+        raise e
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -133,173 +164,12 @@ def get_default_output_folder():
 def datamigration_register_ir(auth_key,
                               ir_path=None):
 
-    validate_os_env()
+    helper.validate_os_env()
 
-    if not is_user_admin():
+    if not helper.is_user_admin():
         raise UnclassifiedUserFault("Failed: You do not have Administrator rights to run this command. Please re-run this command as an Administrator!")
-    validate_input(auth_key)
+    helper.validate_input(auth_key)
     if ir_path is not None:
-        install_gateway(ir_path)
+        helper.install_gateway(ir_path)
 
-    register_ir(auth_key)
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to check IR path Extension
-# -----------------------------------------------------------------------------------------------------------------
-def validate_ir_extension(ir_path):
-
-    if ir_path is not None:
-        ir_extension = os.path.splitext(ir_path)[1]
-        if ir_extension != ".msi":
-            raise InvalidArgumentValueError("Invalid Integration Runtime Extension. Please provide a valid Integration Runtime MSI path.")
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to check whether the command is run as admin.
-# -----------------------------------------------------------------------------------------------------------------
-def is_user_admin():
-
-    try:
-        isAdmin = os.getuid() == 0
-    except AttributeError:
-        isAdmin = ctypes.windll.shell32.IsUserAnAdmin() != 0
-
-    return isAdmin
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to validate key input.
-# -----------------------------------------------------------------------------------------------------------------
-def validate_input(key):
-    if key == "":
-        raise InvalidArgumentValueError("Failed: IR Auth key is empty. Please provide a valid auth key.")
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to check whether SHIR is installed or not.
-# -----------------------------------------------------------------------------------------------------------------
-def check_whether_gateway_installed(name):
-
-    import winreg
-    # Connecting to key in registry
-    accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
-
-    # Get the path of Installed softwares
-    accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
-
-    for i in range(0, winreg.QueryInfoKey(accessKey)[0]):
-        installedSoftware = winreg.EnumKey(accessKey, i)
-        installedSoftwareKey = winreg.OpenKey(accessKey, installedSoftware)
-        try:
-            displayName = winreg.QueryValueEx(installedSoftwareKey, r"DisplayName")[0]
-            if name in displayName:
-                return True
-        except FileNotFoundError:
-            pass
-
-    # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there)
-    try:
-        diaCmdPath = get_cmd_file_path_static()
-        if os.path.exists(diaCmdPath):
-            return True
-        else:
-            return False
-    except (FileNotFoundError, IndexError):
-        return False
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to install SHIR
-# -----------------------------------------------------------------------------------------------------------------
-def install_gateway(path):
-
-    if check_whether_gateway_installed("Microsoft Integration Runtime"):
-        print("Microsoft Integration Runtime is already installed")
-        return
-
-    validate_ir_extension(path)
-
-    if not os.path.exists(path):
-        raise InvalidArgumentValueError(f"Invalid Integration Runtime MSI path : {path}. Please provide a valid Integration Runtime MSI path")
-
-    print("Start Integration Runtime installation")
-
-    installCmd = f'msiexec.exe /i "{path}" /quiet /passive'
-    subprocess.call(installCmd, shell=False)
-    time.sleep(30)
-
-    print("Integration Runtime installation is complete")
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to register Sql Migration Service on IR
-# -----------------------------------------------------------------------------------------------------------------
-def register_ir(key):
-    print(f"Start to register IR with key: {key}")
-
-    cmdFilePath = get_cmd_file_path()
-
-    directoryPath = os.path.dirname(cmdFilePath)
-    parentDirPath = os.path.dirname(directoryPath)
-
-    dmgCmdPath = os.path.join(directoryPath, "dmgcmd.exe")
-    regIRScriptPath = os.path.join(parentDirPath, "PowerShellScript", "RegisterIntegrationRuntime.ps1")
-
-    portCmd = f'{dmgCmdPath} -EnableRemoteAccess 8060'
-    irCmd = f'powershell -command "& \'{regIRScriptPath}\' -gatewayKey {key}"'
-
-    subprocess.call(portCmd, shell=False)
-    subprocess.call(irCmd, shell=False)
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to get SHIR script path
-# -----------------------------------------------------------------------------------------------------------------
-def get_cmd_file_path():
-
-    import winreg
-    try:
-        # Connecting to key in registry
-        accessRegistry = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
-
-        # Get the path of Integration Runtime
-        accessKey = winreg.OpenKey(accessRegistry, r"SOFTWARE\Microsoft\DataTransfer\DataManagementGateway\ConfigurationManager")
-        accessValue = winreg.QueryValueEx(accessKey, r"DiacmdPath")[0]
-
-        return accessValue
-    except FileNotFoundError:
-        try:
-            diaCmdPath = get_cmd_file_path_static()
-            return diaCmdPath
-        except FileNotFoundError as e:
-            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command") from e
-        except IndexError as e:
-            raise FileOperationError("IR is not properly installed. Please re-install it and re-run this command") from e
-
-
-# -----------------------------------------------------------------------------------------------------------------
-# Helper function to get DiaCmdPath with Static Paths. This function assumes that IR is always installed in program files
-# -----------------------------------------------------------------------------------------------------------------
-def get_cmd_file_path_static():
-
-    # Base folder is taken as Program files or Program files (x86).
-    baseFolderX64 = os.path.join(r"C:\Program Files", "Microsoft Integration Runtime")
-    baseFolderX86 = os.path.join(r"C:\Program Files (x86)", "Microsoft Integration Runtime")
-    if os.path.exists(baseFolderX86):
-        baseFolder = baseFolderX86
-    else:
-        baseFolder = baseFolderX64
-
-    # Add the latest version to baseFolder path.
-    listDir = os.listdir(baseFolder)
-    listDir.sort(reverse=True)
-    versionFolder = os.path.join(baseFolder, listDir[0])
-
-    # Create diaCmd default path and check if it is valid or not.
-    diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
-
-    if not os.path.exists(diaCmdPath):
-        raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
-
-    return diaCmdPath
+    helper.register_ir(auth_key)

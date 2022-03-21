@@ -3,6 +3,16 @@
 Release History
 ===============
 
+0.4.0
++++++
+* Add new cmd `az network manager connection`
+* Add new cmd `az network manager connection management-group`
+* Add new cmd `az network manager scope connection`
+* Add new cmd `az network manager group static-member`
+* `az network manager group delete`: add parameter `force`
+* `az network manager security-admin-config delete`: add parameter `force` and add parameter `recursive`
+* Bump up azure-mgmt-network SDK to 2021_05_01_preview
+
 0.3.0
 +++++
 * `az network manager list-active-connectivity-config`: rename parameter `region` to `regions`

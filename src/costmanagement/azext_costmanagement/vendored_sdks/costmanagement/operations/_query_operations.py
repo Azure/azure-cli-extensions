@@ -8,16 +8,16 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from .. import models
+from .. import models as _models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -36,7 +36,7 @@ class QueryOperations(object):
     :param deserializer: An object model deserializer.
     """
 
-    models = models
+    models = _models
 
     def __init__(self, client, config, serializer, deserializer):
         self._client = client
@@ -47,16 +47,10 @@ class QueryOperations(object):
     def usage(
         self,
         scope,  # type: str
-        type,  # type: Union[str, "models.ExportType"]
-        timeframe,  # type: Union[str, "models.TimeframeType"]
-        time_period=None,  # type: Optional["models.QueryTimePeriod"]
-        configuration=None,  # type: Optional["models.QueryDatasetConfiguration"]
-        aggregation=None,  # type: Optional[Dict[str, "QueryAggregation"]]
-        grouping=None,  # type: Optional[List["QueryGrouping"]]
-        filter=None,  # type: Optional["models.QueryFilter"]
+        parameters,  # type: "_models.QueryDefinition"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.QueryResult"
+        # type: (...) -> "_models.QueryResult"
         """Query the usage data for scope defined.
 
         :param scope: The scope associated with query and export operations. This includes
@@ -76,39 +70,24 @@ class QueryOperations(object):
          '/providers/Microsoft.Billing/billingAccounts/{billingAccountId}/customers/{customerId}'
          specific for partners.
         :type scope: str
-        :param type: The type of the query.
-        :type type: str or ~azure.mgmt.costmanagement.models.ExportType
-        :param timeframe: The time frame for pulling data for the query. If custom, then a specific
-         time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.TimeframeType
-        :param time_period: Has time period for pulling data for the query.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
-        :param configuration: Has configuration information for the data in the export. The
-         configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
-        :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
-         item in the dictionary is the alias for the aggregated column. Query can have up to 2
-         aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
-        :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
-         by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
-        :param filter: Has filter expression to use in the query.
-        :type filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :param parameters: Parameters supplied to the CreateOrUpdate Query Config operation.
+        :type parameters: ~azure.mgmt.costmanagement.models.QueryDefinition
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
+        :return: QueryResult, or the result of cls(response)
         :rtype: ~azure.mgmt.costmanagement.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-
-        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
-        api_version = "2019-11-01"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.QueryResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self.usage.metadata['url']
+        url = self.usage.metadata['url']  # type: ignore
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
         }
@@ -121,44 +100,36 @@ class QueryOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'QueryDefinition')
+        body_content = self._serialize.body(parameters, 'QueryDefinition')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/query'}
+    usage.metadata = {'url': '/{scope}/providers/Microsoft.CostManagement/query'}  # type: ignore
 
     def usage_by_external_cloud_provider_type(
         self,
-        external_cloud_provider_type,  # type: Union[str, "models.ExternalCloudProviderType"]
+        external_cloud_provider_type,  # type: Union[str, "_models.ExternalCloudProviderType"]
         external_cloud_provider_id,  # type: str
-        type,  # type: Union[str, "models.ExportType"]
-        timeframe,  # type: Union[str, "models.TimeframeType"]
-        time_period=None,  # type: Optional["models.QueryTimePeriod"]
-        configuration=None,  # type: Optional["models.QueryDatasetConfiguration"]
-        aggregation=None,  # type: Optional[Dict[str, "QueryAggregation"]]
-        grouping=None,  # type: Optional[List["QueryGrouping"]]
-        filter=None,  # type: Optional["models.QueryFilter"]
+        parameters,  # type: "_models.QueryDefinition"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.QueryResult"
+        # type: (...) -> "_models.QueryResult"
         """Query the usage data for external cloud provider type defined.
 
         :param external_cloud_provider_type: The external cloud provider type associated with
@@ -168,39 +139,24 @@ class QueryOperations(object):
         :param external_cloud_provider_id: This can be '{externalSubscriptionId}' for linked account or
          '{externalBillingAccountId}' for consolidated account used with dimension/query operations.
         :type external_cloud_provider_id: str
-        :param type: The type of the query.
-        :type type: str or ~azure.mgmt.costmanagement.models.ExportType
-        :param timeframe: The time frame for pulling data for the query. If custom, then a specific
-         time period must be provided.
-        :type timeframe: str or ~azure.mgmt.costmanagement.models.TimeframeType
-        :param time_period: Has time period for pulling data for the query.
-        :type time_period: ~azure.mgmt.costmanagement.models.QueryTimePeriod
-        :param configuration: Has configuration information for the data in the export. The
-         configuration will be ignored if aggregation and grouping are provided.
-        :type configuration: ~azure.mgmt.costmanagement.models.QueryDatasetConfiguration
-        :param aggregation: Dictionary of aggregation expression to use in the query. The key of each
-         item in the dictionary is the alias for the aggregated column. Query can have up to 2
-         aggregation clauses.
-        :type aggregation: dict[str, ~azure.mgmt.costmanagement.models.QueryAggregation]
-        :param grouping: Array of group by expression to use in the query. Query can have up to 2 group
-         by clauses.
-        :type grouping: list[~azure.mgmt.costmanagement.models.QueryGrouping]
-        :param filter: Has filter expression to use in the query.
-        :type filter: ~azure.mgmt.costmanagement.models.QueryFilter
+        :param parameters: Parameters supplied to the CreateOrUpdate Query Config operation.
+        :type parameters: ~azure.mgmt.costmanagement.models.QueryDefinition
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: QueryResult or the result of cls(response)
+        :return: QueryResult, or the result of cls(response)
         :rtype: ~azure.mgmt.costmanagement.models.QueryResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryResult"]
-        error_map = kwargs.pop('error_map', {404: ResourceNotFoundError, 409: ResourceExistsError})
-
-        _parameters = models.QueryDefinition(type=type, timeframe=timeframe, time_period=time_period, configuration=configuration, aggregation=aggregation, grouping=grouping, filter=filter)
-        api_version = "2019-11-01"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.QueryResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self.usage_by_external_cloud_provider_type.metadata['url']
+        url = self.usage_by_external_cloud_provider_type.metadata['url']  # type: ignore
         path_format_arguments = {
             'externalCloudProviderType': self._serialize.url("external_cloud_provider_type", external_cloud_provider_type, 'str'),
             'externalCloudProviderId': self._serialize.url("external_cloud_provider_id", external_cloud_provider_id, 'str'),
@@ -214,26 +170,24 @@ class QueryOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'QueryDefinition')
+        body_content = self._serialize.body(parameters, 'QueryDefinition')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('QueryResult', pipeline_response)
 
         if cls:
-          return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    usage_by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/query'}
+    usage_by_external_cloud_provider_type.metadata = {'url': '/providers/Microsoft.CostManagement/{externalCloudProviderType}/{externalCloudProviderId}/query'}  # type: ignore

@@ -12,7 +12,7 @@ from ipaddress import ip_network
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
@@ -219,6 +219,13 @@ def validate_spot_max_price(namespace):
             raise CLIError(
                 "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates "
                 "default price to be up-to on-demand")
+
+
+def validate_message_of_the_day(namespace):
+    """Validates message of the day can only be used on Linux."""
+    if namespace.message_of_the_day is not None and namespace.message_of_the_day != "":
+        if namespace.os_type is not None and namespace.os_type != "Linux":
+            raise ArgumentUsageError('--message-of-the-day can only be set for linux nodepools')
 
 
 def validate_acr(namespace):

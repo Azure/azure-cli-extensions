@@ -73,9 +73,7 @@ class EndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        # api_version = "2021-10-06-preview"
-        # api_version = "2021-10-01-privatepreview"
-        api_version = "2021-07-08-privatepreview"
+        api_version = "2021-10-06-preview"
         accept = "application/json"
 
         # Construct URL

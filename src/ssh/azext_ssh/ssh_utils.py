@@ -5,11 +5,15 @@
 import os
 import platform
 import subprocess
-import stat
 import multiprocessing as mp
 import time
 import datetime
+import colorama
 import oschmod
+import re
+
+from colorama import Fore
+from colorama import Style
 
 from knack import log
 from azure.cli.core import azclierror
@@ -22,81 +26,83 @@ from . import constants as const
 logger = log.get_logger(__name__)
 
 
-def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_file, private_key_file, port,
-                         is_arc, delete_keys, delete_cert, public_key_file, ssh_client_path, ssh_args,
-                         delete_credentials):
+def start_ssh_connection(op_info, delete_keys, delete_cert):
 
-    if not ssh_client_path:
-        ssh_client_path = _get_ssh_path()
+    try:
+        ssh_arg_list = []
+        if op_info.ssh_args:
+            ssh_arg_list = op_info.ssh_args
 
-    ssh_arg_list = []
-    if ssh_args:
-        ssh_arg_list = ssh_args
+        env = os.environ.copy()
+        if op_info.is_arc():
+            env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
-    env = os.environ.copy()
+        if not op_info.cert_file and not op_info.private_key_file:
+            # In this case, even if delete_credentials is true, there is nothing to clean-up.
+            op_info.delete_credentials = False
+    
+        log_file, ssh_arg_list, cleanup_process = _start_cleanup(op_info.cert_file, op_info.private_key_file,
+                                                                op_info.public_key_file, op_info.delete_credentials,
+                                                                delete_keys, delete_cert, ssh_arg_list)
+        
+        command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
+        command = command + op_info.build_args() + ssh_arg_list
 
-    if is_arc:
-        env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(relay_info)
-        if port:
-            pcommand = f"ProxyCommand={proxy_path} -p {port}"
-        else:
-            pcommand = f"ProxyCommand={proxy_path}"
-        args = ["-o", pcommand] + _build_args(cert_file, private_key_file, None)
-        host = _get_host(username, vm_name)
+        connection_duration = time.time()
+        logger.debug("Running ssh command %s", ' '.join(command))
+        connection_status = subprocess.call(command, shell=platform.system() == 'Windows', env=env)
+
+        connection_duration = (time.time() - connection_duration) / 60
+        ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
+        if _get_connection_status(log_file, connection_status):
+            ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
+        telemetry.add_extension_event('ssh', ssh_connection_data)
+
+        _terminate_cleanup(delete_keys, delete_cert, op_info.delete_credentials, cleanup_process, op_info.cert_file,
+                        op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
+    finally:
+        _do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
+def write_ssh_config(config_info, delete_keys, delete_cert):
+
+    config_text = config_info.get_config_text()
+
+    _issue_config_cleanup_warning(delete_cert, delete_keys, config_info.is_arc(), 
+                                  config_info.cert_file, config_info.relay_info_path)
+
+    if config_info.overwrite:
+        mode = 'w'
     else:
-        host = _get_host(username, ip)
-        args = _build_args(cert_file, private_key_file, port)
+        mode = 'a'
+    with open(config_info.config_path, mode, encoding='utf-8') as f:
+        f.write('\n'.join(config_text))
+    
 
-    if not cert_file and not private_key_file:
-        # In this case, even if delete_credentials is true, there is nothing to clean-up.
-        delete_credentials = False
-
-    log_file, ssh_arg_list, cleanup_process = _start_cleanup(cert_file, private_key_file,
-                                                             public_key_file, delete_credentials,
-                                                             delete_keys, delete_cert, ssh_arg_list)
-
-    command = [ssh_client_path, host]
-    command = command + args + ssh_arg_list
-
-    connection_duration = time.time()
-
-    logger.debug("Running ssh command %s", ' '.join(command))
-    subprocess.call(command, shell=platform.system() == 'Windows', env=env)
-
-    connection_duration = (time.time() - connection_duration) / 60
-
-    ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-    if log_file and _get_connection_status(log_file):
-        ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
-    telemetry.add_extension_event('ssh', ssh_connection_data)
-
-    _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_process, cert_file,
-                       private_key_file, public_key_file, log_file)
-
-
-def create_ssh_keyfile(private_key_file):
-    command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
+def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
+    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
+    command = [sshkeygen_path, "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
-def get_ssh_cert_info(cert_file):
-    command = [_get_ssh_path("ssh-keygen"), "-L", "-f", cert_file]
+def get_ssh_cert_info(cert_file, ssh_client_folder=None):
+    sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
+    command = [sshkeygen_path, "-L", "-f", cert_file]
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
 
 
-def _get_ssh_cert_validity(cert_file):
+def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
     if cert_file:
-        info = get_ssh_cert_info(cert_file)
+        info = get_ssh_cert_info(cert_file, ssh_client_folder)
         for line in info:
             if "Valid:" in line:
                 return line.strip()
     return None
 
 
-def get_certificate_start_and_end_times(cert_file):
-    validity_str = _get_ssh_cert_validity(cert_file)
+def get_certificate_start_and_end_times(cert_file, ssh_client_folder=None):
+    validity_str = _get_ssh_cert_validity(cert_file, ssh_client_folder)
     times = None
     if validity_str and "Valid: from " in validity_str and " to " in validity_str:
         times = validity_str.replace("Valid: from ", "").split(" to ")
@@ -106,16 +112,16 @@ def get_certificate_start_and_end_times(cert_file):
     return times
 
 
-def get_certificate_lifetime(cert_file):
-    times = get_certificate_start_and_end_times(cert_file)
+def get_certificate_lifetime(cert_file, ssh_client_folder=None):
+    times = get_certificate_start_and_end_times(cert_file, ssh_client_folder)
     lifetime = None
     if times:
         lifetime = times[1] - times[0]
     return lifetime
 
 
-def get_ssh_cert_principals(cert_file):
-    info = get_ssh_cert_info(cert_file)
+def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
+    info = get_ssh_cert_info(cert_file, ssh_client_folder)
     principals = []
     in_principal = False
     for line in info:
@@ -130,96 +136,107 @@ def get_ssh_cert_principals(cert_file):
     return principals
 
 
-def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
-                     cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, _,
-                     config_path, overwrite, resource_group, credentials_folder):
+def _print_error_messages_from_ssh_log(log_file, connection_status):
+    with open(log_file, 'r', encoding='utf-8') as ssh_log:
+        log_text = ssh_log.read()
+        log_lines = log_text.splitlines()
+        if "debug1: Authentication succeeded" not in log_text or connection_status != 0:
+            for line in log_lines:
+                if "debug1:" not in line:
+                    print(line)
 
-    common_lines = []
-    common_lines.append("\tUser " + username)
-    if cert_file:
-        common_lines.append("\tCertificateFile \"" + cert_file + "\"")
-    if private_key_file:
-        common_lines.append("\tIdentityFile \"" + private_key_file + "\"")
+            if "Permission denied (publickey)." in log_text:
+                # pylint: disable=bare-except
+                # pylint: disable=too-many-boolean-expressions
+                # Check if OpenSSH client and server versions are incompatible
+                try:
+                    regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
+                    local_major, local_minor = re.findall(regex, log_lines[0])[0]
+                    remote_major, remote_minor = re.findall(regex, _get_line_that_contains("remote software version",
+                                                                                           log_lines))[0]
+                    local_major = int(local_major)
+                    local_minor = int(local_minor)
+                    remote_major = int(remote_major)
+                    remote_minor = int(remote_minor)
+                except:
+                    ssh_log.close()
+                    return
 
-    lines = [""]
-    relay_info_path = None
-    relay_info_filename = None
-    if is_arc:
-        relay_info_path, relay_info_filename = _prepare_relay_info_file(relay_info, credentials_folder,
-                                                                        vm_name, resource_group)
+                if (remote_major < 7 or (remote_major == 7 and remote_minor < 8)) and \
+                   (local_major > 8 or (local_major == 8 and local_minor >= 8)):
+                    logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
+                                   "Version incompatible with OpenSSH client version %d.%d. "
+                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                                   remote_major, remote_minor, local_major, local_minor)
 
-        lines.append("Host " + resource_group + "-" + vm_name)
-        lines.append("\tHostName " + vm_name)
-        lines = lines + common_lines
-        if port:
-            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\" " + "-p " + port)
-        else:
-            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\"")
-    else:
-        if resource_group and vm_name:
-            lines.append("Host " + resource_group + "-" + vm_name)
-            lines.append("\tHostName " + ip)
-            lines = lines + common_lines
-            if port:
-                lines.append("\tPort " + port)
-
-        # default to all hosts for config
-        if not ip:
-            ip = "*"
-
-        lines.append("Host " + ip)
-        lines = lines + common_lines
-        if port:
-            lines.append("\tPort " + port)
-
-    if overwrite:
-        mode = 'w'
-    else:
-        mode = 'a'
-
-    with open(config_path, mode) as f:
-        f.write('\n'.join(lines))
-
-    _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path)
+                elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
+                     (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
+                    logger.warning("The OpenSSH client version %d.%d is too old. "
+                                   "Version incompatible with OpenSSH server version %d.%d in the target VM. "
+                                   "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                                   local_major, local_minor, remote_major, remote_minor)
+        ssh_log.close()
 
 
-def _get_ssh_path(ssh_command="ssh"):
+def _get_line_that_contains(substring, lines):
+    for line in lines:
+        if substring in line:
+            return line
+    return None
+
+
+def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
+    if ssh_client_folder:
+        ssh_path = os.path.join(ssh_client_folder, ssh_command)
+        if platform.system() == 'Windows':
+            ssh_path = ssh_path + '.exe'
+        if os.path.isfile(ssh_path):
+            logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+            return ssh_path
+        logger.warning("Could not find %s in provided --ssh-client-folder %s. "
+                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
+
     ssh_path = ssh_command
 
     if platform.system() == 'Windows':
-        arch_data = platform.architecture()
-        is_32bit = arch_data[0] == '32bit'
-        sys_path = 'SysNative' if is_32bit else 'System32'
+        # If OS architecture is 64bit and python architecture is 32bit,
+        # look for System32 under SysNative folder.
+        machine = platform.machine()
+        os_architecture = None
+        # python interpreter architecture
+        platform_architecture = platform.architecture()[0]
+        sys_path = None
+
+        if machine.endswith('64'):
+            os_architecture = '64bit'
+        elif machine.endswith('86'):
+            os_architecture = '32bit'
+        elif machine == '':
+            raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
+        else:
+            raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
+
+        if os_architecture == "64bit":
+            sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
+        else:
+            sys_path = 'System32'
+
         system_root = os.environ['SystemRoot']
         system32_path = os.path.join(system_root, sys_path)
         ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
-        logger.debug("Platform architecture: %s", str(arch_data))
+        logger.debug("Platform architecture: %s", platform_architecture)
+        logger.debug("OS architecture: %s", os_architecture)
         logger.debug("System Root: %s", system_root)
-        logger.debug("Attempting to run ssh from path %s", ssh_path)
+        logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
 
         if not os.path.isfile(ssh_path):
             raise azclierror.UnclassifiedUserFault(
-                "Could not find " + ssh_command + ".exe.",
-                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse")
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". "
+                "Make sure OpenSSH is installed correctly: "
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
+                "Or use --ssh-client-folder to provide folder path with ssh executables. ")
 
     return ssh_path
-
-
-def _get_host(username, target):
-    return username + "@" + target
-
-
-def _build_args(cert_file, private_key_file, port):
-    private_key = []
-    port_arg = []
-    certificate = []
-    if private_key_file:
-        private_key = ["-i", private_key_file]
-    if port:
-        port_arg = ["-p", port]
-    if cert_file:
-        certificate = ["-o", "CertificateFile=" + cert_file]
-    return private_key + certificate + port_arg
 
 
 def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
@@ -228,8 +245,9 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, lo
         match = False
         while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
+            # pylint: disable=bare-except
             try:
-                with open(log_file, 'r') as ssh_client_log:
+                with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
                     match = "debug1: Authentication succeeded" in ssh_client_log.read()
                     ssh_client_log.close()
             except:
@@ -250,7 +268,6 @@ def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, lo
 
 def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credentials, delete_keys,
                    delete_cert, ssh_arg_list):
-
     log_file = None
     cleanup_process = None
     if delete_keys or delete_cert or delete_credentials:
@@ -276,7 +293,8 @@ def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credenti
 
 
 def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_process, cert_file,
-                       private_key_file, public_key_file, log_file):
+                       private_key_file, public_key_file, log_file, connection_status):
+
     if delete_keys or delete_cert or delete_credentials:
         if cleanup_process.is_alive():
             cleanup_process.terminate()
@@ -284,6 +302,9 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             t0 = time.time()
             while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
                 time.sleep(1)
+        
+        if log_file:
+            _print_error_messages_from_ssh_log(log_file, connection_status)
 
         # Make sure all files have been properly removed.
         _do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
@@ -296,37 +317,14 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_group):
-    # create the custom folder
-    relay_info_dir = credentials_folder
-    if not os.path.isdir(relay_info_dir):
-        os.makedirs(relay_info_dir)
-
-    if vm_name and resource_group:
-        relay_info_filename = resource_group + "-" + vm_name + "-relay_info"
-
-    relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
-    # Overwrite relay_info if it already exists in that folder.
-    file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
-    file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(relay_info),
-                             f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
-    oschmod.set_mode(relay_info_path, stat.S_IRUSR)
-
-    # Print the expiration of the relay information
-    expiration = datetime.datetime.fromtimestamp(relay_info.expires_on)
-    expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-    print(f"Generated relay information {relay_info_path} is valid until {expiration}.\n")
-
-    return relay_info_path, relay_info_filename
-
-
-def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_filename, relay_info_path):
+def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path):
     if delete_cert:
+        colorama.init()
+        # pylint: disable=broad-except
         try:
             expiration = get_certificate_start_and_end_times(cert_file)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print(f"Generated SSH certificate {cert_file} is valid until",
-                  f"{expiration}.\n")
+            print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time." + Style.RESET_ALL)
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
@@ -334,6 +332,7 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
         # Warn users to delete credentials once config file is no longer being used.
         # If user provided keys, only ask them to delete the certificate.
         if is_arc:
+            relay_info_filename = os.path.basename(relay_info_path)
             if delete_keys and delete_cert:
                 path_to_delete = os.path.dirname(cert_file)
                 items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
@@ -350,15 +349,17 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = cert_file
                 items_to_delete = ""
 
-        print(f"{path_to_delete} contain sensitive information{items_to_delete}. "
-              "Please delete it once you no longer need this config file.\n")
+        logger.warning(f"{path_to_delete} contain sensitive information{items_to_delete}. "
+                       "Please delete it once you no longer need this config file.\n")
 
 
-def _get_connection_status(log_file):
-    try:
-        with open(log_file, 'r') as ssh_client_log:
-            match = "debug1: Authentication succeeded" in ssh_client_log.read()
-            ssh_client_log.close()
-    except:
-        return False
-    return match
+def _get_connection_status(log_file, connection_status):
+    if log_file:
+        try:
+            with open(log_file, 'r') as ssh_client_log:
+                match = "debug1: Authentication succeeded" in ssh_client_log.read()
+                ssh_client_log.close()
+        except:
+            return False
+        return match and connection_status == 0
+    return connection_status == 0

@@ -22,8 +22,9 @@ def load_arguments(self, _):
         c.argument('resource_type', options_list=['--resource-type'],
                    help='Resource type should be either Microsoft.Compute or Microsoft.HybridCompute',
                    completer=["Microsoft.HybridCompute", "Microsoft.Compute"])
-        c.argument('ssh_client_path', options_list=['--ssh-client-path'],
-                   help='Path to ssh executable. Default to ssh pre-installed if not provided.')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
                    help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
                          'SSH login experience in Cloud shell.'),
@@ -54,6 +55,9 @@ def load_arguments(self, _):
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
                    help=('Path to the folder where the ssh proxy should be saved. '
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
 
     with self.argument_context('ssh cert') as c:
         c.argument('cert_path', options_list=['--file', '-f'],
@@ -70,8 +74,9 @@ def load_arguments(self, _):
                    help='The username for a local user')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
-        c.argument('ssh_client_path', options_list=['--ssh-client-path'],
-                   help='Path to ssh executable. Default to ssh pre-installed if not provided.')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
                    help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
                          'SSH login experience in Cloud shell.'),

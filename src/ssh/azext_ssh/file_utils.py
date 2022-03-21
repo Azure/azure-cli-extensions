@@ -27,6 +27,7 @@ def mkdir_p(path):
 
 
 def delete_file(file_path, message, warning=False):
+    # pylint: disable=broad-except
     if os.path.isfile(file_path):
         try:
             os.remove(file_path)
@@ -38,6 +39,7 @@ def delete_file(file_path, message, warning=False):
 
 
 def delete_folder(dir_path, message, warning=False):
+    # pylint: disable=broad-except
     if os.path.isdir(dir_path):
         try:
             os.rmdir(dir_path)

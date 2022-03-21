@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import os
 import time
 from types import SimpleNamespace
@@ -32,7 +33,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import get_file_json
+from azure.cli.core.util import get_file_json, read_file_content
 from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -370,6 +371,41 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return gpu_instance_profile
 
+    def get_message_of_the_day(self) -> Union[str, None]:
+        """Obtain the value of message_of_the_day.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        message_of_the_day = None
+        message_of_the_day_file_path = self.raw_param.get("message_of_the_day")
+
+        if message_of_the_day_file_path:
+            if not os.path.isfile(message_of_the_day_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        message_of_the_day_file_path
+                    )
+                )
+            message_of_the_day = read_file_content(message_of_the_day_file_path)
+            message_of_the_day = base64.b64encode(bytes(message_of_the_day, 'ascii')).decode('ascii')
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile and
+                hasattr(agent_pool_profile, "message_of_the_day") and  # backward compatibility
+                agent_pool_profile.message_of_the_day is not None
+            ):
+                message_of_the_day = agent_pool_profile.message_of_the_day
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return message_of_the_day
+
     def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
         """Obtain the value of kubelet_config.
 
@@ -476,8 +512,9 @@ class AKSPreviewContext(AKSContext):
                 )
 
         # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.http_proxy_config is not None:
-            http_proxy_config = self.mc.http_proxy_config
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.http_proxy_config is not None:
+                http_proxy_config = self.mc.http_proxy_config
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -1588,6 +1625,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         agent_pool_profile.gpu_instance_profile = (
             self.context.get_gpu_instance_profile()
         )
+        agent_pool_profile.message_of_the_day = (
+            self.context.get_message_of_the_day()
+        )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
 
@@ -2027,7 +2067,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--disable-public-fqdn"'
                 '"--enble-windows-gmsa" or '
                 '"--nodepool-labels" or '
-                '"--enable-oidc-issuer".'
+                '"--enable-oidc-issuer" or '
+                '"--http-proxy-config".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2071,6 +2112,16 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         if self.context.get_disable_pod_security_policy():
             mc.enable_pod_security_policy = False
+        return mc
+
+    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.http_proxy_config = self.context.get_http_proxy_config()
         return mc
 
     def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2185,6 +2236,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         mc = self.update_oidc_issuer_profile(mc)
+        mc = self.update_http_proxy_config(mc)
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
