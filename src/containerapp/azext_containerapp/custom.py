@@ -6,7 +6,13 @@
 
 from urllib.parse import urlparse
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
-from azure.cli.core.azclierror import (RequiredArgumentMissingError, ValidationError, ResourceNotFoundError, CLIInternalError, InvalidArgumentValueError)
+from azure.cli.core.azclierror import (
+    RequiredArgumentMissingError,
+    ValidationError,
+    ResourceNotFoundError,
+    CLIError,
+    CLIInternalError,
+    InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
@@ -122,7 +128,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
     if from_revision:
         try:
             r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
-        except CLIInternalError as e:
+        except CLIError as e:
             handle_raw_exception(e)
         _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
         current_containerapp_def["properties"]["template"] = r["properties"]["template"]
@@ -694,7 +700,7 @@ def show_containerapp(cmd, name, resource_group_name):
 
     try:
         return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -709,7 +715,7 @@ def list_containerapp(cmd, resource_group_name=None):
             containerapps = ContainerAppClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
 
         return containerapps
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -718,7 +724,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
 
     try:
         return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -809,7 +815,7 @@ def show_managed_environment(cmd, name, resource_group_name):
 
     try:
         return ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -824,7 +830,7 @@ def list_managed_environments(cmd, resource_group_name=None):
             managed_envs = ManagedEnvironmentClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
 
         return managed_envs
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -833,7 +839,7 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -994,7 +1000,7 @@ def show_managed_identity(cmd, name, resource_group_name):
 
     try:
         r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
     try:
@@ -1061,7 +1067,7 @@ def create_or_update_github_action(cmd,
                 if e.data and e.data['message']:
                     error_msg += " Error: {}".format(e.data['message'])
                 raise CLIInternalError(error_msg) from e
-    except CLIInternalError as clierror:
+    except CLIError as clierror:
         raise clierror
     except Exception:
         # If exception due to github package missing, etc just continue without validating the repo and rely on api validation
@@ -1179,7 +1185,7 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
                 if e.data and e.data['message']:
                     error_msg += " Error: {}".format(e.data['message'])
                 raise CLIInternalError(error_msg) from e
-    except CLIInternalError as clierror:
+    except CLIError as clierror:
         raise clierror
     except Exception:
         # If exception due to github package missing, etc just continue without validating the repo and rely on api validation
@@ -1196,7 +1202,7 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
 def list_revisions(cmd, name, resource_group_name):
     try:
         return ContainerAppClient.list_revisions(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -1206,7 +1212,7 @@ def show_revision(cmd, resource_group_name, revision_name, name=None):
 
     try:
         return ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -1216,7 +1222,7 @@ def restart_revision(cmd, resource_group_name, revision_name, name=None):
 
     try:
         return ContainerAppClient.restart_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -1226,7 +1232,7 @@ def activate_revision(cmd, resource_group_name, revision_name, name=None):
 
     try:
         return ContainerAppClient.activate_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -1236,7 +1242,7 @@ def deactivate_revision(cmd, resource_group_name, revision_name, name=None):
 
     try:
         return ContainerAppClient.deactivate_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=revision_name)
-    except CLIInternalError as e:
+    except CLIError as e:
         handle_raw_exception(e)
 
 
@@ -1289,7 +1295,7 @@ def copy_revision(cmd,
     if from_revision:
         try:
             r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
-        except CLIInternalError as e:
+        except CLIError as e:
             # Error handle the case where revision not found?
             handle_raw_exception(e)
 
