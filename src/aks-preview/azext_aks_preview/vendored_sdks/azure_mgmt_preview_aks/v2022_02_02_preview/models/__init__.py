@@ -13,6 +13,7 @@ from ._models_py3 import AgentPoolListResult
 from ._models_py3 import AgentPoolUpgradeProfile
 from ._models_py3 import AgentPoolUpgradeProfilePropertiesUpgradesItem
 from ._models_py3 import AgentPoolUpgradeSettings
+from ._models_py3 import AzureKeyVaultKms
 from ._models_py3 import CloudErrorBody
 from ._models_py3 import ContainerServiceDiagnosticsProfile
 from ._models_py3 import ContainerServiceLinuxProfile
@@ -59,13 +60,17 @@ from ._models_py3 import ManagedClusterPodIdentityProvisioningInfo
 from ._models_py3 import ManagedClusterPoolUpgradeProfile
 from ._models_py3 import ManagedClusterPoolUpgradeProfileUpgradesItem
 from ._models_py3 import ManagedClusterPropertiesAutoScalerProfile
+from ._models_py3 import ManagedClusterPropertiesForSnapshot
 from ._models_py3 import ManagedClusterSKU
 from ._models_py3 import ManagedClusterSecurityProfile
 from ._models_py3 import ManagedClusterSecurityProfileAzureDefender
 from ._models_py3 import ManagedClusterServicePrincipalProfile
+from ._models_py3 import ManagedClusterSnapshot
+from ._models_py3 import ManagedClusterSnapshotListResult
 from ._models_py3 import ManagedClusterUpgradeProfile
 from ._models_py3 import ManagedClusterWindowsProfile
 from ._models_py3 import ManagedServiceIdentityUserAssignedIdentitiesValue
+from ._models_py3 import NetworkProfileForSnapshot
 from ._models_py3 import OSOptionProfile
 from ._models_py3 import OSOptionProperty
 from ._models_py3 import OperationListResult
@@ -142,6 +147,7 @@ __all__ = [
     'AgentPoolUpgradeProfile',
     'AgentPoolUpgradeProfilePropertiesUpgradesItem',
     'AgentPoolUpgradeSettings',
+    'AzureKeyVaultKms',
     'CloudErrorBody',
     'ContainerServiceDiagnosticsProfile',
     'ContainerServiceLinuxProfile',
@@ -188,13 +194,17 @@ __all__ = [
     'ManagedClusterPoolUpgradeProfile',
     'ManagedClusterPoolUpgradeProfileUpgradesItem',
     'ManagedClusterPropertiesAutoScalerProfile',
+    'ManagedClusterPropertiesForSnapshot',
     'ManagedClusterSKU',
     'ManagedClusterSecurityProfile',
     'ManagedClusterSecurityProfileAzureDefender',
     'ManagedClusterServicePrincipalProfile',
+    'ManagedClusterSnapshot',
+    'ManagedClusterSnapshotListResult',
     'ManagedClusterUpgradeProfile',
     'ManagedClusterWindowsProfile',
     'ManagedServiceIdentityUserAssignedIdentitiesValue',
+    'NetworkProfileForSnapshot',
     'OSOptionProfile',
     'OSOptionProperty',
     'OperationListResult',

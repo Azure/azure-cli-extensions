@@ -36,13 +36,13 @@ def build_get_os_options_request(
     resource_type: Optional[str] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/locations/{location}/osOptions/default')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "location": _SERIALIZER.url("location", location, 'str'),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "location": _SERIALIZER.url("location", location, 'str', min_length=1),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -70,12 +70,12 @@ def build_list_request(
     subscription_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/managedClusters')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -102,13 +102,13 @@ def build_list_by_resource_group_request(
     resource_group_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -136,13 +136,13 @@ def build_get_upgrade_profile_request(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/upgradeProfiles/default')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -172,13 +172,13 @@ def build_get_access_profile_request(
     role_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/accessProfiles/{roleName}/listCredential')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
         "roleName": _SERIALIZER.url("role_name", role_name, 'str'),
     }
@@ -208,16 +208,55 @@ def build_list_cluster_admin_credentials_request(
     resource_name: str,
     *,
     server_fqdn: Optional[str] = None,
-    format: Optional[Union[str, "_models.Format"]] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterAdminCredential')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
+    }
+
+    url = _format_url_section(url, **path_format_arguments)
+
+    # Construct parameters
+    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    if server_fqdn is not None:
+        query_parameters['server-fqdn'] = _SERIALIZER.query("server_fqdn", server_fqdn, 'str')
+
+    # Construct headers
+    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=url,
+        params=query_parameters,
+        headers=header_parameters,
+        **kwargs
+    )
+
+
+def build_list_cluster_user_credentials_request(
+    subscription_id: str,
+    resource_group_name: str,
+    resource_name: str,
+    *,
+    server_fqdn: Optional[str] = None,
+    format: Optional[Union[str, "_models.Format"]] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    api_version = "2022-02-02-preview"
+    accept = "application/json"
+    # Construct URL
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential')
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -244,45 +283,6 @@ def build_list_cluster_admin_credentials_request(
     )
 
 
-def build_list_cluster_user_credentials_request(
-    subscription_id: str,
-    resource_group_name: str,
-    resource_name: str,
-    *,
-    server_fqdn: Optional[str] = None,
-    **kwargs: Any
-) -> HttpRequest:
-    api_version = "2022-01-02-preview"
-    accept = "application/json"
-    # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential')
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
-        "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-    }
-
-    url = _format_url_section(url, **path_format_arguments)
-
-    # Construct parameters
-    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if server_fqdn is not None:
-        query_parameters['server-fqdn'] = _SERIALIZER.query("server_fqdn", server_fqdn, 'str')
-
-    # Construct headers
-    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="POST",
-        url=url,
-        params=query_parameters,
-        headers=header_parameters,
-        **kwargs
-    )
-
-
 def build_list_cluster_monitoring_user_credentials_request(
     subscription_id: str,
     resource_group_name: str,
@@ -291,13 +291,13 @@ def build_list_cluster_monitoring_user_credentials_request(
     server_fqdn: Optional[str] = None,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterMonitoringUserCredential')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -328,13 +328,13 @@ def build_get_request(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -368,13 +368,13 @@ def build_create_or_update_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -412,13 +412,13 @@ def build_update_tags_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -451,13 +451,13 @@ def build_delete_request_initial(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -491,13 +491,13 @@ def build_reset_service_principal_profile_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/resetServicePrincipalProfile')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -535,13 +535,13 @@ def build_reset_aad_profile_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/resetAADProfile')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -574,13 +574,13 @@ def build_rotate_cluster_certificates_request_initial(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/rotateClusterCertificates')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -609,13 +609,13 @@ def build_stop_request_initial(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/stop')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -644,13 +644,13 @@ def build_start_request_initial(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/start')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -684,13 +684,13 @@ def build_run_command_request_initial(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/runCommand')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -724,13 +724,13 @@ def build_get_command_result_request(
     command_id: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/commandResults/{commandId}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
         "commandId": _SERIALIZER.url("command_id", command_id, 'str'),
     }
@@ -760,13 +760,13 @@ def build_list_outbound_network_dependencies_endpoints_request(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/outboundNetworkDependenciesEndpoints')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -795,7 +795,7 @@ class ManagedClustersOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -821,13 +821,13 @@ class ManagedClustersOperations(object):
 
         Gets supported OS options in the specified subscription.
 
-        :param location: The name of a supported Azure region.
+        :param location: The name of Azure region.
         :type location: str
         :param resource_type: The resource type for which the OS options needs to be returned.
         :type resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OSOptionProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.OSOptionProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.OSOptionProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OSOptionProfile"]
@@ -876,7 +876,7 @@ class ManagedClustersOperations(object):
         :return: An iterator like instance of either ManagedClusterListResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterListResult]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -940,13 +940,13 @@ class ManagedClustersOperations(object):
 
         Lists managed clusters in the specified subscription and resource group.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedClusterListResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterListResult]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -1013,13 +1013,13 @@ class ManagedClustersOperations(object):
 
         Gets the upgrade profile of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterUpgradeProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterUpgradeProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterUpgradeProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterUpgradeProfile"]
@@ -1070,7 +1070,7 @@ class ManagedClustersOperations(object):
         `ListClusterAdminCredentials
         <https://docs.microsoft.com/rest/api/aks/managedclusters/listclusteradmincredentials>`_ .
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1078,7 +1078,7 @@ class ManagedClustersOperations(object):
         :type role_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterAccessProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterAccessProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterAccessProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterAccessProfile"]
@@ -1121,26 +1121,21 @@ class ManagedClustersOperations(object):
         resource_group_name: str,
         resource_name: str,
         server_fqdn: Optional[str] = None,
-        format: Optional[Union[str, "_models.Format"]] = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the admin credentials of a managed cluster.
 
         Lists the admin credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param server_fqdn: server fqdn type for credentials to be returned.
         :type server_fqdn: str
-        :param format: Only apply to AAD clusters, specifies the format of returned kubeconfig. Format
-         'azure' will return azure auth-provider kubeconfig; format 'exec' will return exec format
-         kubeconfig, which requires kubelogin binary in the path.
-        :type format: str or ~azure.mgmt.containerservice.v2022_01_02_preview.models.Format
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -1155,7 +1150,6 @@ class ManagedClustersOperations(object):
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             server_fqdn=server_fqdn,
-            format=format,
             template_url=self.list_cluster_admin_credentials.metadata['url'],
         )
         request = _convert_request(request)
@@ -1184,21 +1178,26 @@ class ManagedClustersOperations(object):
         resource_group_name: str,
         resource_name: str,
         server_fqdn: Optional[str] = None,
+        format: Optional[Union[str, "_models.Format"]] = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the user credentials of a managed cluster.
 
         Lists the user credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param server_fqdn: server fqdn type for credentials to be returned.
         :type server_fqdn: str
+        :param format: Only apply to AAD clusters, specifies the format of returned kubeconfig. Format
+         'azure' will return azure auth-provider kubeconfig; format 'exec' will return exec format
+         kubeconfig, which requires kubelogin binary in the path.
+        :type format: str or ~azure.mgmt.containerservice.v2022_02_02_preview.models.Format
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -1213,6 +1212,7 @@ class ManagedClustersOperations(object):
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             server_fqdn=server_fqdn,
+            format=format,
             template_url=self.list_cluster_user_credentials.metadata['url'],
         )
         request = _convert_request(request)
@@ -1247,7 +1247,7 @@ class ManagedClustersOperations(object):
 
         Lists the cluster monitoring user credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1255,7 +1255,7 @@ class ManagedClustersOperations(object):
         :type server_fqdn: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -1303,13 +1303,13 @@ class ManagedClustersOperations(object):
 
         Gets a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedCluster, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedCluster"]
@@ -1406,12 +1406,12 @@ class ManagedClustersOperations(object):
 
         Creates or updates a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The managed cluster to create or update.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1423,7 +1423,7 @@ class ManagedClustersOperations(object):
         :return: An instance of LROPoller that returns either ManagedCluster or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -1525,12 +1525,12 @@ class ManagedClustersOperations(object):
 
         Updates tags on a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: Parameters supplied to the Update Managed Cluster Tags operation.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.TagsObject
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1542,7 +1542,7 @@ class ManagedClustersOperations(object):
         :return: An instance of LROPoller that returns either ManagedCluster or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -1633,7 +1633,7 @@ class ManagedClustersOperations(object):
 
         Deletes a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1738,13 +1738,13 @@ class ManagedClustersOperations(object):
 
         This action cannot be performed on a cluster that is not using a service principal.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The service principal profile to set on the managed cluster.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterServicePrincipalProfile
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterServicePrincipalProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1849,13 +1849,13 @@ class ManagedClustersOperations(object):
 
         Reset the AAD Profile of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The AAD profile to set on the Managed Cluster.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterAADProfile
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterAADProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1954,7 +1954,7 @@ class ManagedClustersOperations(object):
         See `Certificate rotation <https://docs.microsoft.com/azure/aks/certificate-rotation>`_ for
         more details about rotating managed cluster certificates.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -2056,7 +2056,7 @@ class ManagedClustersOperations(object):
         <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about stopping a
         cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -2155,7 +2155,7 @@ class ManagedClustersOperations(object):
         See `starting a cluster <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more
         details about starting a cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -2268,13 +2268,13 @@ class ManagedClustersOperations(object):
         more information see `AKS Run Command
         <https://docs.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param request_payload: The run command request.
         :type request_payload:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandRequest
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -2286,7 +2286,7 @@ class ManagedClustersOperations(object):
         :return: An instance of LROPoller that returns either RunCommandResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandResult]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -2343,7 +2343,7 @@ class ManagedClustersOperations(object):
 
         Gets the results of a command which has been run on the Managed Cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -2351,7 +2351,7 @@ class ManagedClustersOperations(object):
         :type command_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: RunCommandResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandResult or None
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandResult or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.RunCommandResult"]]
@@ -2403,7 +2403,7 @@ class ManagedClustersOperations(object):
         Gets a list of egress endpoints (network endpoints of all outbound dependencies) in the
         specified managed cluster. The operation returns properties of each egress endpoint.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -2411,7 +2411,7 @@ class ManagedClustersOperations(object):
         :return: An iterator like instance of either OutboundEnvironmentEndpointCollection or the
          result of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.OutboundEnvironmentEndpointCollection]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.OutboundEnvironmentEndpointCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OutboundEnvironmentEndpointCollection"]

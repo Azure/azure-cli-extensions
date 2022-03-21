@@ -14,6 +14,7 @@ from ._private_endpoint_connections_operations import PrivateEndpointConnections
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
 from ._resolve_private_link_service_id_operations import ResolvePrivateLinkServiceIdOperations
 from ._snapshots_operations import SnapshotsOperations
+from ._managed_cluster_snapshots_operations import ManagedClusterSnapshotsOperations
 
 __all__ = [
     'Operations',
@@ -24,4 +25,5 @@ __all__ = [
     'PrivateLinkResourcesOperations',
     'ResolvePrivateLinkServiceIdOperations',
     'SnapshotsOperations',
+    'ManagedClusterSnapshotsOperations',
 ]

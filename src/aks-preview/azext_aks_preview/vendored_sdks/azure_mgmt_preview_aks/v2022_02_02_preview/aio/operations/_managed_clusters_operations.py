@@ -33,7 +33,7 @@ class ManagedClustersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,13 +59,13 @@ class ManagedClustersOperations:
 
         Gets supported OS options in the specified subscription.
 
-        :param location: The name of a supported Azure region.
+        :param location: The name of Azure region.
         :type location: str
         :param resource_type: The resource type for which the OS options needs to be returned.
         :type resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OSOptionProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.OSOptionProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.OSOptionProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OSOptionProfile"]
@@ -114,7 +114,7 @@ class ManagedClustersOperations:
         :return: An iterator like instance of either ManagedClusterListResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterListResult]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -178,13 +178,13 @@ class ManagedClustersOperations:
 
         Lists managed clusters in the specified subscription and resource group.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedClusterListResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterListResult]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -251,13 +251,13 @@ class ManagedClustersOperations:
 
         Gets the upgrade profile of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterUpgradeProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterUpgradeProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterUpgradeProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterUpgradeProfile"]
@@ -308,7 +308,7 @@ class ManagedClustersOperations:
         `ListClusterAdminCredentials
         <https://docs.microsoft.com/rest/api/aks/managedclusters/listclusteradmincredentials>`_ .
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -316,7 +316,7 @@ class ManagedClustersOperations:
         :type role_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterAccessProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterAccessProfile
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterAccessProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterAccessProfile"]
@@ -359,26 +359,21 @@ class ManagedClustersOperations:
         resource_group_name: str,
         resource_name: str,
         server_fqdn: Optional[str] = None,
-        format: Optional[Union[str, "_models.Format"]] = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the admin credentials of a managed cluster.
 
         Lists the admin credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param server_fqdn: server fqdn type for credentials to be returned.
         :type server_fqdn: str
-        :param format: Only apply to AAD clusters, specifies the format of returned kubeconfig. Format
-         'azure' will return azure auth-provider kubeconfig; format 'exec' will return exec format
-         kubeconfig, which requires kubelogin binary in the path.
-        :type format: str or ~azure.mgmt.containerservice.v2022_01_02_preview.models.Format
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -393,7 +388,6 @@ class ManagedClustersOperations:
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             server_fqdn=server_fqdn,
-            format=format,
             template_url=self.list_cluster_admin_credentials.metadata['url'],
         )
         request = _convert_request(request)
@@ -422,21 +416,26 @@ class ManagedClustersOperations:
         resource_group_name: str,
         resource_name: str,
         server_fqdn: Optional[str] = None,
+        format: Optional[Union[str, "_models.Format"]] = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the user credentials of a managed cluster.
 
         Lists the user credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param server_fqdn: server fqdn type for credentials to be returned.
         :type server_fqdn: str
+        :param format: Only apply to AAD clusters, specifies the format of returned kubeconfig. Format
+         'azure' will return azure auth-provider kubeconfig; format 'exec' will return exec format
+         kubeconfig, which requires kubelogin binary in the path.
+        :type format: str or ~azure.mgmt.containerservice.v2022_02_02_preview.models.Format
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -451,6 +450,7 @@ class ManagedClustersOperations:
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             server_fqdn=server_fqdn,
+            format=format,
             template_url=self.list_cluster_user_credentials.metadata['url'],
         )
         request = _convert_request(request)
@@ -485,7 +485,7 @@ class ManagedClustersOperations:
 
         Lists the cluster monitoring user credentials of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -493,7 +493,7 @@ class ManagedClustersOperations:
         :type server_fqdn: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -541,13 +541,13 @@ class ManagedClustersOperations:
 
         Gets a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedCluster, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedCluster"]
@@ -644,12 +644,12 @@ class ManagedClustersOperations:
 
         Creates or updates a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The managed cluster to create or update.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -661,7 +661,7 @@ class ManagedClustersOperations:
         :return: An instance of AsyncLROPoller that returns either ManagedCluster or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -763,12 +763,12 @@ class ManagedClustersOperations:
 
         Updates tags on a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: Parameters supplied to the Update Managed Cluster Tags operation.
-        :type parameters: ~azure.mgmt.containerservice.v2022_01_02_preview.models.TagsObject
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -780,7 +780,7 @@ class ManagedClustersOperations:
         :return: An instance of AsyncLROPoller that returns either ManagedCluster or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedCluster]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedCluster]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -871,7 +871,7 @@ class ManagedClustersOperations:
 
         Deletes a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -976,13 +976,13 @@ class ManagedClustersOperations:
 
         This action cannot be performed on a cluster that is not using a service principal.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The service principal profile to set on the managed cluster.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterServicePrincipalProfile
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterServicePrincipalProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -1087,13 +1087,13 @@ class ManagedClustersOperations:
 
         Reset the AAD Profile of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The AAD profile to set on the Managed Cluster.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.ManagedClusterAADProfile
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.ManagedClusterAADProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -1192,7 +1192,7 @@ class ManagedClustersOperations:
         See `Certificate rotation <https://docs.microsoft.com/azure/aks/certificate-rotation>`_ for
         more details about rotating managed cluster certificates.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1294,7 +1294,7 @@ class ManagedClustersOperations:
         <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about stopping a
         cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1393,7 +1393,7 @@ class ManagedClustersOperations:
         See `starting a cluster <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more
         details about starting a cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1506,13 +1506,13 @@ class ManagedClustersOperations:
         more information see `AKS Run Command
         <https://docs.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param request_payload: The run command request.
         :type request_payload:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandRequest
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -1524,7 +1524,7 @@ class ManagedClustersOperations:
         :return: An instance of AsyncLROPoller that returns either RunCommandResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandResult]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
@@ -1581,7 +1581,7 @@ class ManagedClustersOperations:
 
         Gets the results of a command which has been run on the Managed Cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1589,7 +1589,7 @@ class ManagedClustersOperations:
         :type command_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: RunCommandResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.RunCommandResult or None
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.RunCommandResult or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.RunCommandResult"]]
@@ -1641,7 +1641,7 @@ class ManagedClustersOperations:
         Gets a list of egress endpoints (network endpoints of all outbound dependencies) in the
         specified managed cluster. The operation returns properties of each egress endpoint.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -1649,7 +1649,7 @@ class ManagedClustersOperations:
         :return: An iterator like instance of either OutboundEnvironmentEndpointCollection or the
          result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.OutboundEnvironmentEndpointCollection]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.OutboundEnvironmentEndpointCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OutboundEnvironmentEndpointCollection"]

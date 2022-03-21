@@ -31,7 +31,7 @@ class MaintenanceConfigurationsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +57,7 @@ class MaintenanceConfigurationsOperations:
 
         Gets a list of maintenance configurations in the specified managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -65,7 +65,7 @@ class MaintenanceConfigurationsOperations:
         :return: An iterator like instance of either MaintenanceConfigurationListResult or the result
          of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfigurationListResult]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfigurationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfigurationListResult"]
@@ -135,7 +135,7 @@ class MaintenanceConfigurationsOperations:
 
         Gets the specified maintenance configuration of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -143,7 +143,7 @@ class MaintenanceConfigurationsOperations:
         :type config_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MaintenanceConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
@@ -193,7 +193,7 @@ class MaintenanceConfigurationsOperations:
 
         Creates or updates a maintenance configuration in the specified managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -201,10 +201,10 @@ class MaintenanceConfigurationsOperations:
         :type config_name: str
         :param parameters: The maintenance configuration to create or update.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MaintenanceConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
@@ -258,7 +258,7 @@ class MaintenanceConfigurationsOperations:
 
         Deletes a maintenance configuration.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str

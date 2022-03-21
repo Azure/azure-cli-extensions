@@ -18,18 +18,18 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._private_link_resources_operations import build_list_request
+from ...operations._resolve_private_link_service_id_operations import build_post_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class PrivateLinkResourcesOperations:
-    """PrivateLinkResourcesOperations async operations.
+class ResolvePrivateLinkServiceIdOperations:
+    """ResolvePrivateLinkServiceIdOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,38 +45,45 @@ class PrivateLinkResourcesOperations:
         self._config = config
 
     @distributed_trace_async
-    async def list(
+    async def post(
         self,
         resource_group_name: str,
         resource_name: str,
+        parameters: "_models.PrivateLinkResource",
         **kwargs: Any
-    ) -> "_models.PrivateLinkResourcesListResult":
-        """Gets a list of private link resources in the specified managed cluster.
+    ) -> "_models.PrivateLinkResource":
+        """Gets the private link service ID for the specified managed cluster.
 
-        To learn more about private clusters, see:
-        https://docs.microsoft.com/azure/aks/private-clusters.
+        Gets the private link service ID for the specified managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
+        :param parameters: Parameters required in order to resolve a private link service ID.
+        :type parameters: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateLinkResource
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PrivateLinkResourcesListResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.PrivateLinkResourcesListResult
+        :return: PrivateLinkResource, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateLinkResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateLinkResourcesListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateLinkResource"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        
-        request = build_list_request(
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(parameters, 'PrivateLinkResource')
+
+        request = build_post_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            template_url=self.list.metadata['url'],
+            content_type=content_type,
+            json=_json,
+            template_url=self.post.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -88,12 +95,12 @@ class PrivateLinkResourcesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('PrivateLinkResourcesListResult', pipeline_response)
+        deserialized = self._deserialize('PrivateLinkResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateLinkResources'}  # type: ignore
+    post.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/resolvePrivateLinkServiceId'}  # type: ignore
 

@@ -33,13 +33,13 @@ def build_list_by_managed_cluster_request(
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
 
@@ -69,13 +69,13 @@ def build_get_request(
     config_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
         "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
@@ -111,13 +111,13 @@ def build_create_or_update_request(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
         "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
@@ -152,13 +152,13 @@ def build_delete_request(
     config_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-01-02-preview"
+    api_version = "2022-02-02-preview"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', min_length=1),
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
         "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
@@ -188,7 +188,7 @@ class MaintenanceConfigurationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_01_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -214,7 +214,7 @@ class MaintenanceConfigurationsOperations(object):
 
         Gets a list of maintenance configurations in the specified managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -222,7 +222,7 @@ class MaintenanceConfigurationsOperations(object):
         :return: An iterator like instance of either MaintenanceConfigurationListResult or the result
          of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfigurationListResult]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfigurationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfigurationListResult"]
@@ -292,7 +292,7 @@ class MaintenanceConfigurationsOperations(object):
 
         Gets the specified maintenance configuration of a managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -300,7 +300,7 @@ class MaintenanceConfigurationsOperations(object):
         :type config_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MaintenanceConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
@@ -350,7 +350,7 @@ class MaintenanceConfigurationsOperations(object):
 
         Creates or updates a maintenance configuration in the specified managed cluster.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
@@ -358,10 +358,10 @@ class MaintenanceConfigurationsOperations(object):
         :type config_name: str
         :param parameters: The maintenance configuration to create or update.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+         ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MaintenanceConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_01_02_preview.models.MaintenanceConfiguration
+        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
@@ -415,7 +415,7 @@ class MaintenanceConfigurationsOperations(object):
 
         Deletes a maintenance configuration.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
