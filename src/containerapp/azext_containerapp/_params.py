@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-statements, consider-using-f-string
+# pylint: disable=line-too-long, too-many-statements, consider-using-f-string, option-length-too-long
 
 from knack.arguments import CLIArgumentType
 
@@ -55,7 +55,7 @@ def load_arguments(self, _):
 
     # Dapr
     with self.argument_context('containerapp', arg_group='Dapr') as c:
-        c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag())
+        c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag(), help="Boolean indicating if the Dapr side car is enabled.")
         c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
         c.argument('dapr_app_id', type=str, help="The Dapr application identifier.")
         c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
@@ -154,6 +154,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp secret set') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format.")
+
+    with self.argument_context('containerapp secret show') as c:
+        c.argument('secret_name', help="The name of the secret to show.")
 
     with self.argument_context('containerapp secret remove') as c:
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")

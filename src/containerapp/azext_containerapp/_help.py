@@ -64,14 +64,6 @@ helps['containerapp delete'] = """
       text: az containerapp delete -g MyResourceGroup -n MyContainerapp
 """
 
-helps['containerapp scale'] = """
-    type: command
-    short-summary: Set the min and max replicas for a container app (latest revision in multiple revisions mode).
-    examples:
-    - name: Scale a container's latest revision.
-      text: az containerapp scale -g MyResourceGroup -n MyContainerapp --min-replicas 1 --max-replicas 2
-"""
-
 helps['containerapp show'] = """
     type: command
     short-summary: Show details of a container app.
@@ -106,7 +98,7 @@ helps['containerapp revision show'] = """
     - name: Show details of a revision.
       text: |
           az containerapp revision show -n MyContainerapp -g MyResourceGroup \\
-              --revision-name MyContainerappRevision
+              --revision MyContainerappRevision
 """
 
 helps['containerapp revision list'] = """
@@ -200,10 +192,6 @@ helps['containerapp env create'] = """
               --location "Canada Central"
 """
 
-helps['containerapp env update'] = """
-    type: command
-    short-summary: Update a Container Apps environment. Currently Unsupported.
-"""
 
 helps['containerapp env delete'] = """
     type: command
@@ -245,7 +233,7 @@ helps['containerapp env dapr-component list'] = """
     examples:
     - name: List dapr components for a Containerapp environment.
       text: |
-          az containerapp env dapr-component list -g MyResourceGroup --environment-name MyEnvironment
+          az containerapp env dapr-component list -g MyResourceGroup --name MyEnvironment
 """
 
 helps['containerapp env dapr-component show'] = """
@@ -254,7 +242,7 @@ helps['containerapp env dapr-component show'] = """
     examples:
     - name: Show the details of a dapr component.
       text: |
-          az containerapp env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
+          az containerapp env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
 
 helps['containerapp env dapr-component set'] = """
@@ -263,7 +251,7 @@ helps['containerapp env dapr-component set'] = """
     examples:
     - name: Create a dapr component.
       text: |
-          az containerapp env dapr-component set -g MyResourceGroup --environment-name MyEnv --yaml MyYAMLPath --name MyDaprName
+          az containerapp env dapr-component set -g MyResourceGroup --name MyEnv --yaml MyYAMLPath --dapr-component-name MyDaprComponentName
 """
 
 helps['containerapp env dapr-component remove'] = """
@@ -272,7 +260,7 @@ helps['containerapp env dapr-component remove'] = """
     examples:
     - name: Remove a dapr componenet from a Containerapp environment.
       text: |
-          az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponenetName --environment-name MyEnvironment
+          az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponenetName --name MyEnvironment
 """
 
 # Identity Commands
@@ -303,7 +291,7 @@ helps['containerapp identity remove'] = """
     examples:
     - name: Remove system identity.
       text: |
-          az containerapp identity remove [system]
+          az containerapp identity remove --identities [system]
     - name: Remove system and user identity.
       text: |
           az containerapp identity remove --identities [system] myAssignedId
