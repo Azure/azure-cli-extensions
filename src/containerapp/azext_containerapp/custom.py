@@ -1054,8 +1054,8 @@ def create_or_update_github_action(cmd,
                 logger.warning('Verified GitHub repo and branch')
             except BadCredentialsException as e:
                 raise ValidationError("Could not authenticate to the repository. Please create a Personal Access Token and use "
-                               "the --token argument. Run 'az webapp deployment github-actions add --help' "
-                               "for more information.") from e
+                                      "the --token argument. Run 'az webapp deployment github-actions add --help' "
+                                      "for more information.") from e
             except GithubException as e:
                 error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
                 if e.data and e.data['message']:
@@ -1172,8 +1172,8 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
                     raise ValidationError("The token does not have appropriate access rights to repository {}.".format(repo))
             except BadCredentialsException as e:
                 raise CLIInternalError("Could not authenticate to the repository. Please create a Personal Access Token and use "
-                               "the --token argument. Run 'az webapp deployment github-actions add --help' "
-                               "for more information.") from e
+                                       "the --token argument. Run 'az webapp deployment github-actions add --help' "
+                                       "for more information.") from e
             except GithubException as e:
                 error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
                 if e.data and e.data['message']:
