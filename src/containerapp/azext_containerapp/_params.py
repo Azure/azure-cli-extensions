@@ -33,13 +33,13 @@ def load_arguments(self, _):
     # Container
     with self.argument_context('containerapp', arg_group='Container (Creates new revision)') as c:
         c.argument('image', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('container_name', type=str, options_list=['--container-name'], help="Name of the container.")
-        c.argument('cpu', type=float, validator=validate_cpu, options_list=['--cpu'], help="Required CPU in cores, e.g. 0.5")
-        c.argument('memory', type=str, validator=validate_memory, options_list=['--memory'], help="Required memory, e.g. 1.0Gi")
-        c.argument('env_vars', nargs='*', options_list=['--env-vars'], help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
+        c.argument('container_name', type=str, help="Name of the container.")
+        c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores, e.g. 0.5")
+        c.argument('memory', type=str, validator=validate_memory, help="Required memory, e.g. 1.0Gi")
+        c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
-        c.argument('args', nargs='*', options_list=['--args'], help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
-        c.argument('revision_suffix', type=str, options_list=['--revision-suffix'], help='User friendly suffix that is appended to the revision name')
+        c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
+        c.argument('revision_suffix', type=str, help='User friendly suffix that is appended to the revision name')
 
     # Env vars
     with self.argument_context('containerapp', arg_group='Environment variables (Creates new revision)') as c:
@@ -50,29 +50,29 @@ def load_arguments(self, _):
 
     # Scale
     with self.argument_context('containerapp', arg_group='Scale (Creates new revision)') as c:
-        c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of replicas.")
-        c.argument('max_replicas', type=int, options_list=['--max-replicas'], help="The maximum number of replicas.")
+        c.argument('min_replicas', type=int, help="The minimum number of replicas.")
+        c.argument('max_replicas', type=int, help="The maximum number of replicas.")
 
     # Dapr
     with self.argument_context('containerapp', arg_group='Dapr') as c:
         c.argument('dapr_enabled', options_list=['--enable-dapr'], default=False, arg_type=get_three_state_flag())
-        c.argument('dapr_app_port', type=int, options_list=['--dapr-app-port'], help="The port Dapr uses to talk to the application.")
-        c.argument('dapr_app_id', type=str, options_list=['--dapr-app-id'], help="The Dapr application identifier.")
-        c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), options_list=['--dapr-app-protocol'], help="The protocol Dapr uses to talk to the application.")
-        c.argument('dapr_components', options_list=['--dapr-components'], help="The name of a yaml file containing a list of dapr components.")
+        c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
+        c.argument('dapr_app_id', type=str, help="The Dapr application identifier.")
+        c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
+        c.argument('dapr_components', help="The name of a yaml file containing a list of dapr components.")
 
     # Configuration
     with self.argument_context('containerapp', arg_group='Configuration') as c:
-        c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple']), options_list=['--revisions-mode'], help="The active revisions mode for the container app.")
-        c.argument('registry_server', type=str, validator=validate_registry_server, options_list=['--registry-server'], help="The container registry server hostname, e.g. myregistry.azurecr.io.")
+        c.argument('revisions_mode', arg_type=get_enum_type(['single', 'multiple']), help="The active revisions mode for the container app.")
+        c.argument('registry_server', type=str, validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
         c.argument('registry_pass', type=str, validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', type=str, validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format.")
 
     # Ingress
     with self.argument_context('containerapp', arg_group='Ingress') as c:
-        c.argument('ingress', validator=validate_ingress, options_list=['--ingress'], default=None, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
-        c.argument('target_port', type=int, validator=validate_target_port, options_list=['--target-port'], help="The application port used for ingress traffic.")
+        c.argument('ingress', validator=validate_ingress, default=None, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
+        c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
 
     with self.argument_context('containerapp create') as c:
@@ -80,8 +80,8 @@ def load_arguments(self, _):
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
 
     with self.argument_context('containerapp scale') as c:
-        c.argument('min_replicas', type=int, options_list=['--min-replicas'], help="The minimum number of replicas.")
-        c.argument('max_replicas', type=int, options_list=['--max-replicas'], help="The maximum number of replicas.")
+        c.argument('min_replicas', type=int, help="The minimum number of replicas.")
+        c.argument('max_replicas', type=int, help="The maximum number of replicas.")
 
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -94,7 +94,7 @@ def load_arguments(self, _):
         c.argument('logs_key', type=str, options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
 
     with self.argument_context('containerapp env', arg_group='Dapr') as c:
-        c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry')
+        c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Application Insights instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_subnet_resource_id', type=str, options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components and user app containers.')
