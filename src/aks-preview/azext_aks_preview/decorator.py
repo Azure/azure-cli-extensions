@@ -1647,9 +1647,12 @@ class AKSPreviewContext(AKSContext):
 
         if enable_validation:
             enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(enable_validation=False)
-            if (azure_keyvault_kms_key_id and
-                (enable_azure_keyvault_kms is None or
-                enable_azure_keyvault_kms is False)
+            if (
+                azure_keyvault_kms_key_id and
+                (
+                    enable_azure_keyvault_kms is None or
+                    enable_azure_keyvault_kms is False
+                )
             ):
                 raise RequiredArgumentMissingError('"--azure-keyvault-kms-key-id" requires "--enable-azure-keyvault-kms".')
 
