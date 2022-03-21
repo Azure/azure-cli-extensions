@@ -175,3 +175,12 @@ def load_arguments(self, _):
         c.argument('server', help="The container registry server, e.g. myregistry.azurecr.io")
         c.argument('username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
         c.argument('password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
+
+    with self.argument_context('containerapp registry list') as c:
+        c.argument('name', id_part=None)
+
+    with self.argument_context('containerapp secret list') as c:
+        c.argument('name', id_part=None)
+
+    with self.argument_context('containerapp revision list') as c:
+        c.argument('name', id_part=None)
