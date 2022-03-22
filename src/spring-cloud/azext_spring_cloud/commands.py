@@ -37,6 +37,11 @@ def load_command_table(self, _):
         client_factory=cf_spring_cloud_20220301preview
     )
 
+    app_managed_identity_command = CliCommandType(
+        operations_tmpl='azext_spring_cloud.app_managed_identity#{}',
+        client_factory = cf_spring_cloud_20220301preview
+    )
+
     service_registry_cmd_group = CliCommandType(
         operations_tmpl='azext_spring_cloud.service_registry#{}',
         client_factory=cf_spring_cloud_20220101preview
@@ -142,7 +147,7 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
-    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220301preview,
+    with self.command_group('spring-cloud app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign', validator=validate_app_identity_assign_or_warning)
         g.custom_command('remove', 'app_identity_remove', validator=validate_app_identity_remove_or_warning)
