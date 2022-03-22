@@ -15,6 +15,36 @@ FAKE_USER_IDENTITY_RESOURCE_ID = "/subscriptions/00000000-0000-0000-0000-0000000
 
 class TestCreateAppWithManagedIdentityValitorWithConflict(unittest.TestCase):
 
+    def test_system_identity_override_1(self):
+        ns = Namespace(system_assigned=None,
+                       assign_identity=False)
+        validate_create_app_with_system_identity_or_warning(ns)
+        self.assertEquals(ns.system_assigned, False)
+
+
+    def test_system_identity_override_2(self):
+        ns = Namespace(system_assigned=None,
+                       assign_identity=True)
+        validate_create_app_with_system_identity_or_warning(ns)
+        self.assertEquals(ns.system_assigned, True)
+
+
+    def test_system_identity_override_3(self):
+        ns = Namespace(system_assigned=True,
+                       assign_identity=None)
+        validate_create_app_with_system_identity_or_warning(ns)
+        self.assertEquals(ns.system_assigned, True)
+
+
+    def test_system_identity_override_4(self):
+        ns = Namespace(system_assigned=False,
+                       assign_identity=None)
+        validate_create_app_with_system_identity_or_warning(ns)
+        self.assertEquals(ns.system_assigned, False)
+
+
+class TestCreateAppWithManagedIdentityValitorWithConflict(unittest.TestCase):
+
     def test_conflict_parameter_1(self):
         ns = Namespace(system_assigned=None,
                        assign_identity=None)

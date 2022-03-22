@@ -102,5 +102,10 @@ def validate_create_app_with_user_identity_or_warning(namespace):
 
 
 def validate_create_app_with_system_identity_or_warning(namespace):
+    """
+    Note: assign_identity is deprecated, use system_assigned instead.
+    """
     if namespace.system_assigned is not None and namespace.assign_identity is not None:
         raise InvalidArgumentValueError('Parameter "system-assigned" should not use together with "assign-identity".')
+    if namespace.assign_identity is not None:
+        namespace.system_assigned = namespace.assign_identity
