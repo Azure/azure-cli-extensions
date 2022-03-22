@@ -46,6 +46,8 @@ def app_create(cmd, client, resource_group, service, name,
                jvm_options=None,
                # app.create
                assign_identity=None,
+               system_assigned=None,
+               user_assigned=None,
                # app.update
                enable_persistent_storage=None,
                persistent_storage=None,

@@ -213,3 +213,12 @@ def _normalize_user_identity_resource_id(namespace):
     if namespace.user_assigned:
         namespace.user_assigned = _normalized_user_identitiy_resource_id_list(namespace.user_assigned)
 
+
+def validate_create_app_with_user_identity_or_warning(namespace):
+    _validate_user_identity_resource_id(namespace)
+    _normalize_user_identity_resource_id(namespace)
+
+
+def validate_create_app_with_system_identity_or_warning(namespace):
+    if namespace.system_assigned is not None and namespace.assign_identity is not None:
+        raise InvalidArgumentValueError('Parameter "system-assigned" should not use together with "assign-identity".')
