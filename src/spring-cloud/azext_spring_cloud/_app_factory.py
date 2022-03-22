@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
 from azure.cli.core.util import get_file_json
 
 
@@ -23,10 +24,37 @@ class DefaultApp:
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
-    def _format_identity(self, assign_identity=None, **_):
-        if assign_identity is not None:
-            assign_type = 'systemassigned' if assign_identity else 'None'
-            return models.ManagedIdentityProperties(type=assign_type)
+    def _format_identity(self, system_assigned=None, user_assigned=None, **_):
+        target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
+        user_identity_payload = self._get_user_identity_payload(target_identity_type, user_assigned)
+        identity_props = None
+        if target_identity_type != models_20220301preview.ManagedIdentityType.NONE:
+            identity_props = models_20220301preview.ManagedIdentityProperties()
+            identity_props.type = target_identity_type
+            identity_props.user_assigned_identities = user_identity_payload
+        return identity_props
+
+    def _get_identity_assign_type(self, system_assigned=None, user_assigned=None):
+        target_identity_type = models_20220301preview.ManagedIdentityType.NONE
+        if system_assigned and user_assigned:
+            target_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        elif system_assigned:
+            target_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+        elif user_assigned:
+            target_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+        return target_identity_type
+
+    def _get_user_identity_payload(self, target_identity_type, user_assigned=None):
+        if target_identity_type in (models_20220301preview.ManagedIdentityType.NONE,
+                                    models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED):
+            return None
+        user_identity_payload = {}
+        if user_assigned:
+            for user_identity_resource_id in user_assigned:
+                user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
+        if len(user_identity_payload) == 0:
+            user_identity_payload = None
+        return user_identity_payload
 
     def _load_temp_disk(self, enable_temporary_disk=None, **_):
         if enable_temporary_disk is not None:

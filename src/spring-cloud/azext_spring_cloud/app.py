@@ -73,7 +73,8 @@ def app_create(cmd, client, resource_group, service, name,
     }
 
     create_app_kwargs = {
-        'assign_identity': assign_identity,
+        'system_assigned': system_assigned,
+        'user_assigned': user_assigned,
         'enable_temporary_disk': True,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
