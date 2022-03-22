@@ -411,47 +411,146 @@ def app_identity_assign(cmd,
                         scope=None,
                         system_assigned=None,
                         user_assigned=None):
-    app_resource = models_20220101preview.AppResource()
-    identity = models_20220101preview.ManagedIdentityProperties(type="systemassigned")
-    properties = models_20220101preview.AppResourceProperties()
-    resource = client.services.get(resource_group, service)
-    location = resource.location
+    """
+    Note: Always use sync method to operate managed identity to avoid data inconsistency.
+    :param role: role name of role assignment for system-assigned managed identity.
+    :param scope: scope of role assignment for system-assigned managed identity.
+    :param system_assigned: 1. None or False: Don't change system-assigned managed identity.
+                            2. Enable system-assigned managed identity on app.
+    :param user_assigned: 1. None: Don't change user-assigned managed identities.
+                          2. A non-empty list of user-assigned managed identity resource id to app.
+                          3. A empty list: should be blocked by validator.
+    """
+    # TODO(jiec): Retire legacy identity assign after migration.
+    if _is_legacy_identity_assign(system_assigned, user_assigned):
+        _legacy_app_identity_assign(cmd, client, resource_group, service, name)
+    else:
+        _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned)
 
-    app_resource.identity = identity
-    app_resource.properties = properties
-    app_resource.location = location
-    client.apps.begin_update(resource_group, service, name, app_resource)
+    if role and scope:
+        _create_role_assignment(resource_group, service, name, role, scope)
+
+    return client.apps.get(resource_group, service, name)
+
+
+def _is_legacy_identity_assign(system_assigned, user_assigned):
+    return not system_assigned and not user_assigned
+
+
+def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
+    """
+    Enable system-assigned managed identity on app.
+    """
+    logger.warning("Start to enable system-assigned managed identity.")
+
     app = client.apps.get(resource_group, service, name)
-    if role:
-        principal_id = app.identity.principal_id
+    new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+    if app.identity and app.identity.type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
+                                              models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+    target_identity = models_20220301preview.ManagedIdentityProperties(type=new_identity_type)
+    app_resource = models_20220301preview.AppResource(identity=target_identity)
 
-        from azure.cli.core.commands import arm as _arm
-        identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
-        assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
-        RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 'RoleAssignmentCreateParameters', mod='models',
-                                                 operation_group='role_assignments')
-        parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id, principal_id=principal_id)
-        logger.info("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
-        retry_times = 36
-        assignment_name = _arm._gen_guid()
-        for i in range(0, retry_times):
-            try:
-                assignments_client.create(scope=scope, role_assignment_name=assignment_name,
-                                          parameters=parameters)
+    wait_till_end(cmd, client.apps.begin_update(resource_group, service, name, app_resource))
+
+
+def _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned):
+    app = client.apps.get(resource_group, service, name)
+    new_identity_type = _get_new_identity_type_for_assign(app, system_assigned, user_assigned)
+    user_identity_payload = _get_user_identity_payload_for_assign(new_identity_type, user_assigned)
+
+    identity_payload = models_20220301preview.ManagedIdentityProperties()
+    identity_payload.type = new_identity_type
+    identity_payload.user_assigned_identities = user_identity_payload
+
+    app_resource = models_20220301preview.AppResource(identity=identity_payload)
+
+    logger.warning("Start to assign managed identities to app.")
+    wait_till_end(cmd, client.apps.begin_update(resource_group, service, name, app_resource))
+
+
+def _get_new_identity_type_for_assign(app, system_assigned, user_assigned):
+    new_identity_type = None
+
+    if app.identity and app.identity.type:
+        new_identity_type = app.identity.type
+    else:
+        new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+
+    if system_assigned:
+        if new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
+                                 models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        else:
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+
+    if user_assigned:
+        if new_identity_type in (models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED,
+                                 models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+            new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+        else:
+            new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+
+    if not new_identity_type or new_identity_type == models_20220301preview.ManagedIdentityType.NONE:
+        raise CLIError("Internal error: invalid new identity type:{}.".format(new_identity_type))
+
+    return new_identity_type
+
+
+def _get_user_identity_payload_for_assign(new_identity_type, new_user_identity_rid_list):
+    """
+    :param new_user_identity_rid_list: 1. None object.
+                                       2. A non-empty list of user-assigned managed identity resource ID.
+    :return 1. None object.
+            2. A dict from user-assigned managed identity to an empty object.
+    """
+    uid_payload = {}
+    if new_identity_type == models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED:
+        pass
+    elif new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
+                               models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+        if new_user_identity_rid_list:
+            for rid in new_user_identity_rid_list:
+                uid_payload[rid]= models_20220301preview.UserAssignedManagedIdentity()
+
+    if len(uid_payload) == 0:
+        uid_payload = None
+
+    return uid_payload
+
+
+def _create_role_assignment(resource_group, service, name, role, scope):
+    app = client.apps.get(resource_group, service, name)
+
+    if not app.identity or not app.identity.principal_id:
+        raise CLIError("Failed to create role assignment without object ID(principal ID) of system-assigned managed identity.")
+
+    from azure.cli.core.commands import arm as _arm
+    identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
+    assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+    RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                             'RoleAssignmentCreateParameters', mod='models',
+                                             operation_group='role_assignments')
+    parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id, principal_id=principal_id)
+    logger.warning("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
+    retry_times = 36
+    assignment_name = _arm._gen_guid()
+    for i in range(0, retry_times):
+        try:
+            assignments_client.create(scope=scope, role_assignment_name=assignment_name,
+                                      parameters=parameters)
+            break
+        except HttpResponseError as ex:
+            if 'role assignment already exists' in ex.message:
+                logger.warning('Role assignment already exists')
                 break
-            except HttpResponseError as ex:
-                if 'role assignment already exists' in ex.message:
-                    logger.info('Role assignment already exists')
-                    break
-                elif i < retry_times and ' does not exist in the directory ' in ex.message:
-                    sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-                    logger.warning('Retrying role assignment creation: %s/%s', i + 1,
-                                   retry_times)
-                    continue
-                else:
-                    raise
-    return app
+            elif i < retry_times and ' does not exist in the directory ' in ex.message:
+                sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+                logger.warning('Retrying role assignment creation: %s/%s', i + 1,
+                               retry_times)
+                continue
+            else:
+                raise
 
 
 def app_identity_remove(cmd,
