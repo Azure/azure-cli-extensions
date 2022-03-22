@@ -455,16 +455,12 @@ def update_containerapp(cmd,
                         min_replicas=None,
                         max_replicas=None,
                         revisions_mode=None,
-                        secrets=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
                         remove_all_env_vars=False,
                         cpu=None,
                         memory=None,
-                        registry_server=None,
-                        registry_user=None,
-                        registry_pass=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -474,8 +470,7 @@ def update_containerapp(cmd,
 
     if yaml:
         if image or min_replicas or max_replicas or\
-           revisions_mode or secrets or set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or registry_server or\
-           registry_user or registry_pass or\
+           revisions_mode or set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
@@ -498,11 +493,9 @@ def update_containerapp(cmd,
                         e["value"] = ""
 
     update_map = {}
-    update_map['secrets'] = secrets is not None
-    update_map['registries'] = registry_server or registry_user or registry_pass
     update_map['scale'] = min_replicas or max_replicas
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
-    update_map['configuration'] = update_map['secrets'] or update_map['registries'] or revisions_mode is not None
+    update_map['configuration'] = revisions_mode is not None
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -631,57 +624,6 @@ def update_containerapp(cmd,
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    if secrets is not None:
-        _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
-
-    if update_map["registries"]:
-        registries_def = None
-        registry = None
-
-        if "registries" not in containerapp_def["properties"]["configuration"]:
-            containerapp_def["properties"]["configuration"]["registries"] = []
-
-        registries_def = containerapp_def["properties"]["configuration"]["registries"]
-
-        if not registry_server:
-            raise ValidationError("Usage error: --registry-server is required when adding or updating a registry")
-
-        # Infer credentials if not supplied and its azurecr
-        if (registry_user is None or registry_pass is None) and not _registry_exists(containerapp_def, registry_server):
-            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
-
-        # Check if updating existing registry
-        updating_existing_registry = False
-        for r in registries_def:
-            if r['server'].lower() == registry_server.lower():
-                updating_existing_registry = True
-
-                if registry_user:
-                    r["username"] = registry_user
-                if registry_pass:
-                    r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-                        containerapp_def["properties"]["configuration"]["secrets"],
-                        r["username"],
-                        r["server"],
-                        registry_pass,
-                        update_existing_secret=True)
-
-        # If not updating existing registry, add as new registry
-        if not updating_existing_registry:
-            if not(registry_server is not None and registry_user is not None and registry_pass is not None):
-                raise ValidationError("Usage error: --registry-server, --registry-password and --registry-username are required when adding a registry")
-
-            registry = RegistryCredentialsModel
-            registry["server"] = registry_server
-            registry["username"] = registry_user
-            registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-                containerapp_def["properties"]["configuration"]["secrets"],
-                registry_user,
-                registry_server,
-                registry_pass,
-                update_existing_secret=True)
-
-            registries_def.append(registry)
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
