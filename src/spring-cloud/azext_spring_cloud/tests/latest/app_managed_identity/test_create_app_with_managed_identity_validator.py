@@ -6,8 +6,8 @@
 import unittest
 from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from ...._app_validator import (validate_create_app_with_system_identity_or_warning,
-                                validate_create_app_with_user_identity_or_warning)
+from ...._app_managed_identity_validator import (validate_create_app_with_system_identity_or_warning,
+                                                 validate_create_app_with_user_identity_or_warning)
 
 
 FAKE_USER_IDENTITY_RESOURCE_ID = "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fake-rg/providers/microsoft.managedidentity/userassignedidentities/fake-identity-name"
