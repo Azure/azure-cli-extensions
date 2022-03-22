@@ -10,9 +10,9 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.4'
+VERSION = '0.1.0'
 try:
-    from .manual.version import VERSION
+    from azext_stack_hci.manual.version import VERSION
 except ImportError:
     pass
 
@@ -31,8 +31,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_stack_hci.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -47,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AzureStackHCIClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/stack-hci',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/stack-hci',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
