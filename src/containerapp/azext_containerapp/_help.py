@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['containerapp'] = """
     type: group
-    short-summary: Commands to manage Azure Container Apps.
+    short-summary: Manage Azure Container Apps.
 """
 
 helps['containerapp create'] = """
@@ -21,17 +21,18 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image myregistry.azurecr.io/my-app:v1.0 --environment MyContainerappEnv \\
               --ingress external --target-port 80 \\
+              --registry-server myregistry.azurecr.io --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --query properties.configuration.ingress.fqdn
     - name: Create a container app with resource requirements and replica count limits.
       text: |
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
-              --image myregistry.azurecr.io/my-app:v1.0 --environment MyContainerappEnv \\
+              --image nginx --environment MyContainerappEnv \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
     - name: Create a container app with secrets and environment variables.
       text: |
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
-              --image myregistry.azurecr.io/my-app:v1.0 --environment MyContainerappEnv \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret
     - name: Create a container app using a YAML configuration. Example YAML configuration - https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples
@@ -224,43 +225,43 @@ helps['containerapp env list'] = """
 
 helps['containerapp env dapr-component'] = """
     type: group
-    short-summary: Commmands to manage dapr components on the Container App environment.
+    short-summary: Commands to manage Dapr components for the Container Apps environment.
 """
 
 helps['containerapp env dapr-component list'] = """
     type: command
-    short-summary: List dapr components for a Containerapp environment.
+    short-summary: List Dapr components for an environment.
     examples:
-    - name: List dapr components for a Containerapp environment.
+    - name: List Dapr components for an environment.
       text: |
           az containerapp env dapr-component list -g MyResourceGroup --name MyEnvironment
 """
 
 helps['containerapp env dapr-component show'] = """
     type: command
-    short-summary: Show the details of a dapr component.
+    short-summary: Show the details of a Dapr component.
     examples:
-    - name: Show the details of a dapr component.
+    - name: Show the details of a Dapr component.
       text: |
           az containerapp env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
 
 helps['containerapp env dapr-component set'] = """
     type: command
-    short-summary: Create or update a dapr component.
+    short-summary: Create or update a Dapr component.
     examples:
-    - name: Create a dapr component.
+    - name: Create a Dapr component.
       text: |
           az containerapp env dapr-component set -g MyResourceGroup --name MyEnv --yaml MyYAMLPath --dapr-component-name MyDaprComponentName
 """
 
 helps['containerapp env dapr-component remove'] = """
     type: command
-    short-summary: Remove a dapr componenet from a Containerapp environment.
+    short-summary: Remove a Dapr component from an environment.
     examples:
-    - name: Remove a dapr componenet from a Containerapp environment.
+    - name: Remove a Dapr component from a Container Apps environment.
       text: |
-          az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponenetName --name MyEnvironment
+          az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
 
 # Identity Commands
@@ -511,7 +512,7 @@ helps['containerapp github-action show'] = """
 # Dapr Commands
 helps['containerapp dapr'] = """
     type: group
-    short-summary: Commands to manage Dapr.
+    short-summary: Commands to manage Dapr. To manage Dapr components, see `az containerapp env dapr-component`.
 """
 
 helps['containerapp dapr enable'] = """

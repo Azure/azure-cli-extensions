@@ -31,7 +31,7 @@ def load_arguments(self, _):
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app. All other parameters will be ignored. For an example, see  https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples')
 
     # Container
-    with self.argument_context('containerapp', arg_group='Container (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Container') as c:
         c.argument('image', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('container_name', type=str, help="Name of the container.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores, e.g. 0.5")
@@ -42,14 +42,14 @@ def load_arguments(self, _):
         c.argument('revision_suffix', type=str, help='User friendly suffix that is appended to the revision name')
 
     # Env vars
-    with self.argument_context('containerapp', arg_group='Environment variables (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Environment variables') as c:
         c.argument('set_env_vars', nargs='*', help="A list of environment variable(s) to add to the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('remove_env_vars', nargs='*', help="A list of environment variable(s) to remove from container. Space-separated env var name values.")
         c.argument('replace_env_vars', nargs='*', help="A list of environment variable(s) to replace from the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('remove_all_env_vars', help="Option to remove all environment variable(s) from the container.")
 
     # Scale
-    with self.argument_context('containerapp', arg_group='Scale (Creates new revision)') as c:
+    with self.argument_context('containerapp', arg_group='Scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
 
@@ -59,7 +59,6 @@ def load_arguments(self, _):
         c.argument('dapr_app_port', type=int, help="The port Dapr uses to talk to the application.")
         c.argument('dapr_app_id', type=str, help="The Dapr application identifier.")
         c.argument('dapr_app_protocol', type=str, arg_type=get_enum_type(['http', 'grpc']), help="The protocol Dapr uses to talk to the application.")
-        c.argument('dapr_components', help="The name of a yaml file containing a list of dapr components.")
 
     # Configuration
     with self.argument_context('containerapp', arg_group='Configuration') as c:
@@ -162,10 +161,10 @@ def load_arguments(self, _):
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
 
     with self.argument_context('containerapp env dapr-component') as c:
-        c.argument('dapr_app_id', help="The dapr app id.")
+        c.argument('dapr_app_id', help="The Dapr app ID.")
         c.argument('dapr_app_port', help="The port of your app.")
         c.argument('dapr_app_protocol', help="Tells Dapr which protocol your application is using.  Allowed values: grpc, http.")
-        c.argument('dapr_component_name', help="The dapr component name.")
+        c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
 
     with self.argument_context('containerapp revision set-mode') as c:
