@@ -256,12 +256,12 @@ helps['spring-cloud app log tail'] = """
 
 helps['spring-cloud app identity'] = """
     type: group
-    short-summary: Manage an app's managed service identity.
+    short-summary: Manage an app's managed identities.
 """
 
 helps['spring-cloud app identity assign'] = """
     type: command
-    short-summary:  Enable system-assigned managed identity or assign user-assigned managed identities to an app.
+    short-summary: Enable system-assigned managed identity or assign user-assigned managed identities to an app.
     examples:
     - name: Enable the system assigned identity.
       text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
