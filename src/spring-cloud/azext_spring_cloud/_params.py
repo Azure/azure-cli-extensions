@@ -244,6 +244,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Remove system-assigned managed identity.")
         c.argument('user_assigned',
+                   is_preview=True,
                    nargs='*',
                    help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
 
