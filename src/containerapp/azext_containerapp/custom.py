@@ -1855,7 +1855,7 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        return r["properties"]['dapr']
+        return r["properties"]['configuration']['dapr']
     except Exception as e:
         handle_raw_exception(e)
 
@@ -1885,7 +1885,7 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        return r["properties"]['dapr']
+        return r["properties"]['configuration']['dapr']
     except Exception as e:
         handle_raw_exception(e)
 
