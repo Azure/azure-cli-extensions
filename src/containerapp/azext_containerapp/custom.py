@@ -358,11 +358,20 @@ def create_containerapp(cmd,
             secrets_def = []
         registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
 
+    dapr_def = None
+    if dapr_enabled:
+        dapr_def = DaprModel
+        dapr_def["enabled"] = True
+        dapr_def["appId"] = dapr_app_id
+        dapr_def["appPort"] = dapr_app_port
+        dapr_def["appProtocol"] = dapr_app_protocol
+
     config_def = ConfigurationModel
     config_def["secrets"] = secrets_def
     config_def["activeRevisionsMode"] = revisions_mode
     config_def["ingress"] = ingress_def
     config_def["registries"] = [registries_def] if registries_def is not None else None
+    config_def["dapr"] = dapr_def
 
     # Identity actions
     identity_def = ManagedServiceIdentityModel
@@ -410,18 +419,9 @@ def create_containerapp(cmd,
     if resources_def is not None:
         container_def["resources"] = resources_def
 
-    dapr_def = None
-    if dapr_enabled:
-        dapr_def = DaprModel
-        dapr_def["daprEnabled"] = True
-        dapr_def["appId"] = dapr_app_id
-        dapr_def["appPort"] = dapr_app_port
-        dapr_def["appProtocol"] = dapr_app_protocol
-
     template_def = TemplateModel
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
-    template_def["dapr"] = dapr_def
 
     if revision_suffix is not None:
         template_def["revisionSuffix"] = revision_suffix
