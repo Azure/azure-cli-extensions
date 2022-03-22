@@ -2791,7 +2791,7 @@ def _get_http_proxy_config(file_path):
 def aks_app_init():
     print("I am called to init")
     aks_web_app_init()
-    
+
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
                          binding_selector=None,

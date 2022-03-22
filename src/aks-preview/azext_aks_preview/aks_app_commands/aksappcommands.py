@@ -14,9 +14,13 @@ def pre_setup_validations() -> bool:
     print("Checking if Binary exist ...")
     cmd_exist = cmd_exists("ifconfig")
     print(cmd_exist)
+
+    isDownloadSuccessful = False
     if not cmd_exist:
-        print("Checking if Binary Does Not exist Bail Early...")
-    return cmd_exist
+        print("DraftV2 binary not found")
+        isDownloadSuccessful = downloadBinary()
+
+    return cmd_exist or isDownloadSuccessful
 
 def cmd_exists(cmd: str) -> bool:
     return shutil.which(cmd) is not None
@@ -29,9 +33,14 @@ def run_binary():
         ['ifconfig'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
     stdout, stderr = process.communicate()
     exit_code = process.wait()
-    print("If non zero then bnary ran fine and job is done.")
+    print("If non zero then binary ran fine and job is done.")
     print(stdout, stderr, exit_code)
     print("prepare exiting mechanism.")
+
+
+def downloadBinary() -> bool:
+    print("Attempting to download DraftV2 binary")
+
 
 def cmd_finish():
     print("Depending ont the exit_code display message")
