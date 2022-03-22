@@ -154,6 +154,10 @@ def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, res
 
     payload["overwrite"] = overwrite or False
 
+    if "id" in payload["dashboard"]:
+        logger.warning("Removing 'id' from dashboard to prevent the error of 'Not Found'")
+        del payload["dashboard"]["id"]
+
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
                              payload)
     return json.loads(response.content)
