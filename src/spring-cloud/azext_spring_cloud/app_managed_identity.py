@@ -90,6 +90,20 @@ def app_identity_remove(cmd,
     return client.apps.get(resource_group, service, name)
 
 
+def app_identity_force_set(cmd,
+                        client,
+                        resource_group,
+                        service,
+                        name,
+                        system_assigned,
+                        user_assigned):
+    """
+    :param system_assigned: string, disable or enable
+    :param user_assigned: 1. A single-element string list with 'disable'
+                          2. A non-empty list of user-assigned managed identity resource ID.
+    """
+    pass
+
 def app_identity_show(cmd, client, resource_group, service, name):
     app = client.apps.get(resource_group, service, name)
     return app.identity

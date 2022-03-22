@@ -151,6 +151,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign', validator=validate_app_identity_assign_or_warning)
         g.custom_command('remove', 'app_identity_remove', validator=validate_app_identity_remove_or_warning)
+        g.custom_command('force-set', 'app_identity_force_set', is_preview=True)
         g.custom_show_command('show', 'app_identity_show')
 
     with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud_20220101preview,

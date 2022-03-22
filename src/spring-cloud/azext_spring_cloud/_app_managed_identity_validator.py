@@ -15,7 +15,8 @@ logger = get_logger(__name__)
 OBSOLETE_APP_IDENTITY_REMOVE = "Remove managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only remove system-assigned managed identity, and will not be supported in the future."
 WARNING_NO_USER_IDENTITY_RESOURCE_ID = "No resource ID of user-assigned managed identity is given for parameter \"user-assigned\", will remove ALL user-assigned managed identities."
 OBSOLETE_APP_IDENTITY_ASSIGN = "Assign managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only enable system-assigned managed identity, and will not be supported in the future."
-
+ENABLE_LOWER = "enable"
+DISABLE_LOWER = "disable"
 
 def validate_app_identity_remove_or_warning(namespace):
     if namespace.system_assigned is None and namespace.user_assigned is None:
@@ -109,3 +110,27 @@ def validate_create_app_with_system_identity_or_warning(namespace):
         raise InvalidArgumentValueError('Parameter "system-assigned" should not use together with "assign-identity".')
     if namespace.assign_identity is not None:
         namespace.system_assigned = namespace.assign_identity
+
+
+def validate_app_force_set_system_identity_or_warning(namespace):
+    if namespace.system_assigned is None:
+        raise InvalidArgumentValueError('Parameter "system-assigned" expected at least one argument.')
+    namespace.system_assigned = namespace.system_assigned.strip().lower()
+    if namespace.system_assigned.strip().lower() not in (ENABLE_LOWER, DISABLE_LOWER):
+        raise InvalidArgumentValueError('Allowed values for "system-assigned" are: {}, {}.'.format(ENABLE_LOWER, DISABLE_LOWER))
+
+
+def validate_app_force_set_user_identity_or_warning(namespace):
+    if namespace.user_assigned is None or len(namespace.user_assigned) == 0:
+        raise InvalidArgumentValueError('Parameter "user-assigned" expected at least one argument.')
+    if len(namespace.user_assigned) == 1:
+        single_element = namespace.user_assigned[0].strip().lower()
+        if single_element != DISABLE_LOWER and not _is_valid_user_assigned_managed_identity_resource_id(single_element):
+            raise InvalidArgumentValueError('Allowed values for "user-assigned" are: {}, space-separated user-assigned managed identity resource IDs.'.format(DISABLE_LOWER))
+        elif single_element == DISABLE_LOWER:
+            namespace.user_assigned = [DISABLE_LOWER]
+        else:
+            _normalize_user_identity_resource_id(namespace)
+    else:
+        _validate_user_identity_resource_id(namespace)
+        _normalize_user_identity_resource_id(namespace)

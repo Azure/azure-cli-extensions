@@ -26,7 +26,9 @@ from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
-                                              validate_create_app_with_system_identity_or_warning)
+                                              validate_create_app_with_system_identity_or_warning,
+                                              validate_app_force_set_system_identity_or_warning,
+                                              validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
 
 
@@ -273,6 +275,15 @@ def load_arguments(self, _):
                    is_preview=True,
                    nargs='*',
                    help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
+
+    with self.argument_context('spring-cloud app identity force-set') as c:
+        c.argument('system_assigned',
+                   validator=validate_app_force_set_system_identity_or_warning,
+                   help="Enable or disable system-assigned managed identity. Allowed values: \"enable\",\"disable\"")
+        c.argument('user_assigned',
+                   nargs='+',
+                   validator=validate_app_force_set_user_identity_or_warning,
+                   help="Disable or assigned user-assigned managed identities to an app. Allowed values: \"disable\" or space-separated user-assigned managed identity resource IDs to assign.")
 
 
     def prepare_logs_argument(c):

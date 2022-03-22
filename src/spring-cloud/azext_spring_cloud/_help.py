@@ -289,6 +289,18 @@ helps['spring-cloud app identity show'] = """
       text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
 """
 
+helps['spring-cloud app identity force-set'] = """
+    type: command
+    short-summary: Force set managed identities on an app.
+    examples:
+    - name: Force remove all managed identities on an app.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned disable
+    - name: Force set app with only system-assigned managed identity.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned enable --user-assigned disable
+    - name: Force set app with only user-assigned managed identities.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned IdentityResourceId1 IdentityResourceId2
+"""
+
 helps['spring-cloud app set-deployment'] = """
     type: command
     short-summary: Set production deployment of an app.
