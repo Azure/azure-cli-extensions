@@ -109,8 +109,8 @@ helps['stack-hci cluster create'] = """
       - name: Create cluster
         text: |-
                az stack-hci cluster create --location "East US" --aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a847dfc" \
---aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" --cloud-management-endpoint "https://98294836-31be-4668-aeae-698\
-667faf99b.waconazure.com" --name "myCluster" --resource-group "test-rg"
+--aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconaz\
+ure.com" --name "myCluster" --resource-group "test-rg"
 """
 
 helps['stack-hci cluster update'] = """
@@ -127,9 +127,9 @@ helps['stack-hci cluster update'] = """
     examples:
       - name: Update cluster
         text: |-
-               az stack-hci cluster update --cloud-management-endpoint "https://98294836-31be-4668-aeae-698667faf99b.wa\
-conazure.com" --desired-properties diagnostic-level="Basic" windows-server-subscription="Enabled" --tags tag1="value1" \
-tag2="value2" --name "myCluster" --resource-group "test-rg"
+               az stack-hci cluster update --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" \
+--desired-properties diagnostic-level="Basic" windows-server-subscription="Enabled" --tags tag1="value1" tag2="value2" \
+--name "myCluster" --resource-group "test-rg"
 """
 
 helps['stack-hci cluster delete'] = """
@@ -172,10 +172,10 @@ helps['stack-hci extension create'] = """
     examples:
       - name: Create Arc Extension
         text: |-
-               az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" \
---type-properties-extension-parameters-type "MicrosoftMonitoringAgent" --protected-settings \
-"{\\"workspaceKey\\":\\"xx\\"}" --publisher "Microsoft.Compute" --settings "{\\"workspaceId\\":\\"xx\\"}" \
---type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
+               az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type \
+"MicrosoftMonitoringAgent" --protected-settings "{\\"workspaceKey\\":\\"xx\\"}" --publisher "Microsoft.Compute" \
+--settings "{\\"workspaceId\\":\\"xx\\"}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" \
+--resource-group "test-rg"
 """
 
 helps['stack-hci extension update'] = """
@@ -184,10 +184,9 @@ helps['stack-hci extension update'] = """
     examples:
       - name: Update Arc Extension
         text: |-
-               az stack-hci extension update --arc-setting-name "default" --cluster-name "myCluster" \
---type-properties-extension-parameters-type "MicrosoftMonitoringAgent" --publisher "Microsoft.Compute" --settings \
-"{\\"workspaceId\\":\\"xx\\"}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group \
-"test-rg"
+               az stack-hci extension update --arc-setting-name "default" --cluster-name "myCluster" --type \
+"MicrosoftMonitoringAgent" --publisher "Microsoft.Compute" --settings "{\\"workspaceId\\":\\"xx\\"}" \
+--type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
 """
 
 helps['stack-hci extension delete'] = """

@@ -41,8 +41,8 @@ def load_arguments(self, _):
         c.argument('cluster_name', type=str, help='The name of the cluster.')
         c.argument('arc_setting_name', options_list=['--name', '-n', '--arc-setting-name'], type=str, help='The name '
                    'of the proxy resource holding details of HCI ArcSetting information.')
-        c.argument('arc_instance_resource_group', type=str, help='The resource group that hosts the Arc agents, ie. '
-                   'Hybrid Compute Machine resources.')
+        c.argument('arc_instance_resource_group', options_list=['--instance-rg'], type=str, help='The resource group '
+                   'that hosts the Arc agents, ie. Hybrid Compute Machine resources.')
         c.argument('created_by', type=str, help='The identity that created the resource.', arg_group='System Data')
         c.argument('created_by_type', arg_type=get_enum_type(['User', 'Application', 'ManagedIdentity', 'Key']),
                    help='The type of identity that created the resource.', arg_group='System Data')
@@ -81,8 +81,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('cloud_management_endpoint', type=str, help='Endpoint configured for management from the Azure '
-                   'portal.')
+        c.argument('cloud_management_endpoint', options_list=['--endpoint'], type=str, help='Endpoint configured for '
+                   'management from the Azure portal.')
         c.argument('aad_client_id', type=str, help='App id of cluster AAD identity.')
         c.argument('aad_tenant_id', type=str, help='Tenant id of cluster AAD identity.')
         c.argument('desired_properties', action=AddDesiredProperties, nargs='+', help='Desired properties of the '
@@ -103,8 +103,8 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'cluster.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('cloud_management_endpoint', type=str, help='Endpoint configured for management from the Azure '
-                   'portal')
+        c.argument('cloud_management_endpoint', options_list=['--endpoint'], type=str, help='Endpoint configured for '
+                   'management from the Azure portal')
         c.argument('aad_client_id', type=str, help='App id of cluster AAD identity.')
         c.argument('aad_tenant_id', type=str, help='Tenant id of cluster AAD identity.')
         c.argument('desired_properties', action=AddDesiredProperties, nargs='+', help='Desired properties of the '
@@ -140,14 +140,14 @@ def load_arguments(self, _):
                    'the extension configuration has not changed.', arg_group='Extension Parameters')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.', arg_group='Extension '
                    'Parameters')
-        c.argument('type_properties_extension_parameters_type', type=str, help='Specifies the type of the extension; '
-                   'an example is "CustomScriptExtension".', arg_group='Extension Parameters')
+        c.argument('type_properties_extension_parameters_type', options_list=['--type'], type=str, help='Specifies the '
+                   'type of the extension; an example is "CustomScriptExtension".', arg_group='Extension Parameters')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.',
                    arg_group='Extension Parameters')
-        c.argument('auto_upgrade_minor_version', arg_type=get_three_state_flag(), help='Indicates whether the '
-                   'extension should use a newer minor version if one is available at deployment time. Once deployed, '
-                   'however, the extension will not upgrade minor versions unless redeployed, even with this property '
-                   'set to true.', arg_group='Extension Parameters')
+        c.argument('auto_upgrade_minor_version', options_list=['--auto-upgrade'], arg_type=get_three_state_flag(),
+                   help='Indicates whether the extension should use a newer minor version if one is available at '
+                   'deployment time. Once deployed, however, the extension will not upgrade minor versions unless '
+                   'redeployed, even with this property set to true.', arg_group='Extension Parameters')
         c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Extension Parameters')
         c.argument('protected_settings', type=validate_file_or_dict, help='Protected settings (may contain secrets). '
@@ -174,14 +174,14 @@ def load_arguments(self, _):
                    'the extension configuration has not changed.', arg_group='Extension Parameters')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.', arg_group='Extension '
                    'Parameters')
-        c.argument('type_properties_extension_parameters_type', type=str, help='Specifies the type of the extension; '
-                   'an example is "CustomScriptExtension".', arg_group='Extension Parameters')
+        c.argument('type_properties_extension_parameters_type', options_list=['--type'], type=str, help='Specifies the '
+                   'type of the extension; an example is "CustomScriptExtension".', arg_group='Extension Parameters')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.',
                    arg_group='Extension Parameters')
-        c.argument('auto_upgrade_minor_version', arg_type=get_three_state_flag(), help='Indicates whether the '
-                   'extension should use a newer minor version if one is available at deployment time. Once deployed, '
-                   'however, the extension will not upgrade minor versions unless redeployed, even with this property '
-                   'set to true.', arg_group='Extension Parameters')
+        c.argument('auto_upgrade_minor_version', options_list=['--auto-upgrade'], arg_type=get_three_state_flag(),
+                   help='Indicates whether the extension should use a newer minor version if one is available at '
+                   'deployment time. Once deployed, however, the extension will not upgrade minor versions unless '
+                   'redeployed, even with this property set to true.', arg_group='Extension Parameters')
         c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
                    'Expected value: json-string/json-file/@json-file.', arg_group='Extension Parameters')
         c.argument('protected_settings', type=validate_file_or_dict, help='Protected settings (may contain secrets). '

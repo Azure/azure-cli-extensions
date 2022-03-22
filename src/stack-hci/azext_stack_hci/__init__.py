@@ -21,7 +21,7 @@ class AzureStackHCIClientCommandsLoader(AzCommandsLoader):
         stack_hci_custom = CliCommandType(
             operations_tmpl='azext_stack_hci.custom#{}',
             client_factory=cf_stack_hci_cl)
-        parent = super(AzureStackHCIClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=stack_hci_custom)
 
     def load_command_table(self, args):

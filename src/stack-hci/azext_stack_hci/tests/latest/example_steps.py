@@ -21,7 +21,7 @@ def step_cluster_create(test, checks=None):
              '--location "East US" '
              '--aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a847dfc" '
              '--aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" '
-             '--cloud-management-endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" '
+             '--endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" '
              '--name "{myCluster}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -64,7 +64,7 @@ def step_cluster_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az stack-hci cluster update '
-             '--cloud-management-endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" '
+             '--endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" '
              '--desired-properties diagnostic-level="Basic" windows-server-subscription="Enabled" '
              '--tags tag1="value1" tag2="value2" '
              '--name "{myCluster}" '
@@ -115,7 +115,7 @@ def step_extension_create(test, checks=None):
     test.cmd('az stack-hci extension create '
              '--arc-setting-name "{myArcSetting}" '
              '--cluster-name "{myCluster}" '
-             '--type-properties-extension-parameters-type "{myExtension}" '
+             '--type "{myExtension}" '
              '--protected-settings "{{\\"workspaceKey\\":\\"xx\\"}}" '
              '--publisher "Microsoft.Compute" '
              '--settings "{{\\"workspaceId\\":\\"xx\\"}}" '
@@ -164,7 +164,7 @@ def step_extension_update(test, checks=None):
     test.cmd('az stack-hci extension update '
              '--arc-setting-name "{myArcSetting}" '
              '--cluster-name "{myCluster}" '
-             '--type-properties-extension-parameters-type "{myExtension}" '
+             '--type "{myExtension}" '
              '--publisher "Microsoft.Compute" '
              '--settings "{{\\"workspaceId\\":\\"xx\\"}}" '
              '--type-handler-version "1.10" '
