@@ -100,7 +100,7 @@ def create_deserializer():
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -139,7 +139,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
         containerapp_def = deserializer('ContainerApp', yaml_containerapp)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
     tags = None
@@ -178,7 +178,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -199,7 +199,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
         containerapp_def = deserializer('ContainerApp', yaml_containerapp)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
     tags = None
@@ -219,7 +219,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
     # Validate managed environment
     if not containerapp_def["properties"].get('managedEnvironmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     env_id = containerapp_def["properties"]['managedEnvironmentId']
     env_name = None
@@ -1898,7 +1898,7 @@ def create_or_update_dapr_component(cmd, resource_group_name, environment_name, 
 
     yaml_containerapp = load_yaml_file(yaml)
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     daprcomponent_def = None
@@ -1907,7 +1907,7 @@ def create_or_update_dapr_component(cmd, resource_group_name, environment_name, 
 
         daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
 
