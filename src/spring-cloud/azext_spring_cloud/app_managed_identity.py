@@ -13,6 +13,10 @@ from knack.util import CLIError
 logger = get_logger(__name__)
 
 
+ENABLE_LOWER = "enable"
+DISABLE_LOWER = "disable"
+
+
 def app_identity_assign(cmd,
                         client,
                         resource_group,
@@ -102,7 +106,20 @@ def app_identity_force_set(cmd,
     :param user_assigned: 1. A single-element string list with 'disable'
                           2. A non-empty list of user-assigned managed identity resource ID.
     """
-    pass
+    app = client.apps.get(resource_group, service, name)
+    new_identity_type = _get_new_identity_type_for_force_set(system_assigned, user_assigned)
+    user_identity_payload = _get_user_identity_payload_for_force_set(user_assigned)
+
+    target_identity = models_20220301preview.ManagedIdentityProperties()
+    target_identity.type = new_identity_type
+    target_identity.user_assigned_identities = user_identity_payload
+
+    app.identity = target_identity
+
+    poller = client.apps.begin_create_or_update(resource_group, service, name, app)
+    wait_till_end(cmd, poller)
+    return client.apps.get(resource_group, service, name)
+
 
 def app_identity_show(cmd, client, resource_group, service, name):
     app = client.apps.get(resource_group, service, name)
@@ -308,3 +325,24 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
 
     return user_identity_payload
 
+
+def  _get_new_identity_type_for_force_set(system_assigned, user_assigned):
+    new_identity_type = models_20220301preview.ManagedIdentityType.NONE
+    if DISABLE_LOWER == system_assigned and DISABLE_LOWER != user_assigned[0]:
+        new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
+    elif ENABLE_LOWER == system_assigned and DISABLE_LOWER == user_assigned[0]:
+        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
+    elif ENABLE_LOWER == system_assigned and DISABLE_LOWER != user_assigned[0]:
+        new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
+    return new_identity_type
+
+
+def _get_user_identity_payload_for_force_set(user_assigned):
+    if DISABLE_LOWER == user_assigned[0]:
+        return None
+    user_identity_payload = {}
+    for user_identity_resource_id in user_assigned:
+        user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
+    if not user_identity_payload:
+        user_identity_payload = None
+    return user_identity_payload
