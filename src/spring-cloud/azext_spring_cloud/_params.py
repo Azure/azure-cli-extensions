@@ -236,8 +236,19 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring-cloud app identity assign') as c:
-        c.argument('scope', help="The scope the managed identity has access to")
-        c.argument('role', help="Role name or id the managed identity will be assigned")
+        c.argument('scope',
+                   deprecate_info=c.deprecate(),
+                   help="The scope the managed identity has access to")
+        c.argument('role',
+                   deprecate_info=c.deprecate(),
+                   help="Role name or id the managed identity will be assigned")
+        c.argument('system_assigned',
+                   arg_type=get_three_state_flag(),
+                   help="Enable system-assigned managed identity on an app.")
+        c.argument('user_assigned',
+                   is_preview=True,
+                   nargs='+',
+                   help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
 
     with self.argument_context('spring-cloud app identity remove') as c:
         c.argument('system_assigned',

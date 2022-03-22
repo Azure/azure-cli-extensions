@@ -19,8 +19,9 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long,raise-missing-from
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
 NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
-OBSOLETE_APP_IDENTITY_REMOVE = "Remove managed identities without \"system-assigned\" or \"user-assigned\" parameter is obsolete, will only remove system-assigned managed identity, and will not be supported in the future."
+OBSOLETE_APP_IDENTITY_REMOVE = "Remove managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only remove system-assigned managed identity, and will not be supported in the future."
 WARNING_NO_USER_IDENTITY_RESOURCE_ID = "No resource ID of user-assigned managed identity is given for parameter \"user-assigned\", will remove ALL user-assigned managed identities."
+OBSOLETE_APP_IDENTITY_ASSIGN = "Assign managed identities without \"system-assigned\" or \"user-assigned\" parameters is obsolete, will only enable system-assigned managed identity, and will not be supported in the future."
 
 def fulfill_deployment_param(cmd, namespace):
     client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
@@ -159,8 +160,56 @@ def _normalized_user_identitiy_resource_id_list(user_identity_resource_id_list):
 
 
 def _is_valid_user_assigned_managed_identity_resource_id(resource_id):
-    if not is_valid_resource_id(resource_id):
+    if not is_valid_resource_id(resource_id.lower()):
         return False
-    if "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/".lower() not in resource_id:
+    if "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/".lower() not in resource_id.lower():
         return False
     return True
+
+
+def validate_app_identity_assign_or_warning(namespace):
+    _warn_if_no_identity_type_params(namespace)
+    _validate_role_and_scope_should_use_together(namespace)
+    _validate_role_and_scope_should_not_use_with_user_identity(namespace)
+    _validate_user_identity_resource_id(namespace)
+    _normalize_user_identity_resource_id(namespace)
+
+
+def _warn_if_no_identity_type_params(namespace):
+    if namespace.system_assigned is None and namespace.user_assigned is None:
+        logger.warning(OBSOLETE_APP_IDENTITY_ASSIGN)
+
+
+def _validate_role_and_scope_should_use_together(namespace):
+    if _has_role_or_scope(namespace) and not _has_role_and_scope(namespace):
+        raise InvalidArgumentValueError("Parameter \"role\" and \"scope\" should be used together.")
+
+
+def _validate_role_and_scope_should_not_use_with_user_identity(namespace):
+    if _has_role_and_scope(namespace) and _only_has_user_assigned(namespace):
+        raise InvalidArgumentValueError("Invalid to use parameter \"role\" and \"scope\" with \"user-assigned\" parameter.")
+
+
+def _has_role_and_scope(namespace):
+    return namespace.role and namespace.scope
+
+
+def _has_role_or_scope(namespace):
+    return namespace.role or namespace.scope
+
+
+def _only_has_user_assigned(namespace):
+    return (namespace.user_assigned) and (not namespace.system_assigned)
+
+
+def _validate_user_identity_resource_id(namespace):
+    if namespace.user_assigned:
+        for resource_id in namespace.user_assigned:
+            if not _is_valid_user_assigned_managed_identity_resource_id(resource_id):
+                raise InvalidArgumentValueError("Invalid user-assigned managed identity resource ID \"{}\".".format(resource_id))
+
+
+def _normalize_user_identity_resource_id(namespace):
+    if namespace.user_assigned:
+        namespace.user_assigned = _normalized_user_identitiy_resource_id_list(namespace.user_assigned)
+

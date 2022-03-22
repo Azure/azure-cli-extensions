@@ -402,7 +402,15 @@ def app_tail_log(cmd, client, resource_group, service, name,
         raise exceptions[0]
 
 
-def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
+def app_identity_assign(cmd,
+                        client,
+                        resource_group,
+                        service,
+                        name,
+                        role=None,
+                        scope=None,
+                        system_assigned=None,
+                        user_assigned=None):
     app_resource = models_20220101preview.AppResource()
     identity = models_20220101preview.ManagedIdentityProperties(type="systemassigned")
     properties = models_20220101preview.AppResourceProperties()
