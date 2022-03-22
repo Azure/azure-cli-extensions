@@ -21,7 +21,7 @@ from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient
-# from ._sdk_models import *  # pylint: disable=wildcard-import, unused-wildcard-import
+from ._sdk_models import *  # pylint: disable=wildcard-import, unused-wildcard-import
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
