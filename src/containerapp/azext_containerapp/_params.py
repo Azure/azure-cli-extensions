@@ -163,7 +163,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
         c.argument('dapr_app_port', help="The port of your app.")
-        c.argument('dapr_app_protocol', help="Tells Dapr which protocol your application is using.  Allowed values: grpc, http.")
+        c.argument('dapr_app_protocol', help="Tell Dapr which protocol your application is using.  Allowed values: grpc, http.")
         c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
 
