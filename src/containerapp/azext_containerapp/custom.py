@@ -1835,19 +1835,22 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    if 'dapr' not in containerapp_def['properties']:
-        containerapp_def['properties']['dapr'] = {}
+    if 'configuration' not in containerapp_def['properties']:
+        containerapp_def['properties']['configuration'] = {}
+
+    if 'dapr' not in containerapp_def['properties']['configuration']:
+        containerapp_def['properties']['configuration']['dapr'] = {}
 
     if dapr_app_id:
-        containerapp_def['properties']['dapr']['dapr_app_id'] = dapr_app_id
+        containerapp_def['properties']['configuration']['dapr']['dapr_app_id'] = dapr_app_id
 
     if dapr_app_port:
-        containerapp_def['properties']['dapr']['dapr_app_port'] = dapr_app_port
+        containerapp_def['properties']['configuration']['dapr']['dapr_app_port'] = dapr_app_port
 
     if dapr_app_protocol:
-        containerapp_def['properties']['dapr']['dapr_app_protocol'] = dapr_app_protocol
+        containerapp_def['properties']['configuration']['dapr']['dapr_app_protocol'] = dapr_app_protocol
 
-    containerapp_def['properties']['dapr']['enabled'] = True
+    containerapp_def['properties']['configuration']['dapr']['enabled'] = True
 
     try:
         r = ContainerAppClient.create_or_update(
@@ -1871,7 +1874,13 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    containerapp_def['properties']['dapr']['enabled'] = False
+    if 'configuration' not in containerapp_def['properties']:
+        containerapp_def['properties']['configuration'] = {}
+
+    if 'dapr' not in containerapp_def['properties']['configuration']:
+        containerapp_def['properties']['configuration']['dapr'] = {}
+
+    containerapp_def['properties']['configuration']['dapr']['enabled'] = False
 
     try:
         r = ContainerAppClient.create_or_update(
