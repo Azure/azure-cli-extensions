@@ -127,14 +127,10 @@ def app_identity_force_set(cmd,
     target_identity.type = new_identity_type
     target_identity.user_assigned_identities = user_identity_payload
 
+    # All read-only attributes will be droped by SDK automatically.
     exist_app.identity = target_identity
 
-    new_app = models_20220301preview.AppResource()
-    new_app.identity = target_identity
-    new_app.properties = exist_app.properties
-    new_app.properties.provisioning_state = None
-
-    poller = client.apps.begin_create_or_update(resource_group, service, name, new_app)
+    poller = client.apps.begin_create_or_update(resource_group, service, name, exist_app)
     wait_till_end(cmd, poller)
     return client.apps.get(resource_group, service, name)
 
