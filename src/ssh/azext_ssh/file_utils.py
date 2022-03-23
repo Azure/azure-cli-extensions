@@ -67,3 +67,14 @@ def write_to_file(file_path, mode, content, error_message, encoding=None):
                 f.write(content)
     except Exception as e:
         raise azclierror.FileOperationError(error_message + "Error: " + str(e)) from e
+
+
+def get_line_that_contains(substring, lines):
+    for line in lines:
+        if substring in line:
+            return line
+    return None
+
+
+def get_valid_name_for_config_cred_folder(folder_name, config_folder):
+    return None

@@ -27,7 +27,6 @@ logger = log.get_logger(__name__)
 
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
-
     try:
         ssh_arg_list = []
         if op_info.ssh_args:
@@ -62,6 +61,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                         op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
     finally:
         _do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
 
@@ -152,8 +152,8 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                 try:
                     regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
                     local_major, local_minor = re.findall(regex, log_lines[0])[0]
-                    remote_major, remote_minor = re.findall(regex, _get_line_that_contains("remote software version",
-                                                                                           log_lines))[0]
+                    remote_major, remote_minor = re.findall(regex, file_utils.get_line_that_contains("remote software version",
+                                                                                                     log_lines))[0]
                     local_major = int(local_major)
                     local_minor = int(local_minor)
                     remote_major = int(remote_major)
@@ -176,13 +176,6 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                                    "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
                                    local_major, local_minor, remote_major, remote_minor)
         ssh_log.close()
-
-
-def _get_line_that_contains(substring, lines):
-    for line in lines:
-        if substring in line:
-            return line
-    return None
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):

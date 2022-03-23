@@ -8,6 +8,7 @@ import hashlib
 import json
 import tempfile
 import time
+import platform
 
 import colorama
 from colorama import Fore
@@ -23,6 +24,8 @@ from . import rsa_parser
 from . import ssh_utils
 from . import connectivity_utils
 from . import ssh_info
+from . import file_utils
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -62,7 +65,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
-    _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
+    _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 
     config_session = ssh_info.ConfigSession(config_path, resource_group_name, vm_name, ssh_ip, public_key_file,
                                             private_key_file, overwrite, use_private_ip, local_user, cert_file,
@@ -74,16 +77,14 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     if not os.path.isdir(config_folder):
         raise azclierror.InvalidArgumentValueError(f"Config file destination folder {config_folder} "
                                                    "does not exist.")
-    
-    # Default credential location
-    # Add logic to test if credentials folder is valid
     if not credentials_folder:
         # * is not a valid name for a folder in Windows. Treat this as a special case.
-        # make this more robust. Make sure the folder name is valid. IP might contain invalid characters.
         folder_name = config_session.ip if config_session.ip != "*" else "all_ips"
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
-        credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
+        if not set(folder_name).isdisjoint(set(const.WINDOWS_INVALID_FOLDERNAME_CHARS)) and platform.system() == "Windows":
+            folder_name = file_utils.get_valid_name_for_config_cred_folder(folder_name, config_folder)
+        config_session.credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
     
     config_session.resource_type = _decide_resource_type(cmd, config_session)
     _do_ssh_op(cmd, config_session, op_call)
@@ -135,7 +136,7 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
 
 def _do_ssh_op(cmd, op_info, op_call):
     # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
-    if op_info.resource_type != "Microsoft.HybridCompute":
+    if not op_info.is_arc():
         if op_info.ssh_proxy_folder:
             logger.warning("Target machine is not an Arc Server, --ssh-proxy-folder value will be ignored.")
         op_info.ip = op_info.ip or ip_utils.get_ssh_ip(cmd, op_info.resource_group_name,
@@ -158,16 +159,25 @@ def _do_ssh_op(cmd, op_info, op_call):
                                                   op_info.credentials_folder, op_info.ssh_client_folder)
         op_info.cert_file, op_info.local_user = _get_and_write_certificate(cmd, op_info.public_key_file,
                                                                            None, op_info.ssh_client_folder)
-        if op_info.resource_type == "Microsoft.HybridCompute":
+        if op_info.is_arc():
             try:
                 cert_lifetime = ssh_utils.get_certificate_lifetime(op_info.cert_file).total_seconds()
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
+    
+    try:
+        if op_info.is_arc():
+            op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
+            op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name, 
+                                                                        op_info.vm_name, cert_lifetime)
+    except Exception as e:
+        logger.warning("An error occured before operation concluded. Deleting generated keys: %s %s %s",
+                       op_info.private_key_file + ', ' if (delete_keys or op_info.delete_credentials) else "",
+                       op_info.public_key_file + ', ' if (delete_keys or op_info.delete_credentials) else "",
+                       op_info.cert_file if (delete_cert or op_info.delete_credentials) else "")
+        ssh_utils._do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+        raise e
 
-    if op_info.resource_type != "Microsoft.HybridCompute":
-        op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
-        op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name, 
-                                                                      op_info.vm_name, cert_lifetime)
     op_call(op_info, delete_keys, delete_cert)
 
 
@@ -329,7 +339,7 @@ def _decide_resource_type(cmd, op_info):
     is_arc_server = False
     is_azure_vm = False
 
-    if op_info.ssh_ip:
+    if op_info.ip:
         is_azure_vm = True
         vm = None
 
