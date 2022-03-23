@@ -16,8 +16,8 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-# TODO(jiec): remove this version number after verification.
-VERSION = '3.0.1-use-0301-api'
+# TODO(jiec): Fix the version number before submit PR.
+VERSION = '3.1.0-mason-app-msi'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
