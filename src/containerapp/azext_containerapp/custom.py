@@ -454,7 +454,6 @@ def update_containerapp(cmd,
                         container_name=None,
                         min_replicas=None,
                         max_replicas=None,
-                        revisions_mode=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -470,7 +469,7 @@ def update_containerapp(cmd,
 
     if yaml:
         if image or min_replicas or max_replicas or\
-           revisions_mode or set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
+           set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
@@ -495,7 +494,6 @@ def update_containerapp(cmd,
     update_map = {}
     update_map['scale'] = min_replicas or max_replicas
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
-    update_map['configuration'] = revisions_mode is not None
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -617,10 +615,6 @@ def update_containerapp(cmd,
             containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
         if max_replicas is not None:
             containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
-
-    # Configuration
-    if revisions_mode is not None:
-        containerapp_def["properties"]["configuration"]["activeRevisionsMode"] = revisions_mode
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
