@@ -113,9 +113,9 @@ def app_identity_force_set(cmd,
     :param user_assigned: 1. A single-element string list with 'disable'
                           2. A non-empty list of user-assigned managed identity resource ID.
     """
-    app = client.apps.get(resource_group, service, name)
-    if app.properties and app.properties.provisioning_state and app.properties.provisioning_state.lower() in ["updating", "deleting"]:
-        raise CLIError("Failed to force set managed identities since app is in {} state.".format(app.properties.provisioning_state))
+    exist_app = client.apps.get(resource_group, service, name)
+    if exist_app.properties and exist_app.properties.provisioning_state and exist_app.properties.provisioning_state.lower() in ["updating", "deleting"]:
+        raise CLIError("Failed to force set managed identities since app is in {} state.".format(exist_app.properties.provisioning_state))
 
     new_identity_type = _get_new_identity_type_for_force_set(system_assigned, user_assigned)
     user_identity_payload = _get_user_identity_payload_for_force_set(user_assigned)
@@ -124,9 +124,14 @@ def app_identity_force_set(cmd,
     target_identity.type = new_identity_type
     target_identity.user_assigned_identities = user_identity_payload
 
-    app.identity = target_identity
+    exist_app.identity = target_identity
 
-    poller = client.apps.begin_create_or_update(resource_group, service, name, app)
+    new_app = models_20220301preview.AppResource()
+    new_app.identity = target_identity
+    new_app.properties = exist_app.properties
+    new_app.properties.provisioning_state = None
+
+    poller = client.apps.begin_create_or_update(resource_group, service, name, new_app)
     wait_till_end(cmd, poller)
     return client.apps.get(resource_group, service, name)
 
