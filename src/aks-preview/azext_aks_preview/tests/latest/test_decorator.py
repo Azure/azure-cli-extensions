@@ -1746,6 +1746,17 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_4.get_enable_azure_keyvault_kms()
 
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "azure_keyvault_kms_key_id": "test_azure_keyvault_kms_key_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_5.get_enable_azure_keyvault_kms()
+
     def test_get_azure_keyvault_kms_key_id(self):
         ctx_0 = AKSPreviewContext(
             self.cmd,

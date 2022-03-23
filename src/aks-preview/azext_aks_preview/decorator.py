@@ -1597,6 +1597,7 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
+        # TODO: set default value as False after the get function of AKSParamDict accepts parameter `default`
         enable_azure_keyvault_kms = self.raw_param.get("enable_azure_keyvault_kms")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -1610,8 +1611,10 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            if enable_azure_keyvault_kms and self._get_azure_keyvault_kms_key_id(enable_validation=False) is None:
-                raise RequiredArgumentMissingError('"--enable-azure-keyvault-kms" requires "--azure-keyvault-kms-key-id".')
+            if bool(enable_azure_keyvault_kms) != bool(self._get_azure_keyvault_kms_key_id(enable_validation=False)):
+                raise RequiredArgumentMissingError(
+                    'You must set "--enable-azure-keyvault-kms" and "--azure-keyvault-kms-key-id" at the same time.'
+                )
 
         return enable_azure_keyvault_kms
 
