@@ -139,7 +139,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
         g.custom_show_command(
-            'show', 'app_get', table_transformer=transform_app_table_output)
+            'show', 'app_get', table_transformer=transform_app_table_output,
+            client_factory=cf_spring_cloud_20220301preview)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
