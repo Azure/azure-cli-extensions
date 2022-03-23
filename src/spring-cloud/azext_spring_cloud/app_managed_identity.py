@@ -22,6 +22,7 @@ ENABLE_LOWER = "enable"
 DISABLE_LOWER = "disable"
 APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
+
 def app_identity_assign(cmd,
                         client,
                         resource_group,
@@ -69,8 +70,9 @@ def app_identity_remove(cmd,
                           3) A non-empty list of user-assigned managed identity resource id to remove.
     """
     app = client.apps.get(resource_group, service, name)
-    if app.properties and app.properties.provisioning_state and app.properties.provisioning_state.lower() in ["updating", "deleting"]:
-        raise CLIError("Failed to remove managed identities since app is in {} state.".format(app.properties.provisioning_state))
+    if _app_not_updatable(app):
+        raise CLIError("Failed to remove managed identities since app is in {} state."\
+                       .format(app.properties.provisioning_state))
 
     if not app.identity:
         logger.warning("Skip remove managed identity since no identities assigned to app.")
@@ -90,7 +92,7 @@ def app_identity_remove(cmd,
     user_identity_payload = _get_user_identity_payload_for_remove(new_identity_type, user_assigned)
 
     target_identity = models_20220301preview.ManagedIdentityProperties()
-    target_identity.type=new_identity_type
+    target_identity.type = new_identity_type
     target_identity.user_assigned_identities = user_identity_payload
 
     app_resource = models_20220301preview.AppResource()
@@ -102,20 +104,21 @@ def app_identity_remove(cmd,
 
 
 def app_identity_force_set(cmd,
-                        client,
-                        resource_group,
-                        service,
-                        name,
-                        system_assigned,
-                        user_assigned):
+                           client,
+                           resource_group,
+                           service,
+                           name,
+                           system_assigned,
+                           user_assigned):
     """
     :param system_assigned: string, disable or enable
     :param user_assigned: 1. A single-element string list with 'disable'
                           2. A non-empty list of user-assigned managed identity resource ID.
     """
     exist_app = client.apps.get(resource_group, service, name)
-    if exist_app.properties and exist_app.properties.provisioning_state and exist_app.properties.provisioning_state.lower() in ["updating", "deleting"]:
-        raise CLIError("Failed to force set managed identities since app is in {} state.".format(exist_app.properties.provisioning_state))
+    if _app_not_updatable(exist_app):
+        raise CLIError("Failed to force set managed identities since app is in {} state.".format(
+            exist_app.properties.provisioning_state))
 
     new_identity_type = _get_new_identity_type_for_force_set(system_assigned, user_assigned)
     user_identity_payload = _get_user_identity_payload_for_force_set(user_assigned)
@@ -150,8 +153,9 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
     Enable system-assigned managed identity on app.
     """
     app = client.apps.get(resource_group, service, name)
-    if app.properties and app.properties.provisioning_state and app.properties.provisioning_state.lower() in ["updating", "deleting"]:
-        raise CLIError("Failed to enable system-assigned managed identity since app is in {} state.".format(app.properties.provisioning_state))
+    if _app_not_updatable(app):
+        raise CLIError("Failed to enable system-assigned managed identity since app is in {} state.".format(
+            app.properties.provisioning_state))
 
     new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
     if app.identity and app.identity.type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
@@ -166,8 +170,9 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
 
 def _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned):
     app = client.apps.get(resource_group, service, name)
-    if app.properties and app.properties.provisioning_state and app.properties.provisioning_state.lower() in ["updating", "deleting"]:
-        raise CLIError("Failed to assign managed identities since app is in {} state.".format(app.properties.provisioning_state))
+    if _app_not_updatable(app):
+        raise CLIError(
+            "Failed to assign managed identities since app is in {} state.".format(app.properties.provisioning_state))
 
     new_identity_type = _get_new_identity_type_for_assign(app, system_assigned, user_assigned)
     user_identity_payload = _get_user_identity_payload_for_assign(new_identity_type, user_assigned)
@@ -224,7 +229,7 @@ def _get_user_identity_payload_for_assign(new_identity_type, new_user_identity_r
                                models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
         if new_user_identity_rid_list:
             for rid in new_user_identity_rid_list:
-                uid_payload[rid]= models_20220301preview.UserAssignedManagedIdentity()
+                uid_payload[rid] = models_20220301preview.UserAssignedManagedIdentity()
 
     if len(uid_payload) == 0:
         uid_payload = None
@@ -236,14 +241,16 @@ def _create_role_assignment(cmd, client, resource_group, service, name, role, sc
     app = client.apps.get(resource_group, service, name)
 
     if not app.identity or not app.identity.principal_id:
-        raise CLIError("Failed to create role assignment without object ID(principal ID) of system-assigned managed identity.")
+        raise CLIError(
+            "Failed to create role assignment without object ID(principal ID) of system-assigned managed identity.")
 
     identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
     assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
-    parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id, principal_id=app.identity.principal_id)
+    parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id,
+                                                principal_id=app.identity.principal_id)
     logger.warning("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
     retry_times = 36
     assignment_name = _arm._gen_guid()
@@ -331,10 +338,11 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
     """
     user_identity_payload = {}
     if new_identity_type in (models_20220301preview.ManagedIdentityType.USER_ASSIGNED,
-                               models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
+                             models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
         # empty list means remove all user-assigned managed identites
         if user_identity_list_to_remove is not None and len(user_identity_list_to_remove) == 0:
-            raise CLIError("Target identity type should not be {}, when remove all user-assigned managed identities.".format(new_identity_type))
+            raise CLIError("When remove all user-assigned managed identities, "
+                           "target identity type should not be {}.".format(new_identity_type))
         # non-empty list
         elif user_identity_list_to_remove:
             for id in user_identity_list_to_remove:
@@ -346,7 +354,7 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
     return user_identity_payload
 
 
-def  _get_new_identity_type_for_force_set(system_assigned, user_assigned):
+def _get_new_identity_type_for_force_set(system_assigned, user_assigned):
     new_identity_type = models_20220301preview.ManagedIdentityType.NONE
     if DISABLE_LOWER == system_assigned and DISABLE_LOWER != user_assigned[0]:
         new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
@@ -366,3 +374,9 @@ def _get_user_identity_payload_for_force_set(user_assigned):
     if not user_identity_payload:
         user_identity_payload = None
     return user_identity_payload
+
+
+def _app_not_updatable(app):
+    return app.properties \
+           and app.properties.provisioning_state \
+           and app.properties.provisioning_state.lower() in ["updating", "deleting"]
