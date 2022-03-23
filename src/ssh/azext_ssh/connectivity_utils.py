@@ -46,23 +46,20 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except ResourceNotFoundError as e:
         if not prompt_y_n("Default Endpoint could not be found. Would you like to create it?", default="n"):
-            raise azclierror.ClientRequestError("No default endpoint. Contact the administrator.")
+            raise azclierror.ClientRequestError(f"No default endpoint. Contact the administrator. Error:\n{str(e)}")
         else:
             _create_default_endpoint(cmd, resource_group, vm_name, client)
             try:
                 result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                          endpoint_name="default", expiresin=certificate_validity_in_seconds)
-            except:
-                raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
-            return result
+            except Exception as e:
+                raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
                                 fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
                                 summary=f'listCredentials failed with error: {str(e)}.')
-        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
+        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     return result
-
-
 
 
 def _create_default_endpoint(cmd, resource_group, vm_name, client):
@@ -115,6 +112,8 @@ def get_client_side_proxy(arc_proxy_folder):
         # write executable in the install location
         file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
+        colorama.init()
+        print(Fore.GREEN + f"SSH Client Proxy saved to {install_location}" + Style.RESET_ALL)
 
     return install_location
 

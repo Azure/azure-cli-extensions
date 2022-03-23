@@ -5,6 +5,7 @@
 
 import errno
 import os
+from . import constants as const
 from azure.cli.core import azclierror
 from knack import log
 
@@ -76,5 +77,9 @@ def get_line_that_contains(substring, lines):
     return None
 
 
-def get_valid_name_for_config_cred_folder(folder_name, config_folder):
-    return None
+def remove_invalid_characters_foldername(folder_name):
+    new_foldername = ""
+    for c in folder_name:
+        if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS:
+            new_foldername += c
+    return new_foldername

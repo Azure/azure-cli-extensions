@@ -72,6 +72,8 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                                             port, resource_type, credentials_folder, ssh_proxy_folder, ssh_client_folder)
     op_call = ssh_utils.write_ssh_config
 
+    config_session.resource_type = _decide_resource_type(cmd, config_session)
+
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)
     if not os.path.isdir(config_folder):
@@ -82,11 +84,12 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         folder_name = config_session.ip if config_session.ip != "*" else "all_ips"
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
-        if not set(folder_name).isdisjoint(set(const.WINDOWS_INVALID_FOLDERNAME_CHARS)) and platform.system() == "Windows":
-            folder_name = file_utils.get_valid_name_for_config_cred_folder(folder_name, config_folder)
+        if not set(folder_name).isdisjoint(set(const.WINDOWS_INVALID_FOLDERNAME_CHARS)) and platform.system() == "Windows" and (not config_session.local_user or config_session.is_arc()):
+            folder_name = file_utils.remove_invalid_characters_foldername(folder_name)
+            if folder_name == "":
+                raise azclierror.RequiredArgumentMissingError("Can't create default folder for generated keys. Please provide --keys-destination-folder.")
         config_session.credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
     
-    config_session.resource_type = _decide_resource_type(cmd, config_session)
     _do_ssh_op(cmd, config_session, op_call)
 
 
@@ -171,6 +174,7 @@ def _do_ssh_op(cmd, op_info, op_call):
             op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name, 
                                                                         op_info.vm_name, cert_lifetime)
     except Exception as e:
+        # only if delete_keys, delete_cert, or delete_credentials
         logger.warning("An error occured before operation concluded. Deleting generated keys: %s %s %s",
                        op_info.private_key_file + ', ' if (delete_keys or op_info.delete_credentials) else "",
                        op_info.public_key_file + ', ' if (delete_keys or op_info.delete_credentials) else "",
