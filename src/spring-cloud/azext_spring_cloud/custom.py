@@ -8,7 +8,6 @@ import requests
 import re
 import os
 
-from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
@@ -29,7 +28,6 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
