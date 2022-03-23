@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001","name":"cli_test_azure_firewall000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-08-02T02:38:34Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001","name":"cli_test_azure_firewall000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-03-16T07:39:12Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '471'
+      - '336'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:38:41 GMT
+      - Wed, 16 Mar 2022 07:39:14 GMT
       expires:
       - '-1'
       pragma:
@@ -60,13 +60,13 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"7de13ca7-8ac0-4e77-9db3-5522f781474b\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"e880767e-61cf-4f04-96f9-5783fa008be2\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -78,15 +78,15 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/bdff51a5-526f-418e-9f15-8b589ee06627?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/fd86f261-bf86-4ee5-a926-1f8e87658db0?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
-      - '740'
+      - '694'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:38:48 GMT
+      - Wed, 16 Mar 2022 07:39:21 GMT
       expires:
       - '-1'
       pragma:
@@ -99,7 +99,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - afbdcd80-5909-4786-8734-f46ac1146d39
+      - cdc08540-a6b2-428f-adbc-8d7005b5f8cd
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -119,9 +119,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/bdff51a5-526f-418e-9f15-8b589ee06627?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/fd86f261-bf86-4ee5-a926-1f8e87658db0?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -133,7 +133,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:38:59 GMT
+      - Wed, 16 Mar 2022 07:39:31 GMT
       expires:
       - '-1'
       pragma:
@@ -150,7 +150,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f09abd1d-4fb1-49c8-a828-df20544eb18b
+      - e9399266-391b-4dd1-b364-7c433781c6f0
     status:
       code: 200
       message: OK
@@ -168,13 +168,13 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"e73f7198-6719-48aa-b179-ae1d5bc3a5ab\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"eede3dd7-ce46-423d-9ac3-f34d2dc75a34\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -186,13 +186,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '741'
+      - '695'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:38:59 GMT
+      - Wed, 16 Mar 2022 07:39:31 GMT
       etag:
-      - W/"e73f7198-6719-48aa-b179-ae1d5bc3a5ab"
+      - W/"eede3dd7-ce46-423d-9ac3-f34d2dc75a34"
       expires:
       - '-1'
       pragma:
@@ -209,7 +209,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 071b578e-af22-403e-adcd-86e568fdd2e5
+      - 36e3ffd3-f0a2-472d-bba4-22aa4d495402
     status:
       code: 200
       message: OK
@@ -227,13 +227,13 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"e73f7198-6719-48aa-b179-ae1d5bc3a5ab\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"eede3dd7-ce46-423d-9ac3-f34d2dc75a34\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -245,13 +245,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '741'
+      - '695'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:01 GMT
+      - Wed, 16 Mar 2022 07:39:32 GMT
       etag:
-      - W/"e73f7198-6719-48aa-b179-ae1d5bc3a5ab"
+      - W/"eede3dd7-ce46-423d-9ac3-f34d2dc75a34"
       expires:
       - '-1'
       pragma:
@@ -268,7 +268,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c1795cc6-ce5a-4056-ab13-4913b83144c7
+      - 688da7d3-cd59-463d-988f-d1c0e0b6aeea
     status:
       code: 200
       message: OK
@@ -288,19 +288,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '456'
+      - '410'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"eeb4ba4d-3372-4c5e-a7b0-c4ee44cdd1be\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"76da7c4a-6824-4ad8-b478-15965baad796\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -311,15 +311,15 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/ec0de15d-159d-4016-b078-117f5603a566?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c66c16b9-6d98-4dca-8e46-13e06cc4e7fc?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
-      - '689'
+      - '643'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:03 GMT
+      - Wed, 16 Mar 2022 07:39:33 GMT
       expires:
       - '-1'
       pragma:
@@ -336,9 +336,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 554b2fbe-9826-4809-afe5-f84251e0a2eb
+      - 88742878-089c-44e1-b308-52b5787b9e72
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -356,9 +356,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/ec0de15d-159d-4016-b078-117f5603a566?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c66c16b9-6d98-4dca-8e46-13e06cc4e7fc?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -370,7 +370,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:14 GMT
+      - Wed, 16 Mar 2022 07:39:44 GMT
       expires:
       - '-1'
       pragma:
@@ -387,7 +387,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fdea5df4-60f3-44be-908e-eef02de10326
+      - a6f6b928-44fe-4a44-a102-b3a10fd345ed
     status:
       code: 200
       message: OK
@@ -405,13 +405,13 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode --allow-active-ftp
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"c2448388-46fb-4f99-8ebd-735efebd1312\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"bd81ce2f-26de-45be-a679-68d79fbb33c5\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -422,13 +422,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '690'
+      - '644'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:15 GMT
+      - Wed, 16 Mar 2022 07:39:44 GMT
       etag:
-      - W/"c2448388-46fb-4f99-8ebd-735efebd1312"
+      - W/"bd81ce2f-26de-45be-a679-68d79fbb33c5"
       expires:
       - '-1'
       pragma:
@@ -445,7 +445,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 45d121aa-e002-4b98-b266-00fb7e23b567
+      - 0959ccba-b0c1-48ea-b17e-86dedbdcf799
     status:
       code: 200
       message: OK
@@ -463,13 +463,13 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"c2448388-46fb-4f99-8ebd-735efebd1312\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"bd81ce2f-26de-45be-a679-68d79fbb33c5\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n    \"threatIntelMode\":
@@ -480,13 +480,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '690'
+      - '644'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:17 GMT
+      - Wed, 16 Mar 2022 07:39:45 GMT
       etag:
-      - W/"c2448388-46fb-4f99-8ebd-735efebd1312"
+      - W/"bd81ce2f-26de-45be-a679-68d79fbb33c5"
       expires:
       - '-1'
       pragma:
@@ -503,7 +503,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 27bbbb72-84ad-414e-b246-3b0bad9a1012
+      - af1285ac-9c70-4367-bdb8-0254c72017d9
     status:
       code: 200
       message: OK
@@ -521,14 +521,14 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"af1\",\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \     \"etag\": \"W/\\\"c2448388-46fb-4f99-8ebd-735efebd1312\\\"\",\r\n      \"type\":
+        \     \"etag\": \"W/\\\"bd81ce2f-26de-45be-a679-68d79fbb33c5\\\"\",\r\n      \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n      \"location\": \"westus\",\r\n
         \     \"properties\": {\r\n        \"provisioningState\": \"Succeeded\",\r\n
         \       \"sku\": {\r\n          \"name\": \"AZFW_VNet\",\r\n          \"tier\":
@@ -540,11 +540,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '795'
+      - '749'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:18 GMT
+      - Wed, 16 Mar 2022 07:39:47 GMT
       expires:
       - '-1'
       pragma:
@@ -561,7 +561,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5c9d425a-e0cd-4206-881d-73d61735e0cb
+      - 69bdb9ce-2036-4755-b1eb-06a9bb7ce8e2
     status:
       code: 200
       message: OK
@@ -581,9 +581,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2021-05-01
   response:
     body:
       string: ''
@@ -591,17 +591,17 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/eb1f8b53-8c4c-40b4-adc8-21f72a36e4d5?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/edd2f79d-7279-49b1-9f9b-923016da9a32?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Mon, 02 Aug 2021 02:39:21 GMT
+      - Wed, 16 Mar 2022 07:39:48 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/eb1f8b53-8c4c-40b4-adc8-21f72a36e4d5?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/edd2f79d-7279-49b1-9f9b-923016da9a32?api-version=2021-05-01
       pragma:
       - no-cache
       server:
@@ -612,7 +612,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ee3db8b8-b764-4ca1-a6d4-1e28eaad8596
+      - f003cd7d-f7c3-4447-9cf4-402b8f601773
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -632,9 +632,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/eb1f8b53-8c4c-40b4-adc8-21f72a36e4d5?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/edd2f79d-7279-49b1-9f9b-923016da9a32?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -646,7 +646,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 02 Aug 2021 02:39:31 GMT
+      - Wed, 16 Mar 2022 07:39:59 GMT
       expires:
       - '-1'
       pragma:
@@ -663,7 +663,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 93cb06f8-b771-402b-9b12-5c2c43a27cc7
+      - 890cdbab-cc45-4e1e-82e8-be0fba2ceda3
     status:
       code: 200
       message: OK

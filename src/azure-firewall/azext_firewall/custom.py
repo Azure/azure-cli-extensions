@@ -493,7 +493,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None,
+                                   sku=None, intrusion_detection_mode=None, sql=None,
                                    key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
@@ -543,7 +543,10 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
             certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
                                                                   name=certificate_name)
             firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
-
+    if cmd.supported_api_version(min_api='2021-03-01'):
+        if sql is not None:
+            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
+            firewall_policy.sql = FirewallPolicySQL(allow_sql_redirect=sql)
     # identity
     if user_assigned_identity is not None:
         user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
@@ -562,7 +565,7 @@ def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None,
+                                   sku=None, intrusion_detection_mode=None, sql=None,
                                    key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
 
     (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
@@ -607,7 +610,10 @@ def update_azure_firewall_policies(cmd,
             certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
                                                                   name=certificate_name)
             instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
-
+    if cmd.supported_api_version(min_api='2021-03-01'):
+        if sql is not None:
+            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
+            instance.sql = FirewallPolicySQL(allow_sql_redirect=sql)
     # identity
     (ManagedServiceIdentityUserAssignedIdentitiesValue,
      ManagedServiceIdentity) = cmd.get_models('Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties',

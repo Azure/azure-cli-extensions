@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001","name":"test_azure_firewall_policy_update_premiumonlyproperty_issue000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-11-23T02:41:30Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001","name":"test_azure_firewall_policy_update_premiumonlyproperty_issue000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-03-17T09:19:22Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '413'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:37 GMT
+      - Thu, 17 Mar 2022 09:19:24 GMT
       expires:
       - '-1'
       pragma:
@@ -60,9 +60,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -70,18 +70,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9c468c27-6aff-4860-9d04-cab96370b248\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9c5620e0-cbc2-42de-b097-3ac246c64960?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/06e76097-269d-439d-9270-ac933e9c3a04?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
-      - '593'
+      - '583'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:44 GMT
+      - Thu, 17 Mar 2022 09:19:32 GMT
       expires:
       - '-1'
       pragma:
@@ -93,7 +93,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1191'
     status:
       code: 201
       message: Created
@@ -111,9 +111,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9c5620e0-cbc2-42de-b097-3ac246c64960?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/06e76097-269d-439d-9270-ac933e9c3a04?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -125,7 +125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:54 GMT
+      - Thu, 17 Mar 2022 09:19:42 GMT
       expires:
       - '-1'
       pragma:
@@ -157,9 +157,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -167,18 +167,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9c468c27-6aff-4860-9d04-cab96370b248\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '594'
+      - '584'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:55 GMT
+      - Thu, 17 Mar 2022 09:19:42 GMT
       etag:
-      - '"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8"'
+      - '"9c468c27-6aff-4860-9d04-cab96370b248"'
       expires:
       - '-1'
       pragma:
@@ -210,9 +210,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -220,18 +220,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"9c468c27-6aff-4860-9d04-cab96370b248\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '594'
+      - '584'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:58 GMT
+      - Thu, 17 Mar 2022 09:19:45 GMT
       etag:
-      - '"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8"'
+      - '"9c468c27-6aff-4860-9d04-cab96370b248"'
       expires:
       - '-1'
       pragma:
@@ -263,15 +263,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '307'
+      - '297'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -279,18 +279,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"6778a7ed-84da-45b8-ab7c-cb84b2ec965d\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"97a0ab83-9041-4054-892b-314c917d7de2\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/2a527da0-a0af-4ab4-b2f9-a8eefc67e901?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/b11d5577-a186-48fb-8c93-d511b8f146a5?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
-      - '592'
+      - '582'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:59 GMT
+      - Thu, 17 Mar 2022 09:19:47 GMT
       expires:
       - '-1'
       pragma:
@@ -306,7 +306,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1193'
     status:
       code: 200
       message: OK
@@ -324,9 +324,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/2a527da0-a0af-4ab4-b2f9-a8eefc67e901?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/b11d5577-a186-48fb-8c93-d511b8f146a5?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -338,7 +338,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:42:10 GMT
+      - Thu, 17 Mar 2022 09:19:58 GMT
       expires:
       - '-1'
       pragma:
@@ -370,9 +370,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.31.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.17763-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -380,18 +380,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"6778a7ed-84da-45b8-ab7c-cb84b2ec965d\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"97a0ab83-9041-4054-892b-314c917d7de2\",\r\n  \"location\": \"eastus2euap\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '593'
+      - '583'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:42:10 GMT
+      - Thu, 17 Mar 2022 09:19:59 GMT
       etag:
-      - '"6778a7ed-84da-45b8-ab7c-cb84b2ec965d"'
+      - '"97a0ab83-9041-4054-892b-314c917d7de2"'
       expires:
       - '-1'
       pragma:

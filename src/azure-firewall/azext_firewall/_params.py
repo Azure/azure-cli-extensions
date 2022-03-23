@@ -164,6 +164,7 @@ def load_arguments(self, _):
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
         c.argument('sku', arg_type=get_enum_type(FirewallPolicySkuTier), help='SKU of Firewall policy', is_preview=True)
         c.argument('user_assigned_identity', options_list='--identity', help="Name or ID of the ManagedIdentity Resource")
+        c.argument('sql', arg_type=get_three_state_flag(), help='', is_preview=True)
 
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')

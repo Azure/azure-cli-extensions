@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.14.0
+++++++
+* `az network firewall policy`: add parameter `sql`
+* Bump up azure-mgmt-network SDK to 2021_05_01_preview
 
 0.13.0
 ++++++

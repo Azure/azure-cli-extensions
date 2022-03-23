@@ -233,13 +233,6 @@ class AzureFirewallScenario(ScenarioTest):
     def test_azure_firewall_virtual_hub(self, resource_group):
         from knack.util import CLIError
         self.kwargs.update({
-            'af': 'af1',
-            'coll': 'rc1',
-            'vwan': 'clitestvwan',
-            'vhub': 'clitestvhub',
-            'vwan2': 'clitestvwan2',
-            'vhub2': 'clitestvhub2',
-            'rg': resource_group
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
@@ -527,7 +520,7 @@ class AzureFirewallScenario(ScenarioTest):
                  --action DNAT --rule-name network-rule --description "test" \
                  --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
                  --translated-address 128.1.1.1 --translated-port 1234 \
-                 --destination-ports 12000 12001 --ip-protocols TCP UDP', checks=[
+                 --destination-ports 12000 --ip-protocols TCP UDP', checks=[
             self.check('length(ruleCollections)', 1),
             self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
             self.check('ruleCollections[0].name', "nat-collection")
@@ -537,7 +530,7 @@ class AzureFirewallScenario(ScenarioTest):
                  --rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 13000 \
                  --action Allow --rule-name network-rule --rule-type NetworkRule \
                  --description "test" --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
-                 --destination-ports 12003 12004 --ip-protocols Any ICMP', checks=[
+                 --destination-ports 12003 --ip-protocols Any ICMP', checks=[
             self.check('length(ruleCollections)', 2),
             self.check('ruleCollections[1].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
             self.check('ruleCollections[1].name', "filter-collection-1")
@@ -564,7 +557,7 @@ class AzureFirewallScenario(ScenarioTest):
                                  --action DNAT --rule-name network-rule --description "test" \
                                  --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
                                  --translated-fqdn www.google.com --translated-port 1234 \
-                                 --destination-ports 12000 12001 --ip-protocols TCP UDP', checks=[
+                                 --destination-ports 12000 --ip-protocols TCP UDP', checks=[
             self.check('length(ruleCollections)', 4),
             self.check('ruleCollections[3].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
             self.check('ruleCollections[3].name', "nat-collection-2")
@@ -598,7 +591,7 @@ class AzureFirewallScenario(ScenarioTest):
                  --rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 \
                  --name network-rule-2 --rule-type NetworkRule \
                  --description "test" --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
-                 --destination-ports 12003 12004 --ip-protocols Any ICMP', checks=[
+                 --destination-ports 12003 --ip-protocols Any ICMP', checks=[
             self.check('length(ruleCollections[1].rules)', 2)
         ])
 
@@ -770,7 +763,7 @@ class AzureFirewallScenario(ScenarioTest):
                  '--action DNAT --rule-name nat-rule --description "test" '
                  '--destination-addresses "202.120.36.15" --source-ip-groups {source_ip_group} '
                  '--translated-address 128.1.1.1 --translated-port 1234 '
-                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 '--destination-ports 12000 --ip-protocols TCP UDP',
                  checks=[
                      self.check('length(ruleCollections)', 1),
                      self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
@@ -839,7 +832,7 @@ class AzureFirewallScenario(ScenarioTest):
                  '--name nat-rule-2 --rule-type NatRule --description "test" '
                  '--destination-addresses "202.120.36.16" --source-ip-groups {source_ip_group} '
                  '--translated-address 128.1.1.1 --translated-port 1234 '
-                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 '--destination-ports 12000 --ip-protocols TCP UDP',
                  checks=[
                      self.check('length(ruleCollections[0].rules)', 2)
                  ])
@@ -920,3 +913,15 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy create -g {rg} -n {policy} --sku Standard --threat-intel-mode Alert')
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny')
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_with_sql', location='eastus2euap')
+    def test_azure_firewall_policy_with_sql(self, resource_group):
+        self.kwargs.update({
+            'policy': 'testpolicy'
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy} --sql true',
+                 checks=self.check('sql.allowSQLRedirect', 'true'))
+
+        self.cmd('network firewall policy update -g {rg} -n {policy} --sql false',
+                 checks=self.check('', ''))
