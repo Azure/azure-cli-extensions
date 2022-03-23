@@ -536,3 +536,116 @@ helps['cosmosdb table retrieve-latest-backup-time'] = """
 type: command
 short-summary: Retrieves latest restorable timestamp for the given table in given region.
 """
+
+helps['cosmosdb dts export'] = """
+    type: command
+    short-summary: "Creates a data transfer export Job."
+    parameters:
+      - name: --cassandra-table
+        short-summary: "Cassandra table data source"
+        long-summary: |
+            Usage: --cassandra-table keyspace=XX table=XX'
+            keyspace: Cassandra keyspace name.
+            table: Cassandra table name.
+      - name: --blob-container
+        short-summary: "Blob container data sink"
+        long-summary: |
+            Usage: --blob-container name=XX url=XX
+            name: Container name of Azure Blob Storage.
+            url: Endpoint Url of Azure Blob Storage.
+            
+    examples:
+      - name: Export to cassandra table to blob container
+        text: |-
+          az cosmosdb dts export --account-name "db1" -g "rg1" --job-name "j1"\
+ --cassandra-table keyspace=testkeyspace table=testtable\
+ --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/ 
+"""
+
+helps['cosmosdb dts import'] = """
+    type: command
+    short-summary: "Creates a data transfer import Job."
+    parameters:
+      - name: --cassandra-table
+        short-summary: "Cassandra table data sink"
+        long-summary: |
+            Usage: --cassandra-table keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --blob-container
+        short-summary: "Blob conatiner data source"
+        long-summary: |
+            Usage: --blob-container name=XX url=XX
+            name: Container name of Azure Blob Storage.
+            url: Endpoint Url of Azure Blob Storage.
+            
+    examples:
+      - name: Import cassandra table from blob container
+        text: |-
+          az cosmosdb dts import --account-name "db1" -g "rg1" --job-name "j1"\
+ --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/\
+ --cassandra-table keyspace=testkeyspace table=testtable
+"""
+
+helps['cosmosdb dts copy'] = """
+    type: command
+    short-summary: "Creates a data transfer import Job."
+    parameters:
+      - name: --source-cassandra-table
+        short-summary: "Source cassandra table" 
+        long-summary: |
+            Usage: --source-cassandra-table keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --destination-cassandra-table
+        short-summary: "Destination cassandra table"
+        long-summary: |
+            Usage: --destination-cassandra-table keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --source-sql-container
+        short-summary: "Blob conatiner data source"
+        short-summary: "Source sql container"
+        long-summary: |
+            Usage: --source-sql-container database=XX container=XX'
+            database: Database name of CosmosDB Sql.
+            container: Container name of CosmosDB Sql.
+      - name: --destination-sql-container
+        short-summary: "Blob conatiner data source"
+        short-summary: "Destination sql container"
+        long-summary: |
+            Usage: --destination-sql-container database=XX container=XX'
+            database: Database name of CosmosDB Sql.
+            container: Container name of CosmosDB Sql.
+            
+    examples:
+      - name: Copy sql container
+        text: |-
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-sql-container database=db1 container=c1 --destination-sql-container database=db2 container=c2
+      - name: Copy cassandra table
+        text: |-
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --destination-cassandra-table keyspace=k1 table=t1
+"""
+
+helps['cosmosdb dts'] = """
+    type: group
+    short-summary: Manage data transfer job with cosmosdb
+"""
+
+helps['cosmosdb dts list'] = """
+    type: command
+    short-summary: "Get a list of Data Transfer jobs."
+    examples:
+      - name: List all jobs
+        text: |-
+               az cosmosdb dts list --account-name "ddb1" -g "rg1"
+"""
+
+helps['cosmosdb dts show'] = """
+    type: command
+    short-summary: "Get a Data Transfer Job."
+    examples:
+      - name: Show details of job j1
+        text: |-
+               az cosmosdb dts show --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
