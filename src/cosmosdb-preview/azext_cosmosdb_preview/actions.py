@@ -11,7 +11,10 @@ from knack.util import CLIError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseRestoreResource,
-    GremlinDatabaseRestoreResource
+    GremlinDatabaseRestoreResource,
+    AzureBlobDataTransferDataSourceSink,
+    CosmosCassandraDataTransferDataSourceSink,
+    CosmosSqlDataTransferDataSourceSink
 )
 
 logger = get_logger(__name__)
@@ -97,96 +100,110 @@ class CreateTableRestoreResource(argparse._AppendAction):
 
 class AddBlobContainerAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.blob_container = action
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
 
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
+        container_name = None
+        endpoint_url = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
             kl = k.lower()
-            v = properties[k]
-
             if kl == 'name':
-                d['container_name'] = v[0]
+                container_name = v
 
             elif kl == 'url':
-                d['endpoint_url'] = v[0]
+                endpoint_url = v
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for {} component. All'
-                    ' possible keys are: name, url'.format(k, component_name)
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: name, url'
                 )
-        return d
+
+        if container_name is None:
+            raise CLIError(f'usage error: missing key name in {option_string} component')
+
+        if endpoint_url is None:
+            raise CLIError(f'usage error: missing key url in {option_string} component')
+
+        blob_container = AzureBlobDataTransferDataSourceSink(container_name=container_name, endpoint_url=endpoint_url)
+
+        namespace.blob_container = blob_container
 
 class AddCassandraTableAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.cassandra_table = action
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
 
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
+        keyspace_name = None
+        table_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
             kl = k.lower()
-            v = properties[k]
-
             if kl == 'keyspace':
-                d['keyspace_name'] = v[0]
+                keyspace_name = v
 
             elif kl == 'table':
-                d['table_name'] = v[0]
+                table_name = v
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for cassandra-table. All'
-                    ' possible keys are: keyspace, table'.format(k, component_name)
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: keyspace, table'
                 )
-        return d
+
+        if keyspace_name is None:
+            raise CLIError(f'usage error: missing key keyspace in {option_string} component')
+
+        if table_name is None:
+            raise CLIError(f'usage error: missing key table in {option_string} component')
+
+        cassandra_table = CosmosCassandraDataTransferDataSourceSink(keyspace_name=keyspace_name, table_name=table_name)
+
+        if option_string == "--source-cassandra-table":
+            namespace.source_cassandra_table = cassandra_table
+        elif option_string == "--destination-cassandra-table":
+            namespace.destination_cassandra_table = cassandra_table
+        else:
+            namespace.cassandra_table = cassandra_table
+
 
 class AddSqlContainerAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        if option_string == "--source-sql-container":
-            namespace.source_sql_container = action
-        if option_string == "--destination-sql-container":
-            namespace.destination_sql_container = action
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
 
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
+        database_name = None
+        container_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
             kl = k.lower()
-            v = properties[k]
-
             if kl == 'database':
-                d['database_name'] = v[0]
+                database_name = v
 
             elif kl == 'container':
-                d['container_name'] = v[0]
+                container_name = v
 
             else:
                 raise CLIError(
-                    'Unsupported Key {} is provided for sql-container. All'
-                    ' possible keys are: database, container'.format(k, component_name)
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, container'
                 )
-        return d
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if container_name is None:
+            raise CLIError(f'usage error: missing key container in {option_string} component')
+
+        sql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
+
+        if option_string == "--source-sql-container":
+            namespace.source_sql_container = sql_container
+        elif option_string == "--destination-sql-container":
+            namespace.destination_sql_container = sql_container
+        else:
+            namespace.sql_container = sql_container

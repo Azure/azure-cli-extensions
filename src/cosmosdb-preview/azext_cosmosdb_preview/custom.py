@@ -1038,7 +1038,7 @@ def cli_table_retrieve_latest_backup_time(client,
                                                                           table_name,
                                                                           restoreLocation)
     return asyc_backupInfo.result()
-                                 
+
 
 def cosmosdb_data_transfer_export_job(client,
                                       resource_group_name,
@@ -1054,19 +1054,9 @@ def cosmosdb_data_transfer_export_job(client,
     if blob_container is None:
         raise CLIError('Sink is required for dts export')
 
-    job_source = {}
-    job_source['component'] = 'CosmosDBCassandra'
-    job_source['keyspace_name'] = cassandra_table['keyspace_name']
-    job_source['table_name'] = cassandra_table['table_name']
-
-    job_destination = {}
-    job_destination['component'] = 'AzureBlobStorage'
-    job_destination['container_name'] = blob_container['container_name']
-    job_destination['endpoint_url'] = blob_container['endpoint_url']
-
     job_create_properties = {}
-    job_create_properties['source'] = job_source
-    job_create_properties['destination'] = job_destination
+    job_create_properties['source'] = cassandra_table
+    job_create_properties['destination'] = blob_container
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count
@@ -1095,19 +1085,9 @@ def cosmosdb_data_transfer_import_job(client,
     if cassandra_table is None:
         raise CLIError('Sink is required for dts import')
 
-    job_source = {}
-    job_source['component'] = 'AzureBlobStorage'
-    job_source['container_name'] = blob_container['container_name']
-    job_source['endpoint_url'] = blob_container['endpoint_url']
-
-    job_destination = {}
-    job_destination['component'] = 'CosmosDBCassandra'
-    job_destination['keyspace_name'] = cassandra_table['keyspace_name']
-    job_destination['table_name'] = cassandra_table['table_name']
-
     job_create_properties = {}
-    job_create_properties['source'] = job_source
-    job_create_properties['destination'] = job_destination
+    job_create_properties['source'] = blob_container
+    job_create_properties['destination'] = cassandra_table
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count
@@ -1133,42 +1113,30 @@ def cosmosdb_data_transfer_copy_job(client,
                                     worker_count=0,
                                     job_name=None):
     if source_cassandra_table is None and source_sql_container is None:
-        raise CLIError('Source is required for dts copy')
+        raise CLIError('source component ismissing')
 
     if source_cassandra_table is not None and source_sql_container is not None:
-        raise CLIError('dts copy cannot have multiple sources')
+        raise CLIError('Invalid input: multiple source components')
 
     if destination_cassandra_table is None and destination_sql_container is None:
-        raise CLIError('Destination is required for dts copy')
+        raise CLIError('destination component is missing')
 
     if destination_cassandra_table is not None and destination_sql_container is not None:
-        raise CLIError('dts copy cannot have multiple destinations')
-
-    job_source = {}
-    if (source_cassandra_table is not None):
-        job_source['component'] = 'CosmosDBCassandra'
-        job_source['keyspace_name'] = source_cassandra_table['keyspace_name']
-        job_source['table_name'] = source_cassandra_table['table_name']
-
-    if (source_sql_container is not None):
-        job_source['component'] = 'CosmosDBSql'
-        job_source['database_name'] = source_sql_container['database_name']
-        job_source['container_name'] = source_sql_container['container_name']
-
-    job_destination = {}
-    if (destination_cassandra_table is not None):
-        job_destination['component'] = 'CosmosDBCassandra'
-        job_destination['keyspace_name'] = destination_cassandra_table['keyspace_name']
-        job_destination['table_name'] = destination_cassandra_table['table_name']
-
-    if (destination_sql_container is not None):
-        job_destination['component'] = 'CosmosDBSql'
-        job_destination['database_name'] = destination_sql_container['database_name']
-        job_destination['container_name'] = destination_sql_container['container_name']
+        raise CLIError('Invalid input: multiple destination components')
 
     job_create_properties = {}
-    job_create_properties['source'] = job_source
-    job_create_properties['destination'] = job_destination
+
+    if source_cassandra_table is not None:
+        job_create_properties['source'] = source_cassandra_table
+
+    if source_sql_container is not None:
+        job_create_properties['source'] = source_sql_container
+
+    if destination_cassandra_table is not None:
+        job_create_properties['destination'] = destination_cassandra_table
+
+    if destination_sql_container is not None:
+        job_create_properties['destination'] = destination_sql_container
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count

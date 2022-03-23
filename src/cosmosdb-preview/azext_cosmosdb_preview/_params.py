@@ -300,12 +300,12 @@ def load_arguments(self, _):
         c.argument('worker_count', type=int, help='Worker count')
 
     with self.argument_context('cosmosdb dts copy') as c:
-        c.argument('account_name', type=str, help='Cosmos DB database account name.')
+        c.argument('account_name', type=str, options_list=['--account-name', '-a'], help='Cosmos DB database account name.')
         c.argument('job_name', type=str, help='Name of the Data Transfer Job')
         c.argument('source_cassandra_table',nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
-        c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql collection')
+        c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql container')
         c.argument('destination_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
-        c.argument('destination_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql collection')
+        c.argument('destination_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
 
     with self.argument_context('cosmosdb dts list') as c:

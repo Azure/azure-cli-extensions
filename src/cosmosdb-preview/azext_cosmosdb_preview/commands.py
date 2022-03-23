@@ -169,11 +169,9 @@ def load_command_table(self, _):
         client_factory=cf_data_transfer_job
     )
 
-    with self.command_group(
-            'cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job
-        ) as g:
-            g.custom_command('export', 'cosmosdb_data_transfer_export_job')
-            g.custom_command('import', 'cosmosdb_data_transfer_import_job')
-            g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
-            g.custom_command('list', 'cosmosdb_dts_list')
-            g.custom_show_command('show', 'cosmosdb_dts_show')
+    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job) as g:
+        g.custom_command('export', 'cosmosdb_data_transfer_export_job')
+        g.custom_command('import', 'cosmosdb_data_transfer_import_job')
+        g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
+        g.custom_command('list', 'cosmosdb_dts_list')
+        g.custom_show_command('show', 'cosmosdb_dts_show')
