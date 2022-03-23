@@ -254,6 +254,11 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
                 name, resource_group_name
             ))
 
+        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+            logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        else:
+            logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
+
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -440,6 +445,11 @@ def create_containerapp(cmd,
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+
+        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+            logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        else:
+            logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
 
         return r
     except Exception as e:
@@ -731,6 +741,8 @@ def create_managed_environment(cmd,
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
+
+        logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
         return r
     except Exception as e:
@@ -1459,6 +1471,7 @@ def enable_ingress(cmd, name, resource_group_name, type, target_port, transport,
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("\nIngress enabled. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         return r["properties"]["configuration"]["ingress"]
     except Exception as e:
         handle_raw_exception(e)
