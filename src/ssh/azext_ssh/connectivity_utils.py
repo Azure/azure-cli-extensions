@@ -15,13 +15,12 @@ import colorama
 from colorama import Fore
 from colorama import Style
 
-from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
 from azure.mgmt.core.tools import resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack import log
-from knack.prompting import prompt_y_n
 
 from . import file_utils
 from . import constants as consts
@@ -44,16 +43,14 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
                                          endpoint_name="default", expiresin=certificate_validity_in_seconds)
         time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
-    except ResourceNotFoundError as e:
-        if not prompt_y_n("Default Endpoint could not be found. Would you like to create it?", default="n"):
-            raise azclierror.ClientRequestError(f"No default endpoint. Contact the administrator. Error:\n{str(e)}")
-        else:
-            _create_default_endpoint(cmd, resource_group, vm_name, client)
-            try:
-                result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                         endpoint_name="default", expiresin=certificate_validity_in_seconds)
-            except Exception as e:
-                raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
+    except ResourceNotFoundError:
+        logger.debug("Default Endpoint couldn't be found. Trying to create Default Endpoint.")
+        _create_default_endpoint(cmd, resource_group, vm_name, client)
+        try:
+            result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
+                                             endpoint_name="default", expiresin=certificate_validity_in_seconds)
+        except Exception as e:
+            raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
                                 fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
@@ -63,14 +60,14 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
 
 
 def _create_default_endpoint(cmd, resource_group, vm_name, client):
-    id = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group, namespace="Microsoft.HybridCompute", type="machines", name=vm_name)
-    endpoint_resource = { "id": id, "type_properties_type": "default"}
+    az_resource_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
+                                 namespace="Microsoft.HybridCompute", type="machines", name=vm_name)
+    endpoint_resource = {"id": az_resource_id, "type_properties_type": "default"}
     try:
         client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
-        colorama.init()
-        print(Fore.GREEN + "Default Endpoint Created Successfully" + Style.RESET_ALL)
     except Exception as e:
-        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. Contact owner/contributor of the resource.\nError: {str(e)}")
+        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. "
+                                           f"Contact owner/contributor of the resource.\nError: {str(e)}")
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform

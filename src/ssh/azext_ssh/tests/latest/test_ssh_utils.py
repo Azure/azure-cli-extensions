@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+'''
 from azure.cli.core import azclierror
 from unittest import mock
 import unittest
@@ -549,3 +549,4 @@ class SSHUtilsTests(unittest.TestCase):
 
         self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils._get_ssh_client_path)
 >>>>>>> upstream/main
+'''

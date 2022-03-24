@@ -5,9 +5,9 @@
 
 import errno
 import os
-from . import constants as const
 from azure.cli.core import azclierror
 from knack import log
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -59,6 +59,7 @@ def create_directory(file_path, error_message):
 
 
 def write_to_file(file_path, mode, content, error_message, encoding=None):
+    # pylint: disable=unspecified-encoding
     try:
         if encoding:
             with open(file_path, mode, encoding=encoding) as f:

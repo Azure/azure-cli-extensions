@@ -6,9 +6,17 @@ import os
 import datetime
 import stat
 import oschmod
+
+import colorama
+from colorama import Fore
+from colorama import Style
+
 from azure.cli.core import azclierror
+from knack import log
 from . import file_utils
 from . import connectivity_utils
+
+logger = log.get_logger(__name__)
 
 
 class SSHSession():
@@ -38,7 +46,7 @@ class SSHSession():
         if self.resource_type == "Microsoft.HybridCompute":
             return True
         return False
-    
+
     def get_host(self):
         if not self.is_arc():
             if self.local_user and self.ip:
@@ -85,21 +93,22 @@ class ConfigSession():
         self.resource_type = resource_type
         self.proxy_path = None
         self.relay_info = None
+        self.relay_info_path = None
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None
         self.ssh_client_folder = os.path.abspath(ssh_client_folder) if ssh_client_folder else None
-        self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
         self.ssh_proxy_folder = os.path.abspath(ssh_proxy_folder) if ssh_proxy_folder else None
+        self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
 
     def is_arc(self):
         if self.resource_type == "Microsoft.HybridCompute":
             return True
         return False
-    
+
     def get_config_text(self):
         lines = [""]
-        if self.resource_type == "Microsof.HybridCompute":
+        if self.is_arc():
             self.relay_info_path = self._create_relay_info_file()
             lines = lines + self._get_arc_entry()
         else:
@@ -110,7 +119,6 @@ class ConfigSession():
                 self.ip = "*"
             lines = lines + self._get_ip_entry()
         return lines
-    
 
     def _get_arc_entry(self):
         lines = []
@@ -122,7 +130,8 @@ class ConfigSession():
         if self.private_key_file:
             lines.append("\tIdentityFile \"" + self.private_key_file + "\"")
         if self.port:
-            lines.append("\tProxyCommand \"" + self.proxy_path + "\" " + "-r \"" + self.relay_info_path + "\" " + "-p " + self.port)
+            lines.append("\tProxyCommand \"" + self.proxy_path + "\" " + "-r \"" + self.relay_info_path + "\" "
+                         + "-p " + self.port)
         else:
             lines.append("\tProxyCommand \"" + self.proxy_path + "\" " + "-r \"" + self.relay_info_path + "\"")
         return lines
@@ -151,13 +160,13 @@ class ConfigSession():
         if self.port:
             lines.append("\tPort " + self.port)
         return lines
-    
+
     def _create_relay_info_file(self):
         relay_info_dir = self.credentials_folder
         relay_info_filename = None
         if not os.path.isdir(relay_info_dir):
             os.makedirs(relay_info_dir)
-        
+
         if self.vm_name and self.resource_group_name:
             relay_info_filename = self.resource_group_name + "-" + self.vm_name + "-relay_info"
 
@@ -167,10 +176,14 @@ class ConfigSession():
         file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(self.relay_info),
                                  f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
         oschmod.set_mode(relay_info_path, stat.S_IRUSR)
-
-        # Print the expiration of the relay information
-        expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
-        expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-        print(f"Generated relay information {relay_info_path} is valid until {expiration}.\n")
+        # pylint: disable=broad-except
+        try:
+            expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
+            expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
+            colorama.init()
+            print(Fore.GREEN + f"Generated relay information {relay_info_path} is valid until {expiration}."
+                  + Style.RESET_ALL)
+        except Exception as e:
+            logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 
         return relay_info_path
