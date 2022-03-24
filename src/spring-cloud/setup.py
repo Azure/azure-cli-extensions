@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 # TODO(jiec): Fix the version number before submit PR.
-VERSION = '3.1.2-mason-app-msi'
+VERSION = '3.1.2-test-app-msi'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
