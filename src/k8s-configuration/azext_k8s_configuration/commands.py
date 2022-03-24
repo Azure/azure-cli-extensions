@@ -36,7 +36,6 @@ def load_command_table(self, _):
         "k8s-configuration flux",
         k8s_configuration_fluxconfig_client,
         custom_command_type=flux_configuration_custom_type,
-        is_preview=True,
     ) as g:
         g.custom_command("create", "create_config", supports_no_wait=True)
         g.custom_command("update", "update_config", supports_no_wait=True)
@@ -52,7 +51,6 @@ def load_command_table(self, _):
         "k8s-configuration flux kustomization",
         k8s_configuration_fluxconfig_client,
         custom_command_type=flux_configuration_custom_type,
-        is_preview=True,
     ) as g:
         g.custom_command("create", "create_kustomization", supports_no_wait=True)
         g.custom_command("update", "update_kustomization", supports_no_wait=True)
@@ -72,7 +70,6 @@ def load_command_table(self, _):
         "k8s-configuration flux deployed-object",
         k8s_configuration_fluxconfig_client,
         custom_command_type=flux_configuration_custom_type,
-        is_preview=True,
     ) as g:
         g.custom_command(
             "list",

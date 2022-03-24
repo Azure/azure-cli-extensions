@@ -72,6 +72,8 @@ def read_key_file(path, strip_newline=False):
 
 
 def parse_dependencies(depends_on):
+    if not depends_on:
+        return []
     depends_on = depends_on.strip()
     if depends_on[0] == "[":
         depends_on = depends_on[1:-1]
