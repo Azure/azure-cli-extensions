@@ -45,10 +45,15 @@ def app_identity_assign(cmd,
                           3. A empty list: should be blocked by validator.
     """
     # TODO(jiec): Retire legacy identity assign after migration.
+    poller = None
     if _is_legacy_identity_assign(system_assigned, user_assigned):
-        _legacy_app_identity_assign(cmd, client, resource_group, service, name)
+        poller = _legacy_app_identity_assign(cmd, client, resource_group, service, name)
     else:
-        _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned)
+        poller = _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned)
+    wait_till_end(poller)
+    poller.result()
+    if "succeeded" != poller.status().lower():
+        return poller
 
     if role and scope:
         _create_role_assignment(cmd, client, resource_group, service, name, role, scope)
@@ -102,7 +107,11 @@ def app_identity_remove(cmd,
 
     poller = client.apps.begin_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, poller)
-    return client.apps.get(resource_group, service, name)
+    poller.result()
+    if "succeeded" != poller.status().lower():
+        return poller
+    else:
+        return client.apps.get(resource_group, service, name)
 
 
 def app_identity_force_set(cmd,
@@ -134,7 +143,11 @@ def app_identity_force_set(cmd,
 
     poller = client.apps.begin_create_or_update(resource_group, service, name, exist_app)
     wait_till_end(cmd, poller)
-    return client.apps.get(resource_group, service, name)
+    poller.result()
+    if "succeeded" != poller.status().lower():
+        return poller
+    else:
+        return client.apps.get(resource_group, service, name)
 
 
 def app_identity_show(cmd, client, resource_group, service, name):
@@ -163,7 +176,7 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
     app_resource = models_20220301preview.AppResource(identity=target_identity)
 
     logger.warning("Start to enable system-assigned managed identity.")
-    wait_till_end(cmd, client.apps.begin_update(resource_group, service, name, app_resource))
+    return client.apps.begin_update(resource_group, service, name, app_resource)
 
 
 def _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned):
@@ -182,7 +195,7 @@ def _new_app_identity_assign(cmd, client, resource_group, service, name, system_
     app_resource = models_20220301preview.AppResource(identity=identity_payload)
 
     logger.warning("Start to assign managed identities to app.")
-    wait_till_end(cmd, client.apps.begin_update(resource_group, service, name, app_resource))
+    return client.apps.begin_update(resource_group, service, name, app_resource)
 
 
 def _get_new_identity_type_for_assign(app, system_assigned, user_assigned):
