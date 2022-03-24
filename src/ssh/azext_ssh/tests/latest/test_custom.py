@@ -3,18 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import io
-import azext_ssh
-from azure.cli.core import azclierror
-from unittest import mock
 import unittest
-import functools
-
+from unittest import mock
 from azext_ssh import custom
 from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
-from azext_ssh import connectivity_utils
-#from azext_ssh.custom import _do_ssh_op 
 
+from azure.cli.core import azclierror
 from azure.core.exceptions import ResourceNotFoundError
 
 

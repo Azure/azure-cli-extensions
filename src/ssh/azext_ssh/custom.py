@@ -139,7 +139,7 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
            port, ssh_client_folder, delete_credentials, "Microsoft.HybridCompute", ssh_proxy_folder, ssh_args)
 
 
-def _do_ssh_op(cmd, op_info, op_call):   
+def _do_ssh_op(cmd, op_info, op_call):
     # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
     if not op_info.is_arc():
         if op_info.ssh_proxy_folder:

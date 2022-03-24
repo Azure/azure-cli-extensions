@@ -47,8 +47,11 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
         logger.debug("Default Endpoint couldn't be found. Trying to create Default Endpoint.")
         _create_default_endpoint(cmd, resource_group, vm_name, client)
         try:
+            t0 = time.time()
             result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                              endpoint_name="default", expiresin=certificate_validity_in_seconds)
+            time_elapsed = time.time() - t0
+            telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
         except Exception as e:
             raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
