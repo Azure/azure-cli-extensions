@@ -3,6 +3,8 @@
 import shutil
 import subprocess
 import requests
+import os.path
+
 
 
 def aks_web_app_init():
@@ -13,19 +15,32 @@ def aks_web_app_init():
 
 def pre_setup_validations() -> bool:
     print("The DraftV2 setup is in progress ...")
-    print("Checking if Binary exist ...")
-    cmd_exist = False #cmd_exists("ifconfig")
-    #print(cmd_exist)
+
+    paths = ["fakePath", "anotherFakePath"]
+    draftV2BinaryExists = isExists(paths)
 
     isDownloadSuccessful = False
-    if not cmd_exist:
-        print("DraftV2 binary not found")
+
+    if not draftV2BinaryExists:
+        print("DraftV2 binary not found in the following paths:")
+        print(*paths, sep = ", ")
         isDownloadSuccessful = downloadBinary()
 
-    return cmd_exist or isDownloadSuccessful
+    # Considered valid if binary already exists, or we were able to successfully download the binary
+    return draftV2BinaryExists or isDownloadSuccessful
 
-def cmd_exists(cmd: str) -> bool:
-    return shutil.which(cmd) is not None
+def isExists(paths) -> bool:
+    print("Checking if DraftV2 binary exists ...")
+
+    if not paths:
+        print("List of given DraftV2 paths is empty")
+        return False
+
+    for path in paths:
+        if os.path.exists(path):
+            return True
+    return False
+
 
 def run_binary():
     print("Running DraftV2 Binary ...")
@@ -46,21 +61,21 @@ def cmd_finish():
 
 
 def downloadBinary() -> bool:
-    print("Attempting to download DraftV2 binary")
-    url = "https://github.com/Azure/draftv2/releases/latest/"
+    print("Attempting to download DraftV2 binary...")
+    url = "https://github.com/Azure/aks-app/releases/download/v0.0.5/draftv2-darwin-amd64"
+    headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
-    req = requests.get(url)
-    result = False
+    req = requests.get(url, headers=headers)
 
     if req.ok:
-        # Split URL to get the file name
+        # Split URL to get the file name "draft-v2darwin-arm64"
         filename = url.split('/')[-1]
 
         # Writing the file to the local file system
         with open(filename,'wb') as output_file:
             output_file.write(req.content)
-        print("download of DraftV2 binary was successful with a status code: " + str(req.status_code))
+        print("Download of DraftV2 binary was successful with a status code: " + str(req.status_code))
         return True
 
     print("Download of DraftV2 binary was unsuccessful with a status code: " + str(req.status_code))
