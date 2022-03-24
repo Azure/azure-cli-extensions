@@ -2,10 +2,10 @@ Release History
 ===============
 2.0.0
 -----
-- SSHArc Public Preview
-- Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.
-- New command az ssh arc.
-- New parameters: --resource-type and --ssh-proxy-folder.
+* SSHArc Public Preview
+* Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.
+* New command az ssh arc.
+* New parameters: --resource-type and --ssh-proxy-folder.
 
 1.0.1
 -----
