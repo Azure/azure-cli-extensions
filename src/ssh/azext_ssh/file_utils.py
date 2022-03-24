@@ -7,6 +7,7 @@ import errno
 import os
 from azure.cli.core import azclierror
 from knack import log
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -58,6 +59,7 @@ def create_directory(file_path, error_message):
 
 
 def write_to_file(file_path, mode, content, error_message, encoding=None):
+    # pylint: disable=unspecified-encoding
     try:
         if encoding:
             with open(file_path, mode, encoding=encoding) as f:
@@ -67,3 +69,18 @@ def write_to_file(file_path, mode, content, error_message, encoding=None):
                 f.write(content)
     except Exception as e:
         raise azclierror.FileOperationError(error_message + "Error: " + str(e)) from e
+
+
+def get_line_that_contains(substring, lines):
+    for line in lines:
+        if substring in line:
+            return line
+    return None
+
+
+def remove_invalid_characters_foldername(folder_name):
+    new_foldername = ""
+    for c in folder_name:
+        if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS:
+            new_foldername += c
+    return new_foldername

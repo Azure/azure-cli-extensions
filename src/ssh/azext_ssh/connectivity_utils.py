@@ -11,8 +11,15 @@ import json
 import base64
 from glob import glob
 
+import colorama
+from colorama import Fore
+from colorama import Style
+
+from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
+from azure.mgmt.core.tools import resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
 from knack import log
 
 from . import file_utils
@@ -36,13 +43,34 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
                                          endpoint_name="default", expiresin=certificate_validity_in_seconds)
         time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
+    except ResourceNotFoundError:
+        logger.debug("Default Endpoint couldn't be found. Trying to create Default Endpoint.")
+        _create_default_endpoint(cmd, resource_group, vm_name, client)
+        try:
+            t0 = time.time()
+            result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
+                                             endpoint_name="default", expiresin=certificate_validity_in_seconds)
+            time_elapsed = time.time() - t0
+            telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
+        except Exception as e:
+            raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
                                 fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
                                 summary=f'listCredentials failed with error: {str(e)}.')
-        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
-
+        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     return result
+
+
+def _create_default_endpoint(cmd, resource_group, vm_name, client):
+    az_resource_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
+                                 namespace="Microsoft.HybridCompute", type="machines", name=vm_name)
+    endpoint_resource = {"id": az_resource_id, "type_properties_type": "default"}
+    try:
+        client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
+    except Exception as e:
+        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. "
+                                           f"Contact owner.\nError: {str(e)}")
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -84,6 +112,8 @@ def get_client_side_proxy(arc_proxy_folder):
         # write executable in the install location
         file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
+        colorama.init()
+        print(Fore.GREEN + f"SSH Client Proxy saved to {install_location}" + Style.RESET_ALL)
 
     return install_location
 

@@ -14,3 +14,4 @@ PROXY_UNSUPPORTED_ARCH_FAULT_TYPE = 'client-proxy-unsupported-architecture-error
 PROXY_UNSUPPORTED_OS_FAULT_TYPE = 'client-proxy-unsupported-os-error'
 PROXY_DOWNLOAD_FAILED_FAULT_TYPE = 'client-proxy-download-failed-error'
 LIST_CREDENTIALS_FAILED_FAULT_TYPE = 'get-relay-information-failed-error'
+WINDOWS_INVALID_FOLDERNAME_CHARS = "\\/*:<>?\"|"

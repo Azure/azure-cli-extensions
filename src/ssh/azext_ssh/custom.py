@@ -8,6 +8,7 @@ import hashlib
 import json
 import tempfile
 import time
+import platform
 
 import colorama
 from colorama import Fore
@@ -23,6 +24,8 @@ from . import rsa_parser
 from . import ssh_utils
 from . import connectivity_utils
 from . import ssh_info
+from . import file_utils
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -30,20 +33,20 @@ logger = log.get_logger(__name__)
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
            ssh_client_folder=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None, ssh_args=None):
-    
+
     # delete_credentials can only be used by Azure Portal to provide one-click experience on CloudShell.
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
-    
+
     # include openssh client logs to --debug output to make it easier to users to debug connection issued.
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
         ssh_args = ['-v'] if not ssh_args else ['-v'] + ssh_args
-    
+
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
-    
+
     # all credentials for this command are saved in temp folder and deleted at the end of execution.
     credentials_folder = None
-    
+
     op_call = ssh_utils.start_ssh_connection
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
                                       private_key_file, use_private_ip, local_user, cert_file, port,
@@ -51,41 +54,44 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_proxy_folder, credentials_folder)
     ssh_session.resource_type = _decide_resource_type(cmd, ssh_session)
     _do_ssh_op(cmd, ssh_session, op_call)
-    
+
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
                local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None,
                ssh_proxy_folder=None, ssh_client_folder=None):
-    
+
     # If user provides their own key pair, certificate will be written in the same folder as public key.
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
-    _assert_args(resource_group_name, vm_name, ssh_ip, cert_file, local_user)
+    _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 
     config_session = ssh_info.ConfigSession(config_path, resource_group_name, vm_name, ssh_ip, public_key_file,
-                                            private_key_file, overwrite, use_private_ip, local_user, cert_file,
-                                            port, resource_type, credentials_folder, ssh_proxy_folder, ssh_client_folder)
+                                            private_key_file, overwrite, use_private_ip, local_user, cert_file, port,
+                                            resource_type, credentials_folder, ssh_proxy_folder, ssh_client_folder)
     op_call = ssh_utils.write_ssh_config
+
+    config_session.resource_type = _decide_resource_type(cmd, config_session)
 
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)
     if not os.path.isdir(config_folder):
         raise azclierror.InvalidArgumentValueError(f"Config file destination folder {config_folder} "
                                                    "does not exist.")
-    
-    # Default credential location
-    # Add logic to test if credentials folder is valid
     if not credentials_folder:
         # * is not a valid name for a folder in Windows. Treat this as a special case.
-        # make this more robust. Make sure the folder name is valid. IP might contain invalid characters.
         folder_name = config_session.ip if config_session.ip != "*" else "all_ips"
         if config_session.resource_group_name and config_session.vm_name:
             folder_name = config_session.resource_group_name + "-" + config_session.vm_name
-        credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
-    
-    config_session.resource_type = _decide_resource_type(cmd, config_session)
+        if not set(folder_name).isdisjoint(set(const.WINDOWS_INVALID_FOLDERNAME_CHARS)) and \
+           platform.system() == "Windows" and (not config_session.local_user or config_session.is_arc()):
+            folder_name = file_utils.remove_invalid_characters_foldername(folder_name)
+            if folder_name == "":
+                raise azclierror.RequiredArgumentMissingError("Can't create default folder for generated keys. "
+                                                              "Please provide --keys-destination-folder.")
+        config_session.credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
+
     _do_ssh_op(cmd, config_session, op_call)
 
 
@@ -106,7 +112,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     keys_folder = None
     if not public_key_file:
         keys_folder = os.path.dirname(cert_path)
-    
+
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
 
@@ -123,27 +129,27 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
     except Exception as e:
         logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
         print(Fore.GREEN + f"Generated SSH certificate {cert_file}." + Style.RESET_ALL)
-    
+
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
             local_user=None, cert_file=None, port=None, ssh_client_folder=None, delete_credentials=False,
             ssh_proxy_folder=None, ssh_args=None):
 
     ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file, False, local_user, cert_file,
-            port, ssh_client_folder, delete_credentials, "Microsoft.HybridCompute", ssh_proxy_folder, ssh_args)
+           port, ssh_client_folder, delete_credentials, "Microsoft.HybridCompute", ssh_proxy_folder, ssh_args)
 
 
 def _do_ssh_op(cmd, op_info, op_call):
     # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
-    if op_info.resource_type != "Microsoft.HybridCompute":
+    if not op_info.is_arc():
         if op_info.ssh_proxy_folder:
             logger.warning("Target machine is not an Arc Server, --ssh-proxy-folder value will be ignored.")
         op_info.ip = op_info.ip or ip_utils.get_ssh_ip(cmd, op_info.resource_group_name,
-                                                    op_info.vm_name, op_info.use_private_ip)
+                                                       op_info.vm_name, op_info.use_private_ip)
         if not op_info.ip:
             if not op_info.use_private_ip:
                 raise azclierror.ResourceNotFoundError(f"VM '{op_info.vm_name}' does not have a public "
-                                                    "IP address to SSH to")
+                                                       "IP address to SSH to")
             raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
 
     # If user provides local user, no credentials should be deleted.
@@ -158,16 +164,29 @@ def _do_ssh_op(cmd, op_info, op_call):
                                                   op_info.credentials_folder, op_info.ssh_client_folder)
         op_info.cert_file, op_info.local_user = _get_and_write_certificate(cmd, op_info.public_key_file,
                                                                            None, op_info.ssh_client_folder)
-        if op_info.resource_type == "Microsoft.HybridCompute":
+        if op_info.is_arc():
+            # pylint: disable=broad-except
             try:
                 cert_lifetime = ssh_utils.get_certificate_lifetime(op_info.cert_file).total_seconds()
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
-    if op_info.resource_type != "Microsoft.HybridCompute":
-        op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
-        op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name, 
-                                                                      op_info.vm_name, cert_lifetime)
+    try:
+        if op_info.is_arc():
+            op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
+            op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name,
+                                                                          op_info.vm_name, cert_lifetime)
+    except Exception as e:
+        if delete_keys or delete_cert:
+            # Keep this warning?
+            logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",
+                         op_info.private_key_file + ', ' if delete_keys else "",
+                         op_info.public_key_file + ', ' if delete_keys else "",
+                         op_info.cert_file if delete_cert else "")
+            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.cert_file,
+                                 op_info.private_key_file, op_info.public_key_file)
+        raise e
+
     op_call(op_info, delete_keys, delete_cert)
 
 
@@ -329,7 +348,7 @@ def _decide_resource_type(cmd, op_info):
     is_arc_server = False
     is_azure_vm = False
 
-    if op_info.ssh_ip:
+    if op_info.ip:
         is_azure_vm = True
         vm = None
 
@@ -380,11 +399,10 @@ def _decide_resource_type(cmd, op_info):
     if os_type and os_type.lower() == 'windows' and not op_info.local_user:
         raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
                                                       "Please provide --local-user.")
-    
+
     if is_arc_server:
         return "Microsoft.HybridCompute"
-    else:
-        return "Microsoft.Compute" 
+    return "Microsoft.Compute"
 
 
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):

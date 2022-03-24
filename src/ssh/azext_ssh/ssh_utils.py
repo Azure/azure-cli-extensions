@@ -8,9 +8,8 @@ import subprocess
 import multiprocessing as mp
 import time
 import datetime
-import colorama
-import oschmod
 import re
+import colorama
 
 from colorama import Fore
 from colorama import Style
@@ -27,7 +26,6 @@ logger = log.get_logger(__name__)
 
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
-
     try:
         ssh_arg_list = []
         if op_info.ssh_args:
@@ -40,11 +38,11 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if not op_info.cert_file and not op_info.private_key_file:
             # In this case, even if delete_credentials is true, there is nothing to clean-up.
             op_info.delete_credentials = False
-    
+
         log_file, ssh_arg_list, cleanup_process = _start_cleanup(op_info.cert_file, op_info.private_key_file,
-                                                                op_info.public_key_file, op_info.delete_credentials,
-                                                                delete_keys, delete_cert, ssh_arg_list)
-        
+                                                                 op_info.public_key_file, op_info.delete_credentials,
+                                                                 delete_keys, delete_cert, ssh_arg_list)
+
         command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
         command = command + op_info.build_args() + ssh_arg_list
 
@@ -59,24 +57,22 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
         _terminate_cleanup(delete_keys, delete_cert, op_info.delete_credentials, cleanup_process, op_info.cert_file,
-                        op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
+                           op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
     finally:
-        _do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+        do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
-
     config_text = config_info.get_config_text()
-
-    _issue_config_cleanup_warning(delete_cert, delete_keys, config_info.is_arc(), 
+    _issue_config_cleanup_warning(delete_cert, delete_keys, config_info.is_arc(),
                                   config_info.cert_file, config_info.relay_info_path)
-
     if config_info.overwrite:
         mode = 'w'
     else:
         mode = 'a'
     with open(config_info.config_path, mode, encoding='utf-8') as f:
         f.write('\n'.join(config_text))
-    
+
 
 def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
     sshkeygen_path = _get_ssh_client_path("ssh-keygen", ssh_client_folder)
@@ -152,8 +148,9 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                 try:
                     regex = 'OpenSSH.*_([0-9]+)\\.([0-9]+)'
                     local_major, local_minor = re.findall(regex, log_lines[0])[0]
-                    remote_major, remote_minor = re.findall(regex, _get_line_that_contains("remote software version",
-                                                                                           log_lines))[0]
+                    remote_major, remote_minor = re.findall(regex,
+                                                            file_utils.get_line_that_contains("remote software version",
+                                                                                              log_lines))[0]
                     local_major = int(local_major)
                     local_minor = int(local_minor)
                     remote_major = int(remote_major)
@@ -176,13 +173,6 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                                    "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
                                    local_major, local_minor, remote_major, remote_minor)
         ssh_log.close()
-
-
-def _get_line_that_contains(substring, lines):
-    for line in lines:
-        if substring in line:
-            return line
-    return None
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
@@ -239,7 +229,7 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     return ssh_path
 
 
-def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
+def do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
     if log_file:
         t0 = time.time()
         match = False
@@ -283,10 +273,10 @@ def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credenti
             log_file = os.path.join(log_dir, log_file_name)
             ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
         # Create a new process that will wait until the connection is established and then delete keys.
-        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys or delete_credentials,
-                                                               delete_cert or delete_credentials,
-                                                               cert_file, private_key_file, public_key_file,
-                                                               log_file, True))
+        cleanup_process = mp.Process(target=do_cleanup, args=(delete_keys or delete_credentials,
+                                                              delete_cert or delete_credentials,
+                                                              cert_file, private_key_file, public_key_file,
+                                                              log_file, True))
         cleanup_process.start()
 
     return log_file, ssh_arg_list, cleanup_process
@@ -302,13 +292,13 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             t0 = time.time()
             while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
                 time.sleep(1)
-        
+
         if log_file:
             _print_error_messages_from_ssh_log(log_file, connection_status)
 
         # Make sure all files have been properly removed.
-        _do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
-                    cert_file, private_key_file, public_key_file)
+        do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
+                   cert_file, private_key_file, public_key_file)
         if log_file:
             file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
         if delete_keys:
@@ -324,7 +314,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
         try:
             expiration = get_certificate_start_and_end_times(cert_file)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
-            print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time." + Style.RESET_ALL)
+            print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."
+                  + Style.RESET_ALL)
         except Exception as e:
             logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 
@@ -349,14 +340,15 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 path_to_delete = cert_file
                 items_to_delete = ""
 
-        logger.warning(f"{path_to_delete} contain sensitive information{items_to_delete}. "
-                       "Please delete it once you no longer need this config file.\n")
+        logger.warning("%s contain sensitive information%s. Please delete it once you no longer "
+                       "need this config file.", path_to_delete, items_to_delete)
 
 
 def _get_connection_status(log_file, connection_status):
+    # pylint: disable=bare-except
     if log_file:
         try:
-            with open(log_file, 'r') as ssh_client_log:
+            with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
                 match = "debug1: Authentication succeeded" in ssh_client_log.read()
                 ssh_client_log.close()
         except:

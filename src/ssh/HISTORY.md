@@ -1,5 +1,11 @@
 Release History
 ===============
+2.0.0
+-----
+* SSHArc Public Preview
+* Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.
+* New command az ssh arc.
+* New parameters: --resource-type and --ssh-proxy-folder.
 
 1.0.1
 -----
@@ -28,28 +34,6 @@ Release History
 * For ssh config, relay information is stored under az_ssh_config folder.
 * New optional parameter --arc-proxy-folder to determine where arc proxy is stored.
 * Relay information lifetime is synced with certificate lifetime for AAD login.
-
-0.2.1
------
-* SSHArc Private Preview 2
-
-0.2.0
------
-* SSHArc Private Preview 1
-
-0.1.9
------
-* Add support for connecting to Arc Servers using AAD issued certificates.
-* Add support for connecting to local users on Azure VMs and Arc Server using certs-based, key-based, and password-based authentication
-* Add --ssh-client-path, --resource-id, --local-user, --cert-file arguments.
-
-0.1.8
------
-* Rollback from version 0.1.7 to 0.1.6 to remove preview features.
-
-0.1.7
------
-* Introduced preview features.
 
 0.1.6
 -----

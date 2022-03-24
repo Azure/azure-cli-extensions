@@ -65,6 +65,9 @@ def load_arguments(self, _):
         c.argument('public_key_file', options_list=['--public-key-file', '-p'],
                    help='The RSA public key file path. If not provided, '
                    'generated key pair is stored in the same directory as --file.')
+        c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
+                   help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
+                   'Default to ssh pre-installed if not provided.')
 
     with self.argument_context('ssh arc') as c:
         c.argument('vm_name', options_list=['--vm-name', '--name', '-n'], help='The name of the Arc Server')
