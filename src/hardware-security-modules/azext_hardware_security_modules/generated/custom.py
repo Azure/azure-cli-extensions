@@ -38,8 +38,8 @@ def hardware_security_modules_dedicated_hsm_create(client,
                                                    stamp_id=None,
                                                    subnet=None,
                                                    network_interfaces=None,
-                                                   api_entity_reference_subnet=None,
-                                                   network_profile_network_interfaces=None,
+                                                   management_network_profile_subnet=None,
+                                                   management_network_profile_interfaces=None,
                                                    no_wait=False):
     parameters = {}
     parameters['location'] = location
@@ -60,10 +60,10 @@ def hardware_security_modules_dedicated_hsm_create(client,
         parameters['network_profile']['subnet'] = subnet
     if network_interfaces is not None:
         parameters['network_profile']['network_interfaces'] = network_interfaces
-    if api_entity_reference_subnet is not None:
-        parameters['management_network_profile']['subnet'] = api_entity_reference_subnet
-    if network_profile_network_interfaces is not None:
-        parameters['management_network_profile']['network_interfaces'] = network_profile_network_interfaces
+    if management_network_profile_subnet is not None:
+        parameters['management_network_profile']['subnet'] = management_network_profile_subnet
+    if management_network_profile_interfaces is not None:
+        parameters['management_network_profile']['network_interfaces'] = management_network_profile_interfaces
     if len(parameters['management_network_profile']) == 0:
         del parameters['management_network_profile']
     if len(parameters['network_profile']) == 0:

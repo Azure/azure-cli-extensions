@@ -48,15 +48,14 @@ def load_arguments(self, _):
                    arg_group='Sku')
         c.argument('stamp_id', type=str, help='This field will be used when RP does not support Availability zones.')
         c.argument('subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of the subnet.',
-                   arg_group='Management Network Profile')
-        c.argument('network_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the list of resource '
-                   'Ids for the network interfaces associated with the dedicated HSM.', arg_group='Management Network '
-                   'Profile')
-        c.argument('api_entity_reference_subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of the '
-                   'subnet.', arg_group='Network Profile')
-        c.argument('network_profile_network_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the '
-                   'list of resource Ids for the network interfaces associated with the dedicated HSM.',
                    arg_group='Network Profile')
+        c.argument('network_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the list of resource '
+                   'Ids for the network interfaces associated with the dedicated HSM.', arg_group='Network Profile')
+        c.argument('management_network_profile_subnet', action=AddSubnet, nargs='+', help='Specifies the identifier of '
+                   'the subnet.', arg_group='Management Network Profile')
+        c.argument('management_network_profile_interfaces', action=AddNetworkInterfaces, nargs='+', help='Specifies the '
+                   'list of resource Ids for the network interfaces associated with the dedicated HSM.',
+                   arg_group='Management Network Profile')
 
     with self.argument_context('dedicated-hsm update') as c:
         c.argument('resource_group_name', resource_group_name_type)
