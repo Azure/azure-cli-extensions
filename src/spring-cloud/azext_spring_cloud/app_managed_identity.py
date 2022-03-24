@@ -20,6 +20,8 @@ logger = get_logger(__name__)
 
 ENABLE_LOWER = "enable"
 DISABLE_LOWER = "disable"
+UPDATING_LOWER = "updating"
+DELETING_LOWER = "deleting"
 APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 
@@ -375,4 +377,4 @@ def _get_user_identity_payload_for_force_set(user_assigned):
 def _app_not_updatable(app):
     return app.properties \
            and app.properties.provisioning_state \
-           and app.properties.provisioning_state.lower() in ["updating", "deleting"]
+           and app.properties.provisioning_state.lower() in [UPDATING_LOWER, DELETING_LOWER]
