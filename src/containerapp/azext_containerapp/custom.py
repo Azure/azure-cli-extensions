@@ -292,8 +292,7 @@ def create_containerapp(cmd,
                         startup_command=None,
                         args=None,
                         tags=None,
-                        no_wait=False,
-                        assign_identity=None):
+                        no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
@@ -309,9 +308,6 @@ def create_containerapp(cmd,
 
     if managed_env is None:
         raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
-
-    if assign_identity is None:
-        assign_identity = []
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -378,28 +374,6 @@ def create_containerapp(cmd,
     config_def["registries"] = [registries_def] if registries_def is not None else None
     config_def["dapr"] = dapr_def
 
-    # Identity actions
-    identity_def = ManagedServiceIdentityModel
-    identity_def["type"] = "None"
-
-    assign_system_identity = '[system]' in assign_identity
-    assign_user_identities = [x for x in assign_identity if x != '[system]']
-
-    if assign_system_identity and assign_user_identities:
-        identity_def["type"] = "SystemAssigned, UserAssigned"
-    elif assign_system_identity:
-        identity_def["type"] = "SystemAssigned"
-    elif assign_user_identities:
-        identity_def["type"] = "UserAssigned"
-
-    if assign_user_identities:
-        identity_def["userAssignedIdentities"] = {}
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
-        for r in assign_user_identities:
-            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
-            identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
-
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
         scale_def = ScaleModel
@@ -433,7 +407,6 @@ def create_containerapp(cmd,
 
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
-    containerapp_def["identity"] = identity_def
     containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def

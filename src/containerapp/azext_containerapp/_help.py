@@ -264,45 +264,6 @@ helps['containerapp env dapr-component remove'] = """
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
 
-# Identity Commands
-helps['containerapp identity'] = """
-    type: group
-    short-summary: Commands to manage managed identities.
-"""
-
-helps['containerapp identity assign'] = """
-    type: command
-    short-summary: Assign managed identity to a container app.
-    long-summary: Managed identities can be user-assigned or system-assigned.
-    examples:
-    - name: Assign system identity.
-      text: |
-          az containerapp identity assign
-    - name: Assign user identity.
-      text: |
-          az containerapp identity assign --identities myAssignedId
-    - name: Assign system and user identity.
-      text: |
-          az containerapp identity assign --identities [system] myAssignedId
-"""
-
-helps['containerapp identity remove'] = """
-    type: command
-    short-summary: Remove a managed identity from a container app.
-    examples:
-    - name: Remove system identity.
-      text: |
-          az containerapp identity remove --identities [system]
-    - name: Remove system and user identity.
-      text: |
-          az containerapp identity remove --identities [system] myAssignedId
-"""
-
-helps['containerapp identity show'] = """
-    type: command
-    short-summary: Show managed identities of a container app.
-"""
-
 # Ingress Commands
 helps['containerapp ingress'] = """
     type: group
