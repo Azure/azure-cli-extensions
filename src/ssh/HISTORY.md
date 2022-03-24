@@ -6,6 +6,7 @@ Release History
 * Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.
 * New command az ssh arc.
 * New parameters: --resource-type and --ssh-proxy-folder.
+* Validate that target machine exists before attempting to connect.
 
 1.0.1
 -----
@@ -22,18 +23,17 @@ Release History
 * Delete all keys and certificates created during execution of ssh vm.
 * Add --keys-destination-folder to ssh config
 * Keys generated during ssh config are saved in az_ssh_config folder in the same directory as --file.
-* Users no longer allowed to run ssh cert with no parameters.
+* Users no longer allowed to run ssh cert with no parameters. 
 * When --public-key-file/-f is not provided to ssh cert, generated public and private keys are saved in the same folder as --file.
 * Add support to connect to local users on local machines using key based, cert based, or password based authentication.
 
-0.2.2
+0.1.8
 -----
-* Validate that target machine exists before attempting to connect.
-* ssh config accepts relative path for --file.
-* Make --local-user mandatory for Windows target machines.
-* For ssh config, relay information is stored under az_ssh_config folder.
-* New optional parameter --arc-proxy-folder to determine where arc proxy is stored.
-* Relay information lifetime is synced with certificate lifetime for AAD login.
+* Rollback from version 0.1.7 to 0.1.6 to remove preview features.
+
+0.1.7
+-----
+* Introduced preview features.
 
 0.1.6
 -----
