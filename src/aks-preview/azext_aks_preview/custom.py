@@ -130,7 +130,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_02_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -762,6 +762,8 @@ def aks_create(cmd,
                host_group_id=None,
                crg_id=None,
                message_of_the_day=None,
+               enable_azure_keyvault_kms=False,
+               azure_keyvault_kms_key_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -840,7 +842,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                enable_oidc_issuer=False,
-               http_proxy_config=None):
+               http_proxy_config=None,
+               enable_azure_keyvault_kms=False,
+               azure_keyvault_kms_key_id=None):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
