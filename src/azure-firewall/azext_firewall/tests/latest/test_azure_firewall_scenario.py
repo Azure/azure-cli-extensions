@@ -233,6 +233,13 @@ class AzureFirewallScenario(ScenarioTest):
     def test_azure_firewall_virtual_hub(self, resource_group):
         from knack.util import CLIError
         self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+            'vwan': 'clitestvwan',
+            'vhub': 'clitestvhub',
+            'vwan2': 'clitestvwan2',
+            'vhub2': 'clitestvhub2',
+            'rg': resource_group
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
