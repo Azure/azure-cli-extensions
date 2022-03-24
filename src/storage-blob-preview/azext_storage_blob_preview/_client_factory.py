@@ -51,6 +51,7 @@ def cf_blob_service(cli_ctx, kwargs):
                              '_blob_service_client#BlobServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
+    account_url = kwargs.pop('account_url', None)
     account_key = kwargs.pop('account_key', None)
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
@@ -64,7 +65,8 @@ def cf_blob_service(cli_ctx, kwargs):
                                             recommendation='Try `az storage account show-connection-string` '
                                                            'to get a valid connection string')
 
-    account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
+    if not account_url:
+        account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
     credential = account_key or sas_token or token_credential
 
     return t_blob_service(account_url=account_url, credential=credential, **client_kwargs)
@@ -77,6 +79,7 @@ def cf_blob_client(cli_ctx, kwargs):
         # del unused kwargs
         kwargs.pop('connection_string')
         kwargs.pop('account_name')
+        kwargs.pop('account_url')
         kwargs.pop('container_name')
         kwargs.pop('blob_name')
         return t_blob_client.from_blob_url(blob_url=kwargs.pop('blob_url'),
@@ -119,14 +122,16 @@ def cf_blob_sas(cli_ctx, kwargs):
 def cf_adls_service(cli_ctx, kwargs):
     t_adls_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_FILEDATALAKE,
                              '_data_lake_service_client#DataLakeServiceClient')
+    account_name = kwargs.pop('account_name', None)
+    account_url = kwargs.pop('account_url', None)
     connection_string = kwargs.pop('connection_string', None)
     account_key = kwargs.pop('account_key', None)
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
     if connection_string:
         return t_adls_service.from_connection_string(connection_string=connection_string)
-
-    account_url = get_account_url(cli_ctx, account_name=kwargs.pop('account_name', None), service='dfs')
+    if not account_url:
+        account_url = get_account_url(cli_ctx, account_name=account_name, service='dfs')
     credential = account_key or sas_token or token_credential
 
     if account_url and credential:
@@ -154,10 +159,11 @@ def cf_share_service(cli_ctx, kwargs):
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
     account_name = kwargs.pop('account_name', None)
+    account_url = kwargs.pop('account_url', None)
     if connection_string:
         return t_share_service.from_connection_string(conn_str=connection_string)
-
-    account_url = get_account_url(cli_ctx, account_name=account_name, service='file')
+    if not account_url:
+        account_url = get_account_url(cli_ctx, account_name=account_name, service='file')
     credential = account_key or sas_token or token_credential
 
     if account_url and credential:

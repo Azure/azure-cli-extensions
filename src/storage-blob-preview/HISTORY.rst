@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.2
+++++++
+* Add `--service-endpoint` for storage data plane track2 commands to support customized account service endpoint
+
 0.6.1
 ++++++
 * `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy

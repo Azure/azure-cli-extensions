@@ -225,18 +225,24 @@ Authentication failure. This may be caused by either invalid account key, connec
                                   'present, the command will try to query the storage account key using the '
                                   'authenticated Azure account. If a large number of storage commands are executed the '
                                   'API quota may be hit')
+        command.add_argument('account_url', '--service-endpoint', required=False, default=None,
+                             arg_group=group_name,
+                             help='Storage data service endpoint. Must be used in conjunction with either '
+                                  'storage account key or a SAS token. You can find each service primary endpoint '
+                                  'with `az storage account show`. '
+                                  'Environment variable: AZURE_STORAGE_SERVICE_ENDPOINT')
         command.add_argument('account_key', '--account-key', required=False, default=None,
                              arg_group=group_name,
-                             help='Storage account key. Must be used in conjunction with storage account name. '
-                                  'Environment variable: AZURE_STORAGE_KEY')
+                             help='Storage account key. Must be used in conjunction with storage account '
+                                  'name or service endpoint. Environment variable: AZURE_STORAGE_KEY')
         command.add_argument('connection_string', '--connection-string', required=False, default=None,
                              validator=validate_client_parameters, arg_group=group_name,
                              help='Storage account connection string. Environment variable: '
                                   'AZURE_STORAGE_CONNECTION_STRING')
         command.add_argument('sas_token', '--sas-token', required=False, default=None,
                              arg_group=group_name,
-                             help='A Shared Access Signature (SAS). Must be used in conjunction with storage account '
-                                  'name. Environment variable: AZURE_STORAGE_SAS_TOKEN')
+                             help='A Shared Access Signature (SAS). Must be used in conjunction with storage '
+                                  'account name or service endpoint. Environment variable: AZURE_STORAGE_SAS_TOKEN')
 
     def _register_data_plane_oauth_arguments(self, command_name):
         from azure.cli.core.commands.parameters import get_enum_type
