@@ -38,7 +38,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', options_list=['--name', '-n'],
                    help='The name of the workspace')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('description', help='Description of Workspace.')
@@ -71,7 +71,7 @@ def load_arguments(self, _):
     with self.argument_context('desktopvirtualization applicationgroup create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('description', help='Description of ApplicationGroup.')
@@ -105,7 +105,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('friendly_name', help='Friendly name of HostPool.')
