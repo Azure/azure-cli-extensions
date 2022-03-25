@@ -65,5 +65,5 @@ def load_command_table(self, _):
         g.custom_command('update', 'desktopvirtualization_workspace_update')
         g.custom_command('delete', 'desktopvirtualization_workspace_delete', confirmation=True)
 
-    with self.command_group('desktopvirtualization', is_experimental=True):
+    with self.command_group('desktopvirtualization'):
         pass
