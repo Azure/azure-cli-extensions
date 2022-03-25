@@ -4,8 +4,8 @@ import shutil
 import subprocess
 import requests
 import os
+import platform
 from pathlib import Path
-
 
 
 def aks_web_app_init():
@@ -17,30 +17,48 @@ def aks_web_app_init():
 def pre_setup_validations() -> bool:
     print("The DraftV2 setup is in progress ...")
 
-    paths = ["fakePath", "anotherFakePath"]
+    paths = getPaths()
     draftV2BinaryExists = isExists(paths)
 
     isDownloadSuccessful = False
 
     if not draftV2BinaryExists:
         print("DraftV2 binary not found in the following paths:")
-        print(*paths, sep = ", ")
         isDownloadSuccessful = downloadBinary()
 
     # Considered valid if binary already exists, or we were able to successfully download the binary
     return draftV2BinaryExists or isDownloadSuccessful
 
+
 def isExists(paths) -> bool:
     print("Checking if DraftV2 binary exists ...")
+
+    operatingSystem = platform.system()
+    # Filename depends on the operating system
+    filename = "draftv2-" + operatingSystem.lower() + "-amd64"
 
     if not paths:
         print("List of given DraftV2 paths is empty")
         return False
 
     for path in paths:
-        if os.path.exists(path):
+        if os.path.exists(path + "/" + filename):
+            print("Existing binary found at: " + path)
             return True
     return False
+
+
+# Returns a list of potential draftV2 binary paths
+def getPaths():
+    result = [str(Path.home()) + "/" +".aksapp"]
+    paths = os.environ['PATH'].split(':')
+
+    for path in paths:
+        if "draftv2" in path:
+            result.append(path)
+
+    return result
+
 
 
 def run_binary():
@@ -69,7 +87,11 @@ def downloadBinary() -> bool:
         raise ValueError("`az aks app` requires the missing dependency")
 
     print("Attempting to download dependency...")
-    url = "https://github.com/Azure/aks-app/releases/download/v0.0.5/draftv2-darwin-amd64"
+
+    operatingSystem = platform.system()
+    draftV2ReleaseVersion = "v0.0.5"
+    filename = "draftv2-" + operatingSystem.lower() + "-amd64"
+    url = "https://github.com/Azure/aks-app/releases/download/"+ releaseVersion + "/" +  filename
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
@@ -84,10 +106,8 @@ def downloadBinary() -> bool:
         print("Directory '% s' was created inside of your HOME directory" % ".aksapp")
 
     if req.ok:
-        # Split URL to get the file name "draft-v2darwin-arm64"
+        # Split URL to get the file name "draftv2-darwin-amd64"
         os.chdir(binaryPath)
-        filename = url.split('/')[-1]
-
         # Writing the file to the local file system
         with open(filename,'wb') as output_file:
             output_file.write(req.content)
