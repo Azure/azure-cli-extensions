@@ -46,7 +46,7 @@ class SshCustomCommandTest(unittest.TestCase):
         
         custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", [])
 
-        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-v'], False, "type", "proxy", None)
+        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "username")
         mock_type.assert_called_once_with(cmd, ssh_info)
         mock_do_op.assert_called_once_with(cmd, ssh_info, ssh_utils.start_ssh_connection)
