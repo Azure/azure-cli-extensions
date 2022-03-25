@@ -162,14 +162,6 @@ helps['containerapp revision copy'] = """
 
 """
 
-helps['containerapp revision copy'] = """
-    type: command
-    short-summary: Create a revision based on a previous revision.
-    examples:
-    - name: Create a revision based on a previous revision.
-      text: |
-          az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
-"""
 
 # Environment Commands
 helps['containerapp env'] = """
