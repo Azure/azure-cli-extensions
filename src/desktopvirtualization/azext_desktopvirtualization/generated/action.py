@@ -16,7 +16,7 @@
 
 import argparse
 from collections import defaultdict
-from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 
 
 class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
@@ -31,7 +31,7 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ArgumentUsageError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -47,7 +47,7 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
                 d['registration_token_operation'] = v[0]
 
             else:
-                raise CLIError(
+                raise InvalidArgumentValueError(
                     'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
                     ' expiration-time, token, registration-token-operation'.format(k)
                 )
@@ -67,7 +67,7 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ArgumentUsageError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -80,7 +80,7 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
                 d['registration_token_operation'] = v[0]
 
             else:
-                raise CLIError(
+                raise InvalidArgumentValueError(
                     'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
                     ' expiration-time, registration-token-operation'.format(k)
                 )
