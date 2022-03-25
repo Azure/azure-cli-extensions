@@ -3695,7 +3695,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile', None)
+            self.not_exists('securityProfile.azureKeyVaultKms')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
