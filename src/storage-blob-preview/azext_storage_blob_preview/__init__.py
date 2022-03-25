@@ -211,12 +211,23 @@ Authentication failure. This may be caused by either invalid account key, connec
     def _register_data_plane_account_arguments(self, command_name):
         """ Add parameters required to create a storage client """
         from azure.cli.core.commands.parameters import get_resource_name_completion_list
+        from azure.cli.core.profiles import ResourceType
+        from .profiles import CUSTOM_DATA_STORAGE_BLOB
         from ._validators import validate_client_parameters
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
 
         group_name = 'Storage Account'
+        resource_type = command.command_kwargs['resource_type']
+        endpoint_argument_dict = {
+            CUSTOM_DATA_STORAGE_BLOB: '--blob-endpoint',
+            ResourceType.DATA_STORAGE_BLOB: '--blob-endpoint',
+            ResourceType.DATA_STORAGE_FILESHARE: '--file-endpoint',
+            ResourceType.DATA_STORAGE_TABLE: '--table-endpoint',
+            ResourceType.DATA_STORAGE_QUEUE: '--queue-endpoint',
+            ResourceType.DATA_STORAGE_FILEDATALAKE: '--blob-endpoint'
+        }
         command.add_argument('account_name', '--account-name', required=False, default=None,
                              arg_group=group_name,
                              completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
@@ -225,8 +236,8 @@ Authentication failure. This may be caused by either invalid account key, connec
                                   'present, the command will try to query the storage account key using the '
                                   'authenticated Azure account. If a large number of storage commands are executed the '
                                   'API quota may be hit')
-        command.add_argument('account_url', '--service-endpoint', required=False, default=None,
-                             arg_group=group_name,
+        command.add_argument('account_url', endpoint_argument_dict.get(resource_type, '--service-endpoint'),
+                             required=False, default=None, arg_group=group_name,
                              help='Storage data service endpoint. Must be used in conjunction with either '
                                   'storage account key or a SAS token. You can find each service primary endpoint '
                                   'with `az storage account show`. '
