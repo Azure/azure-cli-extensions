@@ -4,7 +4,7 @@ Release History
 ===============
 0.6.2
 ++++++
-* Add `--service-endpoint` for storage data plane track2 commands to support customized account service endpoint
+* Add `--blob-endpoint` for blob data commands to support customized service endpoint
 
 0.6.1
 ++++++
