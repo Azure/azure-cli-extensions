@@ -26,7 +26,7 @@ def step_hostpool_create(test, checks=None):
              '--max-session-limit 999999 '
              '--personal-desktop-assignment-type "Automatic" '
              '--preferred-app-group-type "Desktop" '
-             '--registration-info expiration-time="2022-03-20T05:38:08.189Z" registration-token-operation="Update" '
+             '--registration-info expiration-time="2022-03-26T05:38:08.189Z" registration-token-operation="Update" '
              '--sso-client-id "client" '
              '--sso-client-secret-key-vault-path "https://keyvault/secret" '
              '--sso-secret-type "SharedKey" '
@@ -79,7 +79,7 @@ def step_hostpool_update(test, checks=None):
              '--load-balancer-type "BreadthFirst" '
              '--max-session-limit 999999 '
              '--personal-desktop-assignment-type "Automatic" '
-             '--registration-info expiration-time="2022-03-20T05:38:08.190Z" registration-token-operation="Update" '
+             '--registration-info expiration-time="2022-03-26T05:38:08.190Z" registration-token-operation="Update" '
              '--sso-client-id "client" '
              '--sso-client-secret-key-vault-path "https://keyvault/secret" '
              '--sso-secret-type "SharedKey" '
@@ -171,7 +171,7 @@ def step_applicationgroup_update(test, checks=None):
 def step_applicationgroup_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az desktopvirtualization applicationgroup delete -y '
+    test.cmd('az desktopvirtualization applicationgroup delete '
              '--name "{myApplicationGroup}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -182,7 +182,7 @@ def step_applicationgroup_delete(test, checks=None):
 def step_hostpool_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az desktopvirtualization hostpool delete -y '
+    test.cmd('az desktopvirtualization hostpool delete '
              '--force true '
              '--name "{myHostPool}" '
              '--resource-group "{rg}"',
@@ -254,7 +254,7 @@ def step_workspace_update(test, checks=None):
 def step_workspace_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az desktopvirtualization workspace delete -y '
+    test.cmd('az desktopvirtualization workspace delete '
              '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
              checks=checks)
