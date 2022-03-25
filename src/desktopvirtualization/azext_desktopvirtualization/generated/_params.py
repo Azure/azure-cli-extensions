@@ -31,68 +31,66 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization workspace show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+        c.argument('workspace_name', options_list=['--name', '-n'],
                    help='The name of the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization workspace create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+        c.argument('workspace_name', options_list=['--name', '-n'],
                    help='The name of the workspace')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of Workspace.')
-        c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
+        c.argument('description', help='Description of Workspace.')
+        c.argument('friendly_name', help='Friendly name of Workspace.')
         c.argument('application_group_references', nargs='+', help='List of applicationGroup resource Ids.')
 
     with self.argument_context('desktopvirtualization workspace update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+        c.argument('workspace_name', options_list=['--name', '-n'],
                    help='The name of the workspace', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of Workspace.')
-        c.argument('friendly_name', type=str, help='Friendly name of Workspace.')
+        c.argument('description', help='Description of Workspace.')
+        c.argument('friendly_name', help='Friendly name of Workspace.')
         c.argument('application_group_references', nargs='+', help='List of applicationGroup links.')
 
     with self.argument_context('desktopvirtualization workspace delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('workspace_name', options_list=['--name', '-n'], type=str,
+        c.argument('workspace_name', options_list=['--name', '-n'],
                    help='The name of the workspace', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('filter', type=str,
-                   help='OData filter expression. Valid properties for filtering are applicationGroupType.')
+        c.argument('filter', help='OData filter expression. Valid properties for filtering are applicationGroupType.')
 
     with self.argument_context('desktopvirtualization applicationgroup show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'],
                    help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization applicationgroup create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
-                   help='The name of the application group')
+        c.argument('application_group_name', options_list=['--name', '-n'], help='The name of the application group')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of ApplicationGroup.')
-        c.argument('friendly_name', type=str, help='Friendly name of ApplicationGroup.')
-        c.argument('host_pool_arm_path', type=str, help='HostPool arm path of ApplicationGroup.')
+        c.argument('description', help='Description of ApplicationGroup.')
+        c.argument('friendly_name', help='Friendly name of ApplicationGroup.')
+        c.argument('host_pool_arm_path', help='HostPool arm path of ApplicationGroup.')
         c.argument('application_group_type', arg_type=get_enum_type(['RemoteApp', 'Desktop']),
                    help='Resource Type of ApplicationGroup.')
 
     with self.argument_context('desktopvirtualization applicationgroup update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'],
                    help='The name of the application group', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('description', type=str, help='Description of ApplicationGroup.')
-        c.argument('friendly_name', type=str, help='Friendly name of ApplicationGroup.')
+        c.argument('description', help='Description of ApplicationGroup.')
+        c.argument('friendly_name', help='Friendly name of ApplicationGroup.')
 
     with self.argument_context('desktopvirtualization applicationgroup delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('application_group_name', options_list=['--name', '-n'], type=str,
+        c.argument('application_group_name', options_list=['--name', '-n'],
                    help='The name of the application group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool list') as c:
@@ -100,23 +98,23 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization hostpool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+        c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group', id_part='name')
 
     with self.argument_context('desktopvirtualization hostpool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+        c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
-        c.argument('description', type=str, help='Description of HostPool.')
+        c.argument('friendly_name', help='Friendly name of HostPool.')
+        c.argument('description', help='Description of HostPool.')
         c.argument('host_pool_type', arg_type=get_enum_type(['Personal', 'Pooled', 'BYODesktop']),
                    help='HostPool type for desktop.')
         c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']),
                    help='PersonalDesktopAssignment type for HostPool.')
-        c.argument('custom_rdp_property', type=str, help='Custom rdp property of HostPool.')
+        c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
         c.argument('max_session_limit', type=int, help='The max session limit of HostPool.')
         c.argument('load_balancer_type', arg_type=get_enum_type(['BreadthFirst', 'DepthFirst', 'Persistent']),
                    help='The type of the load balancer.')
@@ -124,13 +122,12 @@ def load_arguments(self, _):
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
         c.argument('registration_info', action=AddDesktopvirtualizationHostpoolCreateRegistrationInfo, nargs='+',
                    help='The registration info of HostPool.')
-        c.argument('vm_template', type=str, help='VM template for sessionhosts configuration within hostpool.')
-        c.argument('ssoadfs_authority', type=str,
-                   help='URL to customer ADFS server for signing WVD SSO certificates.')
-        c.argument('sso_client_id', type=str,
+        c.argument('vm_template', help='VM template for sessionhosts configuration within hostpool.')
+        c.argument('ssoadfs_authority', help='URL to customer ADFS server for signing WVD SSO certificates.')
+        c.argument('sso_client_id',
                    help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
         c.argument('sso_client_secret_key_vault_path', options_list=['--sso-client-secret-key-vault-path', '-p'],
-                   type=str, help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
+                   help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
         c.argument('sso_secret_type',
                    arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
                    help='The type of single sign on Secret Type.')
@@ -142,12 +139,12 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization hostpool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+        c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('friendly_name', type=str, help='Friendly name of HostPool.')
-        c.argument('description', type=str, help='Description of HostPool.')
-        c.argument('custom_rdp_property', type=str, help='Custom rdp property of HostPool.')
+        c.argument('friendly_name', help='Friendly name of HostPool.')
+        c.argument('description', help='Description of HostPool.')
+        c.argument('custom_rdp_property', help='Custom rdp property of HostPool.')
         c.argument('max_session_limit', type=int, help='The max session limit of HostPool.')
         c.argument('personal_desktop_assignment_type', arg_type=get_enum_type(['Automatic', 'Direct']),
                    help='PersonalDesktopAssignment type for HostPool.')
@@ -157,13 +154,12 @@ def load_arguments(self, _):
         c.argument('validation_environment', arg_type=get_three_state_flag(), help='Is validation environment.')
         c.argument('registration_info', action=AddDesktopvirtualizationHostpoolUpdateRegistrationInfo, nargs='+',
                    help='The registration info of HostPool.')
-        c.argument('vm_template', type=str, help='VM template for sessionhosts configuration within hostpool.')
-        c.argument('ssoadfs_authority', type=str,
-                   help='URL to customer ADFS server for signing WVD SSO certificates.')
-        c.argument('sso_client_id', type=str,
+        c.argument('vm_template', help='VM template for sessionhosts configuration within hostpool.')
+        c.argument('ssoadfs_authority', help='URL to customer ADFS server for signing WVD SSO certificates.')
+        c.argument('sso_client_id',
                    help='ClientId for the registered Relying Party used to issue WVD SSO certificates.')
         c.argument('sso_client_secret_key_vault_path', options_list=['--sso-client-secret-key-vault-path', '-p'],
-                   type=str, help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
+                   help='Path to Azure KeyVault storing the secret used for communication to ADFS.')
         c.argument('sso_secret_type',
                    arg_type=get_enum_type(['SharedKey', 'Certificate', 'SharedKeyInKeyVault', 'CertificateInKeyVault']),
                    help='The type of single sign on Secret Type.')
@@ -175,11 +171,11 @@ def load_arguments(self, _):
 
     with self.argument_context('desktopvirtualization hostpool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+        c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group', id_part='name')
         c.argument('force', arg_type=get_three_state_flag(), help='Force flag to delete sessionHost.')
 
     with self.argument_context('desktopvirtualization hostpool retrieve-registration-token') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('host_pool_name', options_list=['--name', '-n'], type=str,
+        c.argument('host_pool_name', options_list=['--name', '-n'],
                    help='The name of the host pool within the specified resource group', id_part='name')
