@@ -73,7 +73,7 @@ def _create_default_endpoint(cmd, resource_group, vm_name, client):
         client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
     except Exception as e:
         raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. "
-                                           f"Contact owner of this resource.\nError: {str(e)}")
+                                           f"Contact Owner/Contributor of the resource.\nError: {str(e)}")
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
