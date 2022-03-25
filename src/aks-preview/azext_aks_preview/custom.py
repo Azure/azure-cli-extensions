@@ -2775,7 +2775,7 @@ def _get_linux_os_config(file_path):
 
 def _get_http_proxy_config(file_path):
     if not os.path.isfile(file_path):
-        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+        raise CLIError("{} is not valid file, or is not accessible.".format(file_path))
     hp_config = get_file_json(file_path)
     if not isinstance(hp_config, dict):
         raise CLIError(
@@ -2789,7 +2789,6 @@ def _get_http_proxy_config(file_path):
     return config_object
 
 def aks_app_init():
-    print("I am called to init")
     aks_web_app_init()
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,

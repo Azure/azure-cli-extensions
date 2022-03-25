@@ -3,7 +3,8 @@
 import shutil
 import subprocess
 import requests
-import os.path
+import os
+from pathlib import Path
 
 
 
@@ -61,15 +62,30 @@ def cmd_finish():
 
 
 def downloadBinary() -> bool:
-    print("Attempting to download DraftV2 binary...")
+    # prompt user to download binary. If users says no, we error out and tell them that this requires the binary
+    permissionToDownload = input("The required binary was not found. Would you like us to download the required binary for you? Y/n: ")
+
+    if permissionToDownload.lower() != "y" :
+        raise ValueError("`az aks app` requires the missing dependency")
+
+    print("Attempting to download dependency...")
     url = "https://github.com/Azure/aks-app/releases/download/v0.0.5/draftv2-darwin-amd64"
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
     req = requests.get(url, headers=headers)
 
+    binaryPath = str(Path.home()) + "/" +".aksapp"
+
+    # Directory
+    if os.path.exists(binaryPath) == False:
+        os.chdir(str(Path.home()))
+        os.mkdir(".aksapp")
+        print("Directory '% s' was created inside of your HOME directory" % ".aksapp")
+
     if req.ok:
         # Split URL to get the file name "draft-v2darwin-arm64"
+        os.chdir(binaryPath)
         filename = url.split('/')[-1]
 
         # Writing the file to the local file system
