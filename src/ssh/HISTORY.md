@@ -1,6 +1,6 @@
 Release History
 ===============
-2.0.0
+1.1.0
 -----
 * SSHArc Public Preview
 * Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.

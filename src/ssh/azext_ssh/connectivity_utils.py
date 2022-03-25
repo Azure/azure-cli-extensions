@@ -53,6 +53,9 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
             time_elapsed = time.time() - t0
             telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
         except Exception as e:
+            telemetry.set_exception(exception='Call to listCredentials failed',
+                                    fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
+                                    summary=f'listCredentials failed with error: {str(e)}.')
             raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
@@ -70,7 +73,7 @@ def _create_default_endpoint(cmd, resource_group, vm_name, client):
         client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
     except Exception as e:
         raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. "
-                                           f"Contact owner.\nError: {str(e)}")
+                                           f"Contact owner of this resource.\nError: {str(e)}")
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
