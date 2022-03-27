@@ -61,7 +61,7 @@ class HostPoolOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPool"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -161,7 +161,7 @@ class HostPoolOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _host_pool = models.HostPool(tags=tags, location=location, friendly_name=friendly_name, description=description, host_pool_type=host_pool_type, personal_desktop_assignment_type=personal_desktop_assignment_type, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, vm_template=vm_template, sso_context=sso_context)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -231,7 +231,7 @@ class HostPoolOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -320,7 +320,7 @@ class HostPoolOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _host_pool = models.HostPoolPatch(tags=tags, friendly_name=friendly_name, description=description, custom_rdp_property=custom_rdp_property, max_session_limit=max_session_limit, personal_desktop_assignment_type=personal_desktop_assignment_type, load_balancer_type=load_balancer_type, ring=ring, validation_environment=validation_environment, registration_info=registration_info, sso_context=sso_context)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -382,7 +382,7 @@ class HostPoolOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -446,7 +446,7 @@ class HostPoolOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HostPoolList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:

@@ -63,7 +63,7 @@ class DesktopOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Desktop"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -134,7 +134,7 @@ class DesktopOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _desktop = models.DesktopPatch(tags=tags, description=description, friendly_name=friendly_name)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -200,7 +200,7 @@ class DesktopOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DesktopList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.list.metadata['url']  # type: ignore

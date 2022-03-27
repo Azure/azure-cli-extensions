@@ -46,7 +46,7 @@ class DesktopVirtualizationAPIClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2019-12-10-preview"
+        self.api_version = "2021-07-12"
         self.credential_scopes = ['https://management.azure.com/.default']
         self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
         kwargs.setdefault('sdk_moniker', 'desktopvirtualizationapiclient/{}'.format(VERSION))

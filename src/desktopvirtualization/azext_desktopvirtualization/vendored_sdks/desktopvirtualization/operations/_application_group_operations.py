@@ -66,7 +66,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroup"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -143,7 +143,7 @@ class ApplicationGroupOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _application_group = models.ApplicationGroup(tags=tags, location=location, description=description, friendly_name=friendly_name, host_pool_arm_path=host_pool_arm_path, application_group_type=application_group_type)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -211,7 +211,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -275,7 +275,7 @@ class ApplicationGroupOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _application_group = models.ApplicationGroupPatch(tags=tags, description=description, friendly_name=friendly_name)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -342,7 +342,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -413,7 +413,7 @@ class ApplicationGroupOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:

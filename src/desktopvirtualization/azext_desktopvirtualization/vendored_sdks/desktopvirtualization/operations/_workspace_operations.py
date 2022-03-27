@@ -66,7 +66,7 @@ class WorkspaceOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Workspace"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -140,7 +140,7 @@ class WorkspaceOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _workspace = models.Workspace(tags=tags, location=location, description=description, friendly_name=friendly_name, application_group_references=application_group_references)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -208,7 +208,7 @@ class WorkspaceOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -275,7 +275,7 @@ class WorkspaceOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         _workspace = models.WorkspacePatch(tags=tags, description=description, friendly_name=friendly_name, application_group_references=application_group_references)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -338,7 +338,7 @@ class WorkspaceOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkspaceList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:
@@ -403,7 +403,7 @@ class WorkspaceOperations(object):
         cls = kwargs.pop('cls', None)  # type: ClsType["models.WorkspaceList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:

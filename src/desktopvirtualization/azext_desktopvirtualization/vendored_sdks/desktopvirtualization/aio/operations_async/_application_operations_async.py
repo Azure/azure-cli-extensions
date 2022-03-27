@@ -64,7 +64,7 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Application"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -153,7 +153,7 @@ class ApplicationOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _application = models.Application(description=description, friendly_name=friendly_name, file_path=file_path, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -224,7 +224,7 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -312,7 +312,7 @@ class ApplicationOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _application = models.ApplicationPatch(tags=tags, description=description, friendly_name=friendly_name, file_path=file_path, command_line_setting=command_line_setting, command_line_arguments=command_line_arguments, show_in_portal=show_in_portal, icon_path=icon_path, icon_index=icon_index)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -378,7 +378,7 @@ class ApplicationOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:

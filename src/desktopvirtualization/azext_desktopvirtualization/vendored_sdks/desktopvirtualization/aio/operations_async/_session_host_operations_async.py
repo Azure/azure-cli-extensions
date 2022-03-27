@@ -64,7 +64,7 @@ class SessionHostOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SessionHost"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -127,7 +127,7 @@ class SessionHostOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -193,7 +193,7 @@ class SessionHostOperations:
         error_map.update(kwargs.pop('error_map', {}))
 
         _session_host = models.SessionHostPatch(allow_new_session=allow_new_session, assigned_user=assigned_user)
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -259,7 +259,7 @@ class SessionHostOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SessionHostList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:

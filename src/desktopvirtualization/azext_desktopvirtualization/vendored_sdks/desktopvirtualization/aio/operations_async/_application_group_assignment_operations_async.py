@@ -65,7 +65,7 @@ class ApplicationGroupAssignmentOperations:
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ApplicationGroupList"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-12-10-preview"
+        api_version = "2021-07-12"
 
         def prepare_request(next_link=None):
             if not next_link:
