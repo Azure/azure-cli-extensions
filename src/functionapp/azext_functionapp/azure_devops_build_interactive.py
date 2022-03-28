@@ -30,7 +30,7 @@ from azure_functions_devops_build.exceptions import (
 )
 from azure.cli.command_modules.appservice.custom import (
     list_function_app,
-    show_functionapp,
+    show_webapp,
     get_app_settings)
 from azure.cli.command_modules.appservice.utils import str2bool
 from .azure_devops_build_provider import AzureDevopsBuildProvider
@@ -242,7 +242,7 @@ class AzureDevopsBuildInteractive():
         else:
             functionapp = self.cmd_selector.cmd_functionapp(self.functionapp_name)
 
-        kinds = show_functionapp(self.cmd, functionapp.resource_group, functionapp.name).kind.split(',')
+        kinds = show_webapp(self.cmd, functionapp.resource_group, functionapp.name).kind.split(',')
 
         # Get functionapp settings in Azure
         app_settings = get_app_settings(self.cmd, functionapp.resource_group, functionapp.name)

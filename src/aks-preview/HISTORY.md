@@ -3,12 +3,20 @@
 Release History
 ===============
 
+0.5.58
+++++++
+* Add support for enabling Azure KeyVault KMS with `--enable-azure-keyvault-kms` flag.
+
+0.5.57
+++++++
+* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
+
 0.5.56
 ++++++
 * Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
 
 0.5.55
-+++++
+++++++
 * Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
 
 0.5.54

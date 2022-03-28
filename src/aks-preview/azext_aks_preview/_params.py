@@ -24,7 +24,7 @@ from ._validators import (
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
     validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity,
-    validate_host_group_id, validate_message_of_the_day)
+    validate_host_group_id, validate_message_of_the_day, validate_azure_keyvault_kms_key_id)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, \
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -207,6 +207,8 @@ def load_arguments(self, _):
                    validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         c.argument('message_of_the_day', type=str)  # no validation for aks create because it already only supports Linux.
+        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
+        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
@@ -267,6 +269,9 @@ def load_arguments(self, _):
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
+        c.argument('http_proxy_config', type=str)
+        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
+        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
