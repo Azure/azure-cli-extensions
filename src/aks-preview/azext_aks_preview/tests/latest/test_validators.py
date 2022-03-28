@@ -359,25 +359,5 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
-class CredentialFormatNamespace:
-    def __init__(self, credential_format):
-        self.credential_format = credential_format
-
-class TestCredentialFormat(unittest.TestCase):
-    def test_invalid_format(self):
-        credential_format = "foobar"
-        namespace = CredentialFormatNamespace(credential_format)
-        err = ("--format can only be azure or exec.")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_credential_format(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_valid_format(self):
-        credential_format = "exec"
-        namespace = CredentialFormatNamespace(credential_format)
-
-        validators.validate_credential_format(namespace)
-
 if __name__ == "__main__":
     unittest.main()

@@ -24,7 +24,7 @@ from ._validators import (
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
     validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity,
-    validate_host_group_id, validate_message_of_the_day, validate_azure_keyvault_kms_key_id, validate_credential_format)
+    validate_host_group_id, validate_message_of_the_day, validate_azure_keyvault_kms_key_id)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, \
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -34,7 +34,7 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER
     CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL, \
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI
 from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, \
-    CONST_GPU_INSTANCE_PROFILE_MIG7_G
+    CONST_GPU_INSTANCE_PROFILE_MIG7_G, CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC
 
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
                      CONST_WORKLOAD_RUNTIME_WASM_WASI]
@@ -484,7 +484,8 @@ def load_arguments(self, _):
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
-        c.argument('credential_format', type=str, options_list=['--format'], validator=validate_credential_format)
+        c.argument('credential_format', type=str, options_list=['--format'], arg_type=get_enum_type(
+            [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_AZURE]))
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')

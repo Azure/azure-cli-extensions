@@ -573,10 +573,3 @@ def validate_azure_keyvault_kms_key_id(namespace):
         segments = key_id[len(https_prefix):].split("/")
         if len(segments) != 4 or segments[1] != "keys":
             raise InvalidArgumentValueError(err_msg)
-
-
-def validate_credential_format(namespace):
-    if namespace.credential_format and \
-        namespace.credential_format.lower() != "azure" and \
-            namespace.credential_format.lower() != "exec":
-        raise InvalidArgumentValueError("--format can only be azure or exec.")
