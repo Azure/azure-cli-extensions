@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ssh',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/ssh',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,

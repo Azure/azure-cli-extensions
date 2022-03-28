@@ -2,11 +2,16 @@
 
 Release History
 ===============
-0.8.0
+0.8.1(2022-03-15)
+++++++++++++++++++
+* `az storage account create/update`: Support `--key-vault-federated-identity-client-id` and `--allowed-copy-scope`
+
+0.8.0(2022-01-17)
 ++++++++++++++++++
 * Remove `az storage account file-service-properties` as SMB multichannel and secured SMB has been supported in main Azure CLI
 * Remove `az storage account blob-inventory-policy` as it is supported in main Azure CLI
 * `az storage account local-user`: Add support for local user
+* `az storage account create/update`: Support `--enable-sftp`, `--enable-local-user`, `--sam-account-name` and `--account-type`
 
 0.7.3(2021-05-20)
 ++++++++++++++++++

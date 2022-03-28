@@ -202,6 +202,11 @@ arcdata dc create:
     metrics_ui_public_key_file:
       rule_exclusions:
       - option_length_too_long
+sql mi-arc update:
+  parameters:
+    preferred_primary_replica:
+      rule_exclusions:
+      - option_length_too_long
 attestation policy set:
   parameters:
     new_attestation_policy:
@@ -293,6 +298,28 @@ codespace plan create:
       rule_exclusions:
       - option_length_too_long
     default_sku_name:
+      rule_exclusions:
+      - option_length_too_long
+containerapp env create:
+  parameters:
+    infrastructure_subnet_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    instrumentation_key:
+      rule_exclusions:
+      - option_length_too_long
+    platform_reserved_dns_ip:
+      rule_exclusions:
+      - option_length_too_long
+containerapp github-action add:
+  parameters:
+    service_principal_client_id:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_client_secret:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_tenant_id:
       rule_exclusions:
       - option_length_too_long
 costmanagement export create:
@@ -1009,6 +1036,56 @@ iot central export update:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
     central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central device-template update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central file-upload-config update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central organization update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot central user update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot dps enrollment update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot dps enrollment-group update:
+  parameters:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 iot hub configuration update:

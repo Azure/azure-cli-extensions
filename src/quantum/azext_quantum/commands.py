@@ -5,9 +5,13 @@
 
 # pylint: disable=line-too-long
 
+import logging
+
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+
+logger = logging.getLogger(__name__)
 
 
 def transform_targets(providers):
@@ -27,7 +31,7 @@ def transform_targets(providers):
 
 
 def transform_job(result):
-    result = OrderedDict([
+    transformed_result = OrderedDict([
         ('Name', result['name']),
         ('Id', result['id']),
         ('Status', result['status']),
@@ -35,7 +39,17 @@ def transform_job(result):
         ('Submission time', result['creationTime']),
         ('Completion time', result['endExecutionTime'])
     ])
-    return result
+
+    # For backwards compatibility check if the field is present and only display if present
+    cost_estimate = result['costEstimate']
+    if cost_estimate is not None:
+        amount = cost_estimate['estimatedTotal']
+        currency = cost_estimate['currencyCode']
+        if (amount is not None) and (currency is not None):
+            price = str(amount) + ' ' + currency
+            transformed_result['Cost estimate'] = price
+
+    return transformed_result
 
 
 def transform_jobs(results):
@@ -83,6 +97,19 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
+
+    elif 'errorData' in results:
+        notFound = 'Not found'
+        errorData = results['errorData']
+        status = results.get('status', notFound)
+        errorCode = errorData.get('code', notFound)
+        errorMessage = errorData.get('message', notFound)
+        target = results.get('target', notFound)
+        jobId = results.get('id', notFound)
+        submissionTime = results.get('creationTime', notFound)
+
+        logger.error("Job was not successful. Job ID: %s, Status: %s, Error Code: %s, Error Message: %s, Target: %s", jobId, status, errorCode, errorMessage, target)
+        return {'Status': status, 'Error Code': errorCode, 'Error Message': errorMessage, 'Target': target, 'Job ID': jobId, 'Submission Time': submissionTime}
 
     return results
 

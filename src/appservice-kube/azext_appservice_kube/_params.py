@@ -10,9 +10,9 @@ from azure.cli.command_modules.appservice._validators import (validate_site_crea
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 get_resource_name_completion_list,
                                                 get_three_state_flag, get_enum_type, tags_type)
+from azure.cli.command_modules.appservice._constants import FUNCTIONS_VERSIONS
 
-from ._constants import (FUNCTIONS_VERSIONS, FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS,
-                         LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES, OS_TYPES)
+from ._constants import MULTI_CONTAINER_TYPES, OS_TYPES
 from ._validators import validate_asp_create, validate_timeout_value
 
 
@@ -28,20 +28,6 @@ def load_arguments(self, _):
 
     self.get_models('K8SENetworkPlugin')
 
-    # combine all runtime versions for all functions versions
-    functionapp_runtime_to_version = {}
-    for functions_version in FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS.values():
-        for runtime, val in functions_version.items():
-            # dotnet version is not configurable, so leave out of help menu
-            if runtime != 'dotnet':
-                functionapp_runtime_to_version[runtime] = functionapp_runtime_to_version.get(runtime, set()).union(val)
-
-    functionapp_runtime_to_version_texts = []
-    for runtime, runtime_versions in functionapp_runtime_to_version.items():
-        runtime_versions_list = list(runtime_versions)
-        runtime_versions_list.sort(key=float)
-        functionapp_runtime_to_version_texts.append(runtime + ' -> [' + ', '.join(runtime_versions_list) + ']')
-
     with self.argument_context('webapp') as c:
         c.ignore('app_instance')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
@@ -50,6 +36,14 @@ def load_arguments(self, _):
         c.argument('name', configured_default='web', arg_type=name_arg_type,
                    completer=get_resource_name_completion_list('Microsoft.Web/sites'), id_part='name',
                    help="name of the web app. You can configure the default using `az configure --defaults web=<name>`")
+
+    with self.argument_context('webapp update') as c:
+        c.argument('client_affinity_enabled', help="Enables sending session affinity cookies.",
+                   arg_type=get_three_state_flag(return_label=True))
+        c.argument('https_only', help="Redirect all traffic made to an app using HTTP to HTTPS.",
+                   arg_type=get_three_state_flag(return_label=True))
+        c.argument('minimum_elastic_instance_count', options_list=["--minimum-elastic-instance-count", "-i"], type=int, is_preview=True, help="Minimum number of instances. App must be in an elastic scale App Service Plan.")
+        c.argument('prewarmed_instance_count', options_list=["--prewarmed-instance-count", "-w"], type=int, is_preview=True, help="Number of preWarmed instances. App must be in an elastic scale App Service Plan.")
 
     with self.argument_context('webapp create') as c:
         c.argument('name', options_list=['--name', '-n'], help='name of the new web app', validator=validate_site_create)
@@ -98,10 +92,9 @@ def load_arguments(self, _):
                    help='Provide a string value of a Storage Account in the provided Resource Group. Or Resource ID of a Storage Account in a different Resource Group')
         c.argument('consumption_plan_location', options_list=['--consumption-plan-location', '-c'],
                    help="Geographic location where Function App will be hosted. Use `az functionapp list-consumption-locations` to view available locations.")
-        c.argument('functions_version', help='The functions app version.', arg_type=get_enum_type(FUNCTIONS_VERSIONS))
-        c.argument('runtime', help='The functions runtime stack.', arg_type=get_enum_type(set(LINUX_RUNTIMES).union(set(WINDOWS_RUNTIMES))))
-        c.argument('runtime_version', help='The version of the functions runtime stack. '
-                                           'Allowed values for each --runtime are: ' + ', '.join(functionapp_runtime_to_version_texts))
+        c.argument('functions_version', help='The functions app version.  Use "az functionapp list-runtimes" to check compatibility with runtimes and runtime versions', arg_type=get_enum_type(FUNCTIONS_VERSIONS))
+        c.argument('runtime', help='The functions runtime stack. Use "az functionapp list-runtimes" to check supported runtimes and versions')
+        c.argument('runtime_version', help='The version of the functions runtime stack. Use "az functionapp list-runtimes" to check supported runtimes and versions')
         c.argument('os_type', arg_type=get_enum_type(OS_TYPES), help="Set the OS type for the app to be created.")
         c.argument('app_insights_key', help="Instrumentation key of App Insights to be added.")
         c.argument('app_insights', help="Name of the existing App Insights project to be added to the Function app. Must be in the same resource group.")

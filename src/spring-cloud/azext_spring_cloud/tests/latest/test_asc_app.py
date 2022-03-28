@@ -121,6 +121,19 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
 
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_net_with_jvm_options(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        deployment.properties.source.jvm_options = 'test-options'
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='NetCore_31', main_entry='test')
+        resource = self.patch_deployment_resource
+        self.assertEqual('NetCoreZip', resource.properties.source.type)
+        self.assertEqual('my-relative-path', resource.properties.source.relative_path)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
+        self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_continous_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -252,7 +265,15 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
-    
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_build_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment=self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env='{"BP_JVM_VERSION": "8.*"}')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
+
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
@@ -360,7 +381,7 @@ class TestAppUpdate(BasicTest):
         app_update(_get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
-        if kwargs.get('deployment', None):
+        if len(call_args):
             self.assertEqual(1, len(call_args))
             self.assertEqual(5, len(call_args[0][0]))
             self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
@@ -423,6 +444,30 @@ class TestAppUpdate(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
 
+    def test_app_update_clear_jvm_option_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='')
+        resource = self.patch_deployment_resource
+        self.assertEqual({"foo": "bar"}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_in_enterprise_with_new_set_env(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_env_and_jvm_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option', env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()
         deployment.properties.source.type = 'Container'
@@ -441,6 +486,13 @@ class TestAppUpdate(BasicTest):
         self.assertIsNone(resource.properties.source)
         self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
 
+    def test_steeltoe_app_cannot_set_jvm_options(self):
+        deployment=self._get_deployment()
+        deployment.properties.source.type = 'NetCoreZip'
+        deployment.properties.source.runtime_version = 'NetCore_31'
+        deployment.properties.source.net_core_main_entry_path = 'main-entry'
+        with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
+            self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -524,6 +576,8 @@ class TestAppCreate(BasicTest):
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource
+        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
+        resource = self.patch_app_resource
         self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
 
     def test_app_with_persistent_storage_basic(self):

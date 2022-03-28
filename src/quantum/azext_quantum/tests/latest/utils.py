@@ -7,7 +7,8 @@ TEST_SUBS_DEFAULT = "916dfd6d-030c-4bd9-b579-7bb6d1926e97"
 TEST_RG_DEFAULT = "e2e-scenarios"
 TEST_WORKSPACE_DEFAULT = "e2e-qsharp-tests"
 TEST_WORKSPACE_DEFAULT_LOCATION = "westus2"
-TEST_WORKSPACE_DEFAULT_STORAGE = "/subscriptions/916dfd6d-030c-4bd9-b579-7bb6d1926e97/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"
+TEST_WORKSPACE_DEFAULT_STORAGE = "e2etests"
+TEST_WORKSPACE_DEFAULT_STORAGE_GRS = "e2etestsgrs"
 TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST = "Microsoft/Basic"
 TEST_CAPABILITIES_DEFAULT = "new.microsoft;submit.microsoft" 
 
@@ -29,6 +30,9 @@ def get_test_workspace_location():
 
 def get_test_workspace_storage():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
+
+def get_test_workspace_storage_grs():
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE_GRS", TEST_WORKSPACE_DEFAULT_STORAGE_GRS)
 
 def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)

@@ -6,6 +6,7 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 import sys
 import requests
+import json
 from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
@@ -16,6 +17,7 @@ from msrestazure.azure_exceptions import CloudError
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
+from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 
 logger = get_logger(__name__)
 
@@ -56,14 +58,14 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, target_module=None, app=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, app=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         properties = models.BuildProperties(
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env={"BP_MAVEN_BUILT_MODULE": target_module} if target_module else None)
+            env=json.loads(build_env) if build_env else None)
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,

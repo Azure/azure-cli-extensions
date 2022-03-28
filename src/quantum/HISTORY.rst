@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.13.0
+++++++
+* [2022-03-03] Version intended to work with QDK version v0.23.195983
+* Fixed workspace race condition using an Azure Resource Manager template to synchronize deployment.
+
+0.12.0
+++++++
+* [2022-01-26] Version intended to work with QDK version v0.22.187631
+* Updated data plane generated client to API version 2021-11-01-preview.
+* Added support for displaying cost estimate for a job when available.
+
 0.11.0
 ++++++
 * [2021-12-14] Version intended to work with QDK version v0.21.2112.180703
