@@ -351,10 +351,10 @@ def network_manager_group_create(client,
                                  resource_group_name,
                                  network_manager_name,
                                  network_group_name,
+                                 member_type,
                                  if_match=None,
                                  display_name=None,
-                                 description=None,
-                                 member_type=None):
+                                 description=None):
     parameters = {}
     parameters['display_name'] = display_name
     parameters['description'] = description

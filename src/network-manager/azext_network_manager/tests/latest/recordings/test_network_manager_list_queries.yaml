@@ -27,7 +27,7 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"TestNetworkManager","description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"fdcedf08-b81e-4b8c-944a-e4b55980ec18"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T06:35:26.4811216Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T06:35:26.4811216Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"643c4d9e-438d-4822-a5d1-9bf9c5870531"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T08:54:15.2702379Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T08:54:15.2702379Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:30 GMT
+      - Mon, 28 Mar 2022 08:54:19 GMT
       expires:
       - '-1'
       pragma:
@@ -52,13 +52,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"displayName": "ASampleGroup", "description": "A sample
-      policy"}}'
+      policy", "memberType": "Microsoft.Network/virtualNetworks"}}'
     headers:
       Accept:
       - application/json
@@ -69,11 +69,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '81'
+      - '132'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --network-manager-name --description --display-name -g
+      - --name --network-manager-name --description --display-name --member-type -g
       User-Agent:
       - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
     method: PUT
@@ -81,7 +81,7 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"displayName":"ASampleGroup","description":"A
-        sample policy","groupMembers":[],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b4a14fd8-ad4a-43ea-ae40-9d82a56f4da1"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T06:35:31.9874349Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T06:35:31.9874349Z"}}'
+        sample policy","groupMembers":[],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"92f01fa4-231c-4013-9093-e4494031cf8f"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T08:54:21.1336021Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T08:54:21.1336021Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -90,7 +90,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:32 GMT
+      - Mon, 28 Mar 2022 08:54:21 GMT
       expires:
       - '-1'
       pragma:
@@ -106,7 +106,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -133,7 +133,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember?api-version=2021-05-01-preview
   response:
     body:
-      string: '{"name":"TestStaticMember","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember","type":"Microsoft.Network/networkManagers/networkGroups/staticMembers","etag":"","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002","provisioningState":"Updating"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T06:35:33.3879062Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T06:35:33.3879062Z"}}'
+      string: '{"name":"TestStaticMember","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/staticMembers/TestStaticMember","type":"Microsoft.Network/networkManagers/networkGroups/staticMembers","etag":"","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002","provisioningState":"Updating"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-28T08:54:22.8309508Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-28T08:54:22.8309508Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -142,7 +142,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:33 GMT
+      - Mon, 28 Mar 2022 08:54:23 GMT
       expires:
       - '-1'
       pragma:
@@ -158,7 +158,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -194,7 +194,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:35 GMT
+      - Mon, 28 Mar 2022 08:54:24 GMT
       expires:
       - '-1'
       pragma:
@@ -246,7 +246,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:37 GMT
+      - Mon, 28 Mar 2022 08:54:27 GMT
       expires:
       - '-1'
       pragma:
@@ -298,7 +298,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:40 GMT
+      - Mon, 28 Mar 2022 08:54:29 GMT
       expires:
       - '-1'
       pragma:
@@ -350,7 +350,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:40 GMT
+      - Mon, 28 Mar 2022 08:54:29 GMT
       expires:
       - '-1'
       pragma:
@@ -402,7 +402,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:41 GMT
+      - Mon, 28 Mar 2022 08:54:31 GMT
       expires:
       - '-1'
       pragma:
@@ -454,7 +454,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:42 GMT
+      - Mon, 28 Mar 2022 08:54:32 GMT
       expires:
       - '-1'
       pragma:
@@ -506,7 +506,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Mar 2022 06:35:43 GMT
+      - Mon, 28 Mar 2022 08:54:34 GMT
       expires:
       - '-1'
       pragma:
@@ -522,7 +522,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -554,7 +554,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Mar 2022 06:35:44 GMT
+      - Mon, 28 Mar 2022 08:54:35 GMT
       expires:
       - '-1'
       pragma:
@@ -566,7 +566,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -598,7 +598,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Mar 2022 06:35:51 GMT
+      - Mon, 28 Mar 2022 08:54:41 GMT
       expires:
       - '-1'
       pragma:
@@ -610,7 +610,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14998'
     status:
       code: 200
       message: OK

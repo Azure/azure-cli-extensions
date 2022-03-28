@@ -192,7 +192,7 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('display_name', type=str, help='A friendly name for the resource.')
         c.argument('description', type=str, help='A description of the connectivity configuration.')
-        c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpokeTopology', 'MeshTopology']),
+        c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpoke', 'Mesh']),
                    help='Connectivity topology type.')
         c.argument('is_global', arg_type=get_three_state_flag(), help='Flag if global mesh is supported.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
@@ -233,7 +233,7 @@ def load_arguments(self, _):
                    'changes.')
         c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
-        c.argument('member_type', arg_type=get_enum_type(['Microsoft.Network/virtualNetworks', 'Microsoft.Network/virtualNetworks/subnets']), help='Group member type.')
+        c.argument('member_type', arg_type=get_enum_type(['Microsoft.Network/virtualNetworks']), help='Group member type.')
 
     with self.argument_context('network manager group update') as c:
         c.argument('resource_group_name', resource_group_name_type)
