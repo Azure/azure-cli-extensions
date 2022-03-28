@@ -485,7 +485,7 @@ def load_arguments(self, _):
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
         c.argument('credential_format', type=str, options_list=['--format'], arg_type=get_enum_type(
-            [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_AZURE]))
+            [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]))
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
