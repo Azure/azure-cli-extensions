@@ -178,7 +178,6 @@ def _do_ssh_op(cmd, op_info, op_call):
                                                                           op_info.vm_name, cert_lifetime)
     except Exception as e:
         if delete_keys or delete_cert:
-            # Keep this warning?
             logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",
                          op_info.private_key_file + ', ' if delete_keys else "",
                          op_info.public_key_file + ', ' if delete_keys else "",

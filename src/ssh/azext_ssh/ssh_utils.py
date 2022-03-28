@@ -27,6 +27,10 @@ logger = log.get_logger(__name__)
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
     try:
+        cleanup_process = None
+        log_file = None
+        connection_status = None
+
         ssh_arg_list = []
         if op_info.ssh_args:
             ssh_arg_list = op_info.ssh_args
@@ -35,6 +39,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
+        command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
+
         if not op_info.cert_file and not op_info.private_key_file:
             # In this case, even if delete_credentials is true, there is nothing to clean-up.
             op_info.delete_credentials = False
@@ -42,8 +48,6 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         log_file, ssh_arg_list, cleanup_process = _start_cleanup(op_info.cert_file, op_info.private_key_file,
                                                                  op_info.public_key_file, op_info.delete_credentials,
                                                                  delete_keys, delete_cert, ssh_arg_list)
-
-        command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
         command = command + op_info.build_args() + ssh_arg_list
 
         connection_duration = time.time()
@@ -56,10 +60,9 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
+    finally:
         _terminate_cleanup(delete_keys, delete_cert, op_info.delete_credentials, cleanup_process, op_info.cert_file,
                            op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
-    finally:
-        do_cleanup(delete_keys, delete_cert, op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
@@ -136,7 +139,7 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
         log_text = ssh_log.read()
         log_lines = log_text.splitlines()
-        if "debug1: Authentication succeeded" not in log_text or connection_status != 0:
+        if "debug1: Authentication succeeded" not in log_text or connection_status:
             for line in log_lines:
                 if "debug1:" not in line:
                     print(line)
@@ -184,7 +187,7 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
         logger.warning("Could not find %s in provided --ssh-client-folder %s. "
-                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
+                       "Attempting to get pre-installed OpenSSH bits.", ssh_path, ssh_client_folder)
 
     ssh_path = ssh_command
 
@@ -286,7 +289,7 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
                        private_key_file, public_key_file, log_file, connection_status):
 
     if delete_keys or delete_cert or delete_credentials:
-        if cleanup_process.is_alive():
+        if cleanup_process and cleanup_process.is_alive():
             cleanup_process.terminate()
             # wait for process to terminate
             t0 = time.time()
