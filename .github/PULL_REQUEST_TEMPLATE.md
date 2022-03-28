@@ -2,6 +2,10 @@
 
 This checklist is used to make sure that common guidelines for a pull request are followed.
 
+### Related command
+<!--- Please provide the related command with `az $command`, azure-cli bot will analyse command and route to related team --->
+
+
 ### General Guidelines
 
 - [ ] Have you run `azdev style <YOUR_EXT>` locally? (`pip install azdev` required)
