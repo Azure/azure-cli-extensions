@@ -234,8 +234,6 @@ def load_arguments(self, _):
         c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
         c.argument('member_type', arg_type=get_enum_type(['Microsoft.Network/virtualNetworks', 'Microsoft.Network/virtualNetworks/subnets']), help='Group member type.')
-        c.argument('group_members', action=AddGroupMembers, nargs='+', help='Group members of network group.')
-        c.argument('conditional_membership', type=str, help='Network group conditional filter.')
 
     with self.argument_context('network manager group update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -248,8 +246,6 @@ def load_arguments(self, _):
         c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
         c.argument('member_type', arg_type=get_enum_type(['VirtualNetwork', 'Subnet']), help='Group member type.')
-        c.argument('group_members', action=AddGroupMembers, nargs='+', help='Group members of network group.')
-        c.argument('conditional_membership', type=str, help='Network group conditional filter.')
         c.ignore('parameters')
 
     with self.argument_context('network manager group delete') as c:
@@ -337,6 +333,9 @@ def load_arguments(self, _):
         c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
         c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
                    'network security groups.')
+        c.argument('apply_on_network_intent_policy_based_services', options_list=['--apply-on-network-intent-policy',
+                                                                                  '--apply-on'], nargs='+',
+                   arg_type=get_enum_type(['None', 'All']), help='Enum list of network intent policy based services.')
 
     with self.argument_context('network manager security-admin-config update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -348,6 +347,9 @@ def load_arguments(self, _):
         c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
         c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
                    'network security groups.')
+        c.argument('apply_on_network_intent_policy_based_services', options_list=['--apply-on-network-intent-policy',
+                                                                                  '--apply-on'], nargs='+',
+                   arg_type=get_enum_type(['None', 'All']), help='Enum list of network intent policy based services.')
         c.ignore('security_configuration')
 
     with self.argument_context('network manager security-admin-config delete') as c:

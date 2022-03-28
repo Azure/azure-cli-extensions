@@ -354,15 +354,11 @@ def network_manager_group_create(client,
                                  if_match=None,
                                  display_name=None,
                                  description=None,
-                                 member_type=None,
-                                 group_members=None,
-                                 conditional_membership=None):
+                                 member_type=None):
     parameters = {}
     parameters['display_name'] = display_name
     parameters['description'] = description
     parameters['member_type'] = member_type
-    parameters['group_members'] = group_members
-    parameters['conditional_membership'] = conditional_membership
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    network_group_name=network_group_name,
@@ -377,19 +373,13 @@ def network_manager_group_update(instance,
                                  if_match=None,
                                  display_name=None,
                                  description=None,
-                                 member_type=None,
-                                 group_members=None,
-                                 conditional_membership=None):
+                                 member_type=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
         instance.description = description
     if member_type is not None:
         instance.member_type = member_type
-    if group_members is not None:
-        instance.group_members = group_members
-    if conditional_membership is not None:
-        instance.conditional_membership = conditional_membership
     return instance
 
 
@@ -495,11 +485,14 @@ def network_manager_security_admin_config_create(client,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 delete_existing_ns_gs=None):
+                                                 delete_existing_ns_gs=None,
+                                                 apply_on_network_intent_policy_based_services=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
+    security_configuration['apply_on_network_intent_policy_based_services'] = \
+        apply_on_network_intent_policy_based_services
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    configuration_name=configuration_name,
@@ -512,13 +505,16 @@ def network_manager_security_admin_config_update(instance,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 delete_existing_ns_gs=None):
+                                                 delete_existing_ns_gs=None,
+                                                 apply_on_network_intent_policy_based_services=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
         instance.description = description
     if delete_existing_ns_gs is not None:
         instance.delete_existing_ns_gs = delete_existing_ns_gs
+    if apply_on_network_intent_policy_based_services is not None:
+        instance.apply_on_network_intent_policy_based_services = apply_on_network_intent_policy_based_services
     return instance
 
 
