@@ -27,6 +27,8 @@ logger = log.get_logger(__name__)
 
 def start_ssh_connection(op_info, delete_keys, delete_cert):
     try:
+        # Initialize these so that if something fails in the try block before these
+        # are initialized, then the finally block won't fail.
         cleanup_process = None
         log_file = None
         connection_status = None
@@ -39,6 +41,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
+        # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [_get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host()]
 
         if not op_info.cert_file and not op_info.private_key_file:
@@ -61,6 +64,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
     finally:
+        # Even if something fails between the creation of the credentials and the end of the ssh connection, we
+        # want to make sure that all credentials are cleaned up, and that the clean up process is terminated.
         _terminate_cleanup(delete_keys, delete_cert, op_info.delete_credentials, cleanup_process, op_info.cert_file,
                            op_info.private_key_file, op_info.public_key_file, log_file, connection_status)
 
@@ -135,7 +140,7 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
     return principals
 
 
-def _print_error_messages_from_ssh_log(log_file, connection_status):
+def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert):
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
         log_text = ssh_log.read()
         log_lines = log_text.splitlines()
@@ -144,7 +149,9 @@ def _print_error_messages_from_ssh_log(log_file, connection_status):
                 if "debug1:" not in line:
                     print(line)
 
-            if "Permission denied (publickey)." in log_text:
+            # This connection fails when using our generated certificates.
+            # Only throw error if conection fails with AAD login.
+            if "Permission denied (publickey)." in log_text and delete_cert:
                 # pylint: disable=bare-except
                 # pylint: disable=too-many-boolean-expressions
                 # Check if OpenSSH client and server versions are incompatible
@@ -296,8 +303,8 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
                 time.sleep(1)
 
-        if log_file:
-            _print_error_messages_from_ssh_log(log_file, connection_status)
+        if log_file and os.path.isfile(log_file):
+            _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
 
         # Make sure all files have been properly removed.
         do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
@@ -349,7 +356,7 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
 
 def _get_connection_status(log_file, connection_status):
     # pylint: disable=bare-except
-    if log_file:
+    if log_file and os.path.isfile(log_file):
         try:
             with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
                 match = "debug1: Authentication succeeded" in ssh_client_log.read()
