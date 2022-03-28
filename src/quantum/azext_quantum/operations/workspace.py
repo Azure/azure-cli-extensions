@@ -105,6 +105,18 @@ def _provider_terms_need_acceptance(cmd, provider):
     return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
 
+def _correct_provider_case(providers_in_region, provider):
+    # Use the case of the provider ID from the offerings list, not the case of the command parameter value.
+    # For example, use "quantinuum" even if "Quantinuum" was specified in the command
+    for provider_in_region in providers_in_region:
+        if provider_in_region.id.lower() == provider['provider_id'].lower():
+            provider_id = provider_in_region.id
+            break
+    if provider_id is None:
+        raise InvalidArgumentValueError(f"Unable to find provider ID in offerings list: \"{provider['provider_id']}\"")
+    return provider_id
+
+
 def _add_quantum_providers(cmd, workspace, providers):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
@@ -126,14 +138,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             raise InvalidArgumentValueError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
                                             "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
-        # Use the case of the provider ID from the offerings list, not the case of the command parameter value.
-        # For example, use "quantinuum" even if "Quantinuum" was specified in the command
-        for provider_in_region in providers_in_region:
-            if provider_in_region.id.lower() == provider['provider_id'].lower():
-                p.provider_id = provider_in_region.id
-                break
-        if p.provider_id is None:
-            raise InvalidArgumentValueError(f"Unable to find valid case for provider ID \"{provider['provider_id']}\"")
+        p.provider_id = _correct_provider_case(providers_in_region, provider)
         p.provider_sku = provider['sku']
         workspace.providers.append(p)
 
