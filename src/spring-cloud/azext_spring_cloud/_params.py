@@ -13,7 +13,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
-                          validate_jar)
+                          validate_ingress_timeout, validate_jar)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acs_patterns, validate_config_file_patterns,
@@ -101,6 +101,10 @@ def load_arguments(self, _):
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
                         "this could only be supported in several regions at the moment.",
                    default=False, is_preview=True)
+        c.argument('ingress_read_timeout',
+                   type=int,
+                   help='Ingress read timeout value in seconds. Default 300, Minimum is 1, maximum is 1800.',
+                   validator=validate_ingress_timeout)
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5']),
                    validator=validate_build_pool_size,
@@ -142,6 +146,10 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', arg_type=sku_type, validator=normalize_sku)
+        c.argument('ingress_read_timeout',
+                   type=int,
+                   help='Ingress read timeout value in seconds. Minimum is 1, maximum is 1800.',
+                   validator=validate_ingress_timeout)
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_tracing_parameters_asc_update,

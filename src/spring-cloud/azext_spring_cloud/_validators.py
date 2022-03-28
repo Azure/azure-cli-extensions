@@ -200,6 +200,12 @@ def validate_jvm_options(namespace):
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
 
+def validate_ingress_timeout(namespace):
+    if namespace.ingress_read_timeout is not None and (namespace.ingress_read_timeout < 1 or
+                                                       namespace.ingress_read_timeout > 1800):
+        raise InvalidArgumentValueError("Invalid value: Ingress read timeout must be in the range [1,1800].")
+
+
 def validate_tracing_parameters_asc_create(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable_app_insights:

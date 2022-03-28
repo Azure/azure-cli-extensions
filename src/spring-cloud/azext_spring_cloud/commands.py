@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_cloud_20220101preview,
+from ._client_factory import (cf_spring_cloud_20220501preview,
+                              cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
@@ -26,7 +27,7 @@ from ._validators_enterprise import (validate_gateway_update, validate_api_porta
 def load_command_table(self, _):
     spring_cloud_routing_util = CliCommandType(
         operations_tmpl='azext_spring_cloud.spring_cloud_instance#{}',
-        client_factory=cf_spring_cloud_20220101preview
+        client_factory=cf_spring_cloud_20220501preview
     )
 
     app_command = CliCommandType(
@@ -83,7 +84,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
 
-    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
