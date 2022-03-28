@@ -126,7 +126,14 @@ def _add_quantum_providers(cmd, workspace, providers):
             raise InvalidArgumentValueError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
                                             "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
-        p.provider_id = provider['provider_id']
+        # Use the case of the provider ID from the offerings list, not the case of the command parameter value.
+        # For example, use "quantinuum" even if "Quantinuum" was specified in the command
+        for provider_in_region in providers_in_region:
+            if provider_in_region.id.lower() == provider['provider_id'].lower():
+                p.provider_id = provider_in_region.id
+                break
+        if p.provider_id is None:
+            raise InvalidArgumentValueError(f"Unable to find valid case for provider ID \"{provider['provider_id']}\"")
         p.provider_sku = provider['sku']
         workspace.providers.append(p)
 
