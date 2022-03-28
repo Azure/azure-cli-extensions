@@ -3,9 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-
-
 KUBE_DEFAULT_SKU = "K1"
 KUBE_ASP_KIND = "linux,kubernetes"
 KUBE_APP_KIND = "linux,kubernetes,app"

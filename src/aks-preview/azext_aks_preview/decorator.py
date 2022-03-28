@@ -82,6 +82,7 @@ ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
 Snapshot = TypeVar("Snapshot")
+AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -116,6 +117,16 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
             "ManagedClusterOIDCIssuerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterSecurityProfile = self.__cmd.get_models(
+            "ManagedClusterSecurityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.AzureKeyVaultKms = self.__cmd.get_models(
+            "AzureKeyVaultKms",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -512,8 +523,9 @@ class AKSPreviewContext(AKSContext):
                 )
 
         # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.http_proxy_config is not None:
-            http_proxy_config = self.mc.http_proxy_config
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.http_proxy_config is not None:
+                http_proxy_config = self.mc.http_proxy_config
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -1576,6 +1588,89 @@ class AKSPreviewContext(AKSContext):
         crg_id = self.raw_param.get("crg_id")
         return crg_id
 
+    def _get_enable_azure_keyvault_kms(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_azure_keyvault_kms.
+
+        This function supports the option of enable_validation. When enabled, if azure_keyvault_kms_key_id is empty,
+        raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        # TODO: set default value as False after the get function of AKSParamDict accepts parameter `default`
+        enable_azure_keyvault_kms = self.raw_param.get("enable_azure_keyvault_kms")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.security_profile and
+                self.mc.security_profile.azure_key_vault_kms
+            ):
+                enable_azure_keyvault_kms = self.mc.security_profile.azure_key_vault_kms.enabled
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if bool(enable_azure_keyvault_kms) != bool(self._get_azure_keyvault_kms_key_id(enable_validation=False)):
+                raise RequiredArgumentMissingError(
+                    'You must set "--enable-azure-keyvault-kms" and "--azure-keyvault-kms-key-id" at the same time.'
+                )
+
+        return enable_azure_keyvault_kms
+
+    def get_enable_azure_keyvault_kms(self) -> bool:
+        """Obtain the value of enable_azure_keyvault_kms.
+
+        This function will verify the parameter by default. When enabled, if azure_keyvault_kms_key_id is empty,
+        raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        return self._get_enable_azure_keyvault_kms(enable_validation=True)
+
+    def _get_azure_keyvault_kms_key_id(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of azure_keyvault_kms_key_id according to the context.
+
+        This function supports the option of enable_validation. When enabled, it will check if azure_keyvault_kms_key_id is
+        assigned but enable_azure_keyvault_kms is not specified, if so, raise a RequiredArgumentMissingError.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        azure_keyvault_kms_key_id = self.raw_param.get("azure_keyvault_kms_key_id")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.security_profile and
+                self.mc.security_profile.azure_key_vault_kms and
+                self.mc.security_profile.azure_key_vault_kms.key_id is not None
+            ):
+                azure_keyvault_kms_key_id = self.mc.security_profile.azure_key_vault_kms.key_id
+
+        if enable_validation:
+            enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(enable_validation=False)
+            if (
+                azure_keyvault_kms_key_id and
+                (
+                    enable_azure_keyvault_kms is None or
+                    enable_azure_keyvault_kms is False
+                )
+            ):
+                raise RequiredArgumentMissingError('"--azure-keyvault-kms-key-id" requires "--enable-azure-keyvault-kms".')
+
+        return azure_keyvault_kms_key_id
+
+    def get_azure_keyvault_kms_key_id(self) -> Union[str, None]:
+        """Obtain the value of azure_keyvault_kms_key_id.
+
+        This function will verify the parameter by default. When enabled, if enable_azure_keyvault_kms is False,
+        raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        return self._get_azure_keyvault_kms_key_id(enable_validation=True)
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -1897,6 +1992,23 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_azure_keyvault_kms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile azureKeyVaultKms for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if self.context.get_enable_azure_keyvault_kms():
+            key_id = self.context.get_azure_keyvault_kms_key_id()
+            if key_id:
+                if mc.security_profile is None:
+                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+                    enabled=True,
+                    key_id=key_id,
+                )
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -1916,6 +2028,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         mc = self.set_up_oidc_issuer_profile(mc)
+        mc = self.set_up_azure_keyvault_kms(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2066,7 +2179,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--disable-public-fqdn"'
                 '"--enble-windows-gmsa" or '
                 '"--nodepool-labels" or '
-                '"--enable-oidc-issuer".'
+                '"--enable-oidc-issuer" or '
+                '"--http-proxy-config" or '
+                '"--enable-azure-keyvault-kms".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2110,6 +2225,16 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         if self.context.get_disable_pod_security_policy():
             mc.enable_pod_security_policy = False
+        return mc
+
+    def update_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.http_proxy_config = self.context.get_http_proxy_config()
         return mc
 
     def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2192,6 +2317,25 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
+    def update_azure_keyvault_kms(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile azureKeyvaultKms for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_azure_keyvault_kms():
+            key_id = self.context.get_azure_keyvault_kms_key_id()
+            if key_id:
+                if mc.security_profile is None:
+                    mc.security_profile = self.models.ManagedClusterSecurityProfile()
+                mc.security_profile.azure_key_vault_kms = self.models.AzureKeyVaultKms(
+                    enabled=True,
+                    key_id=key_id,
+                )
+
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2224,6 +2368,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
         mc = self.update_oidc_issuer_profile(mc)
+        mc = self.update_http_proxy_config(mc)
+        mc = self.update_azure_keyvault_kms(mc)
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
