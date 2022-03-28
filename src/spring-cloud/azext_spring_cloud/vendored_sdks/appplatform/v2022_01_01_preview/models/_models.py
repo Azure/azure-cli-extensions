@@ -272,9 +272,9 @@ class ApiPortalProperties(msrest.serialization.Model):
     ):
         super(ApiPortalProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.public = kwargs.get('public', None)
+        self.public = kwargs.get('public', False)
         self.url = None
-        self.https_only = kwargs.get('https_only', None)
+        self.https_only = kwargs.get('https_only', False)
         self.gateway_ids = kwargs.get('gateway_ids', None)
         self.source_urls = kwargs.get('source_urls', None)
         self.sso_properties = kwargs.get('sso_properties', None)
@@ -606,8 +606,8 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server.
-    :type type: str
+     disk.Constant filled by server.  Possible values include: "AzureFileVolume".
+    :type type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.Type
     :param mount_path: Required. The mount path of the persistent disk.
     :type mount_path: str
     :param read_only: Indicates whether the persistent disk is a readOnly one.
@@ -649,8 +649,8 @@ class AzureFileVolume(CustomPersistentDiskProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server.
-    :type type: str
+     disk.Constant filled by server.  Possible values include: "AzureFileVolume".
+    :type type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.Type
     :param mount_path: Required. The mount path of the persistent disk.
     :type mount_path: str
     :param read_only: Indicates whether the persistent disk is a readOnly one.
@@ -1843,8 +1843,8 @@ class ClusterResourceProperties(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar provisioning_state: Provisioning state of the Service. Possible values include:
-     "Creating", "Updating", "Deleting", "Deleted", "Succeeded", "Failed", "Moving", "Moved",
-     "MoveFailed".
+     "Creating", "Updating", "Starting", "Stopping", "Deleting", "Deleted", "Succeeded", "Failed",
+     "Moving", "Moved", "MoveFailed".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2022_01_01_preview.models.ProvisioningState
     :param network_profile: Network profile of the Service.
@@ -2468,7 +2468,7 @@ class ContentCertificateProperties(CertificateProperties):
     :vartype subject_name: str
     :ivar dns_names: The domain list of certificate.
     :vartype dns_names: list[str]
-    :param content: Required. The content of uploaded certificate.
+    :param content: The content of uploaded certificate.
     :type content: str
     """
 
@@ -2481,7 +2481,6 @@ class ContentCertificateProperties(CertificateProperties):
         'activate_date': {'readonly': True},
         'subject_name': {'readonly': True},
         'dns_names': {'readonly': True},
-        'content': {'required': True},
     }
 
     _attribute_map = {
@@ -2502,7 +2501,7 @@ class ContentCertificateProperties(CertificateProperties):
     ):
         super(ContentCertificateProperties, self).__init__(**kwargs)
         self.type = 'ContentCertificate'  # type: str
-        self.content = kwargs['content']
+        self.content = kwargs.get('content', None)
 
 
 class CustomContainer(msrest.serialization.Model):
@@ -3384,9 +3383,9 @@ class GatewayProperties(msrest.serialization.Model):
     ):
         super(GatewayProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.public = kwargs.get('public', None)
+        self.public = kwargs.get('public', False)
         self.url = None
-        self.https_only = kwargs.get('https_only', None)
+        self.https_only = kwargs.get('https_only', False)
         self.sso_properties = kwargs.get('sso_properties', None)
         self.api_metadata_properties = kwargs.get('api_metadata_properties', None)
         self.cors_properties = kwargs.get('cors_properties', None)
@@ -3730,7 +3729,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
     :type relative_path: str
     :param runtime_version: Runtime version of the Jar file.
     :type runtime_version: str
-    :param jvm_opions: Jvm Parameters.
+    :param jvm_options: JVM parameter.
     :type jvm_options: str
     """
 
@@ -3753,7 +3752,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         super(JarUploadedUserSourceInfo, self).__init__(**kwargs)
         self.type = 'Jar'  # type: str
         self.runtime_version = kwargs.get('runtime_version', None)
-        self.jvm_opions = kwargs.get('jvm_options', None)
+        self.jvm_options = kwargs.get('jvm_options', None)
 
 
 class KeyVaultCertificateProperties(CertificateProperties):
@@ -4304,22 +4303,32 @@ class NetworkProfileOutboundIPs(msrest.serialization.Model):
 class OperationDetail(msrest.serialization.Model):
     """Operation detail payload.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param name: Name of the operation.
     :type name: str
     :param is_data_action: Indicates whether the operation is a data action.
     :type is_data_action: bool
     :param display: Display of the operation.
     :type display: ~azure.mgmt.appplatform.v2022_01_01_preview.models.OperationDisplay
+    :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
+     internal only APIs. Possible values include: "Internal".
+    :vartype action_type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.ActionType
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
     :type properties: ~azure.mgmt.appplatform.v2022_01_01_preview.models.OperationProperties
     """
 
+    _validation = {
+        'action_type': {'readonly': True},
+    }
+
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'action_type': {'key': 'actionType', 'type': 'str'},
         'origin': {'key': 'origin', 'type': 'str'},
         'properties': {'key': 'properties', 'type': 'OperationProperties'},
     }
@@ -4332,6 +4341,7 @@ class OperationDetail(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
         self.is_data_action = kwargs.get('is_data_action', None)
         self.display = kwargs.get('display', None)
+        self.action_type = None
         self.origin = kwargs.get('origin', None)
         self.properties = kwargs.get('properties', None)
 
@@ -5233,8 +5243,9 @@ class StorageProperties(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param storage_type: Required. The type of the storage.Constant filled by server.
-    :type storage_type: str
+    :param storage_type: Required. The type of the storage.Constant filled by server.  Possible
+     values include: "StorageAccount".
+    :type storage_type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.StorageType
     """
 
     _validation = {
@@ -5262,8 +5273,9 @@ class StorageAccount(StorageProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param storage_type: Required. The type of the storage.Constant filled by server.
-    :type storage_type: str
+    :param storage_type: Required. The type of the storage.Constant filled by server.  Possible
+     values include: "StorageAccount".
+    :type storage_type: str or ~azure.mgmt.appplatform.v2022_01_01_preview.models.StorageType
     :param account_name: Required. The account name of the Azure Storage Account.
     :type account_name: str
     :param account_key: Required. The account key of the Azure Storage Account.

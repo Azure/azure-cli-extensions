@@ -180,6 +180,7 @@ except (SyntaxError, ImportError):
     from ._models import UserSourceInfo  # type: ignore
 
 from ._app_platform_management_client_enums import (
+    ActionType,
     AppResourceProvisioningState,
     ConfigServerState,
     CreatedByType,
@@ -193,10 +194,12 @@ from ._app_platform_management_client_enums import (
     ResourceSkuRestrictionsType,
     RuntimeVersion,
     SkuScaleType,
+    StorageType,
     SupportedRuntimePlatform,
     SupportedRuntimeValue,
     TestKeyType,
     TrafficDirection,
+    Type,
     UserSourceType,
 )
 
@@ -286,6 +289,7 @@ __all__ = [
     'TestKeys',
     'TrackedResource',
     'UserSourceInfo',
+    'ActionType',
     'AppResourceProvisioningState',
     'ConfigServerState',
     'CreatedByType',
@@ -299,9 +303,11 @@ __all__ = [
     'ResourceSkuRestrictionsType',
     'RuntimeVersion',
     'SkuScaleType',
+    'StorageType',
     'SupportedRuntimePlatform',
     'SupportedRuntimeValue',
     'TestKeyType',
     'TrafficDirection',
+    'Type',
     'UserSourceType',
 ]

@@ -342,6 +342,7 @@ except (SyntaxError, ImportError):
     from ._models import ValidationMessages  # type: ignore
 
 from ._app_platform_management_client_enums import (
+    ActionType,
     ApiPortalProvisioningState,
     AppResourceProvisioningState,
     BindingType,
@@ -366,10 +367,12 @@ from ._app_platform_management_client_enums import (
     ResourceSkuRestrictionsType,
     ServiceRegistryProvisioningState,
     SkuScaleType,
+    StorageType,
     SupportedRuntimePlatform,
     SupportedRuntimeValue,
     TestKeyType,
     TrafficDirection,
+    Type,
 )
 
 __all__ = [
@@ -539,6 +542,7 @@ __all__ = [
     'UploadedUserSourceInfo',
     'UserSourceInfo',
     'ValidationMessages',
+    'ActionType',
     'ApiPortalProvisioningState',
     'AppResourceProvisioningState',
     'BindingType',
@@ -563,8 +567,10 @@ __all__ = [
     'ResourceSkuRestrictionsType',
     'ServiceRegistryProvisioningState',
     'SkuScaleType',
+    'StorageType',
     'SupportedRuntimePlatform',
     'SupportedRuntimeValue',
     'TestKeyType',
     'TrafficDirection',
+    'Type',
 ]

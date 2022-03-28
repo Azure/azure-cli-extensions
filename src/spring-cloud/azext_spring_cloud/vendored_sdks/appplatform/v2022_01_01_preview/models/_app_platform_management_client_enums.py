@@ -26,6 +26,12 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs.
+    """
+
+    INTERNAL = "Internal"
+
 class ApiPortalProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """State of the API portal.
     """
@@ -211,6 +217,8 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     CREATING = "Creating"
     UPDATING = "Updating"
+    STARTING = "Starting"
+    STOPPING = "Stopping"
     DELETING = "Deleting"
     DELETED = "Deleted"
     SUCCEEDED = "Succeeded"
@@ -252,6 +260,12 @@ class SkuScaleType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANUAL = "Manual"
     AUTOMATIC = "Automatic"
 
+class StorageType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of the storage.
+    """
+
+    STORAGE_ACCOUNT = "StorageAccount"
+
 class SupportedRuntimePlatform(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The platform of this runtime version (possible values: "Java" or ".NET").
     """
@@ -281,3 +295,9 @@ class TrafficDirection(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     INBOUND = "Inbound"
     OUTBOUND = "Outbound"
+
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of the underlying resource to mount as a persistent disk.
+    """
+
+    AZURE_FILE_VOLUME = "AzureFileVolume"
