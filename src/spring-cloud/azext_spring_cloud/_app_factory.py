@@ -26,7 +26,7 @@ class DefaultApp:
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
-        user_identity_payload = self._get_user_identity_payload(target_identity_type, user_assigned)
+        user_identity_payload = self._get_user_identity_payload(user_assigned)
         identity_props = None
         if target_identity_type != models_20220301preview.ManagedIdentityType.NONE:
             identity_props = models_20220301preview.ManagedIdentityProperties()
@@ -44,14 +44,12 @@ class DefaultApp:
             target_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
         return target_identity_type
 
-    def _get_user_identity_payload(self, target_identity_type, user_assigned=None):
-        if target_identity_type in (models_20220301preview.ManagedIdentityType.NONE,
-                                    models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED):
+    def _get_user_identity_payload(self, user_assigned=None):
+        if not user_assigned:
             return None
         user_identity_payload = {}
-        if user_assigned:
-            for user_identity_resource_id in user_assigned:
-                user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
+        for user_identity_resource_id in user_assigned:
+            user_identity_payload[user_identity_resource_id] = models_20220301preview.UserAssignedManagedIdentity()
         if len(user_identity_payload) == 0:
             user_identity_payload = None
         return user_identity_payload
