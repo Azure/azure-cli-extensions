@@ -26,7 +26,7 @@ def binaryPreCheck() -> str:
     if draftV2BinaryPath:
         return draftV2BinaryPath
 
-    print("DraftV2 binary not found in the following paths:")
+    print("DraftV2 binary not found")
     return downloadBinary()
 
 
