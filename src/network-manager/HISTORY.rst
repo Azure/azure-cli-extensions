@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.1
++++++
+* 'az network manager connect-config update': update parameter '--connectivity-topology'
+* 'az network manager group create': update parameter '--member-type' and remove parameters `--group-members` and '--conditional-membership'
+* 'az network manager security-admin-config create': add parameter '--apply-on'
 
 0.4.0
 +++++
