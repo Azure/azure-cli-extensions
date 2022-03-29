@@ -484,7 +484,7 @@ def load_arguments(self, _):
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
-        c.argument('credential_format', type=str, options_list=['--format'], arg_type=get_enum_type(
+        c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(
             [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]))
 
     with self.argument_context('aks pod-identity') as c:
