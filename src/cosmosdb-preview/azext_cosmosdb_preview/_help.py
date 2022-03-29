@@ -553,13 +553,13 @@ helps['cosmosdb dts export'] = """
             Usage: --blob-container name=XX url=XX
             name: Container name of Azure Blob Storage.
             url: Endpoint Url of Azure Blob Storage.
-            
+
     examples:
       - name: Export to cassandra table to blob container
         text: |-
           az cosmosdb dts export --account-name "db1" -g "rg1" --job-name "j1"\
  --cassandra-table keyspace=testkeyspace table=testtable\
- --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/ 
+ --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/
 """
 
 helps['cosmosdb dts import'] = """
@@ -578,7 +578,7 @@ helps['cosmosdb dts import'] = """
             Usage: --blob-container name=XX url=XX
             name: Container name of Azure Blob Storage.
             url: Endpoint Url of Azure Blob Storage.
-            
+
     examples:
       - name: Import cassandra table from blob container
         text: |-
@@ -589,10 +589,10 @@ helps['cosmosdb dts import'] = """
 
 helps['cosmosdb dts copy'] = """
     type: command
-    short-summary: "Creates a data transfer import Job."
+    short-summary: "Creates a data transfer copy Job."
     parameters:
       - name: --source-cassandra-table
-        short-summary: "Source cassandra table" 
+        short-summary: "Source cassandra table"
         long-summary: |
             Usage: --source-cassandra-table keyspace=XX table=XX'
             keyspace: Keyspace name of CosmosDB Cassandra.
@@ -617,7 +617,7 @@ helps['cosmosdb dts copy'] = """
             Usage: --destination-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
-            
+
     examples:
       - name: Copy sql container
         text: |-

@@ -1072,6 +1072,7 @@ def cosmosdb_data_transfer_export_job(client,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
 
+
 def cosmosdb_data_transfer_import_job(client,
                                       resource_group_name,
                                       account_name,
@@ -1102,6 +1103,7 @@ def cosmosdb_data_transfer_import_job(client,
                          account_name=account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
+
 
 def cosmosdb_data_transfer_copy_job(client,
                                     resource_group_name,
@@ -1151,6 +1153,7 @@ def cosmosdb_data_transfer_copy_job(client,
                          account_name=account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
+
 
 def cosmosdb_dts_list(client,
                       resource_group_name,

@@ -131,6 +131,7 @@ class AddBlobContainerAction(argparse._AppendAction):
 
         namespace.blob_container = blob_container
 
+
 class AddCassandraTableAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not values:
