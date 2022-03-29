@@ -171,7 +171,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_providers_in_region.append(ProviderDescription(id='Microsoft'))
         test_providers_in_region.append(ProviderDescription(id='quantinuum'))
 
-        # Calls with valid parameters should not raise errors
         assert _correct_provider_case(test_providers_in_region, {'provider_id': 'ionq'}) == 'ionq'
         assert _correct_provider_case(test_providers_in_region, {'provider_id': 'IonQ'}) == 'ionq'
         assert _correct_provider_case(test_providers_in_region, {'provider_id': 'IONQ'}) == 'ionq'
