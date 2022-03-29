@@ -597,10 +597,10 @@ helps['cosmosdb dts copy'] = """
             Usage: --source-cassandra-table keyspace=XX table=XX'
             keyspace: Keyspace name of CosmosDB Cassandra.
             table: Table name of CosmosDB Cassandra.
-      - name: --destination-cassandra-table
+      - name: --dest-cassandra-table
         short-summary: "Destination cassandra table"
         long-summary: |
-            Usage: --destination-cassandra-table keyspace=XX table=XX'
+            Usage: --dest-cassandra-table keyspace=XX table=XX'
             keyspace: Keyspace name of CosmosDB Cassandra.
             table: Table name of CosmosDB Cassandra.
       - name: --source-sql-container
@@ -610,21 +610,21 @@ helps['cosmosdb dts copy'] = """
             Usage: --source-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
-      - name: --destination-sql-container
+      - name: --dest-sql-container
         short-summary: "Blob conatiner data source"
         short-summary: "Destination sql container"
         long-summary: |
-            Usage: --destination-sql-container database=XX container=XX'
+            Usage: --dest-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
 
     examples:
       - name: Copy sql container
         text: |-
-          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-sql-container database=db1 container=c1 --destination-sql-container database=db2 container=c2
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-sql-container database=db1 container=c1 --dest-sql-container database=db2 container=c2
       - name: Copy cassandra table
         text: |-
-          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --destination-cassandra-table keyspace=k1 table=t1
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --dest-cassandra-table keyspace=k1 table=t1
 """
 
 helps['cosmosdb dts'] = """

@@ -286,31 +286,31 @@ def load_arguments(self, _):
         c.argument('location', options_list=['--location', '-l'], help="Location of the account", required=True)
 
     with self.argument_context('cosmosdb dts export') as c:
-        c.argument('account_name', type=str, options_list=['--account-name', '-a'], help='Cosmos DB database account name.')
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
         c.argument('job_name', type=str, help='Name of the Data Transfer Job. A random job name will be generated if not passed.')
-        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data source cassandra table')
-        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data sink blob container')
+        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data source cassandra table', required=True)
+        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data sink blob container', required=True)
         c.argument('worker_count', type=int, help='Worker count')
 
     with self.argument_context('cosmosdb dts import') as c:
-        c.argument('account_name', type=str, options_list=['--account-name', '-a'], help='Cosmos DB database account name.')
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
         c.argument('job_name', type=str, help='Name of the Data Transfer Job. A random job name will be generated if not passed.')
-        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data sink cassandra table')
-        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data source blob container')
+        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data sink cassandra table', required=True)
+        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data source blob container', required=True)
         c.argument('worker_count', type=int, help='Worker count')
 
     with self.argument_context('cosmosdb dts copy') as c:
-        c.argument('account_name', type=str, options_list=['--account-name', '-a'], help='Cosmos DB database account name.')
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
         c.argument('job_name', type=str, help='Name of the Data Transfer Job')
         c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
         c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql container')
-        c.argument('destination_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
-        c.argument('destination_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
+        c.argument('dest_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
+        c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
 
     with self.argument_context('cosmosdb dts list') as c:
-        c.argument('account_name', type=str, help='Cosmos DB database account name.')
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
 
     with self.argument_context('cosmosdb dts show') as c:
-        c.argument('account_name', type=str, help='Cosmos DB database account name.')
-        c.argument('job_name', type=str, help='Name of the Data Transfer Job')
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
+        c.argument('job_name', type=str, help='Name of the Data Transfer Job', required=True)

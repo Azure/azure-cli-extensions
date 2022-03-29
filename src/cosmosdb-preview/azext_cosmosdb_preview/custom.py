@@ -1109,9 +1109,9 @@ def cosmosdb_data_transfer_copy_job(client,
                                     resource_group_name,
                                     account_name,
                                     source_cassandra_table=None,
-                                    destination_cassandra_table=None,
+                                    dest_cassandra_table=None,
                                     source_sql_container=None,
-                                    destination_sql_container=None,
+                                    dest_sql_container=None,
                                     worker_count=0,
                                     job_name=None):
     if source_cassandra_table is None and source_sql_container is None:
@@ -1120,10 +1120,10 @@ def cosmosdb_data_transfer_copy_job(client,
     if source_cassandra_table is not None and source_sql_container is not None:
         raise CLIError('Invalid input: multiple source components')
 
-    if destination_cassandra_table is None and destination_sql_container is None:
+    if dest_cassandra_table is None and dest_sql_container is None:
         raise CLIError('destination component is missing')
 
-    if destination_cassandra_table is not None and destination_sql_container is not None:
+    if dest_cassandra_table is not None and dest_sql_container is not None:
         raise CLIError('Invalid input: multiple destination components')
 
     job_create_properties = {}
@@ -1134,11 +1134,11 @@ def cosmosdb_data_transfer_copy_job(client,
     if source_sql_container is not None:
         job_create_properties['source'] = source_sql_container
 
-    if destination_cassandra_table is not None:
-        job_create_properties['destination'] = destination_cassandra_table
+    if dest_cassandra_table is not None:
+        job_create_properties['destination'] = dest_cassandra_table
 
-    if destination_sql_container is not None:
-        job_create_properties['destination'] = destination_sql_container
+    if dest_sql_container is not None:
+        job_create_properties['destination'] = dest_sql_container
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count

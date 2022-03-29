@@ -165,8 +165,8 @@ class AddCassandraTableAction(argparse._AppendAction):
 
         if option_string == "--source-cassandra-table":
             namespace.source_cassandra_table = cassandra_table
-        elif option_string == "--destination-cassandra-table":
-            namespace.destination_cassandra_table = cassandra_table
+        elif option_string == "--dest-cassandra-table":
+            namespace.dest_cassandra_table = cassandra_table
         else:
             namespace.cassandra_table = cassandra_table
 
@@ -204,7 +204,7 @@ class AddSqlContainerAction(argparse._AppendAction):
 
         if option_string == "--source-sql-container":
             namespace.source_sql_container = sql_container
-        elif option_string == "--destination-sql-container":
-            namespace.destination_sql_container = sql_container
+        elif option_string == "--dest-sql-container":
+            namespace.dest_sql_container = sql_container
         else:
             namespace.sql_container = sql_container
