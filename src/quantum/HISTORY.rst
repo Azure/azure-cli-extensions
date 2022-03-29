@@ -5,7 +5,7 @@ Release History
 
 0.14.0
 ++++++
-* [2022-03-30] Version intended to work with QDK version v0.24.2XXXXX
+* [2022-03-30] Version intended to work with QDK version v0.24.201332
 * Extended error message in failed jobs to include details originated from the provider.
 * Completed support in workspace creation for all storage account types allowed in the Azure Quantum service.
 * Improved visual feedback in 'az quantum execute' command indicating to the user that the process has started.
