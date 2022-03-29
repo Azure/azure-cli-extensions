@@ -14,10 +14,7 @@ from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
 from ...operations.workspace import _validate_storage_account, _correct_provider_case, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS
-
-#>>>>>>
 from ...vendored_sdks.azure_mgmt_quantum.models import ProviderDescription
-#<<<<<<
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
