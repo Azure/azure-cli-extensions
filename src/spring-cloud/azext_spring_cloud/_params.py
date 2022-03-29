@@ -279,11 +279,11 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app identity force-set') as c:
         c.argument('system_assigned',
                    validator=validate_app_force_set_system_identity_or_warning,
-                   help="Enable or disable system-assigned managed identity. Allowed values: \"enable\",\"disable\"")
+                   help="Allowed values: [\"enable\", \"disable\"]. Use \"enable\" to enable or keep system-assigned managed identity. Use \"disable\" to remove system-assigned managed identity.")
         c.argument('user_assigned',
                    nargs='+',
                    validator=validate_app_force_set_user_identity_or_warning,
-                   help="Disable or assigned user-assigned managed identities to an app. Allowed values: \"disable\" or space-separated user-assigned managed identity resource IDs to assign.")
+                   help="Allowed values: [\"disable\", space-separated user-assigned managed identity resource IDs]. Use \"disable\" to remove all user-assigned managed identities, use resource IDs to assign or keep user-assigned managed identities.")
 
 
     def prepare_logs_argument(c):
