@@ -254,10 +254,8 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope',
-                   deprecate_info=c.deprecate(hide=True),
                    help="The scope the managed identity has access to")
         c.argument('role',
-                   deprecate_info=c.deprecate(hide=True, redirect="az role assignment"),
                    help="Role name or id the managed identity will be assigned")
         c.argument('system_assigned',
                    arg_type=get_three_state_flag(),
