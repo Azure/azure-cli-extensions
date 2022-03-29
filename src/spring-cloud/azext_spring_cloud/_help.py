@@ -295,9 +295,9 @@ helps['spring-cloud app identity force-set'] = """
     examples:
     - name: Force remove all managed identities on an app.
       text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned disable
-    - name: Force set app with only system-assigned managed identity.
+    - name: Force remove all user-assigned managed identities on an app, and enable or keep system-assigned managed identity.
       text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned enable --user-assigned disable
-    - name: Force set app with only user-assigned managed identities.
+    - name: Force remove system-assigned managed identity on an app, and assign or keep user-assigned managed identities.
       text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned IdentityResourceId1 IdentityResourceId2
 """
 
