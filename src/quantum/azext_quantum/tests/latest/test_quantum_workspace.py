@@ -13,7 +13,11 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS
+from ...operations.workspace import _validate_storage_account, _correct_provider_case, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS
+
+#>>>>>>
+from ...vendored_sdks.azure_mgmt_quantum.models import ProviderDescription
+#<<<<<<
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -163,3 +167,29 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
              assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "Storage account kind 'BlobStorage' is not supported.\nStorage account kinds currently supported: Storage, StorageV2"
+
+    def test_correct_provider_case(self):
+        test_providers_in_region = []
+        test_providers_in_region.append(ProviderDescription(id='ionq'))
+        test_providers_in_region.append(ProviderDescription(id='Microsoft'))
+        test_providers_in_region.append(ProviderDescription(id='quantinuum'))
+
+        # Calls with valid parameters should not raise errors
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'ionq'}) == 'ionq'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'IonQ'}) == 'ionq'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'IONQ'}) == 'ionq'
+        
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'microsoft'}) == 'Microsoft'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'Microsoft'}) == 'Microsoft'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'MICROSOFT'}) == 'Microsoft'
+
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'quantinuum'}) == 'quantinuum'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'Quantinuum'}) == 'quantinuum'
+        assert _correct_provider_case(test_providers_in_region, {'provider_id': 'QUANTINUUM'}) == 'quantinuum'
+
+        # Invalid provider ID should raise an error
+        try:
+             _correct_provider_case(test_providers_in_region, {'provider_id': 'LexCorp'})
+             assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "Unable to find provider ID in offerings list: \"LexCorp\""

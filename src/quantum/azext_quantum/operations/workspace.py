@@ -108,6 +108,7 @@ def _provider_terms_need_acceptance(cmd, provider):
 def _correct_provider_case(providers_in_region, provider):
     # Use the case of the provider ID from the offerings list, not the case of the command parameter value.
     # For example, use "quantinuum" even if "Quantinuum" was specified in the command
+    provider_id = None
     for provider_in_region in providers_in_region:
         if provider_in_region.id.lower() == provider['provider_id'].lower():
             provider_id = provider_in_region.id
