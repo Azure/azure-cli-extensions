@@ -265,6 +265,8 @@ helps['spring-cloud app identity assign'] = """
     examples:
     - name: Enable the system assigned identity.
       text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
+    - name: Enable the system assigned identity on an app with the 'Reader' role.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
     - name: Assign two user-assigned managed identities to an app.
       text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --user-assigned IdentityResourceId1 IdentityResourceId2
 """
