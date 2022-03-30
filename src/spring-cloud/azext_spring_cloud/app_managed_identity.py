@@ -353,7 +353,7 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
         # empty list means remove all user-assigned managed identites
         if user_identity_list_to_remove is not None and len(user_identity_list_to_remove) == 0:
             raise CLIInternalError("When remove all user-assigned managed identities, "
-                           "target identity type should not be {}.".format(new_identity_type))
+                                   "target identity type should not be {}.".format(new_identity_type))
         # non-empty list
         elif user_identity_list_to_remove:
             for id in user_identity_list_to_remove:
