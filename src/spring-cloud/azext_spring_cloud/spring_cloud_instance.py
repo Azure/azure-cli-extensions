@@ -8,7 +8,7 @@
 from ._utils import (wait_till_end, _get_rg_location)
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from knack.log import get_logger
-from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
+from .custom import (_update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
@@ -38,7 +38,7 @@ class DefaultSpringCloud:
         return resource
 
     def before_create(self, **kwargs):
-        _warn_enable_java_agent(**kwargs)
+        pass
 
     def after_create(self, **kwargs):
         _update_application_insights_asc_create(self.cmd,

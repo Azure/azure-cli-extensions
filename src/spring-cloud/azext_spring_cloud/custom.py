@@ -55,12 +55,6 @@ DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deplo
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def _warn_enable_java_agent(enable_java_agent, **_):
-    if enable_java_agent is not None:
-        logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
-                    "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
-
-
 def _update_application_insights_asc_create(cmd,
                                             resource_group,
                                             name,

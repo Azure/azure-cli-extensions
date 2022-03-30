@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
+from knack.deprecation import Deprecated
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
@@ -79,7 +80,7 @@ def load_arguments(self, _):
                    help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                         "This parameter is no longer needed and will be removed in future release.",
                    validator=validate_java_agent_parameters,
-                   deprecate_info=c.deprecate(target='--enable-java-agent', hide=True))
+                   deprecate_info=Deprecated(self.cli_ctx, message_func=_enable_java_agent_deprecation_info, hide=True))
         c.argument('app_insights_key',
                    arg_group='Application Insights',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
@@ -672,3 +673,8 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
             c.argument('service', service_name_type, validator=only_support_enterprise)
+
+
+def _enable_java_agent_deprecation_info(_):
+    return "Java in process agent is now GA-ed and used by default when Application Insights enabled. " \
+           "The parameter '--enable-java-agent' is no longer needed and will be removed in future release."
