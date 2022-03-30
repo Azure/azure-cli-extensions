@@ -1,5 +1,9 @@
 Release History
 ===============
+3.0.2
+---
+* Revert new RBAC requirement for Standard and Basic sku Spring resource for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.
+
 3.0.1
 ---
 * `az spring-cloud app deploy` has new preview argument "--build-env" to specify build module and jvm version and so on.
