@@ -78,8 +78,7 @@ def app_identity_remove(cmd,
     """
     app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(app):
-        raise CLIError("Failed to remove managed identities since app is in {} state."\
-                       .format(app.properties.provisioning_state))
+        raise CLIError("Failed to remove managed identities since app is in {} state.".format(app.properties.provisioning_state))
 
     if not app.identity:
         logger.warning("Skip remove managed identity since no identities assigned to app.")
@@ -389,5 +388,5 @@ def _get_user_identity_payload_for_force_set(user_assigned):
 
 def _app_not_updatable(app):
     return app.properties \
-           and app.properties.provisioning_state \
-           and app.properties.provisioning_state.lower() in [UPDATING_LOWER, DELETING_LOWER]
+        and app.properties.provisioning_state \
+        and app.properties.provisioning_state.lower() in [UPDATING_LOWER, DELETING_LOWER]

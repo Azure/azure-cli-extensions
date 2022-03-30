@@ -283,7 +283,6 @@ def load_arguments(self, _):
                    validator=validate_app_force_set_user_identity_or_warning,
                    help="Allowed values: [\"disable\", space-separated user-assigned managed identity resource IDs]. Use \"disable\" to remove all user-assigned managed identities, use resource IDs to assign or keep user-assigned managed identities.")
 
-
     def prepare_logs_argument(c):
         '''`app log tail` is deprecated. `app logs` is the new choice. They share the same command processor.'''
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')

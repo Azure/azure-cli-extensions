@@ -18,6 +18,7 @@ OBSOLETE_APP_IDENTITY_ASSIGN = "Assign managed identities without \"system-assig
 ENABLE_LOWER = "enable"
 DISABLE_LOWER = "disable"
 
+
 def validate_app_identity_remove_or_warning(namespace):
     if namespace.system_assigned is None and namespace.user_assigned is None:
         logger.warning(OBSOLETE_APP_IDENTITY_REMOVE)

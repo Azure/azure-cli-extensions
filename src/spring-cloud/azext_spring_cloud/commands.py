@@ -39,7 +39,7 @@ def load_command_table(self, _):
 
     app_managed_identity_command = CliCommandType(
         operations_tmpl='azext_spring_cloud.app_managed_identity#{}',
-        client_factory = cf_spring_cloud_20220301preview
+        client_factory=cf_spring_cloud_20220301preview
     )
 
     service_registry_cmd_group = CliCommandType(
