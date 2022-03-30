@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.1.0
+++++++++++++++++++
+* Migrate Extensions api-version to 2022-03-01
+* microsoft.azureml.kubernetes: Remove inference private review warning message
+* microsoft.openservicemesh: Enable System-assigned identity
+
 1.0.4
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Support SSL secret

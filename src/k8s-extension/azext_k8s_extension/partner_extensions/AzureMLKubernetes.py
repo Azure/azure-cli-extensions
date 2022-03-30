@@ -10,7 +10,7 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
-from azext_k8s_extension.utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models
@@ -339,7 +339,6 @@ class AzureMLKubernetes(DefaultExtension):
         enable_inference = str(enable_inference).lower() == 'true'
 
         if enable_inference:
-            logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
             self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings, release_namespace)
             self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
