@@ -167,7 +167,8 @@ def _do_ssh_op(cmd, op_info, op_call):
         if op_info.is_arc():
             # pylint: disable=broad-except
             try:
-                cert_lifetime = ssh_utils.get_certificate_lifetime(op_info.cert_file, op_info.ssh_client_folder).total_seconds()
+                cert_lifetime = ssh_utils.get_certificate_lifetime(op_info.cert_file,
+                                                                   op_info.ssh_client_folder).total_seconds()
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
 

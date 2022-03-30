@@ -73,12 +73,12 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_issue_config_cleanup_warning')
     @mock.patch('os.path.abspath')
     def test_write_ssh_config_ip_and_vm_compute_append(self, mock_abspath, mock_warning):
-        op_info = ssh_info.ConfigSession("config", "rg", "vm", "ip", None, None, False, False, "user", None, "port", "Microsoft.Compute", None, None, None)
+        op_info = ssh_info.ConfigSession("config", "rg", "vm", "ip", None, None, False, False, "user", None, "port", "Microsoft.Compute", None, None, "client")
         op_info.config_path = "config"
+        op_info.ssh_client_folder = "client"
         op_info.private_key_file = "priv"
         op_info.public_key_file = "pub"
         op_info.cert_file = "cert"
-        mock_abspath.return_value = "config"
         expected_lines = [
             "",
             "Host rg-vm",
@@ -100,7 +100,7 @@ class SSHUtilsTests(unittest.TestCase):
             ssh_utils.write_ssh_config(
                 op_info, True, True)
 
-        mock_warning.assert_called_once_with(True, True, False, "cert", None)
+        mock_warning.assert_called_once_with(True, True, False, "cert", None, "client")
         mock_open.assert_called_once_with("config", 'a', encoding='utf-8')
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
 
@@ -108,13 +108,13 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('os.path.abspath')
     @mock.patch.object(ssh_info.ConfigSession, '_create_relay_info_file')
     def test_write_ssh_config_arc_overwrite(self, mock_create_file, mock_abspath, mock_warning):
-        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, True, False, "user", None, "port", "Microsoft.HybridCompute", None, None, None)
+        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, True, False, "user", None, "port", "Microsoft.HybridCompute", None, None, "client")
         op_info.config_path = "config"
+        op_info.ssh_client_folder = "client"
         op_info.private_key_file = "priv"
         op_info.public_key_file = "pub"
         op_info.cert_file = "cert"
         op_info.proxy_path = "proxy"
-        mock_abspath.return_value = "config"
         mock_create_file.return_value = "relay"
         expected_lines = [
             "",
@@ -132,7 +132,7 @@ class SSHUtilsTests(unittest.TestCase):
             ssh_utils.write_ssh_config(
                 op_info, True, True)
 
-        mock_warning.assert_called_once_with(True, True, True, "cert", "relay")
+        mock_warning.assert_called_once_with(True, True, True, "cert", "relay", "client")
         mock_open.assert_called_once_with("config", 'w', encoding='utf-8')
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
     

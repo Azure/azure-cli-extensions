@@ -73,7 +73,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 def write_ssh_config(config_info, delete_keys, delete_cert):
     config_text = config_info.get_config_text()
     _issue_config_cleanup_warning(delete_cert, delete_keys, config_info.is_arc(),
-                                  config_info.cert_file, config_info.relay_info_path)
+                                  config_info.cert_file, config_info.relay_info_path,
+                                  config_info.ssh_client_folder)
     if config_info.overwrite:
         mode = 'w'
     else:
@@ -144,7 +145,9 @@ def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
         log_text = ssh_log.read()
         log_lines = log_text.splitlines()
-        if "debug1: Authentication succeeded" not in log_text or connection_status:
+        if ("debug1: Authentication succeeded" not in log_text and
+            not re.search("^Authenticated to .*\n", log_text, re.MULTILINE)) \
+           or connection_status:
             for line in log_lines:
                 if "debug1:" not in line:
                     print(line)
@@ -246,9 +249,13 @@ def do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log
         while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
             # pylint: disable=bare-except
+            # pylint: disable=anomalous-backslash-in-string
             try:
                 with open(log_file, 'r', encoding='utf-8') as ssh_client_log:
-                    match = "debug1: Authentication succeeded" in ssh_client_log.read()
+                    log_text = ssh_client_log.read()
+                    # The "debug1:..." message doesn't seems to exist in OpenSSH 3.9
+                    match = ("debug1: Authentication succeeded" in log_text or
+                             re.search("^Authenticated to .*\n", log_text, re.MULTILINE))
                     ssh_client_log.close()
             except:
                 # If there is an exception, wait for a little bit and try again
@@ -317,12 +324,12 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path):
+def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path, ssh_client_folder):
     if delete_cert:
         colorama.init()
         # pylint: disable=broad-except
         try:
-            expiration = get_certificate_start_and_end_times(cert_file)[1]
+            expiration = get_certificate_start_and_end_times(cert_file, ssh_client_folder)[1]
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
             print(Fore.GREEN + f"Generated SSH certificate {cert_file} is valid until {expiration} in local time."
                   + Style.RESET_ALL)
