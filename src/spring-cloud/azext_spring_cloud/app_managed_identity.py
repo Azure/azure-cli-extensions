@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from ._clierror import ConflictRequestError
 from ._utils import wait_till_end
 from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
 from azure.core.exceptions import HttpResponseError
@@ -11,7 +12,7 @@ from azure.cli.core.commands import arm as _arm
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import (ResourceType, get_sdk)
 from knack.log import get_logger
-from knack.util import CLIError
+from knack.util import (AzureInternalError, CLIInternalError)
 from time import sleep
 
 
@@ -78,13 +79,13 @@ def app_identity_remove(cmd,
     """
     app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(app):
-        raise CLIError("Failed to remove managed identities since app is in {} state.".format(app.properties.provisioning_state))
+        raise ConflictRequestError("Failed to remove managed identities since app is in {} state.".format(app.properties.provisioning_state))
 
     if not app.identity:
         logger.warning("Skip remove managed identity since no identities assigned to app.")
         return
     if not app.identity.type:
-        raise CLIError("Invalid existed identity type {}.".format(app.identity.type))
+        raise AzureInternalError("Invalid existed identity type {}.".format(app.identity.type))
     if app.identity.type == models_20220301preview.ManagedIdentityType.NONE:
         logger.warning("Skip remove managed identity since identity type is {}.".format(app.identity.type))
         return
@@ -127,7 +128,7 @@ def app_identity_force_set(cmd,
     """
     exist_app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(exist_app):
-        raise CLIError("Failed to force set managed identities since app is in {} state.".format(
+        raise ConflictRequestError("Failed to force set managed identities since app is in {} state.".format(
             exist_app.properties.provisioning_state))
 
     new_identity_type = _get_new_identity_type_for_force_set(system_assigned, user_assigned)
@@ -164,7 +165,7 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
     """
     app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(app):
-        raise CLIError("Failed to enable system-assigned managed identity since app is in {} state.".format(
+        raise ConflictRequestError("Failed to enable system-assigned managed identity since app is in {} state.".format(
             app.properties.provisioning_state))
 
     new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED
@@ -181,7 +182,7 @@ def _legacy_app_identity_assign(cmd, client, resource_group, service, name):
 def _new_app_identity_assign(cmd, client, resource_group, service, name, system_assigned, user_assigned):
     app = client.apps.get(resource_group, service, name)
     if _app_not_updatable(app):
-        raise CLIError(
+        raise ConflictRequestError(
             "Failed to assign managed identities since app is in {} state.".format(app.properties.provisioning_state))
 
     new_identity_type = _get_new_identity_type_for_assign(app, system_assigned, user_assigned)
@@ -220,7 +221,7 @@ def _get_new_identity_type_for_assign(app, system_assigned, user_assigned):
             new_identity_type = models_20220301preview.ManagedIdentityType.USER_ASSIGNED
 
     if not new_identity_type or new_identity_type == models_20220301preview.ManagedIdentityType.NONE:
-        raise CLIError("Internal error: invalid new identity type:{}.".format(new_identity_type))
+        raise CLIInternalError("Internal error: invalid new identity type:{}.".format(new_identity_type))
 
     return new_identity_type
 
@@ -251,7 +252,7 @@ def _create_role_assignment(cmd, client, resource_group, service, name, role, sc
     app = client.apps.get(resource_group, service, name)
 
     if not app.identity or not app.identity.principal_id:
-        raise CLIError(
+        raise AzureInternalError(
             "Failed to create role assignment without object ID(principal ID) of system-assigned managed identity.")
 
     identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
@@ -335,7 +336,7 @@ def _get_new_identity_type_for_remove(exist_identity_type, is_remove_system_iden
         else:
             new_identity_type = models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED
     else:
-        raise CLIError("Invalid identity type: {}.".format(exist_identity_type_str))
+        raise AzureInternalError("Invalid identity type: {}.".format(exist_identity_type_str))
 
     return new_identity_type
 
@@ -351,7 +352,7 @@ def _get_user_identity_payload_for_remove(new_identity_type, user_identity_list_
                              models_20220301preview.ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED):
         # empty list means remove all user-assigned managed identites
         if user_identity_list_to_remove is not None and len(user_identity_list_to_remove) == 0:
-            raise CLIError("When remove all user-assigned managed identities, "
+            raise CLIInternalError("When remove all user-assigned managed identities, "
                            "target identity type should not be {}.".format(new_identity_type))
         # non-empty list
         elif user_identity_list_to_remove:
