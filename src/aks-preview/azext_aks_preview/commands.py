@@ -18,8 +18,8 @@ from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 from ._format import aks_pod_identities_table_format
 from ._format import aks_pod_identity_exceptions_table_format
-from ._format import aks_nodepool_show_snapshot_table_format
-from ._format import aks_nodepool_list_snapshot_table_format
+from ._format import aks_show_nodepool_snapshot_table_format
+from ._format import aks_list_nodepool_snapshot_table_format
 from ._format import aks_show_snapshot_table_format
 from ._format import aks_list_snapshot_table_format
 
@@ -144,9 +144,9 @@ def load_command_table(self, _):
     # AKS nodepool snapshot commands
     with self.command_group('aks nodepool snapshot', nodepool_snapshot_sdk, client_factory=cf_nodepool_snapshots) as g:
         g.custom_command('list', 'aks_nodepool_snapshot_list',
-                         table_transformer=aks_nodepool_list_snapshot_table_format)
+                         table_transformer=aks_list_nodepool_snapshot_table_format)
         g.custom_show_command('show', 'aks_nodepool_snapshot_show',
-                              table_transformer=aks_nodepool_show_snapshot_table_format)
+                              table_transformer=aks_show_nodepool_snapshot_table_format)
         g.custom_command('create', 'aks_nodepool_snapshot_create',
                          supports_no_wait=True)
         g.custom_command('delete', 'aks_nodepool_snapshot_delete',

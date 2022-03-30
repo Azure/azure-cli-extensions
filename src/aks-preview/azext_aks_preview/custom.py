@@ -3079,7 +3079,7 @@ def aks_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable
 def aks_nodepool_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                                  client,
                                  resource_group_name,
-                                 name,
+                                 snapshot_name,
                                  nodepool_id,
                                  location=None,
                                  tags=None,
@@ -3095,35 +3095,35 @@ def aks_nodepool_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-m
     )
 
     snapshot = Snapshot(
-        name=name,
+        name=snapshot_name,
         tags=tags,
         location=location,
         creation_data=creationData
     )
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return client.create_or_update(resource_group_name, name, snapshot, headers=headers)
+    return client.create_or_update(resource_group_name, snapshot_name, snapshot, headers=headers)
 
 
-def aks_nodepool_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
-    snapshot = client.get(resource_group_name, name)
+def aks_nodepool_snapshot_show(cmd, client, resource_group_name, snapshot_name):   # pylint: disable=unused-argument
+    snapshot = client.get(resource_group_name, snapshot_name)
     return snapshot
 
 
 def aks_nodepool_snapshot_delete(cmd,    # pylint: disable=unused-argument
                                  client,
                                  resource_group_name,
-                                 name,
+                                 snapshot_name,
                                  no_wait=False,
                                  yes=False):
 
     from knack.prompting import prompt_y_n
     msg = 'This will delete the nodepool snapshot "{}" in resource group "{}", Are you sure?'.format(
-        name, resource_group_name)
+        snapshot_name, resource_group_name)
     if not yes and not prompt_y_n(msg, default="n"):
         return None
 
-    return client.delete(resource_group_name, name)
+    return client.delete(resource_group_name, snapshot_name)
 
 
 def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable=unused-argument

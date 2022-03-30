@@ -1605,7 +1605,7 @@ helps['aks nodepool snapshot list'] = """
 
 helps['aks nodepool snapshot create'] = """
     type: command
-    short-summary: Create a snapshot of a node pool.
+    short-summary: Create a nodepool snapshot.
     parameters:
         - name: --nodepool-id
           type: string

@@ -217,12 +217,12 @@ def aks_pod_identities_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
-def aks_nodepool_list_snapshot_table_format(results):
+def aks_list_nodepool_snapshot_table_format(results):
     """"Format a list of nodepool snapshots as summary results for display with "-o table"."""
     return [_aks_nodepool_snapshot_table_format(r) for r in results]
 
 
-def aks_nodepool_show_snapshot_table_format(result):
+def aks_show_nodepool_snapshot_table_format(result):
     """Format a nodepool snapshot as summary results for display with "-o table"."""
     return [_aks_nodepool_snapshot_table_format(result)]
 
