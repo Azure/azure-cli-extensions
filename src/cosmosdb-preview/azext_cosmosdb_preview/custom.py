@@ -1153,19 +1153,3 @@ def cosmosdb_data_transfer_copy_job(client,
                          account_name=account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
-
-
-def cosmosdb_dts_list(client,
-                      resource_group_name,
-                      account_name):
-    return client.list_by_database_account(resource_group_name=resource_group_name,
-                                           account_name=account_name)
-
-
-def cosmosdb_dts_show(client,
-                      resource_group_name,
-                      account_name,
-                      job_name):
-    return client.get(resource_group_name=resource_group_name,
-                      account_name=account_name,
-                      job_name=job_name)

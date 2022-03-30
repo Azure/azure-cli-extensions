@@ -173,5 +173,5 @@ def load_command_table(self, _):
         g.custom_command('export', 'cosmosdb_data_transfer_export_job')
         g.custom_command('import', 'cosmosdb_data_transfer_import_job')
         g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
-        g.custom_command('list', 'cosmosdb_dts_list')
-        g.custom_show_command('show', 'cosmosdb_dts_show')
+        g.command('list', 'list_by_database_account')
+        g.show_command('show', 'get')
