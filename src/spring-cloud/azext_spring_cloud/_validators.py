@@ -12,7 +12,7 @@ import zipfile
 from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError, MutuallyExclusiveArgumentError
 from knack.validators import DefaultStr
 from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
@@ -224,10 +224,15 @@ def validate_tracing_parameters_asc_update(namespace):
 def validate_java_agent_parameters(namespace):
     """TODO (jiec) Deco this function when 'enable-java-agent' is decommissioned.
     """
-    if namespace.disable_app_insights and namespace.enable_java_agent:
-        raise InvalidArgumentValueError(
+    if namespace.disable_app_insights is not None and namespace.enable_java_agent is not None:
+        raise MutuallyExclusiveArgumentError(
             "Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
             "can not be set at the same time.")
+    if namespace.enable_java_agent == True:
+        namespace.disable_app_insights = False
+    elif namespace.enable_java_agent == False:
+        namespace.disable_app_insights = True
+    namespace.enable_java_agent = None
 
 
 def validate_app_insights_parameters(namespace):
