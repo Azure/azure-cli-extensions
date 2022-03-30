@@ -488,6 +488,12 @@ def validate_nodepool_id(namespace):
         raise InvalidArgumentValueError("--nodepool-id is not a valid Azure resource ID.")
 
 
+def validate_cluster_id(namespace):
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(namespace.cluster_id):
+        raise InvalidArgumentValueError("--cluster-id is not a valid Azure resource ID.")
+
+
 def validate_snapshot_id(namespace):
     if namespace.snapshot_id:
         from msrestazure.tools import is_valid_resource_id
