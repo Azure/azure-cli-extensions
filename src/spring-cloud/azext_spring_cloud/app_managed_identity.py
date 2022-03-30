@@ -6,13 +6,13 @@
 from ._clierror import ConflictRequestError
 from ._utils import wait_till_end
 from .vendored_sdks.appplatform.v2022_03_01_preview import models as models_20220301preview
+from azure.cli.core.azclierror import (AzureInternalError, CLIInternalError)
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.commands import arm as _arm
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import (ResourceType, get_sdk)
 from knack.log import get_logger
-from knack.util import (AzureInternalError, CLIInternalError)
 from time import sleep
 
 
