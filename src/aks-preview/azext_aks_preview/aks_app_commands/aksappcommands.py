@@ -2,38 +2,40 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 #
-
+from __future__ import annotations
 import shutil
 import subprocess
 import requests
 import os
 import platform
 from pathlib import Path
+from knack.prompting import prompt_y_n
+
 
 
 def aks_web_app_init():
-    filePath = binaryPreCheck()
+    filePath = _binary_pre_check()
     if filePath:
         isRunSuccessful = run_binary(filePath)
-        if isRunSuccessful is 0:
+        if isRunSuccessful == 0:
             cmd_finish()
             return
 
     raise ValueError("Binary was NOT executed successfully")
 
 # If setup is valid this method returns the correct binary path to execute
-def binaryPreCheck() -> str:
+def _binary_pre_check() -> str:
     print("The DraftV2 setup is in progress ...")
 
-    draftV2BinaryPath = findExistingPath(getPotentialPaths())
+    draftV2BinaryPath = _find_existing_path(get_potential_paths())
     if draftV2BinaryPath:
         return draftV2BinaryPath
 
     print("DraftV2 binary not found")
-    return downloadBinary()
+    return download_binary()
 
 
-def findExistingPath(paths) -> str:
+def _find_existing_path(paths: List[str]) -> str:
     print("Checking if DraftV2 binary exists ...")
 
     operatingSystem = platform.system()
@@ -52,7 +54,7 @@ def findExistingPath(paths) -> str:
     return ""
 
 # Returns a list of potential draftV2 binary paths
-def getPotentialPaths():
+def get_potential_paths() -> List[str]:
     result = [str(Path.home()) + "/" +".aksapp"]
     paths = os.environ['PATH'].split(':')
 
@@ -62,7 +64,7 @@ def getPotentialPaths():
     return result
 
 
-def run_binary(path):
+def run_binary(path: str):
     if path is None:
         raise ValueError("The given Binary path was null or empty")
 
@@ -79,11 +81,12 @@ def cmd_finish():
     print("We are done Stop.")
 
 
-def downloadBinary() -> str:
+def download_binary() -> str:
     # prompt user to download binary. If users says no, we error out and tell them that this requires the binary
-    permissionToDownload = input("The required binary was not found. Would you like us to download the required binary for you? Y/n: ")
+    from knack.prompting import prompt_y_n
+    msg = 'he required binary was not found. Would you like us to download the required binary for you?'
 
-    if permissionToDownload.lower() != "y" :
+    if not prompt_y_n(msg, default="n"):
         raise ValueError("`az aks app` requires the missing dependency")
 
     print("Attempting to download dependency...")
