@@ -9,6 +9,7 @@ from msrestazure.tools import resource_id
 from ...vendored_sdks.appplatform.v2022_01_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
+from ...custom import (app_set_deployment, app_unset_deployment)
 try:
     import unittest.mock as mock
 except ImportError:
@@ -60,6 +61,50 @@ class BasicTest(unittest.TestCase):
         deployment.sku.tier = sku
         deployment.sku.name = _get_sku_name(sku)
         return deployment
+
+
+class TestSetActiveDeploy(BasicTest):
+    def test_blue_green_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        call_args = client.apps.begin_set_active_deployments.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('default', request.active_deployment_names[0])
+
+    def test_unset_active_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        call_args = client.apps.begin_set_active_deployments.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual(0, len(request.active_deployment_names))
+
+    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    def test_blue_green_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
+        client = self._get_basic_mock_client(sku='Standard')
+        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        call_args = client_mock.apps.begin_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('default', request.properties.active_deployment_name)
+
+    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    def test_unset_active_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
+        client = self._get_basic_mock_client(sku='Standard')
+        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        call_args = client_mock.apps.begin_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('', request.properties.active_deployment_name)
 
 
 class TestAppDeploy_Patch(BasicTest):

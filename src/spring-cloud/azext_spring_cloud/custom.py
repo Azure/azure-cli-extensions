@@ -16,7 +16,7 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri)
+from ._utils import (get_portal_uri, get_spring_cloud_sku)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
@@ -25,6 +25,7 @@ from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_manageme
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
+from ._client_factory import (cf_spring_cloud)
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -464,17 +465,34 @@ def app_identity_show(cmd, client, resource_group, service, name):
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
-    active_deployment_collection = models_20220101preview.ActiveDeploymentCollection(
-        active_deployment_names=[deployment]
-    )
-    return client.apps.begin_set_active_deployments(resource_group, service, name, active_deployment_collection)
+    sku = get_spring_cloud_sku(client, resource_group, service)
+    if sku.tier == 'Enterprise':
+        return _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment)
+    else:
+        return _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deployment)
 
 
 def app_unset_deployment(cmd, client, resource_group, service, name):
+    sku = get_spring_cloud_sku(client, resource_group, service)
+    if sku.tier == 'Enterprise':
+        return _set_active_in_preview_api(cmd, client, resource_group, service, name)
+    else:
+        return _set_active_in_lagecy_api(cmd, client, resource_group, service, name)
+
+
+def _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment=None):
     active_deployment_collection = models_20220101preview.ActiveDeploymentCollection(
-        active_deployment_names=[]
+        active_deployment_names=[x for x in [deployment] if x is not None]
     )
     return client.apps.begin_set_active_deployments(resource_group, service, name, active_deployment_collection)
+
+
+def _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deployment=''):
+    app = models.AppResource(
+        properties=models.AppResourceProperties(active_deployment_name=deployment)
+    )
+    client = cf_spring_cloud(cmd.cli_ctx)
+    return client.apps.begin_update(resource_group, service, name, app)
 
 
 def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
