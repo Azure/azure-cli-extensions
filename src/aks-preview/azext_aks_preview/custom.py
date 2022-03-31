@@ -1016,7 +1016,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                 sas_token=None,
                 container_logs=None,
                 kube_objects=None,
-                node_logs=None):
+                node_logs=None,
+                node_logs_windows=None):
     colorama.init()
 
     mc = client.get(resource_group_name, name)
@@ -1115,30 +1116,55 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     container_name = normalized_container_name[:len_of_container_name]
 
     sas_token = sas_token.strip('?')
-    deployment_yaml = _read_periscope_yaml()
-    deployment_yaml = deployment_yaml.replace(
-        "# <accountName, string>", storage_account_name)
-    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
-                                              (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace(
-        "# <containerName, string>", container_name)
 
-    yaml_lines = deployment_yaml.splitlines()
-    for index, line in enumerate(yaml_lines):
-        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line and container_logs is not None:
-            yaml_lines[index] = line + ' ' + container_logs
-        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line and kube_objects is not None:
-            yaml_lines[index] = line + ' ' + kube_objects
-        if "DIAGNOSTIC_NODELOGS_LIST" in line and node_logs is not None:
-            yaml_lines[index] = line + ' ' + node_logs
-    deployment_yaml = '\n'.join(yaml_lines)
+    diag_config_vars = {
+        'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
+        'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
+        'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs,
+        'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
+    }
 
-    fd, temp_yaml_path = tempfile.mkstemp()
-    temp_yaml_file = os.fdopen(fd, 'w+t')
+    diag_content = "\n".join(f'  - {k}="{v}"' for k,v in diag_config_vars.items() if v is not None)
+
+    storage_config_vars = {
+        'AZURE_BLOB_ACCOUNT_NAME': storage_account_name,
+        'AZURE_BLOB_SAS_KEY': "?" + sas_token,
+        'AZURE_BLOB_CONTAINER_NAME': container_name
+    }
+
+    storage_content = "\n".join(f'  - {k}="{v}"' for k,v in storage_config_vars.items())
+
+    kustomize_yaml = f"""
+resources:
+- https://github.com/peterbom/aks-periscope//deployment/base?ref=experiment/windows
+
+images:
+- name: periscope-linux
+  newName: ghcr.io/peterbom/aks/periscope
+  newTag: 0.0.8
+- name: periscope-windows
+  newName: ghcr.io/peterbom/aks/periscope-win
+  newTag: 0.0.8
+
+configMapGenerator:
+- name: diagnostic-config
+  behavior: merge
+  literals:
+{diag_content}
+
+secretGenerator:
+- name: azureblob-secret
+  behavior: replace
+  literals:
+{storage_content}
+""" # .format(diag_content = diag_content, storage_content = storage_content)
+
+    kustomize_folder = tempfile.mkdtemp()
+    kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
-        temp_yaml_file.write(deployment_yaml)
-        temp_yaml_file.flush()
-        temp_yaml_file.close()
+        with os.fdopen(os.open(kustomize_file_path, os.O_RDWR | os.O_CREAT), 'w+t') as kustomize_file:
+            kustomize_file.write(kustomize_yaml)
+
         try:
             print()
             print("Cleaning up aks-periscope resources if existing")
@@ -1175,12 +1201,14 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
             print()
             print("Deploying aks-periscope")
-            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
-                                     temp_yaml_path, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
+            
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
+                                     kustomize_folder, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output)
     finally:
-        os.remove(temp_yaml_path)
+        os.remove(kustomize_file_path)
+        os.rmdir(kustomize_folder)
 
     print()
 
@@ -1202,16 +1230,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
-
-
-def _read_periscope_yaml():
-    curr_dir = os.path.dirname(os.path.realpath(__file__))
-    periscope_yaml_file = os.path.join(
-        curr_dir, "deploymentyaml", "aks-periscope.yaml")
-    yaml_file = open(periscope_yaml_file, "r")
-    data_loaded = yaml_file.read()
-
-    return data_loaded
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
