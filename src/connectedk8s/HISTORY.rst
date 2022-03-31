@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.8
+++++++
+
+* Bumping up CSP version to 1.3.019103
+
 1.2.7
 ++++++
 
