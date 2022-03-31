@@ -2788,8 +2788,10 @@ def _get_http_proxy_config(file_path):
 
     return config_object
 
+
 def aks_app_init():
     aks_web_app_init()
+
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
