@@ -111,7 +111,7 @@ def download_binary() -> str:
         # Split URL to get the file name "draftv2-darwin-amd64"
         os.chdir(binaryPath)
         # Writing the file to the local file system
-        with open(filename,'wb') as output_file:
+        with open(filename, 'wb') as output_file:
             output_file.write(req.content)
         print("Download of DraftV2 binary was successful with a status code: " + str(req.status_code))
         os.chmod(binaryPath + "/" + filename, 0o777)
