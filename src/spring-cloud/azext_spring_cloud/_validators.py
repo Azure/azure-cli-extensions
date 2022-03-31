@@ -18,6 +18,7 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
+from ._app_insights import get_app_insights_connection_string
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from .vendored_sdks.appplatform.v2020_07_01 import models
 
@@ -208,6 +209,7 @@ def validate_tracing_parameters_asc_create(cmd, namespace):
     validate_java_agent_parameters(namespace)
     _validate_app_insights_mutual_exclude_parameters(namespace)
     _validate_app_insights_parameters(namespace)
+    _validate_get_connection_string_from_app_insights(cmd, namespace)
 
 
 def validate_tracing_parameters_asc_update(namespace):
@@ -268,6 +270,16 @@ def _validate_app_insights_mutual_exclude_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
             "can not be set with '--disable-app-insights'.")
+
+
+def _validate_get_connection_string_from_app_insights(cmd, namespace):
+    """
+    Try get connection string by application insights name or resource ID.
+    And convert to connection string.
+    """
+    if namespace.app_insights:
+        namespace.app_insights_key = get_app_insights_connection_string(cmd, namespace.resource_group, namespace.app_insights)
+        namespace.app_insights = None
 
 
 def validate_vnet(cmd, namespace):
