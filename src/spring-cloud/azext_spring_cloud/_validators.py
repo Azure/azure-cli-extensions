@@ -201,11 +201,8 @@ def validate_jvm_options(namespace):
 
 
 def validate_tracing_parameters_asc_create(namespace):
-    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
-            and namespace.disable_app_insights:
-        raise InvalidArgumentValueError(
-            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
-            "can not be set with '--disable-app-insights'.")
+    validate_java_agent_parameters(namespace)
+    _validate_app_insights_mutual_exclude_parameters(namespace)
     _validate_app_insights_parameters(namespace)
 
 
@@ -259,6 +256,14 @@ def _validate_app_insights_parameters(namespace):
         raise InvalidArgumentValueError("Invalid value: '--app-insights-key' can not be empty.")
     if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise InvalidArgumentValueError("Invalid value: Sampling Rate must be in the range [0,100].")
+
+
+def _validate_app_insights_mutual_exclude_parameters(namespace):
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
+            and namespace.disable_app_insights:
+        raise MutuallyExclusiveArgumentError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
+            "can not be set with '--disable-app-insights'.")
 
 
 def validate_vnet(cmd, namespace):
