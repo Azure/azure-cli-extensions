@@ -13,7 +13,6 @@ from pathlib import Path
 from knack.prompting import prompt_y_n
 
 
-
 def aks_web_app_init():
     filePath = _binary_pre_check()
     if filePath:
@@ -24,10 +23,10 @@ def aks_web_app_init():
 
     raise ValueError("Binary was NOT executed successfully")
 
+
 # If setup is valid this method returns the correct binary path to execute
 def _binary_pre_check() -> str:
     print("The DraftV2 setup is in progress ...")
-
     draftV2BinaryPath = _find_existing_path(get_potential_paths())
     if draftV2BinaryPath:
         return draftV2BinaryPath
@@ -38,7 +37,6 @@ def _binary_pre_check() -> str:
 
 def _find_existing_path(paths: List[str]) -> str:
     print("Checking if DraftV2 binary exists ...")
-
     operatingSystem = platform.system()
     # Filename depends on the operating system
     filename = "draftv2-" + operatingSystem.lower() + "-amd64"
@@ -53,6 +51,7 @@ def _find_existing_path(paths: List[str]) -> str:
             print("Existing binary found at: " + binaryFilePath)
             return binaryFilePath
     return ""
+
 
 # Returns a list of potential draftV2 binary paths
 def get_potential_paths() -> List[str]:
@@ -95,12 +94,11 @@ def download_binary() -> str:
     operatingSystem = platform.system()
     draftV2ReleaseVersion = "v0.0.5"
     filename = "draftv2-" + operatingSystem.lower() + "-amd64"
-    url = "https://github.com/Azure/aks-app/releases/download/"+ releaseVersion + "/" +  filename
+    url = "https://github.com/Azure/aks-app/releases/download/"+ draftV2ReleaseVersion + "/" +  filename
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
     req = requests.get(url, headers=headers)
-
     binaryPath = str(Path.home()) + "/" +".aksapp"
 
     # Directory
@@ -121,5 +119,3 @@ def download_binary() -> str:
 
     print("Download of DraftV2 binary was unsuccessful with a status code: " + str(req.status_code))
     return None
-
-
