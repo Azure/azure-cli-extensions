@@ -55,7 +55,7 @@ def _find_existing_path(paths: List[str]) -> str:
 
 # Returns a list of potential draftV2 binary paths
 def get_potential_paths() -> List[str]:
-    result = [str(Path.home()) + "/" +".aksapp"]
+    result = [str(Path.home()) + "/" + ".aksapp"]
     paths = os.environ['PATH'].split(':')
 
     for path in paths:
@@ -94,7 +94,7 @@ def download_binary() -> str:
     operatingSystem = platform.system()
     draftV2ReleaseVersion = "v0.0.5"
     filename = "draftv2-" + operatingSystem.lower() + "-amd64"
-    url = "https://github.com/Azure/aks-app/releases/download/"+ draftV2ReleaseVersion + "/" +  filename
+    url = "https://github.com/Azure/aks-app/releases/download/" + draftV2ReleaseVersion + "/" +  filename
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
@@ -102,7 +102,7 @@ def download_binary() -> str:
     binaryPath = str(Path.home()) + "/" +".aksapp"
 
     # Directory
-    if os.path.exists(binaryPath) == False:
+    if os.path.exists(binaryPath) is False:
         os.chdir(str(Path.home()))
         os.mkdir(".aksapp")
         print("Directory '% s' was created inside of your HOME directory" % ".aksapp")
