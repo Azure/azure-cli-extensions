@@ -12,7 +12,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
                           validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
-                          validate_tracing_parameters_asc_update,
+                          validate_spring_cloud_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_jar)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
@@ -78,6 +78,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                         "This parameter is no longer needed and will be removed in future release.",
+                   validator=validate_spring_cloud_create,
                    deprecate_info=Deprecated(self.cli_ctx, message_func=_enable_java_agent_deprecation_info, hide=True))
         c.argument('app_insights_key',
                    arg_group='Application Insights',
