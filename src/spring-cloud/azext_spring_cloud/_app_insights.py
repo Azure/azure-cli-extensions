@@ -27,11 +27,11 @@ def get_connection_string_from_exist_or_new_create_app_insights(cmd,
     3. Create an app insights, and get connection string from it
     """
     return app_insights_key or \
-           _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
+           get_app_insights_connection_string(cmd, resource_group, app_insights) or \
            _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
 
 
-def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
+def get_app_insights_connection_string(cmd, resource_group, app_insights):
     """Get connection string from:
     1) application insights name
     2) application insights resource id
@@ -42,10 +42,10 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
     if is_valid_resource_id(app_insights):
         resource_id_dict = parse_resource_id(app_insights)
-        connection_string = _get_app_insights_connection_string(
+        connection_string = get_app_insights_connection_string_by_name(
             cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
     else:
-        connection_string = _get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
+        connection_string = get_app_insights_connection_string_by_name(cmd.cli_ctx, resource_group, app_insights)
 
     if not connection_string:
         raise InvalidArgumentValueError("Cannot find Connection string from application insights:{}".format(app_insights))
@@ -53,7 +53,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     return connection_string
 
 
-def _get_app_insights_connection_string(cli_ctx, resource_group, name):
+def get_app_insights_connection_string_by_name(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
 
