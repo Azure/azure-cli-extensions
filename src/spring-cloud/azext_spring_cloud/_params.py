@@ -12,7 +12,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
                           validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
-                          validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
+                          validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_jar)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
@@ -78,30 +78,25 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                         "This parameter is no longer needed and will be removed in future release.",
-                   validator=validate_tracing_parameters_asc_create,
                    deprecate_info=Deprecated(self.cli_ctx, message_func=_enable_java_agent_deprecation_info, hide=True))
         c.argument('app_insights_key',
                    arg_group='Application Insights',
-                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
-                   validator=validate_tracing_parameters_asc_create)
+                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.")
         c.argument('app_insights',
                    arg_group='Application Insights',
                    help="Name of the existing Application Insights in the same Resource Group. "
-                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
-                   validator=validate_tracing_parameters_asc_create)
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.")
         c.argument('sampling_rate',
                    type=float,
                    arg_group='Application Insights',
-                   help="Sampling Rate of application insights. Minimum is 0, maximum is 100.",
-                   validator=validate_tracing_parameters_asc_create)
+                   help="Sampling Rate of application insights. Minimum is 0, maximum is 100.")
         c.argument('disable_app_insights',
                    arg_type=get_three_state_flag(),
                    arg_group='Application Insights',
                    help="Disable Application Insights, "
                         "if not disabled and no existing Application Insights specified with "
                         "--app-insights-key or --app-insights, "
-                        "will create a new Application Insights instance in the same resource group.",
-                   validator=validate_tracing_parameters_asc_create)
+                        "will create a new Application Insights instance in the same resource group.")
         c.argument('zone_redundant',
                    arg_type=get_three_state_flag(),
                    help="Create your Azure Spring Cloud service in an Azure availability zone or not, "
