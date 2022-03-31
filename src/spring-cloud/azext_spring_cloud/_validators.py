@@ -288,7 +288,7 @@ def _fail_fast_create_app_insights(cmd, namespace):
         return
 
     connection_string = get_connection_string_from_exist_or_new_create_app_insights(cmd, namespace.resource_group,
-                                                                                    namespace.service_name,
+                                                                                    namespace.name,
                                                                                     namespace.location,
                                                                                     namespace.app_insights_key,
                                                                                     namespace.app_insights)
