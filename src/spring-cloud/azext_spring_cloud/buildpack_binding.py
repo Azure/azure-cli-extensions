@@ -83,7 +83,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
                            'if needed.'
 
     sampling_rate = sampling_rate or 10
-    connection_string = _safe_get_connection(cmd, resource_group, service_name, location, app_insights_key)
+    connection_string = _safe_get_connection_string(cmd, resource_group, service_name, location, app_insights_key)
     if not connection_string:
         return None
 
@@ -95,7 +95,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
     return models.BuildpackBindingProperties(binding_type="ApplicationInsights", launch_properties=launch_properties)
 
 
-def _safe_get_connection(cmd, resource_group, service_name, location, app_insights_key):
+def _safe_get_connection_string(cmd, resource_group, service_name, location, app_insights_key):
     connection_string = app_insights_key
     if not connection_string:
         try:
