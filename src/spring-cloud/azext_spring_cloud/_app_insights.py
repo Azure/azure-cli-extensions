@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from ._utils import get_portal_uri
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
@@ -26,13 +26,9 @@ def get_connection_string_from_exist_or_new_create_app_insights(cmd,
     2. From app_insights_name
     3. Create an app insights, and get connection string from it
     """
-    connection_string = app_insights_key or \
-                        _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
-                        _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
-
-    if not connection_string:
-        raise InvalidArgumentValueError('Error while trying to get the ConnectionString of Application Insights for the Azure Spring Cloud. '
-                                        'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+    return app_insights_key or \
+           _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
+           _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
 
 
 def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
@@ -52,8 +48,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
         connection_string = _get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
 
     if not connection_string:
-        logger.warning(
-            "Cannot find Connection string from application insights:{}".format(app_insights))
+        raise InvalidArgumentValueError("Cannot find Connection string from application insights:{}".format(app_insights))
 
     return connection_string
 
@@ -69,22 +64,12 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
 
 
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
-
-    try:
-        created_app_insights = _try_create_application_insights(cmd, resource_group, service_name, location)
-        if created_app_insights:
-            return created_app_insights.connection_string
-    except Exception:  # pylint: disable=broad-except
-        logger.warning(
-            'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
-            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
-    return None
+    created_app_insights = _try_create_application_insights(cmd, resource_group, service_name, location)
+    return created_app_insights.connection_string
 
 
 def _try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
-                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
-                           'if needed.'
+    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud.'
 
     ai_resource_group_name = resource_group
     ai_name = name
@@ -102,8 +87,7 @@ def _try_create_application_insights(cmd, resource_group, name, location):
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
 
     if not appinsights or not appinsights.connection_string:
-        logger.warning(creation_failed_warn)
-        return None
+        raise CLIInternalError(creation_failed_warn)
 
     portal_url = get_portal_uri(cmd.cli_ctx)
     # We make this success message as a warning to no interfere with regular JSON output in stdout
