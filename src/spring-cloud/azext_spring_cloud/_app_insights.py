@@ -18,8 +18,8 @@ def get_connection_string_from_exist_or_new_create_app_insights(cmd,
                                                                  resource_group,
                                                                  service_name,
                                                                  location,
-                                                                 app_insights_key,
-                                                                 app_insights):
+                                                                 app_insights_key=None,
+                                                                 app_insights=None):
     """
     To get connection string in order, and return after first condition met.
     1. From app_insights_key

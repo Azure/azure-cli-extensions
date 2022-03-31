@@ -18,6 +18,7 @@ from azure.mgmt.core.tools import is_valid_resource_id
 from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
+from ._app_insights import get_connection_string_from_exist_or_new_create_app_insights
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
 from .vendored_sdks.appplatform.v2020_07_01 import models
 
@@ -201,13 +202,14 @@ def validate_jvm_options(namespace):
 
 
 def validate_spring_cloud_create(cmd, namespace):
-    validate_tracing_parameters_asc_create(namespace)
+    validate_tracing_parameters_asc_create(cmd, namespace)
 
 
-def validate_tracing_parameters_asc_create(namespace):
+def validate_tracing_parameters_asc_create(cmd, namespace):
     validate_java_agent_parameters(namespace)
     _validate_app_insights_mutual_exclude_parameters(namespace)
     _validate_app_insights_parameters(namespace)
+    _fail_fast_create_app_insights(cmd, namespace)
 
 
 def validate_tracing_parameters_asc_update(namespace):
@@ -252,7 +254,7 @@ def validate_app_insights_parameters(namespace):
 
 def _validate_app_insights_parameters(namespace):
     if namespace.app_insights and namespace.app_insights_key:
-        raise InvalidArgumentValueError(
+        raise MutuallyExclusiveArgumentError(
             "Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
         raise InvalidArgumentValueError("Invalid value: '--app-insights' can not be empty.")
@@ -268,6 +270,29 @@ def _validate_app_insights_mutual_exclude_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
             "can not be set with '--disable-app-insights'.")
+
+
+def _fail_fast_create_app_insights(cmd, namespace):
+    """
+    When create service instance, will by default enable application insights. If user didn't provide existed
+    application insights instance with name or resourceID or connectionString, we'll create one and bind to service instance.
+    However, application insights didn't support some regions like:
+    - Canary (East US 2 EUAP)
+    - Pilot (West Central US)
+    - Newly onboarded regions (West US 3)
+    So, in these regions, application insights create will fail.
+    In original implementation, application insights is created or updated after service instance is created.
+    Here, refactor the code to create application insights first to fail fast.
+    """
+    if namespace.disable_app_insights:
+        return
+
+    connection_string = get_connection_string_from_exist_or_new_create_app_insights(cmd, namespace.resource_group,
+                                                                                    namespace.service_name,
+                                                                                    namespace.location,
+                                                                                    namespace.app_insights_key,
+                                                                                    namespace.app_insights)
+    namespace.app_insights_key = connection_string
 
 
 def validate_vnet(cmd, namespace):
