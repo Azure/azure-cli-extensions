@@ -94,12 +94,12 @@ def download_binary() -> str:
     operatingSystem = platform.system()
     draftV2ReleaseVersion = "v0.0.5"
     filename = "draftv2-" + operatingSystem.lower() + "-amd64"
-    url = "https://github.com/Azure/aks-app/releases/download/" + draftV2ReleaseVersion + "/" +  filename
+    url = "https://github.com/Azure/aks-app/releases/download/" + draftV2ReleaseVersion + "/" + filename
     headers = {'Accept': 'application/octet-stream'}
 
     # Downloading the file by sending the request to the URL
     req = requests.get(url, headers=headers)
-    binaryPath = str(Path.home()) + "/" +".aksapp"
+    binaryPath = str(Path.home()) + "/" + ".aksapp"
 
     # Directory
     if os.path.exists(binaryPath) is False:
