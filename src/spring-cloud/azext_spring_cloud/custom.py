@@ -8,7 +8,6 @@ import requests
 import re
 import os
 
-from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
@@ -30,7 +29,6 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
@@ -400,68 +398,6 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
     if exceptions:
         raise exceptions[0]
-
-
-def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
-    app_resource = models_20220101preview.AppResource()
-    identity = models_20220101preview.ManagedIdentityProperties(type="systemassigned")
-    properties = models_20220101preview.AppResourceProperties()
-    resource = client.services.get(resource_group, service)
-    location = resource.location
-
-    app_resource.identity = identity
-    app_resource.properties = properties
-    app_resource.location = location
-    client.apps.begin_update(resource_group, service, name, app_resource)
-    app = client.apps.get(resource_group, service, name)
-    if role:
-        principal_id = app.identity.principal_id
-
-        from azure.cli.core.commands import arm as _arm
-        identity_role_id = _arm.resolve_role_id(cmd.cli_ctx, role, scope)
-        assignments_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
-        RoleAssignmentCreateParameters = get_sdk(cmd.cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 'RoleAssignmentCreateParameters', mod='models',
-                                                 operation_group='role_assignments')
-        parameters = RoleAssignmentCreateParameters(role_definition_id=identity_role_id, principal_id=principal_id)
-        logger.info("Creating an assignment with a role '%s' on the scope of '%s'", identity_role_id, scope)
-        retry_times = 36
-        assignment_name = _arm._gen_guid()
-        for i in range(0, retry_times):
-            try:
-                assignments_client.create(scope=scope, role_assignment_name=assignment_name,
-                                          parameters=parameters)
-                break
-            except HttpResponseError as ex:
-                if 'role assignment already exists' in ex.message:
-                    logger.info('Role assignment already exists')
-                    break
-                elif i < retry_times and ' does not exist in the directory ' in ex.message:
-                    sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
-                    logger.warning('Retrying role assignment creation: %s/%s', i + 1,
-                                   retry_times)
-                    continue
-                else:
-                    raise
-    return app
-
-
-def app_identity_remove(cmd, client, resource_group, service, name):
-    app_resource = models_20220101preview.AppResource()
-    identity = models_20220101preview.ManagedIdentityProperties(type="none")
-    properties = models_20220101preview.AppResourceProperties()
-    resource = client.services.get(resource_group, service)
-    location = resource.location
-
-    app_resource.identity = identity
-    app_resource.properties = properties
-    app_resource.location = location
-    return client.apps.begin_update(resource_group, service, name, app_resource)
-
-
-def app_identity_show(cmd, client, resource_group, service, name):
-    app = client.apps.get(resource_group, service, name)
-    return app.identity
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):

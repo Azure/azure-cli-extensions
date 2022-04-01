@@ -25,6 +25,10 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_memory, fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
+                                              validate_create_app_with_system_identity_or_warning,
+                                              validate_app_force_set_system_identity_or_warning,
+                                              validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
 
 
@@ -186,8 +190,21 @@ def load_arguments(self, _):
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL for direct access.', default=False,
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
-        c.argument('assign_identity', arg_type=get_three_state_flag(),
-                   help='If true, assign managed service identity.')
+        c.argument('assign_identity',
+                   arg_type=get_three_state_flag(),
+                   validator=validate_create_app_with_system_identity_or_warning,
+                   deprecate_info=c.deprecate(target='--assign-identity',
+                                              redirect='--system-assigned',
+                                              hide=True),
+                   help='Enable system-assigned managed identity.')
+        c.argument('system_assigned',
+                   arg_type=get_three_state_flag(),
+                   help='Enable system-assigned managed identity.')
+        c.argument('user_assigned',
+                   is_preview=True,
+                   nargs='+',
+                   validator=validate_create_app_with_user_identity_or_warning,
+                   help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
         c.argument('cpu', arg_type=cpu_type, default="1")
         c.argument('memory', arg_type=memort_type, default="1Gi")
         c.argument('instance_count', type=int,
@@ -236,8 +253,35 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist_or_warning)
 
     with self.argument_context('spring-cloud app identity assign') as c:
-        c.argument('scope', help="The scope the managed identity has access to")
-        c.argument('role', help="Role name or id the managed identity will be assigned")
+        c.argument('scope',
+                   help="The scope the managed identity has access to")
+        c.argument('role',
+                   help="Role name or id the managed identity will be assigned")
+        c.argument('system_assigned',
+                   arg_type=get_three_state_flag(),
+                   help="Enable system-assigned managed identity on an app.")
+        c.argument('user_assigned',
+                   is_preview=True,
+                   nargs='+',
+                   help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
+
+    with self.argument_context('spring-cloud app identity remove') as c:
+        c.argument('system_assigned',
+                   arg_type=get_three_state_flag(),
+                   help="Remove system-assigned managed identity.")
+        c.argument('user_assigned',
+                   is_preview=True,
+                   nargs='*',
+                   help="Space-separated user-assigned managed identity resource IDs to remove. If no ID is provided, remove ALL user-assigned managed identities.")
+
+    with self.argument_context('spring-cloud app identity force-set') as c:
+        c.argument('system_assigned',
+                   validator=validate_app_force_set_system_identity_or_warning,
+                   help="Allowed values: [\"enable\", \"disable\"]. Use \"enable\" to enable or keep system-assigned managed identity. Use \"disable\" to remove system-assigned managed identity.")
+        c.argument('user_assigned',
+                   nargs='+',
+                   validator=validate_app_force_set_user_identity_or_warning,
+                   help="Allowed values: [\"disable\", space-separated user-assigned managed identity resource IDs]. Use \"disable\" to remove all user-assigned managed identities, use resource IDs to assign or keep user-assigned managed identities.")
 
     def prepare_logs_argument(c):
         '''`app log tail` is deprecated. `app logs` is the new choice. They share the same command processor.'''
