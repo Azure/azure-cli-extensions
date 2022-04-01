@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from logging import Logger, log
+# from logging import Logger  # , log
 import subprocess
 import shlex
 import os
@@ -17,8 +17,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
 
-from .exceptions import (AzCommandError, WindowsOsNotAvailableError,
-    RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
+from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
 # pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
@@ -461,19 +460,19 @@ def _suse_image_selector_gen2(distro):
 
 def _select_distro_linux(distro):
     image_lookup = {
-    'rhel6':'RedHat:RHEL:6.10:latest',
-    'rhel7':'RedHat:rhel-raw:7-raw:latest',
-    'rhel8':'RedHat:rhel-raw:8-raw:latest',
-    'ubuntu18':'Canonical:UbuntuServer:18.04-LTS:latest',
-    'ubuntu20':'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
-    'centos6':'OpenLogic:CentOS:6.10:latest',
-    'centos7':'OpenLogic:CentOS:7_9:latest',
-    'centos8':'OpenLogic:CentOS:8_4:latest',
-    'oracle6':'Oracle:Oracle-Linux:6.10:latest',
-    'oracle7':'Oracle:Oracle-Linux:ol79:latest',
-    'oracle8':'Oracle:Oracle-Linux:ol82:latest',
-    'sles12':_suse_image_selector('sles-12'),
-    'sles15':_suse_image_selector('sles-15')
+        'rhel6': 'RedHat:RHEL:6.10:latest',
+        'rhel7': 'RedHat:rhel-raw:7-raw:latest',
+        'rhel8': 'RedHat:rhel-raw:8-raw:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18.04-LTS:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
+        'centos6': 'OpenLogic:CentOS:6.10:latest',
+        'centos7': 'OpenLogic:CentOS:7_9:latest',
+        'centos8': 'OpenLogic:CentOS:8_4:latest',
+        'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
+        'sles12': _suse_image_selector('sles-12'),
+        'sles15': _suse_image_selector('sles-15')
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -491,20 +490,20 @@ def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
     # RHEL/Centos/Oracle 6 are not supported for Gen 2
     image_lookup = {
-        'rhel6':'RedHat:rhel-raw:7-raw-gen2:latest',
-        'rhel7':'RedHat:rhel-raw:7-raw-gen2:latest',
-        'rhel8':'RedHat:rhel-raw:8-raw-gen2:latest',
-        'ubuntu18':'Canonical:UbuntuServer:18_04-lts-gen2:latest',
-        'ubuntu20':'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
-        'centos6':'OpenLogic:CentOS:7_9-gen2:latest',
-        'centos7':'OpenLogic:CentOS:7_9-gen2:latest',
-        'centos8':'OpenLogic:CentOS:8_4-gen2:latest',
-        'oracle6':'Oracle:Oracle-Linux:ol79-gen2:latest',
-        'oracle7':'Oracle:Oracle-Linux:ol79-gen2:latest',
-        'oracle8':'Oracle:Oracle-Linux:ol82-gen2:latest',
-        'sles12':_suse_image_selector_gen2('sles-12'),
-        'sles15':_suse_image_selector_gen2('sles-15')
-        }
+        'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
+        'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
+        'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
+        'centos6': 'OpenLogic:CentOS:7_9-gen2:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
+        'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
+        'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
+        'sles12': _suse_image_selector_gen2('sles-12'),
+        'sles15': _suse_image_selector_gen2('sles-15')
+    }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
     else:
