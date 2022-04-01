@@ -100,8 +100,8 @@ def _safe_get_connection_string(cmd, resource_group, service_name, location, app
     connection_string = app_insights_key
     if not connection_string:
         try:
-            app_insights = create_app_insights(cmd, resource_group, service_name, location)
-            connection_string = app_insights.connection_string
+            appinsights = create_app_insights(cmd, resource_group, service_name, location)
+            connection_string = appinsights.connection_string
             portal_url = get_portal_uri(cmd.cli_ctx)
             # We make this success message as a warning to no interfere with regular JSON output in stdout
             logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
