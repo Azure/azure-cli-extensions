@@ -59,10 +59,10 @@ def buildpack_binding_delete(cmd, client, resource_group, service, name, builder
 
 
 def create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name, location,
-                                                              app_insights_key, app_insights, sampling_rate):
+                                                              app_insights_key, sampling_rate):
     logger.warning("Start configure Application Insights")
     binding_resource = models.BuildpackBindingResource()
-    binding_resource.properties = _get_buildpack_binding_properties(cmd, resource_group, name, location, app_insights_key, app_insights, sampling_rate)
+    binding_resource.properties = _get_buildpack_binding_properties(cmd, resource_group, name, location, app_insights_key, sampling_rate)
 
     if binding_resource.properties:
         return client.buildpack_binding.begin_create_or_update(resource_group, name, DEFAULT_BUILD_SERVICE_NAME,
@@ -78,7 +78,7 @@ def _build_buildpack_binding_resource(binding_type, properties_dict, secrets_dic
 
 
 def _get_buildpack_binding_properties(cmd, resource_group, service_name, location,
-                                      app_insights_key, app_insights, sampling_rate):
+                                      app_insights_key, sampling_rate):
     sampling_rate = sampling_rate or 10
     connection_string = _safe_get_connection_string(cmd, resource_group, service_name, location, app_insights_key)
     if not connection_string:

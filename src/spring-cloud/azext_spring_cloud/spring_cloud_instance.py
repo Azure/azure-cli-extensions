@@ -161,11 +161,10 @@ def spring_cloud_create(cmd, client, resource_group, name,
     return spring_cloud_factory.create(**kwargs)
 
 
-def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key, app_insights,
+def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key,
                          sampling_rate, disable_app_insights, **_):
     if disable_app_insights:
         return
 
     return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
-                                                                     location, app_insights_key, app_insights,
-                                                                     sampling_rate)
+                                                                     location, app_insights_key, sampling_rate)
