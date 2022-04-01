@@ -6,6 +6,8 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+import json
+
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
     ScenarioTest
@@ -57,9 +59,7 @@ class StackHciClientTest(ScenarioTest):
         })
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
-        self.cmd(
-            'stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}'
-        )
+        self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
 
         self.cmd(
             'stack-hci arc-setting create -n default -g {rg} --cluster-name {cluster_name}',
@@ -83,3 +83,43 @@ class StackHciClientTest(ScenarioTest):
             ]
         )
         self.cmd('stack-hci arc-setting delete -n default -g {rg} --cluster-name {cluster_name} --no-wait --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_', location='eastus')
+    def test_stack_hci_extension_crud(self):
+        self.kwargs.update({
+            'cluster_name': 'cli-test-cluster',
+            'app_name': 'cli-test-app',
+            'type': 'MicrosoftMonitoringAgent',
+            'publisher': 'Microsoft.Compute'
+        })
+        self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
+        self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
+        self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
+        self.cmd('stack-hci arc-setting create -n default -g {rg} --cluster-name {cluster_name}')
+
+        self.kwargs['settings'] = json.dumps({'workspaceId': 'xx'})
+        self.kwargs['protected_settings'] = json.dumps({'workspaceKey': 'xx'})
+        self.cmd(
+            'stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default '
+            '--settings \'{settings}\' --protected-settings \'{protected_settings}\' '
+            '--publisher {publisher} --type {type} --type-handler-version 1.10',
+            checks=[
+                self.check('name', self.kwargs['type']),
+                self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
+            ]
+        )
+        self.cmd(
+            'stack-hci extension list -g {rg} --cluster-name {cluster_name} --arc-setting-name default',
+            checks=[
+                self.check('length(@)', 1),
+                self.check('@[0].name', self.kwargs['type'])
+            ]
+        )
+        self.cmd(
+            'stack-hci extension show -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default',
+            checks=[
+                self.check('name', self.kwargs['type']),
+                self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
+            ]
+        )
+        self.cmd('stack-hci extension delete -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --no-wait --yes')
