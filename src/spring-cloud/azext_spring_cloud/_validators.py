@@ -201,10 +201,6 @@ def validate_jvm_options(namespace):
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
 
-def validate_spring_cloud_create(cmd, namespace):
-    validate_tracing_parameters_asc_create(cmd, namespace)
-
-
 def validate_tracing_parameters_asc_create(cmd, namespace):
     validate_java_agent_parameters(namespace)
     _validate_app_insights_mutual_exclude_parameters(namespace)
