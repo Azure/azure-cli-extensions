@@ -178,16 +178,16 @@ helps['stack-hci extension create'] = """
 --resource-group "test-rg"
 """
 
-helps['stack-hci extension update'] = """
-    type: command
-    short-summary: "Update Extension for HCI cluster."
-    examples:
-      - name: Update Arc Extension
-        text: |-
-               az stack-hci extension update --arc-setting-name "default" --cluster-name "myCluster" --type \
-"MicrosoftMonitoringAgent" --publisher "Microsoft.Compute" --settings "{\\"workspaceId\\":\\"xx\\"}" \
---type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
-"""
+# helps['stack-hci extension update'] = """
+#     type: command
+#     short-summary: "Update Extension for HCI cluster."
+#     examples:
+#       - name: Update Arc Extension
+#         text: |-
+#                az stack-hci extension update --arc-setting-name "default" --cluster-name "myCluster" --type \
+# "MicrosoftMonitoringAgent" --publisher "Microsoft.Compute" --settings "{\\"workspaceId\\":\\"xx\\"}" \
+# --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
+# """
 
 helps['stack-hci extension delete'] = """
     type: command
