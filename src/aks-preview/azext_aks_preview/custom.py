@@ -1117,48 +1117,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
 
-    diag_config_vars = {
-        'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
-        'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
-        'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs,
-        'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
-    }
-
-    diag_content = "\n".join(f'  - {k}="{v}"' for k,v in diag_config_vars.items() if v is not None)
-
-    storage_config_vars = {
-        'AZURE_BLOB_ACCOUNT_NAME': storage_account_name,
-        'AZURE_BLOB_SAS_KEY': "?" + sas_token,
-        'AZURE_BLOB_CONTAINER_NAME': container_name
-    }
-
-    storage_content = "\n".join(f'  - {k}="{v}"' for k,v in storage_config_vars.items())
-
-    kustomize_yaml = f"""
-resources:
-- https://github.com/peterbom/aks-periscope//deployment/base?ref=experiment/windows
-
-images:
-- name: periscope-linux
-  newName: ghcr.io/peterbom/aks/periscope
-  newTag: 0.0.8
-- name: periscope-windows
-  newName: ghcr.io/peterbom/aks/periscope-win
-  newTag: 0.0.8
-
-configMapGenerator:
-- name: diagnostic-config
-  behavior: merge
-  literals:
-{diag_content}
-
-secretGenerator:
-- name: azureblob-secret
-  behavior: replace
-  literals:
-{storage_content}
-""" # .format(diag_content = diag_content, storage_content = storage_content)
-
+    kustomize_yaml = get_kustomize_yaml("0.0.8", storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
     kustomize_folder = tempfile.mkdtemp()
     kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
@@ -1231,6 +1190,50 @@ secretGenerator:
     else:
         display_diagnostics_report(temp_kubeconfig_path)
 
+def get_kustomize_yaml(periscope_version,
+                       storage_account_name,
+                       sas_token,
+                       container_name,
+                       container_logs=None,
+                       kube_objects=None,
+                       node_logs_linux=None,
+                       node_logs_windows=None):
+    diag_config_vars = {
+        'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
+        'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
+        'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs_linux,
+        'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
+    }
+
+    diag_content = "\n".join(f'  - {k}="{v}"' for k,v in diag_config_vars.items() if v is not None)
+
+    # TODO: Change to MCR images
+    return f"""
+resources:
+- https://github.com/peterbom/aks-periscope//deployment/base?ref={periscope_version}
+
+images:
+- name: periscope-linux
+  newName: ghcr.io/peterbom/aks/periscope
+  newTag: {periscope_version}
+- name: periscope-windows
+  newName: ghcr.io/peterbom/aks/periscope-win
+  newTag: {periscope_version}
+
+configMapGenerator:
+- name: diagnostic-config
+  behavior: merge
+  literals:
+{diag_content}
+
+secretGenerator:
+- name: azureblob-secret
+  behavior: replace
+  literals:
+  - AZURE_BLOB_ACCOUNT_NAME={storage_account_name}
+  - AZURE_BLOB_SAS_KEY=?{sas_token}
+  - AZURE_BLOB_CONTAINER_NAME={container_name}
+"""
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
     colorama.init()
