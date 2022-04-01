@@ -9,7 +9,7 @@ import sys
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.6"
+VERSION = "0.2.7"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -30,7 +30,7 @@ DEPENDENCIES = [
 ]
 
 if sys.platform != 'darwin':
-    DEPENDENCIES.append('pymssql==2.2.2')
+    DEPENDENCIES.append('pymssql==2.2.4')
 
 setup(
     name='db-up',
