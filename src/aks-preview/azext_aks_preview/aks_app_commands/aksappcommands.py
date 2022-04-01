@@ -119,3 +119,4 @@ def download_binary() -> str:
 
     print("Download of DraftV2 binary was unsuccessful with a status code: " + str(req.status_code))
     return None
+    
