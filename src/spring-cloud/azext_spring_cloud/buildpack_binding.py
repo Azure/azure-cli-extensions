@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-order
 from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._app_insights import create_app_insights
+from ._utils import get_portal_uri
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
