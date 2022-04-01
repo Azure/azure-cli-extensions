@@ -6,7 +6,9 @@ Release History
 0.5.59
 ++++++
 
-* Add support for managed cluster snapshot commands and modify current nodepool snapshot commands
+* Add support for managed cluster snapshot commands and modify current nodepool snapshot commands.
+* It is breaking change for nodepool snapshot commands, `az aks nodepool snapshot` will be the command
+to managed nodepool snapshot. `az aks snapshot` is used for managed cluster snapshot.
 for managed cluster snapshot, it will be
   * `az aks snapshot create`
   * `az aks snapshot delete`
@@ -219,7 +221,7 @@ and `az aks nodepool add`
 0.5.24
 +++++
 
-  * * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
 
 0.5.23
 +++++
