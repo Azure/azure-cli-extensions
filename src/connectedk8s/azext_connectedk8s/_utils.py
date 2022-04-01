@@ -26,6 +26,7 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
@@ -68,10 +69,10 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context)
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
 
     # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
@@ -80,7 +81,7 @@ def get_chart_path(registry_path, kube_config, kube_context):
             shutil.rmtree(chart_export_path)
     except:
         logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context)
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
@@ -88,8 +89,8 @@ def get_chart_path(registry_path, kube_config, kube_context):
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context):
-    cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path]
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
+    cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -102,8 +103,8 @@ def pull_helm_chart(registry_path, kube_config, kube_context):
         raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context):
-    cmd_helm_chart_export = ["helm", "chart", "export", registry_path, "--destination", chart_export_path]
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
+    cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -116,10 +117,10 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def add_helm_repo(kube_config, kube_context):
+def add_helm_repo(kube_config, kube_context, helm_client_location):
     repo_name = os.getenv('HELMREPONAME')
     repo_url = os.getenv('HELMREPOURL')
-    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url]
+    cmd_helm_repo = [helm_client_location, "repo", "add", repo_name, repo_url]
     if kube_config:
         cmd_helm_repo.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -269,8 +270,8 @@ def ensure_namespace_cleanup(configuration):
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, configuration):
-    cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace]
+def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location):
+    cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -290,8 +291,9 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid, onboarding_timeout="600"):
-    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
+                         enable_custom_locations, custom_locations_oid, helm_client_location, onboarding_timeout="600"):
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
@@ -321,6 +323,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
     if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        cmd_helm_install.extend(["--set", "global.isCustomCert={}".format(True)])
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if kube_config:
@@ -442,3 +445,40 @@ def validate_node_api_response(api_instance, node_api_response):
             return None
     else:
         return node_api_response
+
+
+def az_cli(args_str):
+    args = args_str.split()
+    cli = get_default_cli()
+    cli.invoke(args, out_file=open(os.devnull, 'w'))
+    if cli.result.result:
+        return cli.result.result
+    elif cli.result.error:
+        raise Exception(cli.result.error)
+    return True
+
+
+# def is_cli_using_msal_auth():
+#     response_cli_version = az_cli("version --output json")
+#     try:
+#         cli_version = response_cli_version['azure-cli']
+#     except Exception as ex:
+#         raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+#     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
+#         return True
+#     else:
+#         return False
+
+def is_cli_using_msal_auth():
+    response_cli_version = az_cli("version --output json")
+    try:
+        cli_version = response_cli_version['azure-cli']
+    except Exception as ex:
+        raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+    v1 = cli_version
+    v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
+    for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
+        if i == j:
+            continue
+        return i > j
+    return len(v1.split(".")) == len(v2.split("."))

@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['desktopvirtualization'] = '''
+    type: group
+    short-summary: Manage Desktop Virtualization
+'''
+
 helps['desktopvirtualization workspace'] = """
     type: group
     short-summary: desktopvirtualization workspace
@@ -37,7 +42,7 @@ helps['desktopvirtualization workspace show'] = """
 
 helps['desktopvirtualization workspace create'] = """
     type: command
-    short-summary: Create or update a workspace.
+    short-summary: Create a workspace.
     examples:
       - name: Workspace_Create
         text: |-
@@ -91,7 +96,7 @@ helps['desktopvirtualization applicationgroup show'] = """
 
 helps['desktopvirtualization applicationgroup create'] = """
     type: command
-    short-summary: Create or update an applicationGroup.
+    short-summary: Create an applicationGroup.
     examples:
       - name: ApplicationGroup_Create
         text: |-
@@ -146,7 +151,7 @@ helps['desktopvirtualization hostpool show'] = """
 
 helps['desktopvirtualization hostpool create'] = """
     type: command
-    short-summary: Create or update a host pool.
+    short-summary: Create a host pool.
     parameters:
       - name: --registration-info
         short-summary: The registration info of HostPool.
@@ -156,14 +161,22 @@ helps['desktopvirtualization hostpool create'] = """
             expiration-time: Expiration time of registration token.
             token: The registration token base64 encoded string.
             registration-token-operation: The type of resetting the token.
+      - name: --host-pool-type
+        short-summary: HostPool type for desktop.
+        long-summary: |
+            Personal: Users will be assigned a SessionHost either by administrators (PersonalDesktopAssignmentType = Direct) or upon connecting to the pool (PersonalDesktopAssignmentType = Automatic). They will always be redirected to their assigned SessionHost.
+            Pooled: Users get a new (random) SessionHost every time it connects to the HostPool.
+            BYODesktop: Users assign their own machines, load balancing logic remains the same as Personal. --personal-desktop-ssignment-type must be Direct.
     examples:
       - name: HostPool_Create
         text: |-
                az desktopvirtualization hostpool create --location "centralus" --description "des1" --friendly-name \
 "friendly" --host-pool-type "Pooled" --load-balancer-type "BreadthFirst" --max-session-limit 999999 \
---personal-desktop-assignment-type "Automatic" --registration-info expiration-time="2020-10-01T14:01:54.9571247Z" \
-registration-token-operation="Update" --sso-context "KeyVaultPath" --tags tag1="value1" tag2="value2" --name \
-"MyHostPool" --resource-group "MyResourceGroup"
+--personal-desktop-assignment-type "Automatic" --preferred-app-group-type "Desktop" \
+--registration-info expiration-time="2020-10-01T14:01:54.9571247Z" registration-token-operation="Update" \
+--sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
+--ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
+tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool update'] = """
@@ -182,8 +195,10 @@ helps['desktopvirtualization hostpool update'] = """
         text: |-
                az desktopvirtualization hostpool update --description "des1" --friendly-name "friendly" \
 --load-balancer-type "BreadthFirst" --max-session-limit 999999 --personal-desktop-assignment-type "Automatic" \
---registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" --sso-context \
-"KeyVaultPath" --tags tag1="value1" tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
+--registration-info expiration-time="2020-10-01T15:01:54.9571247Z" registration-token-operation="Update" \
+--sso-client-id "client" --sso-client-secret-key-vault-path "https://keyvault/secret" --sso-secret-type "SharedKey" \
+--ssoadfs-authority "https://adfs" --start-vm-on-connect false --vm-template "{json:json}" --tags tag1="value1" \
+tag2="value2" --name "MyHostPool" --resource-group "MyResourceGroup"
 """
 
 helps['desktopvirtualization hostpool delete'] = """
@@ -193,5 +208,15 @@ helps['desktopvirtualization hostpool delete'] = """
       - name: HostPool_Delete
         text: |-
                az desktopvirtualization hostpool delete --force true --name "MyHostPool" --resource-group \
+"MyResourceGroup"
+"""
+
+helps['desktopvirtualization hostpool retrieve-registration-token'] = """
+    type: command
+    short-summary: Registration token of the host pool.
+    examples:
+      - name: HostPools_RetrieveRegistrationToken_Post
+        text: |-
+               az desktopvirtualization hostpool retrieve-registration-token --name "MyHostPool" --resource-group \
 "MyResourceGroup"
 """

@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools ConfluentManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/confluent',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/confluent',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

@@ -28,7 +28,7 @@ class MachineExtensionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -49,9 +49,9 @@ class MachineExtensionsOperations:
         name: str,
         extension_name: str,
         extension_parameters: "_models.MachineExtension",
-        **kwargs
-    ) -> Optional["_models.MachineExtension"]:
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.MachineExtension"]]
+        **kwargs: Any
+    ) -> "_models.MachineExtension":
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtension"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -91,8 +91,10 @@ class MachineExtensionsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
+            deserialized = self._deserialize('MachineExtension', pipeline_response)
+
+        if response.status_code == 201:
             deserialized = self._deserialize('MachineExtension', pipeline_response)
 
         if cls:
@@ -107,7 +109,7 @@ class MachineExtensionsOperations:
         name: str,
         extension_name: str,
         extension_parameters: "_models.MachineExtension",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.MachineExtension"]:
         """The operation to create or update the extension.
 
@@ -118,15 +120,15 @@ class MachineExtensionsOperations:
         :param extension_name: The name of the machine extension.
         :type extension_name: str
         :param extension_parameters: Parameters supplied to the Create Machine Extension operation.
-        :type extension_parameters: ~azure_arc_vmware_management_service_api.models.MachineExtension
+        :type extension_parameters: ~azure.mgmt.connectedvmware.models.MachineExtension
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MachineExtension or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.MachineExtension]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.MachineExtension]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -183,9 +185,9 @@ class MachineExtensionsOperations:
         name: str,
         extension_name: str,
         extension_parameters: "_models.MachineExtensionUpdate",
-        **kwargs
-    ) -> Optional["_models.MachineExtension"]:
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.MachineExtension"]]
+        **kwargs: Any
+    ) -> "_models.MachineExtension":
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtension"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -225,8 +227,10 @@ class MachineExtensionsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
+            deserialized = self._deserialize('MachineExtension', pipeline_response)
+
+        if response.status_code == 201:
             deserialized = self._deserialize('MachineExtension', pipeline_response)
 
         if cls:
@@ -241,7 +245,7 @@ class MachineExtensionsOperations:
         name: str,
         extension_name: str,
         extension_parameters: "_models.MachineExtensionUpdate",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.MachineExtension"]:
         """The operation to update the extension.
 
@@ -252,15 +256,15 @@ class MachineExtensionsOperations:
         :param extension_name: The name of the machine extension.
         :type extension_name: str
         :param extension_parameters: Parameters supplied to the Create Machine Extension operation.
-        :type extension_parameters: ~azure_arc_vmware_management_service_api.models.MachineExtensionUpdate
+        :type extension_parameters: ~azure.mgmt.connectedvmware.models.MachineExtensionUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MachineExtension or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.MachineExtension]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.MachineExtension]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -316,7 +320,7 @@ class MachineExtensionsOperations:
         resource_group_name: str,
         name: str,
         extension_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +367,7 @@ class MachineExtensionsOperations:
         resource_group_name: str,
         name: str,
         extension_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """The operation to delete the extension.
 
@@ -375,8 +379,8 @@ class MachineExtensionsOperations:
         :type extension_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -432,7 +436,7 @@ class MachineExtensionsOperations:
         resource_group_name: str,
         name: str,
         extension_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.MachineExtension":
         """The operation to get the extension.
 
@@ -444,7 +448,7 @@ class MachineExtensionsOperations:
         :type extension_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MachineExtension, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.MachineExtension
+        :rtype: ~azure.mgmt.connectedvmware.models.MachineExtension
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtension"]
@@ -495,7 +499,7 @@ class MachineExtensionsOperations:
         resource_group_name: str,
         name: str,
         expand: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.MachineExtensionsListResult"]:
         """The operation to get all extensions of a non-Azure machine.
 
@@ -507,7 +511,7 @@ class MachineExtensionsOperations:
         :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either MachineExtensionsListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.MachineExtensionsListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.MachineExtensionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.MachineExtensionsListResult"]

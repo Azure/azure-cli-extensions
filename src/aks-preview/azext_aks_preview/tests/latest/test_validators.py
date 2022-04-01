@@ -62,60 +62,11 @@ class TestValidateIPRanges(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
-class TestClusterAutoscalerParamsValidators(unittest.TestCase):
-    def test_empty_key_empty_value(self):
-        cluster_autoscaler_profile = ["="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_non_empty_key_empty_value(self):
-        cluster_autoscaler_profile = ["scan-interval="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-
-        validators.validate_cluster_autoscaler_profile(namespace)
-
-    def test_two_empty_keys_empty_value(self):
-        cluster_autoscaler_profile = ["=", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_one_empty_key_in_pair_one_non_empty(self):
-        cluster_autoscaler_profile = ["scan-interval=20s", "="]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Empty key specified for cluster-autoscaler-profile"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_invalid_key(self):
-        cluster_autoscaler_profile = ["bad-key=val"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-        err = "Invalid key specified for cluster-autoscaler-profile: bad-key"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_cluster_autoscaler_profile(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_valid_parameters(self):
-        cluster_autoscaler_profile = ["scan-interval=20s", "scale-down-delay-after-add=15m"]
-        namespace = Namespace(cluster_autoscaler_profile=cluster_autoscaler_profile)
-
-        validators.validate_cluster_autoscaler_profile(namespace)
-
-
 class Namespace:
-    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None):
+    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
+        self.kubernetes_version = kubernetes_version
 
 
 class TestSubnetId(unittest.TestCase):
@@ -148,6 +99,10 @@ class SpotMaxPriceNamespace:
         self.priority = "Spot"
         self.spot_max_price = spot_max_price
 
+class MessageOfTheDayNamespace:
+    def __init__(self, message_of_the_day, os_type):
+        self.os_type = os_type
+        self.message_of_the_day = message_of_the_day
 
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
@@ -192,6 +147,22 @@ class TestSpotMaxPrice(unittest.TestCase):
             validators.validate_spot_max_price(ns)
         self.assertTrue('--spot_max_price can only be set when --priority is Spot' in str(cm.exception), msg=str(cm.exception))
 
+
+class TestMessageOfTheday(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace(v, "Linux"))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "Windows"))
+        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "invalid"))
+        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
@@ -298,6 +269,95 @@ class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
             validators.validate_pod_identity_resource_namespace(namespace)
         self.assertEqual(str(cm.exception), '--namespace is required')
 
+class TestValidateKubernetesVersion(unittest.TestCase):
+
+    def test_valid_full_kubernetes_version(self):
+        kubernetes_version = "1.11.8"
+        namespace = Namespace(kubernetes_version=kubernetes_version)
+
+        validators.validate_k8s_version(namespace)
+
+    def test_valid_alias_minor_version(self):
+        kubernetes_version = "1.11"
+        namespace = Namespace(kubernetes_version=kubernetes_version)
+
+        validators.validate_k8s_version(namespace)
+
+    def test_valid_empty_kubernetes_version(self):
+        kubernetes_version = ""
+        namespace = Namespace(kubernetes_version=kubernetes_version)
+
+        validators.validate_k8s_version(namespace)
+
+    def test_invalid_kubernetes_version(self):
+        kubernetes_version = "1.2.3.4"
+
+        namespace = Namespace(kubernetes_version=kubernetes_version)
+        err = ("--kubernetes-version should be the full version number or alias minor version, "
+               "such as \"1.7.12\" or \"1.7\"")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_k8s_version(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+        kubernetes_version = "1."
+
+        namespace = Namespace(kubernetes_version=kubernetes_version)
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_k8s_version(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+class HostGroupIDNamespace:
+
+    def __init__(self, host_group_id):
+        self.host_group_id = host_group_id
+
+class TestValidateHostGroupID(unittest.TestCase):
+    def test_invalid_host_group_id(self):
+        invalid_host_group_id = "dummy group id"
+        namespace = HostGroupIDNamespace(host_group_id=invalid_host_group_id)
+        err = ("--host-group-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_host_group_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+class AzureKeyVaultKmsKeyIdNamespace:
+
+    def __init__(self, azure_keyvault_kms_key_id):
+        self.azure_keyvault_kms_key_id = azure_keyvault_kms_key_id
+
+class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
+    def test_invalid_azure_keyvault_kms_key_id_without_https(self):
+        invalid_azure_keyvault_kms_key_id = "dummy key id"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_azure_keyvault_kms_key_id_without_key_version(self):
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_azure_keyvault_kms_key_id_with_wrong_object_type(self):
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
 
 if __name__ == "__main__":
     unittest.main()

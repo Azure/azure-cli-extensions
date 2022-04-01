@@ -2,6 +2,34 @@
 
 Release History
 ===============
+0.15.0
+++++++
+* Add `--enable-materialized-views` parameter for create/update database account.
+
+0.14.0
+++++++
+* List the different versions of databases and graphs that were modified for a gremlin database account.
+* List the different versions of tables that were modified for a table database account.
+* Trigger a point in time restore on the Azure CosmosDB continuous mode backup accounts for gremlin and table database account.
+* Retrieve latest restorable timestamp for graphs and tables in gremlin and table database account respectively.
+* Filter restorable collections, graphs and tables event feed by start and end time.
+
+0.13.0
+++++++
+* Create and manage Role Definitions and User Definitions for enforcing data plane RBAC on Cosmos DB MongoDB accounts
+
+0.12.0
+++++++
+* Modify parameter names for Ldap support in Managed Instance for Apache Cassandra.
+
+0.11.0
+++++++
+* Add Ldap support for Managed Instance for Apache Cassandra.
+
+0.10.0
+++++++
+* Adding support for Services APIs and Graph Resources.
+
 0.9.0
 ++++++
 * Fixing Managed Cassandra issues that were introduced due to updating to python sdk 4.0.

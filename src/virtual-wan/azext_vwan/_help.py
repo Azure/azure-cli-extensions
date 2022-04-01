@@ -112,6 +112,62 @@ helps['network vhub connection wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of virtual hub VNet connection is met.
 """
 
+helps['network vhub bgpconnection'] = """
+    type: group
+    short-summary: Manage virtual hub bgpconnections.
+"""
+
+helps['network vhub bgpconnection create'] = """
+    type: command
+    short-summary: Create a virtual hub bgpconnection.
+    examples:
+    - name: Create a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection create -n MyConnection -g MyRG --vhub-name MyHub --peer-asn 20000  --peer-ip "10.5.0.3"
+            --vhub-conn <vhub_connection_resource_id>
+"""
+
+helps['network vhub bgpconnection list'] = """
+    type: command
+    short-summary: List virtual hub bgpconnections.
+    examples:
+    - name: List bgpconnections in a given virtual hub.
+      text: |
+          az network vhub bgpconnection list --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection show'] = """
+    type: command
+    short-summary: Get the details of a virtual hub bgpconnection.
+    examples:
+    - name: Get the details of a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection show -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection delete'] = """
+    type: command
+    short-summary: Delete a virtual hub bgpconnection.
+    examples:
+    - name: Delete a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection delete -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection update'] = """
+    type: command
+    short-summary: Update settings of a virtual hub bgpconnection.
+    examples:
+    - name: Update a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection update -n MyConnection --vhub-name MyHub -g MyRG --peer-asn 15000
+"""
+
+helps['network vhub bgpconnection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of virtual hub bgpconnection is met.
+"""
+
 helps['network vhub route'] = """
     type: group
     short-summary: Manage entries in the virtual hub route table.
@@ -355,6 +411,74 @@ helps['network vpn-gateway connection ipsec-policy remove'] = """
     type: command
     short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection.
 """
+
+helps['network vpn-gateway connection vpn-site-link-conn'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn add'] = """
+    type: command
+    short-summary: Add a VPN site link connection to a site-to-site VPN gateway connection.
+    examples:
+      - name: Add a VPN site link connection to site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn add -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn \
+--vpn-site-link /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite/vpnSiteLinks/vpnsitelink \
+--vpn-connection-protocol-type IKEv2
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link connection.
+    examples:
+      - name: List VPN site link connections on site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn list -g MyRG --connection-name MyConnection --gateway-name MyGateway
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn remove'] = """
+    type: command
+    short-summary: Remove a VPN site link connection from a site-to-site VPN gateway connection.
+    examples:
+      - name: Remove aVPN site link connection from site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn remove -g MyRG --connection-name MyConnection --gateway-name MyGateway --index 1
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link IPSec policies.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy add'] = """
+    type: command
+    short-summary: Add an IPSec policy to a site-to-site VPN gateway connection VPN site link.
+    examples:
+      - name: Add an IPSec policy to a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn \
+--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 \
+--sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link IPSec policies.
+    examples:
+      - name: List IPSec policies on a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy remove'] = """
+    type: command
+    short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection VPN site link.
+    examples:
+      - name: Remove an IPSec policy from a site-to-site VPN gateway connection VPN site link
+        text: |
+            az network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g MyRG --connection-name MyConnection --gateway-name MyGateway -n MyVPNSiteLinkConn --index 1
+"""
 # endregion
 
 # region VpnSite
@@ -391,6 +515,39 @@ helps['network vpn-site delete'] = """
 helps['network vpn-site download'] = """
     type: command
     short-summary: Provide a SAS-URL to download the configuration for a VPN site.
+"""
+
+
+helps['network vpn-site link'] = """
+    type: group
+    short-summary: Manage VPN site link.
+"""
+
+helps['network vpn-site link add'] = """
+    type: command
+    short-summary: Add a VPN site link to VPN site configuration.
+    examples:
+      - name: Add a VPN site link to VPN site configuration
+        text: |
+            az network vpn-site link add -g MyRG --site-name VpnSite -n VpnSiteLinkName --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0
+"""
+
+helps['network vpn-site link list'] = """
+    type: command
+    short-summary: List VPN site links on VPN site configuration.
+    examples:
+      - name: List VPN site links on VPN site configuration
+        text: |
+            az network vpn-site link list -g MyRG --site-name VpnSite
+"""
+
+helps['network vpn-site link remove'] = """
+    type: command
+    short-summary: Remove a VPN site link from VPN site configuration.
+    examples:
+      - name: Remove a VPN site links from VPN site configuration
+        text: |
+            az network vpn-site link remove -g MyRG --site-name VpnSite --index 1
 """
 # endregion
 

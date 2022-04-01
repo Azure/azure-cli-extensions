@@ -3,37 +3,37 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import ManagedClusterNATGatewayProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import ManagedClusterManagedOutboundIPProfile
+from types import SimpleNamespace
 
 
-def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout):
+def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, models: SimpleNamespace):
     """parse and build NAT gateway profile"""
     if not is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
         return None
 
-    profile = ManagedClusterNATGatewayProfile()
-    return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile)
+    profile = models.ManagedClusterNATGatewayProfile()
+    return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models)
 
 
-def update_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile):
+def update_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models: SimpleNamespace):
     """parse and update an existing NAT gateway profile"""
     if not is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
         return profile
 
-    return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile)
+    return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models)
 
 
 def is_nat_gateway_profile_provided(managed_outbound_ip_count, idle_timeout):
     return any([managed_outbound_ip_count, idle_timeout])
 
 
-def configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile):
+def configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models: SimpleNamespace):
     """configure a NAT Gateway with customer supplied values"""
     if not profile:
         return profile
 
     if managed_outbound_ip_count:
+        ManagedClusterManagedOutboundIPProfile = models.ManagedClusterManagedOutboundIPProfile
         profile.managed_outbound_ip_profile = ManagedClusterManagedOutboundIPProfile(
             count=managed_outbound_ip_count
         )

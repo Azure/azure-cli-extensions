@@ -7,7 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+
 # pylint: disable=protected-access
+
+# pylint: disable=no-self-use
+
 
 import argparse
 from collections import defaultdict
@@ -19,7 +24,7 @@ class AddIdentity(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.identity = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -31,15 +36,22 @@ class AddIdentity(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'type':
                 d['type'] = v[0]
+
             elif kl == 'principal-id':
                 d['principal_id'] = v[0]
+
             elif kl == 'tenant-id':
                 d['tenant_id'] = v[0]
+
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter identity. All possible keys are: type, '
-                               'principal-id, tenant-id'.format(k))
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter identity. All possible keys are: type, principal-id,'
+                    ' tenant-id'.format(k)
+                )
+
         return d
 
 
@@ -48,7 +60,7 @@ class AddDependsOnOverrides(argparse._AppendAction):
         action = self.get_action(values, option_string)
         super(AddDependsOnOverrides, self).__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -60,11 +72,17 @@ class AddDependsOnOverrides(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'id':
                 d['id'] = v[0]
+
             elif kl == 'target-id':
                 d['target_id'] = v[0]
+
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter depends_on_overrides. All possible keys '
-                               'are: id, target-id'.format(k))
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter depends-on-overrides. All possible keys are: id,'
+                    ' target-id'.format(k)
+                )
+
         return d

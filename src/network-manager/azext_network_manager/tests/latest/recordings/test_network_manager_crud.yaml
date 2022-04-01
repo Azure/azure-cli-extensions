@@ -1,0 +1,197 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"displayName": "TestNetworkManager",
+      "description": "My Test Network Manager", "networkManagerScopes": {"subscriptions":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000"]}, "networkManagerScopeAccesses":
+      ["Connectivity"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '271'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --display-name --scope-accesses --network-manager-scopes
+        -l --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.17763-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2021-05-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"TestNetworkManager","description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Connectivity"],"resourceGuid":"c23470b9-a24c-4d16-924d-eb6cf6861da6"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-07T15:30:59.4610174Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-07T15:30:59.4610174Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '893'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Mar 2022 15:31:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.17763-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2021-05-01-preview
+  response:
+    body:
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"\"0000397f-0000-3400-0000-622625370000\"","properties":{"displayName":"TestNetworkManager","description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Connectivity"],"resourceGuid":"c23470b9-a24c-4d16-924d-eb6cf6861da6"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-07T15:30:59.4610174Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-07T15:30:59.4610174Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '933'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Mar 2022 15:31:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.17763-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers?api-version=2021-05-01-preview
+  response:
+    body:
+      string: '{"nextLink":"","value":[{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"\"0000397f-0000-3400-0000-622625370000\"","properties":{"displayName":"TestNetworkManager","description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"multiTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Connectivity"],"resourceGuid":"c23470b9-a24c-4d16-924d-eb6cf6861da6"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2022-03-07T15:30:59.4610174Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-03-07T15:30:59.4610174Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '959'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 07 Mar 2022 15:31:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.31.0 azsdk-python-mgmt-network/1.0.0b1 Python/3.9.5 (Windows-10-10.0.17763-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2021-05-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 07 Mar 2022 15:31:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+    status:
+      code: 200
+      message: OK
+version: 1

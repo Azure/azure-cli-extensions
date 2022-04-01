@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Upgrade SDK to fix deserialization errors
+
+0.1.4
+++++++
+* Add missing help for top level command group
+
 0.1.3
 ++++++
 * Preview logic extension

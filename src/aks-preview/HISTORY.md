@@ -3,6 +3,141 @@
 Release History
 ===============
 
+0.5.58
+++++++
+* Add support for enabling Azure KeyVault KMS with `--enable-azure-keyvault-kms` flag.
+
+0.5.57
+++++++
+* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
+
+0.5.56
+++++++
+* Add `--message-of-the-day` flag for `az aks create` and `az aks nodepool add` for Linux message of the day.
+
+0.5.55
+++++++
+* Add option `none` to `--network-plugin` parameter to skip CNI installation during cluster creation.
+
+0.5.54
+++++++
+* Add --host-group-id to `az aks create` and `az aks nodepool add` commands to support Azure Dedicated Host Group, which requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview"
+  * `az aks create --host-group-id`
+  * `az aks nodepool add --host-group-id`
+
+0.5.53
+++++++
+* Add support for cluster creating with Capacity Reservation Group.
+  * `az aks create --crg-id`
+* Add support for nodepool adding with Capacity Reservation Group.
+  * `az aks nodepool add --crg-id`
+
+0.5.52
+++++++
+* Add yaml template files to package data to fix issue [#148](https://github.com/Azure/aks-periscope/issues/148).
+* Add support for using empty string to remove existing nodepool label by `az aks update --nodepool-labels` or `az aks nodepool update --labels`.
+* Add support for using empty string to remove existing node taints by `az nodepool update --node-taints`.
+* Correct the option for time control in `maintenanceconfiguration` series commands to `hourSlot`.
+* GA (General Availability) for the snapshot feature.
+
+0.5.51
+++++++
+* Add currentKubernetesVersion column for az aks show --output table.
+
+0.5.50
+++++++
+* Add support for enabling OIDC issuer with `--enable-oidc-issuer` flag.
+
+0.5.49
+++++++
+* Add support for Alias Minor Version.
+
+0.5.48
+++++++
+* Fix aks update issue with load balancer profile defaults being set when CLI arguments only include outbound IPs or outbound prefixes
+
+0.5.47
+++++++
+* Add support for IPv4/IPv6 dual-stack networking AKS clusters
+* `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
+
+0.5.46
+++++++
+* Update to use 2021-10-01 api-version
+
+0.5.45
+++++++
+* Remove the snapshot name trimming in `az aks snapshot create` command.
+
+0.5.44
+++++++
+* In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
+
+0.5.43
+++++++
+* Enable the new implementation in command `aks create`, and change the dependent cli version to at least 2.30.0
+
+0.5.42
+++++++
+* Fix default value behavior for pod identity exception pod labels in upgrade/scale calls.
+
+0.5.41
+++++++
+* Fix default value behavior for pod identity exception pod labels.
+
+0.5.40
++++++
+* Add support for new snapshot commands
+  * `az aks snapshot create`
+  * `az aks snapshot delete`
+  * `az aks snapshot list`
+  * `az aks snapshot show`
+* Add --snapshot-id to creating/upgrading commands
+  * `az aks create --snapshot-id`
+  * `az aks nodepool add --snapshot-id`
+  * `az aks nodepool upgrade --snapshot-id`
+
+0.5.39
++++++
+* Add commands for agentpool start stop feature
+
+0.5.38
++++++
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon.
+
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
+
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
+0.5.33
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
+
+0.5.32
++++++
+* Update to use 2021-08-01 api-version
+
 0.5.31
 +++++
 * Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'

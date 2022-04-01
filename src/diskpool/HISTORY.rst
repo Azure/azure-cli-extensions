@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.0
+++++++
+* Add `az disk-pool list-zones` command
+* Add `az disk-pool redeploy` command
+
 0.1.2
 ++++++
 * Refine table output

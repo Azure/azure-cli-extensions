@@ -3,6 +3,42 @@
 Release History
 ===============
 
+1.1.0
+++++++++++++++++++
+* Migrate Extensions api-version to 2022-03-01
+* microsoft.azureml.kubernetes: Remove inference private review warning message
+* microsoft.openservicemesh: Enable System-assigned identity
+
+1.0.4
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Support SSL secret
+
+1.0.3
+++++++++++++++++++
+* Remove identity creation for calls to Microsoft.ResourceConnector
+
+1.0.2
+++++++++++++++++++
+* Update api-version for calls to Microsoft.ResourceConnector to 2021-10-31-preview
+* Update api-version for calls to Microsoft.ContainerService to 2021-10-01
+* Update api-version for calls to Microsoft.Kubernetes to 2021-10-01
+* microsoft.azureml.kubernetes: Add one more prompt for amlarc extension update
+
+1.0.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Retrieve relay and service bus connection string when update the configuration protected settings of the extension.
+
+1.0.0
+++++++++++++++++++
+* Switch to GA api-version of Extensions (2021-09-01)
+* Support Extensions PATCH
+* Enable Dapr extension type
+* Enable ManagedClusters clusterType
+
+0.7.1
+++++++++++++++++++
+* Fix DF resource manager endpoint check
+
 0.7.0
 ++++++++++++++++++
 * Enable identity by default for extensions

@@ -50,7 +50,7 @@ class DatabasesOperations:
         resource_name: "models.CheckNameRequest",
         **kwargs
     ) -> "models.CheckNameResult":
-        """Checks that the database name is valid and is not already in use.
+        """Checks that the databases resource name is valid and is not already in use.
 
         :param resource_group_name: The name of the resource group containing the Kusto cluster.
         :type resource_group_name: str
@@ -68,7 +68,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -131,7 +131,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -208,7 +208,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -258,7 +258,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -396,7 +396,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -533,7 +533,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -661,7 +661,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -742,7 +742,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -812,7 +812,7 @@ class DatabasesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
