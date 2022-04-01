@@ -8,6 +8,7 @@ from knack.util import CLIError
 from msrestazure.tools import resource_id
 from ...vendored_sdks.appplatform.v2022_01_01_preview import models
 from ...spring_cloud_instance import (spring_cloud_create)
+from ..._app_insights import get_app_insights_connection_string
 from ..._utils import (_get_sku_name)
 try:
     import unittest.mock as mock
@@ -153,7 +154,7 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         super().__init__(methodName=methodName)
         self.buildpack_binding_resource = None
 
-    @mock.patch('azext_spring_cloud.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
+    @mock.patch('azext_spring_cloud._app_insights.get_mgmt_service_client', _get_application_insights_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
         super()._execute(resource_group, name, client=client, **kwargs)
@@ -191,8 +192,10 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         self.assertEqual(23,
             self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
 
+    @mock.patch('azext_spring_cloud._app_insights.get_mgmt_service_client', _get_application_insights_client)
     def test_asc_create_with_application_insights_name(self):
-        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights='test-application-insights', sampling_rate=53)
+        connection_string = get_app_insights_connection_string(_get_test_cmd(), 'rg', 'test-application-insights')
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), app_insights_key=connection_string, sampling_rate=53)
         resource = self.created_resource
         self.assertEqual('E0', resource.sku.name)
         self.assertEqual('Enterprise', resource.sku.tier)
