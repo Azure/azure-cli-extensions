@@ -24,8 +24,6 @@ GUEST_AGENT_PROVISIONING_ACTION_INSTALL = "install"
 NAME_PARAMETER = "name"
 DEVICE_KEY = "device-key"
 
-DEFAULT_VCENTER_PORT = 443
-
 # Nic parameters.
 NETWORK = "network"
 NIC_TYPE = "nic-type"

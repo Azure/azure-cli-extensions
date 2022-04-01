@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* HTTP Proxy support in vm guest agent
+* Remove default vcenter port 
+
 0.1.6
 ++++++
 * Fix vm update

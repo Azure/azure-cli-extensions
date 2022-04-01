@@ -18,7 +18,6 @@ from .vmware_constants import (
     DATASTORE_RESOURCE_TYPE,
     VMTEMPLATE_RESOURCE_TYPE,
     VIRTUALNETWORK_RESOURCE_TYPE,
-    DEFAULT_VCENTER_PORT,
     EXTENDED_LOCATION_NAMESPACE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
     EXTENDED_LOCATION_TYPE,
@@ -75,6 +74,7 @@ from .vendored_sdks.models import (
     GuestAgent,
     GuestCredential,
     PlacementProfile,
+    HttpProxyConfiguration,
 )
 
 from .vendored_sdks.operations import (
@@ -110,7 +110,7 @@ def connect_vcenter(
     fqdn=None,
     username=None,
     password=None,
-    port=DEFAULT_VCENTER_PORT,
+    port=None,
     tags=None,
     no_wait=False,
 ):
@@ -123,24 +123,24 @@ def connect_vcenter(
             'password': password,
         }
         if fqdn is None:
-            print('Please provide vcenter fqdn: ', end='', file=sys.stderr)
+            print('Please provide vcenter FQDN or IP address: ', end='')
             creds['fqdn'] = input()
         if username is None:
-            print('Please provide vcenter username: ', end='', file=sys.stderr)
+            print('Please provide vcenter username: ', end='')
             creds['username'] = input()
         if password is None:
             creds['password'] = getpass('Please provide vcenter password: ')
-        print('Is this OK? [Y/n]: ', end='', file=sys.stderr)
+        print('Confirm vcenter details? [Y/n]: ', end='')
         res = input().lower()
         if res in ['y', '']:
             for cred_type, cred_val in creds.items():
                 if not cred_val:
-                    print(f'{cred_type} cannot be empty. Please try again.', file=sys.stderr)
+                    print(f'{cred_type} cannot be empty. Please try again.')
                     continue
             fqdn, username, password = creds['fqdn'], creds['username'], creds['password']
             creds_ok = True
         elif res != 'n':
-            print('Please type y/n or leave empty.', file=sys.stderr)
+            print('Please type y/n or leave empty.')
 
     username_creds = VICredential(username=username, password=password)
 
@@ -1779,6 +1779,7 @@ def enable_guest_agent(
     vm_name,
     username,
     password,
+    https_proxy=None,
 ):
     """
     Enable guest agent on the given virtual machine.
@@ -1793,12 +1794,18 @@ def enable_guest_agent(
 
     resource_id = get_resource_id(cmd, resource_group_name, VMWARE_NAMESPACE, VIRTUALMACHINE_RESOURCE_TYPE, vm_name)
 
+    https_proxy_config = None
+
+    if https_proxy:
+        https_proxy_config = HttpProxyConfiguration(https_proxy=https_proxy)
+
     guest_agent = GuestAgent(
         id=resource_id,
         type=VIRTUALMACHINE_RESOURCE_TYPE,
         name=DEFAULT_GUEST_AGENT_NAME,
         credentials=vm_creds,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
+        http_proxy_config=https_proxy_config,
     )
 
     return client.begin_create(resource_group_name, vm_name, DEFAULT_GUEST_AGENT_NAME, guest_agent)
