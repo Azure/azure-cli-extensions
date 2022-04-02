@@ -293,6 +293,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
+    max_poll_wait_secs = float(max_poll_wait_secs)
     job = client.get(job_id)
 
     while not _has_completed(job):
