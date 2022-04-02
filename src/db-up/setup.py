@@ -30,7 +30,7 @@ DEPENDENCIES = [
 ]
 
 if sys.platform != 'darwin':
-    DEPENDENCIES.append('pymssql==2.2.4')
+    DEPENDENCIES.append('pymssql~=2.2.4')
 
 setup(
     name='db-up',
