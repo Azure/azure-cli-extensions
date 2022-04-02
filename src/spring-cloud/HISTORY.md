@@ -27,6 +27,7 @@ Release History
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.jvmOptions", use "properties.activeDeployment.properties.source.jvmOptions" instead.
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.runtimeVersion", use "properties.activeDeployment.properties.source.runtimeVersion" instead.
 * [BREAKING CHANGE] `az spring-cloud app` command output: Remove "properties.activeDeployment.properties.deploymentSettings.netCoreMainEntryPath", use "properties.activeDeployment.properties.source.netCoreMainEntryPath" instead.
+* [BREAKING CHANGE] RBAC change requirement for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.
 
 2.12.3
 ---
