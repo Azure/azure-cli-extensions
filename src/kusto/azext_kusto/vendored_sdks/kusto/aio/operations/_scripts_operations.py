@@ -28,7 +28,7 @@ class ScriptsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~kusto_management_client.models
+    :type models: ~azure.mgmt.kusto.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +60,7 @@ class ScriptsOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ScriptListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ScriptListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.ScriptListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ScriptListResult"]
@@ -68,7 +68,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -141,7 +141,7 @@ class ScriptsOperations:
         :type script_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Script, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.Script
+        :rtype: ~azure.mgmt.kusto.models.Script
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Script"]
@@ -149,7 +149,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -201,7 +201,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -271,7 +271,7 @@ class ScriptsOperations:
         :param script_name: The name of the Kusto database script.
         :type script_name: str
         :param parameters: The Kusto Script parameters contains the KQL to run.
-        :type parameters: ~kusto_management_client.models.Script
+        :type parameters: ~azure.mgmt.kusto.models.Script
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -279,7 +279,7 @@ class ScriptsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Script or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.Script]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.Script]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -346,7 +346,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -381,14 +381,16 @@ class ScriptsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('Script', pipeline_response)
 
         if response.status_code == 202:
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('Script', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
     _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/scripts/{scriptName}'}  # type: ignore
@@ -413,7 +415,7 @@ class ScriptsOperations:
         :param script_name: The name of the Kusto database script.
         :type script_name: str
         :param parameters: The Kusto Script parameters contains to the KQL to run.
-        :type parameters: ~kusto_management_client.models.Script
+        :type parameters: ~azure.mgmt.kusto.models.Script
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -421,7 +423,7 @@ class ScriptsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Script or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.Script]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.Script]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -446,10 +448,13 @@ class ScriptsOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('Script', pipeline_response)
 
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, response_headers)
             return deserialized
 
         path_format_arguments = {
@@ -487,7 +492,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -613,10 +618,10 @@ class ScriptsOperations:
         :param database_name: The name of the database in the Kusto cluster.
         :type database_name: str
         :param script_name: The name of the script.
-        :type script_name: ~kusto_management_client.models.ScriptCheckNameRequest
+        :type script_name: ~azure.mgmt.kusto.models.ScriptCheckNameRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameResult, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.CheckNameResult
+        :rtype: ~azure.mgmt.kusto.models.CheckNameResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameResult"]
@@ -624,7 +629,7 @@ class ScriptsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

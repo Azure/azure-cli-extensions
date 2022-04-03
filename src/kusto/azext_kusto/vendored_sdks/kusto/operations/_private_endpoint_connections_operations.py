@@ -32,7 +32,7 @@ class PrivateEndpointConnectionsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~kusto_management_client.models
+    :type models: ~azure.mgmt.kusto.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +62,7 @@ class PrivateEndpointConnectionsOperations(object):
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateEndpointConnectionListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~kusto_management_client.models.PrivateEndpointConnectionListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.kusto.models.PrivateEndpointConnectionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnectionListResult"]
@@ -70,7 +70,7 @@ class PrivateEndpointConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -140,7 +140,7 @@ class PrivateEndpointConnectionsOperations(object):
         :type private_endpoint_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.PrivateEndpointConnection
+        :rtype: ~azure.mgmt.kusto.models.PrivateEndpointConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnection"]
@@ -148,7 +148,7 @@ class PrivateEndpointConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -199,7 +199,7 @@ class PrivateEndpointConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -263,7 +263,7 @@ class PrivateEndpointConnectionsOperations(object):
         :param private_endpoint_connection_name: The name of the private endpoint connection.
         :type private_endpoint_connection_name: str
         :param parameters:
-        :type parameters: ~kusto_management_client.models.PrivateEndpointConnection
+        :type parameters: ~azure.mgmt.kusto.models.PrivateEndpointConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -271,7 +271,7 @@ class PrivateEndpointConnectionsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either PrivateEndpointConnection or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~kusto_management_client.models.PrivateEndpointConnection]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.kusto.models.PrivateEndpointConnection]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -335,7 +335,7 @@ class PrivateEndpointConnectionsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL

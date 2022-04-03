@@ -28,7 +28,7 @@ class ManagedPrivateEndpointsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~kusto_management_client.models
+    :type models: ~azure.mgmt.kusto.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,10 +57,10 @@ class ManagedPrivateEndpointsOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param resource_name: The name of the resource.
-        :type resource_name: ~kusto_management_client.models.ManagedPrivateEndpointsCheckNameRequest
+        :type resource_name: ~azure.mgmt.kusto.models.ManagedPrivateEndpointsCheckNameRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameResult, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.CheckNameResult
+        :rtype: ~azure.mgmt.kusto.models.CheckNameResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameResult"]
@@ -68,7 +68,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -123,7 +123,7 @@ class ManagedPrivateEndpointsOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedPrivateEndpointListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ManagedPrivateEndpointListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.ManagedPrivateEndpointListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointListResult"]
@@ -131,7 +131,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -200,7 +200,7 @@ class ManagedPrivateEndpointsOperations:
         :type managed_private_endpoint_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedPrivateEndpoint, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.ManagedPrivateEndpoint
+        :rtype: ~azure.mgmt.kusto.models.ManagedPrivateEndpoint
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpoint"]
@@ -208,7 +208,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -258,7 +258,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -324,7 +324,7 @@ class ManagedPrivateEndpointsOperations:
         :param managed_private_endpoint_name: The name of the managed private endpoint.
         :type managed_private_endpoint_name: str
         :param parameters: The managed private endpoint parameters.
-        :type parameters: ~kusto_management_client.models.ManagedPrivateEndpoint
+        :type parameters: ~azure.mgmt.kusto.models.ManagedPrivateEndpoint
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -332,7 +332,7 @@ class ManagedPrivateEndpointsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ManagedPrivateEndpoint or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.ManagedPrivateEndpoint]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.ManagedPrivateEndpoint]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -396,7 +396,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -430,14 +430,16 @@ class ManagedPrivateEndpointsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('ManagedPrivateEndpoint', pipeline_response)
 
         if response.status_code == 202:
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('ManagedPrivateEndpoint', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
     _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/managedPrivateEndpoints/{managedPrivateEndpointName}'}  # type: ignore
@@ -459,7 +461,7 @@ class ManagedPrivateEndpointsOperations:
         :param managed_private_endpoint_name: The name of the managed private endpoint.
         :type managed_private_endpoint_name: str
         :param parameters: The managed private endpoint parameters.
-        :type parameters: ~kusto_management_client.models.ManagedPrivateEndpoint
+        :type parameters: ~azure.mgmt.kusto.models.ManagedPrivateEndpoint
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -467,7 +469,7 @@ class ManagedPrivateEndpointsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ManagedPrivateEndpoint or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.ManagedPrivateEndpoint]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.ManagedPrivateEndpoint]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -491,10 +493,13 @@ class ManagedPrivateEndpointsOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('ManagedPrivateEndpoint', pipeline_response)
 
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, response_headers)
             return deserialized
 
         path_format_arguments = {
@@ -530,7 +535,7 @@ class ManagedPrivateEndpointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL

@@ -25,6 +25,7 @@ from azext_kusto.generated._client_factory import (
     cf_private_link_resource,
     cf_data_connection,
     cf_operation_result,
+    cf_operation_result_location,
 )
 
 
@@ -77,6 +78,12 @@ kusto_operation_result = CliCommandType(
         'azext_kusto.vendored_sdks.kusto.operations._operations_results_operations#OperationsResultsOperations.{}'
     ),
     client_factory=cf_operation_result,
+)
+
+
+kusto_operation_result_location = CliCommandType(
+    operations_tmpl='azext_kusto.vendored_sdks.kusto.operations._operations_results_location_operations#OperationsResultsLocationOperations.{}',
+    client_factory=cf_operation_result_location,
 )
 
 
@@ -227,6 +234,11 @@ def load_command_table(self, _):
 
     with self.command_group('kusto operation-result', kusto_operation_result, client_factory=cf_operation_result) as g:
         g.custom_show_command('show', 'kusto_operation_result_show')
+
+    with self.command_group(
+        'kusto operation-result-location', kusto_operation_result_location, client_factory=cf_operation_result_location
+    ) as g:
+        g.custom_show_command('show', 'kusto_operation_result_location_show')
 
     with self.command_group(
         'kusto private-endpoint-connection',

@@ -52,6 +52,8 @@ def kusto_cluster_create(client,
                          enable_auto_stop=None,
                          restrict_outbound_network_access=None,
                          allowed_fqdn_list=None,
+                         public_ip_type=None,
+                         virtual_cluster_graduation_properties=None,
                          type_=None,
                          user_assigned_identities=None,
                          no_wait=False):
@@ -104,8 +106,16 @@ def kusto_cluster_create(client,
         parameters['enable_auto_stop'] = True
     if restrict_outbound_network_access is not None:
         parameters['restrict_outbound_network_access'] = restrict_outbound_network_access
+    else:
+        parameters['restrict_outbound_network_access'] = "Disabled"
     if allowed_fqdn_list is not None:
         parameters['allowed_fqdn_list'] = allowed_fqdn_list
+    if public_ip_type is not None:
+        parameters['public_ip_type'] = public_ip_type
+    else:
+        parameters['public_ip_type'] = "IPv4"
+    if virtual_cluster_graduation_properties is not None:
+        parameters['virtual_cluster_graduation_properties'] = virtual_cluster_graduation_properties
     parameters['identity'] = {}
     if type_ is not None:
         parameters['identity']['type'] = type_
@@ -144,6 +154,8 @@ def kusto_cluster_update(client,
                          enable_auto_stop=None,
                          restrict_outbound_network_access=None,
                          allowed_fqdn_list=None,
+                         public_ip_type=None,
+                         virtual_cluster_graduation_properties=None,
                          type_=None,
                          user_assigned_identities=None,
                          no_wait=False):
@@ -196,8 +208,16 @@ def kusto_cluster_update(client,
         parameters['enable_auto_stop'] = True
     if restrict_outbound_network_access is not None:
         parameters['restrict_outbound_network_access'] = restrict_outbound_network_access
+    else:
+        parameters['restrict_outbound_network_access'] = "Disabled"
     if allowed_fqdn_list is not None:
         parameters['allowed_fqdn_list'] = allowed_fqdn_list
+    if public_ip_type is not None:
+        parameters['public_ip_type'] = public_ip_type
+    else:
+        parameters['public_ip_type'] = "IPv4"
+    if virtual_cluster_graduation_properties is not None:
+        parameters['virtual_cluster_graduation_properties'] = virtual_cluster_graduation_properties
     parameters['identity'] = {}
     if type_ is not None:
         parameters['identity']['type'] = type_
@@ -790,6 +810,7 @@ def kusto_script_create(client,
                         script_name,
                         script_url=None,
                         script_url_sas_token=None,
+                        script_content=None,
                         force_update_tag=None,
                         continue_on_errors=None,
                         no_wait=False):
@@ -798,6 +819,8 @@ def kusto_script_create(client,
         parameters['script_url'] = script_url
     if script_url_sas_token is not None:
         parameters['script_url_sas_token'] = script_url_sas_token
+    if script_content is not None:
+        parameters['script_content'] = script_content
     if force_update_tag is not None:
         parameters['force_update_tag'] = force_update_tag
     if continue_on_errors is not None:
@@ -820,6 +843,7 @@ def kusto_script_update(client,
                         script_name,
                         script_url=None,
                         script_url_sas_token=None,
+                        script_content=None,
                         force_update_tag=None,
                         continue_on_errors=None,
                         no_wait=False):
@@ -828,6 +852,8 @@ def kusto_script_update(client,
         parameters['script_url'] = script_url
     if script_url_sas_token is not None:
         parameters['script_url_sas_token'] = script_url_sas_token
+    if script_content is not None:
+        parameters['script_content'] = script_content
     if force_update_tag is not None:
         parameters['force_update_tag'] = force_update_tag
     if continue_on_errors is not None:
@@ -956,6 +982,7 @@ def kusto_data_connection_event_grid_create(client,
                                             data_connection_name,
                                             location=None,
                                             storage_account_resource_id=None,
+                                            event_grid_resource_id=None,
                                             event_hub_resource_id=None,
                                             consumer_group=None,
                                             table_name=None,
@@ -963,6 +990,8 @@ def kusto_data_connection_event_grid_create(client,
                                             data_format=None,
                                             ignore_first_record=None,
                                             blob_storage_event_type=None,
+                                            managed_identity_resource_id=None,
+                                            database_routing=None,
                                             no_wait=False):
     parameters = {}
     if location is not None:
@@ -970,6 +999,8 @@ def kusto_data_connection_event_grid_create(client,
     parameters['kind'] = 'EventGrid'
     if storage_account_resource_id is not None:
         parameters['storage_account_resource_id'] = storage_account_resource_id
+    if event_grid_resource_id is not None:
+        parameters['event_grid_resource_id'] = event_grid_resource_id
     if event_hub_resource_id is not None:
         parameters['event_hub_resource_id'] = event_hub_resource_id
     if consumer_group is not None:
@@ -984,6 +1015,10 @@ def kusto_data_connection_event_grid_create(client,
         parameters['ignore_first_record'] = ignore_first_record
     if blob_storage_event_type is not None:
         parameters['blob_storage_event_type'] = blob_storage_event_type
+    if managed_identity_resource_id is not None:
+        parameters['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -1007,6 +1042,7 @@ def kusto_data_connection_event_hub_create(client,
                                            event_system_properties=None,
                                            compression=None,
                                            managed_identity_resource_id=None,
+                                           database_routing=None,
                                            no_wait=False):
     parameters = {}
     if location is not None:
@@ -1030,6 +1066,8 @@ def kusto_data_connection_event_hub_create(client,
         parameters['compression'] = "None"
     if managed_identity_resource_id is not None:
         parameters['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -1052,6 +1090,7 @@ def kusto_data_connection_iot_hub_create(client,
                                          data_format=None,
                                          event_system_properties=None,
                                          shared_access_policy_name=None,
+                                         database_routing=None,
                                          no_wait=False):
     parameters = {}
     if location is not None:
@@ -1071,6 +1110,8 @@ def kusto_data_connection_iot_hub_create(client,
         parameters['event_system_properties'] = event_system_properties
     if shared_access_policy_name is not None:
         parameters['shared_access_policy_name'] = shared_access_policy_name
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -1087,6 +1128,7 @@ def kusto_data_connection_event_grid_update(client,
                                             data_connection_name,
                                             location=None,
                                             storage_account_resource_id=None,
+                                            event_grid_resource_id=None,
                                             event_hub_resource_id=None,
                                             consumer_group=None,
                                             table_name=None,
@@ -1094,6 +1136,8 @@ def kusto_data_connection_event_grid_update(client,
                                             data_format=None,
                                             ignore_first_record=None,
                                             blob_storage_event_type=None,
+                                            managed_identity_resource_id=None,
+                                            database_routing=None,
                                             no_wait=False):
     parameters = {}
     if location is not None:
@@ -1101,6 +1145,8 @@ def kusto_data_connection_event_grid_update(client,
     parameters['kind'] = 'EventGrid'
     if storage_account_resource_id is not None:
         parameters['storage_account_resource_id'] = storage_account_resource_id
+    if event_grid_resource_id is not None:
+        parameters['event_grid_resource_id'] = event_grid_resource_id
     if event_hub_resource_id is not None:
         parameters['event_hub_resource_id'] = event_hub_resource_id
     if consumer_group is not None:
@@ -1115,6 +1161,10 @@ def kusto_data_connection_event_grid_update(client,
         parameters['ignore_first_record'] = ignore_first_record
     if blob_storage_event_type is not None:
         parameters['blob_storage_event_type'] = blob_storage_event_type
+    if managed_identity_resource_id is not None:
+        parameters['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -1138,6 +1188,7 @@ def kusto_data_connection_event_hub_update(client,
                                            event_system_properties=None,
                                            compression=None,
                                            managed_identity_resource_id=None,
+                                           database_routing=None,
                                            no_wait=False):
     parameters = {}
     if location is not None:
@@ -1161,6 +1212,8 @@ def kusto_data_connection_event_hub_update(client,
         parameters['compression'] = "None"
     if managed_identity_resource_id is not None:
         parameters['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -1183,6 +1236,7 @@ def kusto_data_connection_iot_hub_update(client,
                                          data_format=None,
                                          event_system_properties=None,
                                          shared_access_policy_name=None,
+                                         database_routing=None,
                                          no_wait=False):
     parameters = {}
     if location is not None:
@@ -1202,6 +1256,8 @@ def kusto_data_connection_iot_hub_update(client,
         parameters['event_system_properties'] = event_system_properties
     if shared_access_policy_name is not None:
         parameters['shared_access_policy_name'] = shared_access_policy_name
+    if database_routing is not None:
+        parameters['database_routing'] = database_routing
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -1232,6 +1288,7 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
                                                                 data_connection_name=None,
                                                                 location=None,
                                                                 storage_account_resource_id=None,
+                                                                event_grid_resource_id=None,
                                                                 event_hub_resource_id=None,
                                                                 consumer_group=None,
                                                                 table_name=None,
@@ -1239,6 +1296,8 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
                                                                 data_format=None,
                                                                 ignore_first_record=None,
                                                                 blob_storage_event_type=None,
+                                                                managed_identity_resource_id=None,
+                                                                database_routing=None,
                                                                 no_wait=False):
     parameters = {}
     if data_connection_name is not None:
@@ -1249,6 +1308,8 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
     parameters['properties']['kind'] = 'EventGrid'
     if storage_account_resource_id is not None:
         parameters['properties']['storage_account_resource_id'] = storage_account_resource_id
+    if event_grid_resource_id is not None:
+        parameters['properties']['event_grid_resource_id'] = event_grid_resource_id
     if event_hub_resource_id is not None:
         parameters['properties']['event_hub_resource_id'] = event_hub_resource_id
     if consumer_group is not None:
@@ -1263,6 +1324,10 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
         parameters['properties']['ignore_first_record'] = ignore_first_record
     if blob_storage_event_type is not None:
         parameters['properties']['blob_storage_event_type'] = blob_storage_event_type
+    if managed_identity_resource_id is not None:
+        parameters['properties']['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['properties']['database_routing'] = database_routing
     if len(parameters['properties']) == 0:
         del parameters['properties']
     return sdk_no_wait(no_wait,
@@ -1287,6 +1352,7 @@ def kusto_data_connection_event_hub_data_connection_validation(client,
                                                                event_system_properties=None,
                                                                compression=None,
                                                                managed_identity_resource_id=None,
+                                                               database_routing=None,
                                                                no_wait=False):
     parameters = {}
     if data_connection_name is not None:
@@ -1313,6 +1379,8 @@ def kusto_data_connection_event_hub_data_connection_validation(client,
         parameters['properties']['compression'] = "None"
     if managed_identity_resource_id is not None:
         parameters['properties']['managed_identity_resource_id'] = managed_identity_resource_id
+    if database_routing is not None:
+        parameters['properties']['database_routing'] = database_routing
     if len(parameters['properties']) == 0:
         del parameters['properties']
     return sdk_no_wait(no_wait,
@@ -1336,6 +1404,7 @@ def kusto_data_connection_iot_hub_data_connection_validation(client,
                                                              data_format=None,
                                                              event_system_properties=None,
                                                              shared_access_policy_name=None,
+                                                             database_routing=None,
                                                              no_wait=False):
     parameters = {}
     if data_connection_name is not None:
@@ -1358,6 +1427,8 @@ def kusto_data_connection_iot_hub_data_connection_validation(client,
         parameters['properties']['event_system_properties'] = event_system_properties
     if shared_access_policy_name is not None:
         parameters['properties']['shared_access_policy_name'] = shared_access_policy_name
+    if database_routing is not None:
+        parameters['properties']['database_routing'] = database_routing
     if len(parameters['properties']) == 0:
         del parameters['properties']
     return sdk_no_wait(no_wait,
@@ -1371,5 +1442,12 @@ def kusto_data_connection_iot_hub_data_connection_validation(client,
 def kusto_operation_result_show(client,
                                 location,
                                 operation_id):
+    return client.get(location=location,
+                      operation_id=operation_id)
+
+
+def kusto_operation_result_location_show(client,
+                                         location,
+                                         operation_id):
     return client.get(location=location,
                       operation_id=operation_id)

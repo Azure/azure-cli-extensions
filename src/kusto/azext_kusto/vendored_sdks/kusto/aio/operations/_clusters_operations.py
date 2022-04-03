@@ -28,7 +28,7 @@ class ClustersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~kusto_management_client.models
+    :type models: ~azure.mgmt.kusto.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +57,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Cluster, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.Cluster
+        :rtype: ~azure.mgmt.kusto.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Cluster"]
@@ -65,7 +65,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -115,7 +115,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -180,7 +180,7 @@ class ClustersOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param parameters: The Kusto cluster parameters supplied to the CreateOrUpdate operation.
-        :type parameters: ~kusto_management_client.models.Cluster
+        :type parameters: ~azure.mgmt.kusto.models.Cluster
         :param if_match: The ETag of the cluster. Omit this value to always overwrite the current
          cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent
          changes.
@@ -195,7 +195,7 @@ class ClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Cluster or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.Cluster]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.Cluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -259,7 +259,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -294,17 +294,20 @@ class ClustersOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('Cluster', pipeline_response)
 
         if response.status_code == 201:
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('Cluster', pipeline_response)
 
         if response.status_code == 202:
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('Cluster', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
     _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}'}  # type: ignore
@@ -324,7 +327,7 @@ class ClustersOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param parameters: The Kusto cluster parameters supplied to the Update operation.
-        :type parameters: ~kusto_management_client.models.ClusterUpdate
+        :type parameters: ~azure.mgmt.kusto.models.ClusterUpdate
         :param if_match: The ETag of the cluster. Omit this value to always overwrite the current
          cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent
          changes.
@@ -336,7 +339,7 @@ class ClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Cluster or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.Cluster]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.Cluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -360,10 +363,13 @@ class ClustersOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
             deserialized = self._deserialize('Cluster', pipeline_response)
 
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, response_headers)
             return deserialized
 
         path_format_arguments = {
@@ -397,7 +403,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -505,7 +511,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -613,7 +619,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -725,7 +731,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either FollowerDatabaseListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.FollowerDatabaseListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.FollowerDatabaseListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.FollowerDatabaseListResult"]
@@ -733,7 +739,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -797,7 +803,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -849,7 +855,7 @@ class ClustersOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param follower_database_to_remove: The follower databases properties to remove.
-        :type follower_database_to_remove: ~kusto_management_client.models.FollowerDatabaseDefinition
+        :type follower_database_to_remove: ~azure.mgmt.kusto.models.FollowerDatabaseDefinition
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -914,7 +920,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         # Construct URL
@@ -972,7 +978,7 @@ class ClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either DiagnoseVirtualNetworkResult or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~kusto_management_client.models.DiagnoseVirtualNetworkResult]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.kusto.models.DiagnoseVirtualNetworkResult]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -1031,7 +1037,7 @@ class ClustersOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ClusterListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ClusterListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.ClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterListResult"]
@@ -1039,7 +1045,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1098,7 +1104,7 @@ class ClustersOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ClusterListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ClusterListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.ClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterListResult"]
@@ -1106,7 +1112,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1164,7 +1170,7 @@ class ClustersOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SkuDescriptionList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.SkuDescriptionList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.SkuDescriptionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SkuDescriptionList"]
@@ -1172,7 +1178,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1233,10 +1239,10 @@ class ClustersOperations:
         :param location: Azure location (region) name.
         :type location: str
         :param cluster_name: The name of the cluster.
-        :type cluster_name: ~kusto_management_client.models.ClusterCheckNameRequest
+        :type cluster_name: ~azure.mgmt.kusto.models.ClusterCheckNameRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameResult, or the result of cls(response)
-        :rtype: ~kusto_management_client.models.CheckNameResult
+        :rtype: ~azure.mgmt.kusto.models.CheckNameResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameResult"]
@@ -1244,7 +1250,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1298,7 +1304,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListResourceSkusResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.ListResourceSkusResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.ListResourceSkusResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListResourceSkusResult"]
@@ -1306,7 +1312,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1372,7 +1378,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OutboundNetworkDependenciesEndpointListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.OutboundNetworkDependenciesEndpointListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.OutboundNetworkDependenciesEndpointListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OutboundNetworkDependenciesEndpointListResult"]
@@ -1380,7 +1386,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1446,7 +1452,7 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either LanguageExtensionsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~kusto_management_client.models.LanguageExtensionsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kusto.models.LanguageExtensionsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.LanguageExtensionsList"]
@@ -1454,7 +1460,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1518,7 +1524,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1570,7 +1576,7 @@ class ClustersOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param language_extensions_to_add: The language extensions to add.
-        :type language_extensions_to_add: ~kusto_management_client.models.LanguageExtensionsList
+        :type language_extensions_to_add: ~azure.mgmt.kusto.models.LanguageExtensionsList
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -1636,7 +1642,7 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-27"
+        api_version = "2022-02-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1688,7 +1694,7 @@ class ClustersOperations:
         :param cluster_name: The name of the Kusto cluster.
         :type cluster_name: str
         :param language_extensions_to_remove: The language extensions to remove.
-        :type language_extensions_to_remove: ~kusto_management_client.models.LanguageExtensionsList
+        :type language_extensions_to_remove: ~azure.mgmt.kusto.models.LanguageExtensionsList
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a

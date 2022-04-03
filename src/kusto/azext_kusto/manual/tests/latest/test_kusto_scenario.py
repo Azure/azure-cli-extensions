@@ -110,7 +110,7 @@ def call_scenario(test):
         test.check("enablePurge", True),
         test.check("enableStreamingIngest", True),
         test.check("publicNetworkAccess", "Enabled", case_sensitive=False),
-        test.check("sku.name", "Standard_D11_v2", case_sensitive=False),
+        test.check("sku.name", "Standard_E2a_v4", case_sensitive=False),
         test.check("sku.capacity", 2),
         test.check("sku.tier", "Standard", case_sensitive=False),
     ])
@@ -233,7 +233,6 @@ def call_scenario(test):
 # Test class for Scenario
 @try_manual
 class KustoScenarioTest(ScenarioTest):
-    
     def __init__(self, *args, **kwargs):
         super(KustoScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
@@ -241,11 +240,11 @@ class KustoScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'myCluster': 'kustoclusterclitest7',
-            'myScript': 'kustoScript2',
-            'myCluster1': 'KustoClusterLeader7',
-            'myDataConnection': 'DataConnection3',
-            'myAttachedDatabaseConfiguration': 'myAttachedDatabaseConfiguration',
+            'myCluster': 'kustoCluster',
+            'myScript': 'kustoScript',
+            'myCluster1': 'KustoClusterLeader',
+            'myDataConnection': 'dataConnectionTest',
+            'myAttachedDatabaseConfiguration': 'attachedDatabaseConfigurationsTest',
             'myManagedPrivateEndpoint': 'kustoManagedPrivateEndpoint4',
             'myPrivateEndpoint': 'kustoPrivateEndpoint4',
             'myPrivateLinkResource': 'privateLinkResource'
@@ -254,6 +253,7 @@ class KustoScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
     @StorageAccountPreparer(name_prefix='clitestkusto_storageAccountTest'[:7], key='sa', resource_group_parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitestkusto_teststorageaccount'[:7], key='sa_2', resource_group_parameter_name='rg')
     def test_kusto_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)

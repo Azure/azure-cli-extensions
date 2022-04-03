@@ -38,20 +38,24 @@ class AzureSkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU name.
     """
 
+    DEV_NO_SLA_STANDARD_D11_V2 = "Dev(No SLA)_Standard_D11_v2"
+    DEV_NO_SLA_STANDARD_E2_A_V4 = "Dev(No SLA)_Standard_E2a_v4"
+    STANDARD_D11_V2 = "Standard_D11_v2"
+    STANDARD_D12_V2 = "Standard_D12_v2"
+    STANDARD_D13_V2 = "Standard_D13_v2"
+    STANDARD_D14_V2 = "Standard_D14_v2"
+    STANDARD_D32_D_V4 = "Standard_D32d_v4"
+    STANDARD_D16_D_V5 = "Standard_D16d_v5"
+    STANDARD_D32_D_V5 = "Standard_D32d_v5"
     STANDARD_DS13_V2_1_TB_PS = "Standard_DS13_v2+1TB_PS"
     STANDARD_DS13_V2_2_TB_PS = "Standard_DS13_v2+2TB_PS"
     STANDARD_DS14_V2_3_TB_PS = "Standard_DS14_v2+3TB_PS"
     STANDARD_DS14_V2_4_TB_PS = "Standard_DS14_v2+4TB_PS"
-    STANDARD_D13_V2 = "Standard_D13_v2"
-    STANDARD_D14_V2 = "Standard_D14_v2"
+    STANDARD_L4_S = "Standard_L4s"
     STANDARD_L8_S = "Standard_L8s"
     STANDARD_L16_S = "Standard_L16s"
     STANDARD_L8_S_V2 = "Standard_L8s_v2"
     STANDARD_L16_S_V2 = "Standard_L16s_v2"
-    STANDARD_D11_V2 = "Standard_D11_v2"
-    STANDARD_D12_V2 = "Standard_D12_v2"
-    STANDARD_L4_S = "Standard_L4s"
-    DEV_NO_SLA_STANDARD_D11_V2 = "Dev(No SLA)_Standard_D11_v2"
     STANDARD_E64_I_V3 = "Standard_E64i_v3"
     STANDARD_E80_IDS_V4 = "Standard_E80ids_v4"
     STANDARD_E2_A_V4 = "Standard_E2a_v4"
@@ -62,7 +66,22 @@ class AzureSkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     STANDARD_E8_AS_V4_2_TB_PS = "Standard_E8as_v4+2TB_PS"
     STANDARD_E16_AS_V4_3_TB_PS = "Standard_E16as_v4+3TB_PS"
     STANDARD_E16_AS_V4_4_TB_PS = "Standard_E16as_v4+4TB_PS"
-    DEV_NO_SLA_STANDARD_E2_A_V4 = "Dev(No SLA)_Standard_E2a_v4"
+    STANDARD_E8_AS_V5_1_TB_PS = "Standard_E8as_v5+1TB_PS"
+    STANDARD_E8_AS_V5_2_TB_PS = "Standard_E8as_v5+2TB_PS"
+    STANDARD_E16_AS_V5_3_TB_PS = "Standard_E16as_v5+3TB_PS"
+    STANDARD_E16_AS_V5_4_TB_PS = "Standard_E16as_v5+4TB_PS"
+    STANDARD_E2_ADS_V5 = "Standard_E2ads_v5"
+    STANDARD_E4_ADS_V5 = "Standard_E4ads_v5"
+    STANDARD_E8_ADS_V5 = "Standard_E8ads_v5"
+    STANDARD_E16_ADS_V5 = "Standard_E16ads_v5"
+    STANDARD_E8_S_V4_1_TB_PS = "Standard_E8s_v4+1TB_PS"
+    STANDARD_E8_S_V4_2_TB_PS = "Standard_E8s_v4+2TB_PS"
+    STANDARD_E16_S_V4_3_TB_PS = "Standard_E16s_v4+3TB_PS"
+    STANDARD_E16_S_V4_4_TB_PS = "Standard_E16s_v4+4TB_PS"
+    STANDARD_E8_S_V5_1_TB_PS = "Standard_E8s_v5+1TB_PS"
+    STANDARD_E8_S_V5_2_TB_PS = "Standard_E8s_v5+2TB_PS"
+    STANDARD_E16_S_V5_3_TB_PS = "Standard_E16s_v5+3TB_PS"
+    STANDARD_E16_S_V5_4_TB_PS = "Standard_E16s_v5+4TB_PS"
 
 class AzureSkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU tier.
@@ -127,6 +146,14 @@ class DatabasePrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     APP = "App"
     GROUP = "Group"
     USER = "User"
+
+class DatabaseRouting(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indication for database routing information from the data connection, by default only database
+    routing information is allowed
+    """
+
+    SINGLE = "Single"
+    MULTI = "Multi"
 
 class DataConnectionKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Kind of the endpoint for the data connection
@@ -265,6 +292,13 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     MOVING = "Moving"
+
+class PublicIpType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6)
+    """
+
+    I_PV4 = "IPv4"
+    DUAL_STACK = "DualStack"
 
 class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Public network access to the cluster is enabled by default. When disabled, only private

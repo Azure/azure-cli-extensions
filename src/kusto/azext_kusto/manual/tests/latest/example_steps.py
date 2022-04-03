@@ -67,42 +67,40 @@ def step_cluster_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az kusto cluster create '
-             '--cluster-name "{myCluster}" '
-             '--type="SystemAssigned" '
+             '--name "{myCluster}" '
+             '--type "SystemAssigned" '
              '--location "westus2" '
              '--allowed-ip-range-list "0.0.0.0/0" '
              '--enable-auto-stop true '
+             '--enable-double-encryption false '
              '--enable-purge true '
              '--enable-streaming-ingest true '
              '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
+             '--public-ip-type "DualStack" '
+             '--sku name="Standard_E2a_v4" capacity=2 tier="Standard" '
              '--public-network-access "Enabled" '
              '--resource-group "{rg}" ',
              checks=[])
     test.cmd('az kusto cluster wait --created '
-             '--cluster-name "{myCluster}" '
+             '--name "{myCluster}" '
              '--resource-group "{rg}" ',
              checks=[])
 
-# EXAMPLE: /Clusters/put/KustoClustersCreateOrUpdate
 @try_manual
 def step_leader_cluster_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az kusto cluster create '
-             '--cluster-name "{myCluster1}" '
-             '--type="SystemAssigned" ' 
+             '--name "{myCluster1}" '
+             '--type "SystemAssigned" '
              '--location "westus2" '
-             '--enable-purge true '
-             '--enable-streaming-ingest true '
-             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
+             '--sku name="Standard_E2a_v4" capacity=2 tier="Standard" '
              '--resource-group "{rg}" ',
              checks=[])
     test.cmd('az kusto cluster wait --created '
-             '--cluster-name "{myCluster1}" '
+             '--name "{myCluster1}" '
              '--resource-group "{rg}" ',
              checks=[])
-
 
 # EXAMPLE: /Clusters/get/Get Kusto cluster outbound network dependencies
 @try_manual
@@ -279,7 +277,7 @@ def step_cluster_stop(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-
+    
 # EXAMPLE: /ClusterPrincipalAssignments/put/KustoClusterPrincipalAssignmentsCreateOrUpdate
 @try_manual
 def step_cluster_principal_assignment_create(test, checks=None):
@@ -294,7 +292,7 @@ def step_cluster_principal_assignment_create(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-
+    
 # EXAMPLE: /ClusterPrincipalAssignments/get/KustoClusterPrincipalAssignmentsGet
 @try_manual
 def step_cluster_principal_assignment_show(test, checks=None):
@@ -317,7 +315,7 @@ def step_cluster_principal_assignment_list(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-
+    
 # EXAMPLE: /DatabasePrincipalAssignments/put/KustoDatabasePrincipalAssignmentsCreateOrUpdate
 @try_manual
 def step_database_principal_assignment_create(test, checks=None):
@@ -674,6 +672,17 @@ def step_operation_result_show(test, checks=None):
     test.cmd('az kusto operation-result show '
              '--operation-id "30972f1b-b61d-4fd8-bd34-3dcfa24670f3" '
              '--location "westus2" ',
+             checks=checks)
+
+
+# EXAMPLE: /OperationsResultsLocation/get/KustoOperationsResultsLocationGet
+@try_manual
+def step_operation_result_location_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az kusto operation-result-location show '
+             '--operation-id "30972f1b-b61d-4fd8-bd34-3dcfa24670f3" '
+             '--location "westus"',
              checks=checks)
 
 
