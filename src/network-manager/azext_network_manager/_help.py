@@ -284,35 +284,21 @@ helps['network manager group create'] = """
     type: command
     short-summary: "Create a network group."
     parameters:
-      - name: --group-members
-        short-summary: "Group members of network group."
+      - name: --member-type
+        short-summary: "Group member type"
         long-summary: |
-            Usage: --group-members resource-id=XX
-
-            resource-id: Resource Id.
-
-            Multiple actions can be specified by using more than one --group-members argument.
+            Usage: --member-type "Microsoft.Network/virtualNetworks"
     examples:
       - name: Create/Update Azure Virtual Network Manager Network Group
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
---description "A sample group" --conditional-membership "" --display-name "My Network Group" --group-members \
-resource-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" \
+--description "A sample group" --display-name "My Network Group" \
 --member-type "Microsoft.Network/virtualNetworks" --resource-group "rg1"
 """
 
 helps['network manager group update'] = """
     type: command
     short-summary: "Update a network group."
-    parameters:
-      - name: --group-members
-        short-summary: "Group members of network group."
-        long-summary: |
-            Usage: --group-members resource-id=XX
-
-            resource-id: Resource Id.
-
-            Multiple actions can be specified by using more than one --group-members argument.
 """
 
 helps['network manager group delete'] = """
@@ -421,7 +407,7 @@ helps['network manager security-admin-config create'] = """
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true
+--delete-existing-ns-gs true --apply-on None
 """
 
 helps['network manager security-admin-config update'] = """

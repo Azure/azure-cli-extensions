@@ -1,5 +1,13 @@
 Release History
 ===============
+3.1.1
+---
+* Fix min version requirement for Azure CLI Core.
+
+3.1.0
+---
+* Add support for user-assigned managed identity on App (Preview).
+
 3.0.1
 ---
 * `az spring-cloud app deploy` has new preview argument "--build-env" to specify build module and jvm version and so on.

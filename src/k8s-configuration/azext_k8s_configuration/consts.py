@@ -7,9 +7,9 @@
 
 # API VERSIONS -----------------------------------------
 
-SOURCE_CONTROL_API_VERSION = "2021-03-01"
-FLUXCONFIG_API_VERSION = "2022-01-01-preview"
-EXTENSION_API_VERSION = "2021-09-01"
+SOURCE_CONTROL_API_VERSION = "2022-03-01"
+FLUXCONFIG_API_VERSION = "2022-03-01"
+EXTENSION_API_VERSION = "2022-03-01"
 
 # ERROR/HELP TEXT DEFINITIONS -----------------------------------------
 
@@ -160,8 +160,6 @@ FLUX_EXTENSION_NOT_SUCCEEDED_OR_CREATING_HELP = "Try resolving the extension err
 
 FLUX_EXTENSION_CREATING_ERROR = "Error! 'Microsoft.Flux' extension is currently installing on the cluster. Unable to proceed with Flux v2 configuration install."
 FLUX_EXTENSION_CREATING_HELP = "Try again in a few minutes when the 'Microsoft.Flux' extension installation has completed."
-
-HTTP_URL_NO_AUTH_WARNING = "Warning! https url is being used without https auth params, ensure the repository url provided is not a private repo"
 
 NO_KUSTOMIZATIONS_WARNING = "Warning! No kustomizations were specified for this configuration. A kustomization will be generated with the default name 'kustomization-1'."
 DEFAULT_KUSTOMIZATION_NAME = "kustomization-1"
