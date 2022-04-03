@@ -439,11 +439,11 @@ helps['fidalgo admin attached-network show'] = """
     examples:
       - name: AttachedNetworks_GetByProject
         text: |-
-               az fidalgo admin attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" \
+               az fidalgo admin attached-network show --name "{attachedNetworkConnectionName}" \
 --project-name "{projectName}" --resource-group "rg1"
       - name: AttachedNetworks_GetByDevCenter
         text: |-
-               az fidalgo admin attached-network show --attached-network-connection-name "{attachedNetworkConnectionName}" \
+               az fidalgo admin attached-network show --name "{attachedNetworkConnectionName}" \
 --dev-center-name "Contoso" --resource-group "rg1"
 """
 

@@ -316,28 +316,28 @@ def load_arguments(self, _):
         c.argument('project_name', options_list=['--name', '-n', '--project-name'], type=str, help='The name of the '
                    'project.', id_part='name')
 
-    with self.argument_context('fidalgo attached-network list') as c:
+    with self.argument_context('fidalgo admin attached-network list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', type=str, help='The name of the project.')
         c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
                    '\'$top=10\'.')
         c.argument('dev_center_name', type=str, help='The name of the devcenter.')
 
-    with self.argument_context('fidalgo attached-network show') as c:
+    with self.argument_context('fidalgo admin attached-network show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', type=str, help='The name of the project.', id_part='name')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
                    id_part='child_name_1')
         c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
 
-    with self.argument_context('fidalgo attached-network create') as c:
+    with self.argument_context('fidalgo admin attached-network create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.')
         c.argument('network_connection_resource_id', type=str, help='The resource ID of the NetworkConnection you want '
                    'to attach.')
 
-    with self.argument_context('fidalgo attached-network update') as c:
+    with self.argument_context('fidalgo admin attached-network update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
@@ -345,13 +345,13 @@ def load_arguments(self, _):
         c.argument('network_connection_resource_id', type=str, help='The resource ID of the NetworkConnection you want '
                    'to attach.')
 
-    with self.argument_context('fidalgo attached-network delete') as c:
+    with self.argument_context('fidalgo admin attached-network delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dev_center_name', type=str, help='The name of the devcenter.', id_part='name')
         c.argument('attached_network_connection_name', options_list=['--name', '-n', '--attached-network-connection-name'], type=str, help='The name of the attached NetworkConnection.',
                    id_part='child_name_1')
 
-    with self.argument_context('fidalgo attached-network wait') as c:
+    with self.argument_context('fidalgo admin attached-network wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('project_name', type=str, help='The name of the project.', id_part='name')
         c.argument('attached_network_connection_name', type=str, help='The name of the attached NetworkConnection.',
