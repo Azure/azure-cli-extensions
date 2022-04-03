@@ -46,7 +46,8 @@ class KustoManagementClientConfiguration(Configuration):
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = "2022-02-01"
-        self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
+        self.credential_scopes = kwargs.pop(
+            'credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'mgmt-kusto/{}'.format(VERSION))
         self._configure(**kwargs)
 
@@ -54,14 +55,23 @@ class KustoManagementClientConfiguration(Configuration):
         self,
         **kwargs: Any
     ) -> None:
-        self.user_agent_policy = kwargs.get('user_agent_policy') or policies.UserAgentPolicy(**kwargs)
-        self.headers_policy = kwargs.get('headers_policy') or policies.HeadersPolicy(**kwargs)
-        self.proxy_policy = kwargs.get('proxy_policy') or policies.ProxyPolicy(**kwargs)
-        self.logging_policy = kwargs.get('logging_policy') or policies.NetworkTraceLoggingPolicy(**kwargs)
-        self.http_logging_policy = kwargs.get('http_logging_policy') or ARMHttpLoggingPolicy(**kwargs)
-        self.retry_policy = kwargs.get('retry_policy') or policies.AsyncRetryPolicy(**kwargs)
-        self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
-        self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
+        self.user_agent_policy = kwargs.get(
+            'user_agent_policy') or policies.UserAgentPolicy(**kwargs)
+        self.headers_policy = kwargs.get(
+            'headers_policy') or policies.HeadersPolicy(**kwargs)
+        self.proxy_policy = kwargs.get(
+            'proxy_policy') or policies.ProxyPolicy(**kwargs)
+        self.logging_policy = kwargs.get(
+            'logging_policy') or policies.NetworkTraceLoggingPolicy(**kwargs)
+        self.http_logging_policy = kwargs.get(
+            'http_logging_policy') or ARMHttpLoggingPolicy(**kwargs)
+        self.retry_policy = kwargs.get(
+            'retry_policy') or policies.AsyncRetryPolicy(**kwargs)
+        self.custom_hook_policy = kwargs.get(
+            'custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
+        self.redirect_policy = kwargs.get(
+            'redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)
         self.authentication_policy = kwargs.get('authentication_policy')
         if self.credential and not self.authentication_policy:
-            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)
+            self.authentication_policy = policies.AsyncBearerTokenCredentialPolicy(
+                self.credential, *self.credential_scopes, **kwargs)

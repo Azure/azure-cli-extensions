@@ -131,8 +131,10 @@ class AttachedDatabaseConfiguration(Resource):
         self.database_name = kwargs.get('database_name', None)
         self.cluster_resource_id = kwargs.get('cluster_resource_id', None)
         self.attached_database_names = None
-        self.default_principals_modification_kind = kwargs.get('default_principals_modification_kind', None)
-        self.table_level_sharing_properties = kwargs.get('table_level_sharing_properties', None)
+        self.default_principals_modification_kind = kwargs.get(
+            'default_principals_modification_kind', None)
+        self.table_level_sharing_properties = kwargs.get(
+            'table_level_sharing_properties', None)
 
 
 class AttachedDatabaseConfigurationListResult(msrest.serialization.Model):
@@ -185,7 +187,8 @@ class AttachedDatabaseConfigurationsCheckNameRequest(msrest.serialization.Model)
         self,
         **kwargs
     ):
-        super(AttachedDatabaseConfigurationsCheckNameRequest, self).__init__(**kwargs)
+        super(AttachedDatabaseConfigurationsCheckNameRequest,
+              self).__init__(**kwargs)
         self.name = kwargs['name']
 
 
@@ -609,24 +612,32 @@ class Cluster(TrackedResource):
         self.uri = None
         self.data_ingestion_uri = None
         self.state_reason = None
-        self.trusted_external_tenants = kwargs.get('trusted_external_tenants', None)
+        self.trusted_external_tenants = kwargs.get(
+            'trusted_external_tenants', None)
         self.optimized_autoscale = kwargs.get('optimized_autoscale', None)
-        self.enable_disk_encryption = kwargs.get('enable_disk_encryption', False)
-        self.enable_streaming_ingest = kwargs.get('enable_streaming_ingest', False)
-        self.virtual_network_configuration = kwargs.get('virtual_network_configuration', None)
+        self.enable_disk_encryption = kwargs.get(
+            'enable_disk_encryption', False)
+        self.enable_streaming_ingest = kwargs.get(
+            'enable_streaming_ingest', False)
+        self.virtual_network_configuration = kwargs.get(
+            'virtual_network_configuration', None)
         self.key_vault_properties = kwargs.get('key_vault_properties', None)
         self.enable_purge = kwargs.get('enable_purge', False)
         self.language_extensions = None
-        self.enable_double_encryption = kwargs.get('enable_double_encryption', False)
-        self.public_network_access = kwargs.get('public_network_access', "Enabled")
+        self.enable_double_encryption = kwargs.get(
+            'enable_double_encryption', False)
+        self.public_network_access = kwargs.get(
+            'public_network_access', "Enabled")
         self.allowed_ip_range_list = kwargs.get('allowed_ip_range_list', None)
         self.engine_type = kwargs.get('engine_type', "V3")
         self.accepted_audiences = kwargs.get('accepted_audiences', None)
         self.enable_auto_stop = kwargs.get('enable_auto_stop', True)
-        self.restrict_outbound_network_access = kwargs.get('restrict_outbound_network_access', "Disabled")
+        self.restrict_outbound_network_access = kwargs.get(
+            'restrict_outbound_network_access', "Disabled")
         self.allowed_fqdn_list = kwargs.get('allowed_fqdn_list', None)
         self.public_ip_type = kwargs.get('public_ip_type', "IPv4")
-        self.virtual_cluster_graduation_properties = kwargs.get('virtual_cluster_graduation_properties', None)
+        self.virtual_cluster_graduation_properties = kwargs.get(
+            'virtual_cluster_graduation_properties', None)
         self.private_endpoint_connections = None
 
 
@@ -955,24 +966,32 @@ class ClusterUpdate(Resource):
         self.uri = None
         self.data_ingestion_uri = None
         self.state_reason = None
-        self.trusted_external_tenants = kwargs.get('trusted_external_tenants', None)
+        self.trusted_external_tenants = kwargs.get(
+            'trusted_external_tenants', None)
         self.optimized_autoscale = kwargs.get('optimized_autoscale', None)
-        self.enable_disk_encryption = kwargs.get('enable_disk_encryption', False)
-        self.enable_streaming_ingest = kwargs.get('enable_streaming_ingest', False)
-        self.virtual_network_configuration = kwargs.get('virtual_network_configuration', None)
+        self.enable_disk_encryption = kwargs.get(
+            'enable_disk_encryption', False)
+        self.enable_streaming_ingest = kwargs.get(
+            'enable_streaming_ingest', False)
+        self.virtual_network_configuration = kwargs.get(
+            'virtual_network_configuration', None)
         self.key_vault_properties = kwargs.get('key_vault_properties', None)
         self.enable_purge = kwargs.get('enable_purge', False)
         self.language_extensions = None
-        self.enable_double_encryption = kwargs.get('enable_double_encryption', False)
-        self.public_network_access = kwargs.get('public_network_access', "Enabled")
+        self.enable_double_encryption = kwargs.get(
+            'enable_double_encryption', False)
+        self.public_network_access = kwargs.get(
+            'public_network_access', "Enabled")
         self.allowed_ip_range_list = kwargs.get('allowed_ip_range_list', None)
         self.engine_type = kwargs.get('engine_type', "V3")
         self.accepted_audiences = kwargs.get('accepted_audiences', None)
         self.enable_auto_stop = kwargs.get('enable_auto_stop', True)
-        self.restrict_outbound_network_access = kwargs.get('restrict_outbound_network_access', "Disabled")
+        self.restrict_outbound_network_access = kwargs.get(
+            'restrict_outbound_network_access', "Disabled")
         self.allowed_fqdn_list = kwargs.get('allowed_fqdn_list', None)
         self.public_ip_type = kwargs.get('public_ip_type', "IPv4")
-        self.virtual_cluster_graduation_properties = kwargs.get('virtual_cluster_graduation_properties', None)
+        self.virtual_cluster_graduation_properties = kwargs.get(
+            'virtual_cluster_graduation_properties', None)
         self.private_endpoint_connections = None
 
 
@@ -1001,7 +1020,8 @@ class ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalp
         self,
         **kwargs
     ):
-        super(ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties, self).__init__(**kwargs)
+        super(ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties,
+              self).__init__(**kwargs)
         self.principal_id = None
         self.client_id = None
 
@@ -1645,16 +1665,20 @@ class EventGridDataConnection(DataConnection):
     ):
         super(EventGridDataConnection, self).__init__(**kwargs)
         self.kind = 'EventGrid'  # type: str
-        self.storage_account_resource_id = kwargs.get('storage_account_resource_id', None)
-        self.event_grid_resource_id = kwargs.get('event_grid_resource_id', None)
+        self.storage_account_resource_id = kwargs.get(
+            'storage_account_resource_id', None)
+        self.event_grid_resource_id = kwargs.get(
+            'event_grid_resource_id', None)
         self.event_hub_resource_id = kwargs.get('event_hub_resource_id', None)
         self.consumer_group = kwargs.get('consumer_group', None)
         self.table_name = kwargs.get('table_name', None)
         self.mapping_rule_name = kwargs.get('mapping_rule_name', None)
         self.data_format = kwargs.get('data_format', None)
         self.ignore_first_record = kwargs.get('ignore_first_record', None)
-        self.blob_storage_event_type = kwargs.get('blob_storage_event_type', None)
-        self.managed_identity_resource_id = kwargs.get('managed_identity_resource_id', None)
+        self.blob_storage_event_type = kwargs.get(
+            'blob_storage_event_type', None)
+        self.managed_identity_resource_id = kwargs.get(
+            'managed_identity_resource_id', None)
         self.managed_identity_object_id = None
         self.database_routing = kwargs.get('database_routing', None)
         self.provisioning_state = None
@@ -1755,10 +1779,12 @@ class EventHubDataConnection(DataConnection):
         self.table_name = kwargs.get('table_name', None)
         self.mapping_rule_name = kwargs.get('mapping_rule_name', None)
         self.data_format = kwargs.get('data_format', None)
-        self.event_system_properties = kwargs.get('event_system_properties', None)
+        self.event_system_properties = kwargs.get(
+            'event_system_properties', None)
         self.compression = kwargs.get('compression', "None")
         self.provisioning_state = None
-        self.managed_identity_resource_id = kwargs.get('managed_identity_resource_id', None)
+        self.managed_identity_resource_id = kwargs.get(
+            'managed_identity_resource_id', None)
         self.managed_identity_object_id = None
         self.database_routing = kwargs.get('database_routing', None)
 
@@ -1866,7 +1892,8 @@ class Identity(msrest.serialization.Model):
         self.principal_id = None
         self.tenant_id = None
         self.type = kwargs['type']
-        self.user_assigned_identities = kwargs.get('user_assigned_identities', None)
+        self.user_assigned_identities = kwargs.get(
+            'user_assigned_identities', None)
 
 
 class IotHubDataConnection(DataConnection):
@@ -1954,8 +1981,10 @@ class IotHubDataConnection(DataConnection):
         self.table_name = kwargs.get('table_name', None)
         self.mapping_rule_name = kwargs.get('mapping_rule_name', None)
         self.data_format = kwargs.get('data_format', None)
-        self.event_system_properties = kwargs.get('event_system_properties', None)
-        self.shared_access_policy_name = kwargs.get('shared_access_policy_name', None)
+        self.event_system_properties = kwargs.get(
+            'event_system_properties', None)
+        self.shared_access_policy_name = kwargs.get(
+            'shared_access_policy_name', None)
         self.database_routing = kwargs.get('database_routing', None)
         self.provisioning_state = None
 
@@ -2008,7 +2037,8 @@ class LanguageExtension(msrest.serialization.Model):
         **kwargs
     ):
         super(LanguageExtension, self).__init__(**kwargs)
-        self.language_extension_name = kwargs.get('language_extension_name', None)
+        self.language_extension_name = kwargs.get(
+            'language_extension_name', None)
 
 
 class LanguageExtensionsList(msrest.serialization.Model):
@@ -2105,8 +2135,10 @@ class ManagedPrivateEndpoint(Resource):
     ):
         super(ManagedPrivateEndpoint, self).__init__(**kwargs)
         self.system_data = None
-        self.private_link_resource_id = kwargs.get('private_link_resource_id', None)
-        self.private_link_resource_region = kwargs.get('private_link_resource_region', None)
+        self.private_link_resource_id = kwargs.get(
+            'private_link_resource_id', None)
+        self.private_link_resource_region = kwargs.get(
+            'private_link_resource_region', None)
         self.group_id = kwargs.get('group_id', None)
         self.request_message = kwargs.get('request_message', None)
         self.provisioning_state = None
@@ -2444,7 +2476,8 @@ class OutboundNetworkDependenciesEndpointListResult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(OutboundNetworkDependenciesEndpointListResult, self).__init__(**kwargs)
+        super(OutboundNetworkDependenciesEndpointListResult,
+              self).__init__(**kwargs)
         self.value = kwargs['value']
         self.next_link = None
 
@@ -2504,7 +2537,8 @@ class PrivateEndpointConnection(Resource):
         super(PrivateEndpointConnection, self).__init__(**kwargs)
         self.system_data = None
         self.private_endpoint = None
-        self.private_link_service_connection_state = kwargs.get('private_link_service_connection_state', None)
+        self.private_link_service_connection_state = kwargs.get(
+            'private_link_service_connection_state', None)
         self.group_id = None
         self.provisioning_state = None
 
@@ -3152,10 +3186,14 @@ class TableLevelSharingProperties(msrest.serialization.Model):
         super(TableLevelSharingProperties, self).__init__(**kwargs)
         self.tables_to_include = kwargs.get('tables_to_include', None)
         self.tables_to_exclude = kwargs.get('tables_to_exclude', None)
-        self.external_tables_to_include = kwargs.get('external_tables_to_include', None)
-        self.external_tables_to_exclude = kwargs.get('external_tables_to_exclude', None)
-        self.materialized_views_to_include = kwargs.get('materialized_views_to_include', None)
-        self.materialized_views_to_exclude = kwargs.get('materialized_views_to_exclude', None)
+        self.external_tables_to_include = kwargs.get(
+            'external_tables_to_include', None)
+        self.external_tables_to_exclude = kwargs.get(
+            'external_tables_to_exclude', None)
+        self.materialized_views_to_include = kwargs.get(
+            'materialized_views_to_include', None)
+        self.materialized_views_to_exclude = kwargs.get(
+            'materialized_views_to_exclude', None)
 
 
 class TrustedExternalTenant(msrest.serialization.Model):

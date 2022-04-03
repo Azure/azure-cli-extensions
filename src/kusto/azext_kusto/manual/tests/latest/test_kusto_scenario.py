@@ -100,7 +100,7 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    # Create 
+    # Create
     step_cluster_create(test, checks=[
         test.check("name", "{myCluster}", case_sensitive=False),
         test.check("identity.type", "SystemAssigned", case_sensitive=False),
@@ -143,17 +143,25 @@ def call_scenario(test):
     step_database_principal_assignment_show(test, checks=[])
     step_attached_database_configuration_show(test, checks=[
         test.check("location", "West US 2", case_sensitive=False),
-        test.check("defaultPrincipalsModificationKind", "Union", case_sensitive=False),
-        test.check("tableLevelSharingProperties.externalTablesToExclude[0]", "ExternalTable2", case_sensitive=False),
-        test.check("tableLevelSharingProperties.externalTablesToInclude[0]", "ExternalTable1", case_sensitive=False),
-        test.check("tableLevelSharingProperties.materializedViewsToExclude[0]", "MaterializedViewTable2", case_sensitive=False),
-        test.check("tableLevelSharingProperties.materializedViewsToInclude[0]", "MaterializedViewTable1", case_sensitive=False),
-        test.check("tableLevelSharingProperties.tablesToExclude[0]", "Table2", case_sensitive=False),
-        test.check("tableLevelSharingProperties.tablesToInclude[0]", "Table1", case_sensitive=False),
+        test.check("defaultPrincipalsModificationKind",
+                   "Union", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.externalTablesToExclude[0]", "ExternalTable2", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.externalTablesToInclude[0]", "ExternalTable1", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.materializedViewsToExclude[0]", "MaterializedViewTable2", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.materializedViewsToInclude[0]", "MaterializedViewTable1", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.tablesToExclude[0]", "Table2", case_sensitive=False),
+        test.check(
+            "tableLevelSharingProperties.tablesToInclude[0]", "Table1", case_sensitive=False),
     ])
     step_data_connection_show(test, checks=[
         test.check("location", "West US 2", case_sensitive=False),
-        test.check("eventHubResourceId", "/subscriptions/{subscription_id}/resourceGroups/testrg/providers/Microsoft.EventHub/namespaces/testcli/eventhubs/eventhubTest1", case_sensitive=False)
+        test.check("eventHubResourceId",
+                   "/subscriptions/{subscription_id}/resourceGroups/testrg/providers/Microsoft.EventHub/namespaces/testcli/eventhubs/eventhubTest1", case_sensitive=False)
     ])
     step_managed_private_endpoint_show(test, checks=[])
     step_private_endpoint_connection_show(test, checks=[])
@@ -179,7 +187,7 @@ def call_scenario(test):
     ])
     step_database_principal_assignment_list(test, checks=[])
     step_database_list_principal(test, checks=[
-            test.check('length(@)', 3),
+        test.check('length(@)', 3),
     ])
     step_attached_database_configuration_list(test, checks=[
         test.check('length(@)', 1),
@@ -191,9 +199,9 @@ def call_scenario(test):
     step_cluster_diagnose_virtual_network(test, checks=[])
     step_cluster_list_outbound(test, checks=[])
     step_private_endpoint_connection_list(test, checks=[])
-    #step_private_link_resource_list(test, checks=[
+    # step_private_link_resource_list(test, checks=[
     #    test.check('length(@)', 1),
-    #])
+    # ])
     ####################step_operation_result_show(test, checks=[])
     # Update + validation
     step_data_connection_event_hub_update(test, checks=[])
@@ -211,9 +219,10 @@ def call_scenario(test):
         test.check("enablePurge", True),
         test.check("enableStreamingIngest", True),
         test.check("engineType", "V3", case_sensitive=False),
-        test.check("restrictOutboundNetworkAccess", "Disabled", case_sensitive=False),
+        test.check("restrictOutboundNetworkAccess",
+                   "Disabled", case_sensitive=False),
     ])
-    # Remove  
+    # Remove
     step_cluster_remove_language_extension(test, checks=[])
     step_managed_private_endpoint_delete(test, checks=[])
     step_private_endpoint_connection_delete(test, checks=[])

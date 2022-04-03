@@ -452,7 +452,8 @@ def kusto_database_create(client,
     if read_only_following_database is not None:
         all_parameters.append(read_only_following_database)
     if len(all_parameters) > 1:
-        raise CLIError('at most one of  read_write_database, read_only_following_database is needed for parameters!')
+        raise CLIError(
+            'at most one of  read_write_database, read_only_following_database is needed for parameters!')
     if len(all_parameters) != 1:
         raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is '
                        'provided!')
@@ -478,7 +479,8 @@ def kusto_database_update(client,
     if read_only_following_database is not None:
         all_parameters.append(read_only_following_database)
     if len(all_parameters) > 1:
-        raise CLIError('at most one of  read_write_database, read_only_following_database is needed for parameters!')
+        raise CLIError(
+            'at most one of  read_write_database, read_only_following_database is needed for parameters!')
     if len(all_parameters) != 1:
         raise CLIError('parameters is required. but none of read_write_database, read_only_following_database is '
                        'provided!')

@@ -9,6 +9,7 @@
 from enum import Enum, EnumMeta
 from six import with_metaclass
 
+
 class _CaseInsensitiveEnumMeta(EnumMeta):
     def __getitem__(self, name):
         return super().__getitem__(name.upper())
@@ -33,6 +34,7 @@ class AzureScaleType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     AUTOMATIC = "automatic"
     MANUAL = "manual"
     NONE = "none"
+
 
 class AzureSkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU name.
@@ -83,6 +85,7 @@ class AzureSkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     STANDARD_E16_S_V5_3_TB_PS = "Standard_E16s_v5+3TB_PS"
     STANDARD_E16_S_V5_4_TB_PS = "Standard_E16s_v5+4TB_PS"
 
+
 class AzureSkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """SKU tier.
     """
@@ -90,12 +93,14 @@ class AzureSkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     BASIC = "Basic"
     STANDARD = "Standard"
 
+
 class BlobStorageEventType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The name of blob storage event type to process.
     """
 
     MICROSOFT_STORAGE_BLOB_CREATED = "Microsoft.Storage.BlobCreated"
     MICROSOFT_STORAGE_BLOB_RENAMED = "Microsoft.Storage.BlobRenamed"
+
 
 class ClusterNetworkAccessFlag(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Whether or not to restrict outbound network access.  Value is optional but if passed in, must
@@ -105,6 +110,7 @@ class ClusterNetworkAccessFlag(with_metaclass(_CaseInsensitiveEnumMeta, str, Enu
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
+
 class ClusterPrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Cluster principal role.
     """
@@ -112,12 +118,14 @@ class ClusterPrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ALL_DATABASES_ADMIN = "AllDatabasesAdmin"
     ALL_DATABASES_VIEWER = "AllDatabasesViewer"
 
+
 class Compression(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The compression type
     """
 
     NONE = "None"
     G_ZIP = "GZip"
+
 
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
@@ -127,6 +135,7 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
+
 
 class DatabasePrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Database principal role.
@@ -139,6 +148,7 @@ class DatabasePrincipalRole(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     UNRESTRICTED_VIEWER = "UnrestrictedViewer"
     VIEWER = "Viewer"
 
+
 class DatabasePrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Database principal type.
     """
@@ -146,6 +156,7 @@ class DatabasePrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     APP = "App"
     GROUP = "Group"
     USER = "User"
+
 
 class DatabaseRouting(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indication for database routing information from the data connection, by default only database
@@ -155,6 +166,7 @@ class DatabaseRouting(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SINGLE = "Single"
     MULTI = "Multi"
 
+
 class DataConnectionKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Kind of the endpoint for the data connection
     """
@@ -162,6 +174,7 @@ class DataConnectionKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     EVENT_HUB = "EventHub"
     EVENT_GRID = "EventGrid"
     IOT_HUB = "IotHub"
+
 
 class DefaultPrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The default principals modification kind
@@ -171,12 +184,14 @@ class DefaultPrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta,
     REPLACE = "Replace"
     NONE = "None"
 
+
 class EngineType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The engine type
     """
 
     V2 = "V2"
     V3 = "V3"
+
 
 class EventGridDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
@@ -199,6 +214,7 @@ class EventGridDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APACHEAVRO = "APACHEAVRO"
     W3_CLOGFILE = "W3CLOGFILE"
 
+
 class EventHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
     """
@@ -220,6 +236,7 @@ class EventHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APACHEAVRO = "APACHEAVRO"
     W3_CLOGFILE = "W3CLOGFILE"
 
+
 class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an
     implicitly created identity and a set of user-assigned identities. The type 'None' will remove
@@ -230,6 +247,7 @@ class IdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     SYSTEM_ASSIGNED = "SystemAssigned"
     USER_ASSIGNED = "UserAssigned"
     SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
+
 
 class IotHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The data format of the message. Optionally the data format can be added to each message.
@@ -252,6 +270,7 @@ class IotHubDataFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APACHEAVRO = "APACHEAVRO"
     W3_CLOGFILE = "W3CLOGFILE"
 
+
 class Kind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Kind of the database
     """
@@ -259,12 +278,14 @@ class Kind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     READ_WRITE = "ReadWrite"
     READ_ONLY_FOLLOWING = "ReadOnlyFollowing"
 
+
 class LanguageExtensionName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Language extension that can run within KQL query.
     """
 
     PYTHON = "PYTHON"
     R = "R"
+
 
 class PrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The principals modification kind of the database
@@ -274,6 +295,7 @@ class PrincipalsModificationKind(with_metaclass(_CaseInsensitiveEnumMeta, str, E
     REPLACE = "Replace"
     NONE = "None"
 
+
 class PrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Principal type.
     """
@@ -281,6 +303,7 @@ class PrincipalType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     APP = "App"
     GROUP = "Group"
     USER = "User"
+
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioned state of the resource.
@@ -293,12 +316,14 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     FAILED = "Failed"
     MOVING = "Moving"
 
+
 class PublicIpType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6)
     """
 
     I_PV4 = "IPv4"
     DUAL_STACK = "DualStack"
+
 
 class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Public network access to the cluster is enabled by default. When disabled, only private
@@ -308,12 +333,14 @@ class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
+
 class Reason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Message providing the reason why the given name is invalid.
     """
 
     INVALID = "Invalid"
     ALREADY_EXISTS = "AlreadyExists"
+
 
 class State(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the resource.
@@ -329,6 +356,7 @@ class State(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     STARTING = "Starting"
     UPDATING = "Updating"
 
+
 class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The status of operation.
     """
@@ -337,6 +365,7 @@ class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     CANCELED = "Canceled"
     FAILED = "Failed"
     RUNNING = "Running"
+
 
 class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of resource, for instance Microsoft.Kusto/clusters/databases.

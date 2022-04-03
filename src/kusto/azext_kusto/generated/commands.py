@@ -113,8 +113,10 @@ def load_command_table(self, _):
         client_factory=cf_attached_database_configuration,
     ) as g:
         g.custom_command('list', 'kusto_attached_database_configuration_list')
-        g.custom_show_command('show', 'kusto_attached_database_configuration_show')
-        g.custom_command('create', 'kusto_attached_database_configuration_create', supports_no_wait=True)
+        g.custom_show_command(
+            'show', 'kusto_attached_database_configuration_show')
+        g.custom_command(
+            'create', 'kusto_attached_database_configuration_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
@@ -124,24 +126,34 @@ def load_command_table(self, _):
         g.custom_command(
             'delete', 'kusto_attached_database_configuration_delete', supports_no_wait=True, confirmation=True
         )
-        g.custom_wait_command('wait', 'kusto_attached_database_configuration_show')
+        g.custom_wait_command(
+            'wait', 'kusto_attached_database_configuration_show')
 
     with self.command_group('kusto cluster', kusto_cluster, client_factory=cf_cluster) as g:
         g.custom_command('list', 'kusto_cluster_list')
         g.custom_show_command('show', 'kusto_cluster_show')
-        g.custom_command('create', 'kusto_cluster_create', supports_no_wait=True)
-        g.custom_command('update', 'kusto_cluster_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_cluster_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('add-language-extension', 'kusto_cluster_add_language_extension', supports_no_wait=True)
-        g.custom_command('detach-follower-database', 'kusto_cluster_detach_follower_database', supports_no_wait=True)
-        g.custom_command('diagnose-virtual-network', 'kusto_cluster_diagnose_virtual_network', supports_no_wait=True)
-        g.custom_command('list-follower-database', 'kusto_cluster_list_follower_database')
-        g.custom_command('list-language-extension', 'kusto_cluster_list_language_extension')
+        g.custom_command('create', 'kusto_cluster_create',
+                         supports_no_wait=True)
+        g.custom_command('update', 'kusto_cluster_update',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'kusto_cluster_delete',
+                         supports_no_wait=True, confirmation=True)
+        g.custom_command('add-language-extension',
+                         'kusto_cluster_add_language_extension', supports_no_wait=True)
+        g.custom_command('detach-follower-database',
+                         'kusto_cluster_detach_follower_database', supports_no_wait=True)
+        g.custom_command('diagnose-virtual-network',
+                         'kusto_cluster_diagnose_virtual_network', supports_no_wait=True)
+        g.custom_command('list-follower-database',
+                         'kusto_cluster_list_follower_database')
+        g.custom_command('list-language-extension',
+                         'kusto_cluster_list_language_extension')
         g.custom_command(
             'list-outbound-network-dependency-endpoint', 'kusto_cluster_list_outbound_network_dependency_endpoint'
         )
         g.custom_command('list-sku', 'kusto_cluster_list_sku')
-        g.custom_command('remove-language-extension', 'kusto_cluster_remove_language_extension', supports_no_wait=True)
+        g.custom_command('remove-language-extension',
+                         'kusto_cluster_remove_language_extension', supports_no_wait=True)
         g.custom_command('start', 'kusto_cluster_start', supports_no_wait=True)
         g.custom_command('stop', 'kusto_cluster_stop', supports_no_wait=True)
         g.custom_wait_command('wait', 'kusto_cluster_show')
@@ -152,8 +164,10 @@ def load_command_table(self, _):
         client_factory=cf_cluster_principal_assignment,
     ) as g:
         g.custom_command('list', 'kusto_cluster_principal_assignment_list')
-        g.custom_show_command('show', 'kusto_cluster_principal_assignment_show')
-        g.custom_command('create', 'kusto_cluster_principal_assignment_create', supports_no_wait=True)
+        g.custom_show_command(
+            'show', 'kusto_cluster_principal_assignment_show')
+        g.custom_command(
+            'create', 'kusto_cluster_principal_assignment_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
@@ -163,18 +177,26 @@ def load_command_table(self, _):
         g.custom_command(
             'delete', 'kusto_cluster_principal_assignment_delete', supports_no_wait=True, confirmation=True
         )
-        g.custom_wait_command('wait', 'kusto_cluster_principal_assignment_show')
+        g.custom_wait_command(
+            'wait', 'kusto_cluster_principal_assignment_show')
 
     with self.command_group('kusto data-connection', kusto_data_connection, client_factory=cf_data_connection) as g:
         g.custom_command('list', 'kusto_data_connection_list')
         g.custom_show_command('show', 'kusto_data_connection_show')
-        g.custom_command('event-grid create', 'kusto_data_connection_event_grid_create', supports_no_wait=True)
-        g.custom_command('event-hub create', 'kusto_data_connection_event_hub_create', supports_no_wait=True)
-        g.custom_command('iot-hub create', 'kusto_data_connection_iot_hub_create', supports_no_wait=True)
-        g.custom_command('event-grid update', 'kusto_data_connection_event_grid_update', supports_no_wait=True)
-        g.custom_command('event-hub update', 'kusto_data_connection_event_hub_update', supports_no_wait=True)
-        g.custom_command('iot-hub update', 'kusto_data_connection_iot_hub_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_data_connection_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command(
+            'event-grid create', 'kusto_data_connection_event_grid_create', supports_no_wait=True)
+        g.custom_command(
+            'event-hub create', 'kusto_data_connection_event_hub_create', supports_no_wait=True)
+        g.custom_command(
+            'iot-hub create', 'kusto_data_connection_iot_hub_create', supports_no_wait=True)
+        g.custom_command(
+            'event-grid update', 'kusto_data_connection_event_grid_update', supports_no_wait=True)
+        g.custom_command(
+            'event-hub update', 'kusto_data_connection_event_hub_update', supports_no_wait=True)
+        g.custom_command(
+            'iot-hub update', 'kusto_data_connection_iot_hub_update', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_data_connection_delete',
+                         supports_no_wait=True, confirmation=True)
         g.custom_command(
             'event-grid data-connection-validation',
             'kusto_data_connection_event_grid_data_connection_validation',
@@ -195,9 +217,12 @@ def load_command_table(self, _):
     with self.command_group('kusto database', kusto_database, client_factory=cf_database) as g:
         g.custom_command('list', 'kusto_database_list')
         g.custom_show_command('show', 'kusto_database_show')
-        g.custom_command('create', 'kusto_database_create', supports_no_wait=True)
-        g.custom_command('update', 'kusto_database_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_database_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('create', 'kusto_database_create',
+                         supports_no_wait=True)
+        g.custom_command('update', 'kusto_database_update',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'kusto_database_delete',
+                         supports_no_wait=True, confirmation=True)
         g.custom_command('add-principal', 'kusto_database_add_principal')
         g.custom_command('list-principal', 'kusto_database_list_principal')
         g.custom_command('remove-principal', 'kusto_database_remove_principal')
@@ -209,8 +234,10 @@ def load_command_table(self, _):
         client_factory=cf_database_principal_assignment,
     ) as g:
         g.custom_command('list', 'kusto_database_principal_assignment_list')
-        g.custom_show_command('show', 'kusto_database_principal_assignment_show')
-        g.custom_command('create', 'kusto_database_principal_assignment_create', supports_no_wait=True)
+        g.custom_show_command(
+            'show', 'kusto_database_principal_assignment_show')
+        g.custom_command(
+            'create', 'kusto_database_principal_assignment_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
@@ -220,16 +247,20 @@ def load_command_table(self, _):
         g.custom_command(
             'delete', 'kusto_database_principal_assignment_delete', supports_no_wait=True, confirmation=True
         )
-        g.custom_wait_command('wait', 'kusto_database_principal_assignment_show')
+        g.custom_wait_command(
+            'wait', 'kusto_database_principal_assignment_show')
 
     with self.command_group(
         'kusto managed-private-endpoint', kusto_managed_private_endpoint, client_factory=cf_managed_private_endpoint
     ) as g:
         g.custom_command('list', 'kusto_managed_private_endpoint_list')
         g.custom_show_command('show', 'kusto_managed_private_endpoint_show')
-        g.custom_command('create', 'kusto_managed_private_endpoint_create', supports_no_wait=True)
-        g.custom_command('update', 'kusto_managed_private_endpoint_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_managed_private_endpoint_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command(
+            'create', 'kusto_managed_private_endpoint_create', supports_no_wait=True)
+        g.custom_command(
+            'update', 'kusto_managed_private_endpoint_update', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_managed_private_endpoint_delete',
+                         supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'kusto_managed_private_endpoint_show')
 
     with self.command_group('kusto operation-result', kusto_operation_result, client_factory=cf_operation_result) as g:
@@ -247,14 +278,16 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('list', 'kusto_private_endpoint_connection_list')
         g.custom_show_command('show', 'kusto_private_endpoint_connection_show')
-        g.custom_command('create', 'kusto_private_endpoint_connection_create', supports_no_wait=True)
+        g.custom_command(
+            'create', 'kusto_private_endpoint_connection_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
             custom_func_name='kusto_private_endpoint_connection_update',
             setter_name='begin_create_or_update',
         )
-        g.custom_command('delete', 'kusto_private_endpoint_connection_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('delete', 'kusto_private_endpoint_connection_delete',
+                         supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'kusto_private_endpoint_connection_show')
 
     with self.command_group(
@@ -266,9 +299,12 @@ def load_command_table(self, _):
     with self.command_group('kusto script', kusto_script, client_factory=cf_script) as g:
         g.custom_command('list', 'kusto_script_list')
         g.custom_show_command('show', 'kusto_script_show')
-        g.custom_command('create', 'kusto_script_create', supports_no_wait=True)
-        g.custom_command('update', 'kusto_script_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_script_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('create', 'kusto_script_create',
+                         supports_no_wait=True)
+        g.custom_command('update', 'kusto_script_update',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'kusto_script_delete',
+                         supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'kusto_script_show')
 
     with self.command_group('kusto', is_experimental=True):

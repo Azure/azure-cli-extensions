@@ -134,7 +134,8 @@ class AttachedDatabaseConfiguration(Resource):
         location: Optional[str] = None,
         database_name: Optional[str] = None,
         cluster_resource_id: Optional[str] = None,
-        default_principals_modification_kind: Optional[Union[str, "DefaultPrincipalsModificationKind"]] = None,
+        default_principals_modification_kind: Optional[Union[str,
+                                                             "DefaultPrincipalsModificationKind"]] = None,
         table_level_sharing_properties: Optional["TableLevelSharingProperties"] = None,
         **kwargs
     ):
@@ -202,7 +203,8 @@ class AttachedDatabaseConfigurationsCheckNameRequest(msrest.serialization.Model)
         name: str,
         **kwargs
     ):
-        super(AttachedDatabaseConfigurationsCheckNameRequest, self).__init__(**kwargs)
+        super(AttachedDatabaseConfigurationsCheckNameRequest,
+              self).__init__(**kwargs)
         self.name = name
 
 
@@ -656,12 +658,14 @@ class Cluster(TrackedResource):
         key_vault_properties: Optional["KeyVaultProperties"] = None,
         enable_purge: Optional[bool] = False,
         enable_double_encryption: Optional[bool] = False,
-        public_network_access: Optional[Union[str, "PublicNetworkAccess"]] = "Enabled",
+        public_network_access: Optional[Union[str,
+                                              "PublicNetworkAccess"]] = "Enabled",
         allowed_ip_range_list: Optional[List[str]] = None,
         engine_type: Optional[Union[str, "EngineType"]] = "V3",
         accepted_audiences: Optional[List["AcceptedAudiences"]] = None,
         enable_auto_stop: Optional[bool] = True,
-        restrict_outbound_network_access: Optional[Union[str, "ClusterNetworkAccessFlag"]] = "Disabled",
+        restrict_outbound_network_access: Optional[Union[str,
+                                                         "ClusterNetworkAccessFlag"]] = "Disabled",
         allowed_fqdn_list: Optional[List[str]] = None,
         public_ip_type: Optional[Union[str, "PublicIpType"]] = "IPv4",
         virtual_cluster_graduation_properties: Optional[str] = None,
@@ -1038,12 +1042,14 @@ class ClusterUpdate(Resource):
         key_vault_properties: Optional["KeyVaultProperties"] = None,
         enable_purge: Optional[bool] = False,
         enable_double_encryption: Optional[bool] = False,
-        public_network_access: Optional[Union[str, "PublicNetworkAccess"]] = "Enabled",
+        public_network_access: Optional[Union[str,
+                                              "PublicNetworkAccess"]] = "Enabled",
         allowed_ip_range_list: Optional[List[str]] = None,
         engine_type: Optional[Union[str, "EngineType"]] = "V3",
         accepted_audiences: Optional[List["AcceptedAudiences"]] = None,
         enable_auto_stop: Optional[bool] = True,
-        restrict_outbound_network_access: Optional[Union[str, "ClusterNetworkAccessFlag"]] = "Disabled",
+        restrict_outbound_network_access: Optional[Union[str,
+                                                         "ClusterNetworkAccessFlag"]] = "Disabled",
         allowed_fqdn_list: Optional[List[str]] = None,
         public_ip_type: Optional[Union[str, "PublicIpType"]] = "IPv4",
         virtual_cluster_graduation_properties: Optional[str] = None,
@@ -1105,7 +1111,8 @@ class ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalp
         self,
         **kwargs
     ):
-        super(ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties, self).__init__(**kwargs)
+        super(ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties,
+              self).__init__(**kwargs)
         self.principal_id = None
         self.client_id = None
 
@@ -1801,12 +1808,14 @@ class EventGridDataConnection(DataConnection):
         mapping_rule_name: Optional[str] = None,
         data_format: Optional[Union[str, "EventGridDataFormat"]] = None,
         ignore_first_record: Optional[bool] = None,
-        blob_storage_event_type: Optional[Union[str, "BlobStorageEventType"]] = None,
+        blob_storage_event_type: Optional[Union[str,
+                                                "BlobStorageEventType"]] = None,
         managed_identity_resource_id: Optional[str] = None,
         database_routing: Optional[Union[str, "DatabaseRouting"]] = None,
         **kwargs
     ):
-        super(EventGridDataConnection, self).__init__(location=location, **kwargs)
+        super(EventGridDataConnection, self).__init__(
+            location=location, **kwargs)
         self.kind = 'EventGrid'  # type: str
         self.storage_account_resource_id = storage_account_resource_id
         self.event_grid_resource_id = event_grid_resource_id
@@ -1922,7 +1931,8 @@ class EventHubDataConnection(DataConnection):
         database_routing: Optional[Union[str, "DatabaseRouting"]] = None,
         **kwargs
     ):
-        super(EventHubDataConnection, self).__init__(location=location, **kwargs)
+        super(EventHubDataConnection, self).__init__(
+            location=location, **kwargs)
         self.kind = 'EventHub'  # type: str
         self.event_hub_resource_id = event_hub_resource_id
         self.consumer_group = consumer_group
@@ -2041,7 +2051,8 @@ class Identity(msrest.serialization.Model):
         self,
         *,
         type: Union[str, "IdentityType"],
-        user_assigned_identities: Optional[Dict[str, "ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties"]] = None,
+        user_assigned_identities: Optional[Dict[str,
+                                                "ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties"]] = None,
         **kwargs
     ):
         super(Identity, self).__init__(**kwargs)
@@ -2203,7 +2214,8 @@ class LanguageExtension(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        language_extension_name: Optional[Union[str, "LanguageExtensionName"]] = None,
+        language_extension_name: Optional[Union[str,
+                                                "LanguageExtensionName"]] = None,
         **kwargs
     ):
         super(LanguageExtension, self).__init__(**kwargs)
@@ -2687,7 +2699,8 @@ class OutboundNetworkDependenciesEndpointListResult(msrest.serialization.Model):
         value: List["OutboundNetworkDependenciesEndpoint"],
         **kwargs
     ):
-        super(OutboundNetworkDependenciesEndpointListResult, self).__init__(**kwargs)
+        super(OutboundNetworkDependenciesEndpointListResult,
+              self).__init__(**kwargs)
         self.value = value
         self.next_link = None
 
@@ -3023,7 +3036,8 @@ class ReadOnlyFollowingDatabase(Database):
         hot_cache_period: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(ReadOnlyFollowingDatabase, self).__init__(location=location, **kwargs)
+        super(ReadOnlyFollowingDatabase, self).__init__(
+            location=location, **kwargs)
         self.kind = 'ReadOnlyFollowing'  # type: str
         self.provisioning_state = None
         self.soft_delete_period = None

@@ -86,6 +86,7 @@ def step_cluster_create(test, checks=None):
              '--resource-group "{rg}" ',
              checks=[])
 
+
 @try_manual
 def step_leader_cluster_create(test, checks=None):
     if checks is None:
@@ -103,6 +104,8 @@ def step_leader_cluster_create(test, checks=None):
              checks=[])
 
 # EXAMPLE: /Clusters/get/Get Kusto cluster outbound network dependencies
+
+
 @try_manual
 def step_cluster_list_outbound(test, checks=None):
     if checks is None:
@@ -277,7 +280,7 @@ def step_cluster_stop(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-    
+
 # EXAMPLE: /ClusterPrincipalAssignments/put/KustoClusterPrincipalAssignmentsCreateOrUpdate
 @try_manual
 def step_cluster_principal_assignment_create(test, checks=None):
@@ -292,7 +295,7 @@ def step_cluster_principal_assignment_create(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-    
+
 # EXAMPLE: /ClusterPrincipalAssignments/get/KustoClusterPrincipalAssignmentsGet
 @try_manual
 def step_cluster_principal_assignment_show(test, checks=None):
@@ -315,12 +318,12 @@ def step_cluster_principal_assignment_list(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
 
-    
+
 # EXAMPLE: /DatabasePrincipalAssignments/put/KustoDatabasePrincipalAssignmentsCreateOrUpdate
 @try_manual
 def step_database_principal_assignment_create(test, checks=None):
     if checks is None:
-        checks = [] 
+        checks = []
     test.cmd('az kusto database-principal-assignment create '
              '--cluster-name "{myCluster}" '
              '--database-name "kustoDatabase" '
@@ -693,12 +696,12 @@ def step_private_endpoint_connection_create(test, checks=None):
              '-n "{myPrivateEndpoint}" '
              '-g "testrg" '
              '--group-id "cluster" '
-             '--manual-request true ' 
+             '--manual-request true '
              '--subnet "/subscriptions/{subscription_id}/resourceGroups/testrg/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet" '
              '--private-connection-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/Clusters/{myCluster}" '
              '--connection-name "test"',
              checks=checks)
-    step_private_endpoint_connection_list(test)         
+    step_private_endpoint_connection_list(test)
     test.cmd('az kusto private-endpoint-connection create '
              '--cluster-name "{myCluster}" '
              '--private-link-service-connection-state description="Approved by test" status="Approved" '
@@ -712,6 +715,8 @@ def step_private_endpoint_connection_create(test, checks=None):
              checks=checks)
 
 # EXAMPLE: /PrivateEndpointConnections/get/Gets private endpoint connection.
+
+
 @try_manual
 def step_private_endpoint_connection_show(test, checks=None):
     if checks is None:
@@ -729,12 +734,12 @@ def step_private_endpoint_connection_list(test, checks=None):
     if checks is None:
         checks = []
     myPrivateEndpointConnectionRes = test.cmd('az kusto private-endpoint-connection list '
-             '--cluster-name "{myCluster}" '
-             '--resource-group "{rg}" ',
-             checks=checks).get_output_in_json()
+                                              '--cluster-name "{myCluster}" '
+                                              '--resource-group "{rg}" ',
+                                              checks=checks).get_output_in_json()
     print(myPrivateEndpointConnectionRes[0]["name"])
     test.kwargs.update({
-            'myPrivateEndpointConnection': myPrivateEndpointConnectionRes[0]["name"]
+        'myPrivateEndpointConnection': myPrivateEndpointConnectionRes[0]["name"]
     })
 
 
@@ -749,11 +754,13 @@ def step_private_endpoint_connection_delete(test, checks=None):
              '--resource-group "{rg}" ',
              checks=checks)
     test.cmd('az network private-endpoint delete '
-            '-n "{myPrivateEndpoint}" '
-            '-g "testrg" ',
-            checks=checks)
+             '-n "{myPrivateEndpoint}" '
+             '-g "testrg" ',
+             checks=checks)
 
 # EXAMPLE: /PrivateLinkResources/get/Gets private endpoint connection.
+
+
 @try_manual
 def step_private_link_resource_show(test, checks=None):
     if checks is None:
