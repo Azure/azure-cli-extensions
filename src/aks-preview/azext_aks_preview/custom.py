@@ -1117,7 +1117,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
 
-    kustomize_yaml = get_kustomize_yaml("0.0.8", storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
+    kustomize_yaml = get_kustomize_yaml("v0.8", "0.0.8", storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
     kustomize_folder = tempfile.mkdtemp()
     kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
@@ -1190,7 +1190,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     else:
         display_diagnostics_report(temp_kubeconfig_path)
 
-def get_kustomize_yaml(periscope_version,
+def get_kustomize_yaml(periscope_release_tag,
+                       periscope_image_version,
                        storage_account_name,
                        sas_token,
                        container_name,
@@ -1205,20 +1206,22 @@ def get_kustomize_yaml(periscope_version,
         'DIAGNOSTIC_NODELOGS_LIST_WINDOWS': node_logs_windows
     }
 
+    # Create YAML list items for each config variable that has a value
     diag_content = "\n".join(f'  - {k}="{v}"' for k,v in diag_config_vars.items() if v is not None)
 
-    # TODO: Change to MCR images
+    # Build a Kustomize overlay referencing a base for a known release, and using the images from MCR
+    # for that release.
     return f"""
 resources:
-- https://github.com/peterbom/aks-periscope//deployment/base?ref={periscope_version}
+- https://github.com/azure/aks-periscope//deployment/base?ref={periscope_release_tag}
 
 images:
 - name: periscope-linux
-  newName: ghcr.io/peterbom/aks/periscope
-  newTag: {periscope_version}
+  newName: mcr.microsoft.com/aks/periscope
+  newTag: {periscope_image_version}
 - name: periscope-windows
-  newName: ghcr.io/peterbom/aks/periscope-win
-  newTag: {periscope_version}
+  newName: mcr.microsoft.com/aks/periscope-win
+  newTag: {periscope_image_version}
 
 configMapGenerator:
 - name: diagnostic-config
