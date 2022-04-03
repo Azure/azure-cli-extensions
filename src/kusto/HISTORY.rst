@@ -19,6 +19,6 @@ Release History
 ++++++
 * Adding allowedIpRangeList and allowedFqdnList features, PrivateEndpointConnection resource
 
-0.3.0
+0.5.0
 ++++++
 * Adding database_routing and managed_identity_object_id features, OperationsResultsLocationOperations 

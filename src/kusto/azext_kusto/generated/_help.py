@@ -587,7 +587,7 @@ helps['kusto attached-database-configuration create'] = """
     type: command
     short-summary: "Create an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: --table-level --table-level-sharing-properties
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
@@ -616,7 +616,7 @@ helps['kusto attached-database-configuration update'] = """
     type: command
     short-summary: "Update an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: --table-level --table-level-sharing-properties
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
@@ -923,7 +923,7 @@ helps['kusto private-endpoint-connection create'] = """
     type: command
     short-summary: "Approve or reject a private endpoint connection with a given name."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --connection-state --private-link-service-connection-state
         short-summary: "Connection State of the Private Endpoint Connection."
         long-summary: |
             Usage: --private-link-service-connection-state status=XX description=XX
@@ -935,14 +935,14 @@ helps['kusto private-endpoint-connection create'] = """
         text: |-
                az kusto private-endpoint-connection create --cluster-name "kustoclusterrptest4" \
 --private-link-service-connection-state description="Approved by johndoe@contoso.com" status="Approved" --name \
-"privateEndpointTest" --resource-group "kustorptest"
+"privateEndpointConnectionName" --resource-group "kustorptest"
 """
 
 helps['kusto private-endpoint-connection update'] = """
     type: command
     short-summary: "Approve or reject a private endpoint connection with a given name."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --connection-state --private-link-service-connection-state
         short-summary: "Connection State of the Private Endpoint Connection."
         long-summary: |
             Usage: --private-link-service-connection-state status=XX description=XX
