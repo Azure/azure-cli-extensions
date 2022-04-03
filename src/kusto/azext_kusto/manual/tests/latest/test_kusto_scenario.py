@@ -133,7 +133,7 @@ def call_scenario(test):
         test.check("enableAutoStop", True),
         test.check("enableStreamingIngest", True),
         test.check("publicNetworkAccess", "Enabled", case_sensitive=False),
-        test.check("sku.name", "Standard_D11_v2", case_sensitive=False),
+        test.check("sku.name", "Standard_E2a_v4", case_sensitive=False),
         test.check("sku.capacity", 2),
         test.check("sku.tier", "Standard", case_sensitive=False),
     ])
