@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
 
-import websocket
-import threading
-import sys
+import websocket, threading, sys, requests, time, tty
 from urllib.parse import urlparse
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
@@ -18,7 +16,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from knack.log import get_logger
+from knack.log import get_logger, CliLogLevel
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
@@ -53,7 +51,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists, _remove_env_vars, _update_revision_env_secretrefs)
 from ._constants import (SSH_PROXY_FORWARD, SSH_PROXY_ERROR, SSH_PROXY_INFO, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR,
-                         SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX)
+                         SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX, SSH_CTRL_C_MSG)
 
 
 logger = get_logger(__name__)
@@ -1941,13 +1939,13 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         handle_raw_exception(e)
 
 
-class Connection:
+class _WebSocketConnection:
     def __init__(self, is_connected, socket):
         self.is_connected = is_connected
         self.socket = socket
 
     def disconnect(self):
-        logger.warn("Disconnecting socket")
+        logger.warning("Disconnecting...")
         self.is_connected = False
         self.socket.close()
 
@@ -1955,8 +1953,7 @@ class Connection:
 def _read_ssh(connection, encodings):
     while connection.is_connected:
         response = connection.socket.recv()
-        if response is None:    # close message ?
-            print("response was None")
+        if not response:
             connection.disconnect()
         else:
             proxy_status = response[0]
@@ -1985,14 +1982,30 @@ def _read_ssh(connection, encodings):
                     raise CLIInternalError("Unexpected message received")
 
 
-# TODO implement timeout if needed
+def _send_stdin(connection, encoding):
+    while connection.is_connected:
+        # TODO this will try and read one more character after the connections is closed
+        try:
+            ch = sys.stdin.read(1).encode(encoding) # TODO test on windows
+            if connection.is_connected:
+                connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
+        except KeyboardInterrupt:
+            print("Got keyboard interrupt")
+
+
 # FYI currently only works against Jeff's app
+# TODO get working on windows
+# TODO manage terminal size
+# TODO implement timeout if needed
 def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, timeout=None):
+    if cmd.cli_ctx.logging.log_level == CliLogLevel.DEBUG:
+        websocket.enableTrace(True)
+
     app = ContainerAppClient.show(cmd, resource_group_name, name)
     if not revision:
         revision = app["properties"]["latestRevisionName"]
     if not replica:
-        import requests
+        # VVV this may not be necessary according to Anthony Chu
         requests.get(f'https://{app["properties"]["configuration"]["ingress"]["fqdn"]}')  # needed to get an alive replica
         replicas = ContainerAppClient.list_replicas(cmd=cmd,
                                                     resource_group_name=resource_group_name,
@@ -2012,25 +2025,33 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
 
     proxy_api_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")].replace("https://", "")
 
-    url = f"wss://{proxy_api_url}/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/containerApps/{name}/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{command}?token={token}"
+    url = (f"wss://{proxy_api_url}/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/containerApps/{name}"
+           f"/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{command}?token={token}")
 
-    # websocket.enableTrace(True) TODO enable on debug maybe
-    # TODO catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
-    from websocket._exceptions import WebSocketBadStatusException
+    # TODO maybe catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
     socket = websocket.WebSocket(enable_multithread=True)
     encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
 
     logger.warn("Attempting to connect to %s", url)
     socket.connect(url)
 
-    conn = Connection(is_connected=True, socket=socket)
+    conn = _WebSocketConnection(is_connected=True, socket=socket)
 
     reader = threading.Thread(target=_read_ssh, args=(conn, encodings))
     reader.daemon = True
     reader.start()
 
-    CTRL_C_MSG = b"\x00\x00\x03"  # TODO may need to use this
+    tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+    writer = threading.Thread(target=_send_stdin, args=(conn, SSH_DEFAULT_ENCODING))
+    writer.daemon = True
+    writer.start()
 
+    logger.warning("Use ctrl + D to exit.")
     while conn.is_connected:
-        ch = sys.stdin.read(1).encode(encodings[0]) # TODO test on windows
-        socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                socket.send(SSH_CTRL_C_MSG)
+
