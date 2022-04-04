@@ -4,7 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
 
+import websocket
+import threading
+import sys
 from urllib.parse import urlparse
+
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -48,6 +52,9 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists, _remove_env_vars, _update_revision_env_secretrefs)
+from ._constants import (SSH_PROXY_FORWARD, SSH_PROXY_ERROR, SSH_PROXY_INFO, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR,
+                         SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX)
+
 
 logger = get_logger(__name__)
 
@@ -1932,3 +1939,98 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+class Connection:
+    def __init__(self, is_connected, socket):
+        self.is_connected = is_connected
+        self.socket = socket
+
+    def disconnect(self):
+        logger.warn("Disconnecting socket")
+        self.is_connected = False
+        self.socket.close()
+
+
+def _read_ssh(connection, encodings):
+    while connection.is_connected:
+        response = connection.socket.recv()
+        if response is None:    # close message ?
+            print("response was None")
+            connection.disconnect()
+        else:
+            proxy_status = response[0]
+            if proxy_status == SSH_PROXY_INFO:
+                print(f"INFO: {response[1:].decode(encodings[0])}")
+            elif proxy_status == SSH_PROXY_ERROR:
+                print(f"ERROR: {response[1:].decode(encodings[0])}")
+            elif proxy_status == SSH_PROXY_FORWARD:
+                control_byte = response[1]
+                if control_byte == SSH_CLUSTER_STDOUT or control_byte == SSH_CLUSTER_STDERR:
+                    for i, encoding in enumerate(encodings):
+                        try:
+                            print(response[2:].decode(encoding), end="", flush=True)
+                            break
+                        except UnicodeDecodeError as e:
+                            if i == len(encodings) - 1:  # ran out of encodings to try
+                                connection.disconnect()
+                                logger.info("Proxy Control Byte: ", response[0])
+                                logger.info("Cluster Control Byte: ", response[1])
+                                logger.info("Hexdump: %s", response[2:].hex())
+                                raise CLIInternalError("Failed to decode server data") from e
+                            else:
+                                logger.info("Failed to encode with encoding %s", encoding)
+                else:
+                    connection.disconnect()
+                    raise CLIInternalError("Unexpected message received")
+
+
+# TODO implement timeout if needed
+# FYI currently only works against Jeff's app
+def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, timeout=None):
+    app = ContainerAppClient.show(cmd, resource_group_name, name)
+    if not revision:
+        revision = app["properties"]["latestRevisionName"]
+    if not replica:
+        import requests
+        requests.get(f'https://{app["properties"]["configuration"]["ingress"]["fqdn"]}')  # needed to get an alive replica
+        replicas = ContainerAppClient.list_replicas(cmd=cmd,
+                                                    resource_group_name=resource_group_name,
+                                                    container_app_name=name,
+                                                    revision_name=revision)
+        replica = replicas["value"][0]["name"]
+    if not container:
+        container = app["properties"]["template"]["containers"][0]["name"]
+        # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
+
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    command = "bash"
+
+    token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+    logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
+
+    proxy_api_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")].replace("https://", "")
+
+    url = f"wss://{proxy_api_url}/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/containerApps/{name}/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{command}?token={token}"
+
+    # websocket.enableTrace(True) TODO enable on debug maybe
+    # TODO catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
+    from websocket._exceptions import WebSocketBadStatusException
+    socket = websocket.WebSocket(enable_multithread=True)
+    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+
+    logger.warn("Attempting to connect to %s", url)
+    socket.connect(url)
+
+    conn = Connection(is_connected=True, socket=socket)
+
+    reader = threading.Thread(target=_read_ssh, args=(conn, encodings))
+    reader.daemon = True
+    reader.start()
+
+    CTRL_C_MSG = b"\x00\x00\x03"  # TODO may need to use this
+
+    while conn.is_connected:
+        ch = sys.stdin.read(1).encode(encodings[0]) # TODO test on windows
+        socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
