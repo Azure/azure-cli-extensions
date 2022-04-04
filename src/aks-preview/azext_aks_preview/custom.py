@@ -93,6 +93,11 @@ from ._consts import (
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_PERISCOPE_REPO_ORG,
+    CONST_PERISCOPE_CONTAINER_REGISTRY,
+    CONST_PERISCOPE_RELEASE_TAG,
+    CONST_PERISCOPE_IMAGE_VERSION,
+    CONST_PERISCOPE_NAMESPACE,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SCALE_DOWN_MODE_DELETE,
     CONST_SCALE_SET_PRIORITY_REGULAR,
@@ -1117,7 +1122,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
 
-    kustomize_yaml = get_kustomize_yaml("v0.8", "0.0.8", storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
+    kustomize_yaml = get_kustomize_yaml(storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
     kustomize_folder = tempfile.mkdtemp()
     kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
@@ -1126,11 +1131,11 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
         try:
             print()
-            print("Cleaning up aks-periscope resources if existing")
+            print(f"Cleaning up aks-periscope resources if existing")
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
                              "serviceaccount,configmap,daemonset,secret",
-                             "--all", "-n", "aks-periscope", "--ignore-not-found"],
+                             "--all", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
@@ -1150,7 +1155,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
                              "--all",
-                             "apd", "-n", "aks-periscope", "--ignore-not-found"],
+                             "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.DEVNULL)
 
             subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
@@ -1159,10 +1164,10 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                             stderr=subprocess.STDOUT)
 
             print()
-            print("Deploying aks-periscope")
+            print(f"Deploying aks-periscope")
             
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
-                                     kustomize_folder, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
+                                     kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output)
     finally:
@@ -1190,9 +1195,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     else:
         display_diagnostics_report(temp_kubeconfig_path)
 
-def get_kustomize_yaml(periscope_release_tag,
-                       periscope_image_version,
-                       storage_account_name,
+def get_kustomize_yaml(storage_account_name,
                        sas_token,
                        container_name,
                        container_logs=None,
@@ -1213,15 +1216,17 @@ def get_kustomize_yaml(periscope_release_tag,
     # for that release.
     return f"""
 resources:
-- https://github.com/azure/aks-periscope//deployment/base?ref={periscope_release_tag}
+- https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/base?ref={CONST_PERISCOPE_RELEASE_TAG}
+
+namespace: {CONST_PERISCOPE_NAMESPACE}
 
 images:
 - name: periscope-linux
-  newName: mcr.microsoft.com/aks/periscope
-  newTag: {periscope_image_version}
+  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope
+  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
 - name: periscope-windows
-  newName: mcr.microsoft.com/aks/periscope-win
-  newTag: {periscope_image_version}
+  newName: {CONST_PERISCOPE_CONTAINER_REGISTRY}/aks/periscope-win
+  newTag: {CONST_PERISCOPE_IMAGE_VERSION}
 
 configMapGenerator:
 - name: diagnostic-config
@@ -2619,7 +2624,7 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
         if not apds_created:
             apd = subprocess.check_output(
                 ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get",
-                    "apd", "-n", "aks-periscope", "--no-headers"],
+                    "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--no-headers"],
                 universal_newlines=True
             )
             apd_lines = apd.splitlines()
@@ -2643,14 +2648,14 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
                     network_config = subprocess.check_output(
                         ["kubectl", "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkconfig}"],
+                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkconfig}"],
                         universal_newlines=True)
                     logger.debug('Dns status for node %s is %s',
                                  node_name, network_config)
                     network_status = subprocess.check_output(
                         ["kubectl", "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"],
+                         CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkoutbound}"],
                         universal_newlines=True)
                     logger.debug('Network status for node %s is %s',
                                  node_name, network_status)

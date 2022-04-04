@@ -167,3 +167,9 @@ CONST_CREDENTIAL_FORMAT_EXEC = "exec"
 # refer https://docs.microsoft.com/en-us/rest/api/storageservices/
 # naming-and-referencing-containers--blobs--and-metadata#container-names
 CONST_CONTAINER_NAME_MAX_LENGTH = 63
+
+CONST_PERISCOPE_REPO_ORG = "azure"
+CONST_PERISCOPE_CONTAINER_REGISTRY = "mcr.microsoft.com"
+CONST_PERISCOPE_RELEASE_TAG = "v0.9"
+CONST_PERISCOPE_IMAGE_VERSION = "0.0.9"
+CONST_PERISCOPE_NAMESPACE = "aks-periscope"
