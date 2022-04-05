@@ -9,13 +9,11 @@ import sys
 import platform
 import time
 from urllib.parse import urlparse
-import msvcrt
 import websocket
 import requests
 
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
-from azure.cli.command_modules.container._vt_helper import enable_vt_mode
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError,
@@ -60,6 +58,9 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
 from ._constants import (SSH_PROXY_FORWARD, SSH_PROXY_ERROR, SSH_PROXY_INFO, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR,
                          SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX, SSH_CTRL_C_MSG)
 
+if platform.system() == "Windows":
+    import msvcrt  # pylint: disable=import-error
+    from azure.cli.command_modules.container._vt_helper import enable_vt_mode  # pylint: disable=ungrouped-imports
 
 logger = get_logger(__name__)
 
