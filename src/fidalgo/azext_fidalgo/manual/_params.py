@@ -727,11 +727,11 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
+        #c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
         c.argument('dev_box_definition_name', options_list=['--devbox-definition-name'], type=str, help='Name of a Dev Box definition in parent Project of this Pool')
-        c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
+        #c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
         c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
-        c.argument('sku_name', type=str, required=False, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition', arg_group='Sku')
+        c.argument('sku_name', type=str, required=False, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -741,11 +741,11 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
+        #c.argument('machine_definition_id', type=str, help='Resource Id of a Machine Definition')
         c.argument('dev_box_definition_name', options_list=['--devbox-definition-name'], type=str, help='Name of a Dev Box definition in parent Project of this Pool')
-        c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
+        #c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
         c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
-        c.argument('sku_name', type=str, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition', arg_group='Sku')
+        c.argument('sku_name', type=str, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
