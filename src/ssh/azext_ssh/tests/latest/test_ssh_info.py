@@ -96,7 +96,7 @@ class SSHInfoTest(unittest.TestCase):
 
     @mock.patch('os.path.abspath')
     def test_get_rg_and_vm_entry(self, mock_abspath):
-        expected_lines = [
+        expected_lines_aad = [
             "Host rg-vm",
             "\tUser user",
             "\tHostName ip",
@@ -104,11 +104,20 @@ class SSHInfoTest(unittest.TestCase):
             "\tIdentityFile \"priv_path\"",
             "\tPort port",
         ]
-
+        expected_lines_local_user = [
+            "Host rg-vm-user",
+            "\tUser user",
+            "\tHostName ip",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\"",
+            "\tPort port",
+        ]
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "proxy_path", "cred_path"]
         session = ssh_info.ConfigSession("config", "rg", "vm", "ip", "pub", "priv", False, False, "user", "cert", "port", "compute", "cred", "proxy", "client")
 
-        self.assertEqual(session._get_rg_and_vm_entry(), expected_lines)
+        self.assertEqual(session._get_rg_and_vm_entry(True), expected_lines_aad)
+        self.assertEqual(session._get_rg_and_vm_entry(False), expected_lines_local_user)
+
     
     @mock.patch('os.path.abspath')
     def test_get_ip_entry(self, mock_abspath):
@@ -126,8 +135,17 @@ class SSHInfoTest(unittest.TestCase):
 
     @mock.patch('os.path.abspath')
     def test_get_arc_entry(self, mock_abspath):
-        expected_lines = [
+        expected_lines_aad = [
             "Host rg-vm",
+            "\tHostName vm",
+            "\tUser user",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\"",
+            "\tProxyCommand \"proxy_path\" -r \"relay_info_path\" -p port"
+        ]
+
+        expected_lines_local_user = [
+            "Host rg-vm-user",
             "\tHostName vm",
             "\tUser user",
             "\tCertificateFile \"cert_path\"",
@@ -139,13 +157,29 @@ class SSHInfoTest(unittest.TestCase):
         session = ssh_info.ConfigSession("config", "rg", "vm", None, "pub", "priv", False, False, "user", "cert", "port", "arc", "cred", None, "client/folder")
         session.proxy_path = "proxy_path"
         session.relay_info_path = "relay_info_path"
-        self.assertEqual(session._get_arc_entry(), expected_lines)
+        self.assertEqual(session._get_arc_entry(True), expected_lines_aad)
+        self.assertEqual(session._get_arc_entry(False), expected_lines_local_user)
 
     @mock.patch('os.path.abspath')
     def test_get_config_text_compute(self, mock_abspath):
-        expected_lines = [
+        expected_lines_aad = [
             "",
             "Host rg-vm",
+            "\tUser user",
+            "\tHostName ip",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\"",
+            "\tPort port",
+            "Host ip",
+            "\tUser user",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\"",
+            "\tPort port",
+        ]
+
+        expected_lines_local_user = [
+            "",
+            "Host rg-vm-user",
             "\tUser user",
             "\tHostName ip",
             "\tCertificateFile \"cert_path\"",
@@ -161,15 +195,26 @@ class SSHInfoTest(unittest.TestCase):
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "cred_path"]
         session = ssh_info.ConfigSession("config", "rg", "vm", "ip", "pub", "priv", False, False, "user", "cert", "port", "compute", "cred", None, "client/folder")
 
-        self.assertEqual(session.get_config_text(), expected_lines)
+        self.assertEqual(session.get_config_text(True), expected_lines_aad)
+        self.assertEqual(session.get_config_text(False), expected_lines_local_user)
 
     @mock.patch('os.path.abspath')
     @mock.patch.object(ssh_info.ConfigSession, '_create_relay_info_file')
     def test_get_config_text_arc(self, create_file, mock_abspath):
         create_file.return_value = "relay_info_path"
-        expected_lines = [
+        expected_lines_aad = [
             "",
             "Host rg-vm",
+            "\tHostName vm",
+            "\tUser user",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\"",
+            "\tProxyCommand \"proxy_path\" -r \"relay_info_path\""
+        ]
+
+        expected_lines_local_user = [
+            "",
+            "Host rg-vm-user",
             "\tHostName vm",
             "\tUser user",
             "\tCertificateFile \"cert_path\"",
@@ -180,7 +225,8 @@ class SSHInfoTest(unittest.TestCase):
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "cred_path"]
         session = ssh_info.ConfigSession("config", "rg", "vm", None, "pub", "priv", False, False, "user", "cert", None, "Microsoft.HybridCompute", "cred", None, "client/folder")
         session.proxy_path = "proxy_path"
-        self.assertEqual(session.get_config_text(), expected_lines)
+        self.assertEqual(session.get_config_text(True), expected_lines_aad)
+        self.assertEqual(session.get_config_text(False), expected_lines_local_user)
 
 if __name__ == '__main__':
     unittest.main()

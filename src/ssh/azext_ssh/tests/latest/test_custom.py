@@ -255,6 +255,16 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_isfile.assert_called_once_with("public")
 
     @mock.patch('os.path.isfile')
+    def test_check_or_create_public_private_files_no_public(self, mock_isfile):
+        mock_isfile.side_effect = [True, True]
+        public, private, delete = custom._check_or_create_public_private_files("key.pub", None, None)
+        self.assertEqual(public, 'key.pub')
+        self.assertEqual(private, 'key')
+        self.assertEqual(delete, False)
+        mock_isfile.assert_has_calls([mock.call("key.pub"), mock.call('key')])
+
+
+    @mock.patch('os.path.isfile')
     @mock.patch('os.path.join')
     def test_check_or_create_public_private_files_no_private(self, mock_join, mock_isfile):
         mock_isfile.side_effect = [True, False]
@@ -270,12 +280,14 @@ class SshCustomCommandTest(unittest.TestCase):
     
 
     @mock.patch('builtins.open')
-    def test_write_cert_file(self, mock_open):
+    @mock.patch('oschmod.set_mode')
+    def test_write_cert_file(self, mock_mode, mock_open):
         mock_file = mock.Mock()
         mock_open.return_value.__enter__.return_value = mock_file
 
         custom._write_cert_file("cert", "publickey-aadcert.pub")
 
+        mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o644)
         mock_open.assert_called_once_with("publickey-aadcert.pub", 'w', encoding='utf-8')
         mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
  

@@ -9,6 +9,7 @@ import json
 import tempfile
 import time
 import platform
+import oschmod
 
 import colorama
 from colorama import Fore
@@ -314,13 +315,18 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
         if not os.path.isfile(private_key_file):
             raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
 
+    # Try to get private key if it's saved next to the public key. Not fail if it can't be found.
+    if not private_key_file:
+        if public_key_file.endswith(".pub"):
+            private_key_file = public_key_file[:-4] if os.path.isfile(public_key_file[:-4]) else None
+
     return public_key_file, private_key_file, delete_keys
 
 
 def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-
+    oschmod.set_mode(cert_file, 0o644)
     return cert_file
 
 
@@ -358,8 +364,10 @@ def _decide_resource_type(cmd, op_info):
             if not is_arc_server:
                 if isinstance(arc_error, ResourceNotFoundError):
                     raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                           f"{op_info.resource_group_name} was not found. Error:\n"
-                                                           f"{str(arc_error)}")
+                                                           f"{op_info.resource_group_name} was not found. "
+                                                           "Ensure there are no typos in the name of the resource "
+                                                           "and that the active subscription is set properly."
+                                                           f"Error:\n{str(arc_error)}")
                 raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
                                                  f"Error:\n{str(arc_error)}")
 
@@ -368,8 +376,10 @@ def _decide_resource_type(cmd, op_info):
             if not is_azure_vm:
                 if isinstance(vm_error, ResourceNotFoundError):
                     raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                           f"{op_info.resource_group_name} was not found. Error:\n"
-                                                           f"{str(vm_error)}")
+                                                           f"{op_info.resource_group_name} was not found. "
+                                                           "Ensure there are no typos in the name of the resource "
+                                                           "and that the active subscription is set properly."
+                                                           f"Error:\n{str(vm_error)}")
                 raise azclierror.BadRequestError("Unable to determine that the target machine is an Azure VM. "
                                                  f"Error:\n{str(vm_error)}")
 
@@ -383,7 +393,9 @@ def _decide_resource_type(cmd, op_info):
         if not is_azure_vm and not is_arc_server:
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                       f"{op_info.resource_group_name} was not found.")
+                                                       f"{op_info.resource_group_name} was not found. "
+                                                       "Ensure there are no typos in the name of the resource "
+                                                       "and that the active subscription is set properly.")
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
                                              f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
 

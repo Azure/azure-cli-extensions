@@ -71,7 +71,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
-    config_text = config_info.get_config_text()
+    # if delete cert is true, then this is AAD login.
+    config_text = config_info.get_config_text(delete_cert)
     _issue_config_cleanup_warning(delete_cert, delete_keys, config_info.is_arc(),
                                   config_info.cert_file, config_info.relay_info_path,
                                   config_info.ssh_client_folder)
@@ -342,22 +343,22 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
         if is_arc:
             relay_info_filename = os.path.basename(relay_info_path)
             if delete_keys and delete_cert:
-                path_to_delete = os.path.dirname(cert_file)
+                path_to_delete = f"{os.path.dirname(cert_file)} contains"
                 items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
             elif delete_cert:
-                path_to_delete = f"{cert_file} and {relay_info_path}"
+                path_to_delete = f"{cert_file} and {relay_info_path} contain"
                 items_to_delete = ""
             else:
-                path_to_delete = relay_info_path
+                path_to_delete = f"{relay_info_path} contains"
                 items_to_delete = ""
         else:
-            path_to_delete = os.path.dirname(cert_file)
+            path_to_delete = f"{os.path.dirname(cert_file)} contains"
             items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
             if not delete_keys:
-                path_to_delete = cert_file
+                path_to_delete = f"{cert_file} contains"
                 items_to_delete = ""
 
-        logger.warning("%s contain sensitive information%s. Please delete it once you no longer "
+        logger.warning("%s sensitive information%s. Please delete it once you no longer "
                        "need this config file.", path_to_delete, items_to_delete)
 
 

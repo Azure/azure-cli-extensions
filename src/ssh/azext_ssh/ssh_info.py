@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 import os
 import datetime
-import stat
 import oschmod
 
 import colorama
@@ -106,23 +105,26 @@ class ConfigSession():
             return True
         return False
 
-    def get_config_text(self):
+    def get_config_text(self, is_aad):
         lines = [""]
         if self.is_arc():
             self.relay_info_path = self._create_relay_info_file()
-            lines = lines + self._get_arc_entry()
+            lines = lines + self._get_arc_entry(is_aad)
         else:
             if self.resource_group_name and self.vm_name and self.ip:
-                lines = lines + self._get_rg_and_vm_entry()
+                lines = lines + self._get_rg_and_vm_entry(is_aad)
             # default to all hosts for config
             if not self.ip:
                 self.ip = "*"
             lines = lines + self._get_ip_entry()
         return lines
 
-    def _get_arc_entry(self):
+    def _get_arc_entry(self, is_aad):
         lines = []
-        lines.append("Host " + self.resource_group_name + "-" + self.vm_name)
+        if is_aad:
+            lines.append("Host " + self.resource_group_name + "-" + self.vm_name)
+        else:
+            lines.append("Host " + self.resource_group_name + "-" + self.vm_name + "-" + self.local_user)
         lines.append("\tHostName " + self.vm_name)
         lines.append("\tUser " + self.local_user)
         if self.cert_file:
@@ -136,9 +138,12 @@ class ConfigSession():
             lines.append("\tProxyCommand \"" + self.proxy_path + "\" " + "-r \"" + self.relay_info_path + "\"")
         return lines
 
-    def _get_rg_and_vm_entry(self):
+    def _get_rg_and_vm_entry(self, is_aad):
         lines = []
-        lines.append("Host " + self.resource_group_name + "-" + self.vm_name)
+        if is_aad:
+            lines.append("Host " + self.resource_group_name + "-" + self.vm_name)
+        else:
+            lines.append("Host " + self.resource_group_name + "-" + self.vm_name + "-" + self.local_user)
         lines.append("\tUser " + self.local_user)
         lines.append("\tHostName " + self.ip)
         if self.cert_file:
@@ -175,14 +180,14 @@ class ConfigSession():
         file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
         file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(self.relay_info),
                                  f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
-        oschmod.set_mode(relay_info_path, stat.S_IRUSR)
+        oschmod.set_mode(relay_info_path, 0o644)
         # pylint: disable=broad-except
         try:
             expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
             colorama.init()
-            print(Fore.GREEN + f"Generated relay information {relay_info_path} is valid until {expiration}."
-                  + Style.RESET_ALL)
+            print(Fore.GREEN + f"Generated relay information {relay_info_path} is valid until {expiration} "
+                  "in local time." + Style.RESET_ALL)
         except Exception as e:
             logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 
