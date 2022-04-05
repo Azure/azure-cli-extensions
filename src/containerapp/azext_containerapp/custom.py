@@ -6,13 +6,16 @@
 
 import threading
 import sys
+import platform
 import time
-import tty
 from urllib.parse import urlparse
+import msvcrt
 import websocket
 import requests
 
+
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
+from azure.cli.command_modules.container._vt_helper import enable_vt_mode
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError,
@@ -1987,15 +1990,24 @@ def _read_ssh(connection, encodings):
                     raise CLIInternalError("Unexpected message received")
 
 
-def _send_stdin(connection, encoding):
+def _send_stdin(connection, getch_fn):
     while connection.is_connected:
-        ch = sys.stdin.read(1).encode(encoding)
+        ch = getch_fn()
         if connection.is_connected:
             connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
 
 
+def _getch_unix():
+    return sys.stdin.read(1).encode(SSH_DEFAULT_ENCODING)
+
+
+def _getch_windows():
+    while not msvcrt.kbhit():
+        time.sleep(0.01)
+    return msvcrt.getch()
+
+
 # FYI currently only works against Jeff's app
-# TODO get working on windows
 # TODO manage terminal size
 # TODO implement timeout if needed
 def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None):
@@ -2039,8 +2051,14 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
     reader.daemon = True
     reader.start()
 
-    tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
-    writer = threading.Thread(target=_send_stdin, args=(conn, SSH_DEFAULT_ENCODING))
+    if platform.system() != "Windows":
+        import tty
+        tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
+        writer = threading.Thread(target=_send_stdin, args=(conn, _getch_unix))
+    else:
+        enable_vt_mode()  # needed for interactive commands (ie vim)
+        writer = threading.Thread(target=_send_stdin, args=(conn, _getch_windows))
+
     writer.daemon = True
     writer.start()
 
