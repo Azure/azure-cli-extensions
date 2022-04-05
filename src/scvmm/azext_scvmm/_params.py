@@ -1,0 +1,265 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+
+from knack.arguments import CLIArgumentType
+from azure.cli.core import AzCommandsLoader
+from .vendored_sdks.models import AllocationMethod
+from .scvmm_constants import BusType, VHDType
+from ._actions import VmNicAddAction, VmDiskAddAction
+
+
+def load_arguments(self: AzCommandsLoader, _):
+    from azure.cli.core.commands.parameters import (
+        tags_type,
+        get_enum_type,
+        get_three_state_flag,
+    )
+    from azure.cli.core.commands.validators import (
+        get_default_location_from_resource_group,
+    )
+
+    scvmm_name_type = CLIArgumentType(
+        options_list=['--name', '-n'],
+        help='Name of the resource.',
+        id_part='name',
+    )
+
+    custom_location_type = CLIArgumentType(
+        options_list=['--custom-location', '-cl'],
+        help='Name or ID of the custom location that will manage this resource.',
+    )
+
+    vmmserver_type = CLIArgumentType(
+        options_list=['--vmmserver', '-v'],
+        help='Name or ID of the vmmserver that is managing this resource.',
+    )
+
+    uuid_type = CLIArgumentType(
+        options_list=['--uuid'],
+        help="The ID of the resource created in the VMM.",
+    )
+
+    inventory_item_type = CLIArgumentType(
+        options_list=['--inventory-item', '-i'],
+        help='Name or ID of the inventory item.',
+    )
+
+    force_delete_type = CLIArgumentType(
+        options_list=['--force'],
+        help='Force the resource to be deleted from azure.',
+        action='store_true',
+    )
+
+    with self.argument_context('scvmm') as c:
+        c.argument('tags', tags_type)
+        c.argument('location', validator=get_default_location_from_resource_group)
+        c.argument('resource_name', arg_type=scvmm_name_type)
+        c.argument('custom_location', arg_type=custom_location_type)
+        c.argument('vmmserver', arg_type=vmmserver_type)
+        c.argument('uuid', arg_type=uuid_type)
+        c.argument('inventory_item', arg_type=inventory_item_type)
+        c.argument('force', arg_type=force_delete_type)
+
+    with self.argument_context('scvmm vmmserver connect') as c:
+        c.argument(
+            'fqdn', options_list=['--fqdn'], help="FQDN/IP address of the vmmserver."
+        )
+        c.argument(
+            'port', type=int, options_list=['--port'], help="The port of the vmmserver."
+        )
+        c.argument(
+            'username',
+            options_list=['--username'],
+            help="Username to use for connecting to the vmmserver.",
+        )
+        c.argument(
+            'password',
+            options_list=['--password'],
+            help="Username password credentials to use for connecting to the vmmserver.",
+        )
+
+    self.argument_context('scvmm cloud create')
+
+    self.argument_context('scvmm virtual-network create')
+
+    self.argument_context('scvmm vm-template create')
+
+    for scope in ['create', 'update']:
+        with self.argument_context(f'scvmm vm {scope}') as c:
+            c.argument(
+                'cpu_count',
+                type=int,
+                options_list=['--cpu-count'],
+                help="Number of desired vCPUs for the vm.",
+            )
+            c.argument(
+                'memory_size',
+                type=int,
+                options_list=['--memory-size'],
+                help="Desired memory size in MBs for the vm.",
+            )
+            c.argument(
+                'dynamic_memory_enabled',
+                arg_type=get_three_state_flag(),
+                help='If dynamic memory should be enabled.',
+            )
+            c.argument(
+                'dynamic_memory_min',
+                type=int,
+                options_list=['--dynamic-memory-min'],
+                help="DynamicMemoryMin in MBs for the vm.",
+            )
+            c.argument(
+                'dynamic_memory_max',
+                type=int,
+                options_list=['--dynamic-memory-max'],
+                help="DynamicMemoryMax in MBs for the vm.",
+            )
+            c.argument(
+                'availability_sets',
+                options_list=['--availability-sets', '-a'],
+                nargs='+',
+                help="List of the name or the ID of the availability sets for the vm.",
+            )
+
+    with self.argument_context('scvmm vm create') as c:
+        c.argument(
+            'vm_template',
+            options_list=['--vm-template', '-t'],
+            help="Name or ID of the vm template for deploying the vm.",
+        )
+        c.argument(
+            'cloud',
+            options_list=['--cloud', '-c'],
+            help="Name or ID of the cloud for deploying the vm.",
+        )
+        c.argument(
+            'admin_password',
+            options_list=['--admin-password'],
+            help="Admin password for the vm.",
+        )
+        c.argument(
+            'nics',
+            options_list=['--nic'],
+            action=VmNicAddAction,
+            nargs='+',
+            help="Network overrides for the vm."
+            "Usage: --nic name=<> network=<> ipv4-address-type=<> "
+            "ipv6-address-type=<> mac-address-type=<> mac-address=<>.",
+        )
+        c.argument(
+            'disks',
+            options_list=['--disk'],
+            action=VmDiskAddAction,
+            nargs='+',
+            help="Disk overrides for the vm."
+            "Usage: --disk name=<> disk-size=<> template-disk-id=<> bus-type=<> "
+            "bus=<> lun=<> vhd-type=<> qos-name=<> qos-id=<>.",
+        )
+
+    self.argument_context('scvmm vm update')
+
+    with self.argument_context('scvmm vm stop') as c:
+        c.argument(
+            'skip_shutdown',
+            action='store_true',
+            help="Skips shutdown and power-off immediately.",
+        )
+
+    with self.argument_context('scvmm vm nic') as c:
+        c.argument('nic_name', options_list=['--name', '-n'], help="Name of the NIC.")
+        c.argument('nic_id', options_list=['--nic-id'], help="UUID of the NIC.")
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+        c.argument(
+            'network',
+            options_list=['--network'],
+            help="Name or Id of the virtual network.",
+        )
+        c.argument(
+            'disconnect',
+            action='store_true',
+            help="Disconnect the NIC from any virtual network it is connected to.",
+        )
+        c.argument(
+            'ipv4_address_type',
+            arg_type=get_enum_type(AllocationMethod),
+            help="The allocation type of the ipv4 address.",
+        )
+        c.argument(
+            'ipv6_address_type',
+            arg_type=get_enum_type(AllocationMethod),
+            help="The allocation type of the ipv6 address.",
+        )
+        c.argument(
+            'mac_address_type',
+            arg_type=get_enum_type(AllocationMethod),
+            help="The allocation type of the MAC address.",
+        )
+        c.argument(
+            'mac_address',
+            options_list=['--mac-address'],
+            help="MAC address of the NIC.",
+        )
+        c.argument(
+            'nic_names', options_list=['--nics'], nargs='+', help="Names of the NICs."
+        )
+
+    with self.argument_context('scvmm vm disk') as c:
+        c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
+        c.argument('disk_id', options_list=['--disk-id'], help="UUID of the Disk.")
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+        c.argument(
+            'disk_size_gb', options_list=['--disk-size'], help="Size of the disk in GB."
+        )
+        c.argument('bus', options_list=['--bus'], help="Bus Number for the disk.")
+        c.argument('lun', options_list=['--lun'], help="Lun Number for the disk.")
+        c.argument(
+            'bus_type', arg_type=get_enum_type(BusType), help="Bus Type of the Disk."
+        )
+        c.argument(
+            'vhd_type', arg_type=get_enum_type(VHDType), help="VHD Type of the Disk."
+        )
+        c.argument(
+            'template_disk_id',
+            options_list=['--template-disk-id'],
+            help="UUID of the corresponding disk in VM Template.",
+        )
+        c.argument(
+            'qos_name',
+            options_list=['--qos-name'],
+            help="Name of the Storage QoS Policy to be applied on the disk.",
+        )
+        c.argument(
+            'qos_id',
+            options_list=['--qos-id'],
+            help="UUID of the Storage QoS Policy to be applied on the disk.",
+        )
+        c.argument(
+            'disk_names',
+            options_list=['--disks'],
+            nargs='+',
+            help="Names of the Disks.",
+        )
+
+    with self.argument_context('scvmm vm delete') as c:
+        c.argument(
+            'retain',
+            action='store_true',
+            help='Disable the VM from azure but retain the VM in VMM.',
+        )
+
+    with self.argument_context('scvmm avset') as c:
+        c.argument(
+            'avset_name',
+            options_list=['--avset-name', '-a'],
+            help="Name of the Availabilty Set.",
+        )
+
+    self.argument_context('scvmm vmmserver inventory-item')
