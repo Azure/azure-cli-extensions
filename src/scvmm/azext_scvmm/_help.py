@@ -28,26 +28,48 @@ helps[
     'scvmm vmmserver connect'
 ] = """
     type: command
-    short-summary: Create vmmserver resource
+    short-summary: Create a vmmserver resource
     examples:
       - name: Connect to a vmmserver
         text: |-
-                az scvmm vmmserver connect --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" --custom-location "custom location name" \
---name "vmmserver name" --fqdn "vmmserver FQDN or IP addess" --port "vmmserver port" \
---username "vmmserver user name" --password "vmmserver password"
+                az scvmm vmmserver connect --subscription contoso-sub \
+--resource-group contoso-rg --location eastus --custom-location contoso-cl \
+--name contoso-vmmserver --fqdn vmm.contoso.com --port 8100 \
+--username contoso-user --password contoso-password
+"""
+
+helps[
+    'scvmm vmmserver update'
+] = """
+    type: command
+    short-summary: Update vmmserver resource
+    examples:
+      - name: Update a vmmserver by ARM ID
+        text: |-
+                az scvmm vmmserver update --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmservers/contoso-vmmserver \
+--tags department=Sales
+
+      - name: Update a vmmserver by name
+        text: |-
+                az scvmm vmmserver update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vmmserver --tags department=Sales
 """
 
 helps[
     'scvmm vmmserver delete'
 ] = """
     type: command
-    short-summary: "Delete vmmserver resource"
+    short-summary: Delete a vmmserver resource
     examples:
-      - name: Delete vmmserver resource
+      - name: Delete a vmmserver resource by Name
         text: |-
-                az scvmm vmmserver delete --ids "resource id" --name "vmmserver name" \
---resource-group "resource group name" --subscription "Name or ID of the subscription"
+                az scvmm vmmserver delete --name contoso-vmmserver \
+--resource-group contoso-rg --subscription contoso-sub
+      - name: Delete a vmmserver resource by ARM ID
+        text: |-
+                az scvmm vmmserver delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
 """
 
 helps[
@@ -58,12 +80,12 @@ helps[
     examples:
       - name: Retrieve a list of vmmservers present in a resource group
         text: |-
-               az scvmm vmmserver list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm vmmserver list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of vmmservers present in a subscription
         text: |-
-               az scvmm vmmserver list --subscription "Name or ID of the subscription"
+               az scvmm vmmserver list --subscription contoso-sub
 """
 
 helps[
@@ -74,12 +96,13 @@ helps[
     examples:
       - name: Get details of a vmmserver by ARM ID
         text: |-
-                az scvmm vmmserver show --ids "resource id"
+                az scvmm vmmserver show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/vmmServers/contoso-vmmserver
 
       - name: Get details of a vmmserver by name
         text: |-
-                az scvmm vmmserver show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "vmmserver name"
+                az scvmm vmmserver show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vmmserver
 """
 
 helps[
@@ -97,8 +120,8 @@ helps[
     examples:
       - name: Retrieve a list of inventory items
         text: |-
-                az scvmm vmmserver inventory-item list --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vmmserver "name of the vmmserver"
+                az scvmm vmmserver inventory-item list --subscription contoso-sub \
+--resource-group contoso-rg --vmmserver contoso-vmmserver
 """
 
 helps[
@@ -109,8 +132,8 @@ helps[
     examples:
       - name: Get details of a inventory item
         text: |-
-                az scvmm vmmserver inventory-item show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vmmserver "name of the vmmserver" --inventory-item "Inventory Item Name"
+                az scvmm vmmserver inventory-item show --subscription contoso-sub \
+--resource-group contoso-rg --vmmserver contoso-vmmserver --inventory-item 01234567-0123-0123-0123-0123456789ab
 """
 
 # endregion
@@ -128,14 +151,32 @@ helps[
     'scvmm cloud create'
 ] = """
     type: command
-    short-summary: Create a cloud resource
+    short-summary: Create cloud resource
     examples:
-      - name: Create cloud
+      - name: Create a cloud
         text: |-
-                az scvmm cloud create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vmmserver "name or id of the vmmserver" \
---inventory-item "inventory item name or uuid of the resource in vmm" --name "cloud name"
+                az scvmm cloud create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vmmserver contoso-vmmserver \
+--inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-cloud
+"""
+
+helps[
+    'scvmm cloud update'
+] = """
+    type: command
+    short-summary: Update cloud resource
+    examples:
+      - name: Update a cloud by ARM ID
+        text: |-
+                az scvmm cloud update --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/clouds/contoso-cloud \
+--tags department=Sales
+
+      - name: Update a cloud by name
+        text: |-
+                az scvmm cloud update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-cloud --tags department=Sales
 """
 
 helps[
@@ -144,14 +185,15 @@ helps[
     type: command
     short-summary: Delete cloud resource
     examples:
-      - name: Delete cloud by ARM ID
+      - name: Delete a cloud by ARM ID
         text: |-
-                az scvmm cloud delete --ids "resource id"
+                az scvmm cloud delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/clouds/contoso-cloud
 
-      - name: Delete cloud by name
+      - name: Delete a cloud by name
         text: |-
-                az scvmm cloud delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "cloud name"
+                az scvmm cloud delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-cloud
 """
 
 helps[
@@ -162,12 +204,12 @@ helps[
     examples:
       - name: Retrieve a list of clouds present in a resource group
         text: |-
-               az scvmm cloud list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm cloud list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of clouds present in a subscription
         text: |-
-               az scvmm cloud list --subscription "Name or ID of the subscription"
+               az scvmm cloud list --subscription contoso-sub
 """
 
 helps[
@@ -178,12 +220,13 @@ helps[
     examples:
       - name: Get details of a cloud by ARM ID
         text: |-
-                az scvmm cloud show --ids "resource id"
+                az scvmm cloud show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/clouds/contoso-cloud
 
       - name: Get details of a cloud by name
         text: |-
-                az scvmm cloud show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "cloud name"
+                az scvmm cloud show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-cloud
 """
 
 # endregion
@@ -201,14 +244,32 @@ helps[
     'scvmm vm-template create'
 ] = """
     type: command
-    short-summary: Create a vm-template resource
+    short-summary: Create vm-template resource
     examples:
-      - name: Create vm-template
+      - name: Create a vm-template
         text: |-
-                az scvmm vm-template create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vmmserver "name or id of the vmmserver" \
---inventory-item "inventory item name or uuid of the resource in vmm" --name "vm-template name"
+                az scvmm vm-template create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vmmserver contoso-vmmserver \
+--inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vmtemplate
+"""
+
+helps[
+    'scvmm vm-template update'
+] = """
+    type: command
+    short-summary: Update vm-template resource
+    examples:
+      - name: Update a vm-template by ARM ID
+        text: |-
+                az scvmm vm-template update --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualMachineTemplates/contoso-vmtemplate \
+--tags department=Sales
+
+      - name: Update a vm-template by name
+        text: |-
+                az scvmm vm-template update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vmtemplate --tags department=Sales
 """
 
 helps[
@@ -217,14 +278,15 @@ helps[
     type: command
     short-summary: Delete vm-template resource
     examples:
-      - name: Delete vm-template by ARM ID
+      - name: Delete a vm-template by ARM ID
         text: |-
-                az scvmm vm-template delete --ids "resource id"
+                az scvmm vm-template delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualMachineTemplates/contoso-vmtemplate
 
-      - name: Delete vm-template by name
+      - name: Delete a vm-template by name
         text: |-
-                az scvmm vm-template delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "vm-template name"
+                az scvmm vm-template delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vmtemplate
 """
 
 helps[
@@ -235,12 +297,12 @@ helps[
     examples:
       - name: Retrieve a list of vm-templates present in a resource group
         text: |-
-               az scvmm vm-template list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm vm-template list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of vm-templates present in a subscription
         text: |-
-               az scvmm vm-template list --subscription "Name or ID of the subscription"
+               az scvmm vm-template list --subscription contoso-sub
 """
 
 helps[
@@ -251,12 +313,13 @@ helps[
     examples:
       - name: Get details of a vm-template by ARM ID
         text: |-
-                az scvmm vm-template show --ids "resource id"
+                az scvmm vm-template show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualMachineTemplates/contoso-vmtemplate
 
       - name: Get details of a vm-template by name
         text: |-
-                az scvmm vm-template show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "vm-template name"
+                az scvmm vm-template show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vmtemplate
 """
 
 # endregion
@@ -274,14 +337,32 @@ helps[
     'scvmm virtual-network create'
 ] = """
     type: command
-    short-summary: Create a virtual-network resource
+    short-summary: Create virtual-network resource
     examples:
-      - name: Create virtual-network
+      - name: Create a virtual-network
         text: |-
-                az scvmm virtual-network create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vmmserver "name or id of the vmmserver" \
---inventory-item "inventory item name or uuid of the resource in vmm" --name "virtual-network name"
+                az scvmm virtual-network create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vmmserver contoso-vmmserver \
+--inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vnet
+"""
+
+helps[
+    'scvmm virtual-network update'
+] = """
+    type: command
+    short-summary: Update virtual-network resource
+    examples:
+      - name: Update a virtual-network by ARM ID
+        text: |-
+                az scvmm virtual-network update --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualNetworks/contoso-vnet \
+--tags department=Sales
+
+      - name: Update a virtual-network by name
+        text: |-
+                az scvmm virtual-network update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vnet --tags department=Sales
 """
 
 helps[
@@ -290,14 +371,15 @@ helps[
     type: command
     short-summary: Delete virtual-network resource
     examples:
-      - name: Delete virtual-network by ARM ID
+      - name: Delete a virtual-network by ARM ID
         text: |-
-                az scvmm virtual-network delete --ids "resource id"
+                az scvmm virtual-network delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualNetworks/contoso-vnet
 
-      - name: Delete virtual-network by name
+      - name: Delete a virtual-network by name
         text: |-
-                az scvmm virtual-network delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "virtual-network name"
+                az scvmm virtual-network delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vnet
 """
 
 helps[
@@ -308,12 +390,12 @@ helps[
     examples:
       - name: Retrieve a list of virtual-networks present in a resource group
         text: |-
-               az scvmm virtual-network list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm virtual-network list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of virtual-networks present in a subscription
         text: |-
-               az scvmm virtual-network list --subscription "Name or ID of the subscription"
+               az scvmm virtual-network list --subscription contoso-sub
 """
 
 helps[
@@ -324,12 +406,13 @@ helps[
     examples:
       - name: Get details of a virtual-network by ARM ID
         text: |-
-                az scvmm virtual-network show --ids "resource id"
+                az scvmm virtual-network show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualNetworks/contoso-vnet
 
       - name: Get details of a virtual-network by name
         text: |-
-                az scvmm virtual-network show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "virtual-network name"
+                az scvmm virtual-network show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vnet
 """
 
 # endregion
@@ -347,30 +430,50 @@ helps[
     'scvmm avset create'
 ] = """
     type: command
-    short-summary: Create an availabilty set resource
+    short-summary: Create availabilty set resource
     examples:
       - name: Create an availabilty set
         text: |-
-                az scvmm avset create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vmmserver "name or id of the vmmserver" \
---avset-name "name of the availability set in vmm" --name "availabilty set name"
+                az scvmm avset create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vmmserver contoso-vmmserver \
+--avset-name "name of the availability set in vmm" --name contoso-avset
 """
+
+helps[
+    'scvmm avset update'
+] = """
+    type: command
+    short-summary: Update availabilty set resource
+    examples:
+      - name: Update an availabilty set by ARM ID
+        text: |-
+                az scvmm avset update --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/availabiltySets/contoso-avset \
+--tags department=Sales
+
+      - name: Update an availabilty set by name
+        text: |-
+                az scvmm avset update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset --tags department=Sales
+"""
+
 
 helps[
     'scvmm avset delete'
 ] = """
     type: command
-    short-summary: Delete an availabilty set resource
+    short-summary: Delete availabilty set resource
     examples:
       - name: Delete an availabilty set by ARM ID
         text: |-
-                az scvmm avset delete --ids "resource id"
+                az scvmm avset delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/availabiltySets/contoso-avset
 
       - name: Delete an availabilty set by name
         text: |-
-                az scvmm avset delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "availabilty set name"
+                az scvmm avset delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset
 """
 
 helps[
@@ -381,12 +484,12 @@ helps[
     examples:
       - name: Retrieve a list of availabilty sets present in a resource group
         text: |-
-               az scvmm avset list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm avset list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of availabilty sets present in a subscription
         text: |-
-               az scvmm avset list --subscription "Name or ID of the subscription"
+               az scvmm avset list --subscription contoso-sub
 """
 
 helps[
@@ -397,12 +500,13 @@ helps[
     examples:
       - name: Get details of an availabilty set by ARM ID
         text: |-
-                az scvmm avset show --ids "resource id"
+                az scvmm avset show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/availabiltySets/contoso-avset
 
       - name: Get details of an availabilty set by name
         text: |-
-                az scvmm avset show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "availabilty set name"
+                az scvmm avset show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset
 """
 
 # endregion
@@ -420,54 +524,55 @@ helps[
     'scvmm vm create'
 ] = """
     type: command
-    short-summary: Create a VM resource
+    short-summary: Create VM resource
     examples:
       - name: Enable an exiting VM to azure.
         text: |-
-                az scvmm vm create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" --custom-location "custom location name" \
---inventory-item "inventory item name or uuid of the resource in vmm" --name "vm name"
+                az scvmm vm create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus --custom-location contoso-cl \
+--inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
 
       - name: Create a new VM in vmmserver using a VM Template
         text: |-
-                az scvmm vm create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vm-template "vm-template name" --cloud "cloud name" \
---name "vm name"
+                az scvmm vm create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vm-template contoso-vmtemplate --cloud contoso-cloud \
+--name contoso-vm
 
       - name: Create a new VM specifying some template overrides
         text: |-
-                az scvmm vm create --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --location "location" \
---custom-location "custom location name" --vm-template "vm-template name" --cloud "cloud name" \
---name "vm name" --cpu-count 2 --memory-size 2048 --dynamic-memory-enabled true \
---disk name=disk_1 disk-size=2 bus=0 --nic name=nic_1 network="network name"
+                az scvmm vm create --subscription contoso-sub \
+--resource-group contoso-rg --location eastus \
+--custom-location contoso-cl --vm-template contoso-vmtemplate --cloud contoso-cloud \
+--name contoso-vm --cpu-count 2 --memory-size 2048 --dynamic-memory-enabled true \
+--disk name=disk_1 disk-size=2 bus=0 --nic name=nic_1 network=contoso-vnet
 """
 
 helps[
     'scvmm vm delete'
 ] = """
     type: command
-    short-summary: Delete a VM resource
+    short-summary: Delete VM resource
     examples:
       - name: Delete a VM by ARM ID from both azure and VMM
         text: |-
-                az scvmm vm delete --ids "resource id"
+                az scvmm vm delete --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualMachines/contoso-vm
 
       - name: Delete a VM by name from both azure and VMM
         text: |-
-                az scvmm vm delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "availabilty set name"
+                az scvmm vm delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset
 
       - name: Disable a VM from azure retaining the actual VM in the VMM infra
         text: |-
-                az scvmm vm delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "availabilty set name" --retain
+                az scvmm vm delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset --retain
 
       - name: Force delete the VM ARM resource
         text: |-
-                az scvmm vm delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "availabilty set name" --force
+                az scvmm vm delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset --force
 """
 
 helps[
@@ -478,12 +583,12 @@ helps[
     examples:
       - name: Retrieve a list of VMs present in a resource group
         text: |-
-               az scvmm vm list --subscription "Name or ID of the subscription" \
---resource-group "resource group name"
+               az scvmm vm list --subscription contoso-sub \
+--resource-group contoso-rg
 
       - name: Retrieve a list of VMs present in a subscription
         text: |-
-               az scvmm vm list --subscription "Name or ID of the subscription"
+               az scvmm vm list --subscription contoso-sub
 """
 
 helps[
@@ -494,12 +599,13 @@ helps[
     examples:
       - name: Get details of an VM by ARM ID
         text: |-
-                az scvmm vm show --ids "resource id"
+                az scvmm vm show --ids \
+/subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.ScVmm/virtualMachines/contoso-vm
 
       - name: Get details of an VM by name
         text: |-
-                az scvmm vm show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name"
+                az scvmm vm show --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm
 """
 
 helps[
@@ -510,8 +616,8 @@ helps[
     examples:
       - name: Start a vm
         text: |-
-               az scvmm vm start --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name"
+               az scvmm vm start --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm
 """
 
 helps[
@@ -522,13 +628,13 @@ helps[
     examples:
       - name: Shut down the VM gracefully
         text: |-
-               az scvmm vm stop --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name"
+               az scvmm vm stop --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm
 
       - name: Power off the VM
         text: |-
-               az scvmm vm stop --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name" --skip-shutdown
+               az scvmm vm stop --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --skip-shutdown
 """
 
 helps[
@@ -539,8 +645,8 @@ helps[
     examples:
       - name: Restart a vm
         text: |-
-               az scvmm vm restart --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name"
+               az scvmm vm restart --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm
 """
 
 helps[
@@ -552,11 +658,11 @@ helps[
 Management of VM disks and NICs are not using this subcommand. \
 There are separate subcommands for the same.
     examples:
-      - name: Update vm
+      - name: Update a VM to have 2 vCPUs and 4GB Memory.
         text: |-
-               az scvmm vm --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --name "VM name" --cpu-count "no. of CPUs" \
---memory-size "vm memory size in MB" --tags department=Sales
+               az scvmm vm update --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --cpu-count 2 \
+--memory-size 4096 --tags department=Sales
 """
 
 # endregion
@@ -576,11 +682,13 @@ helps[
     type: command
     short-summary: Add a virtual disk to a virtual machine
     examples:
-      - name: Add a virtual disk to a virtual machine
+      - name: |-
+                Create a virtual disk with size 100 GB to a virtual machine \
+and attach it to Bus 1 Lun 10 SCSI controller.
         text: |-
-                az scvmm vm disk add --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "disk name" \
---bus "bus number" --lun "lun number" --disk-size "the disk size in GB"
+                az scvmm vm disk add --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name disk_2 \
+--bus 1 --lun 10 --bus-type SCSI --disk-size 100
 """
 
 helps[
@@ -591,8 +699,8 @@ helps[
     examples:
       - name: Delete disks of a virtual machine
         text: |-
-                az scvmm vm disk delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --disks "disk name 1" "disk name 2"
+                az scvmm vm disk delete --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --disks disk_1 disk_2
 """
 
 helps[
@@ -603,8 +711,8 @@ helps[
     examples:
       - name: Retrieve the list of disks present in a VM
         text: |-
-                az scvmm vm disk list --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name"
+                az scvmm vm disk list --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm
 """
 
 helps[
@@ -615,8 +723,8 @@ helps[
     examples:
       - name: Get details of vm disk
         text: |-
-                az scvmm vm disk show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "disk name"
+                az scvmm vm disk show --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name disk_1
 """
 
 helps[
@@ -627,9 +735,9 @@ helps[
     examples:
       - name: Update a disk of a VM
         text: |-
-                az scvmm vm disk show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "disk name" \
---bus-type "Bus Type" --disk-size "the disk size in GB" --vhd-type "VHD Type of the disk"
+                az scvmm vm disk update --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name disk_1 \
+--bus-type IDE --bus 0 --disk-size 40 --vhd-type Dynamic
 """
 
 # endregion
@@ -651,10 +759,10 @@ helps[
     examples:
       - name: Add a NIC to a virtual machine
         text: |-
-                az scvmm vm nic add --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "nic name" \
---network "network name" --ipv4-address-type "IPv4 Address Type" \
---mac-address-type "MAC Address Type"
+                az scvmm vm nic add --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name nic_1 \
+--network contoso-vnet --ipv4-address-type Dynamic \
+--mac-address-type Dynamic
 """
 
 helps[
@@ -665,8 +773,8 @@ helps[
     examples:
       - name: Delete NICs of a virtual machine
         text: |-
-                az scvmm vm nic delete --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --nics "nic name 1" "nic name 2"
+                az scvmm vm nic delete --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --nics nic_1 nic_2
 """
 
 helps[
@@ -677,8 +785,8 @@ helps[
     examples:
       - name: Retrieve the list of NICs present in a VM
         text: |-
-                az scvmm vm nic list --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name"
+                az scvmm vm nic list --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm
 """
 
 helps[
@@ -689,8 +797,8 @@ helps[
     examples:
       - name: Get details of vm NIC
         text: |-
-                az scvmm vm nic show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "nic name"
+                az scvmm vm nic show --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name nic_1
 """
 
 helps[
@@ -701,10 +809,10 @@ helps[
     examples:
       - name: Update a NIC of a VM
         text: |-
-                az scvmm vm nic show --subscription "Name or ID of the subscription" \
---resource-group "resource group name" --vm-name "VM name" --name "nic name" \
---network "network name" --ipv4-address-type "IPv4 Address Type" \
---mac-address-type "MAC Address Type"
+                az scvmm vm nic update --subscription contoso-sub \
+--resource-group contoso-rg --vm-name contoso-vm --name nic_1 \
+--network contoso-vnet --ipv4-address-type Dynamic \
+--mac-address-type Dynamic
 """
 
 # endregion

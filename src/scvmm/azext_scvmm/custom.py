@@ -8,7 +8,7 @@ import sys
 from getpass import getpass
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
-from .scvmm_utils import get_resource_id
+from .scvmm_utils import get_resource_id, get_extended_location
 from .scvmm_constants import (
     AVAILABILITYSET_RESOURCE_TYPE,
     SCVMM_NAMESPACE,
@@ -16,7 +16,6 @@ from .scvmm_constants import (
     DEFAULT_VMMSERVER_PORT,
     EXTENDED_LOCATION_NAMESPACE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
-    EXTENDED_LOCATION_TYPE,
     NAME_PARAMETER,
     NETWORK,
     IPV4_ADDRESS_TYPE,
@@ -36,7 +35,6 @@ from .scvmm_constants import (
 )
 from .vendored_sdks.models import (
     Cloud,
-    ExtendedLocation,
     HardwareProfile,
     HardwareProfileUpdate,
     OsProfile,
@@ -137,13 +135,9 @@ def connect_vmmserver(
         custom_location,
     )
 
-    extended_location = ExtendedLocation(
-        type=EXTENDED_LOCATION_TYPE, name=custom_location_id
-    )
-
     vmmserver = VMMServer(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location_id),
         fqdn=fqdn,
         port=port,
         credentials=username_creds,
@@ -215,7 +209,6 @@ def create_cloud(
     custom_location,
     location,
     vmmserver=None,
-    extended_location=None,
     uuid=None,
     inventory_item=None,
     tags=None,
@@ -224,7 +217,7 @@ def create_cloud(
 
     cloud = Cloud(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location),
         vmm_server_id=vmmserver,
         uuid=uuid,
         inventory_item_id=inventory_item,
@@ -267,7 +260,7 @@ def delete_cloud(
     no_wait=False,
 ):
     return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force=None
+        no_wait, client.begin_delete, resource_group_name, resource_name, force
     )
 
 
@@ -294,7 +287,6 @@ def create_virtual_network(
     custom_location,
     location,
     vmmserver=None,
-    extended_location=None,
     uuid=None,
     inventory_item=None,
     tags=None,
@@ -302,7 +294,7 @@ def create_virtual_network(
 ):
     virtual_network = VirtualNetwork(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location),
         vmm_server_id=vmmserver,
         uuid=uuid,
         inventory_item_id=inventory_item,
@@ -376,7 +368,6 @@ def create_vm_template(
     custom_location,
     location,
     vmmserver=None,
-    extended_location=None,
     uuid=None,
     inventory_item=None,
     tags=None,
@@ -384,7 +375,7 @@ def create_vm_template(
 ):
     vm_template = VirtualMachineTemplate(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location),
         vmm_server_id=vmmserver,
         uuid=uuid,
         inventory_item_id=inventory_item,
@@ -457,7 +448,6 @@ def create_vm(
     resource_name,
     custom_location,
     location,
-    extended_location=None,
     vmmserver=None,
     inventory_item=None,
     vm_template=None,
@@ -523,7 +513,7 @@ def create_vm(
 
     vm = VirtualMachine(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location),
         inventory_item_id=inventory_item,
         cloud_id=cloud,
         template_id=vm_template,
@@ -1261,14 +1251,13 @@ def create_avset(
     resource_name,
     vmmserver,
     avset_name,
-    extended_location=None,
     tags=None,
     no_wait=False,
 ):
 
     avset = AvailabilitySet(
         location=location,
-        extended_location=extended_location,
+        extended_location=get_extended_location(custom_location),
         vmm_server_id=vmmserver,
         availability_set_name=avset_name,
         tags=tags,

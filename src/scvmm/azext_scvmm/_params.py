@@ -28,7 +28,7 @@ def load_arguments(self: AzCommandsLoader, _):
     )
 
     custom_location_type = CLIArgumentType(
-        options_list=['--custom-location', '-cl'],
+        options_list=['--custom-location'],
         help='Name or ID of the custom location that will manage this resource.',
     )
 

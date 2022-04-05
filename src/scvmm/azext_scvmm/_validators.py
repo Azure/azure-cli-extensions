@@ -10,7 +10,6 @@ from azext_scvmm.scvmm_constants import (
     CLOUD_RESOURCE_TYPE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
     EXTENDED_LOCATION_NAMESPACE,
-    EXTENDED_LOCATION_TYPE,
     INVENTORY_ITEM_TYPE,
     SCVMM_NAMESPACE,
     VMMSERVER_RESOURCE_TYPE,
@@ -18,9 +17,6 @@ from azext_scvmm.scvmm_constants import (
 )
 
 from .scvmm_utils import get_resource_id
-from .vendored_sdks.models import (
-    ExtendedLocation,
-)
 
 
 def validate_custom_location_name_or_id(cmd, namespace):
@@ -34,10 +30,6 @@ def validate_custom_location_name_or_id(cmd, namespace):
         EXTENDED_LOCATION_NAMESPACE,
         CUSTOM_LOCATION_RESOURCE_TYPE,
         namespace.custom_location,
-    )
-    namespace.extended_location = ExtendedLocation(
-        type=EXTENDED_LOCATION_TYPE,
-        name=namespace.custom_location,
     )
 
 

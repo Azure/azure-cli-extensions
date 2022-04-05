@@ -6,6 +6,12 @@
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
+from azext_scvmm.scvmm_constants import (
+    EXTENDED_LOCATION_TYPE,
+)
+from .vendored_sdks.models import (
+    ExtendedLocation,
+)
 
 
 def get_resource_id(
@@ -44,3 +50,10 @@ def create_dictionary_from_arg_string(values, option_string=None):
                 f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from err
     return params_dict
+
+
+def get_extended_location(custom_location):
+    return ExtendedLocation(
+        type=EXTENDED_LOCATION_TYPE,
+        name=custom_location,
+    )
