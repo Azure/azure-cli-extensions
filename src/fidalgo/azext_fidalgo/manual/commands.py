@@ -332,15 +332,15 @@ def load_command_table(self, _):
         g.custom_command('list', 'fidalgo_image_version_list')
         g.custom_show_command('show', 'fidalgo_image_version_show')
 
-    with self.command_group(
-        'fidalgo admin machine-definition', fidalgo_machine_definition, client_factory=cf_machine_definition
-    ) as g:
-        g.custom_command('list', 'fidalgo_machine_definition_list')
-        g.custom_show_command('show', 'fidalgo_machine_definition_show')
-        g.custom_command('create', 'fidalgo_machine_definition_create', supports_no_wait=True)
-        g.custom_command('update', 'fidalgo_machine_definition_update', supports_no_wait=True)
-        g.custom_command('delete', 'fidalgo_machine_definition_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'fidalgo_machine_definition_show')
+    # with self.command_group(
+    #     'fidalgo admin machine-definition', fidalgo_machine_definition, client_factory=cf_machine_definition
+    # ) as g:
+    #     g.custom_command('list', 'fidalgo_machine_definition_list')
+    #     g.custom_show_command('show', 'fidalgo_machine_definition_show')
+    #     g.custom_command('create', 'fidalgo_machine_definition_create', supports_no_wait=True)
+    #     g.custom_command('update', 'fidalgo_machine_definition_update', supports_no_wait=True)
+    #     g.custom_command('delete', 'fidalgo_machine_definition_delete', supports_no_wait=True, confirmation=True)
+    #     g.custom_wait_command('wait', 'fidalgo_machine_definition_show')
 
     with self.command_group('fidalgo admin mapping', fidalgo_mapping, client_factory=cf_mapping) as g:
         g.custom_command('list', 'fidalgo_mapping_list')
