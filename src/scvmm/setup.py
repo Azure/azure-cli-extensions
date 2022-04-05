@@ -16,14 +16,7 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-<<<<<<< HEAD:src/scvmm/setup.py
 VERSION = '0.1.4'
-=======
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
-
-VERSION = '0.1.6'
->>>>>>> a70efc66dce5f88964f3e5a622a0e7f92ad79af8:src/connectedvmware/setup.py
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
