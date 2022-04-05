@@ -86,6 +86,18 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp ssh'] = """
+    type: command
+    short-summary: Open an interactive shell within a container app replica via SSH
+    examples:
+    - name: ssh into a container app
+      text: |
+          az containerapp ssh -n MyContainerapp -g MyResourceGroup
+    - name: ssh into a particular container app replica and revision
+      text: |
+          az containerapp ssh -n MyContainerapp -g MyResourceGroup
+"""
+
 # Revision Commands
 helps['containerapp revision'] = """
     type: group

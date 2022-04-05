@@ -4,8 +4,13 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
 
-import websocket, threading, sys, requests, time, tty
+import threading
+import sys
+import time
+import tty
 from urllib.parse import urlparse
+import websocket
+import requests
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (
@@ -16,7 +21,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from knack.log import get_logger, CliLogLevel
+from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
@@ -41,15 +46,14 @@ from ._models import (
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
-    SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel)
+    SourceControl as SourceControlModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists, _remove_env_vars, _update_revision_env_secretrefs)
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _update_revision_env_secretrefs)
 from ._constants import (SSH_PROXY_FORWARD, SSH_PROXY_ERROR, SSH_PROXY_INFO, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR,
                          SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX, SSH_CTRL_C_MSG)
 
@@ -62,7 +66,8 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn", "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn",
+                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
@@ -90,7 +95,6 @@ def load_yaml_file(file_name):
 def create_deserializer():
     from ._sdk_models import ContainerApp  # pylint: disable=unused-import
     from msrest import Deserializer
-    import sys
     import inspect
 
     sdkClasses = inspect.getmembers(sys.modules["azext_containerapp._sdk_models"])
@@ -1939,6 +1943,7 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         handle_raw_exception(e)
 
 
+# pylint: disable=too-few-public-methods
 class _WebSocketConnection:
     def __init__(self, is_connected, socket):
         self.is_connected = is_connected
@@ -1956,6 +1961,7 @@ def _read_ssh(connection, encodings):
         if not response:
             connection.disconnect()
         else:
+            logger.info("Received raw response %s", response.hex())
             proxy_status = response[0]
             if proxy_status == SSH_PROXY_INFO:
                 print(f"INFO: {response[1:].decode(encodings[0])}")
@@ -1963,7 +1969,7 @@ def _read_ssh(connection, encodings):
                 print(f"ERROR: {response[1:].decode(encodings[0])}")
             elif proxy_status == SSH_PROXY_FORWARD:
                 control_byte = response[1]
-                if control_byte == SSH_CLUSTER_STDOUT or control_byte == SSH_CLUSTER_STDERR:
+                if control_byte in (SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR):
                     for i, encoding in enumerate(encodings):
                         try:
                             print(response[2:].decode(encoding), end="", flush=True)
@@ -1971,12 +1977,11 @@ def _read_ssh(connection, encodings):
                         except UnicodeDecodeError as e:
                             if i == len(encodings) - 1:  # ran out of encodings to try
                                 connection.disconnect()
-                                logger.info("Proxy Control Byte: ", response[0])
-                                logger.info("Cluster Control Byte: ", response[1])
+                                logger.info("Proxy Control Byte: %s", response[0])
+                                logger.info("Cluster Control Byte: %s", response[1])
                                 logger.info("Hexdump: %s", response[2:].hex())
                                 raise CLIInternalError("Failed to decode server data") from e
-                            else:
-                                logger.info("Failed to encode with encoding %s", encoding)
+                            logger.info("Failed to encode with encoding %s", encoding)
                 else:
                     connection.disconnect()
                     raise CLIInternalError("Unexpected message received")
@@ -1984,23 +1989,16 @@ def _read_ssh(connection, encodings):
 
 def _send_stdin(connection, encoding):
     while connection.is_connected:
-        # TODO this will try and read one more character after the connections is closed
-        try:
-            ch = sys.stdin.read(1).encode(encoding) # TODO test on windows
-            if connection.is_connected:
-                connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
-        except KeyboardInterrupt:
-            print("Got keyboard interrupt")
+        ch = sys.stdin.read(1).encode(encoding)
+        if connection.is_connected:
+            connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
 
 
 # FYI currently only works against Jeff's app
 # TODO get working on windows
 # TODO manage terminal size
 # TODO implement timeout if needed
-def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, timeout=None):
-    if cmd.cli_ctx.logging.log_level == CliLogLevel.DEBUG:
-        websocket.enableTrace(True)
-
+def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None):
     app = ContainerAppClient.show(cmd, resource_group_name, name)
     if not revision:
         revision = app["properties"]["latestRevisionName"]
@@ -2017,7 +2015,7 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
         # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
 
     sub_id = get_subscription_id(cmd.cli_ctx)
-    command = "bash"
+    command = "bash"  # TODO check if there are other shells that can be used
 
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
@@ -2032,7 +2030,7 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
     socket = websocket.WebSocket(enable_multithread=True)
     encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
 
-    logger.warn("Attempting to connect to %s", url)
+    logger.warning("Attempting to connect to %s", url)
     socket.connect(url)
 
     conn = _WebSocketConnection(is_connected=True, socket=socket)
@@ -2054,4 +2052,3 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
                 socket.send(SSH_CTRL_C_MSG)
-

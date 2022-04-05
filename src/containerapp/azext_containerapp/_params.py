@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-statements, consider-using-f-string, option-length-too-long
+# pylint: disable=line-too-long, too-many-statements, consider-using-f-string
 
 from knack.arguments import CLIArgumentType
 
@@ -29,6 +29,12 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app. All other parameters will be ignored. For an example, see  https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples')
+
+    with self.argument_context('containerapp ssh') as c:
+        c.argument('container', help="The name of the container to ssh into")
+        c.argument('replica', help="The name of the replica to ssh into")
+        c.argument('revision', help="The name of the container app revision to ssh into")
+        # c.argument('timeout')
 
     # Container
     with self.argument_context('containerapp', arg_group='Container') as c:

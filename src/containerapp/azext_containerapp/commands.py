@@ -49,7 +49,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output)
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output)
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
-        g.custom_command('ssh', 'containerapp_ssh')
+        g.custom_command('ssh', 'containerapp_ssh', is_preview=True)
 
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')

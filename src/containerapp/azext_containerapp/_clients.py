@@ -371,7 +371,6 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
-
     @classmethod
     def get_auth_token(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
