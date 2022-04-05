@@ -40,7 +40,6 @@ class ScVmmScenarioTest(ScenarioTest):
             }
         )
 
-        # Validate that the show command outputs the same vmmserver name.
         self.cmd(
             'az scvmm vmmserver show -g {resource_group} --name {vmmserver_name}',
             checks=[
