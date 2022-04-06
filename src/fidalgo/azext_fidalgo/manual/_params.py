@@ -731,7 +731,7 @@ def load_arguments(self, _):
         c.argument('dev_box_definition_name', options_list=['--devbox-definition-name'], type=str, help='Name of a Dev Box definition in parent Project of this Pool')
         #c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
         c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
-        c.argument('sku_name', type=str, required=False, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
+        #c.argument('sku_name', type=str, required=False, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -745,7 +745,7 @@ def load_arguments(self, _):
         c.argument('dev_box_definition_name', options_list=['--devbox-definition-name'], type=str, help='Name of a Dev Box definition in parent Project of this Pool')
         #c.argument('network_settings_id', type=str, help='Resource Id of a Network Settings resource')
         c.argument('network_connection_name', type=str, help='Name of a Network Connection in parent Project of this Pool')
-        c.argument('sku_name', type=str, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
+        #c.argument('sku_name', type=str, help='The name of the SKU - this is optional and can be used to overrride the SKU defined in the Dev Box Definition. (not currently used)', arg_group='Sku')
 
     with self.argument_context('fidalgo admin pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -815,7 +815,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('subnet_id', type=str, help='The subnet to attach Virtual Machines to')
-        c.argument('networking_resource_group_id', type=str, help='Target resource group id for NICs to be placed. '
+        c.argument('networking_resource_group_id', type=str, help='Target resource group id for NICs to be placed. [deprecated]'
                    'Required format: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}\'')
         c.argument('domain_name', type=str, help='Active Directory domain name')
         c.argument('organization_unit', type=str, help='Active Directory domain Organization Unit (OU)')

@@ -45,25 +45,15 @@ def fidalgo_pool_create(client,
                         tags=None,
                         dev_box_definition_name=None,
                         network_connection_name=None,
-                        sku_name=None,
                         no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
-    if machine_definition_id is not None:
-        body['machine_definition_id'] = machine_definition_id
     if dev_box_definition_name is not None:
         body['dev_box_definition_name'] = dev_box_definition_name
-    if network_settings_id is not None:
-        body['network_settings_id'] = network_settings_id
     if network_connection_name is not None:
         body['network_connection_name'] = network_connection_name
-    body['sku'] = {}
-    if sku_name is not None:
-        body['sku']['name'] = sku_name
-    if len(body['sku']) == 0:
-        del body['sku']
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -86,19 +76,10 @@ def fidalgo_pool_update(client,
         body['tags'] = tags
     if location is not None:
         body['location'] = location
-    if machine_definition_id is not None:
-        body['machine_definition_id'] = machine_definition_id
     if dev_box_definition_name is not None:
         body['dev_box_definition_name'] = dev_box_definition_name
-    if network_settings_id is not None:
-        body['network_settings_id'] = network_settings_id
     if network_connection_name is not None:
         body['network_connection_name'] = network_connection_name
-    body['sku'] = {}
-    if sku_name is not None:
-        body['sku']['name'] = sku_name
-    if len(body['sku']) == 0:
-        del body['sku']
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
