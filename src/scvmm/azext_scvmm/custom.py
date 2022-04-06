@@ -57,7 +57,7 @@ from .vendored_sdks.models import (
     StorageProfileUpdate,
     ResourcePatch,
     StopVirtualMachineOptions,
-    AvailabilitySetsItem,
+    AvailabilitySetListItem,
     AvailabilitySet,
 )
 from .vendored_sdks.operations import (
@@ -733,7 +733,7 @@ def get_disks(cmd, client: VirtualMachinesOperations, resource_group_name, input
 def get_availability_sets(cmd, resource_group_name, availability_sets):
     if availability_sets is not None:
         availability_sets = [
-            AvailabilitySetsItem(
+            AvailabilitySetListItem(
                 id=get_resource_id(
                     cmd,
                     resource_group_name,

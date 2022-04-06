@@ -8,8 +8,8 @@
 
 try:
     from ._models_py3 import AvailabilitySet
+    from ._models_py3 import AvailabilitySetListItem
     from ._models_py3 import AvailabilitySetListResult
-    from ._models_py3 import AvailabilitySetsItem
     from ._models_py3 import Checkpoint
     from ._models_py3 import Cloud
     from ._models_py3 import CloudCapacity
@@ -62,8 +62,8 @@ try:
     from ._models_py3 import VirtualNetworkListResult
 except (SyntaxError, ImportError):
     from ._models import AvailabilitySet  # type: ignore
+    from ._models import AvailabilitySetListItem  # type: ignore
     from ._models import AvailabilitySetListResult  # type: ignore
-    from ._models import AvailabilitySetsItem  # type: ignore
     from ._models import Checkpoint  # type: ignore
     from ._models import Cloud  # type: ignore
     from ._models import CloudCapacity  # type: ignore
@@ -128,8 +128,8 @@ from ._scvmm_enums import (
 
 __all__ = [
     'AvailabilitySet',
+    'AvailabilitySetListItem',
     'AvailabilitySetListResult',
-    'AvailabilitySetsItem',
     'Checkpoint',
     'Cloud',
     'CloudCapacity',

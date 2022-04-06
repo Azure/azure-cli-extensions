@@ -88,6 +88,35 @@ class AvailabilitySet(msrest.serialization.Model):
         self.provisioning_state = None
 
 
+class AvailabilitySetListItem(msrest.serialization.Model):
+    """Availability Set model.
+
+    :ivar id: Gets the ARM Id of the microsoft.scvmm/availabilitySets resource.
+    :vartype id: str
+    :ivar name: Gets or sets the name of the availability set.
+    :vartype name: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword id: Gets the ARM Id of the microsoft.scvmm/availabilitySets resource.
+        :paramtype id: str
+        :keyword name: Gets or sets the name of the availability set.
+        :paramtype name: str
+        """
+        super(AvailabilitySetListItem, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+
+
 class AvailabilitySetListResult(msrest.serialization.Model):
     """List of AvailabilitySets.
 
@@ -115,35 +144,6 @@ class AvailabilitySetListResult(msrest.serialization.Model):
         super(AvailabilitySetListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = kwargs.get('next_link', None)
-
-
-class AvailabilitySetsItem(msrest.serialization.Model):
-    """Availability Set model.
-
-    :ivar id: Gets the ARM Id of the microsoft.scvmm/availabilitySets resource.
-    :vartype id: str
-    :ivar name: Gets or sets the name of the availability set.
-    :vartype name: str
-    """
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        :keyword id: Gets the ARM Id of the microsoft.scvmm/availabilitySets resource.
-        :paramtype id: str
-        :keyword name: Gets or sets the name of the availability set.
-        :paramtype name: str
-        """
-        super(AvailabilitySetsItem, self).__init__(**kwargs)
-        self.id = kwargs.get('id', None)
-        self.name = kwargs.get('name', None)
 
 
 class Checkpoint(msrest.serialization.Model):
@@ -905,11 +905,9 @@ class NetworkInterfaces(msrest.serialization.Model):
     :vartype ipv6_addresses: list[str]
     :ivar mac_address: Gets or sets the nic MAC address.
     :vartype mac_address: str
-    :ivar virtual_network_id: Gets or sets the ARM Id of the microsoft.scvmm/virtualnetwork
+    :ivar virtual_network_id: Gets or sets the ARM Id of the Microsoft.ScVmm/virtualNetwork
      resource to connect the nic.
     :vartype virtual_network_id: str
-    :ivar nic_uuid: Gets or sets the network interface unique identifier.
-    :vartype nic_uuid: str
     :ivar network_name: Gets or sets the name of the virtual network in vmmServer that the nic is
      connected to.
     :vartype network_name: str
@@ -930,7 +928,6 @@ class NetworkInterfaces(msrest.serialization.Model):
         'display_name': {'readonly': True},
         'ipv4_addresses': {'readonly': True},
         'ipv6_addresses': {'readonly': True},
-        'nic_uuid': {'readonly': True},
         'network_name': {'readonly': True},
     }
 
@@ -941,7 +938,6 @@ class NetworkInterfaces(msrest.serialization.Model):
         'ipv6_addresses': {'key': 'ipv6Addresses', 'type': '[str]'},
         'mac_address': {'key': 'macAddress', 'type': 'str'},
         'virtual_network_id': {'key': 'virtualNetworkId', 'type': 'str'},
-        'nic_uuid': {'key': 'nicUuid', 'type': 'str'},
         'network_name': {'key': 'networkName', 'type': 'str'},
         'ipv4_address_type': {'key': 'ipv4AddressType', 'type': 'str'},
         'ipv6_address_type': {'key': 'ipv6AddressType', 'type': 'str'},
@@ -958,7 +954,7 @@ class NetworkInterfaces(msrest.serialization.Model):
         :paramtype name: str
         :keyword mac_address: Gets or sets the nic MAC address.
         :paramtype mac_address: str
-        :keyword virtual_network_id: Gets or sets the ARM Id of the microsoft.scvmm/virtualnetwork
+        :keyword virtual_network_id: Gets or sets the ARM Id of the Microsoft.ScVmm/virtualNetwork
          resource to connect the nic.
         :paramtype virtual_network_id: str
         :keyword ipv4_address_type: Gets or sets the ipv4 address type. Possible values include:
@@ -980,7 +976,6 @@ class NetworkInterfaces(msrest.serialization.Model):
         self.ipv6_addresses = None
         self.mac_address = kwargs.get('mac_address', None)
         self.virtual_network_id = kwargs.get('virtual_network_id', None)
-        self.nic_uuid = None
         self.network_name = None
         self.ipv4_address_type = kwargs.get('ipv4_address_type', None)
         self.ipv6_address_type = kwargs.get('ipv6_address_type', None)
@@ -995,7 +990,7 @@ class NetworkInterfacesUpdate(msrest.serialization.Model):
     :vartype name: str
     :ivar mac_address: Gets or sets the nic MAC address.
     :vartype mac_address: str
-    :ivar virtual_network_id: Gets or sets the ARM Id of the microsoft.scvmm/virtualnetwork
+    :ivar virtual_network_id: Gets or sets the ARM Id of the Microsoft.ScVmm/virtualNetwork
      resource to connect the nic.
     :vartype virtual_network_id: str
     :ivar ipv4_address_type: Gets or sets the ipv4 address type. Possible values include:
@@ -1030,7 +1025,7 @@ class NetworkInterfacesUpdate(msrest.serialization.Model):
         :paramtype name: str
         :keyword mac_address: Gets or sets the nic MAC address.
         :paramtype mac_address: str
-        :keyword virtual_network_id: Gets or sets the ARM Id of the microsoft.scvmm/virtualnetwork
+        :keyword virtual_network_id: Gets or sets the ARM Id of the Microsoft.ScVmm/virtualNetwork
          resource to connect the nic.
         :paramtype virtual_network_id: str
         :keyword ipv4_address_type: Gets or sets the ipv4 address type. Possible values include:
@@ -1694,7 +1689,7 @@ class VirtualMachine(msrest.serialization.Model):
     :ivar checkpoints: Checkpoints in the vm.
     :vartype checkpoints: list[~scvmm.models.Checkpoint]
     :ivar availability_sets: Availability Sets in vm.
-    :vartype availability_sets: list[~scvmm.models.AvailabilitySetsItem]
+    :vartype availability_sets: list[~scvmm.models.AvailabilitySetListItem]
     :ivar os_profile: OS properties.
     :vartype os_profile: ~scvmm.models.OsProfile
     :ivar hardware_profile: Hardware properties.
@@ -1741,7 +1736,7 @@ class VirtualMachine(msrest.serialization.Model):
         'template_id': {'key': 'properties.templateId', 'type': 'str'},
         'checkpoint_type': {'key': 'properties.checkpointType', 'type': 'str'},
         'checkpoints': {'key': 'properties.checkpoints', 'type': '[Checkpoint]'},
-        'availability_sets': {'key': 'properties.availabilitySets', 'type': '[AvailabilitySetsItem]'},
+        'availability_sets': {'key': 'properties.availabilitySets', 'type': '[AvailabilitySetListItem]'},
         'os_profile': {'key': 'properties.osProfile', 'type': 'OsProfile'},
         'hardware_profile': {'key': 'properties.hardwareProfile', 'type': 'HardwareProfile'},
         'network_profile': {'key': 'properties.networkProfile', 'type': 'NetworkProfile'},
@@ -1777,7 +1772,7 @@ class VirtualMachine(msrest.serialization.Model):
         :keyword checkpoints: Checkpoints in the vm.
         :paramtype checkpoints: list[~scvmm.models.Checkpoint]
         :keyword availability_sets: Availability Sets in vm.
-        :paramtype availability_sets: list[~scvmm.models.AvailabilitySetsItem]
+        :paramtype availability_sets: list[~scvmm.models.AvailabilitySetListItem]
         :keyword os_profile: OS properties.
         :paramtype os_profile: ~scvmm.models.OsProfile
         :keyword hardware_profile: Hardware properties.
@@ -2296,14 +2291,14 @@ class VirtualMachineUpdateProperties(msrest.serialization.Model):
     :ivar network_profile: Defines the resource properties.
     :vartype network_profile: ~scvmm.models.NetworkProfileUpdate
     :ivar availability_sets: Availability Sets in vm.
-    :vartype availability_sets: list[~scvmm.models.AvailabilitySetsItem]
+    :vartype availability_sets: list[~scvmm.models.AvailabilitySetListItem]
     """
 
     _attribute_map = {
         'hardware_profile': {'key': 'hardwareProfile', 'type': 'HardwareProfileUpdate'},
         'storage_profile': {'key': 'storageProfile', 'type': 'StorageProfileUpdate'},
         'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfileUpdate'},
-        'availability_sets': {'key': 'availabilitySets', 'type': '[AvailabilitySetsItem]'},
+        'availability_sets': {'key': 'availabilitySets', 'type': '[AvailabilitySetListItem]'},
     }
 
     def __init__(
@@ -2318,7 +2313,7 @@ class VirtualMachineUpdateProperties(msrest.serialization.Model):
         :keyword network_profile: Defines the resource properties.
         :paramtype network_profile: ~scvmm.models.NetworkProfileUpdate
         :keyword availability_sets: Availability Sets in vm.
-        :paramtype availability_sets: list[~scvmm.models.AvailabilitySetsItem]
+        :paramtype availability_sets: list[~scvmm.models.AvailabilitySetListItem]
         """
         super(VirtualMachineUpdateProperties, self).__init__(**kwargs)
         self.hardware_profile = kwargs.get('hardware_profile', None)

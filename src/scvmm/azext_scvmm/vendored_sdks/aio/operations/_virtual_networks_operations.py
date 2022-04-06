@@ -239,7 +239,7 @@ class VirtualNetworksOperations:
         self,
         resource_group_name: str,
         virtual_network_name: str,
-        x_ms_azure_force_delete: Optional[bool] = None,
+        force: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -256,7 +256,7 @@ class VirtualNetworksOperations:
             resource_group_name=resource_group_name,
             virtual_network_name=virtual_network_name,
             api_version=api_version,
-            x_ms_azure_force_delete=x_ms_azure_force_delete,
+            force=force,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -284,7 +284,7 @@ class VirtualNetworksOperations:
         self,
         resource_group_name: str,
         virtual_network_name: str,
-        x_ms_azure_force_delete: Optional[bool] = None,
+        force: Optional[bool] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements VirtualNetwork DELETE method.
@@ -295,9 +295,9 @@ class VirtualNetworksOperations:
         :type resource_group_name: str
         :param virtual_network_name: Name of the VirtualNetwork.
         :type virtual_network_name: str
-        :param x_ms_azure_force_delete: Forces the resource to be deleted from azure. The corresponding
-         CR would be attempted to be deleted too. Default value is None.
-        :type x_ms_azure_force_delete: bool
+        :param force: Forces the resource to be deleted from azure. The corresponding CR would be
+         attempted to be deleted too. Default value is None.
+        :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -322,7 +322,7 @@ class VirtualNetworksOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 virtual_network_name=virtual_network_name,
-                x_ms_azure_force_delete=x_ms_azure_force_delete,
+                force=force,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

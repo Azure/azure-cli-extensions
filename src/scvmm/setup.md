@@ -66,7 +66,8 @@ code .
 ### Linting and Tests
 
 azdev style scvmm
-azdev test scvmm --live
+azdev linter --include-whl-extensions scvmm
+azdev test scvmm
 
 ### Useful resources
 

@@ -118,7 +118,7 @@ def build_delete_request_initial(
 ):
     # type: (...) -> HttpRequest
     api_version = kwargs.pop('api_version', "2020-06-05-preview")  # type: str
-    x_ms_azure_force_delete = kwargs.pop('x_ms_azure_force_delete', None)  # type: Optional[bool]
+    force = kwargs.pop('force', None)  # type: Optional[bool]
 
     accept = "application/json"
     # Construct URL
@@ -134,11 +134,11 @@ def build_delete_request_initial(
     # Construct parameters
     _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+    if force is not None:
+        _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if x_ms_azure_force_delete is not None:
-        _header_parameters['x-ms-azure-force-delete'] = _SERIALIZER.header("x_ms_azure_force_delete", x_ms_azure_force_delete, 'bool')
     _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
@@ -475,7 +475,7 @@ class VirtualNetworksOperations(object):
         self,
         resource_group_name,  # type: str
         virtual_network_name,  # type: str
-        x_ms_azure_force_delete=None,  # type: Optional[bool]
+        force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -493,7 +493,7 @@ class VirtualNetworksOperations(object):
             resource_group_name=resource_group_name,
             virtual_network_name=virtual_network_name,
             api_version=api_version,
-            x_ms_azure_force_delete=x_ms_azure_force_delete,
+            force=force,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -521,7 +521,7 @@ class VirtualNetworksOperations(object):
         self,
         resource_group_name,  # type: str
         virtual_network_name,  # type: str
-        x_ms_azure_force_delete=None,  # type: Optional[bool]
+        force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -533,9 +533,9 @@ class VirtualNetworksOperations(object):
         :type resource_group_name: str
         :param virtual_network_name: Name of the VirtualNetwork.
         :type virtual_network_name: str
-        :param x_ms_azure_force_delete: Forces the resource to be deleted from azure. The corresponding
-         CR would be attempted to be deleted too. Default value is None.
-        :type x_ms_azure_force_delete: bool
+        :param force: Forces the resource to be deleted from azure. The corresponding CR would be
+         attempted to be deleted too. Default value is None.
+        :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -560,7 +560,7 @@ class VirtualNetworksOperations(object):
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 virtual_network_name=virtual_network_name,
-                x_ms_azure_force_delete=x_ms_azure_force_delete,
+                force=force,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

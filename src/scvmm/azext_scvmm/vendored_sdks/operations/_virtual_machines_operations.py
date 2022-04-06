@@ -119,7 +119,7 @@ def build_delete_request_initial(
     # type: (...) -> HttpRequest
     api_version = kwargs.pop('api_version', "2020-06-05-preview")  # type: str
     retain = kwargs.pop('retain', None)  # type: Optional[bool]
-    x_ms_azure_force_delete = kwargs.pop('x_ms_azure_force_delete', None)  # type: Optional[bool]
+    force = kwargs.pop('force', None)  # type: Optional[bool]
 
     accept = "application/json"
     # Construct URL
@@ -137,11 +137,11 @@ def build_delete_request_initial(
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
     if retain is not None:
         _query_parameters['retain'] = _SERIALIZER.query("retain", retain, 'bool')
+    if force is not None:
+        _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if x_ms_azure_force_delete is not None:
-        _header_parameters['x-ms-azure-force-delete'] = _SERIALIZER.header("x_ms_azure_force_delete", x_ms_azure_force_delete, 'bool')
     _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
@@ -713,7 +713,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
         retain=None,  # type: Optional[bool]
-        x_ms_azure_force_delete=None,  # type: Optional[bool]
+        force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -732,7 +732,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
             virtual_machine_name=virtual_machine_name,
             api_version=api_version,
             retain=retain,
-            x_ms_azure_force_delete=x_ms_azure_force_delete,
+            force=force,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -761,7 +761,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         resource_group_name,  # type: str
         virtual_machine_name,  # type: str
         retain=None,  # type: Optional[bool]
-        x_ms_azure_force_delete=None,  # type: Optional[bool]
+        force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -776,9 +776,9 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         :param retain: Whether to just disable the VM from azure and retain the VM in the VMM. Default
          value is None.
         :type retain: bool
-        :param x_ms_azure_force_delete: Forces the resource to be deleted from azure. The corresponding
-         CR would be attempted to be deleted too. Default value is None.
-        :type x_ms_azure_force_delete: bool
+        :param force: Forces the resource to be deleted from azure. The corresponding CR would be
+         attempted to be deleted too. Default value is None.
+        :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -804,7 +804,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
                 resource_group_name=resource_group_name,
                 virtual_machine_name=virtual_machine_name,
                 retain=retain,
-                x_ms_azure_force_delete=x_ms_azure_force_delete,
+                force=force,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

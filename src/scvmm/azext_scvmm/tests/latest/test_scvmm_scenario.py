@@ -17,7 +17,6 @@ class ScVmmScenarioTest(ScenarioTest):
     def test_scvmm(self):
         self.kwargs.update(
             {
-                'subscription': 'Arc-Testing',
                 'resource_group': 'aadk8test',
                 'location': 'eastus2euap',
                 'custom_location': 'arcvmm-azcli-test-cl',
@@ -80,7 +79,6 @@ class ScVmmScenarioTest(ScenarioTest):
             ],
         )
 
-        # Create cloud resource.
         self.cmd(
             'az scvmm cloud create -g {resource_group} -l {location} --custom-location'
             ' {custom_location} -v {vmmserver_name} -i {icloud_uuid} --name {cloud_name}',
@@ -162,5 +160,7 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm virtual-network delete -g {resource_group} --name {vnet_name} -y'
         )
+
         self.cmd('az scvmm vm-template delete -g {resource_group} --name {vmt_name} -y')
+
         self.cmd('az scvmm cloud delete -g {resource_group} --name {cloud_name} -y')
