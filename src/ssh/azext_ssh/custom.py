@@ -164,9 +164,16 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
         # we used to use the username from the token but now we throw it away
         _, certificate = profile.get_msal_token(scopes, data)
     else:
-        credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
-        certificatedata = credential.get_token(*scopes, data=data)
-        certificate = certificatedata.token
+        if RUNNING_INSIDE_CLOUDSHELL:
+            import msal
+            app = msal.PublicClientApplication("placeholder")
+            account = app.get_accounts()[0]
+            result = app.acquire_token_silent(scopes, account=account, data=data)
+            certificate = result["access_token"]
+        else:
+            credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
+            certificatedata = credential.get_token(*scopes, data=data)
+            certificate = certificatedata.token
 
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
