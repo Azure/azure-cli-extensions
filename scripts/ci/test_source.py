@@ -41,7 +41,6 @@ for src_d in os.listdir(SRC_PATH):
     cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
     ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
     ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
-    logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, ado_target_branch: {ado_target_branch}')
     if ado_branch_last_commit and ado_target_branch:
         if ado_branch_last_commit == 'HEAD':
             # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
@@ -58,6 +57,9 @@ for src_d in os.listdir(SRC_PATH):
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
         ALL_TESTS.append((pkg_name, src_d_full))
 
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'ALL_TESTS: {ALL_TESTS}.')
 
 class TestExtensionSourceMeta(type):
     def __new__(mcs, name, bases, _dict):
