@@ -61,6 +61,7 @@ logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'ado_target_branch: {ado_target_branch}, '
                f'ALL_TESTS: {ALL_TESTS}.')
 
+
 class TestExtensionSourceMeta(type):
     def __new__(mcs, name, bases, _dict):
 
