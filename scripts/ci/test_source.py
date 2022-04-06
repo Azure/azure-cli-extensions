@@ -42,7 +42,7 @@ for src_d in os.listdir(SRC_PATH):
     ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
     ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
     if ado_branch_last_commit and ado_target_branch:
-        if ado_branch_last_commit == 'HEAD':
+        if ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
             # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
             continue
         elif ado_target_branch == '$(System.PullRequest.TargetBranch)':
