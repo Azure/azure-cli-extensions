@@ -116,7 +116,7 @@ jobs:
     - bash: ./scripts/ci/test_source.sh
       displayName: 'Run integration test and build test'
       env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+        ADO_PULL_REQUEST_LATEST_COMMIT: 'HEAD'
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: LintModifiedExtensions
