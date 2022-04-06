@@ -88,7 +88,7 @@ helps['containerapp list'] = """
 
 helps['containerapp ssh'] = """
     type: command
-    short-summary: Open an interactive shell within a container app replica via SSH
+    short-summary: Open an SSH-like interactive shell within a container app pod
     examples:
     - name: ssh into a container app
       text: |

@@ -8,7 +8,6 @@ import threading
 import sys
 import time
 from urllib.parse import urlparse
-import websocket
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (
@@ -53,7 +52,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _update_revision_env_secretrefs)
 from ._ssh_utils import (ping_container_app, SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer,
-                         SSH_CTRL_C_MSG)
+                         SSH_CTRL_C_MSG, SSH_BACKUP_ENCODING)
 
 logger = get_logger(__name__)
 
@@ -1958,26 +1957,10 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
         container = app["properties"]["template"]["containers"][0]["name"]
         # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
 
-    sub_id = get_subscription_id(cmd.cli_ctx)
+    conn = WebSocketConnection(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
+                               replica=replica, container=container, startup_command=startup_command)
 
-    token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
-    token = token_response["properties"]["token"]
-    logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
-
-    proxy_api_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")].replace("https://", "")
-
-    url = (f"wss://{proxy_api_url}/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/containerApps/{name}"
-           f"/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{startup_command}?token={token}")
-
-    # TODO maybe catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
-    socket = websocket.WebSocket(enable_multithread=True)
-    encodings = [SSH_DEFAULT_ENCODING, SSH_DEFAULT_ENCODING]
-
-    logger.warning("Attempting to connect to %s", url)
-    socket.connect(url)
-
-    conn = WebSocketConnection(is_connected=True, socket=socket)
-
+    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
     reader = threading.Thread(target=read_ssh, args=(conn, encodings))
     reader.daemon = True
     reader.start()
@@ -1993,4 +1976,4 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
         except KeyboardInterrupt:
             if conn.is_connected:
                 logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
-                socket.send(SSH_CTRL_C_MSG)
+                conn.send(SSH_CTRL_C_MSG)

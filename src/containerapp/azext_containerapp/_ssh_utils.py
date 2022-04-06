@@ -9,10 +9,13 @@ import time
 import platform
 import threading
 import requests
+import websocket
 
 from knack.log import get_logger
-
 from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.commands.client_factory import get_subscription_id
+
+from ._clients import ContainerAppClient
 
 if platform.system() == "Windows":
     import msvcrt  # pylint: disable=import-error
@@ -33,6 +36,9 @@ SSH_CLUSTER_STDERR = 2
 # forward byte + stdin byte
 SSH_INPUT_PREFIX = b"\x00\x00"
 
+# forward byte + terminal resize byte
+SSH_TERM_RESIZE_PREFIX = b"\x00\x04"
+
 SSH_DEFAULT_ENCODING = "utf-8"
 SSH_BACKUP_ENCODING = "latin_1"
 
@@ -41,14 +47,44 @@ SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 # pylint: disable=too-few-public-methods
 class WebSocketConnection:
-    def __init__(self, is_connected, socket):
-        self.is_connected = is_connected
-        self.socket = socket
+    def __init__(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
+        self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
+                                  replica=replica, container=container, startup_command=startup_command)
+        self._socket = websocket.WebSocket(enable_multithread=True)
+        logger.warning("Attempting to connect to %s", self._remove_token(self._url))
+
+        # TODO maybe catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
+        self._socket.connect(self._url)
+        self.is_connected = True
+
+    @classmethod
+    def _remove_token(cls, url):
+        if "?token=" in url:
+            return url[:url.index("?token=")]
+        return url
+
+
+    @classmethod
+    def _get_url(cls, cmd, resource_group_name, name, revision, replica, container, startup_command):
+        sub = get_subscription_id(cmd.cli_ctx)
+        token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
+        token = token_response["properties"]["token"]
+        logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
+        proxy_api_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")].replace("https://", "")
+
+        return (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
+                f"/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{startup_command}?token={token}")
 
     def disconnect(self):
         logger.warning("Disconnecting...")
         self.is_connected = False
-        self.socket.close()
+        self._socket.close()
+
+    def send(self, *args, **kwargs):
+        return self._socket.send(*args, **kwargs)
+
+    def recv(self, *args, **kwargs):
+        return self._socket.recv(*args, **kwargs)
 
 
 def _decode_and_output_to_terminal(connection: WebSocketConnection, response, encodings):
@@ -69,7 +105,7 @@ def _decode_and_output_to_terminal(connection: WebSocketConnection, response, en
 def read_ssh(connection: WebSocketConnection, response_encodings):
     # response_encodings is the ordered list of Unicode encodings to try to decode with before raising an exception
     while connection.is_connected:
-        response = connection.socket.recv()
+        response = connection.recv()
         if not response:
             connection.disconnect()
         else:
@@ -94,15 +130,15 @@ def _send_stdin(connection: WebSocketConnection, getch_fn):
         ch = getch_fn()
         _resize_terminal(connection)
         if connection.is_connected:
-            connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
+            connection.send(b"".join([SSH_INPUT_PREFIX, ch]))
 
 
 def _resize_terminal(connection: WebSocketConnection):
     size = os.get_terminal_size()
     if connection.is_connected:
-        connection.socket.send(b"".join([b"\x00\x04",
-                                         f'{{"Width": {size.columns}, '
-                                         f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))
+        connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
+                                  f'{{"Width": {size.columns}, '
+                                  f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))
 
 
 def _getch_unix():
