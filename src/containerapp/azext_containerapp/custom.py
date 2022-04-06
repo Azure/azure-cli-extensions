@@ -4,14 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
 
-import os
 import threading
 import sys
-import platform
 import time
 from urllib.parse import urlparse
 import websocket
-import requests
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (
@@ -55,12 +52,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _update_revision_env_secretrefs)
-from ._constants import (SSH_PROXY_FORWARD, SSH_PROXY_ERROR, SSH_PROXY_INFO, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR,
-                         SSH_BACKUP_ENCODING, SSH_DEFAULT_ENCODING, SSH_INPUT_PREFIX, SSH_CTRL_C_MSG)
-
-if platform.system() == "Windows":
-    import msvcrt  # pylint: disable=import-error
-    from azure.cli.command_modules.container._vt_helper import enable_vt_mode  # pylint: disable=ungrouped-imports
+from ._ssh_utils import (ping_container_app, SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer,
+                         SSH_CTRL_C_MSG)
 
 logger = get_logger(__name__)
 
@@ -1947,89 +1940,15 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         handle_raw_exception(e)
 
 
-# pylint: disable=too-few-public-methods
-class _WebSocketConnection:
-    def __init__(self, is_connected, socket):
-        self.is_connected = is_connected
-        self.socket = socket
-
-    def disconnect(self):
-        logger.warning("Disconnecting...")
-        self.is_connected = False
-        self.socket.close()
-
-
-def _read_ssh(connection, encodings):
-    while connection.is_connected:
-        response = connection.socket.recv()
-        if not response:
-            connection.disconnect()
-        else:
-            logger.info("Received raw response %s", response.hex())
-            proxy_status = response[0]
-            if proxy_status == SSH_PROXY_INFO:
-                print(f"INFO: {response[1:].decode(encodings[0])}")
-            elif proxy_status == SSH_PROXY_ERROR:
-                print(f"ERROR: {response[1:].decode(encodings[0])}")
-            elif proxy_status == SSH_PROXY_FORWARD:
-                control_byte = response[1]
-                if control_byte in (SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR):
-                    for i, encoding in enumerate(encodings):
-                        try:
-                            print(response[2:].decode(encoding), end="", flush=True)
-                            break
-                        except UnicodeDecodeError as e:
-                            if i == len(encodings) - 1:  # ran out of encodings to try
-                                connection.disconnect()
-                                logger.info("Proxy Control Byte: %s", response[0])
-                                logger.info("Cluster Control Byte: %s", response[1])
-                                logger.info("Hexdump: %s", response[2:].hex())
-                                raise CLIInternalError("Failed to decode server data") from e
-                            logger.info("Failed to encode with encoding %s", encoding)
-                else:
-                    connection.disconnect()
-                    raise CLIInternalError("Unexpected message received")
-
-
-def _send_stdin(connection, getch_fn):
-    while connection.is_connected:
-        _resize_terminal(connection)
-        ch = getch_fn()
-        _resize_terminal(connection)
-        if connection.is_connected:
-            connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
-
-
-def _resize_terminal(connection):
-    size = os.get_terminal_size()
-    if connection.is_connected:
-        connection.socket.send(b"".join([b"\x00\x04",
-                                         f'{{"Width": {size.columns}, '
-                                         f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))
-
-
-def _getch_unix():
-    return sys.stdin.read(1).encode(SSH_DEFAULT_ENCODING)
-
-
-def _getch_windows():
-    while not msvcrt.kbhit():
-        time.sleep(0.01)
-    return msvcrt.getch()
-
-
-# FYI currently only works against Jeff's app
-# TODO manage terminal size
-# TODO implement timeout if needed
 # TODO token will be read from header at some point
 # TODO validate argument values (+ defaults)
-def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, startup_command=None):
     app = ContainerAppClient.show(cmd, resource_group_name, name)
     if not revision:
         revision = app["properties"]["latestRevisionName"]
     if not replica:
         # VVV this may not be necessary according to Anthony Chu
-        requests.get(f'https://{app["properties"]["configuration"]["ingress"]["fqdn"]}')  # needed to get an alive replica
+        ping_container_app(app)  # needed to get an alive replica
         replicas = ContainerAppClient.list_replicas(cmd=cmd,
                                                     resource_group_name=resource_group_name,
                                                     container_app_name=name,
@@ -2040,7 +1959,6 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
         # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
 
     sub_id = get_subscription_id(cmd.cli_ctx)
-    command = "bash"  # TODO check if there are other shells that can be used
 
     token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
@@ -2049,29 +1967,22 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
     proxy_api_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")].replace("https://", "")
 
     url = (f"wss://{proxy_api_url}/subscriptions/{sub_id}/resourceGroups/{resource_group_name}/containerApps/{name}"
-           f"/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{command}?token={token}")
+           f"/revisions/{revision}/replicas/{replica}/containers/{container}/exec/{startup_command}?token={token}")
 
     # TODO maybe catch websocket._exceptions.WebSocketBadStatusException: Handshake status 404 Not Found
     socket = websocket.WebSocket(enable_multithread=True)
-    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+    encodings = [SSH_DEFAULT_ENCODING, SSH_DEFAULT_ENCODING]
 
     logger.warning("Attempting to connect to %s", url)
     socket.connect(url)
 
-    conn = _WebSocketConnection(is_connected=True, socket=socket)
+    conn = WebSocketConnection(is_connected=True, socket=socket)
 
-    reader = threading.Thread(target=_read_ssh, args=(conn, encodings))
+    reader = threading.Thread(target=read_ssh, args=(conn, encodings))
     reader.daemon = True
     reader.start()
 
-    if platform.system() != "Windows":
-        import tty
-        tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
-        writer = threading.Thread(target=_send_stdin, args=(conn, _getch_unix))
-    else:
-        enable_vt_mode()  # needed for interactive commands (ie vim)
-        writer = threading.Thread(target=_send_stdin, args=(conn, _getch_windows))
-
+    writer = get_stdin_writer(conn)
     writer.daemon = True
     writer.start()
 
