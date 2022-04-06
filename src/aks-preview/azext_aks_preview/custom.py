@@ -1282,9 +1282,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
