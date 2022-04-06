@@ -217,17 +217,17 @@ def aks_pod_identities_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
-def aks_list_snapshot_table_format(results):
-    """"Format a list of snapshots as summary results for display with "-o table"."""
-    return [_aks_snapshot_table_format(r) for r in results]
+def aks_list_nodepool_snapshot_table_format(results):
+    """"Format a list of nodepool snapshots as summary results for display with "-o table"."""
+    return [_aks_nodepool_snapshot_table_format(r) for r in results]
 
 
-def aks_show_snapshot_table_format(result):
-    """Format a snapshot as summary results for display with "-o table"."""
-    return [_aks_snapshot_table_format(result)]
+def aks_show_nodepool_snapshot_table_format(result):
+    """Format a nodepool snapshot as summary results for display with "-o table"."""
+    return [_aks_nodepool_snapshot_table_format(result)]
 
 
-def _aks_snapshot_table_format(result):
+def _aks_nodepool_snapshot_table_format(result):
     parsed = compile_jmes("""{
         name: name,
         location: location,
@@ -237,6 +237,33 @@ def _aks_snapshot_table_format(result):
         osType: osType,
         osSku: osSku,
         enableFIPS: enableFIPS
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict))
+
+
+def aks_list_snapshot_table_format(results):
+    """"Format a list of cluster snapshots as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(r) for r in results]
+
+
+def aks_show_snapshot_table_format(result):
+    """Format a cluster snapshot as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(result)]
+
+
+def _aks_snapshot_table_format(result):
+    parsed = compile_jmes("""{
+        name: name,
+        location: location,
+        resourceGroup: resourceGroup,
+        sku: managedClusterPropertiesReadOnly.sku.tier,
+        enableRbac: managedClusterPropertiesReadOnly.enableRbac,
+        kubernetesVersion: managedClusterPropertiesReadOnly.kubernetesVersion,
+        networkPlugin: managedClusterPropertiesReadOnly.networkProfile.networkPlugin,
+        networkPolicy: managedClusterPropertiesReadOnly.networkProfile.networkPolicy,
+        networkMode: managedClusterPropertiesReadOnly.networkProfile.networkMode,
+        loadBalancerSku: managedClusterPropertiesReadOnly.networkProfile.loadBalancerSku
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
