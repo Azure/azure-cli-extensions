@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.5.60
+++++++
+
+* Fix `az aks upgrade`, keep aad profile in upgrade request.
+
 0.5.59
 ++++++
 
