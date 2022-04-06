@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
 
+import os
 import threading
 import sys
 import platform
@@ -11,7 +12,6 @@ import time
 from urllib.parse import urlparse
 import websocket
 import requests
-
 
 from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
 from azure.cli.core.azclierror import (
@@ -1993,9 +1993,19 @@ def _read_ssh(connection, encodings):
 
 def _send_stdin(connection, getch_fn):
     while connection.is_connected:
+        _resize_terminal(connection)
         ch = getch_fn()
+        _resize_terminal(connection)
         if connection.is_connected:
             connection.socket.send(b"".join([SSH_INPUT_PREFIX, ch]))
+
+
+def _resize_terminal(connection):
+    size = os.get_terminal_size()
+    if connection.is_connected:
+        connection.socket.send(b"".join([b"\x00\x04",
+                                         f'{{"Width": {size.columns}, '
+                                         f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))
 
 
 def _getch_unix():
@@ -2011,6 +2021,8 @@ def _getch_windows():
 # FYI currently only works against Jeff's app
 # TODO manage terminal size
 # TODO implement timeout if needed
+# TODO token will be read from header at some point
+# TODO validate argument values (+ defaults)
 def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None):
     app = ContainerAppClient.show(cmd, resource_group_name, name)
     if not revision:
@@ -2022,7 +2034,7 @@ def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=No
                                                     resource_group_name=resource_group_name,
                                                     container_app_name=name,
                                                     revision_name=revision)
-        replica = replicas["value"][0]["name"]
+        replica = replicas["value"][0]["name"]  # TODO validate that a replica exists
     if not container:
         container = app["properties"]["template"]["containers"][0]["name"]
         # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
