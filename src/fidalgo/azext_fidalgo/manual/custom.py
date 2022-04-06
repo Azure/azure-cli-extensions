@@ -69,7 +69,6 @@ def fidalgo_pool_update(client,
                         location=None,
                         dev_box_definition_name=None,
                         network_connection_name=None,
-                        sku_name=None,
                         no_wait=False):
     body = {}
     if tags is not None:
