@@ -76,7 +76,6 @@ def step_cluster_create(test, checks=None):
              '--enable-purge true '
              '--enable-streaming-ingest true '
              '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--public-ip-type "DualStack" '
              '--sku name="Standard_E2a_v4" capacity=2 tier="Standard" '
              '--public-network-access "Enabled" '
              '--resource-group "{rg}" ',
