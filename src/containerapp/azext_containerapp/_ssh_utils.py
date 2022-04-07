@@ -16,6 +16,7 @@ from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._clients import ContainerAppClient
+from ._utils import safe_get
 
 if platform.system() == "Windows":
     import msvcrt  # pylint: disable=import-error
@@ -150,7 +151,7 @@ def _getch_windows():
 
 
 def ping_container_app(app):
-    site = app.get("properties", {}).get("configuration", {}).get("ingress", {}).get("fqdn")
+    site = safe_get(app, "properties", "configuration", "ingress", "fqdn")
     if site:
         resp = requests.get(f'https://{site}')
         if not resp.ok:

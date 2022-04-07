@@ -8,6 +8,7 @@ from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
+from ._utils import safe_get
 
 
 def _is_number(s):
@@ -111,14 +112,12 @@ def _set_ssh_defaults(cmd, namespace):
             raise ResourceNotFoundError("Could not find a replica for this app")
         namespace.replica = replicas[0]["name"]
     if not namespace.container:
-        replica_containers = ContainerAppClient.get_replica(cmd=cmd,
-                                                            resource_group_name=namespace.resource_group_name,
-                                                            container_app_name=namespace.name,
-                                                            revision_name=namespace.revision,
-                                                            replica_name=namespace.replica)["properties"]["containers"]
-        # sadly this may be a system container, but the API will stop exposing system containers soon
-        namespace.container = replica_containers[0]["name"]
-        # container = app["properties"]["template"]["containers"][0]["name"]
+        revision = ContainerAppClient.show_revision(cmd, resource_group_name=namespace.resource_group_name,
+                                                    container_app_name=namespace.name,
+                                                    name=namespace.revision)
+        revision_containers = safe_get(revision, "properties", "template", "containers")
+        if revision_containers:
+            namespace.container = revision_containers[0]["name"]
 
 
 def _validate_revision_exists(cmd, namespace):
