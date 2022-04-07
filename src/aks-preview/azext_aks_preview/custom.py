@@ -2795,13 +2795,6 @@ def aks_app_init(path,
                  create_config=None,
                  dockerfile_only=None,
                  deployment_only=None):
-    options = {
-        'app-name': app_name, 
-        'language': language, 
-        'create-config': create_config, 
-        'dockerfile-only': dockerfile_only, 
-        'deployment-only': deployment_only
-    }
     aks_draft_app_init(path, app_name, language, create_config, dockerfile_only, deployment_only)
 
 
