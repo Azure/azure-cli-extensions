@@ -15,30 +15,30 @@ from pathlib import Path
 from knack.prompting import prompt_y_n
 
 
-def aks_draft_app_init(deployment_path: str, 
-                       app_name: str, 
-                       language: str, 
-                       create_config: str, 
-                       dockerfile_only: str, 
+def aks_draft_app_init(deployment_path: str,
+                       app_name: str,
+                       language: str,
+                       create_config: str,
+                       dockerfile_only: str,
                        deployment_only: str) -> None:
     file_path = _binary_pre_check()
     if not file_path:
         raise ValueError('Binary was NOT executed successfully')
-    
+
     arguments = _build_arguments(app_name, language, create_config, dockerfile_only, deployment_only)
     run_successful = _run(file_path, deployment_path, arguments)
     if run_successful:
         _cmd_finish()
- 
+
 
 # If setup is valid this method returns the correct binary path to execute
 def _binary_pre_check() -> str:
     print('The DraftV2 setup is in progress...')
     draftv2_binary_path = _get_existing_path()
 
-    if draftv2_binary_path: # use found binary
+    if draftv2_binary_path:  # use found binary
         return draftv2_binary_path
-    else: # prompt user to download binary
+    else:  # prompt user to download binary
         return _download_binary()
 
 
@@ -74,16 +74,16 @@ def _get_potential_paths() -> List[str]:
     return result
 
 
-def _build_arguments(app_name: str, 
-                     language: str, 
-                     create_config: str, 
-                     dockerfile_only: str, 
+def _build_arguments(app_name: str,
+                     language: str,
+                     create_config: str,
+                     dockerfile_only: str,
                      deployment_only: str) -> List[str]:
     options = {
-        'app-name': app_name, 
-        'language': language, 
-        'create-config': create_config, 
-        'dockerfile-only': dockerfile_only, 
+        'app-name': app_name,
+        'language': language,
+        'create-config': create_config,
+        'dockerfile-only': dockerfile_only,
         'deployment-only': deployment_only
     }
     args_list = []
