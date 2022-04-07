@@ -5,7 +5,7 @@ Release History
 1.2.8
 ++++++
 
-* Bumping up CSP version to 1.3.019103
+* Bumping up CSP version to 1.3.019103, bumpup pycryptodome to 3.14.1 support Python 3.10
 
 1.2.7
 ++++++
