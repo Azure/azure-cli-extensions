@@ -4,7 +4,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import List
+import sre_parse
+from typing import Dict, List
 import shutil
 import subprocess
 import requests
@@ -14,15 +15,39 @@ from pathlib import Path
 from knack.prompting import prompt_y_n
 
 
-def aks_draft_app_init():
+def aks_draft_app_init(deployment_path: str, 
+                       app_name: str, 
+                       language: str, 
+                       create_config: str, 
+                       dockerfile_only: str, 
+                       deployment_only: str) -> None:
     file_path = _binary_pre_check()
     if not file_path:
         raise ValueError('Binary was NOT executed successfully')
     
-    run_successful = _run_binary(file_path)
+    arguments = _build_arguments(app_name, language, create_config, dockerfile_only, deployment_only)
+    run_successful = _run(file_path, deployment_path, arguments)
     if run_successful:
         _cmd_finish()
  
+
+def _build_arguments(app_name: str, 
+                     language: str, 
+                     create_config: str, 
+                     dockerfile_only: str, 
+                     deployment_only: str) -> List[str]:
+    options = {
+        'app-name': app_name, 
+        'language': language, 
+        'create-config': create_config, 
+        'dockerfile-only': dockerfile_only, 
+        'deployment-only': deployment_only
+    }
+    args_list = []
+    for arg, val in options.items():
+        if val:
+            args_list.append(f'--{arg}={val}')
+    return args_list
 
 # If setup is valid this method returns the correct binary path to execute
 def _binary_pre_check() -> str:
@@ -66,12 +91,13 @@ def _get_potential_paths() -> List[str]:
     return result
 
 
-def _run_binary(path: str) -> bool:
-    if path is None:
+def _run(binary_path: str, deployment_path: str, arguments: List[str]) -> bool:
+    if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
     print('Running DraftV2 Binary ...')
-    process = subprocess.Popen([path], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    cmd = [binary_path, 'create', deployment_path] + arguments
+    process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
     stdout, stderr = process.communicate()
     exit_code = process.wait()
     print(stdout, stderr, exit_code)
