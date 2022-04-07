@@ -74,7 +74,7 @@ jobs:
       displayName: 'Use Python 3.10'
       inputs:
         versionSpec: 3.10
-    - bash: pip install wheel==0.30.0 pylint==2.13.5 flake8==3.5.0 requests
+    - bash: pip install wheel==0.30.0 pylint==2.9.0 flake8==3.5.0 requests
       displayName: 'Install wheel, pylint, flake8, requests'
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
