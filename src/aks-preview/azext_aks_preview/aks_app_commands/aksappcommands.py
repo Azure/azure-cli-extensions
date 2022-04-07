@@ -23,7 +23,7 @@ def aks_web_app_init():
             return
 
     raise ValueError("Binary was NOT executed successfully")
-
+ 
 
 # If setup is valid this method returns the correct binary path to execute
 def _binary_pre_check() -> str:
