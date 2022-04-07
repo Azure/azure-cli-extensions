@@ -30,11 +30,18 @@ def load_arguments(self, _):
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app. All other parameters will be ignored. For an example, see  https://docs.microsoft.com/azure/container-apps/azure-resource-manager-api-spec#examples')
 
-    with self.argument_context('containerapp ssh') as c:
+    with self.argument_context('containerapp exec') as c:
         c.argument('container', help="The name of the container to ssh into")
         c.argument('replica', help="The name of the replica (pod) to ssh into. List replicas with 'az containerapp replica list'. A replica may not exist if there is not traffic to your app.")
         c.argument('revision', help="The name of the container app revision to ssh into")
         c.argument('startup_command', options_list=["--command"], default="sh", help="The startup command (bash, zsh, sh, etc.).")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    # Replica
+    with self.argument_context('containerapp replica') as c:
+        c.argument('replica', help="The name of the replica (pod). ")
+        c.argument('revision', help="The name of the container app revision. Defaults to the latest revision.")
         c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 

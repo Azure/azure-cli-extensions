@@ -45,7 +45,6 @@ SSH_BACKUP_ENCODING = "latin_1"
 SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 
-# pylint: disable=too-few-public-methods
 class WebSocketConnection:
     def __init__(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
@@ -62,7 +61,6 @@ class WebSocketConnection:
         if "?token=" in url:
             return url[:url.index("?token=")]
         return url
-
 
     @classmethod
     def _get_url(cls, cmd, resource_group_name, name, revision, replica, container, startup_command):

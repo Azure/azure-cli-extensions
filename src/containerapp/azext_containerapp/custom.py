@@ -51,8 +51,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _update_revision_env_secretrefs)
-from ._ssh_utils import (ping_container_app, SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer,
-                         SSH_CTRL_C_MSG, SSH_BACKUP_ENCODING)
+from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
+                         SSH_BACKUP_ENCODING)
 
 logger = get_logger(__name__)
 
@@ -1939,24 +1939,29 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         handle_raw_exception(e)
 
 
-# TODO token will be read from header at some point
-# TODO validate argument values (+ defaults)
-def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, startup_command=None):
+def list_replicas(cmd, resource_group_name, name, revision=None):
     app = ContainerAppClient.show(cmd, resource_group_name, name)
     if not revision:
         revision = app["properties"]["latestRevisionName"]
-    if not replica:
-        # VVV this may not be necessary according to Anthony Chu
-        ping_container_app(app)  # needed to get an alive replica
-        replicas = ContainerAppClient.list_replicas(cmd=cmd,
-                                                    resource_group_name=resource_group_name,
-                                                    container_app_name=name,
-                                                    revision_name=revision)
-        replica = replicas["value"][0]["name"]  # TODO validate that a replica exists
-    if not container:
-        container = app["properties"]["template"]["containers"][0]["name"]
-        # TODO validate that this container is in the current replica or make the user specify it -- or pick a container differently
+    return ContainerAppClient.list_replicas(cmd=cmd,
+                                            resource_group_name=resource_group_name,
+                                            container_app_name=name,
+                                            revision_name=revision)
 
+
+def get_replica(cmd, resource_group_name, name, replica, revision=None):
+    app = ContainerAppClient.show(cmd, resource_group_name, name)
+    if not revision:
+        revision = app["properties"]["latestRevisionName"]
+    return ContainerAppClient.get_replica(cmd=cmd,
+                                          resource_group_name=resource_group_name,
+                                          container_app_name=name,
+                                          revision_name=revision,
+                                          replica_name=replica)
+
+
+# TODO token will be read from header at some point
+def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, startup_command=None):
     conn = WebSocketConnection(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                replica=replica, container=container, startup_command=startup_command)
 

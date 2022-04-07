@@ -353,10 +353,10 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
-    # TODO support pagination
-    # TODO expose via a command
     @classmethod
     def list_replicas(cls, cmd, resource_group_name, container_app_name, revision_name):
+        replica_list = []
+
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/replicas?api-version={}"
@@ -366,6 +366,34 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             revision_name,
+            NEW_API_VERSION)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for replica in j["value"]:
+            replica_list.append(replica)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for replica in j["value"]:
+                replica_list.append(replica)
+
+        return replica_list
+
+    @classmethod
+    def get_replica(cls, cmd, resource_group_name, container_app_name, revision_name, replica_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/replicas/{}/?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            revision_name,
+            replica_name,
             NEW_API_VERSION)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)

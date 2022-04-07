@@ -86,16 +86,49 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
-helps['containerapp ssh'] = """
+helps['containerapp exec'] = """
     type: command
-    short-summary: Open an SSH-like interactive shell within a container app pod
+    short-summary: Open an SSH-like interactive shell within a container app replica (pod)
     examples:
-    - name: ssh into a container app
+    - name: exec into a container app
       text: |
-          az containerapp ssh -n MyContainerapp -g MyResourceGroup
-    - name: ssh into a particular container app replica and revision
+          az containerapp exec -n MyContainerapp -g MyResourceGroup
+    - name: exec into a particular container app replica and revision
       text: |
-          az containerapp ssh -n MyContainerapp -g MyResourceGroup
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
+    - name: open a bash shell in a containerapp
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --command bash
+"""
+
+# Replica Commands
+helps['containerapp replica'] = """
+    type: group
+    short-summary: Manage container app replicas (pods)
+"""
+
+helps['containerapp replica list'] = """
+    type: command
+    short-summary: List a container app revision's replicas (pods)
+    examples:
+    - name: List a container app's replicas in the latest revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup
+    - name: List a container app's replicas in a particular revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup --revision MyRevision
+"""
+
+helps['containerapp replica show'] = """
+    type: command
+    short-summary: Show a container app replica (pod)
+    examples:
+    - name: Show a replica from the latest revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica
+    - name: Show a replica from the a particular revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
 """
 
 # Revision Commands
