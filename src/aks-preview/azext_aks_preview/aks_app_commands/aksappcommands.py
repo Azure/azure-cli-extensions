@@ -31,24 +31,6 @@ def aks_draft_app_init(deployment_path: str,
         _cmd_finish()
  
 
-def _build_arguments(app_name: str, 
-                     language: str, 
-                     create_config: str, 
-                     dockerfile_only: str, 
-                     deployment_only: str) -> List[str]:
-    options = {
-        'app-name': app_name, 
-        'language': language, 
-        'create-config': create_config, 
-        'dockerfile-only': dockerfile_only, 
-        'deployment-only': deployment_only
-    }
-    args_list = []
-    for arg, val in options.items():
-        if val:
-            args_list.append(f'--{arg}={val}')
-    return args_list
-
 # If setup is valid this method returns the correct binary path to execute
 def _binary_pre_check() -> str:
     print('The DraftV2 setup is in progress...')
@@ -58,6 +40,7 @@ def _binary_pre_check() -> str:
         return draftv2_binary_path
     else: # prompt user to download binary
         return _download_binary()
+
 
 # Returns path to existing draftv2 binary and None otherwise
 def _get_existing_path() -> str:
@@ -91,22 +74,39 @@ def _get_potential_paths() -> List[str]:
     return result
 
 
+def _build_arguments(app_name: str, 
+                     language: str, 
+                     create_config: str, 
+                     dockerfile_only: str, 
+                     deployment_only: str) -> List[str]:
+    options = {
+        'app-name': app_name, 
+        'language': language, 
+        'create-config': create_config, 
+        'dockerfile-only': dockerfile_only, 
+        'deployment-only': deployment_only
+    }
+    args_list = []
+    for arg, val in options.items():
+        if val:
+            args_list.append(f'--{arg}={val}')
+    return args_list
+
+
 def _run(binary_path: str, deployment_path: str, arguments: List[str]) -> bool:
     if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
     print('Running DraftV2 Binary ...')
     cmd = [binary_path, 'create', deployment_path] + arguments
-    process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    stdout, stderr = process.communicate()
+    process = subprocess.Popen(cmd)
     exit_code = process.wait()
-    print(stdout, stderr, exit_code)
     return exit_code == 0
 
 
 def _cmd_finish():
     # Clean up logic can go here if needed
-    print('We are done Stop.')
+    pass
 
 
 def _download_binary() -> str:
