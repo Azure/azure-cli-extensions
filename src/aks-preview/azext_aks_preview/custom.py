@@ -1191,9 +1191,8 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                     "Cannot scale cluster autoscaler enabled node pool.")
 
             agent_profile.count = int(node_count)  # pylint: disable=no-member
-            # null out the SP and AAD profile because otherwise validation complains
+            # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            instance.aad_profile = None
             return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
@@ -2291,9 +2290,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     instance.addon_profiles = addon_profiles
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     return instance
 

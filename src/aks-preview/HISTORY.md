@@ -6,7 +6,10 @@ Release History
 0.5.60
 ++++++
 
-* Fix `az aks upgrade`, keep aad profile in upgrade request.
+* BugFix: Keep aad profile in PUT request of ManagedCluster. Modified commands are
+  * `az aks upgrade`
+  * `az aks enable-addons`
+  * `az aks addon enable`
 
 0.5.59
 ++++++
