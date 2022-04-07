@@ -10,6 +10,7 @@ import time
 import datetime
 import re
 import colorama
+import psutil
 
 from colorama import Fore
 from colorama import Style
@@ -55,11 +56,12 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
 
         connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
-        connection_status = subprocess.call(command, shell=platform.system() == 'Windows', env=env)
+
+        connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env, stderr=subprocess.PIPE, text=True)
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-        if _get_connection_status(log_file, connection_status):
+        if _get_connection_status(log_file, connection_status.returncode):
             ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
@@ -311,8 +313,15 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
                 time.sleep(1)
 
+        if connection_status.returncode != 0:
+            # Check if stderr is a proxy error
+            regex = "{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: .*\",\"time\":\".*\"}.*"
+            if re.search(regex, connection_status.stderr):
+                logger.error("Proxy Error. Check if SSHD is running in the target machine and the incoming connection is enabled in the hybrid agent.")
+            print(connection_status.stderr)
+
         if log_file and os.path.isfile(log_file):
-            _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
+            _print_error_messages_from_ssh_log(log_file, connection_status.returncode, delete_cert)
 
         # Make sure all files have been properly removed.
         do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
