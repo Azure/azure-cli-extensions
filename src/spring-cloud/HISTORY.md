@@ -1,11 +1,16 @@
 Release History
 ===============
-3.1.1
+3.1.3
 ---
 * Revert new RBAC requirement for Standard and Basic sku Spring resource for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.
 
-3.1.0
+3.1.2
 ---
+* Find min version requirement for Azure CLI Core.
+
+3.1.1
+---
+* Fix min version requirement for Azure CLI Core.
 * Add support for user-assigned managed identity on App (Preview).
 
 3.0.1
