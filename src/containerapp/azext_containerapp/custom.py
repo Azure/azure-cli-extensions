@@ -183,9 +183,14 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
     elif yaml_containerapp.get('name').lower() != name.lower():
-        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --name flag will be used.'.format(
             yaml_containerapp.get('name'), name))
-    name = yaml_containerapp.get('name')
+
+    if not yaml_containerapp.get('resourceGroup'):
+        yaml_containerapp['resourceGroup'] = resource_group_name
+    elif yaml_containerapp.get('resourceGroup').lower() != resource_group_name.lower():
+        logger.warning('The resource group provided in the --yaml file "{}" does not match the one provided in the --resource-group flag "{}". The one provided int he --resource-group flag will be used.'.format(
+            yaml_containerapp.get('resourceGroup'), resource_group_name))
 
     if not yaml_containerapp.get('type'):
         yaml_containerapp['type'] = 'Microsoft.App/containerApps'
@@ -274,9 +279,9 @@ def create_containerapp(cmd,
                         min_replicas=None,
                         max_replicas=None,
                         target_port=None,
-                        transport="auto",
+                        transport=None,
                         ingress=None,
-                        revisions_mode="single",
+                        revisions_mode=None,
                         secrets=None,
                         env_vars=None,
                         cpu=None,
@@ -296,11 +301,11 @@ def create_containerapp(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
-        if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
+        if image or container_name or managed_env or min_replicas or max_replicas or target_port or ingress or\
             revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
-            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
-                startup_command or args or tags:
-            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol or\
+                revision_suffix or startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will take precedence over the values defined in the yaml')
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if not image:
