@@ -63,24 +63,18 @@ helps['ssh config'] = """
             az ssh config --resource-group myResourceGroup --name myVm --file ./sshconfig
             ssh -F ./sshconfig myResourceGroup-myVM
 
-        - name: Give a resource group, resource name, and local user to create a config using local user credentials, save in local file, and then ssh into that resource
-          text: |
-            # password based authentication
-            az ssh config --resource-group myResourceGroup --name myVM --local-user username1 --file ./sshconfig
-            ssh -F ./sshconfig MyResourceGroup-myVM-username1
-
-            # key based authentication
-            az ssh config --resource-group myResourceGroup --name myVM --local-user username2 --private-key-file key --file ./sshconfig
-            ssh -F ./sshconfig MyResourceGroup-myVM-username2
-
-            # certificate based authentication
-            az ssh config --resource-group myResourceGroup --name myVM --local-user username3 --certificate-file cert.pub --private-key-file key --file ./sshconfig
-            ssh -F ./sshconfig MyResourceGroup-myVM-username3
-
-        - name: Give the public IP (or hostname) of a VM for which to create a config and then ssh
+        - name: Give the public IP (or hostname) of an Azure VM for which to create a config and then ssh into that VM
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
             ssh -F ./sshconfig 1.2.3.4
+
+        - name: Give a local user to create a config using local user credentials, save in local file, and then ssh into that resource
+          text: |
+            az ssh config --resource-group myResourceGroup --name myVM --local-user username1 --file ./sshconfig
+            ssh -F ./sshconfig MyResourceGroup-myVM-username1
+
+            az ssh config -ip 1.2.3.4 --local-user username2 --private-key-file key --file ./sshconfig
+            ssh -F ./sshconfig 1.2.3.4-username2
 
         - name: Give Keys Destination Folder to store the generated keys and certificates. If not provided, SSH keys are stored in new folder "az_ssh_config" next to the config file.
           text: |
