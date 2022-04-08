@@ -53,14 +53,8 @@ def get_relay_information(cmd, resource_group, vm_name, certificate_validity_in_
             time_elapsed = time.time() - t0
             telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
         except Exception as e:
-            telemetry.set_exception(exception='Call to listCredentials failed',
-                                    fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
-                                    summary=f'listCredentials failed with error: {str(e)}.')
             raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     except Exception as e:
-        telemetry.set_exception(exception='Call to listCredentials failed',
-                                fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
-                                summary=f'listCredentials failed with error: {str(e)}.')
         raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
     return result
 
@@ -91,8 +85,6 @@ def get_client_side_proxy(arc_proxy_folder):
                 response_content = response.read()
                 response.close()
         except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.PROXY_DOWNLOAD_FAILED_FAULT_TYPE,
-                                    summary=f'Failed to download proxy from {request_uri}')
             raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
                                                 "Error: " + str(e)) from e
         time_elapsed = time.time() - t0
@@ -136,9 +128,6 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     elif machine == '':
         raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
     else:
-        telemetry.set_exception(exception='Unsuported architecture for installing proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_ARCH_FAULT_TYPE,
-                                summary=f'{machine} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
     # define the request url and install location based on the os and architecture
@@ -153,9 +142,6 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
         install_location = install_location + ".exe"
         older_location = older_location + ".exe"
     elif operating_system not in ('Linux', 'Darwin'):
-        telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
-                                summary=f'{operating_system} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
 
     if not arc_proxy_folder:

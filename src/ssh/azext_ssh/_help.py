@@ -13,13 +13,13 @@ helps['ssh'] = """
 helps['ssh vm'] = """
     type: command
     short-summary: SSH into Azure VMs or Arc Servers.
-    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
+    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates. To SSH using local user credentials, you must provide the local user name using the --local-user parameter.
     examples:
-        - name: Give a resource group and VM to SSH using AAD issued certificates
+        - name: Give a resource group name and resource name to SSH using AAD issued certificates
           text: |
-            az ssh vm --resource-group myResourceGroup --vm-name myVM
+            az ssh vm --resource-group myResourceGroup --name myVM
 
-        - name: Give the public IP (or hostname) of a VM to SSH to SSH using AAD issued certificates
+        - name: Give the public IP (or hostname) of a VM to SSH using AAD issued certificates
           text: |
             az ssh vm --ip 1.2.3.4
             az ssh vm --hostname example.com
@@ -32,36 +32,66 @@ helps['ssh vm'] = """
           text: |
             az ssh vm --ip 1.2.3.4 -- -A -o ForwardX11=yes
 
-        - name: Give the Resource Type of a VM to SSH using AAD issued certificates. Using the resource type is useful when there is an Azure VM and a Arc Server with the same name in the same resource group.
+        - name: Give the Resource Type of the target. Useful when there is an Azure VM and an Arc Server with the same name in the same resource group. Resource type can be either "Microsoft.HybridCompute" for Arc Servers or "Microsoft.Compute" for Azure Virtual Machines.
           text: |
-            az ssh vm --resource-type Microsoft.Compute --resource-group myResourceGroup --vm-name myVM
+            # Azure Virtual Machine
+            az ssh vm --resource-type Microsoft.Compute --resource-group myResourceGroup --name myVM
+            # Arc Enbled Server
+            az ssh vm --resource-type Microsoft.HybridCompute --resource-group myResourceGroup --name myMachine
 
-        - name: Give a local user name to SSH using local user credentials on the target machine using certificate based authentication.
+        - name: Give a local user name to SSH with local user credentials using certificate based authentication.
           text: |
             az ssh vm --local-user username --ip 1.2.3.4 --certificate-file cert.pub --private-key key
 
-        - name: Give a local user name to SSH using local user credentials on the target machine using key based authentication.
+        - name: Give a local user name to SSH with local user credentials using key based authentication.
           text: |
-            az ssh vm --local-user username --resource-group myResourceGroup --vm-name myVM --private-key-file key
+            az ssh vm --local-user username --resource-group myResourceGroup --name myVM --private-key-file key
 
-        - name: Give a local user name to SSH using local user credentials on the target machine using password based authentication.
+        - name: Give a local user name to SSH with local user credentials using password based authentication.
           text: |
-            az ssh vm --local-user username --resource-group myResourceGroup --vm-name myArcServer
+            az ssh vm --local-user username --resource-group myResourceGroup --name myArcServer
+        
+        - name: Give a SSH Client Folder to use the ssh executables (ssh-keyge.exe, ssh.exe, etc) in that folder. If not provided, the extension will look for pre-installed ssh client (for Windows, it will look for ssh executables under C:\\Windows\\System32\\OpenSSH).
+          text: |
+            az ssh vm --resource-group myResourceGroup --name myVM --ssh-client-folder "C:\\Program Files\\OpenSSH"
+        
+        - name: When connecting to an Arc Server, optionally give a SSH Proxy Folder to indicate the folder where the SSH proxy will be stored. If not provided, the proxy will be saved in .clientsshproxy folder in user\'s home directory. 
+          - text: |
+            az ssh vm --resource-group myResourceGroup --name myMachine --ssh-proxy-folder "/home/user/myproxyfolder"
 """
 
 helps['ssh config'] = """
     type: command
-    short-summary: Create an SSH config for resources (Azure VMs, etc) which can then be used by clients that support OpenSSH configs and certificates
-    long-summary: Other software (git/rsync/etc) that support setting an SSH command can be set to use the config file by setting the command to 'ssh -F /path/to/config' e.g. rsync -e 'ssh -F /path/to/config'
+    short-summary: Create an SSH config for resources (Azure VMs, Arc Servers, etc) which can then be used by clients that support OpenSSH configs and certificates
+    long-summary: Other software (git/rsync/etc) that support setting an SSH command can be set to use the config file by setting the command to 'ssh -F /path/to/config' e.g. rsync -e 'ssh -F /path/to/config'.  Users can create ssh config files that use AAD issued certificates or local user credentials.
     examples:
-        - name: Give a resource group and VM for which to create a config, and save in a local file
+        - name: Give a resource group and resource name for which to create a config using AAD issued certificates, save in a local file, and then ssh into that resource
           text: |
-            az ssh config --resource-group myResourceGroup --vm-name myVm --file ./sshconfig
+            az ssh config --resource-group myResourceGroup --name myVm --file ./sshconfig
+            ssh -F ./sshconfig myResourceGroup-myVM
+
+        - name: Give a resource group, resource name, and local user to create a config using local user credentials, save in local file, and then ssh into that resource
+          text: |
+            # password based authentication
+            az ssh config --resource-group myResourceGroup --name myVM --local-user username1 --file ./sshconfig
+            ssh -F ./sshconfig MyResourceGroup-myVM-username1
+            
+            # key based authentication
+            az ssh config --resource-group myResourceGroup --name myVM --local-user username2 --private-key-file key --file ./sshconfig
+            ssh -F ./sshconfig MyResourceGroup-myVM-username2
+
+            # certificate based authentication
+            az ssh config --resource-group myResourceGroup --name myVM --local-user username3 --certificate-file cert.pub --private-key-file key --file ./sshconfig
+            ssh -F ./sshconfig MyResourceGroup-myVM-username3
 
         - name: Give the public IP (or hostname) of a VM for which to create a config and then ssh
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
             ssh -F ./sshconfig 1.2.3.4
+        
+        - name: Give Keys Destination Folder to indicate where new generated keys and certificates will be saved. If not provided, keys will be saved to a new folder "az_ssh_config" next to the config file.
+          text: |
+            az ssh config --ip 1.2.3.4 --file ./sshconfig --keys-destination-folder /home/user/mykeys 
 
         - name: Create a generic config for use with any host
           text: |
@@ -90,7 +120,7 @@ helps['ssh cert'] = """
 helps['ssh arc'] = """
     type: command
     short-summary: SSH into Azure Arc Servers
-    long-summary: Users can now login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates as azure automatically rotate SSH CA keys. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
+    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates as azure automatically rotate SSH CA keys. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
     examples:
         - name: Give a resource group and Arc Server Name to SSH using AAD issued certificates
           text: |

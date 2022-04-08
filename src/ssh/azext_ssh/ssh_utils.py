@@ -10,7 +10,6 @@ import time
 import datetime
 import re
 import colorama
-import psutil
 
 from colorama import Fore
 from colorama import Style
@@ -57,11 +56,12 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         connection_duration = time.time()
         logger.debug("Running ssh command %s", ' '.join(command))
 
-        connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env, stderr=subprocess.PIPE, text=True)
+        # pylint: disable=subprocess-run-check
+        connection_status = subprocess.run(command, env=env, stderr=subprocess.PIPE, text=True)
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-        if _get_connection_status(log_file, connection_status.returncode):
+        if _get_connection_status(log_file, connection_status):
             ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
         telemetry.add_extension_event('ssh', ssh_connection_data)
 
@@ -145,6 +145,9 @@ def get_ssh_cert_principals(cert_file, ssh_client_folder=None):
 
 
 def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert):
+    if connection_status:
+        connection_status = connection_status.returncode
+
     with open(log_file, 'r', encoding='utf-8') as ssh_log:
         log_text = ssh_log.read()
         log_lines = log_text.splitlines()
@@ -304,34 +307,37 @@ def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credenti
 
 def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_process, cert_file,
                        private_key_file, public_key_file, log_file, connection_status):
-
-    if delete_keys or delete_cert or delete_credentials:
-        if cleanup_process and cleanup_process.is_alive():
-            cleanup_process.terminate()
-            # wait for process to terminate
-            t0 = time.time()
-            while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
-                time.sleep(1)
-
-        if connection_status.returncode != 0:
-            # Check if stderr is a proxy error
-            regex = "{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: .*\",\"time\":\".*\"}.*"
-            if re.search(regex, connection_status.stderr):
-                logger.error("Proxy Error. Check if SSHD is running in the target machine and the incoming connection is enabled in the hybrid agent.")
+    try:
+        if connection_status: 
+            if connection_status.returncode != 0:
+                # Check if stderr is a proxy error
+                regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "
+                         ".*\",\"time\":\".*\"}.*")
+                if re.search(regex, connection_status.stderr):
+                    logger.error("SSH Proxy Error. Check if incoming connections are enabled on the hybrid agent "
+                                 "and SSHD is running in the target machine.")
             print(connection_status.stderr)
+    finally:
+        if delete_keys or delete_cert or delete_credentials:
+            if cleanup_process and cleanup_process.is_alive():
+                cleanup_process.terminate()
+                # wait for process to terminate
+                t0 = time.time()
+                while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
+                    time.sleep(1)
 
-        if log_file and os.path.isfile(log_file):
-            _print_error_messages_from_ssh_log(log_file, connection_status.returncode, delete_cert)
+            if log_file and os.path.isfile(log_file):
+                _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
 
-        # Make sure all files have been properly removed.
-        do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
-                   cert_file, private_key_file, public_key_file)
-        if log_file:
-            file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
-        if delete_keys:
-            # This is only true if keys were generated, so they must be in a temp folder.
-            temp_dir = os.path.dirname(cert_file)
-            file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
+            # Make sure all files have been properly removed.
+            do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials,
+                    cert_file, private_key_file, public_key_file)
+            if log_file:
+                file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
+            if delete_keys:
+                # This is only true if keys were generated, so they must be in a temp folder.
+                temp_dir = os.path.dirname(cert_file)
+                file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
 def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, relay_info_path, ssh_client_folder):
@@ -372,6 +378,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
 
 
 def _get_connection_status(log_file, connection_status):
+    if connection_status:
+        connection_status = connection_status.returncode
     # pylint: disable=bare-except
     if log_file and os.path.isfile(log_file):
         try:
