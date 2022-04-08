@@ -64,11 +64,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 # Logs are sent to stderr. In that case, we shouldn't capture stderr.
                 connection_status = subprocess.run(command, env=env, text=True)
         except Exception as e:
+            recommendation = ("Ensure OpenSSH is installed, and that the PATH Environment Variable is set correctly.\n"
+                              "Alternatively, use --ssh-client-folder to provide folder path with OpenSSH executables.")
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
-                                             "Ensure OpenSSH is installed, and that the "
-                                             "Path Environment Variable is set correctly. "
-                                             "Alternatively, use --ssh-client-folder to provide folder "
-                                             "path with OpenSSH executables.")
+                                             recommendation)
 
         connection_duration = (time.time() - connection_duration) / 60
         ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
@@ -104,11 +103,10 @@ def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
     try:
         subprocess.call(command)
     except Exception as e:
+        recommendation = ("Ensure OpenSSH is installed, and that the PATH Environment Variable is set correctly.\n"
+                          "Alternatively, use --ssh-client-folder to provide folder path with OpenSSH executables.")
         raise azclierror.BadRequestError(f"Failed to create ssh key file with error: {str(e)}.",
-                                         "Ensure OpenSSH is installed, and that the "
-                                         "Path Environment Variable is set correctly. "
-                                         "Alternatively, use --ssh-client-folder to provide folder "
-                                         "path with OpenSSH executables.")
+                                         recommendation)
 
 
 def get_ssh_cert_info(cert_file, ssh_client_folder=None):
@@ -118,11 +116,10 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
     try:
         return subprocess.check_output(command).decode().splitlines()
     except Exception as e:
+        recommendation = ("Ensure OpenSSH is installed, and that the PATH Environment Variable is set correctly.\n"
+                          "Alternatively, use --ssh-client-folder to provide folder path with OpenSSH executables.")
         raise azclierror.BadRequestError(f"Failed to get certificate info with error: {str(e)}.",
-                                         "Ensure OpenSSH is installed, and that the "
-                                         "Path Environment Variable is set correctly. "
-                                         "Alternatively, use --ssh-client-folder to provide folder "
-                                         "path with OpenSSH executables.")
+                                         recommendation)
 
 
 def _get_ssh_cert_validity(cert_file, ssh_client_folder=None):
