@@ -30,6 +30,7 @@ DEFAULT_STORAGE_SKU_TIER = 'Standard'
 DEFAULT_STORAGE_KIND = 'Storage'
 SUPPORTED_STORAGE_SKU_TIERS = ['Standard']
 SUPPORTED_STORAGE_KINDS = ['Storage', 'StorageV2']
+DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
 
 POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
@@ -253,7 +254,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        workspace_name,     # Note: This is actually specifying a the deployment name, but workspace_name is used here in test_quantum_workspace.py
+        DEPLOYMENT_NAME_PREFIX + workspace_name,
         {'properties': deployment_properties}
     )
 

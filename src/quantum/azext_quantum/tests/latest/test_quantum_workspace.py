@@ -13,7 +13,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
-from ...operations.workspace import _validate_storage_account, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS
+from ...operations.workspace import _validate_storage_account, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -58,6 +58,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_storage_account = get_test_workspace_storage()
         test_storage_account_grs = get_test_workspace_storage_grs()
         test_provider_sku_list = get_test_workspace_provider_sku_list()
+        #test_deployment_name = f"Microsoft.AzureQuantum-{test_workspace_temp}"
 
         if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             # create
@@ -77,7 +78,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", test_workspace_temp),
+            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             # >>>>>self.check("provisioningState", "Succeeded")  # Status is "Succeeded" since we are linking the storage account this time.
             ])
 
@@ -92,7 +93,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
-            self.check("name", test_workspace_temp),
+            self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             # >>>>>self.check("provisioningState", "Succeeded")  # Status is "Succeeded" since we are linking the storage account this time.
             ])
 
@@ -140,7 +141,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # No message is generated if either version number is unavailable. 
 
         message = check_version(test_config, test_old_reported_version, test_old_date)
-        assert message is None
+        assert message == f"\nVersion {test_old_reported_version} of the quantum extension is installed locally, but version {test_current_reported_version} is now available.\nYou can use 'az extension update -n quantum' to upgrade.\n"
 
         message = check_version(test_config, test_none_version, test_today)
         assert message is None
