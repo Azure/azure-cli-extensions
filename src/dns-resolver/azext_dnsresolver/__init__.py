@@ -21,7 +21,7 @@ class DnsResolverManagementClientCommandsLoader(AzCommandsLoader):
         dns_resolver_custom = CliCommandType(
             operations_tmpl='azext_dnsresolver.custom#{}',
             client_factory=cf_dns_resolver_cl)
-        parent = super(DnsResolverManagementClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=dns_resolver_custom)
 
     def load_command_table(self, args):

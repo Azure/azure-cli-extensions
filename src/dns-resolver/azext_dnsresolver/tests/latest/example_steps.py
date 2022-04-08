@@ -76,10 +76,10 @@ def step_update(test, checks=None):
 
 # EXAMPLE: /DnsResolvers/post/List DNS resolvers by virtual network
 @try_manual
-def step_list_by_virtual_network(test, checks=None):
+def step_list3(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver list-by-virtual-network '
+    test.cmd('az dns-resolver list '
              '--resource-group "{rg}" '
              '--virtual-network-name "{vn}"',
              checks=checks)
@@ -87,20 +87,20 @@ def step_list_by_virtual_network(test, checks=None):
 
 # EXAMPLE: /DnsForwardingRulesets/put/Upsert DNS forwarding ruleset
 @try_manual
-def step_dns_forwarding_ruleset_create(test, checks=None):
+def step_forwarding_ruleset_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset create '
+    test.cmd('az dns-resolver forwarding-ruleset create '
              '--name "{myDnsForwardingRuleset2}" '
              '--location "westus2" '
-             '--dns-resolver-outbound-endpoints id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Micr'
-             'osoft.Network/dnsResolvers/{myDnsResolver}/outboundEndpoints/{myOutboundEndpoint2}" '
-             '--dns-resolver-outbound-endpoints id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Micr'
-             'osoft.Network/dnsResolvers/{myDnsResolver}/outboundEndpoints/{myOutboundEndpoint3}" '
+             '--outbound-endpoints id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network'
+             '/dnsResolvers/{myDnsResolver}/outboundEndpoints/{myOutboundEndpoint2}" '
+             '--outbound-endpoints id="/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network'
+             '/dnsResolvers/{myDnsResolver}/outboundEndpoints/{myOutboundEndpoint3}" '
              '--tags key1="value1" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az dns-resolver dns-forwarding-ruleset wait --created '
+    test.cmd('az dns-resolver forwarding-ruleset wait --created '
              '--name "{myDnsForwardingRuleset2}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -108,30 +108,30 @@ def step_dns_forwarding_ruleset_create(test, checks=None):
 
 # EXAMPLE: /DnsForwardingRulesets/get/List DNS forwarding rulesets by resource group
 @try_manual
-def step_dns_forwarding_ruleset_list(test, checks=None):
+def step_forwarding_ruleset_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset list '
+    test.cmd('az dns-resolver forwarding-ruleset list '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /DnsForwardingRulesets/get/List DNS forwarding rulesets by subscription
 @try_manual
-def step_dns_forwarding_ruleset_list2(test, checks=None):
+def step_forwarding_ruleset_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset list '
+    test.cmd('az dns-resolver forwarding-ruleset list '
              '-g ""',
              checks=checks)
 
 
 # EXAMPLE: /DnsForwardingRulesets/get/Retrieve DNS forwarding ruleset
 @try_manual
-def step_dns_forwarding_ruleset_show(test, checks=None):
+def step_forwarding_ruleset_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset show '
+    test.cmd('az dns-resolver forwarding-ruleset show '
              '--name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -139,10 +139,10 @@ def step_dns_forwarding_ruleset_show(test, checks=None):
 
 # EXAMPLE: /DnsForwardingRulesets/patch/Update DNS forwarding ruleset
 @try_manual
-def step_dns_forwarding_ruleset_update(test, checks=None):
+def step_forwarding_ruleset_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset update '
+    test.cmd('az dns-resolver forwarding-ruleset update '
              '--name "{myDnsForwardingRuleset}" '
              '--tags key1="value1" '
              '--resource-group "{rg}"',
@@ -151,10 +151,10 @@ def step_dns_forwarding_ruleset_update(test, checks=None):
 
 # EXAMPLE: /DnsForwardingRulesets/post/List DNS forwarding rulesets by virtual network
 @try_manual
-def step_dns_forwarding_ruleset(test, checks=None):
+def step_forwarding_ruleset_list3(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset list-by-virtual-network '
+    test.cmd('az dns-resolver forwarding-ruleset list '
              '--resource-group "{rg}" '
              '--virtual-network-name "{vn}"',
              checks=checks)
@@ -166,7 +166,7 @@ def step_forwarding_rule_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dns-resolver forwarding-rule create '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--name "{myForwardingRule}" '
              '--domain-name "contoso.com." '
              '--forwarding-rule-state "Enabled" '
@@ -183,7 +183,7 @@ def step_forwarding_rule_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dns-resolver forwarding-rule list '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -194,7 +194,7 @@ def step_forwarding_rule_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dns-resolver forwarding-rule show '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--name "{myForwardingRule}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -206,7 +206,7 @@ def step_forwarding_rule_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dns-resolver forwarding-rule update '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--name "{myForwardingRule}" '
              '--forwarding-rule-state "Disabled" '
              '--metadata additionalProp2="value2" '
@@ -220,7 +220,7 @@ def step_forwarding_rule_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dns-resolver forwarding-rule delete -y '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--name "{myForwardingRule}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -228,10 +228,10 @@ def step_forwarding_rule_delete(test, checks=None):
 
 # EXAMPLE: /DnsForwardingRulesets/delete/Delete DNS forwarding ruleset
 @try_manual
-def step_dns_forwarding_ruleset_delete(test, checks=None):
+def step_forwarding_ruleset_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver dns-forwarding-ruleset delete -y '
+    test.cmd('az dns-resolver forwarding-ruleset delete -y '
              '--name "{myDnsForwardingRuleset3}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -389,19 +389,19 @@ def step_delete(test, checks=None):
 
 # EXAMPLE: /VirtualNetworkLinks/put/Upsert virtual network link to a DNS forwarding ruleset
 @try_manual
-def step_virtual_network_link_create(test, checks=None):
+def step_vnet_link_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver virtual-network-link create '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link create '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--metadata additionalProp1="value1" '
              '--id "/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.Network/virtualNetworks/'
              '{vn}" '
              '--resource-group "{rg}" '
              '--name "{myVirtualNetworkLink}"',
              checks=[])
-    test.cmd('az dns-resolver virtual-network-link wait --created '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link wait --created '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}" '
              '--name "{myVirtualNetworkLink}"',
              checks=checks)
@@ -409,22 +409,22 @@ def step_virtual_network_link_create(test, checks=None):
 
 # EXAMPLE: /VirtualNetworkLinks/get/List virtual network links to a DNS forwarding ruleset
 @try_manual
-def step_virtual_network_link_list(test, checks=None):
+def step_vnet_link_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver virtual-network-link list '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link list '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /VirtualNetworkLinks/get/Retrieve virtual network link to a DNS forwarding ruleset
 @try_manual
-def step_virtual_network_link_show(test, checks=None):
+def step_vnet_link_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver virtual-network-link show '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link show '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}" '
              '--name "{myVirtualNetworkLink}"',
              checks=checks)
@@ -432,11 +432,11 @@ def step_virtual_network_link_show(test, checks=None):
 
 # EXAMPLE: /VirtualNetworkLinks/patch/Update virtual network link to a DNS forwarding ruleset
 @try_manual
-def step_virtual_network_link_update(test, checks=None):
+def step_vnet_link_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver virtual-network-link update '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link update '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--metadata additionalProp1="value1" '
              '--resource-group "{rg}" '
              '--name "{myVirtualNetworkLink}"',
@@ -445,11 +445,11 @@ def step_virtual_network_link_update(test, checks=None):
 
 # EXAMPLE: /VirtualNetworkLinks/delete/Delete virtual network link to a DNS forwarding ruleset
 @try_manual
-def step_virtual_network_link_delete(test, checks=None):
+def step_vnet_link_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dns-resolver virtual-network-link delete -y '
-             '--dns-forwarding-ruleset-name "{myDnsForwardingRuleset}" '
+    test.cmd('az dns-resolver vnet-link delete -y '
+             '--ruleset-name "{myDnsForwardingRuleset}" '
              '--resource-group "{rg}" '
              '--name "{myVirtualNetworkLink}"',
              checks=checks)

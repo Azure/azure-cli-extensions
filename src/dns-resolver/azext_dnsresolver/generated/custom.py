@@ -14,8 +14,13 @@ from azure.cli.core.util import sdk_no_wait
 
 def dns_resolver_list(client,
                       resource_group_name=None,
+                      virtual_network_name=None,
                       top=None):
-    if resource_group_name:
+    if resource_group_name and virtual_network_name is not None:
+        return client.list_by_virtual_network(resource_group_name=resource_group_name,
+                                              virtual_network_name=virtual_network_name,
+                                              top=top)
+    elif resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list(top=top)
@@ -82,15 +87,6 @@ def dns_resolver_delete(client,
                        resource_group_name=resource_group_name,
                        dns_resolver_name=dns_resolver_name,
                        if_match=if_match)
-
-
-def dns_resolver_list_by_virtual_network(client,
-                                         resource_group_name,
-                                         virtual_network_name,
-                                         top=None):
-    return client.list_by_virtual_network(resource_group_name=resource_group_name,
-                                          virtual_network_name=virtual_network_name,
-                                          top=top)
 
 
 def dns_resolver_inbound_endpoint_list(client,
@@ -250,31 +246,36 @@ def dns_resolver_outbound_endpoint_delete(client,
                        if_match=if_match)
 
 
-def dns_resolver_dns_forwarding_ruleset_list(client,
-                                             resource_group_name=None,
-                                             top=None):
-    if resource_group_name:
+def dns_resolver_forwarding_ruleset_list(client,
+                                         resource_group_name=None,
+                                         virtual_network_name=None,
+                                         top=None):
+    if resource_group_name and virtual_network_name is not None:
+        return client.list_by_virtual_network(resource_group_name=resource_group_name,
+                                              virtual_network_name=virtual_network_name,
+                                              top=top)
+    elif resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list(top=top)
 
 
-def dns_resolver_dns_forwarding_ruleset_show(client,
-                                             resource_group_name,
-                                             dns_forwarding_ruleset_name):
+def dns_resolver_forwarding_ruleset_show(client,
+                                         resource_group_name,
+                                         dns_forwarding_ruleset_name):
     return client.get(resource_group_name=resource_group_name,
                       dns_forwarding_ruleset_name=dns_forwarding_ruleset_name)
 
 
-def dns_resolver_dns_forwarding_ruleset_create(client,
-                                               resource_group_name,
-                                               dns_forwarding_ruleset_name,
-                                               location,
-                                               if_match=None,
-                                               if_none_match=None,
-                                               tags=None,
-                                               dns_resolver_outbound_endpoints=None,
-                                               no_wait=False):
+def dns_resolver_forwarding_ruleset_create(client,
+                                           resource_group_name,
+                                           dns_forwarding_ruleset_name,
+                                           location,
+                                           if_match=None,
+                                           if_none_match=None,
+                                           tags=None,
+                                           dns_resolver_outbound_endpoints=None,
+                                           no_wait=False):
     parameters = {}
     if tags is not None:
         parameters['tags'] = tags
@@ -290,12 +291,12 @@ def dns_resolver_dns_forwarding_ruleset_create(client,
                        parameters=parameters)
 
 
-def dns_resolver_dns_forwarding_ruleset_update(client,
-                                               resource_group_name,
-                                               dns_forwarding_ruleset_name,
-                                               if_match=None,
-                                               tags=None,
-                                               no_wait=False):
+def dns_resolver_forwarding_ruleset_update(client,
+                                           resource_group_name,
+                                           dns_forwarding_ruleset_name,
+                                           if_match=None,
+                                           tags=None,
+                                           no_wait=False):
     parameters = {}
     if tags is not None:
         parameters['tags'] = tags
@@ -307,25 +308,16 @@ def dns_resolver_dns_forwarding_ruleset_update(client,
                        parameters=parameters)
 
 
-def dns_resolver_dns_forwarding_ruleset_delete(client,
-                                               resource_group_name,
-                                               dns_forwarding_ruleset_name,
-                                               if_match=None,
-                                               no_wait=False):
+def dns_resolver_forwarding_ruleset_delete(client,
+                                           resource_group_name,
+                                           dns_forwarding_ruleset_name,
+                                           if_match=None,
+                                           no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        dns_forwarding_ruleset_name=dns_forwarding_ruleset_name,
                        if_match=if_match)
-
-
-def dns_resolver_dns_forwarding_ruleset_list_by_virtual_network(client,
-                                                                resource_group_name,
-                                                                virtual_network_name,
-                                                                top=None):
-    return client.list_by_virtual_network(resource_group_name=resource_group_name,
-                                          virtual_network_name=virtual_network_name,
-                                          top=top)
 
 
 def dns_resolver_forwarding_rule_list(client,
@@ -406,33 +398,33 @@ def dns_resolver_forwarding_rule_delete(client,
                          if_match=if_match)
 
 
-def dns_resolver_virtual_network_link_list(client,
-                                           resource_group_name,
-                                           dns_forwarding_ruleset_name,
-                                           top=None):
+def dns_resolver_vnet_link_list(client,
+                                resource_group_name,
+                                dns_forwarding_ruleset_name,
+                                top=None):
     return client.list(resource_group_name=resource_group_name,
                        dns_forwarding_ruleset_name=dns_forwarding_ruleset_name,
                        top=top)
 
 
-def dns_resolver_virtual_network_link_show(client,
-                                           resource_group_name,
-                                           dns_forwarding_ruleset_name,
-                                           virtual_network_link_name):
+def dns_resolver_vnet_link_show(client,
+                                resource_group_name,
+                                dns_forwarding_ruleset_name,
+                                virtual_network_link_name):
     return client.get(resource_group_name=resource_group_name,
                       dns_forwarding_ruleset_name=dns_forwarding_ruleset_name,
                       virtual_network_link_name=virtual_network_link_name)
 
 
-def dns_resolver_virtual_network_link_create(client,
-                                             resource_group_name,
-                                             dns_forwarding_ruleset_name,
-                                             virtual_network_link_name,
-                                             if_match=None,
-                                             if_none_match=None,
-                                             metadata=None,
-                                             id_=None,
-                                             no_wait=False):
+def dns_resolver_vnet_link_create(client,
+                                  resource_group_name,
+                                  dns_forwarding_ruleset_name,
+                                  virtual_network_link_name,
+                                  if_match=None,
+                                  if_none_match=None,
+                                  metadata=None,
+                                  id_=None,
+                                  no_wait=False):
     parameters = {}
     if metadata is not None:
         parameters['metadata'] = metadata
@@ -451,13 +443,13 @@ def dns_resolver_virtual_network_link_create(client,
                        parameters=parameters)
 
 
-def dns_resolver_virtual_network_link_update(client,
-                                             resource_group_name,
-                                             dns_forwarding_ruleset_name,
-                                             virtual_network_link_name,
-                                             if_match=None,
-                                             metadata=None,
-                                             no_wait=False):
+def dns_resolver_vnet_link_update(client,
+                                  resource_group_name,
+                                  dns_forwarding_ruleset_name,
+                                  virtual_network_link_name,
+                                  if_match=None,
+                                  metadata=None,
+                                  no_wait=False):
     parameters = {}
     if metadata is not None:
         parameters['metadata'] = metadata
@@ -470,12 +462,12 @@ def dns_resolver_virtual_network_link_update(client,
                        parameters=parameters)
 
 
-def dns_resolver_virtual_network_link_delete(client,
-                                             resource_group_name,
-                                             dns_forwarding_ruleset_name,
-                                             virtual_network_link_name,
-                                             if_match=None,
-                                             no_wait=False):
+def dns_resolver_vnet_link_delete(client,
+                                  resource_group_name,
+                                  dns_forwarding_ruleset_name,
+                                  virtual_network_link_name,
+                                  if_match=None,
+                                  no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,

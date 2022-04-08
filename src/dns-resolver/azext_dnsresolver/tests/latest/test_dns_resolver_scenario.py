@@ -18,19 +18,19 @@ from .example_steps import step_list
 from .example_steps import step_list2
 from .example_steps import step_show
 from .example_steps import step_update
-from .example_steps import step_list_by_virtual_network
-from .example_steps import step_dns_forwarding_ruleset_create
-from .example_steps import step_dns_forwarding_ruleset_list
-from .example_steps import step_dns_forwarding_ruleset_list2
-from .example_steps import step_dns_forwarding_ruleset_show
-from .example_steps import step_dns_forwarding_ruleset_update
-from .example_steps import step_dns_forwarding_ruleset
+from .example_steps import step_list3
+from .example_steps import step_forwarding_ruleset_create
+from .example_steps import step_forwarding_ruleset_list
+from .example_steps import step_forwarding_ruleset_list2
+from .example_steps import step_forwarding_ruleset_show
+from .example_steps import step_forwarding_ruleset_update
+from .example_steps import step_forwarding_ruleset_list3
 from .example_steps import step_forwarding_rule_create
 from .example_steps import step_forwarding_rule_list
 from .example_steps import step_forwarding_rule_show
 from .example_steps import step_forwarding_rule_update
 from .example_steps import step_forwarding_rule_delete
-from .example_steps import step_dns_forwarding_ruleset_delete
+from .example_steps import step_forwarding_ruleset_delete
 from .example_steps import step_inbound_endpoint_create
 from .example_steps import step_inbound_endpoint_list
 from .example_steps import step_inbound_endpoint_show
@@ -42,11 +42,11 @@ from .example_steps import step_outbound_endpoint_show
 from .example_steps import step_outbound_endpoint_update
 from .example_steps import step_outbound_endpoint_delete
 from .example_steps import step_delete
-from .example_steps import step_virtual_network_link_create
-from .example_steps import step_virtual_network_link_list
-from .example_steps import step_virtual_network_link_show
-from .example_steps import step_virtual_network_link_update
-from .example_steps import step_virtual_network_link_delete
+from .example_steps import step_vnet_link_create
+from .example_steps import step_vnet_link_list
+from .example_steps import step_vnet_link_show
+from .example_steps import step_vnet_link_update
+from .example_steps import step_vnet_link_delete
 from .. import (
     try_manual,
     raise_if,
@@ -100,24 +100,24 @@ def call_scenario(test):
                    "work/virtualNetworks/{vn}", case_sensitive=False),
         test.check("tags.key1", "value1", case_sensitive=False),
     ])
-    step_list_by_virtual_network(test, checks=[])
-    step_dns_forwarding_ruleset_create(test, checks=[
+    step_list3(test, checks=[])
+    step_forwarding_ruleset_create(test, checks=[
         test.check("name", "{myDnsForwardingRuleset2}", case_sensitive=False),
         test.check("location", "westus2", case_sensitive=False),
         test.check("tags.key1", "value1", case_sensitive=False),
     ])
-    step_dns_forwarding_ruleset_list(test, checks=[
+    step_forwarding_ruleset_list(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_dns_forwarding_ruleset_list2(test, checks=[
+    step_forwarding_ruleset_list2(test, checks=[
         test.check('length(@)', 2),
     ])
-    step_dns_forwarding_ruleset_show(test, checks=[])
-    step_dns_forwarding_ruleset_update(test, checks=[
+    step_forwarding_ruleset_show(test, checks=[])
+    step_forwarding_ruleset_update(test, checks=[
         test.check("name", "{myDnsForwardingRuleset}", case_sensitive=False),
         test.check("tags.key1", "value1", case_sensitive=False),
     ])
-    step_dns_forwarding_ruleset(test, checks=[])
+    step_forwarding_ruleset_list3(test, checks=[])
     step_forwarding_rule_create(test, checks=[
         test.check("name", "{myForwardingRule}", case_sensitive=False),
         test.check("domainName", "contoso.com.", case_sensitive=False),
@@ -140,7 +140,7 @@ def call_scenario(test):
         test.check("metadata.additionalProp2", "value2", case_sensitive=False),
     ])
     step_forwarding_rule_delete(test, checks=[])
-    step_dns_forwarding_ruleset_delete(test, checks=[])
+    step_forwarding_ruleset_delete(test, checks=[])
     step_inbound_endpoint_create(test, checks=[
         test.check("name", "{myInboundEndpoint}", case_sensitive=False),
         test.check("location", "westus2", case_sensitive=False),
@@ -186,28 +186,28 @@ def call_scenario(test):
     ])
     step_outbound_endpoint_delete(test, checks=[])
     step_delete(test, checks=[])
-    step_virtual_network_link_create(test, checks=[
+    step_vnet_link_create(test, checks=[
         test.check("metadata.additionalProp1", "value1", case_sensitive=False),
         test.check("virtualNetwork.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.Net"
                    "work/virtualNetworks/{vn}", case_sensitive=False),
         test.check("name", "{myVirtualNetworkLink}", case_sensitive=False),
     ])
-    step_virtual_network_link_list(test, checks=[
+    step_vnet_link_list(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_virtual_network_link_show(test, checks=[
+    step_vnet_link_show(test, checks=[
         test.check("metadata.additionalProp1", "value1", case_sensitive=False),
         test.check("virtualNetwork.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.Net"
                    "work/virtualNetworks/{vn}", case_sensitive=False),
         test.check("name", "{myVirtualNetworkLink}", case_sensitive=False),
     ])
-    step_virtual_network_link_update(test, checks=[
+    step_vnet_link_update(test, checks=[
         test.check("metadata.additionalProp1", "value1", case_sensitive=False),
         test.check("virtualNetwork.id", "/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.Net"
                    "work/virtualNetworks/{vn}", case_sensitive=False),
         test.check("name", "{myVirtualNetworkLink}", case_sensitive=False),
     ])
-    step_virtual_network_link_delete(test, checks=[])
+    step_vnet_link_delete(test, checks=[])
     cleanup_scenario(test)
 
 

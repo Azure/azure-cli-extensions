@@ -19,9 +19,13 @@ helps['dns-resolver'] = '''
 
 helps['dns-resolver list'] = """
     type: command
-    short-summary: "Lists DNS resolvers within a resource group. And Lists DNS resolvers in all resource groups of a \
-subscription."
+    short-summary: "Lists DNS resolver resource IDs linked to a virtual network. And Lists DNS resolvers within a \
+resource group. And Lists DNS resolvers in all resource groups of a subscription."
     examples:
+      - name: List DNS resolvers by virtual network
+        text: |-
+               az dns-resolver list --resource-group "sampleResourceGroup" --virtual-network-name \
+"sampleVirtualNetwork"
       - name: List DNS resolvers by resource group
         text: |-
                az dns-resolver list --resource-group "sampleResourceGroup"
@@ -67,16 +71,6 @@ helps['dns-resolver delete'] = """
       - name: Delete DNS resolver
         text: |-
                az dns-resolver delete --name "sampleDnsResolver" --resource-group "sampleResourceGroup"
-"""
-
-helps['dns-resolver list-by-virtual-network'] = """
-    type: command
-    short-summary: "Lists DNS resolver resource IDs linked to a virtual network."
-    examples:
-      - name: List DNS resolvers by virtual network
-        text: |-
-               az dns-resolver list-by-virtual-network --resource-group "sampleResourceGroup" --virtual-network-name \
-"sampleVirtualNetwork"
 """
 
 helps['dns-resolver wait'] = """
@@ -259,108 +253,101 @@ deleted.
 "sampleOutboundEndpoint" --resource-group "sampleResourceGroup" --deleted
 """
 
-helps['dns-resolver dns-forwarding-ruleset'] = """
+helps['dns-resolver forwarding-ruleset'] = """
     type: group
-    short-summary: Manage dns forwarding ruleset with dns resolver
+    short-summary: Manage forwarding ruleset with dns resolver
 """
 
-helps['dns-resolver dns-forwarding-ruleset list'] = """
+helps['dns-resolver forwarding-ruleset list'] = """
     type: command
-    short-summary: "Lists DNS forwarding rulesets within a resource group. And Lists DNS forwarding rulesets in all \
-resource groups of a subscription."
+    short-summary: "Lists DNS forwarding ruleset resource IDs attached to a virtual network. And Lists DNS forwarding \
+rulesets within a resource group. And Lists DNS forwarding rulesets in all resource groups of a subscription."
     examples:
+      - name: List DNS forwarding rulesets by virtual network
+        text: |-
+               az dns-resolver forwarding-ruleset list --resource-group "sampleResourceGroup" --virtual-network-name \
+"sampleVirtualNetwork"
       - name: List DNS forwarding rulesets by resource group
         text: |-
-               az dns-resolver dns-forwarding-ruleset list --resource-group "sampleResourceGroup"
+               az dns-resolver forwarding-ruleset list --resource-group "sampleResourceGroup"
       - name: List DNS forwarding rulesets by subscription
         text: |-
-               az dns-resolver dns-forwarding-ruleset list
+               az dns-resolver forwarding-ruleset list
 """
 
-helps['dns-resolver dns-forwarding-ruleset show'] = """
+helps['dns-resolver forwarding-ruleset show'] = """
     type: command
     short-summary: "Gets a DNS forwarding ruleset properties."
     examples:
       - name: Retrieve DNS forwarding ruleset
         text: |-
-               az dns-resolver dns-forwarding-ruleset show --name "sampleDnsForwardingRuleset" --resource-group \
+               az dns-resolver forwarding-ruleset show --name "sampleDnsForwardingRuleset" --resource-group \
 "sampleResourceGroup"
 """
 
-helps['dns-resolver dns-forwarding-ruleset create'] = """
+helps['dns-resolver forwarding-ruleset create'] = """
     type: command
     short-summary: "Create a DNS forwarding ruleset."
     parameters:
-      - name: --dns-resolver-outbound-endpoints
+      - name: --outbound-endpoints
         short-summary: "The reference to the DNS resolver outbound endpoints that are used to route DNS queries \
 matching the forwarding rules in the ruleset to the target DNS servers."
         long-summary: |
-            Usage: --dns-resolver-outbound-endpoints id=XX
+            Usage: --outbound-endpoints id=XX
 
             id: Resource ID.
 
-            Multiple actions can be specified by using more than one --dns-resolver-outbound-endpoints argument.
+            Multiple actions can be specified by using more than one --outbound-endpoints argument.
     examples:
       - name: Upsert DNS forwarding ruleset
         text: |-
-               az dns-resolver dns-forwarding-ruleset create --name "samplednsForwardingRuleset" --location "westus2" \
---dns-resolver-outbound-endpoints id="/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResource\
-Group/providers/Microsoft.Network/dnsResolvers/sampleDnsResolver/outboundEndpoints/sampleOutboundEndpoint0" \
---dns-resolver-outbound-endpoints id="/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResource\
-Group/providers/Microsoft.Network/dnsResolvers/sampleDnsResolver/outboundEndpoints/sampleOutboundEndpoint1" --tags \
-key1="value1" --resource-group "sampleResourceGroup"
+               az dns-resolver forwarding-ruleset create --name "samplednsForwardingRuleset" --location "westus2" \
+--outbound-endpoints id="/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/provide\
+rs/Microsoft.Network/dnsResolvers/sampleDnsResolver/outboundEndpoints/sampleOutboundEndpoint0" --outbound-endpoints \
+id="/subscriptions/abdd4249-9f34-4cc6-8e42-c2e32110603e/resourceGroups/sampleResourceGroup/providers/Microsoft.Network/\
+dnsResolvers/sampleDnsResolver/outboundEndpoints/sampleOutboundEndpoint1" --tags key1="value1" --resource-group \
+"sampleResourceGroup"
 """
 
-helps['dns-resolver dns-forwarding-ruleset update'] = """
+helps['dns-resolver forwarding-ruleset update'] = """
     type: command
     short-summary: "Updates a DNS forwarding ruleset."
     examples:
       - name: Update DNS forwarding ruleset
         text: |-
-               az dns-resolver dns-forwarding-ruleset update --name "sampleDnsForwardingRuleset" --tags key1="value1" \
+               az dns-resolver forwarding-ruleset update --name "sampleDnsForwardingRuleset" --tags key1="value1" \
 --resource-group "sampleResourceGroup"
 """
 
-helps['dns-resolver dns-forwarding-ruleset delete'] = """
+helps['dns-resolver forwarding-ruleset delete'] = """
     type: command
     short-summary: "Deletes a DNS forwarding ruleset. WARNING: This operation cannot be undone. All forwarding rules \
 within the ruleset will be deleted."
     examples:
       - name: Delete DNS forwarding ruleset
         text: |-
-               az dns-resolver dns-forwarding-ruleset delete --name "samplednsForwardingRulesetName" --resource-group \
+               az dns-resolver forwarding-ruleset delete --name "samplednsForwardingRulesetName" --resource-group \
 "sampleResourceGroup"
 """
 
-helps['dns-resolver dns-forwarding-ruleset list-by-virtual-network'] = """
+helps['dns-resolver forwarding-ruleset wait'] = """
     type: command
-    short-summary: "Lists DNS forwarding ruleset resource IDs attached to a virtual network."
+    short-summary: Place the CLI in a waiting state until a condition of the dns-resolver forwarding-ruleset is met.
     examples:
-      - name: List DNS forwarding rulesets by virtual network
-        text: |-
-               az dns-resolver dns-forwarding-ruleset list-by-virtual-network --resource-group "sampleResourceGroup" \
---virtual-network-name "sampleVirtualNetwork"
-"""
-
-helps['dns-resolver dns-forwarding-ruleset wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the dns-resolver dns-forwarding-ruleset is \
-met.
-    examples:
-      - name: Pause executing next line of CLI script until the dns-resolver dns-forwarding-ruleset is successfully \
+      - name: Pause executing next line of CLI script until the dns-resolver forwarding-ruleset is successfully \
 created.
         text: |-
-               az dns-resolver dns-forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
+               az dns-resolver forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
 "sampleResourceGroup" --created
-      - name: Pause executing next line of CLI script until the dns-resolver dns-forwarding-ruleset is successfully \
+      - name: Pause executing next line of CLI script until the dns-resolver forwarding-ruleset is successfully \
 updated.
         text: |-
-               az dns-resolver dns-forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
+               az dns-resolver forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
 "sampleResourceGroup" --updated
-      - name: Pause executing next line of CLI script until the dns-resolver dns-forwarding-ruleset is successfully \
+      - name: Pause executing next line of CLI script until the dns-resolver forwarding-ruleset is successfully \
 deleted.
         text: |-
-               az dns-resolver dns-forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
+               az dns-resolver forwarding-ruleset wait --name "sampleDnsForwardingRuleset" --resource-group \
 "sampleResourceGroup" --deleted
 """
 
@@ -375,8 +362,8 @@ helps['dns-resolver forwarding-rule list'] = """
     examples:
       - name: List forwarding rules in a DNS forwarding ruleset
         text: |-
-               az dns-resolver forwarding-rule list --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup"
+               az dns-resolver forwarding-rule list --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup"
 """
 
 helps['dns-resolver forwarding-rule show'] = """
@@ -385,7 +372,7 @@ helps['dns-resolver forwarding-rule show'] = """
     examples:
       - name: Retrieve forwarding rule in a DNS forwarding ruleset
         text: |-
-               az dns-resolver forwarding-rule show --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" --name \
+               az dns-resolver forwarding-rule show --ruleset-name "sampleDnsForwardingRuleset" --name \
 "sampleForwardingRule" --resource-group "sampleResourceGroup"
 """
 
@@ -405,8 +392,8 @@ helps['dns-resolver forwarding-rule create'] = """
     examples:
       - name: Upsert forwarding rule in a DNS forwarding ruleset
         text: |-
-               az dns-resolver forwarding-rule create --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---name "sampleForwardingRule" --domain-name "contoso.com." --forwarding-rule-state "Enabled" --metadata \
+               az dns-resolver forwarding-rule create --ruleset-name "sampleDnsForwardingRuleset" --name \
+"sampleForwardingRule" --domain-name "contoso.com." --forwarding-rule-state "Enabled" --metadata \
 additionalProp1="value1" --target-dns-servers ip-address="10.0.0.1" port=53 --target-dns-servers ip-address="10.0.0.2" \
 port=53 --resource-group "sampleResourceGroup"
 """
@@ -427,8 +414,8 @@ helps['dns-resolver forwarding-rule update'] = """
     examples:
       - name: Update forwarding rule in a DNS forwarding ruleset
         text: |-
-               az dns-resolver forwarding-rule update --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---name "sampleForwardingRule" --forwarding-rule-state "Disabled" --metadata additionalProp2="value2" --resource-group \
+               az dns-resolver forwarding-rule update --ruleset-name "sampleDnsForwardingRuleset" --name \
+"sampleForwardingRule" --forwarding-rule-state "Disabled" --metadata additionalProp2="value2" --resource-group \
 "sampleResourceGroup"
 """
 
@@ -438,85 +425,82 @@ helps['dns-resolver forwarding-rule delete'] = """
     examples:
       - name: Delete forwarding rule in a DNS forwarding ruleset
         text: |-
-               az dns-resolver forwarding-rule delete --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---name "sampleForwardingRule" --resource-group "sampleResourceGroup"
+               az dns-resolver forwarding-rule delete --ruleset-name "sampleDnsForwardingRuleset" --name \
+"sampleForwardingRule" --resource-group "sampleResourceGroup"
 """
 
-helps['dns-resolver virtual-network-link'] = """
+helps['dns-resolver vnet-link'] = """
     type: group
-    short-summary: Manage virtual network link with dns resolver
+    short-summary: Manage vnet link with dns resolver
 """
 
-helps['dns-resolver virtual-network-link list'] = """
+helps['dns-resolver vnet-link list'] = """
     type: command
     short-summary: "Lists virtual network links to a DNS forwarding ruleset."
     examples:
       - name: List virtual network links to a DNS forwarding ruleset
         text: |-
-               az dns-resolver virtual-network-link list --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup"
+               az dns-resolver vnet-link list --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup"
 """
 
-helps['dns-resolver virtual-network-link show'] = """
+helps['dns-resolver vnet-link show'] = """
     type: command
     short-summary: "Gets properties of a virtual network link to a DNS forwarding ruleset."
     examples:
       - name: Retrieve virtual network link to a DNS forwarding ruleset
         text: |-
-               az dns-resolver virtual-network-link show --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink"
+               az dns-resolver vnet-link show --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup" --name "sampleVirtualNetworkLink"
 """
 
-helps['dns-resolver virtual-network-link create'] = """
+helps['dns-resolver vnet-link create'] = """
     type: command
     short-summary: "Create a virtual network link to a DNS forwarding ruleset."
     examples:
       - name: Upsert virtual network link to a DNS forwarding ruleset
         text: |-
-               az dns-resolver virtual-network-link create --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---metadata additionalProp1="value1" --id "/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnet\
-ResourceGroupName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork" --resource-group \
-"sampleResourceGroup" --name "sampleVirtualNetworkLink"
+               az dns-resolver vnet-link create --ruleset-name "sampleDnsForwardingRuleset" --metadata \
+additionalProp1="value1" --id "/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnetResourceGro\
+upName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork" --resource-group "sampleResourceGroup" --name \
+"sampleVirtualNetworkLink"
 """
 
-helps['dns-resolver virtual-network-link update'] = """
+helps['dns-resolver vnet-link update'] = """
     type: command
     short-summary: "Updates a virtual network link to a DNS forwarding ruleset."
     examples:
       - name: Update virtual network link to a DNS forwarding ruleset
         text: |-
-               az dns-resolver virtual-network-link update --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---metadata additionalProp1="value1" --resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink"
+               az dns-resolver vnet-link update --ruleset-name "sampleDnsForwardingRuleset" --metadata \
+additionalProp1="value1" --resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink"
 """
 
-helps['dns-resolver virtual-network-link delete'] = """
+helps['dns-resolver vnet-link delete'] = """
     type: command
     short-summary: "Deletes a virtual network link to a DNS forwarding ruleset. WARNING: This operation cannot be \
 undone."
     examples:
       - name: Delete virtual network link to a DNS forwarding ruleset
         text: |-
-               az dns-resolver virtual-network-link delete --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink"
+               az dns-resolver vnet-link delete --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup" --name "sampleVirtualNetworkLink"
 """
 
-helps['dns-resolver virtual-network-link wait'] = """
+helps['dns-resolver vnet-link wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the dns-resolver virtual-network-link is met.
+    short-summary: Place the CLI in a waiting state until a condition of the dns-resolver vnet-link is met.
     examples:
-      - name: Pause executing next line of CLI script until the dns-resolver virtual-network-link is successfully \
-created.
+      - name: Pause executing next line of CLI script until the dns-resolver vnet-link is successfully created.
         text: |-
-               az dns-resolver virtual-network-link wait --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink" --created
-      - name: Pause executing next line of CLI script until the dns-resolver virtual-network-link is successfully \
-updated.
+               az dns-resolver vnet-link wait --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup" --name "sampleVirtualNetworkLink" --created
+      - name: Pause executing next line of CLI script until the dns-resolver vnet-link is successfully updated.
         text: |-
-               az dns-resolver virtual-network-link wait --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink" --updated
-      - name: Pause executing next line of CLI script until the dns-resolver virtual-network-link is successfully \
-deleted.
+               az dns-resolver vnet-link wait --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup" --name "sampleVirtualNetworkLink" --updated
+      - name: Pause executing next line of CLI script until the dns-resolver vnet-link is successfully deleted.
         text: |-
-               az dns-resolver virtual-network-link wait --dns-forwarding-ruleset-name "sampleDnsForwardingRuleset" \
---resource-group "sampleResourceGroup" --name "sampleVirtualNetworkLink" --deleted
+               az dns-resolver vnet-link wait --ruleset-name "sampleDnsForwardingRuleset" --resource-group \
+"sampleResourceGroup" --name "sampleVirtualNetworkLink" --deleted
 """

@@ -204,7 +204,7 @@ class AddDnsResolverForwardingRuleCreateMetadata(argparse.Action):
         return d
 
 
-class AddDnsResolverVirtualNetworkLinkUpdateMetadata(argparse.Action):
+class AddDnsResolverVnetLinkUpdateMetadata(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.metadata = action
@@ -226,7 +226,7 @@ class AddDnsResolverVirtualNetworkLinkUpdateMetadata(argparse.Action):
         return d
 
 
-class AddDnsResolverVirtualNetworkLinkCreateMetadata(argparse.Action):
+class AddDnsResolverVnetLinkCreateMetadata(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.metadata = action

@@ -24,8 +24,8 @@ from azext_dnsresolver.action import (
     AddDnsResolverForwardingRuleCreateMetadata,
     AddDnsResolverForwardingRuleUpdateTargetDnsServers,
     AddDnsResolverForwardingRuleUpdateMetadata,
-    AddDnsResolverVirtualNetworkLinkCreateMetadata,
-    AddDnsResolverVirtualNetworkLinkUpdateMetadata
+    AddDnsResolverVnetLinkCreateMetadata,
+    AddDnsResolverVnetLinkUpdateMetadata
 )
 
 
@@ -33,6 +33,7 @@ def load_arguments(self, _):
 
     with self.argument_context('dns-resolver list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
         c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
                    'results.')
 
@@ -71,12 +72,6 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
                    'resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent '
                    'changes.')
-
-    with self.argument_context('dns-resolver list-by-virtual-network') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
-        c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
-                   'results.')
 
     with self.argument_context('dns-resolver wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -188,17 +183,18 @@ def load_arguments(self, _):
         c.argument('outbound_endpoint_name', options_list=['--name', '-n', '--outbound-endpoint-name'], type=str,
                    help='The name of the outbound endpoint for the DNS resolver.', id_part='child_name_1')
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset list') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
         c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
                    'results.')
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset show') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dns_forwarding_ruleset_name', options_list=['--name', '-n', '--dns-forwarding-ruleset-name'],
                    type=str, help='The name of the DNS forwarding ruleset.', id_part='name')
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset create') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dns_forwarding_ruleset_name', options_list=['--name', '-n', '--dns-forwarding-ruleset-name'],
                    type=str, help='The name of the DNS forwarding ruleset.')
@@ -210,11 +206,12 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('dns_resolver_outbound_endpoints', action=AddDnsResolverOutboundEndpoints, nargs='+', help='The '
-                   'reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the '
-                   'forwarding rules in the ruleset to the target DNS servers.')
+        c.argument('dns_resolver_outbound_endpoints', options_list=['--outbound-endpoints'],
+                   action=AddDnsResolverOutboundEndpoints, nargs='+', help='The reference to the DNS resolver outbound '
+                   'endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the '
+                   'target DNS servers.')
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset update') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dns_forwarding_ruleset_name', options_list=['--name', '-n', '--dns-forwarding-ruleset-name'],
                    type=str, help='The name of the DNS forwarding ruleset.', id_part='name')
@@ -223,7 +220,7 @@ def load_arguments(self, _):
                    'changes.')
         c.argument('tags', tags_type)
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset delete') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dns_forwarding_ruleset_name', options_list=['--name', '-n', '--dns-forwarding-ruleset-name'],
                    type=str, help='The name of the DNS forwarding ruleset.', id_part='name')
@@ -231,33 +228,29 @@ def load_arguments(self, _):
                    'resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent '
                    'changes.')
 
-    with self.argument_context('dns-resolver dns-forwarding-ruleset list-by-virtual-network') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
-        c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
-                   'results.')
-
-    with self.argument_context('dns-resolver dns-forwarding-ruleset wait') as c:
+    with self.argument_context('dns-resolver forwarding-ruleset wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('dns_forwarding_ruleset_name', options_list=['--name', '-n', '--dns-forwarding-ruleset-name'],
                    type=str, help='The name of the DNS forwarding ruleset.', id_part='name')
 
     with self.argument_context('dns-resolver forwarding-rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.')
         c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
                    'results.')
 
     with self.argument_context('dns-resolver forwarding-rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('forwarding_rule_name', options_list=['--name', '-n', '--forwarding-rule-name'], type=str,
                    help='The name of the forwarding rule.', id_part='child_name_1')
 
     with self.argument_context('dns-resolver forwarding-rule create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.')
         c.argument('forwarding_rule_name', options_list=['--name', '-n', '--forwarding-rule-name'], type=str,
                    help='The name of the forwarding rule.')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
@@ -275,8 +268,8 @@ def load_arguments(self, _):
 
     with self.argument_context('dns-resolver forwarding-rule update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('forwarding_rule_name', options_list=['--name', '-n', '--forwarding-rule-name'], type=str,
                    help='The name of the forwarding rule.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
@@ -291,30 +284,32 @@ def load_arguments(self, _):
 
     with self.argument_context('dns-resolver forwarding-rule delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('forwarding_rule_name', options_list=['--name', '-n', '--forwarding-rule-name'], type=str,
                    help='The name of the forwarding rule.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
                    'resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent '
                    'changes.')
 
-    with self.argument_context('dns-resolver virtual-network-link list') as c:
+    with self.argument_context('dns-resolver vnet-link list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.')
         c.argument('top', type=int, help='The maximum number of results to return. If not specified, returns up to 100 '
                    'results.')
 
-    with self.argument_context('dns-resolver virtual-network-link show') as c:
+    with self.argument_context('dns-resolver vnet-link show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('virtual_network_link_name', options_list=['--name', '-n', '--virtual-network-link-name'], type=str,
                    help='The name of the virtual network link.', id_part='child_name_1')
 
-    with self.argument_context('dns-resolver virtual-network-link create') as c:
+    with self.argument_context('dns-resolver vnet-link create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.')
         c.argument('virtual_network_link_name', options_list=['--name', '-n', '--virtual-network-link-name'], type=str,
                    help='The name of the virtual network link.')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
@@ -322,35 +317,35 @@ def load_arguments(self, _):
                    'changes.')
         c.argument('if_none_match', type=str, help='Set to \'*\' to allow a new resource to be created, but to prevent '
                    'updating an existing resource. Other values will be ignored.')
-        c.argument('metadata', action=AddDnsResolverVirtualNetworkLinkCreateMetadata, nargs='+', help='Metadata '
-                   'attached to the virtual network link. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...')
+        c.argument('metadata', action=AddDnsResolverVnetLinkCreateMetadata, nargs='+', help='Metadata attached to the '
+                   'virtual network link. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...')
         c.argument('id_', options_list=['--id'], type=str, help='Resource ID.', arg_group='Virtual Network')
 
-    with self.argument_context('dns-resolver virtual-network-link update') as c:
+    with self.argument_context('dns-resolver vnet-link update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('virtual_network_link_name', options_list=['--name', '-n', '--virtual-network-link-name'], type=str,
                    help='The name of the virtual network link.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
                    'resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent '
                    'changes.')
-        c.argument('metadata', action=AddDnsResolverVirtualNetworkLinkUpdateMetadata, nargs='+', help='Metadata '
-                   'attached to the virtual network link. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...')
+        c.argument('metadata', action=AddDnsResolverVnetLinkUpdateMetadata, nargs='+', help='Metadata attached to the '
+                   'virtual network link. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...')
 
-    with self.argument_context('dns-resolver virtual-network-link delete') as c:
+    with self.argument_context('dns-resolver vnet-link delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('virtual_network_link_name', options_list=['--name', '-n', '--virtual-network-link-name'], type=str,
                    help='The name of the virtual network link.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the resource. Omit this value to always overwrite the current '
                    'resource. Specify the last-seen ETag value to prevent accidentally overwriting any concurrent '
                    'changes.')
 
-    with self.argument_context('dns-resolver virtual-network-link wait') as c:
+    with self.argument_context('dns-resolver vnet-link wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('dns_forwarding_ruleset_name', type=str, help='The name of the DNS forwarding ruleset.',
-                   id_part='name')
+        c.argument('dns_forwarding_ruleset_name', options_list=['--ruleset-name'], type=str, help='The name of the DNS '
+                   'forwarding ruleset.', id_part='name')
         c.argument('virtual_network_link_name', options_list=['--name', '-n', '--virtual-network-link-name'], type=str,
                    help='The name of the virtual network link.', id_part='child_name_1')
