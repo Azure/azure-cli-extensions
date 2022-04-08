@@ -96,6 +96,7 @@ def create_deserializer():
 
     return Deserializer(deserializer)
 
+
 def update_containerapp_yaml(cmd,
                              name,
                              resource_group_name,
@@ -216,7 +217,7 @@ def _override_parameters_into_containerapp(cmd,
                                            container_name=None,
                                            managed_env=None,
                                            min_replicas=None,
-                                           max_replicas = None,
+                                           max_replicas=None,
                                            target_port=None,
                                            transport=None,
                                            ingress=None,
@@ -241,8 +242,8 @@ def _override_parameters_into_containerapp(cmd,
                                            tags=None):
     # Containers
     container_needs_update = (image is not None or container_name is not None or set_env_vars is not None or
-        remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or
-        cpu is not None or memory is not None or startup_command is not None or args is not None)
+                              remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or
+                              cpu is not None or memory is not None or startup_command is not None or args is not None)
 
     if container_needs_update:
         if not container_name:
@@ -449,34 +450,34 @@ def _override_parameters_into_containerapp(cmd,
 
 
 def create_containerapp_yaml(cmd,
-                            name,
-                            resource_group_name,
-                            yaml,
-                            image=None,
-                            container_name=None,
-                            managed_env=None,
-                            min_replicas=None,
-                            max_replicas=None,
-                            target_port=None,
-                            transport=None,
-                            ingress=None,
-                            revisions_mode=None,
-                            secrets=None,
-                            env_vars=None,
-                            cpu=None,
-                            memory=None,
-                            registry_server=None,
-                            registry_user=None,
-                            registry_pass=None,
-                            dapr_enabled=False,
-                            dapr_app_port=None,
-                            dapr_app_id=None,
-                            dapr_app_protocol=None,
-                            revision_suffix=None,
-                            startup_command=None,
-                            args=None,
-                            tags=None,
-                            no_wait=False):
+                             name,
+                             resource_group_name,
+                             yaml,
+                             image=None,
+                             container_name=None,
+                             managed_env=None,
+                             min_replicas=None,
+                             max_replicas=None,
+                             target_port=None,
+                             transport=None,
+                             ingress=None,
+                             revisions_mode=None,
+                             secrets=None,
+                             env_vars=None,
+                             cpu=None,
+                             memory=None,
+                             registry_server=None,
+                             registry_user=None,
+                             registry_pass=None,
+                             dapr_enabled=False,
+                             dapr_app_port=None,
+                             dapr_app_id=None,
+                             dapr_app_protocol=None,
+                             revision_suffix=None,
+                             startup_command=None,
+                             args=None,
+                             tags=None,
+                             no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(yaml))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
@@ -802,7 +803,7 @@ def update_containerapp(cmd,
                                         container_name=container_name,
                                         min_replicas=min_replicas,
                                         max_replicas=max_replicas,
-                                        set_env_vars = set_env_vars,
+                                        set_env_vars=set_env_vars,
                                         remove_env_vars=remove_env_vars,
                                         replace_env_vars=replace_env_vars,
                                         remove_all_env_vars=remove_all_env_vars,
