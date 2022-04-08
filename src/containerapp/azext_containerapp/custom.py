@@ -161,13 +161,13 @@ def update_containerapp_yaml(cmd,
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
-    tags = None
+    yaml_tags = None
     if yaml_containerapp.get('tags'):
-        tags = yaml_containerapp.get('tags')
+        yaml_ = yaml_containerapp.get('tags')
         del yaml_containerapp['tags']
 
     containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
-    containerapp_def['tags'] = tags
+    containerapp_def['tags'] = yaml_tags
 
     # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
     containerapp_def = process_loaded_yaml(containerapp_def)
@@ -509,13 +509,13 @@ def create_containerapp_yaml(cmd,
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
-    tags = None
+    yaml_tags = None
     if yaml_containerapp.get('tags'):
-        tags = yaml_containerapp.get('tags')
+        yaml_tags = yaml_containerapp.get('tags')
         del yaml_containerapp['tags']
 
     containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
-    containerapp_def['tags'] = tags
+    containerapp_def['tags'] = yaml_tags
 
     # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
     containerapp_def = process_loaded_yaml(containerapp_def)
