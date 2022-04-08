@@ -270,9 +270,8 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     instance.addon_profiles = addon_profiles
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     return instance
 
