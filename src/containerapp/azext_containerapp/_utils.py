@@ -417,7 +417,7 @@ def _remove_env_vars(existing_env_vars, remove_env_vars):
 
 
 def _add_or_update_tags(containerapp_def, tags):
-    if 'tags' not in containerapp_def:
+    if 'tags' not in containerapp_def or not containerapp_def['tags']:
         if tags:
             containerapp_def['tags'] = tags
         else:
@@ -532,7 +532,7 @@ def _is_valid_weight(weight):
 
 
 def _update_traffic_weights(containerapp_def, list_weights):
-    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or not containerapp_def["properties"]["configuration"]["ingress"]["traffic"] or (list_weights and len(list_weights)):
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
 
     for new_weight in list_weights:

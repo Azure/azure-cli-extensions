@@ -950,7 +950,7 @@ def update_containerapp(cmd,
 
     # Scale
     if update_map["scale"]:
-        if "scale" not in containerapp_def["properties"]["template"]:
+        if "scale" not in containerapp_def["properties"]["template"] or not containerapp_def["properties"]["template"]["scale"]:
             containerapp_def["properties"]["template"]["scale"] = {}
         if min_replicas is not None:
             containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
@@ -1724,7 +1724,7 @@ def copy_revision(cmd,
 
     # Scale
     if update_map["scale"]:
-        if "scale" not in containerapp_def["properties"]["template"]:
+        if "scale" not in containerapp_def["properties"]["template"] or not containerapp_def["properties"]["template"]["scale"]:
             containerapp_def["properties"]["template"]["scale"] = {}
         if min_replicas is not None:
             containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
@@ -1960,7 +1960,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
     registries_def = None
     registry = None
 
-    if "registries" not in containerapp_def["properties"]["configuration"]:
+    if "registries" not in containerapp_def["properties"]["configuration"] or not containerapp_def["properties"]["configuration"]["registries"]:
         containerapp_def["properties"]["configuration"]["registries"] = []
 
     registries_def = containerapp_def["properties"]["configuration"]["registries"]
@@ -2192,10 +2192,10 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    if 'configuration' not in containerapp_def['properties']:
+    if 'configuration' not in containerapp_def['properties'] or not containerapp_def['properties']['configuration']:
         containerapp_def['properties']['configuration'] = {}
 
-    if 'dapr' not in containerapp_def['properties']['configuration']:
+    if 'dapr' not in containerapp_def['properties']['configuration'] or not containerapp_def['properties']['configuration']['dapr']:
         containerapp_def['properties']['configuration']['dapr'] = {}
 
     if dapr_app_id:
@@ -2231,10 +2231,10 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
-    if 'configuration' not in containerapp_def['properties']:
+    if 'configuration' not in containerapp_def['properties'] or not containerapp_def['properties']['configuration']:
         containerapp_def['properties']['configuration'] = {}
 
-    if 'dapr' not in containerapp_def['properties']['configuration']:
+    if 'dapr' not in containerapp_def['properties']['configuration'] or not containerapp_def['properties']['configuration']['dapr']:
         containerapp_def['properties']['configuration']['dapr'] = {}
 
     containerapp_def['properties']['configuration']['dapr']['enabled'] = False
