@@ -96,9 +96,23 @@ def create_deserializer():
 
     return Deserializer(deserializer)
 
-
-def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
-    yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
+def update_containerapp_yaml(cmd,
+                             name,
+                             resource_group_name,
+                             yaml,
+                             image=None,
+                             container_name=None,
+                             min_replicas=None,
+                             max_replicas=None,
+                             cpu=None,
+                             memory=None,
+                             revision_suffix=None,
+                             startup_command=None,
+                             args=None,
+                             tags=None,
+                             from_revision=None,
+                             no_wait=False):
+    yaml_containerapp = process_loaded_yaml(load_yaml_file(yaml))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
@@ -161,6 +175,19 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
     _remove_additional_attributes(current_containerapp_def)
     _remove_readonly_attributes(current_containerapp_def)
 
+    _override_parameters_into_containerapp(cmd=cmd,
+                                           containerapp_def=containerapp_def,
+                                           image=image,
+                                           container_name=container_name,
+                                           min_replicas=min_replicas,
+                                           max_replicas=max_replicas,
+                                           cpu=cpu,
+                                           memory=memory,
+                                           revision_suffix=revision_suffix,
+                                           startup_command=startup_command,
+                                           args=args,
+                                           tags=tags)
+
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=current_containerapp_def, no_wait=no_wait)
@@ -175,8 +202,244 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
         handle_raw_exception(e)
 
 
-def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
-    yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
+def _override_parameters_into_containerapp(cmd,
+                                           containerapp_def,
+                                           image=None,
+                                           container_name=None,
+                                           managed_env=None,
+                                           min_replicas=None,
+                                           max_replicas = None,
+                                           target_port=None,
+                                           transport=None,
+                                           ingress=None,
+                                           revisions_mode=None,
+                                           secrets=None,
+                                           env_vars=None,
+                                           cpu=None,
+                                           memory=None,
+                                           registry_server=None,
+                                           registry_user=None,
+                                           registry_pass=None,
+                                           dapr_enabled=None,
+                                           dapr_app_port=None,
+                                           dapr_app_id=None,
+                                           dapr_app_protocol=None,
+                                           revision_suffix=None,
+                                           startup_command=None,
+                                           args=None,
+                                           tags=None):
+    # Containers
+    container_needs_update = (image is not None or container_name is not None or env_vars is not None or
+        cpu is not None or memory is not None or startup_command is not None or args is not None)
+
+    if container_needs_update:
+        if not container_name:
+            if len(containerapp_def["properties"]["template"]["containers"]) == 1:
+                container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
+            else:
+                raise ValidationError("Usage error: --container-name is required when making changes to a container")
+
+        # Check if updating existing container
+        updating_existing_container = False
+        for c in containerapp_def["properties"]["template"]["containers"]:
+            if c["name"].lower() == container_name.lower():
+                updating_existing_container = True
+
+                if image is not None:
+                    c["image"] = image
+                if env_vars is not None:
+                    c["env"] = _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+                if "resources" in c and c["resources"]:
+                    if cpu is not None:
+                        c["resources"]["cpu"] = cpu
+                    if memory is not None:
+                        c["resources"]["cpu"] = memory
+                if startup_command is not None:
+                    if isinstance(startup_command, list) and not startup_command:
+                        c["command"] = None
+                    else:
+                        c["command"] = startup_command
+                if args is not None:
+                    if isinstance(args, list) and not args:
+                        c["args"] = None
+                    else:
+                        c["args"] = args
+
+        # If not updating existing container, add as new container
+        if not updating_existing_container:
+            if image is None:
+                raise ValidationError("Usage error: --image is required when adding a new container")
+
+            resources_def = None
+            if cpu is not None or memory is not None:
+                resources_def = ContainerResourcesModel
+                resources_def["cpu"] = cpu
+                resources_def["memory"] = memory
+
+            container_def = ContainerModel
+            container_def["name"] = container_name
+            container_def["image"] = image
+            container_def["env"] = []
+
+            if env_vars is not None:
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(env_vars))
+
+            if startup_command is not None:
+                if isinstance(startup_command, list) and not startup_command:
+                    container_def["command"] = None
+                else:
+                    container_def["command"] = startup_command
+            if args is not None:
+                if isinstance(args, list) and not args:
+                    container_def["args"] = None
+                else:
+                    container_def["args"] = args
+            if resources_def is not None:
+                container_def["resources"] = resources_def
+
+            containerapp_def["properties"]["template"]["containers"].append(container_def)
+
+    # Managed env
+    if managed_env is not None:
+        containerapp_def["properties"]["managedEnvironmentId"] = managed_env
+
+    config_def = containerapp_def["properties"]["configuration"]
+
+    # Registries
+    if registry_server is not None or registry_pass is not None or registry_user is not None:
+        if "registries" in config_def and config_def["registries"]:
+            if not registry_server:
+                if len(config_def["registries"]) == 1:
+                    registry_server = config_def["registries"][0]["server"]
+                else:
+                    raise ValidationError("Usage error: --registry-server is required when adding or updating a registry")
+
+            # Check if updating existing registry
+            updating_existing_registry = False
+            for r in config_def["registries"]:
+                if r["server"].lower() == registry_server.lower():
+                    updating_existing_registry = True
+
+                    if registry_user is not None:
+                        r["username"] = registry_user
+
+                    if registry_pass is not None:
+                        r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                            containerapp_def["properties"]["configuration"]["secrets"],
+                            registry_user,
+                            registry_server,
+                            registry_pass,
+                            updating_existing_secret=True)
+
+            # If not updating existing registry, add as new registry
+            if not updating_existing_registry:
+                if not registry_user or not registry_pass:
+                    # If registry is Azure Container Registry, we can try inferring credentials
+                    if '.azurecr.io' not in registry_server:
+                        raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
+                    logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+                    parsed = urlparse(registry_server)
+                    registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+
+                    try:
+                        registry_user, registry_pass = _get_acr_cred(cmd.cli_ctx, registry_name)
+                    except Exception as ex:
+                        raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
+                registry_def = RegistryCredentialsModel
+                registry_def["server"] = registry_server
+                registry_def["username"] = registry_user
+                registry_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                    containerapp_def["properties"]["configuration"]["secrets"],
+                    registry_user,
+                    registry_server,
+                    registry_pass,
+                    updating_existing_secret=True)
+
+                config_def["registries"].append(registry_def)
+
+    # Revisions mode
+    if revisions_mode is not None:
+        config_def["activeRevisionsMode"] = revisions_mode
+
+    # Ingress
+    if "ingress" in config_def and config_def["ingress"]:
+        ingress_def = config_def["ingress"]
+
+        if ingress is not None:
+            if ingress.lower() == "internal":
+                ingress_def["external"] = False
+            elif ingress.lower() == "external":
+                ingress_def["external"] = True
+        if target_port is not None:
+            ingress_def["targetPort"] = target_port
+        if transport is not None:
+            ingress_def["transport"] = transport
+
+    # Dapr
+    if "dapr" in config_def and config_def["dapr"]:
+        dapr_def = config_def["dapr"]
+
+        if dapr_enabled is not None:
+            dapr_def["enabled"] = dapr_enabled
+        if dapr_app_id is not None:
+            dapr_def["appId"] = dapr_app_id
+        if dapr_app_port is not None:
+            dapr_def["appPort"] = dapr_app_port
+        if dapr_app_protocol is not None:
+            dapr_def["appProtocol"] = dapr_app_protocol
+
+    template_def = containerapp_def["properties"]["template"]
+
+    # Revision suffix
+    if revision_suffix is not None:
+        template_def["revisionSuffix"] = revision_suffix
+
+    # Scale
+    if "scale" in template_def and template_def["scale"]:
+        if min_replicas is not None:
+            template_def["scale"]["minReplicas"] = min_replicas
+        if max_replicas is not None:
+            template_def["scale"]["maxReplicas"] = max_replicas
+
+    # Secrets
+    if secrets is not None:
+        _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
+
+    # Tags
+    if tags is not None:
+        _add_or_update_tags(containerapp_def, tags)
+
+
+def create_containerapp_yaml(cmd,
+                            name,
+                            resource_group_name,
+                            yaml,
+                            image=None,
+                            container_name=None,
+                            managed_env=None,
+                            min_replicas=None,
+                            max_replicas=None,
+                            target_port=None,
+                            transport=None,
+                            ingress=None,
+                            revisions_mode=None,
+                            secrets=None,
+                            env_vars=None,
+                            cpu=None,
+                            memory=None,
+                            registry_server=None,
+                            registry_user=None,
+                            registry_pass=None,
+                            dapr_enabled=False,
+                            dapr_app_port=None,
+                            dapr_app_id=None,
+                            dapr_app_protocol=None,
+                            revision_suffix=None,
+                            startup_command=None,
+                            args=None,
+                            tags=None,
+                            no_wait=False):
+    yaml_containerapp = process_loaded_yaml(load_yaml_file(yaml))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
@@ -250,6 +513,33 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     if not containerapp_def.get('location'):
         containerapp_def['location'] = env_info['location']
 
+    _override_parameters_into_containerapp(cmd=cmd,
+                                           containerapp_def=containerapp_def,
+                                           image=image,
+                                           container_name=container_name,
+                                           managed_env=managed_env,
+                                           min_replicas=min_replicas,
+                                           max_replicas=max_replicas,
+                                           target_port=target_port,
+                                           transport=transport,
+                                           ingress=ingress,
+                                           revisions_mode=revisions_mode,
+                                           secrets=secrets,
+                                           env_vars=env_vars,
+                                           cpu=cpu,
+                                           memory=memory,
+                                           registry_server=registry_server,
+                                           registry_user=registry_user,
+                                           registry_pass=registry_pass,
+                                           dapr_enabled=dapr_enabled,
+                                           dapr_app_port=dapr_app_port,
+                                           dapr_app_id=dapr_app_id,
+                                           dapr_app_protocol=dapr_app_protocol,
+                                           revision_suffix=revision_suffix,
+                                           startup_command=startup_command,
+                                           args=args,
+                                           tags=tags)
+
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
@@ -306,7 +596,13 @@ def create_containerapp(cmd,
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or dapr_app_protocol or\
                 revision_suffix or startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will take precedence over the values defined in the yaml')
-        return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, yaml=yaml, image=image,
+                                        container_name=container_name, managed_env=managed_env, min_replicas=min_replicas, max_replicas=max_replicas,
+                                        target_port=target_port, transport=transport, ingress=ingress, revisions_mode=revisions_mode, secrets=secrets,
+                                        env_vars=env_vars, cpu=cpu, memory=memory, registry_server=registry_server, registry_user=registry_user,
+                                        registry_pass=registry_pass, dapr_enabled=dapr_enabled, dapr_app_port=dapr_app_port, dapr_app_id=dapr_app_id,
+                                        dapr_app_protocol=dapr_app_protocol, revision_suffix=revision_suffix, startup_command=startup_command, args=args,
+                                        tags=tags, no_wait=no_wait)
 
     if not image:
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
@@ -456,11 +752,25 @@ def update_containerapp(cmd,
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
-        if image or min_replicas or max_replicas or\
+        if image or container_name or min_replicas or max_replicas or\
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
-           startup_command or args or tags:
-            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+           revision_suffix or startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will take precedence over the values defined in the yaml')
+        return update_containerapp_yaml(cmd=cmd,
+                                        name=name,
+                                        resource_group_name=resource_group_name,
+                                        yaml=yaml,
+                                        image=image,
+                                        container_name=container_name,
+                                        min_replicas=min_replicas,
+                                        max_replicas=max_replicas,
+                                        cpu=cpu,
+                                        memory=memory,
+                                        revision_suffix=revision_suffix,
+                                        startup_command=startup_command,
+                                        args=args,
+                                        tags=tags,
+                                        no_wait=no_wait)
 
     containerapp_def = None
     try:
@@ -481,7 +791,7 @@ def update_containerapp(cmd,
 
     update_map = {}
     update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu is not None or memory is not None or startup_command is not None or args is not None
 
     if tags:
         _add_or_update_tags(containerapp_def, tags)
@@ -495,7 +805,7 @@ def update_containerapp(cmd,
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
                 container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
-                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
@@ -1206,7 +1516,22 @@ def copy_revision(cmd,
             remove_all_env_vars or cpu or memory or \
                 startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, from_revision=from_revision, no_wait=no_wait)
+        return update_containerapp_yaml(cmd=cmd,
+                                        name=name,
+                                        resource_group_name=resource_group_name,
+                                        yaml=yaml,
+                                        image=image,
+                                        container_name=container_name,
+                                        min_replicas=min_replicas,
+                                        max_replicas=max_replicas,
+                                        cpu=cpu,
+                                        memory=memory,
+                                        revision_suffix=revision_suffix,
+                                        startup_command=startup_command,
+                                        args=args,
+                                        tags=tags,
+                                        from_revision=from_revision,
+                                        no_wait=no_wait)
 
     containerapp_def = None
     try:
@@ -1251,7 +1576,7 @@ def copy_revision(cmd,
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
                 container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
-                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
