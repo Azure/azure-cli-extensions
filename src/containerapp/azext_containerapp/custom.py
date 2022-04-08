@@ -104,6 +104,10 @@ def update_containerapp_yaml(cmd,
                              container_name=None,
                              min_replicas=None,
                              max_replicas=None,
+                             set_env_vars=None,
+                             remove_env_vars=None,
+                             replace_env_vars=None,
+                             remove_all_env_vars=False,
                              cpu=None,
                              memory=None,
                              revision_suffix=None,
@@ -181,6 +185,10 @@ def update_containerapp_yaml(cmd,
                                            container_name=container_name,
                                            min_replicas=min_replicas,
                                            max_replicas=max_replicas,
+                                           set_env_vars=set_env_vars,
+                                           remove_env_vars=remove_env_vars,
+                                           replace_env_vars=replace_env_vars,
+                                           remove_all_env_vars=remove_all_env_vars,
                                            cpu=cpu,
                                            memory=memory,
                                            revision_suffix=revision_suffix,
@@ -214,7 +222,10 @@ def _override_parameters_into_containerapp(cmd,
                                            ingress=None,
                                            revisions_mode=None,
                                            secrets=None,
-                                           env_vars=None,
+                                           set_env_vars=None,
+                                           remove_env_vars=None,
+                                           replace_env_vars=None,
+                                           remove_all_env_vars=False,
                                            cpu=None,
                                            memory=None,
                                            registry_server=None,
@@ -229,7 +240,8 @@ def _override_parameters_into_containerapp(cmd,
                                            args=None,
                                            tags=None):
     # Containers
-    container_needs_update = (image is not None or container_name is not None or env_vars is not None or
+    container_needs_update = (image is not None or container_name is not None or set_env_vars is not None or
+        remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or
         cpu is not None or memory is not None or startup_command is not None or args is not None)
 
     if container_needs_update:
@@ -247,8 +259,25 @@ def _override_parameters_into_containerapp(cmd,
 
                 if image is not None:
                     c["image"] = image
-                if env_vars is not None:
-                    c["env"] = _add_or_update_env_vars(c["env"], parse_env_var_flags(env_vars))
+
+                if set_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+                if replace_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
+
+                if remove_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    _remove_env_vars(c["env"], remove_env_vars)
+
+                if remove_all_env_vars:
+                    c["env"] = []
+
                 if "resources" in c and c["resources"]:
                     if cpu is not None:
                         c["resources"]["cpu"] = cpu
@@ -281,8 +310,17 @@ def _override_parameters_into_containerapp(cmd,
             container_def["image"] = image
             container_def["env"] = []
 
-            if env_vars is not None:
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(env_vars))
+            if set_env_vars is not None:
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars), is_add=True)
+
+            if replace_env_vars is not None:
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
+
+            if remove_env_vars is not None:
+                _remove_env_vars(container_def["env"], remove_env_vars)
+
+            if remove_all_env_vars:
+                container_def["env"] = []
 
             if startup_command is not None:
                 if isinstance(startup_command, list) and not startup_command:
@@ -525,7 +563,7 @@ def create_containerapp_yaml(cmd,
                                            ingress=ingress,
                                            revisions_mode=revisions_mode,
                                            secrets=secrets,
-                                           env_vars=env_vars,
+                                           set_env_vars=env_vars,
                                            cpu=cpu,
                                            memory=memory,
                                            registry_server=registry_server,
@@ -764,6 +802,10 @@ def update_containerapp(cmd,
                                         container_name=container_name,
                                         min_replicas=min_replicas,
                                         max_replicas=max_replicas,
+                                        set_env_vars = set_env_vars,
+                                        remove_env_vars=remove_env_vars,
+                                        replace_env_vars=replace_env_vars,
+                                        remove_all_env_vars=remove_all_env_vars,
                                         cpu=cpu,
                                         memory=memory,
                                         revision_suffix=revision_suffix,
@@ -1524,6 +1566,10 @@ def copy_revision(cmd,
                                         container_name=container_name,
                                         min_replicas=min_replicas,
                                         max_replicas=max_replicas,
+                                        set_env_vars=set_env_vars,
+                                        replace_env_vars=replace_env_vars,
+                                        remove_env_vars=remove_env_vars,
+                                        remove_all_env_vars=remove_all_env_vars,
                                         cpu=cpu,
                                         memory=memory,
                                         revision_suffix=revision_suffix,
