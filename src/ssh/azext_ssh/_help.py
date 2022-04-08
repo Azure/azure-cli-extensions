@@ -48,7 +48,7 @@ helps['ssh vm'] = """
           text: |
             az ssh vm --local-user username --resource-group myResourceGroup --name myArcServer
 
-        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempt to use pre-installed OpenSSH client (ensure OpenSSH client is installed and the Path environment variable is set correctly).
+        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempt to use pre-installed OpenSSH client (in that case, ensure OpenSSH client is installed and the Path environment variable is set correctly).
           text: |
             az ssh vm --resource-group myResourceGroup --name myVM --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
@@ -58,7 +58,7 @@ helps['ssh config'] = """
     short-summary: Create an SSH config for resources (Azure VMs, Arc Servers, etc) which can then be used by clients that support OpenSSH configs and certificates
     long-summary: Other software (git/rsync/etc) that support setting an SSH command can be set to use the config file by setting the command to 'ssh -F /path/to/config' e.g. rsync -e 'ssh -F /path/to/config'.  Users can create ssh config files that use AAD issued certificates or local user credentials.
     examples:
-        - name: Give a resource group and resource name for which to create a config using AAD issued certificates, save in a local file, and then ssh into that resource
+        - name: Give the resource group and machine name for which to create a config using AAD issued certificates, save in a local file, and then ssh into that resource
           text: |
             az ssh config --resource-group myResourceGroup --name myVm --file ./sshconfig
             ssh -F ./sshconfig myResourceGroup-myVM
@@ -70,11 +70,8 @@ helps['ssh config'] = """
 
         - name: Give a local user to create a config using local user credentials, save in local file, and then ssh into that resource
           text: |
-            az ssh config --resource-group myResourceGroup --name myVM --local-user username1 --file ./sshconfig
-            ssh -F ./sshconfig MyResourceGroup-myVM-username1
-
-            az ssh config -ip 1.2.3.4 --local-user username2 --private-key-file key --file ./sshconfig
-            ssh -F ./sshconfig 1.2.3.4-username2
+            az ssh config --resource-group myResourceGroup --name myMachine --local-user username --certificate-file cert --private-key-file key --file ./sshconfig
+            ssh -F ./sshconfig MyResourceGroup-myMachine-username
 
         - name: Give Keys Destination Folder to store the generated keys and certificates. If not provided, SSH keys are stored in new folder "az_ssh_config" next to the config file.
           text: |
@@ -94,7 +91,7 @@ helps['ssh config'] = """
             rsync -e 'ssh -F ./sshconfig' -avP directory/ myvm:~/directory
             GIT_SSH_COMMAND="ssh -F ./sshconfig" git clone myvm:~/gitrepo
 
-        - name: Give a SSH Client Folder to use the ssh executables in that folder. If not provided, the extension attempt to use pre-installed OpenSSH client (ensure OpenSSH client is installed and the Path environment variable is set correctly).
+        - name: Give SSH Client Folder to use the ssh executables in that folder. If not provided, the extension attempt to use pre-installed OpenSSH client (in that case, ensure OpenSSH client is installed and the Path environment variable is set correctly).
           text: |
             az ssh vm --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
