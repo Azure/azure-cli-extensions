@@ -15,7 +15,7 @@ helps['ssh vm'] = """
     short-summary: SSH into Azure VMs or Arc Servers.
     long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates. To SSH using local user credentials, you must provide the local user name using the --local-user parameter.
     examples:
-        - name: Give a resource group name and resource name to SSH using AAD issued certificates
+        - name: Give a resource group name and machine name to SSH using AAD issued certificates
           text: |
             az ssh vm --resource-group myResourceGroup --name myVM
 
@@ -34,10 +34,7 @@ helps['ssh vm'] = """
 
         - name: Give the Resource Type of the target. Useful when there is an Azure VM and an Arc Server with the same name in the same resource group. Resource type can be either "Microsoft.HybridCompute" for Arc Servers or "Microsoft.Compute" for Azure Virtual Machines.
           text: |
-            # Azure Virtual Machine
-            az ssh vm --resource-type Microsoft.Compute --resource-group myResourceGroup --name myVM
-            # Arc Enbled Server
-            az ssh vm --resource-type Microsoft.HybridCompute --resource-group myResourceGroup --name myMachine
+            az ssh vm --resource-type [Microsoft.Compute|Microsoft.HybridCompute] --resource-group myResourceGroup --name myVM
 
         - name: Give a local user name to SSH with local user credentials using certificate based authentication.
           text: |
@@ -50,14 +47,10 @@ helps['ssh vm'] = """
         - name: Give a local user name to SSH with local user credentials using password based authentication.
           text: |
             az ssh vm --local-user username --resource-group myResourceGroup --name myArcServer
-        
-        - name: Give a SSH Client Folder to use the ssh executables (ssh-keyge.exe, ssh.exe, etc) in that folder. If not provided, the extension will look for pre-installed ssh client (for Windows, it will look for ssh executables under C:\\Windows\\System32\\OpenSSH).
+
+        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempt to use pre-installed OpenSSH client (ensure OpenSSH client is installed and the Path environment variable is set correctly).
           text: |
             az ssh vm --resource-group myResourceGroup --name myVM --ssh-client-folder "C:\\Program Files\\OpenSSH"
-        
-        - name: When connecting to an Arc Server, optionally give a SSH Proxy Folder to indicate the folder where the SSH proxy will be stored. If not provided, the proxy will be saved in .clientsshproxy folder in user\'s home directory. 
-          - text: |
-            az ssh vm --resource-group myResourceGroup --name myMachine --ssh-proxy-folder "/home/user/myproxyfolder"
 """
 
 helps['ssh config'] = """
@@ -75,7 +68,7 @@ helps['ssh config'] = """
             # password based authentication
             az ssh config --resource-group myResourceGroup --name myVM --local-user username1 --file ./sshconfig
             ssh -F ./sshconfig MyResourceGroup-myVM-username1
-            
+
             # key based authentication
             az ssh config --resource-group myResourceGroup --name myVM --local-user username2 --private-key-file key --file ./sshconfig
             ssh -F ./sshconfig MyResourceGroup-myVM-username2
@@ -88,10 +81,10 @@ helps['ssh config'] = """
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
             ssh -F ./sshconfig 1.2.3.4
-        
-        - name: Give Keys Destination Folder to indicate where new generated keys and certificates will be saved. If not provided, keys will be saved to a new folder "az_ssh_config" next to the config file.
+
+        - name: Give Keys Destination Folder to store the generated keys and certificates. If not provided, SSH keys are stored in new folder "az_ssh_config" next to the config file.
           text: |
-            az ssh config --ip 1.2.3.4 --file ./sshconfig --keys-destination-folder /home/user/mykeys 
+            az ssh config --ip 1.2.3.4 --file ./sshconfig --keys-destination-folder /home/user/mykeys
 
         - name: Create a generic config for use with any host
           text: |
@@ -106,6 +99,10 @@ helps['ssh config'] = """
             az ssh config --ip \\* --file ./sshconfig
             rsync -e 'ssh -F ./sshconfig' -avP directory/ myvm:~/directory
             GIT_SSH_COMMAND="ssh -F ./sshconfig" git clone myvm:~/gitrepo
+
+        - name: Give a SSH Client Folder to use the ssh executables in that folder. If not provided, the extension attempt to use pre-installed OpenSSH client (ensure OpenSSH client is installed and the Path environment variable is set correctly).
+          text: |
+            az ssh vm --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
 
 helps['ssh cert'] = """
@@ -122,23 +119,31 @@ helps['ssh arc'] = """
     short-summary: SSH into Azure Arc Servers
     long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates as azure automatically rotate SSH CA keys. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
     examples:
-        - name: Give a resource group and Arc Server Name to SSH using AAD issued certificates
+        - name: Give a resource group name and machine name to SSH using AAD issued certificates
           text: |
-            az ssh arc --resource-group myResourceGroup --vm-name myArcServer
+            az ssh vm --resource-group myResourceGroup --name myMachine
 
         - name: Using a custom private key file
           text: |
-            az ssh arc --resource-group myResourceGroup --vm-name myArcServer --private-key-file key --public-key-file key.pub
+            az ssh vm --resource-group myResourceGroup --name myMachine --private-key-file key --public-key-file key.pub
 
-        - name: Give a local user name to SSH to a local user using certificate-based authentication
+        - name: Using additional ssh arguments
           text: |
-            az ssh arc  --resource-group myResourceGroup --vm-name myArcServer --certificate-file cert.pub --private-key key --local-user name
+            az ssh vm --resource-group myResourceGroup --name myMachine -- -A -o ForwardX11=yes
 
-        - name: Give a local user name to SSH to a local user using key-based authentication
+        - name: Give a local user name to SSH with local user credentials using certificate based authentication.
           text: |
-            az ssh arc --resource-group myRG --vm-name myVM --local-user name --private-key-file key
+            az ssh vm --local-user username --resource-group myResourceGroup --name myMachine --certificate-file cert.pub --private-key key
 
-        - name: Give a local user name to SSH to a local user using password-based authentication
+        - name: Give a local user name to SSH with local user credentials using key based authentication.
           text: |
-            az ssh arc --resource-group myResourceGroup --vm-name myArcServer --local-user username
+            az ssh vm --local-user username --resource-group myResourceGroup --name myMachine --private-key-file key
+
+        - name: Give a local user name to SSH with local user credentials using password based authentication.
+          text: |
+            az ssh vm --local-user username --resource-group myResourceGroup --name myMachine
+
+        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempt to use pre-installed OpenSSH client (ensure OpenSSH client is installed and the Path environment variable is set correctly).
+          text: |
+            az ssh vm --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
