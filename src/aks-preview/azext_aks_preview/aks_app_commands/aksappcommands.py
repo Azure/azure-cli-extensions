@@ -113,7 +113,6 @@ def _cmd_finish():
 
 def _download_binary() -> Optional[str]:
     # prompt user to download binary. If users says no, we error out and tell them that this requires the binary
-    from knack.prompting import prompt_y_n
     msg = 'The required binary was not found. Would you like us to download the required binary for you?'
 
     if not prompt_y_n(msg, default='n'):
