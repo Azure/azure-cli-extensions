@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import sre_parse
-from typing import Dict, List
+from typing import List, Optional
 import shutil
 import subprocess
 import requests
@@ -45,7 +45,7 @@ def _binary_pre_check() -> str:
 
 
 # Returns path to existing draftv2 binary and None otherwise
-def _get_existing_path() -> str:
+def _get_existing_path() -> Optional[str]:
     print('Checking if DraftV2 binary exists locally...')
 
     operating_system = platform.system().lower()
@@ -108,10 +108,10 @@ def _run(binary_path: str, deployment_path: str, arguments: List[str]) -> bool:
 
 def _cmd_finish():
     # Clean up logic can go here if needed
-    pass
+    print('Finishing running \'az aks app init\'')
 
 
-def _download_binary() -> str:
+def _download_binary() -> Optional[str]:
     # prompt user to download binary. If users says no, we error out and tell them that this requires the binary
     from knack.prompting import prompt_y_n
     msg = 'The required binary was not found. Would you like us to download the required binary for you?'
