@@ -163,7 +163,7 @@ def update_containerapp_yaml(cmd,
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
     yaml_tags = None
     if yaml_containerapp.get('tags'):
-        yaml_ = yaml_containerapp.get('tags')
+        yaml_tags = yaml_containerapp.get('tags')
         del yaml_containerapp['tags']
 
     containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
