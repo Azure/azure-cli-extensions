@@ -23,12 +23,14 @@ def aks_draft_app_init(deployment_path: str,
                        deployment_only: str) -> None:
     file_path = _binary_pre_check()
     if not file_path:
-        raise ValueError('Binary was NOT executed successfully')
+        raise ValueError('Binary check was NOT executed successfully')
 
     arguments = _build_arguments(app_name, language, create_config, dockerfile_only, deployment_only)
     run_successful = _run(file_path, deployment_path, arguments)
     if run_successful:
         _cmd_finish()
+    else:
+        raise ValueError('\'az aks app init\' was NOT executed successfully')
 
 
 # If setup is valid this method returns the correct binary path to execute
@@ -119,10 +121,17 @@ def _download_binary() -> str:
 
     print('Attempting to download dependency...')
 
-    operating_system = platform.system()
-    draftv2_release_version = 'v0.0.5'
-    filename = 'draftv2-' + operating_system.lower() + '-amd64'
-    url = 'https://github.com/Azure/aks-app/releases/download/' + draftv2_release_version + '/' + filename
+    operating_system = platform.system().lower()
+    architecture = platform.machine().lower()
+
+    if architecture == 'x86_64':
+        architecture = 'amd64'
+    if architecture not in ['arm64', 'amd64']:
+        print('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
+        return None
+
+    filename = f'draftv2-{operating_system}-{architecture}'
+    url = f'https://github.com/Azure/aks-app/releases/latest/download/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
     dir_name = '.aksapp'
@@ -143,7 +152,7 @@ def _download_binary() -> str:
         with open(filename, 'wb') as output_file:
             output_file.write(req.content)
         print('Download of DraftV2 binary was successful with a status code: ' + str(req.status_code))
-        os.chmod(binary_path + '/' + filename, 0o777)
+        os.chmod(binary_path + '/' + filename, 0o755)
         return binary_path + '/' + filename
 
     print('Download of DraftV2 binary was unsuccessful with a status code: ' + str(req.status_code))
