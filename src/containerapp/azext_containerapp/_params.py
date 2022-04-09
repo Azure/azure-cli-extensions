@@ -151,14 +151,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp ingress traffic') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
 
-    with self.argument_context('containerapp secret set') as c:
+    with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format.")
-
-    with self.argument_context('containerapp secret show') as c:
         c.argument('secret_name', help="The name of the secret to show.")
-
-    with self.argument_context('containerapp secret remove') as c:
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
+        c.argument('show_values', help='Show the secret values.')
 
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
@@ -176,9 +173,6 @@ def load_arguments(self, _):
         c.argument('password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
 
     with self.argument_context('containerapp registry list') as c:
-        c.argument('name', id_part=None)
-
-    with self.argument_context('containerapp secret list') as c:
         c.argument('name', id_part=None)
 
     with self.argument_context('containerapp revision list') as c:
