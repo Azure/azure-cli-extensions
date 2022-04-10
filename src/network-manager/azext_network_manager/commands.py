@@ -56,15 +56,15 @@ def load_command_table(self, _):
         client_factory=cf_adminrulecollection
     )
 
-    network_userrule = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rules_operations#UserRulesOperations.{}',
-        client_factory=cf_userrule
-    )
+    # network_userrule = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rules_operations#UserRulesOperations.{}',
+    #     client_factory=cf_userrule
+    # )
 
-    network_userrulecollection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collections_operations#UserRuleCollectionsOperations.{}',
-        client_factory=cf_userrulecollection
-    )
+    # network_userrulecollection = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collections_operations#UserRuleCollectionsOperations.{}',
+    #     client_factory=cf_userrulecollection
+    # )
 
     network_scopeconnection = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._scope_connections_operations#ScopeConnectionsOperations.{}',

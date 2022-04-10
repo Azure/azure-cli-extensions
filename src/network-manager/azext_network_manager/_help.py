@@ -494,7 +494,7 @@ helps['network manager security-admin-config rule-collection rule create'] = """
             Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
-            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag 
+            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag. 
 
             Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
