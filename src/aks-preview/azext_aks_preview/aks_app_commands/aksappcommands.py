@@ -43,14 +43,26 @@ def _binary_pre_check() -> str:
     else:  # prompt user to download binary
         return _download_binary()
 
+def _get_filename() -> Optional[str]:
+    operating_system = platform.system().lower()
+    architecture = platform.machine().lower()
+
+    if architecture == 'x86_64':
+        architecture = 'amd64'
+    if architecture not in ['arm64', 'amd64']:
+        print('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
+        return None
+
+    return f'draftv2-{operating_system}-{architecture}'
+
 
 # Returns path to existing draftv2 binary and None otherwise
 def _get_existing_path() -> Optional[str]:
     print('Checking if DraftV2 binary exists locally...')
 
-    operating_system = platform.system().lower()
-    # Filename depends on the operating system
-    filename = 'draftv2-' + operating_system + '-amd64'
+    filename = _get_filename()
+    if not filename:
+        return None
 
     paths = _get_potential_paths()
     if not paths:
@@ -120,16 +132,10 @@ def _download_binary() -> Optional[str]:
 
     print('Attempting to download dependency...')
 
-    operating_system = platform.system().lower()
-    architecture = platform.machine().lower()
-
-    if architecture == 'x86_64':
-        architecture = 'amd64'
-    if architecture not in ['arm64', 'amd64']:
-        print('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
+    filename = _get_filename()
+    if not filename:
         return None
 
-    filename = f'draftv2-{operating_system}-{architecture}'
     url = f'https://github.com/Azure/aks-app/releases/latest/download/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
