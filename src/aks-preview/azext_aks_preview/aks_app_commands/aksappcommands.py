@@ -43,6 +43,7 @@ def _binary_pre_check() -> str:
     else:  # prompt user to download binary
         return _download_binary()
 
+
 def _get_filename() -> Optional[str]:
     operating_system = platform.system().lower()
     architecture = platform.machine().lower()
