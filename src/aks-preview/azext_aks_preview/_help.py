@@ -1572,3 +1572,27 @@ helps['aks snapshot delete'] = """
     type: command
     short-summary: Delete a snapshot.
 """
+
+helps['aks app init'] = """
+    type: command
+    short-summary: Generate a Dockerfile and the minimum required Kubernetes deployment files (helm, kustomize, manifests) for your project directory.
+    parameters:
+        - name: --path
+          type: string
+          short-summary: Specify the path to the project directory.
+        - name: --app-name
+          type: string
+          short-summary: Specify the name of the helm release.
+        - name: --language
+          type: string
+          short-summary: Specify the language used to create the Kubernetes deployment.
+        - name: --create-config
+          type: string
+          short-summary: Specify the path to the configuration file.
+        - name: --dockerfile-only
+          type: string
+          short-summary: Only generate Dockerfile for the Kubernetes deployment.
+        - name: --deployment-only
+          type: string
+          short-summary: Only generate deployment files (helm, kustomize, manifests) for the Kubernetes deployment.
+"""
