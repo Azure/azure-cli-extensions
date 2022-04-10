@@ -94,12 +94,12 @@ def load_command_table(self, _):
         g.custom_command('delete', 'network_manager_delete', confirmation=True)
         g.custom_command('post-commit', 'network_manager_commit_post')
         g.custom_command('list-deploy-status', 'network_manager_deploy_status_list')
-        g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_manager')
+        # g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_manager')
         g.custom_command('list-active-connectivity-config', 'network_manager_active_config_list')
         g.custom_command('list-effective-connectivity-config', 'network_manager_effective_config_list')
         g.custom_command('list-effective-security-admin-rule', 'network_manager_effective_security_admin_rule_list')
         g.custom_command('list-active-security-admin-rule', 'network_manager_active_security_admin_rule_list')
-        g.custom_command('list-active-security-user-rule', 'network_manager_active_security_user_rule_list')
+        # g.custom_command('list-active-security-user-rule', 'network_manager_active_security_user_rule_list')
 
     with self.command_group('network manager connect-config', network_connectivityconfiguration, client_factory=cf_connectivityconfiguration) as g:
         g.custom_command('list', 'network_manager_connect_config_list')
@@ -144,19 +144,19 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'network_manager_admin_rule_collection_show')
         g.custom_command('delete', 'network_manager_admin_rule_collection_delete', confirmation=True)
 
-    with self.command_group('network manager security-user-config rule-collection rule', network_userrule, client_factory=cf_userrule) as g:
-        g.custom_command('list', 'network_manager_user_rule_list')
-        g.custom_show_command('show', 'network_manager_user_rule_show')
-        g.custom_command('create', 'network_manager_user_rule_create')
-        g.generic_update_command('update', setter_arg_name='user_rule', custom_func_name='network_manager_user_rule_update')
-        g.custom_command('delete', 'network_manager_user_rule_delete', confirmation=True)
+    # with self.command_group('network manager security-user-config rule-collection rule', network_userrule, client_factory=cf_userrule) as g:
+    #     g.custom_command('list', 'network_manager_user_rule_list')
+    #     g.custom_show_command('show', 'network_manager_user_rule_show')
+    #     g.custom_command('create', 'network_manager_user_rule_create')
+    #     g.generic_update_command('update', setter_arg_name='user_rule', custom_func_name='network_manager_user_rule_update')
+    #     g.custom_command('delete', 'network_manager_user_rule_delete', confirmation=True)
 
-    with self.command_group('network manager security-user-config rule-collection', network_userrulecollection, client_factory=cf_userrulecollection) as g:
-        g.custom_command('create', 'network_manager_user_rule_collection_create')
-        g.generic_update_command('update', setter_arg_name='user_rule_collection', custom_func_name='network_manager_user_rule_collection_update')
-        g.custom_command('list', 'network_manager_user_rule_collection_list')
-        g.custom_show_command('show', 'network_manager_user_rule_collection_show')
-        g.custom_command('delete', 'network_manager_user_rule_collection_delete', confirmation=True)
+    # with self.command_group('network manager security-user-config rule-collection', network_userrulecollection, client_factory=cf_userrulecollection) as g:
+    #     g.custom_command('create', 'network_manager_user_rule_collection_create')
+    #     g.generic_update_command('update', setter_arg_name='user_rule_collection', custom_func_name='network_manager_user_rule_collection_update')
+    #     g.custom_command('list', 'network_manager_user_rule_collection_list')
+    #     g.custom_show_command('show', 'network_manager_user_rule_collection_show')
+    #     g.custom_command('delete', 'network_manager_user_rule_collection_delete', confirmation=True)
 
     with self.command_group('network manager connection subscription', network_subscriptionconnection, client_factory=cf_subscriptionconnection) as g:
         g.custom_command('create', 'network_manager_connection_subscription_create')
@@ -181,7 +181,8 @@ def load_command_table(self, _):
 
     with self.command_group('network manager group static-member', network_staticmembers, client_factory=cf_staticmembers) as g:
         g.custom_command('create', 'network_manager_group_static_member_create')
-        g.generic_update_command('update', custom_func_name='network_manager_group_static_member_update')
+        # g.generic_update_command('update', custom_func_name='network_manager_group_static_member_update')
         g.custom_command('list', 'network_manager_group_static_member_list')
         g.custom_show_command('show', 'network_manager_group_static_member_show')
+        # network_manager_group_static_member_show
         g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)

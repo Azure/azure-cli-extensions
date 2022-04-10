@@ -28,22 +28,18 @@ class ActiveBaseSecurityAdminRule(msrest.serialization.Model):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     """
 
     _validation = {
@@ -54,9 +50,7 @@ class ActiveBaseSecurityAdminRule(msrest.serialization.Model):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
@@ -73,9 +67,7 @@ class ActiveBaseSecurityAdminRule(msrest.serialization.Model):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -88,27 +80,21 @@ class ActiveBaseSecurityAdminRule(msrest.serialization.Model):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         """
         super(ActiveBaseSecurityAdminRule, self).__init__(**kwargs)
         self.id = id
         self.commit_time = commit_time
         self.region = region
-        self.configuration_display_name = configuration_display_name
         self.configuration_description = configuration_description
-        self.rule_collection_display_name = rule_collection_display_name
         self.rule_collection_description = rule_collection_description
         self.rule_collection_applies_to_groups = rule_collection_applies_to_groups
         self.rule_groups = rule_groups
@@ -129,22 +115,18 @@ class ActiveBaseSecurityUserRule(msrest.serialization.Model):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security user configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security user configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveUserRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveUserRuleKind
     """
 
     _validation = {
@@ -155,9 +137,7 @@ class ActiveBaseSecurityUserRule(msrest.serialization.Model):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
@@ -174,9 +154,7 @@ class ActiveBaseSecurityUserRule(msrest.serialization.Model):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -189,27 +167,21 @@ class ActiveBaseSecurityUserRule(msrest.serialization.Model):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security user configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security user configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         """
         super(ActiveBaseSecurityUserRule, self).__init__(**kwargs)
         self.id = id
         self.commit_time = commit_time
         self.region = region
-        self.configuration_display_name = configuration_display_name
         self.configuration_description = configuration_description
-        self.rule_collection_display_name = rule_collection_display_name
         self.rule_collection_description = rule_collection_description
         self.rule_collection_applies_to_groups = rule_collection_applies_to_groups
         self.rule_groups = rule_groups
@@ -259,30 +231,28 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
     :vartype id: str
     :ivar configuration_groups: Effective configuration groups.
     :vartype configuration_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-    :ivar display_name: A friendly name for the resource.
-    :vartype display_name: str
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar description: A description of the connectivity configuration.
     :vartype description: str
     :ivar connectivity_topology: Connectivity topology type. Possible values include:
      "HubAndSpoke", "Mesh".
     :vartype connectivity_topology: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
     :ivar hubs: List of hubItems.
-    :vartype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+    :vartype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
     :ivar is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-    :vartype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+    :vartype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
     :ivar applies_to_groups: Groups for configuration.
     :vartype applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
     :ivar provisioning_state: The provisioning state of the connectivity configuration resource.
      Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     :ivar delete_existing_peering: Flag if need to remove current existing peerings. Possible
      values include: "False", "True".
     :vartype delete_existing_peering: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+     ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
     """
 
     _validation = {
@@ -292,7 +262,6 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'configuration_groups': {'key': 'configurationGroups', 'type': '[ConfigurationGroup]'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
         'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
@@ -307,7 +276,6 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
         *,
         id: Optional[str] = None,
         configuration_groups: Optional[List["ConfigurationGroup"]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         connectivity_topology: Optional[Union[str, "ConnectivityTopology"]] = None,
         hubs: Optional[List["Hub"]] = None,
@@ -321,31 +289,28 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
         :paramtype id: str
         :keyword configuration_groups: Effective configuration groups.
         :paramtype configuration_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-        :keyword display_name: A friendly name for the resource.
-        :paramtype display_name: str
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword description: A description of the connectivity configuration.
         :paramtype description: str
         :keyword connectivity_topology: Connectivity topology type. Possible values include:
          "HubAndSpoke", "Mesh".
         :paramtype connectivity_topology: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
         :keyword hubs: List of hubItems.
-        :paramtype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+        :paramtype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
         :keyword is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-        :paramtype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+        :paramtype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
         :keyword applies_to_groups: Groups for configuration.
         :paramtype applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
         :keyword delete_existing_peering: Flag if need to remove current existing peerings. Possible
          values include: "False", "True".
         :paramtype delete_existing_peering: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+         ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
         """
         super(EffectiveConnectivityConfiguration, self).__init__(**kwargs)
         self.id = id
         self.configuration_groups = configuration_groups
-        self.display_name = display_name
         self.description = description
         self.connectivity_topology = connectivity_topology
         self.hubs = hubs
@@ -364,30 +329,28 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
     :vartype id: str
     :ivar configuration_groups: Effective configuration groups.
     :vartype configuration_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-    :ivar display_name: A friendly name for the resource.
-    :vartype display_name: str
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar description: A description of the connectivity configuration.
     :vartype description: str
     :ivar connectivity_topology: Connectivity topology type. Possible values include:
      "HubAndSpoke", "Mesh".
     :vartype connectivity_topology: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
     :ivar hubs: List of hubItems.
-    :vartype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+    :vartype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
     :ivar is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-    :vartype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+    :vartype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
     :ivar applies_to_groups: Groups for configuration.
     :vartype applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
     :ivar provisioning_state: The provisioning state of the connectivity configuration resource.
      Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     :ivar delete_existing_peering: Flag if need to remove current existing peerings. Possible
      values include: "False", "True".
     :vartype delete_existing_peering: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+     ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
     :ivar commit_time: Deployment time string.
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
@@ -401,7 +364,6 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'configuration_groups': {'key': 'configurationGroups', 'type': '[ConfigurationGroup]'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
         'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
@@ -418,7 +380,6 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
         *,
         id: Optional[str] = None,
         configuration_groups: Optional[List["ConfigurationGroup"]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         connectivity_topology: Optional[Union[str, "ConnectivityTopology"]] = None,
         hubs: Optional[List["Hub"]] = None,
@@ -434,32 +395,30 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
         :paramtype id: str
         :keyword configuration_groups: Effective configuration groups.
         :paramtype configuration_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-        :keyword display_name: A friendly name for the resource.
-        :paramtype display_name: str
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword description: A description of the connectivity configuration.
         :paramtype description: str
         :keyword connectivity_topology: Connectivity topology type. Possible values include:
          "HubAndSpoke", "Mesh".
         :paramtype connectivity_topology: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
         :keyword hubs: List of hubItems.
-        :paramtype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+        :paramtype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
         :keyword is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-        :paramtype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+        :paramtype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
         :keyword applies_to_groups: Groups for configuration.
         :paramtype applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
         :keyword delete_existing_peering: Flag if need to remove current existing peerings. Possible
          values include: "False", "True".
         :paramtype delete_existing_peering: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+         ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
         :keyword commit_time: Deployment time string.
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
         """
-        super(ActiveConnectivityConfiguration, self).__init__(id=id, configuration_groups=configuration_groups, display_name=display_name, description=description, connectivity_topology=connectivity_topology, hubs=hubs, is_global=is_global, applies_to_groups=applies_to_groups, delete_existing_peering=delete_existing_peering, **kwargs)
+        super(ActiveConnectivityConfiguration, self).__init__(id=id, configuration_groups=configuration_groups, description=description, connectivity_topology=connectivity_topology, hubs=hubs, is_global=is_global, applies_to_groups=applies_to_groups, delete_existing_peering=delete_existing_peering, **kwargs)
         self.commit_time = commit_time
         self.region = region
 
@@ -469,7 +428,7 @@ class ActiveConnectivityConfigurationsListResult(msrest.serialization.Model):
 
     :ivar value: Gets a page of active connectivity configurations.
     :vartype value:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveConnectivityConfiguration]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveConnectivityConfiguration]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -490,7 +449,7 @@ class ActiveConnectivityConfigurationsListResult(msrest.serialization.Model):
         """
         :keyword value: Gets a page of active connectivity configurations.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveConnectivityConfiguration]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveConnectivityConfiguration]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -513,24 +472,18 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar flag: Default rule flag.
@@ -538,11 +491,11 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -550,7 +503,7 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -558,16 +511,15 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
         'kind': {'required': True},
-        'display_name': {'readonly': True},
         'description': {'readonly': True},
         'protocol': {'readonly': True},
         'sources': {'readonly': True},
@@ -584,14 +536,11 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'flag': {'key': 'properties.flag', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
@@ -611,9 +560,7 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -627,25 +574,20 @@ class ActiveDefaultSecurityAdminRule(ActiveBaseSecurityAdminRule):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword flag: Default rule flag.
         :paramtype flag: str
         """
-        super(ActiveDefaultSecurityAdminRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(ActiveDefaultSecurityAdminRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Default'  # type: str
-        self.display_name = None
         self.description = None
         self.flag = flag
         self.protocol = None
@@ -672,24 +614,18 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security user configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security user configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveUserRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveUserRuleKind
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar flag: Default rule flag.
@@ -697,11 +633,11 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -709,16 +645,15 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the security configuration user rule
      resource. Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
         'kind': {'required': True},
-        'display_name': {'readonly': True},
         'description': {'readonly': True},
         'protocol': {'readonly': True},
         'sources': {'readonly': True},
@@ -733,14 +668,11 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'flag': {'key': 'properties.flag', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
@@ -758,9 +690,7 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -774,25 +704,20 @@ class ActiveDefaultSecurityUserRule(ActiveBaseSecurityUserRule):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security user configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security user configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword flag: Default rule flag.
         :paramtype flag: str
         """
-        super(ActiveDefaultSecurityUserRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(ActiveDefaultSecurityUserRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Default'  # type: str
-        self.display_name = None
         self.description = None
         self.flag = flag
         self.protocol = None
@@ -817,34 +742,28 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -852,7 +771,7 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -860,11 +779,11 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -877,14 +796,11 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
         'sources': {'key': 'properties.sources', 'type': '[AddressPrefixItem]'},
@@ -903,13 +819,10 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         protocol: Optional[Union[str, "SecurityConfigurationRuleProtocol"]] = None,
         sources: Optional[List["AddressPrefixItem"]] = None,
@@ -928,31 +841,25 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-        :keyword display_name: A friendly name for the rule.
-        :paramtype display_name: str
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword description: A description for this rule. Restricted to 140 chars.
         :paramtype description: str
         :keyword protocol: Network protocol this rule applies to. Possible values include: "Tcp",
          "Udp", "Icmp", "Esp", "Any", "Ah".
         :paramtype protocol: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
         :keyword sources: The CIDR or source IP ranges.
-        :paramtype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword destinations: The destination address prefixes. CIDR or destination IP ranges.
-        :paramtype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword source_port_ranges: The source port ranges.
         :paramtype source_port_ranges: list[str]
         :keyword destination_port_ranges: The destination port ranges.
@@ -960,7 +867,7 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
         :keyword access: Indicates the access allowed for this particular rule. Possible values
          include: "Allow", "Deny", "AlwaysAllow".
         :paramtype access: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
         :keyword priority: The priority of the rule. The value can be between 1 and 4096. The priority
          number must be unique for each rule in the collection. The lower the priority number, the
          higher the priority of the rule.
@@ -968,11 +875,10 @@ class ActiveSecurityAdminRule(ActiveBaseSecurityAdminRule):
         :keyword direction: Indicates if the traffic matched against the rule in inbound or outbound.
          Possible values include: "Inbound", "Outbound".
         :paramtype direction: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
         """
-        super(ActiveSecurityAdminRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(ActiveSecurityAdminRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Custom'  # type: str
-        self.display_name = display_name
         self.description = description
         self.protocol = protocol
         self.sources = sources
@@ -990,7 +896,7 @@ class ActiveSecurityAdminRulesListResult(msrest.serialization.Model):
 
     :ivar value: Gets a page of active security admin rules.
     :vartype value:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveBaseSecurityAdminRule]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveBaseSecurityAdminRule]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -1011,7 +917,7 @@ class ActiveSecurityAdminRulesListResult(msrest.serialization.Model):
         """
         :keyword value: Gets a page of active security admin rules.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveBaseSecurityAdminRule]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveBaseSecurityAdminRule]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -1034,34 +940,28 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
     :vartype commit_time: ~datetime.datetime
     :ivar region: Deployment region.
     :vartype region: str
-    :ivar configuration_display_name: A display name of the security user configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security user configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveUserRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveUserRuleKind
     :ivar description: A description for this rule.
     :vartype description: str
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -1069,11 +969,11 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the security configuration user rule
      resource. Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -1085,14 +985,11 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
         'id': {'key': 'id', 'type': 'str'},
         'commit_time': {'key': 'commitTime', 'type': 'iso-8601'},
         'region': {'key': 'region', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
         'sources': {'key': 'properties.sources', 'type': '[AddressPrefixItem]'},
@@ -1109,13 +1006,10 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
         id: Optional[str] = None,
         commit_time: Optional[datetime.datetime] = None,
         region: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         protocol: Optional[Union[str, "SecurityConfigurationRuleProtocol"]] = None,
         sources: Optional[List["AddressPrefixItem"]] = None,
@@ -1132,31 +1026,25 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
         :paramtype commit_time: ~datetime.datetime
         :keyword region: Deployment region.
         :paramtype region: str
-        :keyword configuration_display_name: A display name of the security user configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security user configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-        :keyword display_name: A friendly name for the rule.
-        :paramtype display_name: str
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword description: A description for this rule.
         :paramtype description: str
         :keyword protocol: Network protocol this rule applies to. Possible values include: "Tcp",
          "Udp", "Icmp", "Esp", "Any", "Ah".
         :paramtype protocol: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
         :keyword sources: The CIDR or source IP ranges.
-        :paramtype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword destinations: The destination address prefixes. CIDR or destination IP ranges.
-        :paramtype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword source_port_ranges: The source port ranges.
         :paramtype source_port_ranges: list[str]
         :keyword destination_port_ranges: The destination port ranges.
@@ -1164,11 +1052,10 @@ class ActiveSecurityUserRule(ActiveBaseSecurityUserRule):
         :keyword direction: Indicates if the traffic matched against the rule in inbound or outbound.
          Possible values include: "Inbound", "Outbound".
         :paramtype direction: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
         """
-        super(ActiveSecurityUserRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(ActiveSecurityUserRule, self).__init__(id=id, commit_time=commit_time, region=region, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Custom'  # type: str
-        self.display_name = display_name
         self.description = description
         self.protocol = protocol
         self.sources = sources
@@ -1183,7 +1070,7 @@ class ActiveSecurityUserRulesListResult(msrest.serialization.Model):
     """Result of the request to list active security user rules. It contains a list of active security user rules and a skiptoken to get the next set of results.
 
     :ivar value: Gets a page of active security user rules.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveBaseSecurityUserRule]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveBaseSecurityUserRule]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -1204,7 +1091,7 @@ class ActiveSecurityUserRulesListResult(msrest.serialization.Model):
         """
         :keyword value: Gets a page of active security user rules.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ActiveBaseSecurityUserRule]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ActiveBaseSecurityUserRule]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -1222,7 +1109,7 @@ class AddressPrefixItem(msrest.serialization.Model):
     :ivar address_prefix_type: Address prefix type. Possible values include: "IPPrefix",
      "ServiceTag".
     :vartype address_prefix_type: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixType
+     ~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixType
     """
 
     _attribute_map = {
@@ -1243,7 +1130,7 @@ class AddressPrefixItem(msrest.serialization.Model):
         :keyword address_prefix_type: Address prefix type. Possible values include: "IPPrefix",
          "ServiceTag".
         :paramtype address_prefix_type: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixType
+         ~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixType
         """
         super(AddressPrefixItem, self).__init__(**kwargs)
         self.address_prefix = address_prefix
@@ -1312,9 +1199,9 @@ class BaseAdminRule(ProxyResource):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.AdminRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.AdminRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     """
 
     _validation = {
@@ -1367,21 +1254,19 @@ class AdminRule(BaseAdminRule):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.AdminRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.AdminRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -1389,7 +1274,7 @@ class AdminRule(BaseAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -1397,11 +1282,11 @@ class AdminRule(BaseAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -1422,7 +1307,6 @@ class AdminRule(BaseAdminRule):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
         'sources': {'key': 'properties.sources', 'type': '[AddressPrefixItem]'},
@@ -1438,7 +1322,6 @@ class AdminRule(BaseAdminRule):
     def __init__(
         self,
         *,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         protocol: Optional[Union[str, "SecurityConfigurationRuleProtocol"]] = None,
         sources: Optional[List["AddressPrefixItem"]] = None,
@@ -1451,18 +1334,16 @@ class AdminRule(BaseAdminRule):
         **kwargs
     ):
         """
-        :keyword display_name: A friendly name for the rule.
-        :paramtype display_name: str
         :keyword description: A description for this rule. Restricted to 140 chars.
         :paramtype description: str
         :keyword protocol: Network protocol this rule applies to. Possible values include: "Tcp",
          "Udp", "Icmp", "Esp", "Any", "Ah".
         :paramtype protocol: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
         :keyword sources: The CIDR or source IP ranges.
-        :paramtype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword destinations: The destination address prefixes. CIDR or destination IP ranges.
-        :paramtype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword source_port_ranges: The source port ranges.
         :paramtype source_port_ranges: list[str]
         :keyword destination_port_ranges: The destination port ranges.
@@ -1470,7 +1351,7 @@ class AdminRule(BaseAdminRule):
         :keyword access: Indicates the access allowed for this particular rule. Possible values
          include: "Allow", "Deny", "AlwaysAllow".
         :paramtype access: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
         :keyword priority: The priority of the rule. The value can be between 1 and 4096. The priority
          number must be unique for each rule in the collection. The lower the priority number, the
          higher the priority of the rule.
@@ -1478,11 +1359,10 @@ class AdminRule(BaseAdminRule):
         :keyword direction: Indicates if the traffic matched against the rule in inbound or outbound.
          Possible values include: "Inbound", "Outbound".
         :paramtype direction: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
         """
         super(AdminRule, self).__init__(**kwargs)
         self.kind = 'Custom'  # type: str
-        self.display_name = display_name
         self.description = description
         self.protocol = protocol
         self.sources = sources
@@ -1495,11 +1375,110 @@ class AdminRule(BaseAdminRule):
         self.provisioning_state = None
 
 
+class AdminRuleCollection(ProxyResource):
+    """Defines the admin rule collection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :ivar etag: A unique read-only string that changes whenever the resource is updated.
+    :vartype etag: str
+    :ivar system_data: The system metadata related to this resource.
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
+    :ivar description: A description of the admin rule collection.
+    :vartype description: str
+    :ivar applies_to_groups: Groups for configuration.
+    :vartype applies_to_groups:
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
+    :ivar provisioning_state: The provisioning state of the resource. Possible values include:
+     "Succeeded", "Updating", "Deleting", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'description': {'key': 'properties.description', 'type': 'str'},
+        'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        description: Optional[str] = None,
+        applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
+        **kwargs
+    ):
+        """
+        :keyword description: A description of the admin rule collection.
+        :paramtype description: str
+        :keyword applies_to_groups: Groups for configuration.
+        :paramtype applies_to_groups:
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
+        """
+        super(AdminRuleCollection, self).__init__(**kwargs)
+        self.system_data = None
+        self.description = description
+        self.applies_to_groups = applies_to_groups
+        self.provisioning_state = None
+
+
+class AdminRuleCollectionListResult(msrest.serialization.Model):
+    """Security admin configuration rule collection list result.
+
+    :ivar value: A list of network manager security admin configuration rule collections.
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.AdminRuleCollection]
+    :ivar next_link: Gets the URL to get the next set of results.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[AdminRuleCollection]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["AdminRuleCollection"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword value: A list of network manager security admin configuration rule collections.
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.AdminRuleCollection]
+        :keyword next_link: Gets the URL to get the next set of results.
+        :paramtype next_link: str
+        """
+        super(AdminRuleCollectionListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class AdminRuleListResult(msrest.serialization.Model):
     """security configuration admin rule list result.
 
     :ivar value: A list of admin rules.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.BaseAdminRule]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.BaseAdminRule]
     :ivar next_link: The URL to get the next set of results.
     :vartype next_link: str
     """
@@ -1518,13 +1497,47 @@ class AdminRuleListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: A list of admin rules.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.BaseAdminRule]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.BaseAdminRule]
         :keyword next_link: The URL to get the next set of results.
         :paramtype next_link: str
         """
         super(AdminRuleListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
+
+
+class AzureAsyncOperationResult(msrest.serialization.Model):
+    """The response body contains the status of the specified asynchronous operation, indicating whether it has succeeded, is in progress, or has failed. Note that this status is distinct from the HTTP status code returned for the Get Operation Status operation itself. If the asynchronous operation succeeded, the response body includes the HTTP status code for the successful request. If the asynchronous operation failed, the response body includes the HTTP status code for the failed request and error information regarding the failure.
+
+    :ivar status: Status of the Azure async operation. Possible values include: "InProgress",
+     "Succeeded", "Failed".
+    :vartype status: str or ~azure.mgmt.network.v2022_02_01_preview.models.NetworkOperationStatus
+    :ivar error: Details of the error occurred during specified asynchronous operation.
+    :vartype error: ~azure.mgmt.network.v2022_02_01_preview.models.Error
+    """
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'Error'},
+    }
+
+    def __init__(
+        self,
+        *,
+        status: Optional[Union[str, "NetworkOperationStatus"]] = None,
+        error: Optional["Error"] = None,
+        **kwargs
+    ):
+        """
+        :keyword status: Status of the Azure async operation. Possible values include: "InProgress",
+         "Succeeded", "Failed".
+        :paramtype status: str or ~azure.mgmt.network.v2022_02_01_preview.models.NetworkOperationStatus
+        :keyword error: Details of the error occurred during specified asynchronous operation.
+        :paramtype error: ~azure.mgmt.network.v2022_02_01_preview.models.Error
+        """
+        super(AzureAsyncOperationResult, self).__init__(**kwargs)
+        self.status = status
+        self.error = error
 
 
 class BaseUserRule(ProxyResource):
@@ -1547,9 +1560,9 @@ class BaseUserRule(ProxyResource):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.UserRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.UserRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     """
 
     _validation = {
@@ -1598,7 +1611,7 @@ class CloudErrorBody(msrest.serialization.Model):
      error.
     :vartype target: str
     :ivar details: A list of additional details about the error.
-    :vartype details: list[~azure.mgmt.network.v2021_05_01_preview.models.CloudErrorBody]
+    :vartype details: list[~azure.mgmt.network.v2022_02_01_preview.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -1628,13 +1641,45 @@ class CloudErrorBody(msrest.serialization.Model):
          error.
         :paramtype target: str
         :keyword details: A list of additional details about the error.
-        :paramtype details: list[~azure.mgmt.network.v2021_05_01_preview.models.CloudErrorBody]
+        :paramtype details: list[~azure.mgmt.network.v2022_02_01_preview.models.CloudErrorBody]
         """
         super(CloudErrorBody, self).__init__(**kwargs)
         self.code = code
         self.message = message
         self.target = target
         self.details = details
+
+
+class Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties(msrest.serialization.Model):
+    """Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar principal_id: The principal id of user assigned identity.
+    :vartype principal_id: str
+    :ivar client_id: The client id of user assigned identity.
+    :vartype client_id: str
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'client_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'client_id': {'key': 'clientId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties, self).__init__(**kwargs)
+        self.principal_id = None
+        self.client_id = None
 
 
 class ConfigurationGroup(msrest.serialization.Model):
@@ -1644,8 +1689,6 @@ class ConfigurationGroup(msrest.serialization.Model):
 
     :ivar id: Resource ID.
     :vartype id: str
-    :ivar display_name: A friendly name for the network group.
-    :vartype display_name: str
     :ivar description: A description of the network group.
     :vartype description: str
     :ivar member_type: Group member type.
@@ -1653,7 +1696,7 @@ class ConfigurationGroup(msrest.serialization.Model):
     :ivar provisioning_state: The provisioning state of the scope assignment resource. Possible
      values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -1662,7 +1705,6 @@ class ConfigurationGroup(msrest.serialization.Model):
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'member_type': {'key': 'properties.memberType', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -1672,7 +1714,6 @@ class ConfigurationGroup(msrest.serialization.Model):
         self,
         *,
         id: Optional[str] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         member_type: Optional[str] = None,
         **kwargs
@@ -1680,8 +1721,6 @@ class ConfigurationGroup(msrest.serialization.Model):
         """
         :keyword id: Resource ID.
         :paramtype id: str
-        :keyword display_name: A friendly name for the network group.
-        :paramtype display_name: str
         :keyword description: A description of the network group.
         :paramtype description: str
         :keyword member_type: Group member type.
@@ -1689,7 +1728,6 @@ class ConfigurationGroup(msrest.serialization.Model):
         """
         super(ConfigurationGroup, self).__init__(**kwargs)
         self.id = id
-        self.display_name = display_name
         self.description = description
         self.member_type = member_type
         self.provisioning_state = None
@@ -1709,30 +1747,28 @@ class ConnectivityConfiguration(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the resource.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description of the connectivity configuration.
     :vartype description: str
     :ivar connectivity_topology: Connectivity topology type. Possible values include:
      "HubAndSpoke", "Mesh".
     :vartype connectivity_topology: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
     :ivar hubs: List of hubItems.
-    :vartype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+    :vartype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
     :ivar is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-    :vartype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+    :vartype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
     :ivar applies_to_groups: Groups for configuration.
     :vartype applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
     :ivar provisioning_state: The provisioning state of the connectivity configuration resource.
      Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     :ivar delete_existing_peering: Flag if need to remove current existing peerings. Possible
      values include: "False", "True".
     :vartype delete_existing_peering: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+     ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
     """
 
     _validation = {
@@ -1750,7 +1786,6 @@ class ConnectivityConfiguration(ProxyResource):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
         'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
@@ -1763,7 +1798,6 @@ class ConnectivityConfiguration(ProxyResource):
     def __init__(
         self,
         *,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         connectivity_topology: Optional[Union[str, "ConnectivityTopology"]] = None,
         hubs: Optional[List["Hub"]] = None,
@@ -1773,29 +1807,26 @@ class ConnectivityConfiguration(ProxyResource):
         **kwargs
     ):
         """
-        :keyword display_name: A friendly name for the resource.
-        :paramtype display_name: str
         :keyword description: A description of the connectivity configuration.
         :paramtype description: str
         :keyword connectivity_topology: Connectivity topology type. Possible values include:
          "HubAndSpoke", "Mesh".
         :paramtype connectivity_topology: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityTopology
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityTopology
         :keyword hubs: List of hubItems.
-        :paramtype hubs: list[~azure.mgmt.network.v2021_05_01_preview.models.Hub]
+        :paramtype hubs: list[~azure.mgmt.network.v2022_02_01_preview.models.Hub]
         :keyword is_global: Flag if global mesh is supported. Possible values include: "False", "True".
-        :paramtype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+        :paramtype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
         :keyword applies_to_groups: Groups for configuration.
         :paramtype applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityGroupItem]
         :keyword delete_existing_peering: Flag if need to remove current existing peerings. Possible
          values include: "False", "True".
         :paramtype delete_existing_peering: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingPeering
+         ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingPeering
         """
         super(ConnectivityConfiguration, self).__init__(**kwargs)
         self.system_data = None
-        self.display_name = display_name
         self.description = description
         self.connectivity_topology = connectivity_topology
         self.hubs = hubs
@@ -1809,7 +1840,7 @@ class ConnectivityConfigurationListResult(msrest.serialization.Model):
     """Result of the request to list network manager connectivity configurations. It contains a list of configurations and a link to get the next set of results.
 
     :ivar value: Gets a page of Connectivity Configurations.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityConfiguration]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityConfiguration]
     :ivar next_link: Gets the URL to get the next page of results.
     :vartype next_link: str
     """
@@ -1829,7 +1860,7 @@ class ConnectivityConfigurationListResult(msrest.serialization.Model):
         """
         :keyword value: Gets a page of Connectivity Configurations.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.ConnectivityConfiguration]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.ConnectivityConfiguration]
         :keyword next_link: Gets the URL to get the next page of results.
         :paramtype next_link: str
         """
@@ -1847,13 +1878,13 @@ class ConnectivityGroupItem(msrest.serialization.Model):
     :vartype network_group_id: str
     :ivar use_hub_gateway: Flag if need to use hub gateway. Possible values include: "False",
      "True".
-    :vartype use_hub_gateway: str or ~azure.mgmt.network.v2021_05_01_preview.models.UseHubGateway
+    :vartype use_hub_gateway: str or ~azure.mgmt.network.v2022_02_01_preview.models.UseHubGateway
     :ivar is_global: Flag if global is supported. Possible values include: "False", "True".
-    :vartype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+    :vartype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
     :ivar group_connectivity: Required. Group connectivity type. Possible values include: "None",
      "DirectlyConnected".
     :vartype group_connectivity: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.GroupConnectivity
+     ~azure.mgmt.network.v2022_02_01_preview.models.GroupConnectivity
     """
 
     _validation = {
@@ -1882,13 +1913,13 @@ class ConnectivityGroupItem(msrest.serialization.Model):
         :paramtype network_group_id: str
         :keyword use_hub_gateway: Flag if need to use hub gateway. Possible values include: "False",
          "True".
-        :paramtype use_hub_gateway: str or ~azure.mgmt.network.v2021_05_01_preview.models.UseHubGateway
+        :paramtype use_hub_gateway: str or ~azure.mgmt.network.v2022_02_01_preview.models.UseHubGateway
         :keyword is_global: Flag if global is supported. Possible values include: "False", "True".
-        :paramtype is_global: str or ~azure.mgmt.network.v2021_05_01_preview.models.IsGlobal
+        :paramtype is_global: str or ~azure.mgmt.network.v2022_02_01_preview.models.IsGlobal
         :keyword group_connectivity: Required. Group connectivity type. Possible values include:
          "None", "DirectlyConnected".
         :paramtype group_connectivity: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.GroupConnectivity
+         ~azure.mgmt.network.v2022_02_01_preview.models.GroupConnectivity
         """
         super(ConnectivityGroupItem, self).__init__(**kwargs)
         self.network_group_id = network_group_id
@@ -1951,11 +1982,9 @@ class DefaultAdminRule(BaseAdminRule):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.AdminRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.AdminRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar flag: Default rule flag.
@@ -1963,11 +1992,11 @@ class DefaultAdminRule(BaseAdminRule):
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -1975,7 +2004,7 @@ class DefaultAdminRule(BaseAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -1983,11 +2012,11 @@ class DefaultAdminRule(BaseAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -1997,7 +2026,6 @@ class DefaultAdminRule(BaseAdminRule):
         'etag': {'readonly': True},
         'kind': {'required': True},
         'system_data': {'readonly': True},
-        'display_name': {'readonly': True},
         'description': {'readonly': True},
         'protocol': {'readonly': True},
         'sources': {'readonly': True},
@@ -2017,7 +2045,6 @@ class DefaultAdminRule(BaseAdminRule):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'flag': {'key': 'properties.flag', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
@@ -2043,7 +2070,6 @@ class DefaultAdminRule(BaseAdminRule):
         """
         super(DefaultAdminRule, self).__init__(**kwargs)
         self.kind = 'Default'  # type: str
-        self.display_name = None
         self.description = None
         self.flag = flag
         self.protocol = None
@@ -2074,11 +2100,9 @@ class DefaultUserRule(BaseUserRule):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.UserRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.UserRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar flag: Default rule flag.
@@ -2086,11 +2110,11 @@ class DefaultUserRule(BaseUserRule):
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -2098,11 +2122,11 @@ class DefaultUserRule(BaseUserRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the security configuration user rule
      resource. Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -2112,7 +2136,6 @@ class DefaultUserRule(BaseUserRule):
         'etag': {'readonly': True},
         'kind': {'required': True},
         'system_data': {'readonly': True},
-        'display_name': {'readonly': True},
         'description': {'readonly': True},
         'protocol': {'readonly': True},
         'sources': {'readonly': True},
@@ -2130,7 +2153,6 @@ class DefaultUserRule(BaseUserRule):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'flag': {'key': 'properties.flag', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
@@ -2154,7 +2176,6 @@ class DefaultUserRule(BaseUserRule):
         """
         super(DefaultUserRule, self).__init__(**kwargs)
         self.kind = 'Default'  # type: str
-        self.display_name = None
         self.description = None
         self.flag = flag
         self.protocol = None
@@ -2176,22 +2197,18 @@ class EffectiveBaseSecurityAdminRule(msrest.serialization.Model):
 
     :ivar id: Resource ID.
     :vartype id: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     """
 
     _validation = {
@@ -2200,9 +2217,7 @@ class EffectiveBaseSecurityAdminRule(msrest.serialization.Model):
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
@@ -2217,9 +2232,7 @@ class EffectiveBaseSecurityAdminRule(msrest.serialization.Model):
         self,
         *,
         id: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -2228,25 +2241,19 @@ class EffectiveBaseSecurityAdminRule(msrest.serialization.Model):
         """
         :keyword id: Resource ID.
         :paramtype id: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         """
         super(EffectiveBaseSecurityAdminRule, self).__init__(**kwargs)
         self.id = id
-        self.configuration_display_name = configuration_display_name
         self.configuration_description = configuration_description
-        self.rule_collection_display_name = rule_collection_display_name
         self.rule_collection_description = rule_collection_description
         self.rule_collection_applies_to_groups = rule_collection_applies_to_groups
         self.rule_groups = rule_groups
@@ -2262,24 +2269,18 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
 
     :ivar id: Resource ID.
     :vartype id: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar flag: Default rule flag.
@@ -2287,11 +2288,11 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -2299,7 +2300,7 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -2307,16 +2308,15 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
         'kind': {'required': True},
-        'display_name': {'readonly': True},
         'description': {'readonly': True},
         'protocol': {'readonly': True},
         'sources': {'readonly': True},
@@ -2331,14 +2331,11 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'flag': {'key': 'properties.flag', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
@@ -2356,9 +2353,7 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         self,
         *,
         id: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
@@ -2368,25 +2363,20 @@ class EffectiveDefaultSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         """
         :keyword id: Resource ID.
         :paramtype id: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword flag: Default rule flag.
         :paramtype flag: str
         """
-        super(EffectiveDefaultSecurityAdminRule, self).__init__(id=id, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(EffectiveDefaultSecurityAdminRule, self).__init__(id=id, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Default'  # type: str
-        self.display_name = None
         self.description = None
         self.flag = flag
         self.protocol = None
@@ -2409,34 +2399,28 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
 
     :ivar id: Resource ID.
     :vartype id: str
-    :ivar configuration_display_name: A display name of the security admin configuration.
-    :vartype configuration_display_name: str
     :ivar configuration_description: A description of the security admin configuration.
     :vartype configuration_description: str
-    :ivar rule_collection_display_name: A display name of the rule collection.
-    :vartype rule_collection_display_name: str
     :ivar rule_collection_description: A description of the rule collection.
     :vartype rule_collection_description: str
     :ivar rule_collection_applies_to_groups: Groups for rule collection.
     :vartype rule_collection_applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
     :ivar rule_groups: Effective configuration groups.
-    :vartype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
+    :vartype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.EffectiveAdminRuleKind
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.EffectiveAdminRuleKind
     :ivar description: A description for this rule. Restricted to 140 chars.
     :vartype description: str
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -2444,7 +2428,7 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
     :ivar access: Indicates the access allowed for this particular rule. Possible values include:
      "Allow", "Deny", "AlwaysAllow".
     :vartype access: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
     :ivar priority: The priority of the rule. The value can be between 1 and 4096. The priority
      number must be unique for each rule in the collection. The lower the priority number, the
      higher the priority of the rule.
@@ -2452,11 +2436,11 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -2467,14 +2451,11 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'configuration_display_name': {'key': 'configurationDisplayName', 'type': 'str'},
         'configuration_description': {'key': 'configurationDescription', 'type': 'str'},
-        'rule_collection_display_name': {'key': 'ruleCollectionDisplayName', 'type': 'str'},
         'rule_collection_description': {'key': 'ruleCollectionDescription', 'type': 'str'},
         'rule_collection_applies_to_groups': {'key': 'ruleCollectionAppliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
         'rule_groups': {'key': 'ruleGroups', 'type': '[ConfigurationGroup]'},
         'kind': {'key': 'kind', 'type': 'str'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
         'sources': {'key': 'properties.sources', 'type': '[AddressPrefixItem]'},
@@ -2491,13 +2472,10 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         self,
         *,
         id: Optional[str] = None,
-        configuration_display_name: Optional[str] = None,
         configuration_description: Optional[str] = None,
-        rule_collection_display_name: Optional[str] = None,
         rule_collection_description: Optional[str] = None,
         rule_collection_applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
         rule_groups: Optional[List["ConfigurationGroup"]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         protocol: Optional[Union[str, "SecurityConfigurationRuleProtocol"]] = None,
         sources: Optional[List["AddressPrefixItem"]] = None,
@@ -2512,31 +2490,25 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         """
         :keyword id: Resource ID.
         :paramtype id: str
-        :keyword configuration_display_name: A display name of the security admin configuration.
-        :paramtype configuration_display_name: str
         :keyword configuration_description: A description of the security admin configuration.
         :paramtype configuration_description: str
-        :keyword rule_collection_display_name: A display name of the rule collection.
-        :paramtype rule_collection_display_name: str
         :keyword rule_collection_description: A description of the rule collection.
         :paramtype rule_collection_description: str
         :keyword rule_collection_applies_to_groups: Groups for rule collection.
         :paramtype rule_collection_applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
         :keyword rule_groups: Effective configuration groups.
-        :paramtype rule_groups: list[~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationGroup]
-        :keyword display_name: A friendly name for the rule.
-        :paramtype display_name: str
+        :paramtype rule_groups: list[~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationGroup]
         :keyword description: A description for this rule. Restricted to 140 chars.
         :paramtype description: str
         :keyword protocol: Network protocol this rule applies to. Possible values include: "Tcp",
          "Udp", "Icmp", "Esp", "Any", "Ah".
         :paramtype protocol: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
         :keyword sources: The CIDR or source IP ranges.
-        :paramtype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword destinations: The destination address prefixes. CIDR or destination IP ranges.
-        :paramtype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword source_port_ranges: The source port ranges.
         :paramtype source_port_ranges: list[str]
         :keyword destination_port_ranges: The destination port ranges.
@@ -2544,7 +2516,7 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         :keyword access: Indicates the access allowed for this particular rule. Possible values
          include: "Allow", "Deny", "AlwaysAllow".
         :paramtype access: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleAccess
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleAccess
         :keyword priority: The priority of the rule. The value can be between 1 and 4096. The priority
          number must be unique for each rule in the collection. The lower the priority number, the
          higher the priority of the rule.
@@ -2552,11 +2524,10 @@ class EffectiveSecurityAdminRule(EffectiveBaseSecurityAdminRule):
         :keyword direction: Indicates if the traffic matched against the rule in inbound or outbound.
          Possible values include: "Inbound", "Outbound".
         :paramtype direction: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
         """
-        super(EffectiveSecurityAdminRule, self).__init__(id=id, configuration_display_name=configuration_display_name, configuration_description=configuration_description, rule_collection_display_name=rule_collection_display_name, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
+        super(EffectiveSecurityAdminRule, self).__init__(id=id, configuration_description=configuration_description, rule_collection_description=rule_collection_description, rule_collection_applies_to_groups=rule_collection_applies_to_groups, rule_groups=rule_groups, **kwargs)
         self.kind = 'Custom'  # type: str
-        self.display_name = display_name
         self.description = description
         self.protocol = protocol
         self.sources = sources
@@ -2577,7 +2548,7 @@ class EffectiveVirtualNetwork(msrest.serialization.Model):
     :ivar location: Location of vnet.
     :vartype location: str
     :ivar membership_type: Membership Type. Possible values include: "Static", "Dynamic".
-    :vartype membership_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.MembershipType
+    :vartype membership_type: str or ~azure.mgmt.network.v2022_02_01_preview.models.MembershipType
     """
 
     _attribute_map = {
@@ -2601,7 +2572,7 @@ class EffectiveVirtualNetwork(msrest.serialization.Model):
         :paramtype location: str
         :keyword membership_type: Membership Type. Possible values include: "Static", "Dynamic".
         :paramtype membership_type: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.MembershipType
+         ~azure.mgmt.network.v2022_02_01_preview.models.MembershipType
         """
         super(EffectiveVirtualNetwork, self).__init__(**kwargs)
         self.id = id
@@ -2613,7 +2584,7 @@ class EffectiveVirtualNetworksListResult(msrest.serialization.Model):
     """Result of the request to list Effective Virtual Network. It contains a list of groups and a URL link to get the next set of results.
 
     :ivar value: Gets a page of EffectiveVirtualNetwork.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveVirtualNetwork]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveVirtualNetwork]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -2633,7 +2604,7 @@ class EffectiveVirtualNetworksListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: Gets a page of EffectiveVirtualNetwork.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveVirtualNetwork]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveVirtualNetwork]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -2677,6 +2648,130 @@ class EffectiveVirtualNetworksParameter(msrest.serialization.Model):
         self.skip_token = skip_token
 
 
+class Error(msrest.serialization.Model):
+    """Common error representation.
+
+    :ivar code: Error code.
+    :vartype code: str
+    :ivar message: Error message.
+    :vartype message: str
+    :ivar target: Error target.
+    :vartype target: str
+    :ivar details: Error details.
+    :vartype details: list[~azure.mgmt.network.v2022_02_01_preview.models.ErrorDetails]
+    :ivar inner_error: Inner error message.
+    :vartype inner_error: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'details': {'key': 'details', 'type': '[ErrorDetails]'},
+        'inner_error': {'key': 'innerError', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        message: Optional[str] = None,
+        target: Optional[str] = None,
+        details: Optional[List["ErrorDetails"]] = None,
+        inner_error: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword code: Error code.
+        :paramtype code: str
+        :keyword message: Error message.
+        :paramtype message: str
+        :keyword target: Error target.
+        :paramtype target: str
+        :keyword details: Error details.
+        :paramtype details: list[~azure.mgmt.network.v2022_02_01_preview.models.ErrorDetails]
+        :keyword inner_error: Inner error message.
+        :paramtype inner_error: str
+        """
+        super(Error, self).__init__(**kwargs)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.details = details
+        self.inner_error = inner_error
+
+
+class ErrorDetails(msrest.serialization.Model):
+    """Common error details representation.
+
+    :ivar code: Error code.
+    :vartype code: str
+    :ivar target: Error target.
+    :vartype target: str
+    :ivar message: Error message.
+    :vartype message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        target: Optional[str] = None,
+        message: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword code: Error code.
+        :paramtype code: str
+        :keyword target: Error target.
+        :paramtype target: str
+        :keyword message: Error message.
+        :paramtype message: str
+        """
+        super(ErrorDetails, self).__init__(**kwargs)
+        self.code = code
+        self.target = target
+        self.message = message
+
+
+class ExtendedLocation(msrest.serialization.Model):
+    """ExtendedLocation complex type.
+
+    :ivar name: The name of the extended location.
+    :vartype name: str
+    :ivar type: The type of the extended location. Possible values include: "EdgeZone".
+    :vartype type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ExtendedLocationTypes
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        type: Optional[Union[str, "ExtendedLocationTypes"]] = None,
+        **kwargs
+    ):
+        """
+        :keyword name: The name of the extended location.
+        :paramtype name: str
+        :keyword type: The type of the extended location. Possible values include: "EdgeZone".
+        :paramtype type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ExtendedLocationTypes
+        """
+        super(ExtendedLocation, self).__init__(**kwargs)
+        self.name = name
+        self.type = type
+
+
 class Hub(msrest.serialization.Model):
     """Hub Item.
 
@@ -2709,6 +2804,67 @@ class Hub(msrest.serialization.Model):
         self.resource_type = resource_type
 
 
+class ManagedServiceIdentity(msrest.serialization.Model):
+    """Identity for the resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar principal_id: The principal id of the system assigned identity. This property will only
+     be provided for a system assigned identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant id of the system assigned identity. This property will only be
+     provided for a system assigned identity.
+    :vartype tenant_id: str
+    :ivar type: The type of identity used for the resource. The type 'SystemAssigned, UserAssigned'
+     includes both an implicitly created identity and a set of user assigned identities. The type
+     'None' will remove any identities from the virtual machine. Possible values include:
+     "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned", "None".
+    :vartype type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ResourceIdentityType
+    :ivar user_assigned_identities: The list of user identities associated with resource. The user
+     identity dictionary key references will be ARM resource ids in the form:
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+    :vartype user_assigned_identities: dict[str,
+     ~azure.mgmt.network.v2022_02_01_preview.models.Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties]
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '{Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties}'},
+    }
+
+    def __init__(
+        self,
+        *,
+        type: Optional[Union[str, "ResourceIdentityType"]] = None,
+        user_assigned_identities: Optional[Dict[str, "Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties"]] = None,
+        **kwargs
+    ):
+        """
+        :keyword type: The type of identity used for the resource. The type 'SystemAssigned,
+         UserAssigned' includes both an implicitly created identity and a set of user assigned
+         identities. The type 'None' will remove any identities from the virtual machine. Possible
+         values include: "SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned", "None".
+        :paramtype type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ResourceIdentityType
+        :keyword user_assigned_identities: The list of user identities associated with resource. The
+         user identity dictionary key references will be ARM resource ids in the form:
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+        :paramtype user_assigned_identities: dict[str,
+         ~azure.mgmt.network.v2022_02_01_preview.models.Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties]
+        """
+        super(ManagedServiceIdentity, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = type
+        self.user_assigned_identities = user_assigned_identities
+
+
 class NetworkGroup(ProxyResource):
     """The network group resource.
 
@@ -2723,9 +2879,7 @@ class NetworkGroup(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the network group.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description of the network group.
     :vartype description: str
     :ivar member_type: Group member type.
@@ -2733,7 +2887,7 @@ class NetworkGroup(ProxyResource):
     :ivar provisioning_state: The provisioning state of the scope assignment resource. Possible
      values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -2751,7 +2905,6 @@ class NetworkGroup(ProxyResource):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'member_type': {'key': 'properties.memberType', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -2760,14 +2913,11 @@ class NetworkGroup(ProxyResource):
     def __init__(
         self,
         *,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         member_type: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword display_name: A friendly name for the network group.
-        :paramtype display_name: str
         :keyword description: A description of the network group.
         :paramtype description: str
         :keyword member_type: Group member type.
@@ -2775,7 +2925,6 @@ class NetworkGroup(ProxyResource):
         """
         super(NetworkGroup, self).__init__(**kwargs)
         self.system_data = None
-        self.display_name = display_name
         self.description = description
         self.member_type = member_type
         self.provisioning_state = None
@@ -2785,7 +2934,7 @@ class NetworkGroupListResult(msrest.serialization.Model):
     """Result of the request to list NetworkGroup. It contains a list of groups and a URL link to get the next set of results.
 
     :ivar value: Gets a page of NetworkGroup.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkGroup]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkGroup]
     :ivar next_link: Gets the URL to get the next set of results.
     :vartype next_link: str
     """
@@ -2804,7 +2953,7 @@ class NetworkGroupListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: Gets a page of NetworkGroup.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkGroup]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkGroup]
         :keyword next_link: Gets the URL to get the next set of results.
         :paramtype next_link: str
         """
@@ -2885,21 +3034,19 @@ class NetworkManager(Resource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the network manager.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description of the network manager.
     :vartype description: str
     :ivar network_manager_scopes: Scope of Network Manager.
     :vartype network_manager_scopes:
-     ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerPropertiesNetworkManagerScopes
+     ~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerPropertiesNetworkManagerScopes
     :ivar network_manager_scope_accesses: Scope Access.
     :vartype network_manager_scope_accesses: list[str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType]
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType]
     :ivar provisioning_state: The provisioning state of the scope assignment resource. Possible
      values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -2918,7 +3065,6 @@ class NetworkManager(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'etag': {'key': 'etag', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'network_manager_scopes': {'key': 'properties.networkManagerScopes', 'type': 'NetworkManagerPropertiesNetworkManagerScopes'},
         'network_manager_scope_accesses': {'key': 'properties.networkManagerScopeAccesses', 'type': '[str]'},
@@ -2931,7 +3077,6 @@ class NetworkManager(Resource):
         id: Optional[str] = None,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         network_manager_scopes: Optional["NetworkManagerPropertiesNetworkManagerScopes"] = None,
         network_manager_scope_accesses: Optional[List[Union[str, "ConfigurationType"]]] = None,
@@ -2944,21 +3089,18 @@ class NetworkManager(Resource):
         :paramtype location: str
         :keyword tags: A set of tags. Resource tags.
         :paramtype tags: dict[str, str]
-        :keyword display_name: A friendly name for the network manager.
-        :paramtype display_name: str
         :keyword description: A description of the network manager.
         :paramtype description: str
         :keyword network_manager_scopes: Scope of Network Manager.
         :paramtype network_manager_scopes:
-         ~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerPropertiesNetworkManagerScopes
+         ~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerPropertiesNetworkManagerScopes
         :keyword network_manager_scope_accesses: Scope Access.
         :paramtype network_manager_scope_accesses: list[str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType]
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType]
         """
         super(NetworkManager, self).__init__(id=id, location=location, tags=tags, **kwargs)
         self.etag = None
         self.system_data = None
-        self.display_name = display_name
         self.description = description
         self.network_manager_scopes = network_manager_scopes
         self.network_manager_scope_accesses = network_manager_scope_accesses
@@ -2980,7 +3122,7 @@ class NetworkManagerCommit(msrest.serialization.Model):
     :vartype configuration_ids: list[str]
     :ivar commit_type: Commit Type. Possible values include: "SecurityAdmin", "SecurityUser",
      "Connectivity".
-    :vartype commit_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType
+    :vartype commit_type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType
     """
 
     _validation = {
@@ -3010,7 +3152,7 @@ class NetworkManagerCommit(msrest.serialization.Model):
         :paramtype configuration_ids: list[str]
         :keyword commit_type: Commit Type. Possible values include: "SecurityAdmin", "SecurityUser",
          "Connectivity".
-        :paramtype commit_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType
+        :paramtype commit_type: str or ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType
         """
         super(NetworkManagerCommit, self).__init__(**kwargs)
         self.commit_id = None
@@ -3033,13 +3175,13 @@ class NetworkManagerConnection(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar network_manager_id: Network Manager Id.
     :vartype network_manager_id: str
     :ivar connection_state: Connection state. Possible values include: "Connected", "Pending",
      "Conflict", "Revoked", "Rejected".
     :vartype connection_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ScopeConnectionState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ScopeConnectionState
     :ivar description: A description of the scope connection.
     :vartype description: str
     """
@@ -3088,7 +3230,7 @@ class NetworkManagerConnectionListResult(msrest.serialization.Model):
     """List of network manager connections.
 
     :ivar value: List of network manager connections.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerConnection]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerConnection]
     :ivar next_link: Gets the URL to get the next page of results.
     :vartype next_link: str
     """
@@ -3107,7 +3249,7 @@ class NetworkManagerConnectionListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: List of network manager connections.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerConnection]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerConnection]
         :keyword next_link: Gets the URL to get the next page of results.
         :paramtype next_link: str
         """
@@ -3126,13 +3268,13 @@ class NetworkManagerDeploymentStatus(msrest.serialization.Model):
     :ivar deployment_status: Deployment Status. Possible values include: "NotStarted", "Deploying",
      "Deployed", "Failed".
     :vartype deployment_status: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.DeploymentStatus
+     ~azure.mgmt.network.v2022_02_01_preview.models.DeploymentStatus
     :ivar configuration_ids: List of configuration ids.
     :vartype configuration_ids: list[str]
     :ivar deployment_type: Configuration Deployment Type. Possible values include: "SecurityAdmin",
      "SecurityUser", "Connectivity".
     :vartype deployment_type: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType
     :ivar error_message: Error Message.
     :vartype error_message: str
     """
@@ -3165,13 +3307,13 @@ class NetworkManagerDeploymentStatus(msrest.serialization.Model):
         :keyword deployment_status: Deployment Status. Possible values include: "NotStarted",
          "Deploying", "Deployed", "Failed".
         :paramtype deployment_status: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.DeploymentStatus
+         ~azure.mgmt.network.v2022_02_01_preview.models.DeploymentStatus
         :keyword configuration_ids: List of configuration ids.
         :paramtype configuration_ids: list[str]
         :keyword deployment_type: Configuration Deployment Type. Possible values include:
          "SecurityAdmin", "SecurityUser", "Connectivity".
         :paramtype deployment_type: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType
         :keyword error_message: Error Message.
         :paramtype error_message: str
         """
@@ -3189,7 +3331,7 @@ class NetworkManagerDeploymentStatusListResult(msrest.serialization.Model):
 
     :ivar value: Gets a page of Network Manager Deployment Status.
     :vartype value:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerDeploymentStatus]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerDeploymentStatus]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -3210,7 +3352,7 @@ class NetworkManagerDeploymentStatusListResult(msrest.serialization.Model):
         """
         :keyword value: Gets a page of Network Manager Deployment Status.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerDeploymentStatus]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerDeploymentStatus]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -3227,7 +3369,7 @@ class NetworkManagerDeploymentStatusParameter(msrest.serialization.Model):
     :vartype regions: list[str]
     :ivar deployment_types: List of deployment types.
     :vartype deployment_types: list[str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType]
+     ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType]
     :ivar skip_token: Continuation token for pagination, capturing the next page size and offset,
      as well as the context of the query.
     :vartype skip_token: str
@@ -3252,7 +3394,7 @@ class NetworkManagerDeploymentStatusParameter(msrest.serialization.Model):
         :paramtype regions: list[str]
         :keyword deployment_types: List of deployment types.
         :paramtype deployment_types: list[str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.ConfigurationType]
+         ~azure.mgmt.network.v2022_02_01_preview.models.ConfigurationType]
         :keyword skip_token: Continuation token for pagination, capturing the next page size and
          offset, as well as the context of the query.
         :paramtype skip_token: str
@@ -3268,7 +3410,7 @@ class NetworkManagerEffectiveConnectivityConfigurationListResult(msrest.serializ
 
     :ivar value: Gets a page of NetworkManagerEffectiveConnectivityConfiguration.
     :vartype value:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveConnectivityConfiguration]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveConnectivityConfiguration]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -3289,7 +3431,7 @@ class NetworkManagerEffectiveConnectivityConfigurationListResult(msrest.serializ
         """
         :keyword value: Gets a page of NetworkManagerEffectiveConnectivityConfiguration.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveConnectivityConfiguration]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveConnectivityConfiguration]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -3304,7 +3446,7 @@ class NetworkManagerEffectiveSecurityAdminRulesListResult(msrest.serialization.M
 
     :ivar value: Gets a page of NetworkManagerEffectiveSecurityAdminRules.
     :vartype value:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveBaseSecurityAdminRule]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveBaseSecurityAdminRule]
     :ivar skip_token: When present, the value can be passed to a subsequent query call (together
      with the same query and scopes used in the current request) to retrieve the next page of data.
     :vartype skip_token: str
@@ -3325,7 +3467,7 @@ class NetworkManagerEffectiveSecurityAdminRulesListResult(msrest.serialization.M
         """
         :keyword value: Gets a page of NetworkManagerEffectiveSecurityAdminRules.
         :paramtype value:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.EffectiveBaseSecurityAdminRule]
+         list[~azure.mgmt.network.v2022_02_01_preview.models.EffectiveBaseSecurityAdminRule]
         :keyword skip_token: When present, the value can be passed to a subsequent query call (together
          with the same query and scopes used in the current request) to retrieve the next page of data.
         :paramtype skip_token: str
@@ -3339,7 +3481,7 @@ class NetworkManagerListResult(msrest.serialization.Model):
     """Result of the request to list NetworkManager. It contains a list of network managers and a URL link to get the next set of results.
 
     :ivar value: Gets a page of NetworkManager.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManager]
     :ivar next_link: Gets the URL to get the next page of results.
     :vartype next_link: str
     """
@@ -3358,7 +3500,7 @@ class NetworkManagerListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: Gets a page of NetworkManager.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManager]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManager]
         :keyword next_link: Gets the URL to get the next page of results.
         :paramtype next_link: str
         """
@@ -3378,7 +3520,7 @@ class NetworkManagerPropertiesNetworkManagerScopes(msrest.serialization.Model):
     :vartype subscriptions: list[str]
     :ivar cross_tenant_scopes: List of cross tenant scopes.
     :vartype cross_tenant_scopes:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.CrossTenantScopes]
+     list[~azure.mgmt.network.v2022_02_01_preview.models.CrossTenantScopes]
     """
 
     _validation = {
@@ -3493,112 +3635,6 @@ class QueryRequestOptions(msrest.serialization.Model):
         self.skip_token = skip_token
 
 
-class RuleCollection(ProxyResource):
-    """Defines the rule collection.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Resource ID.
-    :vartype id: str
-    :ivar name: Resource name.
-    :vartype name: str
-    :ivar type: Resource type.
-    :vartype type: str
-    :ivar etag: A unique read-only string that changes whenever the resource is updated.
-    :vartype etag: str
-    :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A display name of the rule collection.
-    :vartype display_name: str
-    :ivar description: A description of the rule collection.
-    :vartype description: str
-    :ivar applies_to_groups: Groups for configuration.
-    :vartype applies_to_groups:
-     list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
-    :ivar provisioning_state: The provisioning state of the resource. Possible values include:
-     "Succeeded", "Updating", "Deleting", "Failed".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'etag': {'readonly': True},
-        'system_data': {'readonly': True},
-        'provisioning_state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'etag': {'key': 'etag', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
-        'description': {'key': 'properties.description', 'type': 'str'},
-        'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        display_name: Optional[str] = None,
-        description: Optional[str] = None,
-        applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
-        **kwargs
-    ):
-        """
-        :keyword display_name: A display name of the rule collection.
-        :paramtype display_name: str
-        :keyword description: A description of the rule collection.
-        :paramtype description: str
-        :keyword applies_to_groups: Groups for configuration.
-        :paramtype applies_to_groups:
-         list[~azure.mgmt.network.v2021_05_01_preview.models.NetworkManagerSecurityGroupItem]
-        """
-        super(RuleCollection, self).__init__(**kwargs)
-        self.system_data = None
-        self.display_name = display_name
-        self.description = description
-        self.applies_to_groups = applies_to_groups
-        self.provisioning_state = None
-
-
-class RuleCollectionListResult(msrest.serialization.Model):
-    """Security configuration rule collection list result.
-
-    :ivar value: A list of network manager security configuration rule collections.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.RuleCollection]
-    :ivar next_link: Gets the URL to get the next set of results.
-    :vartype next_link: str
-    """
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[RuleCollection]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        value: Optional[List["RuleCollection"]] = None,
-        next_link: Optional[str] = None,
-        **kwargs
-    ):
-        """
-        :keyword value: A list of network manager security configuration rule collections.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.RuleCollection]
-        :keyword next_link: Gets the URL to get the next set of results.
-        :paramtype next_link: str
-        """
-        super(RuleCollectionListResult, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
-
-
 class ScopeConnection(ProxyResource):
     """The Scope Connections resource.
 
@@ -3613,7 +3649,7 @@ class ScopeConnection(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar tenant_id: Tenant ID.
     :vartype tenant_id: str
     :ivar resource_id: Resource ID.
@@ -3621,7 +3657,7 @@ class ScopeConnection(ProxyResource):
     :ivar connection_state: Connection State. Possible values include: "Connected", "Pending",
      "Conflict", "Revoked", "Rejected".
     :vartype connection_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ScopeConnectionState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ScopeConnectionState
     :ivar description: A description of the scope connection.
     :vartype description: str
     """
@@ -3675,7 +3711,7 @@ class ScopeConnectionListResult(msrest.serialization.Model):
     """List of scope connections.
 
     :ivar value: List of scope connections.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.ScopeConnection]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.ScopeConnection]
     :ivar next_link: Gets the URL to get the next page of results.
     :vartype next_link: str
     """
@@ -3694,7 +3730,7 @@ class ScopeConnectionListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: List of scope connections.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.ScopeConnection]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.ScopeConnection]
         :keyword next_link: Gets the URL to get the next page of results.
         :paramtype next_link: str
         """
@@ -3703,8 +3739,8 @@ class ScopeConnectionListResult(msrest.serialization.Model):
         self.next_link = next_link
 
 
-class SecurityConfiguration(ProxyResource):
-    """Defines the security configuration.
+class SecurityAdminConfiguration(ProxyResource):
+    """Defines the security admin configuration.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -3717,25 +3753,17 @@ class SecurityConfiguration(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A display name of the security configuration.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description of the security configuration.
     :vartype description: str
-    :ivar security_type: Security Type. Possible values include: "AdminPolicy", "UserPolicy".
-    :vartype security_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.SecurityType
     :ivar apply_on_network_intent_policy_based_services: Enum list of network intent policy based
      services.
     :vartype apply_on_network_intent_policy_based_services: list[str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.NetworkIntentPolicyBasedService]
-    :ivar delete_existing_ns_gs: Flag if need to delete existing network security groups. Possible
-     values include: "False", "True".
-    :vartype delete_existing_ns_gs: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingNSGs
+     ~azure.mgmt.network.v2022_02_01_preview.models.NetworkIntentPolicyBasedService]
     :ivar provisioning_state: The provisioning state of the resource. Possible values include:
      "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -3753,10 +3781,109 @@ class SecurityConfiguration(ProxyResource):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'security_type': {'key': 'properties.securityType', 'type': 'str'},
         'apply_on_network_intent_policy_based_services': {'key': 'properties.applyOnNetworkIntentPolicyBasedServices', 'type': '[str]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        description: Optional[str] = None,
+        apply_on_network_intent_policy_based_services: Optional[List[Union[str, "NetworkIntentPolicyBasedService"]]] = None,
+        **kwargs
+    ):
+        """
+        :keyword description: A description of the security configuration.
+        :paramtype description: str
+        :keyword apply_on_network_intent_policy_based_services: Enum list of network intent policy
+         based services.
+        :paramtype apply_on_network_intent_policy_based_services: list[str or
+         ~azure.mgmt.network.v2022_02_01_preview.models.NetworkIntentPolicyBasedService]
+        """
+        super(SecurityAdminConfiguration, self).__init__(**kwargs)
+        self.system_data = None
+        self.description = description
+        self.apply_on_network_intent_policy_based_services = apply_on_network_intent_policy_based_services
+        self.provisioning_state = None
+
+
+class SecurityAdminConfigurationListResult(msrest.serialization.Model):
+    """A list of network manager security admin configurations.
+
+    :ivar value: Gets a page of security admin configurations.
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.SecurityAdminConfiguration]
+    :ivar next_link: Gets the URL to get the next page of results.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[SecurityAdminConfiguration]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["SecurityAdminConfiguration"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword value: Gets a page of security admin configurations.
+        :paramtype value:
+         list[~azure.mgmt.network.v2022_02_01_preview.models.SecurityAdminConfiguration]
+        :keyword next_link: Gets the URL to get the next page of results.
+        :paramtype next_link: str
+        """
+        super(SecurityAdminConfigurationListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class SecurityUserConfiguration(ProxyResource):
+    """Defines the security user configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :ivar etag: A unique read-only string that changes whenever the resource is updated.
+    :vartype etag: str
+    :ivar system_data: The system metadata related to this resource.
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
+    :ivar description: A description of the security user configuration.
+    :vartype description: str
+    :ivar delete_existing_ns_gs: Flag if need to delete existing network security groups. Possible
+     values include: "False", "True".
+    :vartype delete_existing_ns_gs: str or
+     ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingNSGs
+    :ivar provisioning_state: The provisioning state of the resource. Possible values include:
+     "Succeeded", "Updating", "Deleting", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'description': {'key': 'properties.description', 'type': 'str'},
         'delete_existing_ns_gs': {'key': 'properties.deleteExistingNSGs', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
@@ -3764,67 +3891,54 @@ class SecurityConfiguration(ProxyResource):
     def __init__(
         self,
         *,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
-        security_type: Optional[Union[str, "SecurityType"]] = None,
-        apply_on_network_intent_policy_based_services: Optional[List[Union[str, "NetworkIntentPolicyBasedService"]]] = None,
         delete_existing_ns_gs: Optional[Union[str, "DeleteExistingNSGs"]] = None,
         **kwargs
     ):
         """
-        :keyword display_name: A display name of the security configuration.
-        :paramtype display_name: str
-        :keyword description: A description of the security configuration.
+        :keyword description: A description of the security user configuration.
         :paramtype description: str
-        :keyword security_type: Security Type. Possible values include: "AdminPolicy", "UserPolicy".
-        :paramtype security_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.SecurityType
-        :keyword apply_on_network_intent_policy_based_services: Enum list of network intent policy
-         based services.
-        :paramtype apply_on_network_intent_policy_based_services: list[str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.NetworkIntentPolicyBasedService]
         :keyword delete_existing_ns_gs: Flag if need to delete existing network security groups.
          Possible values include: "False", "True".
         :paramtype delete_existing_ns_gs: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.DeleteExistingNSGs
+         ~azure.mgmt.network.v2022_02_01_preview.models.DeleteExistingNSGs
         """
-        super(SecurityConfiguration, self).__init__(**kwargs)
+        super(SecurityUserConfiguration, self).__init__(**kwargs)
         self.system_data = None
-        self.display_name = display_name
         self.description = description
-        self.security_type = security_type
-        self.apply_on_network_intent_policy_based_services = apply_on_network_intent_policy_based_services
         self.delete_existing_ns_gs = delete_existing_ns_gs
         self.provisioning_state = None
 
 
-class SecurityConfigurationListResult(msrest.serialization.Model):
-    """A list of network manager security configurations.
+class SecurityUserConfigurationListResult(msrest.serialization.Model):
+    """A list of network manager security user configurations.
 
-    :ivar value: Gets a page of security configurations.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfiguration]
+    :ivar value: Gets a page of security user configurations.
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.SecurityUserConfiguration]
     :ivar next_link: Gets the URL to get the next page of results.
     :vartype next_link: str
     """
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[SecurityConfiguration]'},
+        'value': {'key': 'value', 'type': '[SecurityUserConfiguration]'},
         'next_link': {'key': 'nextLink', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["SecurityConfiguration"]] = None,
+        value: Optional[List["SecurityUserConfiguration"]] = None,
         next_link: Optional[str] = None,
         **kwargs
     ):
         """
-        :keyword value: Gets a page of security configurations.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfiguration]
+        :keyword value: Gets a page of security user configurations.
+        :paramtype value:
+         list[~azure.mgmt.network.v2022_02_01_preview.models.SecurityUserConfiguration]
         :keyword next_link: Gets the URL to get the next page of results.
         :paramtype next_link: str
         """
-        super(SecurityConfigurationListResult, self).__init__(**kwargs)
+        super(SecurityUserConfigurationListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -3843,7 +3957,7 @@ class StaticMember(ProxyResource):
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
     :vartype etag: str
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar resource_id: Resource Id.
     :vartype resource_id: str
     """
@@ -3884,7 +3998,7 @@ class StaticMemberListResult(msrest.serialization.Model):
     """Result of the request to list StaticMember. It contains a list of groups and a URL link to get the next set of results.
 
     :ivar value: Gets a page of StaticMember.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.StaticMember]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.StaticMember]
     :ivar next_link: Gets the URL to get the next set of results.
     :vartype next_link: str
     """
@@ -3903,13 +4017,38 @@ class StaticMemberListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: Gets a page of StaticMember.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.StaticMember]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.StaticMember]
         :keyword next_link: Gets the URL to get the next set of results.
         :paramtype next_link: str
         """
         super(StaticMemberListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
+
+
+class SubResource(msrest.serialization.Model):
+    """Reference to another subresource.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        id: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword id: Resource ID.
+        :paramtype id: str
+        """
+        super(SubResource, self).__init__(**kwargs)
+        self.id = id
 
 
 class SystemData(msrest.serialization.Model):
@@ -3919,7 +4058,7 @@ class SystemData(msrest.serialization.Model):
     :vartype created_by: str
     :ivar created_by_type: The type of identity that created the resource. Possible values include:
      "User", "Application", "ManagedIdentity", "Key".
-    :vartype created_by_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.CreatedByType
+    :vartype created_by_type: str or ~azure.mgmt.network.v2022_02_01_preview.models.CreatedByType
     :ivar created_at: The timestamp of resource creation (UTC).
     :vartype created_at: ~datetime.datetime
     :ivar last_modified_by: The identity that last modified the resource.
@@ -3927,7 +4066,7 @@ class SystemData(msrest.serialization.Model):
     :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
     :vartype last_modified_by_type: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.CreatedByType
+     ~azure.mgmt.network.v2022_02_01_preview.models.CreatedByType
     :ivar last_modified_at: The type of identity that last modified the resource.
     :vartype last_modified_at: ~datetime.datetime
     """
@@ -3957,7 +4096,7 @@ class SystemData(msrest.serialization.Model):
         :paramtype created_by: str
         :keyword created_by_type: The type of identity that created the resource. Possible values
          include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype created_by_type: str or ~azure.mgmt.network.v2021_05_01_preview.models.CreatedByType
+        :paramtype created_by_type: str or ~azure.mgmt.network.v2022_02_01_preview.models.CreatedByType
         :keyword created_at: The timestamp of resource creation (UTC).
         :paramtype created_at: ~datetime.datetime
         :keyword last_modified_by: The identity that last modified the resource.
@@ -3965,7 +4104,7 @@ class SystemData(msrest.serialization.Model):
         :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
          values include: "User", "Application", "ManagedIdentity", "Key".
         :paramtype last_modified_by_type: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.CreatedByType
+         ~azure.mgmt.network.v2022_02_01_preview.models.CreatedByType
         :keyword last_modified_at: The type of identity that last modified the resource.
         :paramtype last_modified_at: ~datetime.datetime
         """
@@ -3976,6 +4115,31 @@ class SystemData(msrest.serialization.Model):
         self.last_modified_by = last_modified_by
         self.last_modified_by_type = last_modified_by_type
         self.last_modified_at = last_modified_at
+
+
+class TagsObject(msrest.serialization.Model):
+    """Tags object for patch operations.
+
+    :ivar tags: A set of tags. Resource tags.
+    :vartype tags: dict[str, str]
+    """
+
+    _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+    }
+
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        """
+        :keyword tags: A set of tags. Resource tags.
+        :paramtype tags: dict[str, str]
+        """
+        super(TagsObject, self).__init__(**kwargs)
+        self.tags = tags
 
 
 class UserRule(BaseUserRule):
@@ -3995,21 +4159,19 @@ class UserRule(BaseUserRule):
     :vartype etag: str
     :ivar kind: Required. Whether the rule is custom or default.Constant filled by server. Possible
      values include: "Custom", "Default".
-    :vartype kind: str or ~azure.mgmt.network.v2021_05_01_preview.models.UserRuleKind
+    :vartype kind: str or ~azure.mgmt.network.v2022_02_01_preview.models.UserRuleKind
     :ivar system_data: The system metadata related to this resource.
-    :vartype system_data: ~azure.mgmt.network.v2021_05_01_preview.models.SystemData
-    :ivar display_name: A friendly name for the rule.
-    :vartype display_name: str
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
     :ivar description: A description for this rule.
     :vartype description: str
     :ivar protocol: Network protocol this rule applies to. Possible values include: "Tcp", "Udp",
      "Icmp", "Esp", "Any", "Ah".
     :vartype protocol: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
     :ivar sources: The CIDR or source IP ranges.
-    :vartype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar destinations: The destination address prefixes. CIDR or destination IP ranges.
-    :vartype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+    :vartype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
     :ivar source_port_ranges: The source port ranges.
     :vartype source_port_ranges: list[str]
     :ivar destination_port_ranges: The destination port ranges.
@@ -4017,11 +4179,11 @@ class UserRule(BaseUserRule):
     :ivar direction: Indicates if the traffic matched against the rule in inbound or outbound.
      Possible values include: "Inbound", "Outbound".
     :vartype direction: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+     ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
     :ivar provisioning_state: The provisioning state of the security configuration user rule
      resource. Possible values include: "Succeeded", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.network.v2021_05_01_preview.models.ProvisioningState
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
     """
 
     _validation = {
@@ -4041,7 +4203,6 @@ class UserRule(BaseUserRule):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'protocol': {'key': 'properties.protocol', 'type': 'str'},
         'sources': {'key': 'properties.sources', 'type': '[AddressPrefixItem]'},
@@ -4055,7 +4216,6 @@ class UserRule(BaseUserRule):
     def __init__(
         self,
         *,
-        display_name: Optional[str] = None,
         description: Optional[str] = None,
         protocol: Optional[Union[str, "SecurityConfigurationRuleProtocol"]] = None,
         sources: Optional[List["AddressPrefixItem"]] = None,
@@ -4066,18 +4226,16 @@ class UserRule(BaseUserRule):
         **kwargs
     ):
         """
-        :keyword display_name: A friendly name for the rule.
-        :paramtype display_name: str
         :keyword description: A description for this rule.
         :paramtype description: str
         :keyword protocol: Network protocol this rule applies to. Possible values include: "Tcp",
          "Udp", "Icmp", "Esp", "Any", "Ah".
         :paramtype protocol: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleProtocol
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleProtocol
         :keyword sources: The CIDR or source IP ranges.
-        :paramtype sources: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype sources: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword destinations: The destination address prefixes. CIDR or destination IP ranges.
-        :paramtype destinations: list[~azure.mgmt.network.v2021_05_01_preview.models.AddressPrefixItem]
+        :paramtype destinations: list[~azure.mgmt.network.v2022_02_01_preview.models.AddressPrefixItem]
         :keyword source_port_ranges: The source port ranges.
         :paramtype source_port_ranges: list[str]
         :keyword destination_port_ranges: The destination port ranges.
@@ -4085,11 +4243,10 @@ class UserRule(BaseUserRule):
         :keyword direction: Indicates if the traffic matched against the rule in inbound or outbound.
          Possible values include: "Inbound", "Outbound".
         :paramtype direction: str or
-         ~azure.mgmt.network.v2021_05_01_preview.models.SecurityConfigurationRuleDirection
+         ~azure.mgmt.network.v2022_02_01_preview.models.SecurityConfigurationRuleDirection
         """
         super(UserRule, self).__init__(**kwargs)
         self.kind = 'Custom'  # type: str
-        self.display_name = display_name
         self.description = description
         self.protocol = protocol
         self.sources = sources
@@ -4100,11 +4257,110 @@ class UserRule(BaseUserRule):
         self.provisioning_state = None
 
 
+class UserRuleCollection(ProxyResource):
+    """Defines the user rule collection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :ivar etag: A unique read-only string that changes whenever the resource is updated.
+    :vartype etag: str
+    :ivar system_data: The system metadata related to this resource.
+    :vartype system_data: ~azure.mgmt.network.v2022_02_01_preview.models.SystemData
+    :ivar description: A description of the user rule collection.
+    :vartype description: str
+    :ivar applies_to_groups: Groups for configuration.
+    :vartype applies_to_groups:
+     list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
+    :ivar provisioning_state: The provisioning state of the resource. Possible values include:
+     "Succeeded", "Updating", "Deleting", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2022_02_01_preview.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'description': {'key': 'properties.description', 'type': 'str'},
+        'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[NetworkManagerSecurityGroupItem]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        description: Optional[str] = None,
+        applies_to_groups: Optional[List["NetworkManagerSecurityGroupItem"]] = None,
+        **kwargs
+    ):
+        """
+        :keyword description: A description of the user rule collection.
+        :paramtype description: str
+        :keyword applies_to_groups: Groups for configuration.
+        :paramtype applies_to_groups:
+         list[~azure.mgmt.network.v2022_02_01_preview.models.NetworkManagerSecurityGroupItem]
+        """
+        super(UserRuleCollection, self).__init__(**kwargs)
+        self.system_data = None
+        self.description = description
+        self.applies_to_groups = applies_to_groups
+        self.provisioning_state = None
+
+
+class UserRuleCollectionListResult(msrest.serialization.Model):
+    """Security user configuration rule collection list result.
+
+    :ivar value: A list of network manager security user configuration rule collections.
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.UserRuleCollection]
+    :ivar next_link: Gets the URL to get the next set of results.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[UserRuleCollection]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["UserRuleCollection"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs
+    ):
+        """
+        :keyword value: A list of network manager security user configuration rule collections.
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.UserRuleCollection]
+        :keyword next_link: Gets the URL to get the next set of results.
+        :paramtype next_link: str
+        """
+        super(UserRuleCollectionListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class UserRuleListResult(msrest.serialization.Model):
     """security user rule list result.
 
     :ivar value: A list of user rules.
-    :vartype value: list[~azure.mgmt.network.v2021_05_01_preview.models.BaseUserRule]
+    :vartype value: list[~azure.mgmt.network.v2022_02_01_preview.models.BaseUserRule]
     :ivar next_link: The URL to get the next set of results.
     :vartype next_link: str
     """
@@ -4123,7 +4379,7 @@ class UserRuleListResult(msrest.serialization.Model):
     ):
         """
         :keyword value: A list of user rules.
-        :paramtype value: list[~azure.mgmt.network.v2021_05_01_preview.models.BaseUserRule]
+        :paramtype value: list[~azure.mgmt.network.v2022_02_01_preview.models.BaseUserRule]
         :keyword next_link: The URL to get the next set of results.
         :paramtype next_link: str
         """

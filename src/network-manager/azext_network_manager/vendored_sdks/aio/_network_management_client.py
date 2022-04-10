@@ -7,11 +7,12 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Awaitable, Optional, TYPE_CHECKING
+from typing import Any, Awaitable, TYPE_CHECKING
+
+from msrest import Deserializer, Serializer
 
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
-from msrest import Deserializer, Serializer
 
 from .. import models
 from ._configuration import NetworkManagementClientConfiguration
@@ -21,68 +22,71 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-class NetworkManagementClient(NetworkManagementClientOperationsMixin):
+class NetworkManagementClient(NetworkManagementClientOperationsMixin):    # pylint: disable=too-many-instance-attributes
     """Network Client.
 
     :ivar network_managers: NetworkManagersOperations operations
     :vartype network_managers:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.NetworkManagersOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.NetworkManagersOperations
     :ivar network_manager_commits: NetworkManagerCommitsOperations operations
     :vartype network_manager_commits:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.NetworkManagerCommitsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.NetworkManagerCommitsOperations
     :ivar network_manager_deployment_status: NetworkManagerDeploymentStatusOperations operations
     :vartype network_manager_deployment_status:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.NetworkManagerDeploymentStatusOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.NetworkManagerDeploymentStatusOperations
     :ivar effective_virtual_networks: EffectiveVirtualNetworksOperations operations
     :vartype effective_virtual_networks:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.EffectiveVirtualNetworksOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.EffectiveVirtualNetworksOperations
     :ivar connectivity_configurations: ConnectivityConfigurationsOperations operations
     :vartype connectivity_configurations:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.ConnectivityConfigurationsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.ConnectivityConfigurationsOperations
     :ivar network_groups: NetworkGroupsOperations operations
     :vartype network_groups:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.NetworkGroupsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.NetworkGroupsOperations
     :ivar list_effective_virtual_networks: ListEffectiveVirtualNetworksOperations operations
     :vartype list_effective_virtual_networks:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.ListEffectiveVirtualNetworksOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.ListEffectiveVirtualNetworksOperations
     :ivar static_members: StaticMembersOperations operations
     :vartype static_members:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.StaticMembersOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.StaticMembersOperations
     :ivar security_user_configurations: SecurityUserConfigurationsOperations operations
     :vartype security_user_configurations:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.SecurityUserConfigurationsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.SecurityUserConfigurationsOperations
     :ivar user_rule_collections: UserRuleCollectionsOperations operations
     :vartype user_rule_collections:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.UserRuleCollectionsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.UserRuleCollectionsOperations
     :ivar user_rules: UserRulesOperations operations
-    :vartype user_rules: azure.mgmt.network.v2021_05_01_preview.aio.operations.UserRulesOperations
+    :vartype user_rules: azure.mgmt.network.v2022_02_01_preview.aio.operations.UserRulesOperations
     :ivar security_admin_configurations: SecurityAdminConfigurationsOperations operations
     :vartype security_admin_configurations:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.SecurityAdminConfigurationsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.SecurityAdminConfigurationsOperations
     :ivar admin_rule_collections: AdminRuleCollectionsOperations operations
     :vartype admin_rule_collections:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.AdminRuleCollectionsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.AdminRuleCollectionsOperations
     :ivar admin_rules: AdminRulesOperations operations
     :vartype admin_rules:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.AdminRulesOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.AdminRulesOperations
     :ivar subscription_network_manager_connections: SubscriptionNetworkManagerConnectionsOperations
      operations
     :vartype subscription_network_manager_connections:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.SubscriptionNetworkManagerConnectionsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.SubscriptionNetworkManagerConnectionsOperations
     :ivar management_group_network_manager_connections:
      ManagementGroupNetworkManagerConnectionsOperations operations
     :vartype management_group_network_manager_connections:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.ManagementGroupNetworkManagerConnectionsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.ManagementGroupNetworkManagerConnectionsOperations
     :ivar scope_connections: ScopeConnectionsOperations operations
     :vartype scope_connections:
-     azure.mgmt.network.v2021_05_01_preview.aio.operations.ScopeConnectionsOperations
+     azure.mgmt.network.v2022_02_01_preview.aio.operations.ScopeConnectionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription credentials which uniquely identify the Microsoft
      Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
-    :param base_url: Service URL. Default value is 'https://management.azure.com'.
+    :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
+    :keyword api_version: Api Version. Default value is "2022-02-01-preview". Note that overriding
+     this default value may result in unsupported behavior.
+    :paramtype api_version: str
     """
 
     def __init__(

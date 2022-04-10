@@ -99,15 +99,15 @@ helps['network manager list-deploy-status'] = """
 "Connectivity" "SecurityAdmin" --regions "eastus" "westus" --resource-group "resoureGroupSample"
 """
 
-helps['network manager list-effect-vnet'] = """
-    type: command
-    short-summary: "List effective virtual networks in a network manager."
-    examples:
-      - name: List Effective Virtual Networks List By Network Groups
-        text: |-
-               az network manager list-effect-vnet --network-manager-name "testNetworkManager" \
---conditional-members "location=\'useast2\'" --resource-group "rg1"
-"""
+# helps['network manager list-effect-vnet'] = """
+#     type: command
+#     short-summary: "List effective virtual networks in a network manager."
+#     examples:
+#       - name: List Effective Virtual Networks List By Network Groups
+#         text: |-
+#                az network manager list-effect-vnet --network-manager-name "testNetworkManager" \
+# --conditional-members "location=\'useast2\'" --resource-group "rg1"
+# """
 
 helps['network manager list-active-connectivity-config'] = """
     type: command
@@ -147,15 +147,15 @@ helps['network manager list-active-security-admin-rule'] = """
 "myResourceGroup" --region "eastus2euap"
 """
 
-helps['network manager list-active-security-user-rule'] = """
-    type: command
-    short-summary: "Lists active security user rule in a network manager."
-    examples:
-      - name: Get Azure Virtual Network Manager Active Security User Rule
-        text: |-
-               az network manager list-active-security-user-rule --network-manager-name "testNetworkManager" --resource-group \
-"myResourceGroup --region eastus2euap"
-"""
+# helps['network manager list-active-security-user-rule'] = """
+#     type: command
+#     short-summary: "Lists active security user rule in a network manager."
+#     examples:
+#       - name: Get Azure Virtual Network Manager Active Security User Rule
+#         text: |-
+#                az network manager list-active-security-user-rule --network-manager-name "testNetworkManager" --resource-group \
+# "myResourceGroup --region eastus2euap"
+# """
 
 helps['network manager connect-config'] = """
     type: group
@@ -198,15 +198,14 @@ helps['network manager connect-config create'] = """
             group-connectivity: Group connectivity type. Allowed values: None, DirectlyConnected
 
             Multiple actions can be specified by using more than one --applies-to-groups argument.
-      - name: --hubs
+      - name: --hub
         short-summary: "The hub vnets"
         long-summary: |
-            Usage: --hubs resource-id=XX resource-type=XX
+            Usage: --hub resource-id=XX resource-type=XX
 
             resource-id: Resource ID
             resource-type: Resource Type
 
-            Multiple actions can be specified by using more than one --hubs argument.
     examples:
       - name: Create/Update Azure Virtual Network Manager Connectivity Configuration
         text: |-
@@ -214,7 +213,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-existing-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
+--delete-existing-peering true --display-name "myTestConnectivityConfig" --hub resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
@@ -234,15 +233,13 @@ helps['network manager connect-config update'] = """
             group-connectivity: Group connectivity type. Allowed values: None, DirectlyConnected
 
             Multiple actions can be specified by using more than one --applies-to-groups argument.
-      - name: --hubs
+      - name: --hub
         short-summary: "The hub vnets"
         long-summary: |
-            Usage: --hubs resource-id=XX resource-type=XX
+            Usage: --hub resource-id=XX resource-type=XX
 
             resource-id: Resource ID
             resource-type: Resource Type
-
-            Multiple actions can be specified by using more than one --hubs argument.
 """
 
 helps['network manager connect-config delete'] = """
@@ -497,7 +494,7 @@ helps['network manager security-admin-config rule-collection rule create'] = """
             Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
-            address-prefix-type: Address prefix type.
+            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag 
 
             Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
@@ -506,7 +503,7 @@ helps['network manager security-admin-config rule-collection rule create'] = """
             Usage: --destination address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
-            address-prefix-type: Address prefix type.
+            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag
 
             Multiple actions can be specified by using more than one --destination argument.
     examples:
@@ -514,7 +511,8 @@ helps['network manager security-admin-config rule-collection rule create'] = """
         text: |-
                az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
 --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" \
---kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"
+--kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" \
+--destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
 """
 
 helps['network manager security-admin-config rule-collection rule list'] = """
@@ -894,14 +892,14 @@ helps['network manager scope-connection delete'] = """
 
 helps['network manager group static-member'] = """
     type: group
-    short-summary: Manage static members with network
+    short-summary: Manage static members with network manager group
 """
 
 helps['network manager group static-member list'] = """
     type: command
     short-summary: "Lists the specified static member."
     examples:
-      - name: List static member in a network manager
+      - name: List static member in a network manager group
         text: |-
                az network manager group static-member list --network-manager-name "testNetworkManager" \
 --resource-group "rg1" --network-group-name "testNetworkManagerGroup"
@@ -921,7 +919,7 @@ helps['network manager group static-member create'] = """
     type: command
     short-summary: "Creates a static member."
     examples:
-      - name: Create network manager security admin Configuration
+      - name: Create network manager group static-member
         text: |-
                az network manager group static-member create --network-group-name "testNetworkManagerGroup" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
@@ -929,17 +927,17 @@ helps['network manager group static-member create'] = """
 Microsoft.Network/virtualnetworks/virtual_network"
 """
 
-helps['network manager group static-member update'] = """
-    type: command
-    short-summary: "Update a static member."
-    examples:
-      - name: Update network manager security admin Configuration
-        text: |-
-               az network manager group static-member update --network-group-name "testNetworkManagerGroup" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
---resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
-Microsoft.Network/virtualnetworks/virtual_network"
-"""
+# helps['network manager group static-member update'] = """
+#     type: command
+#     short-summary: "Update a static member."
+#     examples:
+#       - name: Update network manager group static-member
+#         text: |-
+#                az network manager group static-member update --network-group-name "testNetworkManagerGroup" \
+# --network-manager-name "testNetworkManager" --resource-group "rg1" --static-member-name "testStaticMember" \
+# --resource-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/ \
+# Microsoft.Network/virtualnetworks/virtual_network"
+# """
 
 helps['network manager group static-member delete'] = """
     type: command
