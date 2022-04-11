@@ -88,7 +88,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: Canada Central, North Europe')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('containerapp env', arg_group='Log Analytics') as c:

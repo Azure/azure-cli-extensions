@@ -29,6 +29,12 @@ helps['containerapp create'] = """
               --image nginx --environment MyContainerappEnv \\
               --cpu 0.5 --memory 1.0Gi \\
               --min-replicas 4 --max-replicas 8
+    - name: Create a container app with secrets and environment variables.
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
+              --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret
     - name: Create a container app using a YAML configuration. Example YAML configuration - https://aka.ms/azure-container-apps-yaml
       text: |
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
