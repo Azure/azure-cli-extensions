@@ -521,8 +521,7 @@ def network_manager_security_admin_config_delete(client,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
-                                                 force=None,
-                                                 recursive=None):
+                                                 force=None):
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name,
