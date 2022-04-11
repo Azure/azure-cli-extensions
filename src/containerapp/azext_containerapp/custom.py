@@ -843,17 +843,13 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_wait=False):
+def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    # if no identities, then assign system by default
-    if not identities:
-        identities = ['[system]']
-        logger.warning('Identities not specified. Assigning managed system identity.')
-
-    identities = [x.lower() for x in identities]
-    assign_system_identity = '[system]' in identities
-    assign_user_identities = [x for x in identities if x != '[system]']
+    assign_system_identity = system_assigned
+    if not user_assigned:
+        user_assigned = []
+    assign_user_identities = [x.lower() for x in user_assigned]
 
     containerapp_def = None
 
@@ -906,12 +902,16 @@ def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
         for r in assign_user_identities:
-            old_id = r
             r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
-            try:
-                containerapp_def["identity"]["userAssignedIdentities"][r]
-                logger.warning("User identity {} is already assigned to containerapp".format(old_id))
-            except:
+            isExisting = False
+
+            for old_user_identity in containerapp_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == r.lower():
+                    isExisting = True
+                    logger.warning("User identity {} is already assigned to containerapp".format(old_user_identity))
+                    break
+
+            if not isExisting:
                 containerapp_def["identity"]["userAssignedIdentities"][r] = {}
 
     try:
@@ -923,18 +923,19 @@ def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_
         handle_raw_exception(e)
 
 
-def remove_managed_identity(cmd, name, resource_group_name, identities, no_wait=False):
+def remove_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    identities = [x.lower() for x in identities]
-    remove_system_identity = '[system]' in identities
-    remove_user_identities = [x for x in identities if x != '[system]']
-    remove_id_size = len(remove_user_identities)
+    remove_system_identity = system_assigned
+    remove_user_identities = user_assigned
 
-    # Remove duplicate identities that are passed and notify
-    remove_user_identities = list(set(remove_user_identities))
-    if remove_id_size != len(remove_user_identities):
-        logger.warning("At least one identity was passed twice.")
+    if user_assigned:
+        remove_id_size = len(remove_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        remove_user_identities = list(set(remove_user_identities))
+        if remove_id_size != len(remove_user_identities):
+            logger.warning("At least one identity was passed twice.")
 
     containerapp_def = None
     # Get containerapp properties of CA we are updating
@@ -963,6 +964,14 @@ def remove_managed_identity(cmd, name, resource_group_name, identities, no_wait=
         if containerapp_def["identity"]["type"] == "UserAssigned":
             raise InvalidArgumentValueError("The containerapp {} has no system assigned identities.".format(name))
         containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    if isinstance(user_assigned, list) and not user_assigned:
+        containerapp_def["identity"]["userAssignedIdentities"] = {}
+        remove_user_identities = []
+
+        if containerapp_def["identity"]["userAssignedIdentities"] == {}:
+            containerapp_def["identity"]["userAssignedIdentities"] = None
+            containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "UserAssigned" else "SystemAssigned")
 
     if remove_user_identities:
         subscription_id = get_subscription_id(cmd.cli_ctx)

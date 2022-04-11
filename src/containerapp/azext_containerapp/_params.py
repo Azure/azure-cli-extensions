@@ -114,10 +114,11 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
     with self.argument_context('containerapp identity') as c:
-        c.argument('identities', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity.")
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
+        c.argument('system_assigned', help="System-assigned identity.")
 
-    with self.argument_context('containerapp identity assign') as c:
-        c.argument('identities', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity. Default is '[system]'.")
+    with self.argument_context('containerapp identity remove') as c:
+        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
 
     with self.argument_context('containerapp github-action add') as c:
         c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')

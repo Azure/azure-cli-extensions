@@ -271,13 +271,13 @@ helps['containerapp identity assign'] = """
     examples:
     - name: Assign system identity.
       text: |
-          az containerapp identity assign
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --system-assigned
     - name: Assign user identity.
       text: |
-          az containerapp identity assign --identities myAssignedId
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --user-assigned myAssignedId
     - name: Assign system and user identity.
       text: |
-          az containerapp identity assign --identities [system] myAssignedId
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned myAssignedId
 """
 
 helps['containerapp identity remove'] = """
@@ -286,15 +286,25 @@ helps['containerapp identity remove'] = """
     examples:
     - name: Remove system identity.
       text: |
-          az containerapp identity remove --identities [system]
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned
     - name: Remove system and user identity.
       text: |
-          az containerapp identity remove --identities [system] myAssignedId
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned myAssignedId
+    - name: Remove all user identities.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned
 """
 
 helps['containerapp identity show'] = """
     type: command
     short-summary: Show managed identities of a container app.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp identity show -n myContainerapp -g MyResourceGroup
 """
 
 # Ingress Commands
@@ -520,7 +530,7 @@ helps['containerapp dapr enable'] = """
 
 helps['containerapp dapr disable'] = """
     type: command
-    short-summary: Disable Dapr for a container app.
+    short-summary: Disable Dapr for a container app. Removes existing values.
     examples:
     - name: Disable Dapr for a container app.
       text: |
