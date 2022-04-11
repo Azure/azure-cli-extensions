@@ -11,6 +11,13 @@ from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class Access(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """Access to be allowed or denied.
+    """
+
+    ALLOW = "Allow"
+    DENY = "Deny"
+
 class AddressPrefixType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Address prefix type.
     """
@@ -24,6 +31,13 @@ class AdminRuleKind(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
     CUSTOM = "Custom"
     DEFAULT = "Default"
+
+class AuthenticationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """VPN client authentication method.
+    """
+
+    EAPTLS = "EAPTLS"
+    EAPMSCHA_PV2 = "EAPMSCHAPv2"
 
 class ConfigurationType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Configuration Deployment Type.
@@ -86,12 +100,33 @@ class EffectiveUserRuleKind(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     CUSTOM = "Custom"
     DEFAULT = "Default"
 
+class ExtendedLocationTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The supported ExtendedLocation types. Currently only EdgeZone is supported in Microsoft.Network
+    resources.
+    """
+
+    EDGE_ZONE = "EdgeZone"
+
 class GroupConnectivity(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Group connectivity type.
     """
 
     NONE = "None"
     DIRECTLY_CONNECTED = "DirectlyConnected"
+
+class IPAllocationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """IP address allocation method.
+    """
+
+    STATIC = "Static"
+    DYNAMIC = "Dynamic"
+
+class IPVersion(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """IP address version.
+    """
+
+    I_PV4 = "IPv4"
+    I_PV6 = "IPv6"
 
 class IsGlobal(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Flag if global mesh is supported.
@@ -114,6 +149,14 @@ class NetworkIntentPolicyBasedService(with_metaclass(CaseInsensitiveEnumMeta, st
     NONE = "None"
     ALL = "All"
 
+class NetworkOperationStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """Status of the Azure async operation.
+    """
+
+    IN_PROGRESS = "InProgress"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+
 class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The current provisioning state.
     """
@@ -122,6 +165,17 @@ class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
     DELETING = "Deleting"
     FAILED = "Failed"
+
+class ResourceIdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes
+    both an implicitly created identity and a set of user assigned identities. The type 'None' will
+    remove any identities from the virtual machine.
+    """
+
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    USER_ASSIGNED = "UserAssigned"
+    SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
+    NONE = "None"
 
 class ScopeConnectionState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The current scope connection state.
@@ -159,13 +213,6 @@ class SecurityConfigurationRuleProtocol(with_metaclass(CaseInsensitiveEnumMeta, 
     ESP = "Esp"
     ANY = "Any"
     AH = "Ah"
-
-class SecurityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Security Type.
-    """
-
-    ADMIN_POLICY = "AdminPolicy"
-    USER_POLICY = "UserPolicy"
 
 class UseHubGateway(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Flag if need to use hub gateway.
