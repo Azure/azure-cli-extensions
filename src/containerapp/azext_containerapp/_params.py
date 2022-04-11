@@ -75,8 +75,11 @@ def load_arguments(self, _):
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2']), help="The transport protocol used for ingress traffic.")
 
     with self.argument_context('containerapp create') as c:
-        c.argument('assign_identity', nargs='+', help="Space-separated identities. Use '[system]' to refer to the system assigned identity.")
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+
+    with self.argument_context('containerapp create', arg_group='Identity') as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -115,7 +118,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
-        c.argument('system_assigned', help="System-assigned identity.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
 
     with self.argument_context('containerapp identity remove') as c:
         c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")

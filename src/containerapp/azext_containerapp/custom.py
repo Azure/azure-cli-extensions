@@ -293,7 +293,8 @@ def create_containerapp(cmd,
                         args=None,
                         tags=None,
                         no_wait=False,
-                        assign_identity=None):
+                        system_assigned=False,
+                        user_assigned=None):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
@@ -309,9 +310,6 @@ def create_containerapp(cmd,
 
     if managed_env is None:
         raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
-
-    if assign_identity is None:
-        assign_identity = []
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -382,8 +380,11 @@ def create_containerapp(cmd,
     identity_def = ManagedServiceIdentityModel
     identity_def["type"] = "None"
 
-    assign_system_identity = '[system]' in assign_identity
-    assign_user_identities = [x for x in assign_identity if x != '[system]']
+    assign_system_identity = system_assigned
+    if user_assigned:
+        assign_user_identities = [x.lower() for x in user_assigned]
+    else:
+        assign_user_identities = []
 
     if assign_system_identity and assign_user_identities:
         identity_def["type"] = "SystemAssigned, UserAssigned"
