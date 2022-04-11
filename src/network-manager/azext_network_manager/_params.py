@@ -673,13 +673,13 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     with self.argument_context('network manager group static-member show') as c:
-        c.argument('resource_group_name', resource_group_name_type, required=True)
-        c.argument('network_manager_name', options_list=['--network-manager', '--network-manager-name'], type=str, required=True, help='The name of the network manager.')
+        c.argument('resource_group_name', resource_group_name_type, id_part=None)
+        c.argument('network_manager_name', options_list=['--network-manager', '--network-manager-name'], type=str, id_part=None, help='The name of the network manager.')
         c.argument('network_group_name', options_list=['--network-group', '--network-group-name'], type=str, help='The name of the network group.')
         c.argument('static_member_name', options_list=['--name', '-n', '--static-member-name'], type=str, help='The name of the static member.')
 
     with self.argument_context('network manager group static-member delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', options_list=['--network-manager', '--network-manager-name'], type=str, help='The name of the network manager.')
+        c.argument('resource_group_name', resource_group_name_type, id_part=None)
+        c.argument('network_manager_name', options_list=['--network-manager', '--network-manager-name'], type=str, id_part=None, help='The name of the network manager.')
         c.argument('network_group_name', options_list=['--network-group', '--network-group-name'], type=str, help='The name of the network group.')
         c.argument('static_member_name', options_list=['--name', '-n', '--static-member-name'], type=str, help='The name of the static member.')
