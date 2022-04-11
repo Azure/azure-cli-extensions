@@ -160,7 +160,7 @@ class ConfigSession():
             lines.append("Host " + self.ip)
         else:
             lines.append("Host " + self.ip + "-" + self.local_user)
-            lines.append("\tHostname " + self.ip)
+            lines.append("\tHostName " + self.ip)
         lines.append("\tUser " + self.local_user)
         if self.cert_file:
             lines.append("\tCertificateFile \"" + self.cert_file + "\"")

@@ -94,6 +94,10 @@ helps['ssh config'] = """
         - name: Give SSH Client Folder to use the ssh executables in that folder. If not provided, the extension attempt to use pre-installed OpenSSH client (in that case, ensure OpenSSH client is installed and the Path environment variable is set correctly).
           text: |
             az ssh vm --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
+
+        - name: Give the Resource Type of the target. Useful when there is an Azure VM and an Arc Server with the same name in the same resource group. Resource type can be either "Microsoft.HybridCompute" for Arc Servers or "Microsoft.Compute" for Azure Virtual Machines.
+          text: |
+            az ssh config --resource-type [Microsoft.Compute|Microsoft.HybridCompute] --resource-group myResourceGroup --name myVM --file ./myconfig
 """
 
 helps['ssh cert'] = """

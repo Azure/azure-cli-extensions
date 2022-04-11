@@ -121,8 +121,15 @@ class SSHInfoTest(unittest.TestCase):
     
     @mock.patch('os.path.abspath')
     def test_get_ip_entry(self, mock_abspath):
-        expected_lines = [
+        expected_lines_aad = [
             "Host ip",
+            "\tUser user",
+            "\tCertificateFile \"cert_path\"",
+            "\tIdentityFile \"priv_path\""
+        ]
+        expected_lines_local_user = [
+            "Host ip-user",
+            "\tHostName ip",
             "\tUser user",
             "\tCertificateFile \"cert_path\"",
             "\tIdentityFile \"priv_path\""
@@ -131,7 +138,8 @@ class SSHInfoTest(unittest.TestCase):
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "cred_folder"]
         session = ssh_info.ConfigSession("config", "rg", "vm", "ip", "pub", "priv", False, False, "user", "cert", None, "compute", "cred", None, "client/folder")
 
-        self.assertEqual(session._get_ip_entry(), expected_lines)
+        self.assertEqual(session._get_ip_entry(True), expected_lines_aad)
+        self.assertEqual(session._get_ip_entry(False), expected_lines_local_user)
 
     @mock.patch('os.path.abspath')
     def test_get_arc_entry(self, mock_abspath):
@@ -185,7 +193,8 @@ class SSHInfoTest(unittest.TestCase):
             "\tCertificateFile \"cert_path\"",
             "\tIdentityFile \"priv_path\"",
             "\tPort port",
-            "Host ip",
+            "Host ip-user",
+            "\tHostName ip",
             "\tUser user",
             "\tCertificateFile \"cert_path\"",
             "\tIdentityFile \"priv_path\"",
