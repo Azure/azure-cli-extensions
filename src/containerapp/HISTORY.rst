@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.1
+0.3.0
 ++++++
 * Subgroup commands for managed identities: az containerapp identity
 
