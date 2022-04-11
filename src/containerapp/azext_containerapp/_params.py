@@ -34,8 +34,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp', arg_group='Container') as c:
         c.argument('image', type=str, options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('container_name', type=str, help="Name of the container.")
-        c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores, e.g. 0.5")
-        c.argument('memory', type=str, validator=validate_memory, help="Required memory, e.g. 1.0Gi")
+        c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
+        c.argument('memory', type=str, validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
         c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
         c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
@@ -173,6 +173,9 @@ def load_arguments(self, _):
         c.argument('password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
 
     with self.argument_context('containerapp registry list') as c:
+        c.argument('name', id_part=None)
+
+    with self.argument_context('containerapp secret list') as c:
         c.argument('name', id_part=None)
 
     with self.argument_context('containerapp revision list') as c:

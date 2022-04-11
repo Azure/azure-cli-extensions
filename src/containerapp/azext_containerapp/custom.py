@@ -528,7 +528,7 @@ def update_containerapp_logic(cmd,
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
                 container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
-                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
@@ -1731,7 +1731,7 @@ def set_secrets(cmd, name, resource_group_name, secrets,
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        logger.warning("Containerapp must be restarted in order for secret changes to take effect.")
+        logger.warning("Containerapp '{}' must be restarted in order for secret changes to take effect.".format(name))
         return r["properties"]["configuration"]["secrets"]
     except Exception as e:
         handle_raw_exception(e)

@@ -184,13 +184,13 @@ helps['containerapp env create'] = """
     - name: Create an environment with an auto-generated Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
-              --location "Canada Central"
+              --location eastus2
     - name: Create an environment with an existing Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
-              --location "Canada Central"
+              --location eastus2
 """
 
 
