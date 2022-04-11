@@ -293,7 +293,7 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
 
 
 def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
-    if "secrets" not in containerapp_def["properties"]["configuration"] or not containerapp_def["properties"]["configuration"]["secrets"]:
+    if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
     else:
         secrets = []
