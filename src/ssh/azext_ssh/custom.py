@@ -412,6 +412,9 @@ def _decide_resource_type(cmd, op_info):
         raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
                                                       "Please provide --local-user.")
 
+    if os_type:
+        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
+
     if is_arc_server:
         return "Microsoft.HybridCompute"
     return "Microsoft.Compute"

@@ -116,7 +116,7 @@ class ConfigSession():
             # default to all hosts for config
             if not self.ip:
                 self.ip = "*"
-            lines = lines + self._get_ip_entry()
+            lines = lines + self._get_ip_entry(is_aad)
         return lines
 
     def _get_arc_entry(self, is_aad):
@@ -154,9 +154,13 @@ class ConfigSession():
             lines.append("\tPort " + self.port)
         return lines
 
-    def _get_ip_entry(self):
+    def _get_ip_entry(self, is_aad):
         lines = []
-        lines.append("Host " + self.ip)
+        if is_aad:
+            lines.append("Host " + self.ip)
+        else:
+            lines.append("Host " + self.ip + "-" + self.local_user)
+            lines.append("\tHostName " + self.ip)
         lines.append("\tUser " + self.local_user)
         if self.cert_file:
             lines.append("\tCertificateFile \"" + self.cert_file + "\"")

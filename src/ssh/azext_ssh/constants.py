@@ -10,8 +10,7 @@ CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS = 120
 CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
 CLEANUP_AWAIT_TERMINATION_IN_SECONDS = 30
 RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS = 3600
-PROXY_UNSUPPORTED_ARCH_FAULT_TYPE = 'client-proxy-unsupported-architecture-error'
-PROXY_UNSUPPORTED_OS_FAULT_TYPE = 'client-proxy-unsupported-os-error'
-PROXY_DOWNLOAD_FAILED_FAULT_TYPE = 'client-proxy-download-failed-error'
-LIST_CREDENTIALS_FAILED_FAULT_TYPE = 'get-relay-information-failed-error'
 WINDOWS_INVALID_FOLDERNAME_CHARS = "\\/*:<>?\"|"
+RECOMMENDATION_SSH_CLIENT_NOT_FOUND = ("Ensure OpenSSH is installed and the PATH Environment "
+                                       "Variable is set correctly.\nAlternatively, use "
+                                       "--ssh-client-folder to provide OpenSSH folder path.")
