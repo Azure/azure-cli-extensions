@@ -89,9 +89,9 @@ class ContainerInsights(DefaultExtension):
        if (extension is not None) and (extension.configuration_settings is not None):
            configSettings = extension.configuration_settings
            if 'omsagent.useAADAuth' in configSettings:
-               useAADAuthSetting =configSettings['omsagent.useAADAuth']
+               useAADAuthSetting = configSettings['omsagent.useAADAuth']
                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
-                    useAADAuth = True
+                   useAADAuth = True
        if useAADAuth:
           association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
           for _ in range(3):
@@ -582,11 +582,11 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     json_response = json.loads(r.text)
     for resource in json_response["resourceTypes"]:
         if (resource["resourceType"].lower() == "datacollectionrules"):
-            region_ids = map(lambda x: region_names_to_id[x], resource["locations"]) # dcr supported regions
+            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr supported regions
             if (workspace_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rules are not supported for LA workspace region {workspace_region}")
         if (resource["resourceType"].lower() == "datacollectionruleassociations"):
-            region_ids = map(lambda x: region_names_to_id[x], resource["locations"]) # dcr-a supported regions
+            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr-a supported regions
             if (cluster_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
 
@@ -682,4 +682,3 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
            error = e
         else:
            raise error
-
