@@ -8,6 +8,8 @@
 import datetime
 import json
 
+from ..utils import get_cluster_rp_api_version
+
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import AzCLIError, CLIError, InvalidArgumentValueError, ClientRequestError
@@ -15,7 +17,7 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait, send_raw_request
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-
+from azure.core.exceptions import HttpResponseError
 
 from ..vendored_sdks.models import Extension
 from ..vendored_sdks.models import ScopeCluster
@@ -69,6 +71,49 @@ class ContainerInsights(DefaultExtension):
             configuration_protected_settings=configuration_protected_settings
         )
         return extension, name, create_identity
+
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+       # Delete DCR-A if it exists incase of MSI Auth
+       useAADAuth = False
+       isDCRAExists = False
+       cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+       try:
+           extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+       except Exception:
+           pass  # its OK to ignore the exception since MSI auth in preview
+
+       logger.warn("deleting the container insights extension: %s", extension)
+       subscription_id = get_subscription_id(cmd.cli_ctx)
+       # handle cluster type here
+       cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
+       if (extension is not None) and (extension.configuration_settings is not None):
+           configSettings = extension.configuration_settings
+           if 'omsagent.useAADAuth' in configSettings:
+               useAADAuthSetting =configSettings['omsagent.useAADAuth']
+               if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                    useAADAuth = True
+       if useAADAuth:
+          association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+          for _ in range(3):
+            try:
+                send_raw_request(cmd.cli_ctx, "GET", association_url,)
+                isDCRAExists = True
+                break
+            except HttpResponseError as ex:
+                # Customize the error message for resources not found
+                if ex.response.status_code == 404:
+                    isDCRAExists = False
+            except Exception:
+               pass  # its OK to ignore the exception since MSI auth in preview
+
+       if isDCRAExists:
+          association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+          for _ in range(3):
+            try:
+                send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
+                break
+            except Exception:
+               pass  # its OK to ignore the exception since MSI auth in preview
 
 
 # Custom Validation Logic for Container Insights
