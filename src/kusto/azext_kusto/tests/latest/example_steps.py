@@ -747,9 +747,10 @@ def step_private_endpoint_connection_list(test, checks=None):
 def step_private_endpoint_connection_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az network private-endpoint delete '
-             '-n "{myPrivateEndpoint}" '
-             '-g "testrg" ',
+    test.cmd('az kusto private-endpoint-connection delete -y '
+             '--cluster-name "{myCluster}" '
+             '--name "{myPrivateEndpointConnection}" '
+             '--resource-group "{rg}" ',
              checks=checks)
 
 # EXAMPLE: /PrivateLinkResources/get/Gets private endpoint connection.
