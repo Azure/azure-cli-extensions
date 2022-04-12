@@ -362,42 +362,43 @@ def _decide_resource_type(cmd, op_info):
         if op_info.resource_type.lower() == "microsoft.hybridcompute":
             arc, arc_error, is_arc_server = _check_if_arc_server(cmd, op_info.resource_group_name, op_info.vm_name)
             if not is_arc_server:
+                colorama.init()
                 if isinstance(arc_error, ResourceNotFoundError):
                     raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                           f"{op_info.resource_group_name} was not found. "
-                                                           "Ensure there are no typos in the name of the resource "
-                                                           "and that the active subscription is set properly."
-                                                           f"Error:\n{str(arc_error)}")
+                                                           f"{op_info.resource_group_name} was not found.",
+                                                           const.RECOMMENDATION_RESOURCE_NOT_FOUND)
                 raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
-                                                 f"Error:\n{str(arc_error)}")
+                                                 f"Error:\n{str(arc_error)}", const.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
         elif op_info.resource_type.lower() == "microsoft.compute":
             vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, op_info.resource_group_name, op_info.vm_name)
             if not is_azure_vm:
+                colorama.init()
                 if isinstance(vm_error, ResourceNotFoundError):
                     raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                           f"{op_info.resource_group_name} was not found. "
-                                                           "Ensure there are no typos in the name of the resource "
-                                                           "and that the active subscription is set properly."
-                                                           f"Error:\n{str(vm_error)}")
+                                                           f"{op_info.resource_group_name} was not found.",
+                                                           const.RECOMMENDATION_RESOURCE_NOT_FOUND)
                 raise azclierror.BadRequestError("Unable to determine that the target machine is an Azure VM. "
-                                                 f"Error:\n{str(vm_error)}")
+                                                 f"Error:\n{str(vm_error)}", const.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
     else:
         vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, op_info.resource_group_name, op_info.vm_name)
         arc, arc_error, is_arc_server = _check_if_arc_server(cmd, op_info.resource_group_name, op_info.vm_name)
 
         if is_azure_vm and is_arc_server:
+            colorama.init()
             raise azclierror.BadRequestError(f"{op_info.resource_group_name} has Azure VM and Arc Server with the "
-                                             f"same name: {op_info.vm_name}. Please provide a --resource-type.")
+                                             f"same name: {op_info.vm_name}.",
+                                             Fore.YELLOW + "Please provide a --resource-type." + Style.RESET_ALL)
         if not is_azure_vm and not is_arc_server:
+            colorama.init()
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {op_info.vm_name} in the resource group "
-                                                       f"{op_info.resource_group_name} was not found. "
-                                                       "Ensure there are no typos in the name of the resource "
-                                                       "and that the active subscription is set properly.")
+                                                       f"{op_info.resource_group_name} was not found. ",
+                                                       const.RECOMMENDATION_RESOURCE_NOT_FOUND)
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
-                                             f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
+                                             f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}",
+                                             const.RECOMMENDATION_RESOURCE_NOT_FOUND)
 
     # Note: We are not able to determine the os of the target if the user only provides an IP address.
     os_type = None

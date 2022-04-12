@@ -66,8 +66,10 @@ def _create_default_endpoint(cmd, resource_group, vm_name, client):
     try:
         client.create_or_update(resource_group, vm_name, "default", endpoint_resource)
     except Exception as e:
-        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}. "
-                                           f"Contact Owner/Contributor of the resource.\nError: {str(e)}")
+        colorama.init()
+        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
+                                           f"\nError: {str(e)}",
+                                           Fore.YELLOW + "Contact Owner/Contributor of the resource." + Style.RESET_ALL)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
