@@ -389,7 +389,8 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
         if 'omsagent.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
-            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+            logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
+            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
 
     workspace_resource_id = workspace_resource_id.strip()
