@@ -87,3 +87,43 @@ class DnsResolverClientTest(ScenarioTest):
             ]
         )
         self.cmd('dns-resolver inbound-endpoint delete -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    def test_dns_resolver_outbound_crud(self):
+        self.kwargs.update({
+            'endpoint_name': self.create_random_name('endpoint-', 16),
+            'dns_resolver_name': self.create_random_name('dns-resolver-', 20),
+            'vnet_name': self.create_random_name('vnet-', 12),
+            'subnet_name': self.create_random_name('subnet-', 12)
+        })
+
+        self.cmd('network vnet create -n {vnet_name} -g {rg}')
+        self.cmd('network vnet subnet create -n {subnet_name} -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.0.0/24')
+        self.kwargs['vnet_id'] = self.cmd('network vnet show -n {vnet_name} -g {rg}').get_output_in_json()['id']
+        self.kwargs['subnet_id'] = self.cmd('network vnet subnet show -n {subnet_name} -g {rg} --vnet-name {vnet_name}').get_output_in_json()['id']
+        self.cmd('dns-resolver create -n {dns_resolver_name} -g {rg} --id {vnet_id}')
+
+        self.cmd(
+            'dns-resolver outbound-endpoint create -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} '
+            '--id={subnet_id} --tags key=value1',
+            checks=[
+                self.check('name', '{endpoint_name}'),
+                self.check('type', 'Microsoft.Network/dnsResolvers/outboundEndpoints')
+            ]
+        )
+        self.cmd(
+            'dns-resolver outbound-endpoint list -g {rg} --dns-resolver-name {dns_resolver_name}',
+            checks=[
+                self.check('length(@)', 1),
+                self.check('[0].name', '{endpoint_name}')
+            ]
+        )
+        self.cmd('dns-resolver outbound-endpoint update -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} --tags key=value2')
+        self.cmd(
+            'dns-resolver outbound-endpoint show -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name}',
+            checks=[
+                self.check('name', '{endpoint_name}'),
+                self.check('tags.key', 'value2')
+            ]
+        )
+        self.cmd('dns-resolver outbound-endpoint delete -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} -y')
