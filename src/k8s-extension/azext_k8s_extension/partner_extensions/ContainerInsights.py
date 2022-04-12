@@ -388,7 +388,9 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
             workspace_resource_id = configuration_settings['logAnalyticsWorkspaceResourceID']
 
         if 'omsagent.useAADAuth' in configuration_settings:
-            useAADAuth = configuration_settings['omsagent.useAADAuth']
+            useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
+            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                useAADAuth = True
 
     workspace_resource_id = workspace_resource_id.strip()
 
@@ -415,6 +417,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
     if is_ci_extension_type:
         if useAADAuth:
+          logger.info("MSI onboarding since omsagent.useAADAuth set to true")
           _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
         else:
           _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
