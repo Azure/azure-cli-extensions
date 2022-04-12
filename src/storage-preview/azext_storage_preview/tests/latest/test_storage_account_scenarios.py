@@ -12,6 +12,21 @@ from knack.util import CLIError
 
 class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
     @AllowLargeResponse()
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-09-01')
+    @ResourceGroupPreparer(name_prefix='cli_test_storage_account_dns_et')
+    def test_storage_account_dns_endpoint_type(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'sa1': self.create_random_name(prefix='cli', length=24),
+            'sa2': self.create_random_name(prefix='cli', length=24),
+            'loc': 'eastus2euap'
+        })
+        self.cmd('storage account create -n {sa1} -g {rg} -l {loc} --hns true --dns-endpoint-type Standard',
+                 checks=[JMESPathCheck('dnsEndpointType', 'Standard')])
+        self.cmd('storage account create -n {sa2} -g {rg} -l {loc} --hns true --dns-endpoint-type AzureDnsZone',
+                 checks=[JMESPathCheck('dnsEndpointType', 'AzureDnsZone')])
+
+    @AllowLargeResponse()
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_sftp')
     def test_storage_account_sftp(self, resource_group):
@@ -325,11 +340,11 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         )
 
         self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('value[0].hasSshKey', False),
-            JMESPathCheck('value[0].hasSshPassword', False),
-            JMESPathCheck('value[0].homeDirectory', 'home2'),
-            JMESPathCheck('value[0].length(permissionScopes)', 1),
-            JMESPathCheck('value[0].sshAuthorizedKeys', None)
+            JMESPathCheck('[0].hasSshKey', False),
+            JMESPathCheck('[0].hasSshPassword', False),
+            JMESPathCheck('[0].homeDirectory', 'home2'),
+            JMESPathCheck('[0].length(permissionScopes)', 1),
+            JMESPathCheck('[0].sshAuthorizedKeys', None)
         )
 
         self.cmd('{cmd} show --account-name {sa} -g {rg} -n {username}').assert_with_checks(
