@@ -9,7 +9,7 @@ import unittest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_workspace_random_long_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION
@@ -92,6 +92,20 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
             self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
+            ])
+
+            # delete
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
+            self.check("name", test_workspace_temp),
+            self.check("provisioningState", "Deleting")
+            ])
+
+            # Create a workspace with a maximum length name, but make sure the deployment name was truncated to a valid length
+            test_workspace_temp = get_test_workspace_random_long_name()
+
+            # create
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account_grs} -r {test_provider_sku_list} -o json', checks=[
+            self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
             ])
 
             # delete

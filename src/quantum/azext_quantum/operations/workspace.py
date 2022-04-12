@@ -254,7 +254,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     deployment_async_operation = arm_client.deployments.begin_create_or_update(
         info.resource_group,
-        DEPLOYMENT_NAME_PREFIX + workspace_name,
+        (DEPLOYMENT_NAME_PREFIX + workspace_name)[:64],
         {'properties': deployment_properties}
     )
 

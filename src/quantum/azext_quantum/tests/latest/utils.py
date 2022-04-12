@@ -44,6 +44,9 @@ def get_test_workspace_random_name():
     import random
     return "e2e-test-w" + str(random.randint(1000000, 9999999))
 
+def get_test_workspace_random_long_name():
+    return get_test_workspace_random_name() + "-54-char-name123456789012345678901234"
+
 def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
     for provide_sku_pair in provider_sku_string.split(';'):
         provider = "new." + provide_sku_pair.split('/')[0].lower()
