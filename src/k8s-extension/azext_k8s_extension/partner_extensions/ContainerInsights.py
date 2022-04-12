@@ -82,7 +82,6 @@ class ContainerInsights(DefaultExtension):
        except Exception:
            pass  # its OK to ignore the exception since MSI auth in preview
 
-       logger.warn("deleting the container insights extension: %s", extension)
        subscription_id = get_subscription_id(cmd.cli_ctx)
        # handle cluster type here
        cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
