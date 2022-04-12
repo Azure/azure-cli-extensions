@@ -6,6 +6,7 @@
 # pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
+import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError)
@@ -15,6 +16,7 @@ from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
 logger = logging.getLogger(__name__)
+knack_logger = knack.log.get_logger(__name__)
 
 
 def list(cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -70,7 +72,7 @@ def build(cmd, target_id=None, project=None):
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
-    print("Building project...")
+    knack_logger.warning('Building project...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -183,7 +185,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
-    print("Submitting job...")
+    knack_logger.warning('Submitting job...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)

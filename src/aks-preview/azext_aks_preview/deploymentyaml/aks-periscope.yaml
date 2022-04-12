@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: aks-periscope
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: diagnostics.aks-periscope.azure.github.com
@@ -16,19 +16,21 @@ spec:
     - apd
     singular: diagnostic
   scope: Namespaced
-  validation:
-    openAPIV3Schema:
-      properties:
-        spec:
-          properties:
-            dns:
-              type: string
-            networkoutbound:
-              type: string
-          type: object
-      type: object
   versions:
   - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              dns:
+                type: string
+              networkoutbound:
+                type: string
+              networkconfig:
+                type: string
+            type: object
+        type: object
     served: true
     storage: true
 ---
@@ -193,7 +195,7 @@ spec:
           name: etcvmlog
       hostPID: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
       serviceAccountName: aks-periscope-service-account
       volumes:
       - hostPath:
@@ -202,6 +204,6 @@ spec:
       - hostPath:
           path: /run/systemd/resolve
         name: resolvlog
-      - name: etcvmlog
-        hostPath:
+      - hostPath:
           path: /etc
+        name: etcvmlog
