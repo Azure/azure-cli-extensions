@@ -33,8 +33,8 @@ def setup_scenario(test):
         "miRG": "MigrationTesting",
         "authentication": "SqlAuthentication",
         "dataSource":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM", 
-        "password": "password",
-        "userName": "username",
+        "password": "XXXXXXXXXXXX",
+        "userName": "hijavatestuser1",
         "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX",
         "storageAccountId": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/aaskhan/providers/Microsoft.Storage/storageAccounts/aasimmigrationtest"        
     }), # MI Online FileShare
@@ -64,8 +64,8 @@ def setup_scenario(test):
     })
     test.kwargs.update({ 
         "targetDataSource":"dmstestsqldb.database.windows.net",
-        "targetUserName":"username",
-        "targetPassword": "password",
+        "targetUserName":"demouser",
+        "targetPassword": "XXXXXXXXXXXX",
         "targetAuthentication": "SqlAuthentication",
         "dbSourceDBName": "Brih",
         "tableName": "[dbo].[Table_1]",
