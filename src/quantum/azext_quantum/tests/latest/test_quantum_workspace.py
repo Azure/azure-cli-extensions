@@ -58,7 +58,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_storage_account = get_test_workspace_storage()
         test_storage_account_grs = get_test_workspace_storage_grs()
         test_provider_sku_list = get_test_workspace_provider_sku_list()
-        
+
         if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
