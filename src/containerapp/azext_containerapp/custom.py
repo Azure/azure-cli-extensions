@@ -292,7 +292,9 @@ def create_containerapp(cmd,
                         startup_command=None,
                         args=None,
                         tags=None,
-                        no_wait=False):
+                        no_wait=False,
+                        system_assigned=False,
+                        user_assigned=None):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
@@ -374,6 +376,31 @@ def create_containerapp(cmd,
     config_def["registries"] = [registries_def] if registries_def is not None else None
     config_def["dapr"] = dapr_def
 
+    # Identity actions
+    identity_def = ManagedServiceIdentityModel
+    identity_def["type"] = "None"
+
+    assign_system_identity = system_assigned
+    if user_assigned:
+        assign_user_identities = [x.lower() for x in user_assigned]
+    else:
+        assign_user_identities = []
+
+    if assign_system_identity and assign_user_identities:
+        identity_def["type"] = "SystemAssigned, UserAssigned"
+    elif assign_system_identity:
+        identity_def["type"] = "SystemAssigned"
+    elif assign_user_identities:
+        identity_def["type"] = "UserAssigned"
+
+    if assign_user_identities:
+        identity_def["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
+            identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
     scale_def = None
     if min_replicas is not None or max_replicas is not None:
         scale_def = ScaleModel
@@ -407,6 +434,7 @@ def create_containerapp(cmd,
 
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
+    containerapp_def["identity"] = identity_def
     containerapp_def["properties"]["managedEnvironmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
@@ -429,25 +457,26 @@ def create_containerapp(cmd,
         handle_raw_exception(e)
 
 
-def update_containerapp(cmd,
-                        name,
-                        resource_group_name,
-                        yaml=None,
-                        image=None,
-                        container_name=None,
-                        min_replicas=None,
-                        max_replicas=None,
-                        set_env_vars=None,
-                        remove_env_vars=None,
-                        replace_env_vars=None,
-                        remove_all_env_vars=False,
-                        cpu=None,
-                        memory=None,
-                        revision_suffix=None,
-                        startup_command=None,
-                        args=None,
-                        tags=None,
-                        no_wait=False):
+def update_containerapp_logic(cmd,
+                              name,
+                              resource_group_name,
+                              yaml=None,
+                              image=None,
+                              container_name=None,
+                              min_replicas=None,
+                              max_replicas=None,
+                              set_env_vars=None,
+                              remove_env_vars=None,
+                              replace_env_vars=None,
+                              remove_all_env_vars=False,
+                              cpu=None,
+                              memory=None,
+                              revision_suffix=None,
+                              startup_command=None,
+                              args=None,
+                              tags=None,
+                              no_wait=False,
+                              from_revision=None):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     if yaml:
@@ -455,7 +484,7 @@ def update_containerapp(cmd,
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait, from_revision=from_revision)
 
     containerapp_def = None
     try:
@@ -465,6 +494,16 @@ def update_containerapp(cmd,
 
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    if from_revision:
+        try:
+            r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
+        except CLIError as e:
+            # Error handle the case where revision not found?
+            handle_raw_exception(e)
+
+        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
+        containerapp_def["properties"]["template"] = r["properties"]["template"]
 
     # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
     if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
@@ -490,7 +529,7 @@ def update_containerapp(cmd,
             if len(containerapp_def["properties"]["template"]["containers"]) == 1:
                 container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
             else:
-                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
+                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
 
         # Check if updating existing container
         updating_existing_container = False
@@ -611,6 +650,48 @@ def update_containerapp(cmd,
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+def update_containerapp(cmd,
+                        name,
+                        resource_group_name,
+                        yaml=None,
+                        image=None,
+                        container_name=None,
+                        min_replicas=None,
+                        max_replicas=None,
+                        set_env_vars=None,
+                        remove_env_vars=None,
+                        replace_env_vars=None,
+                        remove_all_env_vars=False,
+                        cpu=None,
+                        memory=None,
+                        revision_suffix=None,
+                        startup_command=None,
+                        args=None,
+                        tags=None,
+                        no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    return update_containerapp_logic(cmd,
+                                     name,
+                                     resource_group_name,
+                                     yaml,
+                                     image,
+                                     container_name,
+                                     min_replicas,
+                                     max_replicas,
+                                     set_env_vars,
+                                     remove_env_vars,
+                                     replace_env_vars,
+                                     remove_all_env_vars,
+                                     cpu,
+                                     memory,
+                                     revision_suffix,
+                                     startup_command,
+                                     args,
+                                     tags,
+                                     no_wait)
 
 
 def show_containerapp(cmd, name, resource_group_name):
@@ -763,17 +844,13 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_wait=False):
+def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    # if no identities, then assign system by default
-    if not identities:
-        identities = ['[system]']
-        logger.warning('Identities not specified. Assigning managed system identity.')
-
-    identities = [x.lower() for x in identities]
-    assign_system_identity = '[system]' in identities
-    assign_user_identities = [x for x in identities if x != '[system]']
+    assign_system_identity = system_assigned
+    if not user_assigned:
+        user_assigned = []
+    assign_user_identities = [x.lower() for x in user_assigned]
 
     containerapp_def = None
 
@@ -826,12 +903,16 @@ def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_
         subscription_id = get_subscription_id(cmd.cli_ctx)
 
         for r in assign_user_identities:
-            old_id = r
             r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
-            try:
-                containerapp_def["identity"]["userAssignedIdentities"][r]
-                logger.warning("User identity {} is already assigned to containerapp".format(old_id))
-            except:
+            isExisting = False
+
+            for old_user_identity in containerapp_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == r.lower():
+                    isExisting = True
+                    logger.warning("User identity {} is already assigned to containerapp".format(old_user_identity))
+                    break
+
+            if not isExisting:
                 containerapp_def["identity"]["userAssignedIdentities"][r] = {}
 
     try:
@@ -843,18 +924,19 @@ def assign_managed_identity(cmd, name, resource_group_name, identities=None, no_
         handle_raw_exception(e)
 
 
-def remove_managed_identity(cmd, name, resource_group_name, identities, no_wait=False):
+def remove_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    identities = [x.lower() for x in identities]
-    remove_system_identity = '[system]' in identities
-    remove_user_identities = [x for x in identities if x != '[system]']
-    remove_id_size = len(remove_user_identities)
+    remove_system_identity = system_assigned
+    remove_user_identities = user_assigned
 
-    # Remove duplicate identities that are passed and notify
-    remove_user_identities = list(set(remove_user_identities))
-    if remove_id_size != len(remove_user_identities):
-        logger.warning("At least one identity was passed twice.")
+    if user_assigned:
+        remove_id_size = len(remove_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        remove_user_identities = list(set(remove_user_identities))
+        if remove_id_size != len(remove_user_identities):
+            logger.warning("At least one identity was passed twice.")
 
     containerapp_def = None
     # Get containerapp properties of CA we are updating
@@ -883,6 +965,14 @@ def remove_managed_identity(cmd, name, resource_group_name, identities, no_wait=
         if containerapp_def["identity"]["type"] == "UserAssigned":
             raise InvalidArgumentValueError("The containerapp {} has no system assigned identities.".format(name))
         containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    if isinstance(user_assigned, list) and not user_assigned:
+        containerapp_def["identity"]["userAssignedIdentities"] = {}
+        remove_user_identities = []
+
+        if containerapp_def["identity"]["userAssignedIdentities"] == {}:
+            containerapp_def["identity"]["userAssignedIdentities"] = None
+            containerapp_def["identity"]["type"] = ("None" if containerapp_def["identity"]["type"] == "UserAssigned" else "SystemAssigned")
 
     if remove_user_identities:
         subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -1195,177 +1285,26 @@ def copy_revision(cmd,
     if not name:
         name = _get_app_from_revision(from_revision)
 
-    if yaml:
-        if image or min_replicas or max_replicas or\
-            set_env_vars or replace_env_vars or remove_env_vars or \
-            remove_all_env_vars or cpu or memory or \
-                startup_command or args or tags:
-            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, from_revision=from_revision, no_wait=no_wait)
-
-    containerapp_def = None
-    try:
-        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerapp_def:
-        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
-
-    if from_revision:
-        try:
-            r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
-        except CLIError as e:
-            # Error handle the case where revision not found?
-            handle_raw_exception(e)
-
-        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
-        containerapp_def["properties"]["template"] = r["properties"]["template"]
-
-    # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
-    if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
-        for container in containerapp_def["properties"]["template"]["containers"]:
-            if "env" in container:
-                for e in container["env"]:
-                    if "value" not in e:
-                        e["value"] = ""
-
-    update_map = {}
-    update_map['scale'] = min_replicas or max_replicas
-    update_map['container'] = image or container_name or set_env_vars or replace_env_vars or remove_env_vars or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
-
-    if tags:
-        _add_or_update_tags(containerapp_def, tags)
-
-    if revision_suffix is not None:
-        containerapp_def["properties"]["template"]["revisionSuffix"] = revision_suffix
-
-    # Containers
-    if update_map["container"]:
-        if not container_name:
-            if len(containerapp_def["properties"]["template"]["containers"]) == 1:
-                container_name = containerapp_def["properties"]["template"]["containers"][0]["name"]
-            else:
-                raise ValidationError("Usage error: --image-name is required when adding or updating a container")
-
-        # Check if updating existing container
-        updating_existing_container = False
-        for c in containerapp_def["properties"]["template"]["containers"]:
-            if c["name"].lower() == container_name.lower():
-                updating_existing_container = True
-
-                if image is not None:
-                    c["image"] = image
-
-                if set_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars), is_add=True)
-
-                if replace_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
-
-                if remove_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
-                    _remove_env_vars(c["env"], remove_env_vars)
-
-                if remove_all_env_vars:
-                    c["env"] = []
-
-                if startup_command is not None:
-                    if isinstance(startup_command, list) and not startup_command:
-                        c["command"] = None
-                    else:
-                        c["command"] = startup_command
-                if args is not None:
-                    if isinstance(args, list) and not args:
-                        c["args"] = None
-                    else:
-                        c["args"] = args
-                if cpu is not None or memory is not None:
-                    if "resources" in c and c["resources"]:
-                        if cpu is not None:
-                            c["resources"]["cpu"] = cpu
-                        if memory is not None:
-                            c["resources"]["memory"] = memory
-                    else:
-                        c["resources"] = {
-                            "cpu": cpu,
-                            "memory": memory
-                        }
-
-        # If not updating existing container, add as new container
-        if not updating_existing_container:
-            if image is None:
-                raise ValidationError("Usage error: --image is required when adding a new container")
-
-            resources_def = None
-            if cpu is not None or memory is not None:
-                resources_def = ContainerResourcesModel
-                resources_def["cpu"] = cpu
-                resources_def["memory"] = memory
-
-            container_def = ContainerModel
-            container_def["name"] = container_name
-            container_def["image"] = image
-
-            if set_env_vars is not None:
-                # env vars
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars), is_add=True)
-
-            if replace_env_vars is not None:
-                # env vars
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
-
-            if remove_env_vars is not None:
-                # env vars
-                _remove_env_vars(container_def["env"], remove_env_vars)
-
-            if remove_all_env_vars:
-                container_def["env"] = []
-
-            if startup_command is not None:
-                if isinstance(startup_command, list) and not startup_command:
-                    container_def["command"] = None
-                else:
-                    container_def["command"] = startup_command
-            if args is not None:
-                if isinstance(args, list) and not args:
-                    container_def["args"] = None
-                else:
-                    container_def["args"] = args
-            if resources_def is not None:
-                container_def["resources"] = resources_def
-
-            containerapp_def["properties"]["template"]["containers"].append(container_def)
-
-    # Scale
-    if update_map["scale"]:
-        if "scale" not in containerapp_def["properties"]["template"]:
-            containerapp_def["properties"]["template"]["scale"] = {}
-        if min_replicas is not None:
-            containerapp_def["properties"]["template"]["scale"]["minReplicas"] = min_replicas
-        if max_replicas is not None:
-            containerapp_def["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
-
-    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-
-    try:
-        r = ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
-
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
+    return update_containerapp_logic(cmd,
+                                     name,
+                                     resource_group_name,
+                                     yaml,
+                                     image,
+                                     container_name,
+                                     min_replicas,
+                                     max_replicas,
+                                     set_env_vars,
+                                     remove_env_vars,
+                                     replace_env_vars,
+                                     remove_all_env_vars,
+                                     cpu,
+                                     memory,
+                                     revision_suffix,
+                                     startup_command,
+                                     args,
+                                     tags,
+                                     no_wait,
+                                     from_revision)
 
 
 def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
@@ -1410,7 +1349,7 @@ def show_ingress(cmd, name, resource_group_name):
         raise ValidationError("The containerapp '{}' does not have ingress enabled.".format(name)) from e
 
 
-def enable_ingress(cmd, name, resource_group_name, type, target_port, transport, allow_insecure=False, no_wait=False):  # pylint: disable=redefined-builtin
+def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None
@@ -1688,22 +1627,28 @@ def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
         pass
 
 
-def list_secrets(cmd, name, resource_group_name):
+def list_secrets(cmd, name, resource_group_name, show_values=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None
     try:
-        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        r = containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except:
         pass
 
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
+    if not show_values:
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        except:
+            return []
     try:
         return ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)["value"]
-    except Exception as e:
-        raise ValidationError("The containerapp {} has no assigned secrets.".format(name)) from e
+    except Exception:
+        return []
+        # raise ValidationError("The containerapp {} has no assigned secrets.".format(name)) from e
 
 
 def show_secret(cmd, name, resource_group_name, secret_name):
@@ -1796,6 +1741,7 @@ def set_secrets(cmd, name, resource_group_name, secrets,
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("Containerapp '{}' must be restarted in order for secret changes to take effect.".format(name))
         return r["properties"]["configuration"]["secrets"]
     except Exception as e:
         handle_raw_exception(e)
