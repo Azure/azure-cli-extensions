@@ -26,15 +26,15 @@ def setup_scenario(test):
         "vmTargetDb": "tsum-Db-VM"
     }),#12. Create Common Params
     test.kwargs.update({
-        "migrationService": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/sqlServiceUnitTest-Pipeline",
+        "migrationService": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/tsum38RG/providers/Microsoft.DataMigration/SqlMigrationServices/tsuman-IR2",
         "miScope": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/MigrationTesting/providers/Microsoft.Sql/managedInstances/migrationtestmi",
         "vmScope": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/tsum38RG/providers/Microsoft.SqlVirtualMachine/SqlVirtualMachines/DMSCmdletTest-SqlVM",
         "sourceDBName": "AdventureWorks",
         "miRG": "MigrationTesting",
         "authentication": "SqlAuthentication",
         "dataSource":"AALAB03-2K8.REDMOND.CORP.MICROSOFT.COM", 
-        "password": "XXXXXXXXXXXX",
-        "userName": "hijavatestuser1",
+        "password": "password",
+        "userName": "username",
         "accountKey": "XXXXXXXXXXXX/XXXXXXXXXXXX",
         "storageAccountId": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/aaskhan/providers/Microsoft.Storage/storageAccounts/aasimmigrationtest"        
     }), # MI Online FileShare
@@ -57,7 +57,171 @@ def setup_scenario(test):
         "vmOfflineFsTargetDb":"tsum-Db-vm-offline-fs",
         "vmOfflineBlobTargetDb": "tsum-Db-vm-offline-blob9"
     })
+    test.kwargs.update({ 
+        "dbRG":"tsum38RG",
+        "sqlserver":"dmstestsqldb",
+        "dbTargetDb": "NewDb"
+    })
+    test.kwargs.update({ 
+        "targetDataSource":"dmstestsqldb.database.windows.net",
+        "targetUserName":"username",
+        "targetPassword": "password",
+        "targetAuthentication": "SqlAuthentication",
+        "dbSourceDBName": "Brih",
+        "tableName": "[dbo].[Table_1]",
+        "dbScope": "/subscriptions/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/resourceGroups/tsum38RG/providers/Microsoft.Sql/servers/dmstestsqldb"
+    })
     
+
+def step_sql_db_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db show '
+             '--sqldb-instance-name "{sqlserver}" '
+             '--resource-group "{dbRG}" '
+             '--target-db-name "{dbTargetDb}"',
+             checks=checks)
+
+#12. MI Online FileShare Create
+def step_sql_db_offline_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db create '
+             '--migration-service "{migrationService}" '
+             '--scope "{dbScope}" '
+             '--source-database-name "{dbSourceDBName}" '
+             '--source-sql-connection authentication="{authentication}" data-source="{dataSource}"  password="{password}" user-name="{userName}" '
+             '--target-sql-connection authentication="{targetAuthentication}" data-source="{targetDataSource}"  password="{targetPassword}" user-name="{targetUserName}" '
+             '--target-db-name "{dbTargetDb}" '   
+             '--resource-group "{dbRG}" '
+             '--sqldb-instance-name "{sqlserver}"',
+             checks=checks)
+
+def step_sql_db_offline_tablelist_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db create '
+             '--migration-service "{migrationService}" '
+             '--scope "{dbScope}" '
+             '--source-database-name "{dbSourceDBName}" '
+             '--source-sql-connection authentication="{authentication}" data-source="{dataSource}"  password="{password}" user-name="{userName}" '
+             '--target-sql-connection authentication="{targetAuthentication}" data-source="{targetDataSource}"  password="{targetPassword}" user-name="{targetUserName}" '
+             '--table-list "{tableName}" '
+             '--target-db-name "{dbTargetDb}" '   
+             '--resource-group "{dbRG}" '
+             '--sqldb-instance-name "{sqlserver}"',
+             checks=checks)
+
+def step_sql_db_offline_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datamigration sql-db delete '
+             '--sqldb-instance-name "{sqlserver}" '
+             '--resource-group "{dbRG}" '
+             '--target-db-name "{dbTargetDb}" '
+             '--force -y',
+             checks=checks)
+
+
+#19.1 VM Online Blob Cancel
+def step_sql_db_offline_cancel(test, checks=None):    
+    if checks is None:
+        checks = []
+    dbOfflineMigrationStats = test.cmd('az datamigration sql-db show '
+                                 '--sqldb-instance-name "{sqlserver}" '
+                                 '--resource-group "{dbRG}" '
+                                 '--target-db-name "{dbTargetDb}" '
+                                 '--expand=MigrationStatusDetails').get_output_in_json()
+    test.kwargs.update({ 
+        "dbOfflineCancelMigrationId": dbOfflineMigrationStats["properties"]["migrationOperationId"]
+        })
+
+    test.cmd('az datamigration sql-db cancel '
+             '--resource-group "{dbRG}" '
+             '--sqldb-instance-name "{sqlserver}" '
+             '--target-db-name "{dbTargetDb}" '
+             '--migration-operation-id "{dbOfflineCancelMigrationId}"',
+             checks=checks)
+
+
+#17.1 VM Online FileShare Cutover
+def step_sql_db_offline_tablelist_complete(test, checks=None):
+    if checks is None:
+        checks = []
+    dbOfflineMigrationStats = test.cmd('az datamigration sql-db show '
+                                 '--sqldb-instance-name "{sqlserver}" '
+                                 '--resource-group "{dbRG}" '
+                                 '--target-db-name "{dbTargetDb}" '
+                                 '--expand=MigrationStatusDetails').get_output_in_json()
+    migrationStatus = dbOfflineMigrationStats["properties"]["migrationStatus"]
+    
+    while migrationStatus == "InProgress":
+
+        time.sleep(30)
+        dbOfflineMigrationStats = test.cmd('az datamigration sql-db show '
+                                '--sqldb-instance-name "{sqlserver}" '
+                                '--resource-group "{dbRG}" '
+                                '--target-db-name "{dbTargetDb}" '
+                                '--expand=MigrationStatusDetails').get_output_in_json()
+        migrationStatus = dbOfflineMigrationStats["properties"]["migrationStatus"]
+        
+    test.cmd('az datamigration sql-db show '
+             '--sqldb-instance-name "{sqlserver}" '
+             '--resource-group "{dbRG}" '
+             '--target-db-name "{dbTargetDb}"',
+             checks=checks)
+            
+def call_scenario(test):
+    setup_scenario(test)
+    try:
+        step_sql_db_show(test, checks=[
+            test.check("name", "{dbTargetDb}", case_sensitive=False),
+            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+            test.check("properties.kind", "SqlDb", case_sensitive=False)
+        ])
+
+        step_sql_db_offline_create(test, checks=[
+            test.check("name", "{dbTargetDb}", case_sensitive=False),
+            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+            test.check("properties.kind", "SqlDb", case_sensitive=False),
+            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+        ])
+
+        step_sql_db_offline_cancel(test)
+
+        step_sql_db_offline_create(test, checks=[
+            test.check("name", "{dbTargetDb}", case_sensitive=False),
+            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+            test.check("properties.kind", "SqlDb", case_sensitive=False),
+            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+        ])
+
+        step_sql_db_offline_delete(test)
+
+        step_sql_db_offline_tablelist_create(test, checks=[
+            test.check("name", "{dbTargetDb}", case_sensitive=False),
+            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+            test.check("properties.kind", "SqlDb", case_sensitive=False),
+            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+            test.check("properties.migrationStatus", "InProgress", case_sensitive=False),
+            test.check("properties.tableList[0]", "{tableName}", case_sensitive=False)
+        ])
+
+        step_sql_db_offline_tablelist_complete(test, checks=[
+            test.check("name", "{dbTargetDb}", case_sensitive=False),
+            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+            test.check("properties.kind", "SqlDb", case_sensitive=False),
+            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+            test.check("properties.migrationStatus", "Succeeded", case_sensitive=False),
+            test.check("properties.tableList[0]", "{tableName}", case_sensitive=False)
+        ])
+
+    except Exception as e:
+        raise e
+    finally:
+        cleanup_scenario(test)
 
 #Test Cases
 #1.  SQL Service Create 
@@ -480,173 +644,174 @@ def step_sql_vm_offline_blob_create(test, checks=None):
              checks=checks) 
 
 
+
 # Env cleanup_scenario
 def cleanup_scenario(test):
     pass
 
-
-# Testcase: Scenario
-def call_scenario(test):
-    setup_scenario(test)
-    try:
+# # Testcase: Scenario
+# def call_scenario(test):
+#     setup_scenario(test)
+#     try:
         
-        #1.  SQL Service Create 
-        step_sql_service_create(test, checks=[
-            test.check("location", "{location}", case_sensitive=False),
-            test.check("name", "{createSqlMigrationService}", case_sensitive=False),
-            test.check("provisioningState", "Succeeded", case_sensitive=False)
-        ])
+#         #1.  SQL Service Create 
+#         step_sql_service_create(test, checks=[
+#             test.check("location", "{location}", case_sensitive=False),
+#             test.check("name", "{createSqlMigrationService}", case_sensitive=False),
+#             test.check("provisioningState", "Succeeded", case_sensitive=False)
+#         ])
         
-        #2.  SQL Service Show 
-        step_sql_service_show(test, checks=[
-            test.check("location", "{location}", case_sensitive=False),
-            test.check("name", "{sqlMigrationService}", case_sensitive=False)
-        ])
-        #3.  SQL Service List RG
-        step_sql_service_list_rg(test)
+#         #2.  SQL Service Show 
+#         step_sql_service_show(test, checks=[
+#             test.check("location", "{location}", case_sensitive=False),
+#             test.check("name", "{sqlMigrationService}", case_sensitive=False)
+#         ])
+#         #3.  SQL Service List RG
+#         step_sql_service_list_rg(test)
 
-        #4.  SQL Service List Sub
-        step_sql_service_list_sub(test)
+#         #4.  SQL Service List Sub
+#         step_sql_service_list_sub(test)
         
-        #5.  SQL Service List Migration
-        step_sql_service_list_migration(test)
+#         #5.  SQL Service List Migration
+#         step_sql_service_list_migration(test)
 
-        #6.  SQL Service List Auth Keys
-        step_sql_service_list_auth_key(test)
+#         #6.  SQL Service List Auth Keys
+#         step_sql_service_list_auth_key(test)
 
-        #7.  SQL Service Regererate Auth Keys
-        step_sql_service_regenerate_auth_key(test)
+#         #7.  SQL Service Regererate Auth Keys
+#         step_sql_service_regenerate_auth_key(test)
 
-        #8.  SQL Service Regererate Auth Keys
-        step_sql_service_list_integration_runtime_metric(test, checks=[
-            test.check("name", "default-ir", case_sensitive=False)
-        ])
+#         #8.  SQL Service Regererate Auth Keys
+#         step_sql_service_list_integration_runtime_metric(test, checks=[
+#             test.check("name", "default-ir", case_sensitive=False)
+#         ])
 
-        #9. SQL Service Delete
-        step_sql_service_delete(test)
+#         #9. SQL Service Delete
+#         step_sql_service_delete(test)
 
-        #10. MI Show
-        step_sql_managed_instance_show(test, checks=[
-            test.check("name", "{miTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False)
-        ])
+#         #10. MI Show
+#         step_sql_managed_instance_show(test, checks=[
+#             test.check("name", "{miTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False)
+#         ])
 
-        #11. VM Show
-        step_sql_vm_show(test, checks=[
-            test.check("name", "{vmTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlVm", case_sensitive=False)
-        ])        
+#         #11. VM Show
+#         step_sql_vm_show(test, checks=[
+#             test.check("name", "{vmTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlVm", case_sensitive=False)
+#         ])        
         
-        #12. MI Online FileShare Create
-        step_sql_managed_instance_online_fileshare_create(test, checks=[
-            test.check("name", "{miOnlineFsTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
+#         #12. MI Online FileShare Create
+#         step_sql_managed_instance_online_fileshare_create(test, checks=[
+#             test.check("name", "{miOnlineFsTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
                 
-        #13.1 MI Online FileShare Cutover
-        step_sql_managed_instance_online_fileshare_cutover(test)
+#         #13.1 MI Online FileShare Cutover
+#         step_sql_managed_instance_online_fileshare_cutover(test)
 
-        #13.2 MI Online FileShare Cutover Confirm
-        step_sql_managed_instance_online_fileshare_cutover_Confirm(test, checks=[
-            test.check("name", "{miOnlineFsTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.migrationStatus", "Succeeded", case_sensitive=False)
-        ])
+#         #13.2 MI Online FileShare Cutover Confirm
+#         step_sql_managed_instance_online_fileshare_cutover_Confirm(test, checks=[
+#             test.check("name", "{miOnlineFsTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.migrationStatus", "Succeeded", case_sensitive=False)
+#         ])
         
-        #14. MI Online Blob Create
-        step_sql_managed_instance_online_blob_create(test, checks=[
-            test.check("name", "{miOnlineBlobTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
+#         #14. MI Online Blob Create
+#         step_sql_managed_instance_online_blob_create(test, checks=[
+#             test.check("name", "{miOnlineBlobTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
         
-        #15.1 MI Online Blob Cancel
-        step_sql_managed_instance_online_blob_cancel(test)
+#         #15.1 MI Online Blob Cancel
+#         step_sql_managed_instance_online_blob_cancel(test)
        
-        #15.2 MI Online Blob Cancel Confirm
-        step_sql_managed_instance_online_blob_cancel_Confirm(test, checks=[
-            test.check("name", "{miOnlineBlobTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.migrationStatus", "Canceled", case_sensitive=False)
-        ])
+#         #15.2 MI Online Blob Cancel Confirm
+#         step_sql_managed_instance_online_blob_cancel_Confirm(test, checks=[
+#             test.check("name", "{miOnlineBlobTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.migrationStatus", "Canceled", case_sensitive=False)
+#         ])
         
-        #16. VM Online FileShare Create
-        step_sql_vm_online_fileshare_create(test, checks=[
-            test.check("name", "{vmOnlineFsTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlVm", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
+#         #16. VM Online FileShare Create
+#         step_sql_vm_online_fileshare_create(test, checks=[
+#             test.check("name", "{vmOnlineFsTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlVm", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
        
-        #17.1 VM Online FileShare Cutover
-        step_sql_vm_online_fileshare_cutover(test)
+#         #17.1 VM Online FileShare Cutover
+#         step_sql_vm_online_fileshare_cutover(test)
         
-        #17.2 VM Online FileShare Cutover
-        step_sql_vm_online_fileshare_cutover_Confirm(test, checks=[
-           test.check("name", "{vmOnlineFsTargetDb}", case_sensitive=False),
-           test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-           test.check("properties.kind", "SqlVm", case_sensitive=False),
-           test.check("properties.migrationStatus", "Succeeded", case_sensitive=False)
-        ])
+#         #17.2 VM Online FileShare Cutover
+#         step_sql_vm_online_fileshare_cutover_Confirm(test, checks=[
+#            test.check("name", "{vmOnlineFsTargetDb}", case_sensitive=False),
+#            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#            test.check("properties.kind", "SqlVm", case_sensitive=False),
+#            test.check("properties.migrationStatus", "Succeeded", case_sensitive=False)
+#         ])
 
         
-        #18. VM Online Blob Create
-        step_sql_vm_online_blob_create(test, checks=[
-            test.check("name", "{vmOnlineBlobTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlVm", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
-        '''
-        #19. VM Online Blob Cancel
-        step_sql_vm_online_blob_cancel(test)
+#         #18. VM Online Blob Create
+#         step_sql_vm_online_blob_create(test, checks=[
+#             test.check("name", "{vmOnlineBlobTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlVm", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
+#         '''
+#         #19. VM Online Blob Cancel
+#         step_sql_vm_online_blob_cancel(test)
         
-        #20. MI Offline FS Create
-        step_sql_managed_instance_offline_fileshare_create(test, checks=[
-            test.check("name", "{miOfflineFsTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
-        #21. MI Offline Blob Create
-        step_sql_managed_instance_offline_blob_create(test, checks=[
-            test.check("name", "{miOfflineBlobTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlMi", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
-        #22. VM Offline FS Create
-        step_sql_vm_offline_fileshare_create(test, checks=[
-            test.check("name", "{vmOfflineFsTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlVm", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
-        '''
-        #23. VM Offline Blob Create
-        step_sql_vm_offline_blob_create(test, checks=[
-            test.check("name", "{vmOfflineBlobTargetDb}", case_sensitive=False),
-            test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
-            test.check("properties.kind", "SqlVm", case_sensitive=False),
-            test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
-            test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
-        ])
+#         #20. MI Offline FS Create
+#         step_sql_managed_instance_offline_fileshare_create(test, checks=[
+#             test.check("name", "{miOfflineFsTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
+#         #21. MI Offline Blob Create
+#         step_sql_managed_instance_offline_blob_create(test, checks=[
+#             test.check("name", "{miOfflineBlobTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlMi", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
+#         #22. VM Offline FS Create
+#         step_sql_vm_offline_fileshare_create(test, checks=[
+#             test.check("name", "{vmOfflineFsTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlVm", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
+#         '''
+#         #23. VM Offline Blob Create
+#         step_sql_vm_offline_blob_create(test, checks=[
+#             test.check("name", "{vmOfflineBlobTargetDb}", case_sensitive=False),
+#             test.check("type", "Microsoft.DataMigration/databaseMigrations", case_sensitive=False),
+#             test.check("properties.kind", "SqlVm", case_sensitive=False),
+#             test.check("properties.provisioningState", "Succeeded", case_sensitive=False),
+#             test.check("properties.migrationStatus", "InProgress", case_sensitive=False)
+#         ])
         
-    except Exception as e:
-        raise e
-    finally:
-        cleanup_scenario(test)
+#     except Exception as e:
+#         raise e
+#     finally:
+#         cleanup_scenario(test)
+

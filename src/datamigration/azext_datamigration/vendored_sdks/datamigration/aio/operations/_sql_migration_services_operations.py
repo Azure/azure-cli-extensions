@@ -49,7 +49,7 @@ class SqlMigrationServicesOperations:
         sql_migration_service_name: str,
         **kwargs
     ) -> "models.SqlMigrationService":
-        """Retrieve the Migration Service.
+        """Retrieve the Database Migration Service.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -66,7 +66,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         # Construct URL
@@ -114,7 +114,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -242,7 +242,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -279,7 +279,7 @@ class SqlMigrationServicesOperations:
         sql_migration_service_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Delete SQL Migration Service.
+        """Delete Database Migration Service.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -350,7 +350,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -402,7 +402,7 @@ class SqlMigrationServicesOperations:
         parameters: "models.SqlMigrationServiceUpdate",
         **kwargs
     ) -> AsyncLROPoller["models.SqlMigrationService"]:
-        """Update SQL Migration Service.
+        """Update Database Migration Service.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -487,7 +487,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -561,7 +561,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         # Construct URL
@@ -623,7 +623,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -690,7 +690,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -754,7 +754,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -812,7 +812,8 @@ class SqlMigrationServicesOperations:
         sql_migration_service_name: str,
         **kwargs
     ) -> "models.IntegrationRuntimeMonitoringData":
-        """Retrieve the Monitoring Data.
+        """Retrieve the registered Integration Runtime nodes and their monitoring data for a given
+        Database Migration Service.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -829,7 +830,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         # Construct URL
@@ -881,7 +882,7 @@ class SqlMigrationServicesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
