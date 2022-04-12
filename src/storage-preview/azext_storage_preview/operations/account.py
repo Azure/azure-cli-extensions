@@ -34,7 +34,8 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
                            allow_cross_tenant_replication=None, default_share_permission=None,
                            enable_nfs_v3=None, subnet=None, vnet_name=None, action='Allow', enable_alw=None,
                            immutability_period_since_creation_in_days=None, immutability_policy_state=None,
-                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None):
+                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None,
+                           dns_endpoint_type=None):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
@@ -220,6 +221,9 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
 
     if allowed_copy_scope is not None:
         params.allowed_copy_scope = allowed_copy_scope
+
+    if dns_endpoint_type is not None:
+        params.dns_endpoint_type = dns_endpoint_type
 
     return scf.storage_accounts.begin_create(resource_group_name, account_name, params)
 

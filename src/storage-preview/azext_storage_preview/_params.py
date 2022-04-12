@@ -149,6 +149,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         options_list=['--allowed-copy-scope', '-s'], min_api='2021-08-01',
         help='Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet'
     )
+    dns_endpoint_type_enum = self.get_sdk(
+        'models._storage_management_client_enums#DnsEndpointType',
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+    dns_endpoint_type_type = CLIArgumentType(
+        arg_type=get_enum_type(dns_endpoint_type_enum), is_preview=True,
+        options_list=['--dns-endpoint-type', '--endpoint'], min_api='2021-09-01',
+        help='Allow you to specify the type of endpoint. Set this to AzureDNSZone to create a large number of '
+             'accounts in a single subscription, which creates accounts in an Azure DNS Zone and the endpoint URL '
+             'will have an alphanumeric DNS Zone identifier.'
+    )
     public_network_access_enum = self.get_sdk('models._storage_management_client_enums#PublicNetworkAccess',
                                               resource_type=CUSTOM_MGMT_STORAGE)
     num_results_type = CLIArgumentType(
@@ -289,6 +300,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    arg_group='Account Level Immutability',
                    validator=validate_immutability_arguments)
         c.argument('allowed_copy_scope', arg_type=allowed_copy_scope_type)
+        c.argument('dns_endpoint_type', arg_type=dns_endpoint_type_type)
         c.argument('public_network_access', arg_type=get_enum_type(public_network_access_enum), min_api='2021-06-01',
                    help='Enable or disable public network access to the storage account. '
                         'Possible values include: `Enabled` or `Disabled`.')

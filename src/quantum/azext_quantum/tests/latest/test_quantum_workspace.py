@@ -136,12 +136,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         message = check_version(test_config, test_current_reported_version, test_old_date)
         assert message is None
-        # Note: list_versions("quantum") fails during these tests, so latest version number cannot be determined.
-        # No message is generated if either version number is unavailable. 
 
         message = check_version(test_config, test_old_reported_version, test_old_date)
-        assert message is None
+        assert message == f"\nVersion {test_old_reported_version} of the quantum extension is installed locally, but version {test_current_reported_version} is now available.\nYou can use 'az extension update -n quantum' to upgrade.\n"
 
+        # No message is generated if either version number is unavailable. 
         message = check_version(test_config, test_none_version, test_today)
         assert message is None
 

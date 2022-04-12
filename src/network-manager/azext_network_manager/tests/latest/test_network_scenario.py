@@ -104,8 +104,8 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" -g {rg}')
 
-        self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
-                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"')
+        # self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+        #          '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"')
         self.cmd('network manager group static-member show -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member list -g {rg} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member delete -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} --yes')
@@ -221,7 +221,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
-        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
@@ -387,7 +387,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
@@ -427,7 +427,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
+        # self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg} --regions eastus westus')
         self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-effective-security-admin-rule --virtual-network-name {virtual_network} -g {rg}')
