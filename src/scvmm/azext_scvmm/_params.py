@@ -81,12 +81,6 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Username password credentials to use for connecting to the vmmserver.",
         )
 
-    self.argument_context('scvmm cloud create')
-
-    self.argument_context('scvmm virtual-network create')
-
-    self.argument_context('scvmm vm-template create')
-
     for scope in ['create', 'update']:
         with self.argument_context(f'scvmm vm {scope}') as c:
             c.argument(
@@ -103,7 +97,9 @@ def load_arguments(self: AzCommandsLoader, _):
             )
             c.argument(
                 'dynamic_memory_enabled',
-                arg_type=get_three_state_flag(),
+                arg_type=get_three_state_flag(
+                    positive_label='true', negative_label='false', return_label=True
+                ),
                 help='If dynamic memory should be enabled.',
             )
             c.argument(
@@ -160,13 +156,11 @@ def load_arguments(self: AzCommandsLoader, _):
             "bus=<> lun=<> vhd-type=<> qos-name=<> qos-id=<>.",
         )
 
-    self.argument_context('scvmm vm update')
-
     with self.argument_context('scvmm vm stop') as c:
         c.argument(
             'skip_shutdown',
-            action='store_true',
-            help="Skips shutdown and power-off immediately.",
+            arg_type=get_three_state_flag(),
+            help="Skip shutdown and power-off immediately.",
         )
 
     with self.argument_context('scvmm vm nic') as c:
@@ -182,7 +176,7 @@ def load_arguments(self: AzCommandsLoader, _):
         )
         c.argument(
             'disconnect',
-            action='store_true',
+            arg_type=get_three_state_flag(),
             help="Disconnect the NIC from any virtual network it is connected to.",
         )
         c.argument(
@@ -261,5 +255,3 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--avset-name', '-a'],
             help="Name of the Availabilty Set.",
         )
-
-    self.argument_context('scvmm vmmserver inventory-item')

@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
 from azext_scvmm.scvmm_constants import (
@@ -46,7 +46,7 @@ def create_dictionary_from_arg_string(values, option_string=None):
             key, value = item.split('=', 1)
             params_dict[key.lower()] = value
         except ValueError as err:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from err
     return params_dict

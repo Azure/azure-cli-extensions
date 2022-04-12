@@ -4,7 +4,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import (
+    RequiredArgumentMissingError,
+    MutuallyExclusiveArgumentError,
+    InvalidArgumentValueError,
+)
 from msrestazure.tools import is_valid_resource_id
 from azext_scvmm.scvmm_constants import (
     CLOUD_RESOURCE_TYPE,
@@ -21,7 +25,7 @@ from .scvmm_utils import get_resource_id
 
 def validate_custom_location_name_or_id(cmd, namespace):
     if namespace.custom_location is None:
-        raise CLIError(
+        raise RequiredArgumentMissingError(
             '"custom_location" name or id is required for resource PUT operation.'
         )
     namespace.custom_location = get_resource_id(
@@ -47,7 +51,7 @@ def validate_vmmserver_name_or_id(cmd, namespace):
 def validate_inventory_item_name_or_id(namespace):
     if namespace.inventory_item and not is_valid_resource_id(namespace.inventory_item):
         if not namespace.vmmserver:
-            raise CLIError(
+            raise RequiredArgumentMissingError(
                 '"vmmserver" name or id is required when inventory item name is provided.'
             )
         namespace.inventory_item = "/".join(
@@ -70,9 +74,13 @@ def validate_param_combos(cmd, namespace):
         )
         != 1  # noqa: W503
     ):
-        raise CLIError('Exactly one of "uuid" and "inventory_item" must be provided.')
+        raise MutuallyExclusiveArgumentError(
+            'Exactly one of "uuid" and "inventory_item" must be provided.'
+        )
     if namespace.uuid and not namespace.vmmserver:
-        raise CLIError('"vmmserver" name or id is required when "uuid" is provided.')
+        raise RequiredArgumentMissingError(
+            '"vmmserver" name or id is required when "uuid" is provided.'
+        )
     validate_custom_location_name_or_id(cmd, namespace)
     validate_vmmserver_name_or_id(cmd, namespace)
     validate_inventory_item_name_or_id(namespace)
@@ -82,7 +90,7 @@ def validate_param_combos_for_vm(cmd, namespace):
     is_existing = namespace.inventory_item is not None
     is_new = all(getattr(namespace, k) is not None for k in ['vm_template', 'cloud'])
     if not all([any([is_existing, is_new]), (not all([is_existing, is_new]))]):
-        raise CLIError(
+        raise MutuallyExclusiveArgumentError(
             'Either "inventory_id" has to be specified or both "vm_template" and "cloud" have to be specified.'
         )
     validate_custom_location_name_or_id(cmd, namespace)
@@ -104,7 +112,7 @@ def validate_param_combos_for_vm(cmd, namespace):
             namespace.cloud,
         )
     if namespace.availability_sets is not None and len(namespace.availability_sets) > 1:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             'Only one availability set can be specified while creating the VM'
         )
 

@@ -106,6 +106,13 @@ helps[
 """
 
 helps[
+    'scvmm vmmserver wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vmmserver is met.
+"""
+
+helps[
     'scvmm vmmserver inventory-item'
 ] = """
     type: group
@@ -229,6 +236,13 @@ helps[
 --resource-group contoso-rg --name contoso-cloud
 """
 
+helps[
+    'scvmm cloud wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the cloud is met.
+"""
+
 # endregion
 
 # region scvmm vm-template
@@ -320,6 +334,13 @@ helps[
         text: |-
                 az scvmm vm-template show --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-vmtemplate
+"""
+
+helps[
+    'scvmm vm-template wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vm-template is met.
 """
 
 # endregion
@@ -415,6 +436,13 @@ helps[
 --resource-group contoso-rg --name contoso-vnet
 """
 
+helps[
+    'scvmm virtual-network wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the virtual-network is met.
+"""
+
 # endregion
 
 # region scvmm availabilty set
@@ -507,6 +535,13 @@ helps[
         text: |-
                 az scvmm avset show --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-avset
+"""
+
+helps[
+    'scvmm avset wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the availability set is met.
 """
 
 # endregion
@@ -665,6 +700,13 @@ There are separate subcommands for the same.
 --memory-size 4096 --tags department=Sales
 """
 
+helps[
+    'scvmm vm wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vm is met.
+"""
+
 # endregion
 
 # region vm disk
@@ -740,6 +782,13 @@ helps[
 --bus-type IDE --bus 0 --disk-size 40 --vhd-type Dynamic
 """
 
+helps[
+    'scvmm vm disk wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vm disk is met.
+"""
+
 # endregion
 
 # region vm nic
@@ -813,6 +862,13 @@ helps[
 --resource-group contoso-rg --vm-name contoso-vm --name nic_1 \
 --network contoso-vnet --ipv4-address-type Dynamic \
 --mac-address-type Dynamic
+"""
+
+helps[
+    'scvmm vm nic wait'
+] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the vm nic is met.
 """
 
 # endregion

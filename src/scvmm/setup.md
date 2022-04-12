@@ -18,7 +18,7 @@ export AZCLI_SRC_PATH="$azcli/azure-cli" # Include this in the shell source like
 
 git clone https://github.com/Azure/azure-cli.git
 git clone https://github.com/Azure/azure-cli-extensions.git
-git clone -b RPSaaSMaster --single-branch git@github.com:Azure/azure-rest-api-specs-pr.git swagger-prod # Contains the swagger
+git clone git@github.com:Azure/azure-rest-api-specs.git swagger-prod # Contains the swagger
 
 # Set up python environment.
 python -m venv .venv
@@ -39,7 +39,7 @@ azdev extension add $azext_name
 # sdk generation using autorest.
 npm i -g autorest
 
-versions_flags=(--version=3.6.3 --use=@autorest/python@~5.8.4 --use=@autorest/python@~5.8.4 --use=@autorest/modelerfour@~4.19.3)
+versions_flags=(--version=3.7.4 --use=@autorest/python@~5.12.0 --use=@autorest/modelerfour@~4.19.3)
 
 # Path to the readme.md may vary. The following is the path for scvmm.
 autorest $azcli/swagger-prod/specification/scvmm/resource-manager/readme.md --track2 --python --python-sdks-folder=$azcli/sdks --python-mode=update "${versions_flags[@]}"

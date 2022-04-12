@@ -6,9 +6,7 @@
 # pylint: disable=unused-import
 
 import os
-import unittest
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from knack.util import CLIError
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 

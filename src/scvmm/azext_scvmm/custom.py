@@ -6,7 +6,12 @@
 
 import sys
 from getpass import getpass
-from knack.util import CLIError
+from azure.cli.core.azclierror import (
+    UnrecognizedArgumentError,
+    RequiredArgumentMissingError,
+    MutuallyExclusiveArgumentError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.util import sdk_no_wait
 from .scvmm_utils import get_resource_id, get_extended_location
 from .scvmm_constants import (
@@ -469,11 +474,6 @@ def create_vm(
     network_profile = None
     storage_profile = None
 
-    if dynamic_memory_enabled is not None:
-        if dynamic_memory_enabled:
-            dynamic_memory_enabled = 'true'
-        else:
-            dynamic_memory_enabled = 'false'
     if any(
         prop is not None
         for prop in [
@@ -549,11 +549,6 @@ def update_vm(
     no_wait=False,
 ):
     vm_update_props = None
-    if dynamic_memory_enabled is not None:
-        if dynamic_memory_enabled:
-            dynamic_memory_enabled = 'true'
-        else:
-            dynamic_memory_enabled = 'false'
 
     availability_sets = get_availability_sets(
         cmd, resource_group_name, availability_sets
@@ -692,7 +687,9 @@ def get_network_interfaces(
             elif key == MAC_ADDRESS:
                 nic.mac_address = value
             else:
-                raise CLIError(f'Invalid parameter: {key} specified for nic.')
+                raise UnrecognizedArgumentError(
+                    f'Invalid parameter: {key} specified for nic.'
+                )
         nics.append(nic)
     return nics
 
@@ -725,7 +722,9 @@ def get_disks(cmd, client: VirtualMachinesOperations, resource_group_name, input
             elif key == QOS_ID:
                 disk.storage_qo_s_policy = StorageQoSPolicyDetails(id=value)
             else:
-                raise CLIError(f'Invalid parameter: {key} specified for disk.')
+                raise UnrecognizedArgumentError(
+                    f'Invalid parameter: {key} specified for disk.'
+                )
         disks.append(disk)
     return disks
 
@@ -833,11 +832,13 @@ def update_nic(
     """
 
     if nic_name is None and nic_id is None:
-        raise CLIError('Either nic name or nic id must be specified to update the nic.')
+        raise RequiredArgumentMissingError(
+            'Either nic name or nic id must be specified to update the nic.'
+        )
 
     if disconnect:
         if network is not None:
-            raise CLIError(
+            raise MutuallyExclusiveArgumentError(
                 'A NIC can either be disconnected or connected to a network.'
                 'Please spicify only one of these two options.'
             )
@@ -875,7 +876,7 @@ def update_nic(
                 if (nic_name is not None and nic_name != nic.name) or (
                     nic_id is not None and nic_id != nic.nic_id
                 ):
-                    raise CLIError(
+                    raise InvalidArgumentValueError(
                         'Incorrect nic-name and nic-id combination, '
                         + f'Expected nic-name : {nic_name}, nic-id : {nic_id}'  # noqa: W503
                     )
@@ -894,7 +895,9 @@ def update_nic(
             nics_update.append(nic_update)
 
     if not nic_found:
-        raise CLIError('Given nic is not present in the virtual machine.')
+        raise InvalidArgumentValueError(
+            'Given nic is not present in the virtual machine.'
+        )
 
     network_profile = NetworkProfileUpdate(network_interfaces=nics_update)
     vm_update_props = VirtualMachineUpdateProperties(network_profile=network_profile)
@@ -975,7 +978,7 @@ def delete_nics(
         nic_name for nic_name in nics_to_delete if nics_to_delete[nic_name]
     ]
     if not_found_nics:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             f'Nics with name {not_found_nics} not present in the given virtual machine.'
         )
 
@@ -1018,7 +1021,9 @@ def add_disk(
 
     storage_qos_policy = None
     if qos_name is not None and qos_id is not None:
-        raise CLIError('Both name and id of Storage QoS Policy cannot be specified.')
+        raise MutuallyExclusiveArgumentError(
+            'Both name and id of Storage QoS Policy cannot be specified.'
+        )
     if qos_name is not None:
         storage_qos_policy = StorageQoSPolicyDetails(name=qos_name)
     if qos_id is not None:
@@ -1085,13 +1090,15 @@ def update_disk(
     """
 
     if disk_name is None and disk_id is None:
-        raise CLIError(
+        raise RequiredArgumentMissingError(
             'Either disk name or disk id must be specified to update the disk.'
         )
 
     storage_qos_policy = None
     if qos_name is not None and qos_id is not None:
-        raise CLIError('Both name and id of Storage QoS Policy cannot be specified.')
+        raise MutuallyExclusiveArgumentError(
+            'Both name and id of Storage QoS Policy cannot be specified.'
+        )
     if qos_name is not None:
         storage_qos_policy = StorageQoSPolicyDetails(name=qos_name)
     if qos_id is not None:
@@ -1119,7 +1126,7 @@ def update_disk(
                 if (disk_name is not None and disk_name != disk.name) or (
                     disk_id is not None and disk_id != disk.disk_id
                 ):
-                    raise CLIError(
+                    raise InvalidArgumentValueError(
                         'Incorrect disk-name and disk-id combination, '
                         + f'Expected disk-name : {disk_name}, disk-id : {disk_id}'  # noqa: W503
                     )
@@ -1141,7 +1148,9 @@ def update_disk(
             disks_update.append(disk_update)
 
     if not disk_found:
-        raise CLIError('Given disk is not present in the virtual machine.')
+        raise InvalidArgumentValueError(
+            'Given disk is not present in the virtual machine.'
+        )
 
     storage_profile = StorageProfileUpdate(disks=disks_update)
     vm_update_props = VirtualMachineUpdateProperties(storage_profile=storage_profile)
@@ -1219,7 +1228,7 @@ def delete_disks(
         disk_name for disk_name in disks_to_delete if disks_to_delete[disk_name]
     ]
     if not_found_disks:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             f'Disks with name {not_found_disks} not present in the given virtual machine.'
         )
 
