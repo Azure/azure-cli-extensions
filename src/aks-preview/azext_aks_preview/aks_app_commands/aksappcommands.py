@@ -16,6 +16,7 @@ from pathlib import Path
 from knack.prompting import prompt_y_n
 
 
+# `az aks app init` function
 def aks_draft_app_init(destination: str,
                        app_name: str,
                        language: str,
@@ -26,16 +27,16 @@ def aks_draft_app_init(destination: str,
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
-    arguments = _build_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
+    arguments = _build_init_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
     run_successful = _run(file_path, arguments)
     if run_successful:
-        _cmd_finish()
+        _init_finish()
     else:
         raise ValueError('\'az aks app init\' was NOT executed successfully')
 
 
-# If setup is valid this method returns the correct binary path to execute
-def _binary_pre_check() -> str:
+# Returns the path to Draft binary. None if missing the required binary
+def _binary_pre_check() -> Optional[str]:
     print('The Draft setup is in progress...')
     draft_binary_path = _get_existing_path()
 
@@ -58,12 +59,14 @@ def _binary_pre_check() -> str:
         return _download_binary()
 
 
+# Returns the latest version str of Draft on Github
 def _get_latest_version() -> str:
     response = requests.get('https://api.github.com/repos/Azure/aks-app/releases/latest')
     response_json = json.loads(response.text)
     return response_json.get('tag_name')
 
 
+# Returns True if the local binary is the latest version, False otherwise
 def _is_latest_version(binary_path: str) -> bool:
     latest_version = _get_latest_version()
     process = subprocess.Popen([binary_path, 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -75,6 +78,8 @@ def _is_latest_version(binary_path: str) -> bool:
     return latest_version == current_version
 
 
+# Returns the filename for the current os and architecture
+# Returns None if the current system is not supported in Draft
 def _get_filename() -> Optional[str]:
     operating_system = platform.system().lower()
     architecture = platform.machine().lower()
@@ -88,7 +93,7 @@ def _get_filename() -> Optional[str]:
     return f'draftv2-{operating_system}-{architecture}'
 
 
-# Returns path to existing draft binary and None otherwise
+# Returns path to existing draft binary, None otherwise
 def _get_existing_path() -> Optional[str]:
     print('Checking if Draft binary exists locally...')
 
@@ -119,43 +124,8 @@ def _get_potential_paths() -> List[str]:
     return paths
 
 
-def _build_arguments(destination: str,
-                     app_name: str,
-                     language: str,
-                     create_config: str,
-                     dockerfile_only: str,
-                     deployment_only: str) -> List[str]:
-    options = {
-        'destination': destination,
-        'app-name': app_name,
-        'language': language,
-        'create-config': create_config,
-        'dockerfile-only': dockerfile_only,
-        'deployment-only': deployment_only
-    }
-    args_list = []
-    for arg, val in options.items():
-        if val:
-            args_list.append(f'--{arg}={val}')
-    return args_list
-
-
-def _run(binary_path: str, arguments: List[str]) -> bool:
-    if binary_path is None:
-        raise ValueError('The given Binary path was null or empty')
-
-    print('Running Draft Binary ...')
-    cmd = [binary_path, 'create'] + arguments
-    process = subprocess.Popen(cmd)
-    exit_code = process.wait()
-    return exit_code == 0
-
-
-def _cmd_finish():
-    # Clean up logic can go here if needed
-    print('Finishing running \'az aks app init\'')
-
-
+# Downloads the latest binary to ~/.aksapp
+# Returns path to the binary if sucessful, None otherwise
 def _download_binary() -> Optional[str]:
     print('Attempting to download dependency...')
 
@@ -189,3 +159,44 @@ def _download_binary() -> Optional[str]:
 
     print('Download of Draft binary was unsuccessful with a status code: ' + str(response.status_code))
     return None
+
+
+# Returns a list of arguments following the format `--arg=value`
+def _build_init_arguments(destination: str,
+                     app_name: str,
+                     language: str,
+                     create_config: str,
+                     dockerfile_only: str,
+                     deployment_only: str) -> List[str]:
+    options = {
+        'destination': destination,
+        'app-name': app_name,
+        'language': language,
+        'create-config': create_config,
+        'dockerfile-only': dockerfile_only,
+        'deployment-only': deployment_only
+    }
+    args_list = []
+    for arg, val in options.items():
+        if val:
+            args_list.append(f'--{arg}={val}')
+    return args_list
+
+
+# Executes the Draft binary
+# Returns True if the process executed sucessfully, False otherwise
+def _run(binary_path: str, arguments: List[str]) -> bool:
+    if binary_path is None:
+        raise ValueError('The given Binary path was null or empty')
+
+    print('Running Draft Binary ...')
+    cmd = [binary_path, 'create'] + arguments
+    process = subprocess.Popen(cmd)
+    exit_code = process.wait()
+    return exit_code == 0
+
+
+# Function for clean up logic
+def _init_finish():
+    # Clean up logic can go here if needed
+    print('Finishing running `az aks app init`')
