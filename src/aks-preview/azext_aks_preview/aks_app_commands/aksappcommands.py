@@ -28,7 +28,7 @@ def aks_draft_app_init(destination: str,
         raise ValueError('Binary check was NOT executed successfully')
 
     arguments = _build_init_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
-    run_successful = _run(file_path, arguments)
+    run_successful = _run_init(file_path, arguments)
     if run_successful:
         _init_finish()
     else:
@@ -183,9 +183,9 @@ def _build_init_arguments(destination: str,
     return args_list
 
 
-# Executes the Draft binary
+# Executes the Draft create command
 # Returns True if the process executed sucessfully, False otherwise
-def _run(binary_path: str, arguments: List[str]) -> bool:
+def _run_init(binary_path: str, arguments: List[str]) -> bool:
     if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
