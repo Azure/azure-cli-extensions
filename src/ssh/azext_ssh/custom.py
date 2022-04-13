@@ -422,7 +422,7 @@ def _decide_resource_type(cmd, op_info):
     if is_arc_server:
         target_resource_type = "Microsoft.HybridCompute"
     telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetResourceType': target_resource_type})
-    
+
     return target_resource_type
 
 
