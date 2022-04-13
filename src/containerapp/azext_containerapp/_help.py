@@ -162,6 +162,14 @@ helps['containerapp revision copy'] = """
 
 """
 
+helps['containerapp revision copy'] = """
+    type: command
+    short-summary: Create a revision based on a previous revision.
+    examples:
+    - name: Create a revision based on a previous revision.
+      text: |
+          az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
+"""
 
 # Environment Commands
 helps['containerapp env'] = """
@@ -176,13 +184,13 @@ helps['containerapp env create'] = """
     - name: Create an environment with an auto-generated Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
-              --location "Canada Central"
+              --location eastus2
     - name: Create an environment with an existing Log Analytics workspace.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
-              --location "Canada Central"
+              --location eastus2
 """
 
 
@@ -254,6 +262,61 @@ helps['containerapp env dapr-component remove'] = """
     - name: Remove a Dapr component from a Container Apps environment.
       text: |
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
+"""
+
+# Identity Commands
+helps['containerapp identity'] = """
+    type: group
+    short-summary: Commands to manage managed identities.
+"""
+
+helps['containerapp identity assign'] = """
+    type: command
+    short-summary: Assign managed identity to a container app.
+    long-summary: Managed identities can be user-assigned or system-assigned.
+    examples:
+    - name: Assign system identity.
+      text: |
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --system-assigned
+    - name: Assign user identity.
+      text: |
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Assign user identity (from a different resource group than the containerapp).
+      text: |
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --user-assigned myUserIdentityResourceId
+    - name: Assign system and user identity.
+      text: |
+          az containerapp identity assign -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+"""
+
+helps['containerapp identity remove'] = """
+    type: command
+    short-summary: Remove a managed identity from a container app.
+    examples:
+    - name: Remove system identity.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned
+    - name: Remove user identity.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Remove system and user identity (from a different resource group than the containerapp).
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+    - name: Remove all user identities.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp identity remove -n myContainerapp -g MyResourceGroup --system-assigned --user-assigned
+"""
+
+helps['containerapp identity show'] = """
+    type: command
+    short-summary: Show managed identities of a container app.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp identity show -n myContainerapp -g MyResourceGroup
 """
 
 # Ingress Commands
@@ -470,7 +533,7 @@ helps['containerapp dapr'] = """
 
 helps['containerapp dapr enable'] = """
     type: command
-    short-summary: Enable Dapr for a container app.
+    short-summary: Enable Dapr for a container app. Updates existing values.
     examples:
     - name: Enable Dapr for a container app.
       text: |
@@ -479,7 +542,7 @@ helps['containerapp dapr enable'] = """
 
 helps['containerapp dapr disable'] = """
     type: command
-    short-summary: Disable Dapr for a container app.
+    short-summary: Disable Dapr for a container app. Removes existing values.
     examples:
     - name: Disable Dapr for a container app.
       text: |
