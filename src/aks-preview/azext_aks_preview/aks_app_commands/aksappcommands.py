@@ -162,7 +162,7 @@ def _download_binary() -> Optional[str]:
 
 
 # Returns a list of arguments following the format `--arg=value`
-def _build_args(options: Dict[str: str]) -> List[str]:
+def _build_args(options: Dict[str, str]) -> List[str]:
     args_list = []
     for arg, val in options.items():
         if val:
