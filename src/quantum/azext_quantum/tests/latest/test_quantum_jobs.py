@@ -188,15 +188,19 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(type(wait_secs), float)
         self.assertEquals(wait_secs, 1.0)
 
+        wait_secs = _validate_max_poll_wait_secs("60")
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 60.0)
+
         # Invalid values should raise errors
         try:
-            wait_secs = _validate_max_poll_wait_secs("0.999999999")
+            wait_secs = _validate_max_poll_wait_secs(0.999999999)
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: 0.999999999"
 
         try:
-            wait_secs = _validate_max_poll_wait_secs("-1.0")
+            wait_secs = _validate_max_poll_wait_secs(-1.0)
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"
