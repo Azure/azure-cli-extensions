@@ -15,7 +15,7 @@ from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
-MINIMUM_MAX_POLL_WAIT_SECS = 1;
+MINIMUM_MAX_POLL_WAIT_SECS = 1
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
@@ -289,7 +289,7 @@ def _validate_max_poll_wait_secs(max_poll_wait_secs):
     valid_max_poll_wait_secs = 0.0
     error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
     error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
- 
+
     try:
         valid_max_poll_wait_secs = float(max_poll_wait_secs)
     except ValueError as e:
