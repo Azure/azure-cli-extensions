@@ -36,7 +36,7 @@ def load_arguments(self, _):
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
         c.argument('enable_private_link', options_list=['--enable-private-link'], arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, arg_type=get_enum_type(["true", "false"]), validator=validate_private_link_properties)
-        c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
+        c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id', '--pls-arm-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
         c.argument('onboarding_timeout', options_list=['--onboarding-timeout'], arg_group='Timeout', help='Time required (in seconds) for the arc-agent pods to be installed on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for installing the arc-agent pods.')
         c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
 
@@ -52,7 +52,7 @@ def load_arguments(self, _):
         c.argument('disable_proxy', options_list=['--disable-proxy'], arg_group='Proxy', action='store_true', help='Disables proxy settings for agents')
         c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents. By default, auto upgrade of agents is enabled.', arg_type=get_enum_type(["true", "false"]))
         c.argument('enable_private_link', options_list=['--enable-private-link'], arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, arg_type=get_enum_type(["true", "false"]), validator=validate_private_link_properties)
-        c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
+        c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id', '--pls-arm-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
