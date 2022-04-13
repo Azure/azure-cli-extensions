@@ -413,7 +413,7 @@ def _decide_resource_type(cmd, op_info):
         colorama.init()
         raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
                                                       "for Windows.",
-                                                      Fore.YELLOW + "Please provide --local-user" + Style.RESET_ALL)
+                                                      Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
 
     if os_type:
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
