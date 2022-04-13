@@ -78,41 +78,41 @@ class ContainerInsights(DefaultExtension):
         isDCRAExists = False
         cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
         try:
-           extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+            extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         except Exception:
-           pass  # its OK to ignore the exception since MSI auth in preview
+            pass  # its OK to ignore the exception since MSI auth in preview
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
         # handle cluster type here
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         if (extension is not None) and (extension.configuration_settings is not None):
-           configSettings = extension.configuration_settings
-           if 'omsagent.useAADAuth' in configSettings:
-               useAADAuthSetting = configSettings['omsagent.useAADAuth']
-               if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
-                   useAADAuth = True
+            configSettings = extension.configuration_settings
+            if 'omsagent.useAADAuth' in configSettings:
+                useAADAuthSetting = configSettings['omsagent.useAADAuth']
+                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                    useAADAuth = True
         if useAADAuth:
-          association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
-          for _ in range(3):
-            try:
-                send_raw_request(cmd.cli_ctx, "GET", association_url,)
-                isDCRAExists = True
-                break
-            except HttpResponseError as ex:
-                # Customize the error message for resources not found
-                if ex.response.status_code == 404:
-                    isDCRAExists = False
-            except Exception:
-               pass  # its OK to ignore the exception since MSI auth in preview
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "GET", association_url,)
+                    isDCRAExists = True
+                    break
+                except HttpResponseError as ex:
+                    # Customize the error message for resources not found
+                    if ex.response.status_code == 404:
+                        isDCRAExists = False
+                except Exception:
+                    pass  # its OK to ignore the exception since MSI auth in preview
 
         if isDCRAExists:
-          association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
-          for _ in range(3):
-            try:
-                send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
-                break
-            except Exception:
-               pass  # its OK to ignore the exception since MSI auth in preview
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
+                    break
+                except Exception:
+                    pass  # its OK to ignore the exception since MSI auth in preview
 
 
 # Custom Validation Logic for Container Insights
@@ -462,10 +462,10 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
     if is_ci_extension_type:
         if useAADAuth:
-          logger.info("MSI onboarding since omsagent.useAADAuth set to true")
-          _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
+            logger.info("MSI onboarding since omsagent.useAADAuth set to true")
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
         else:
-          _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
+            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
 
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -560,23 +560,23 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         except AzCLIError as e:
             error = e
         else:
-           # This will run if the above for loop was not broken out of. This means all three requests failed
+            # This will run if the above for loop was not broken out of. This means all three requests failed
             raise error
     json_response = json.loads(r.text)
     for region_data in json_response["value"]:
-       region_names_to_id[region_data["displayName"]] = region_data["name"]
+        region_names_to_id[region_data["displayName"]] = region_data["name"]
 
-   # check if region supports DCR and DCR-A
+    # check if region supports DCR and DCR-A
     for _ in range(3):
-       try:
-          feature_check_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-          r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
-          error = None
-          break
-       except AzCLIError as e:
-           error = e
-       else:
-           raise error
+        try:
+            feature_check_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
+            r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
+            error = None
+            break
+        except AzCLIError as e:
+            error = e
+        else:
+            raise error
 
     json_response = json.loads(r.text)
     for resource in json_response["resourceTypes"]:
@@ -654,13 +654,13 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
 
     for _ in range(3):
         try:
-          send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
-          error = None
-          break
+            send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
+            error = None
+            break
         except AzCLIError as e:
             error = e
         else:
-          raise error
+            raise error
 
     association_body = json.dumps(
         {
@@ -674,10 +674,10 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
     for _ in range(3):
         try:
-           send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)
-           error = None
-           break
+            send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)
+            error = None
+            break
         except AzCLIError as e:
-           error = e
+            error = e
         else:
-           raise error
+            raise error
