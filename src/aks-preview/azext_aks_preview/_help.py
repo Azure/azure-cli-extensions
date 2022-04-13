@@ -1577,7 +1577,7 @@ helps['aks app init'] = """
     type: command
     short-summary: Generate a Dockerfile and the minimum required Kubernetes deployment files (helm, kustomize, manifests) for your project directory.
     parameters:
-        - name: --path
+        - name: --destination
           type: string
           short-summary: Specify the path to the project directory.
         - name: --app-name
