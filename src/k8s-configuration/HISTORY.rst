@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.1
+++++++++++++++++++
+* Bump pycryptodome to 3.14.1 to support Python 3.10
+
 1.5.0
 ++++++++++++++++++
 * Update models to 2022-03-01 for GA
