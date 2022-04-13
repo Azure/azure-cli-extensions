@@ -89,7 +89,7 @@ def load_arguments(self, _):
         c.argument('new_app_name', options_list=['--name', '-n'], help='name of the new function app')
         c.argument('custom_location', help="Name or ID of the custom location. Use an ID for a custom location in a different resource group from the app")
         c.argument('storage_account', options_list=['--storage-account', '-s'],
-                   help='Provide a string value of a Storage Account in the provided Resource Group. Or Resource ID of a Storage Account in a different Resource Group')
+                   help='Provide a string value of a Storage Account in the provided Resource Group. Or Resource ID of a Storage Account in a different Resource Group. Required for non-kubernetes function apps')
         c.argument('consumption_plan_location', options_list=['--consumption-plan-location', '-c'],
                    help="Geographic location where Function App will be hosted. Use `az functionapp list-consumption-locations` to view available locations.")
         c.argument('functions_version', help='The functions app version.  Use "az functionapp list-runtimes" to check compatibility with runtimes and runtime versions', arg_type=get_enum_type(FUNCTIONS_VERSIONS))
