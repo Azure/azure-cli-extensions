@@ -5,9 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-import sre_parse
 from typing import Dict, List, Optional
-import shutil
 import subprocess
 import requests
 import os
