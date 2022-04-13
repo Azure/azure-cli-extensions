@@ -81,6 +81,13 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Username password credentials to use for connecting to the vmmserver.",
         )
 
+    with self.argument_context('scvmm vm-template wait') as c:
+        c.argument(
+            'virtual_machine_template_name',
+            options_list=['--vm-template-name'],
+            help="Name of the VirtualMachineTemplate.",
+        )
+
     for scope in ['create', 'update']:
         with self.argument_context(f'scvmm vm {scope}') as c:
             c.argument(

@@ -126,7 +126,7 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_show_command('show', 'show_vm_template')
         g.custom_command('list', 'list_vm_template')
-        g.custom_wait_command('wait', 'show_vm_template')
+        g.wait_command('wait')
 
     with self.command_group(
         'scvmm vm', virtual_machines_cmd_type, client_factory=cf_virtual_machine
