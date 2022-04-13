@@ -407,6 +407,12 @@ helps['aks create'] = """
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
+        - name: --enable-azure-keyvault-kms
+          type: bool
+          short-summary: Enable Azure KeyVault Key Management Service.
+        - name: --azure-keyvault-kms-key-id
+          type: string
+          short-summary: Identifier of Azure Key Vault key.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -674,6 +680,15 @@ helps['aks update'] = """
         - name: --enable-oidc-issuer
           type: bool
           short-summary: (PREVIEW) Enable OIDC issuer.
+        - name: --http-proxy-config
+          type: string
+          short-summary: HTTP Proxy configuration for this cluster.
+        - name: --enable-azure-keyvault-kms
+          type: bool
+          short-summary: Enable Azure KeyVault Key Management Service.
+        - name: --azure-keyvault-kms-key-id
+          type: string
+          short-summary: Identifier of Azure Key Vault key.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -1534,22 +1549,63 @@ helps['aks egress-endpoints list'] = """
 
 helps['aks snapshot'] = """
     type: group
-    short-summary: Commands to manage snapshots.
+    short-summary: Commands to manage cluster snapshots.
 """
 
 helps['aks snapshot show'] = """
     type: command
-    short-summary: Show the details of a snapshot.
+    short-summary: Show the details of a cluster snapshot.
 """
 
 helps['aks snapshot list'] = """
     type: command
-    short-summary: List snapshots.
+    short-summary: List cluster snapshots.
 """
 
 helps['aks snapshot create'] = """
     type: command
-    short-summary: Create a snapshot of a node pool.
+    short-summary: Create a snapshot of a cluster.
+    parameters:
+        - name: --cluster-id
+          type: string
+          short-summary: The source cluster id from which to create this snapshot.
+        - name: --tags
+          type: string
+          short-summary: The tags of the snapshot.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+
+    examples:
+        - name: Create a cluster snapshot.
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --cluster-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1"
+        - name: Create a cluster snapshot with custom tags.
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --cluster-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1" --tags "foo=bar" "key1=val1"
+"""
+
+helps['aks snapshot delete'] = """
+    type: command
+    short-summary: Delete a cluster snapshot.
+"""
+
+helps['aks nodepool snapshot'] = """
+    type: group
+    short-summary: Commands to manage nodepool snapshots.
+"""
+
+helps['aks nodepool snapshot show'] = """
+    type: command
+    short-summary: Show the details of a nodepool snapshot.
+"""
+
+helps['aks nodepool snapshot list'] = """
+    type: command
+    short-summary: List nodepool snapshots.
+"""
+
+helps['aks nodepool snapshot create'] = """
+    type: command
+    short-summary: Create a nodepool snapshot.
     parameters:
         - name: --nodepool-id
           type: string
@@ -1562,15 +1618,15 @@ helps['aks snapshot create'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 
     examples:
-        - name: Create a snapshot.
-          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1"
-        - name: Create a snapshot with custom tags.
-          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1" --tags "foo=bar" "key1=val1"
+        - name: Create a nodepool snapshot.
+          text: az aks nodepool snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1"
+        - name: Create a nodepool snapshot with custom tags.
+          text: az aks nodepool snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1" --tags "foo=bar" "key1=val1"
 """
 
-helps['aks snapshot delete'] = """
+helps['aks nodepool snapshot delete'] = """
     type: command
-    short-summary: Delete a snapshot.
+    short-summary: Delete a nodepool snapshot.
 """
 
 helps['aks app init'] = """

@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '1.2.4'
+VERSION = '1.2.8'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,7 +36,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'kubernetes==11.0.0',
-    'pycryptodome==3.9.8',
+    'pycryptodome==3.14.1',
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

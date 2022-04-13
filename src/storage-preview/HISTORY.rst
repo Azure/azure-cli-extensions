@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.8.2(2022-04-12)
+++++++++++++++++++
+* `az storage account create`: Add `--dns-endpoint-type` to support creating accounts in an Azure DNS Zone
+
+0.8.1(2022-03-15)
+++++++++++++++++++
+* `az storage account create/update`: Support `--key-vault-federated-identity-client-id` and `--allowed-copy-scope`
+
 0.8.0(2022-01-17)
 ++++++++++++++++++
 * Remove `az storage account file-service-properties` as SMB multichannel and secured SMB has been supported in main Azure CLI

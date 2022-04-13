@@ -7,11 +7,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+
+
 # pylint: disable=protected-access
 
+# pylint: disable=no-self-use
+
+
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 
 
 class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
@@ -19,24 +24,34 @@ class AddDesktopvirtualizationHostpoolCreateRegistrationInfo(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.registration_info = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ArgumentUsageError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'expiration-time':
                 d['expiration_time'] = v[0]
+
             elif kl == 'token':
                 d['token'] = v[0]
+
             elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
+
+            else:
+                raise InvalidArgumentValueError(
+                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
+                    ' expiration-time, token, registration-token-operation'.format(k)
+                )
+
         return d
 
 
@@ -45,20 +60,29 @@ class AddDesktopvirtualizationHostpoolUpdateRegistrationInfo(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.registration_info = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ArgumentUsageError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
+
             if kl == 'expiration-time':
                 d['expiration_time'] = v[0]
+
             elif kl == 'registration-token-operation':
                 d['registration_token_operation'] = v[0]
+
+            else:
+                raise InvalidArgumentValueError(
+                    'Unsupported Key {} is provided for parameter registration-info. All possible keys are:'
+                    ' expiration-time, registration-token-operation'.format(k)
+                )
+
         return d

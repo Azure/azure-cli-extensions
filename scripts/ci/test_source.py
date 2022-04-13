@@ -7,6 +7,7 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import sys
 import tempfile
@@ -21,6 +22,7 @@ from six import with_metaclass
 
 from util import SRC_PATH
 
+logger = logging.getLogger(__name__)
 
 ALL_TESTS = []
 
@@ -54,6 +56,10 @@ for src_d in os.listdir(SRC_PATH):
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
         ALL_TESTS.append((pkg_name, src_d_full))
+
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'ALL_TESTS: {ALL_TESTS}.')
 
 
 class TestExtensionSourceMeta(type):

@@ -256,25 +256,31 @@ helps['spring-cloud app log tail'] = """
 
 helps['spring-cloud app identity'] = """
     type: group
-    short-summary: Manage an app's managed service identity.
+    short-summary: Manage an app's managed identities.
 """
 
 helps['spring-cloud app identity assign'] = """
     type: command
-    short-summary: Enable managed service identity on an app.
+    short-summary: Enable system-assigned managed identity or assign user-assigned managed identities to an app.
     examples:
     - name: Enable the system assigned identity.
-      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
     - name: Enable the system assigned identity on an app with the 'Reader' role.
-      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+    - name: Assign two user-assigned managed identities to an app.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --user-assigned IdentityResourceId1 IdentityResourceId2
 """
 
 helps['spring-cloud app identity remove'] = """
     type: command
-    short-summary: Remove managed service identity from an app.
+    short-summary: Remove managed identity from an app.
     examples:
-    - name: Remove the system assigned identity from an app.
-      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
+    - name: Remove the system-assigned managed identity from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
+    - name: Remove the system-assigned and user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --user-assigned IdentityResourceId1 IdentityResourceId2
+    - name: Remove ALL user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --user-assigned
 """
 
 helps['spring-cloud app identity show'] = """
@@ -283,6 +289,18 @@ helps['spring-cloud app identity show'] = """
     examples:
     - name: Display an app's managed identity info.
       text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
+"""
+
+helps['spring-cloud app identity force-set'] = """
+    type: command
+    short-summary: Force set managed identities on an app.
+    examples:
+    - name: Force remove all managed identities on an app.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned disable
+    - name: Force remove all user-assigned managed identities on an app, and enable or keep system-assigned managed identity.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned enable --user-assigned disable
+    - name: Force remove system-assigned managed identity on an app, and assign or keep user-assigned managed identities.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned IdentityResourceId1 IdentityResourceId2
 """
 
 helps['spring-cloud app set-deployment'] = """

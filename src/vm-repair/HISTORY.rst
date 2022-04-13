@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.4.2
+++++++
+Linux only: Fixing duplicated UUID issue. Data disk gets attached only after VM got created.
+
 0.4.1
 ++++++
 Fixing bug in preview parameter
