@@ -15,7 +15,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '0.2.2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -44,7 +44,7 @@ setup(
     description='Microsoft Azure Command-Line Tools AlertsManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/alertsmanagement',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/alertsmanagement',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

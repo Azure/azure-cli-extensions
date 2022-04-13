@@ -9,6 +9,7 @@ import os
 import json
 import tempfile
 import time
+import base64
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
@@ -41,6 +42,7 @@ from azext_connectedk8s._client_factory import get_graph_client_service_principa
 from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2021_04_01
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s._clientproxyutils as clientproxyutils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ConnectedClusterPatch, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2021_04_01.models import ConnectedCluster as ConnectedClusterPreview
@@ -195,7 +197,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
-                # Dibabling cluster-connect if private link is getting enabled
+                # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link == "true":
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
                 return cc_response
@@ -798,18 +800,14 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
 
 
-def patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
+def patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait, enable_private_link):
     try:
-        return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name,
-                           cluster_name=cluster_name, connected_cluster_patch=cc)
-    except Exception as e:
-        utils.arm_exception_handler(e, consts.Update_ConnectedCluster_Fault_Type, 'Unable to update connected cluster resource')
-
-
-def patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_wait):
-    try:
-        return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name,
-                           cluster_name=cluster_name, connected_cluster_patch=cc)
+        if enable_private_link:
+            return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name,
+                               cluster_name=cluster_name, connected_cluster_patch=cc).result()
+        else:
+            return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name,
+                               cluster_name=cluster_name, connected_cluster_patch=cc)
     except Exception as e:
         utils.arm_exception_handler(e, consts.Update_ConnectedCluster_Fault_Type, 'Unable to update connected cluster resource')
 
@@ -825,9 +823,7 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
 
 def update_connectedk8s(client, resource_group_name, cluster_name, tags=None, enable_private_link=None, private_link_scope_resource_id=None, no_wait=False):
     cc = generate_patch_payload(tags, enable_private_link, private_link_scope_resource_id)
-    if enable_private_link:
-        return patch_cc_resource_preview(client, resource_group_name, cluster_name, cc, no_wait).result()
-    return patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+    return patch_cc_resource(client, resource_group_name, cluster_name, cc, no_wait, enable_private_link)
 
 
 # pylint:disable=unused-argument
@@ -879,7 +875,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and not enable_private_link:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
-    if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
+    if (https_proxy or http_proxy or no_proxy) and disable_proxy:
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
@@ -957,9 +953,26 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
+    cmd_helm_values = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace]
+    if kube_config:
+        cmd_helm_values.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_values.extend(["--kube-context", kube_context])
+
+    user_values_location = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
+    existing_user_values = open(user_values_location, 'w+')
+    response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
+    _, error_helm_get_values = response_helm_values_get.communicate()
+    if response_helm_values_get.returncode != 0:
+        if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                    summary='Error while doing helm get values azure-arc')
+            raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
+
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--reuse-values",
-                        "--wait", "--output", "json"]
+                        "-f",
+                        user_values_location, "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
     if auto_upgrade is not None:
@@ -976,6 +989,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
         cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        cmd_helm_upgrade.extend(["--set", "global.isCustomCert={}".format(True)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -993,9 +1007,17 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
+        try:
+            os.remove(user_values_location)
+        except OSError:
+            pass
         raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     logger.info(str.format(consts.Update_Agent_Success, connected_cluster.name))
+    try:
+        os.remove(user_values_location)
+    except OSError:
+        pass
     return patch_cc_response
 
 
@@ -1477,6 +1499,16 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
+    get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, release_train_dogfood, kube_config, kube_context,
+                                   helm_client_location, release_namespace, values_file_provided, values_file, disable_azure_rbac,
+                                   disable_cluster_connect, disable_cl)
+
+    return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
+
+
+def get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, release_train_dogfood, kube_config, kube_context,
+                                   helm_client_location, release_namespace, values_file_provided, values_file, disable_azure_rbac=False,
+                                   disable_cluster_connect=False, disable_cl=False):
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
@@ -1522,53 +1554,14 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
                                 summary='Unable to install helm release')
         raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
-    return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
-
 
 def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location):
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    # Setting the config dataplane endpoint
-    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
-
-    # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
-
-    reg_path_array = registry_path.split(':')
-    agent_version = reg_path_array[1]
-
-    # Set agent version in registry path
-    if connected_cluster.agent_version is not None:
-        agent_version = connected_cluster.agent_version
-        registry_path = reg_path_array[0] + ":" + agent_version
-
-    # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
-
-    cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--reuse-values",
-                        "--wait", "--output", "json"]
-    if values_file_provided:
-        cmd_helm_upgrade.extend(["-f", values_file])
-    if kube_config:
-        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    # Disable cluster-connect
-    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
-    # Disable custom location
-    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
-    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
-
-    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
-    _, error_helm_upgrade = response_helm_upgrade.communicate()
-    if response_helm_upgrade.returncode != 0:
-        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
-            telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
-                                summary='Unable to upgrade helm release')
-        raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
+    get_chart_and_disable_features(cmd, connected_cluster, dp_endpoint_dogfood, release_train_dogfood, kube_config, kube_context,
+                                   helm_client_location, release_namespace, values_file_provided, values_file, False,
+                                   True, True)
 
 
 def load_kubernetes_configuration(filename):
@@ -1734,6 +1727,7 @@ def client_side_proxy_wrapper(cmd,
                                 summary=f'User tried proxy command in fairfax.')
         raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
 
+    tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
     if int(client_proxy_port) == int(api_server_port):
         raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
@@ -1745,13 +1739,13 @@ def client_side_proxy_wrapper(cmd,
     telemetry.set_debug_info('CSP Version is ', consts.CLIENT_PROXY_VERSION)
     telemetry.set_debug_info('OS is ', operating_system)
 
-    if(check_process(proc_name)):
+    if(clientproxyutils.check_process(proc_name)):
         raise ClientRequestError('Another instance of proxy already running')
 
     port_error_string = ""
-    if check_if_port_is_open(api_server_port):
+    if clientproxyutils.check_if_port_is_open(api_server_port):
         port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --port option.\n'
-    if check_if_port_is_open(client_proxy_port):
+    if clientproxyutils.check_if_port_is_open(client_proxy_port):
         telemetry.set_exception(exception='Client proxy port was in use.', fault_type=consts.Client_Proxy_Port_Fault_Type,
                                 summary=f'Client proxy port was in use.')
         port_error_string += f"Port {client_proxy_port} is already in use. This is an internal port that proxy uses. Please ensure that this port is open before running 'az connectedk8s proxy'.\n"
@@ -1850,7 +1844,6 @@ def client_side_proxy_wrapper(cmd,
         subscription_id = get_subscription_id(cmd.cli_ctx)
         account = Profile().get_subscription(subscription_id)
         user_type = account['user']['type']
-        tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':
             dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
@@ -1863,39 +1856,40 @@ def client_side_proxy_wrapper(cmd,
         if cloud == consts.Azure_ChinaCloudName:
             dict_file['cloud'] = 'AzureChinaCloud'
 
-        # Fetching creds
-        creds_location = os.path.expanduser(os.path.join('~', creds_string))
-        try:
-            with open(creds_location) as f:
-                creds_list = json.load(f)
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
-                                    summary='Unable to load accessToken.json')
-            raise FileOperationError("Failed to load credentials." + str(e))
+        if not utils.is_cli_using_msal_auth():
+            # Fetching creds
+            creds_location = os.path.expanduser(os.path.join('~', creds_string))
+            try:
+                with open(creds_location) as f:
+                    creds_list = json.load(f)
+            except Exception as e:
+                telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
+                                        summary='Unable to load accessToken.json')
+                raise FileOperationError("Failed to load credentials." + str(e))
 
-        user_name = account['user']['name']
+            user_name = account['user']['name']
 
-        if user_type == 'user':
-            key = 'userId'
-            key2 = 'refreshToken'
-        else:
-            key = 'servicePrincipalId'
-            key2 = 'accessToken'
+            if user_type == 'user':
+                key = 'userId'
+                key2 = 'refreshToken'
+            else:
+                key = 'servicePrincipalId'
+                key2 = 'accessToken'
 
-        for i in range(len(creds_list)):
-            creds_obj = creds_list[i]
+            for i in range(len(creds_list)):
+                creds_obj = creds_list[i]
 
-            if key in creds_obj and creds_obj[key] == user_name:
-                creds = creds_obj[key2]
-                break
+                if key in creds_obj and creds_obj[key] == user_name:
+                    creds = creds_obj[key2]
+                    break
 
-        if creds == '':
-            telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
-                                    summary='Unable to find creds of user')
-            raise UnclassifiedUserFault("Credentials of user not found.")
+            if creds == '':
+                telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
+                                        summary='Unable to find creds of user')
+                raise UnclassifiedUserFault("Credentials of user not found.")
 
-        if user_type != 'user':
-            dict_file['identity']['clientSecret'] = creds
+            if user_type != 'user':
+                dict_file['identity']['clientSecret'] = creds
     else:
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
         if cloud == consts.Azure_ChinaCloudName:
@@ -1919,7 +1913,7 @@ def client_side_proxy_wrapper(cmd,
         args.append("-d")
         debug_mode = True
 
-    client_side_proxy_main(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    client_side_proxy_main(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
 
 
 # Prepare data as needed by client proxy executable
@@ -1939,6 +1933,7 @@ def prepare_clientproxy_data(response):
 
 
 def client_side_proxy_main(cmd,
+                           tenantId,
                            client,
                            resource_group_name,
                            cluster_name,
@@ -1954,14 +1949,14 @@ def client_side_proxy_main(cmd,
                            path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                            context_name=None,
                            clientproxy_process=None):
-    expiry, clientproxy_process = client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
     next_refresh_time = expiry - consts.CSP_REFRESH_TIME
 
     while(True):
         time.sleep(60)
-        if(check_if_csp_is_running(clientproxy_process)):
+        if(clientproxyutils.check_if_csp_is_running(clientproxy_process)):
             if time.time() >= next_refresh_time:
-                expiry, clientproxy_process = client_side_proxy(cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
+                expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
                 next_refresh_time = expiry - consts.CSP_REFRESH_TIME
         else:
             telemetry.set_exception(exception='Process closed externally.', fault_type=consts.Proxy_Closed_Externally_Fault_Type,
@@ -1970,6 +1965,7 @@ def client_side_proxy_main(cmd,
 
 
 def client_side_proxy(cmd,
+                      tenantId,
                       client,
                       resource_group_name,
                       cluster_name,
@@ -1987,7 +1983,6 @@ def client_side_proxy(cmd,
                       clientproxy_process=None):
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-
     if token is not None:
         auth_method = 'Token'
     else:
@@ -2020,33 +2015,50 @@ def client_side_proxy(cmd,
                                     summary='Unable to run client proxy executable')
             raise CLIInternalError("Failed to start proxy process." + str(e))
 
-        if user_type == 'user':
-            identity_data = {}
-            identity_data['refreshToken'] = creds
-            identity_uri = f'https://localhost:{api_server_port}/identity/rt'
+        if not utils.is_cli_using_msal_auth():  # refresh token approach if cli is using ADAL auth. This is for cli < 2.30.0
+            if user_type == 'user':
+                identity_data = {}
+                identity_data['refreshToken'] = creds
+                identity_uri = f'https://localhost:{api_server_port}/identity/rt'
 
-            # Needed to prevent skip tls warning from printing to the console
-            original_stderr = sys.stderr
-            f = open(os.devnull, 'w')
-            sys.stderr = f
+                # Needed to prevent skip tls warning from printing to the console
+                original_stderr = sys.stderr
+                f = open(os.devnull, 'w')
+                sys.stderr = f
 
-            make_api_call_with_retries(identity_uri, identity_data, False, consts.Post_RefreshToken_Fault_Type,
-                                       'Unable to post refresh token details to clientproxy',
-                                       "Failed to pass refresh token details to proxy.", clientproxy_process)
-            sys.stderr = original_stderr
+                clientproxyutils.make_api_call_with_retries(identity_uri, identity_data, "post", False, consts.Post_RefreshToken_Fault_Type,
+                                                            'Unable to post refresh token details to clientproxy',
+                                                            "Failed to pass refresh token details to proxy.", clientproxy_process)
+                sys.stderr = original_stderr
+
+    if token is None:
+        if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
+            kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, "gTYVsmkQfNwajR0w-v6A3ekPkiI7Wcz2T5ZCb7hwHTU", clientproxy_process)
+
+            if post_at_response.status_code != 200:
+                if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
+                    telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
+                                            summary='PoP public key has expired')
+                    kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
+                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
+                else:
+                    telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
+                                            summary='Failed to post access token to client proxy')
+                    clientproxyutils.close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + post_at_response.text)
 
     data = prepare_clientproxy_data(response)
     expiry = data['hybridConnectionConfig']['expirationTime']
 
     if token is not None:
-        data['kubeconfigs'][0]['value'] = insert_token_in_kubeconfig(data, token)
+        data['kubeconfigs'][0]['value'] = clientproxyutils.insert_token_in_kubeconfig(data, token)
 
     uri = f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01'
 
     # Posting hybrid connection details to proxy in order to get kubeconfig
-    response = make_api_call_with_retries(uri, data, False, consts.Post_Hybridconn_Fault_Type,
-                                          'Unable to post hybrid connection details to clientproxy',
-                                          "Failed to pass hybrid connection details to proxy.", clientproxy_process)
+    response = clientproxyutils.make_api_call_with_retries(uri, data, "post", False, consts.Post_Hybridconn_Fault_Type,
+                                                           'Unable to post hybrid connection details to clientproxy',
+                                                           "Failed to pass hybrid connection details to proxy.", clientproxy_process)
 
     if flag == 0:
         # Decoding kubeconfig into a string
@@ -2055,7 +2067,7 @@ def client_side_proxy(cmd,
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                     summary='Unable to load Kubeconfig')
-            close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to load kubeconfig." + str(e))
+            clientproxyutils.close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to load kubeconfig." + str(e))
 
         kubeconfig = kubeconfig['kubeconfigs'][0]['value']
         kubeconfig = b64decode(kubeconfig).decode("utf-8")
@@ -2075,46 +2087,30 @@ def client_side_proxy(cmd,
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,
                                     summary='Unable to merge kubeconfig.')
-            close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to merge kubeconfig." + str(e))
+            clientproxyutils.close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to merge kubeconfig." + str(e))
 
     return expiry, clientproxy_process
 
 
-def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error, clientproxy_process):
-    for i in range(consts.API_CALL_RETRIES):
-        try:
-            response = requests.post(uri, json=data, verify=tls_verify)
-            return response
-        except Exception as e:
-            time.sleep(5)
-            if i != consts.API_CALL_RETRIES - 1:
-                pass
-            else:
-                telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
-                close_subprocess_and_raise_cli_error(clientproxy_process, cli_error + str(e))
-
-
-def insert_token_in_kubeconfig(data, token):
-    b64kubeconfig = data['kubeconfigs'][0]['value']
-    decoded_kubeconfig_str = b64decode(b64kubeconfig).decode("utf-8")
-    dict_yaml = yaml.safe_load(decoded_kubeconfig_str)
-    dict_yaml['users'][0]['user']['token'] = token
-    kubeconfig = yaml.dump(dict_yaml).encode("utf-8")
-    b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
-    return b64kubeconfig
-
-
-def check_process(processName):
-    '''
-    Check if there is any running process that contains the given name processName.
-    '''
-    for proc in process_iter():
-        try:
-            if proc.name().startswith(processName):
-                return True
-        except (NoSuchProcess, AccessDenied, ZombieProcess):
-            pass
-    return False
+def check_cl_registration_and_get_oid(cmd, cl_oid):
+    enable_custom_locations = True
+    custom_locations_oid = ""
+    try:
+        rp_client = _resource_providers_client(cmd.cli_ctx)
+        cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+        if cl_registration_state != "Registered":
+            enable_custom_locations = False
+            logger.warning("'Custom-locations' feature couldn't be enabled on this cluster as the pre-requisite registration of 'Microsoft.ExtendedLocation' was not met. More details for enabling this feature later on this cluster can be found here - https://aka.ms/EnableCustomLocations")
+        else:
+            custom_locations_oid = get_custom_locations_oid(cmd, cl_oid)
+            if custom_locations_oid == "":
+                enable_custom_locations = False
+    except Exception as e:
+        enable_custom_locations = False
+        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable 'custom-locations' feature...")
+        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
+                                summary='Unable to fetch status of Custom Locations RP registration.')
+    return enable_custom_locations, custom_locations_oid
 
 
 def get_custom_locations_oid(cmd, cl_oid):
@@ -2146,51 +2142,3 @@ def get_custom_locations_oid(cmd, cl_oid):
         log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
         logger.warning(log_string)
         return ""
-
-
-def check_cl_registration_and_get_oid(cmd, cl_oid):
-    enable_custom_locations = True
-    custom_locations_oid = ""
-    try:
-        rp_client = _resource_providers_client(cmd.cli_ctx)
-        cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-        if cl_registration_state != "Registered":
-            enable_custom_locations = False
-            logger.warning("'Custom-locations' feature couldn't be enabled on this cluster as the pre-requisite registration of 'Microsoft.ExtendedLocation' was not met. More details for enabling this feature later on this cluster can be found here - https://aka.ms/EnableCustomLocations")
-        else:
-            custom_locations_oid = get_custom_locations_oid(cmd, cl_oid)
-            if custom_locations_oid == "":
-                enable_custom_locations = False
-    except Exception as e:
-        enable_custom_locations = False
-        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable 'custom-locations' feature...")
-        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
-                                summary='Unable to fetch status of Custom Locations RP registration.')
-    return enable_custom_locations, custom_locations_oid
-
-
-def check_if_port_is_open(port):
-    try:
-        connections = net_connections(kind='inet')
-        for tup in connections:
-            if int(tup[3][1]) == int(port):
-                return True
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
-                                summary='Failed to check if port is in use.')
-        if platform.system() != 'Darwin':
-            logger.info("Failed to check if port is in use. " + str(e))
-        return False
-    return False
-
-
-def close_subprocess_and_raise_cli_error(proc_subprocess, msg):
-    proc_subprocess.terminate()
-    raise CLIInternalError(msg)
-
-
-def check_if_csp_is_running(clientproxy_process):
-    if clientproxy_process.poll() is None:
-        return True
-    else:
-        return False

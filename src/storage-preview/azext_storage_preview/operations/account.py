@@ -28,12 +28,13 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
                            routing_choice=None, publish_microsoft_endpoints=None, publish_internet_endpoints=None,
                            require_infrastructure_encryption=None, allow_blob_public_access=None,
                            min_tls_version=None, allow_shared_key_access=None, edge_zone=None,
-                           identity_type=None, user_identity_id=None, key_vault_user_identity_id=None,
+                           identity_type=None, user_identity_id=None,
+                           key_vault_user_identity_id=None, federated_identity_client_id=None,
                            sas_expiration_period=None, key_expiration_period_in_days=None,
                            allow_cross_tenant_replication=None, default_share_permission=None,
                            enable_nfs_v3=None, subnet=None, vnet_name=None, action='Allow', enable_alw=None,
                            immutability_period_since_creation_in_days=None, immutability_policy_state=None,
-                           allow_protected_append_writes=None, public_network_access=None):
+                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
@@ -68,10 +69,12 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
         params.identity = Identity(type=identity_type, user_assigned_identities={user_identity_id: {}})
     elif identity_type:
         params.identity = Identity(type=identity_type)
-    if key_vault_user_identity_id is not None:
+    if key_vault_user_identity_id is not None or federated_identity_client_id is not None:
         EncryptionIdentity = cmd.get_models('EncryptionIdentity')
         params.encryption.encryption_identity = EncryptionIdentity(
-            encryption_user_assigned_identity=key_vault_user_identity_id)
+            encryption_user_assigned_identity=key_vault_user_identity_id,
+            encryption_federated_identity_client_id=federated_identity_client_id
+        )
 
     if access_tier:
         params.access_tier = AccessTier(access_tier)
@@ -215,6 +218,9 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
     if public_network_access is not None:
         params.public_network_access = public_network_access
 
+    if allowed_copy_scope is not None:
+        params.allowed_copy_scope = allowed_copy_scope
+
     return scf.storage_accounts.begin_create(resource_group_name, account_name, params)
 
 
@@ -282,11 +288,12 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
                            domain_sid=None, azure_storage_sid=None, sam_account_name=None, account_type=None,
                            routing_choice=None, publish_microsoft_endpoints=None, publish_internet_endpoints=None,
                            allow_blob_public_access=None, min_tls_version=None, allow_shared_key_access=None,
-                           identity_type=None, user_identity_id=None, key_vault_user_identity_id=None,
+                           identity_type=None, user_identity_id=None,
+                           key_vault_user_identity_id=None, federated_identity_client_id=None,
                            sas_expiration_period=None, key_expiration_period_in_days=None,
                            allow_cross_tenant_replication=None, default_share_permission=None,
                            immutability_period_since_creation_in_days=None, immutability_policy_state=None,
-                           allow_protected_append_writes=None, public_network_access=None):
+                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None):
     StorageAccountUpdateParameters, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountUpdateParameters', 'Sku', 'CustomDomain', 'AccessTier', 'Identity', 'Encryption',
                        'NetworkRuleSet')
@@ -344,10 +351,15 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     elif identity_type:
         params.identity = Identity(type=identity_type)
 
-    if key_vault_user_identity_id is not None:
+    if key_vault_user_identity_id is not None or federated_identity_client_id is not None:
+        original_encryption_identity = params.encryption.encryption_identity if params.encryption else None
         EncryptionIdentity = cmd.get_models('EncryptionIdentity')
+        if not original_encryption_identity:
+            original_encryption_identity = EncryptionIdentity()
         params.encryption.encryption_identity = EncryptionIdentity(
-            encryption_user_assigned_identity=key_vault_user_identity_id)
+            encryption_user_assigned_identity=key_vault_user_identity_id if key_vault_user_identity_id else original_encryption_identity.encryption_user_assigned_identity,
+            encryption_federated_identity_client_id=federated_identity_client_id if federated_identity_client_id else original_encryption_identity.encryption_federated_identity_client_id
+        )
 
     AzureFilesIdentityBasedAuthentication = cmd.get_models('AzureFilesIdentityBasedAuthentication')
     if enable_files_aadds is not None:
@@ -485,6 +497,9 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
 
     if public_network_access is not None:
         params.public_network_access = public_network_access
+
+    if allowed_copy_scope is not None:
+        params.allowed_copy_scope = allowed_copy_scope
 
     if enable_sftp is not None:
         params.is_sftp_enabled = enable_sftp

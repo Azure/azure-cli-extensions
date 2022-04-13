@@ -1,0 +1,162 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "quantumWorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Quantum Workspace Name"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "Workspace Location"
+            }
+        },
+        "tags": {
+            "type": "object",
+            "defaultValue": {},
+            "metadata": {
+                "description": "Tags for this workspace"
+            }
+        },
+            "providers": {
+            "type": "array",
+            "metadata": {
+                "description": "A list of Providers for this workspace"
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account short name"
+            }
+        },
+        "storageAccountId": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account ID (path)"
+            }
+        },
+        "storageAccountLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account location"
+            }
+        },
+        "storageAccountSku": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account SKU"
+            }
+        },
+        "storageAccountKind": {
+            "type": "string",
+            "metadata": {
+                "description": "Kind of storage account"
+            }
+        },
+        "storageAccountDeploymentName": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment name for role assignment operation"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Quantum/workspaces",
+            "apiVersion": "2019-11-04-preview",
+            "name": "[parameters('quantumWorkspaceName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "providers": "[parameters('providers')]",
+                "storageAccount": "[parameters('storageAccountId')]"
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "[parameters('storageAccountDeploymentName')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Quantum/Workspaces', parameters('quantumWorkspaceName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2019-06-01",
+                            "name": "[parameters('storageAccountName')]",
+                            "location": "[parameters('storageAccountLocation')]",
+                            "type": "Microsoft.Storage/storageAccounts",
+                            "sku": {
+                                "name": "[parameters('storageAccountSku')]"
+                            },
+                            "kind": "[parameters('storageAccountKind')]",
+                            "resources": [
+                                {
+                                    "name": "default",
+                                    "type": "fileServices",
+                                    "apiVersion": "2019-06-01",
+                                    "dependsOn": [
+                                        "[parameters('storageAccountId')]"
+                                    ],
+                                    "properties": {
+                                        "cors": {
+                                            "corsRules": [
+                                                {
+                                                    "allowedOrigins": [
+                                                        "*"
+                                                    ],
+                                                    "allowedHeaders": [
+                                                        "*"
+                                                    ],
+                                                    "allowedMethods": [
+                                                        "GET",
+                                                        "HEAD",
+                                                        "OPTIONS",
+                                                        "POST",
+                                                        "PUT"
+                                                    ],
+                                                    "exposedHeaders": [
+                                                        "*"
+                                                    ],
+                                                    "maxAgeInSeconds": 180
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "apiVersion": "2020-04-01-preview",
+                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId))]",
+                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+                            "location": "[parameters('storageAccountLocation')]",
+                            "properties": {
+                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                                "principalId": "[reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId]",
+                                "principalType": "ServicePrincipal"
+                            },
+                            "dependsOn": [
+                                "[parameters('storageAccountId')]"
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

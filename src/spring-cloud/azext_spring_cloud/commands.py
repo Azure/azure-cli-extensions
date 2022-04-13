@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_cloud_20220101preview,
+from ._client_factory import (cf_spring_cloud_20220301preview,
+                              cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
@@ -20,6 +21,8 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_spring_cloud_gateway_output,
                             transform_api_portal_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update)
+from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
+                                              validate_app_identity_assign_or_warning)
 
 
 # pylint: disable=too-many-statements
@@ -31,7 +34,12 @@ def load_command_table(self, _):
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring_cloud.app#{}',
-        client_factory=cf_spring_cloud_20220101preview
+        client_factory=cf_spring_cloud_20220301preview
+    )
+
+    app_managed_identity_command = CliCommandType(
+        operations_tmpl='azext_spring_cloud.app_managed_identity#{}',
+        client_factory=cf_spring_cloud_20220301preview
     )
 
     service_registry_cmd_group = CliCommandType(
@@ -131,7 +139,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
         g.custom_show_command(
-            'show', 'app_get', table_transformer=transform_app_table_output)
+            'show', 'app_get', table_transformer=transform_app_table_output,
+            client_factory=cf_spring_cloud_20220301preview)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
@@ -139,10 +148,11 @@ def load_command_table(self, _):
         g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
-    with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app identity', custom_command_type=app_managed_identity_command,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('assign', 'app_identity_assign')
-        g.custom_command('remove', 'app_identity_remove')
+        g.custom_command('assign', 'app_identity_assign', validator=validate_app_identity_assign_or_warning)
+        g.custom_command('remove', 'app_identity_remove', validator=validate_app_identity_remove_or_warning)
+        g.custom_command('force-set', 'app_identity_force_set', is_preview=True)
         g.custom_show_command('show', 'app_identity_show')
 
     with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud_20220101preview,
@@ -282,9 +292,6 @@ def load_command_table(self, _):
         g.custom_command('unbind', 'api_portal_custom_domain_unbind')
         g.custom_command('update', 'api_portal_custom_domain_update')
 
-    with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
-        pass
-
     with self.command_group('spring-cloud build-service builder',
                             custom_command_type=builder_cmd_group,
                             exception_handler=handle_asc_exception, is_preview=True) as g:
@@ -301,3 +308,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'buildpack_binding_show')
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
+
+    with self.command_group('spring-cloud build-service', exception_handler=handle_asc_exception, is_preview=True):
+        pass
+
+    with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
+        pass

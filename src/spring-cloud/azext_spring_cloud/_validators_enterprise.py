@@ -36,6 +36,21 @@ def not_support_enterprise(cmd, namespace):
         raise ClientRequestError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
 
 
+def validate_build_env(cmd, namespace):
+    if namespace.build_env is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-env' only supports for Enterprise tier Spring instance.")
+
+
+def validate_target_module(cmd, namespace):
+    if namespace.target_module is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--target-module' doesn't support for Enterprise tier Spring instance.")
+
+
+def validate_runtime_version(cmd, namespace):
+    if namespace.runtime_version is not None and namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--runtime-version' doesn't support for Enterprise tier Spring instance.")
+
+
 def validate_builder_create(cmd, namespace):
     client = get_client(cmd)
     try:
@@ -138,12 +153,12 @@ def validate_api_portal_update(namespace):
 
 
 def _validate_sso(namespace):
-    all_provided = namespace.scope and namespace.client_id and namespace.client_secret and namespace.issuer_uri
+    all_provided = namespace.scope is not None and namespace.client_id is not None and namespace.client_secret is not None and namespace.issuer_uri is not None
     none_provided = namespace.scope is None and namespace.client_id is None and namespace.client_secret is None and namespace.issuer_uri is None
     if not all_provided and not none_provided:
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
-    if namespace.scope:
-        namespace.scope = namespace.scope.split(",")
+    if namespace.scope is not None:
+        namespace.scope = namespace.scope.split(",") if namespace.scope else []
 
 
 def validate_routes(namespace):

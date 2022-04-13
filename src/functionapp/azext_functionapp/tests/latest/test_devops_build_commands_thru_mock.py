@@ -130,7 +130,7 @@ class TestDevopsBuildCommandsMocked(unittest.TestCase):
         self._client.pre_checks_github()
 
     @patch(interactive_patch_path("get_app_settings"), MagicMock())
-    @patch(interactive_patch_path("show_functionapp"), MagicMock())
+    @patch(interactive_patch_path("show_webapp"), MagicMock())
     @patch(interactive_patch_path("AzureDevopsBuildInteractive._find_type"), MagicMock())
     @patch(interactive_patch_path("AzureDevopsBuildInteractive._get_functionapp_runtime_language"), MagicMock())
     @patch(interactive_patch_path("AzureDevopsBuildInteractive._get_functionapp_storage_name"), MagicMock())

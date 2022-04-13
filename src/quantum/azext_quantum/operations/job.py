@@ -70,6 +70,8 @@ def build(cmd, target_id=None, project=None):
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
+    print("Building project...")
+
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
@@ -181,6 +183,8 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
+    print("Submitting job...")
+
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
@@ -237,7 +241,10 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         logger.debug("Downloading job results blob into %s", path)
 
         if job.status != "Succeeded":
-            return f"Job status: {job.status}. Output only available if Succeeded."
+            return job  # If "-o table" is specified, this allows transform_output() in commands.py
+            #             to format the output, so the error info is shown. If "-o json" or no "-o"
+            #             parameter is specified, then the full JSON job output is displayed, being
+            #             consistent with other commands.
 
         args = _parse_blob_url(job.output_data_uri)
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)

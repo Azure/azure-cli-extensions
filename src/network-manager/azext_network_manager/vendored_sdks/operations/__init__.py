@@ -10,40 +10,38 @@ from ._network_managers_operations import NetworkManagersOperations
 from ._network_manager_commits_operations import NetworkManagerCommitsOperations
 from ._network_manager_deployment_status_operations import NetworkManagerDeploymentStatusOperations
 from ._effective_virtual_networks_operations import EffectiveVirtualNetworksOperations
-from ._active_connectivity_configurations_operations import ActiveConnectivityConfigurationsOperations
-from ._active_security_admin_rules_operations import ActiveSecurityAdminRulesOperations
-from ._active_security_user_rules_operations import ActiveSecurityUserRulesOperations
+from ._network_management_client_operations import NetworkManagementClientOperationsMixin
 from ._connectivity_configurations_operations import ConnectivityConfigurationsOperations
-from ._effective_connectivity_configurations_operations import EffectiveConnectivityConfigurationsOperations
-from ._network_manager_effective_security_admin_rules_operations import NetworkManagerEffectiveSecurityAdminRulesOperations
 from ._network_groups_operations import NetworkGroupsOperations
+from ._list_effective_virtual_networks_operations import ListEffectiveVirtualNetworksOperations
+from ._static_members_operations import StaticMembersOperations
 from ._security_user_configurations_operations import SecurityUserConfigurationsOperations
 from ._user_rule_collections_operations import UserRuleCollectionsOperations
 from ._user_rules_operations import UserRulesOperations
 from ._security_admin_configurations_operations import SecurityAdminConfigurationsOperations
 from ._admin_rule_collections_operations import AdminRuleCollectionsOperations
 from ._admin_rules_operations import AdminRulesOperations
-from ._network_security_perimeters_operations import NetworkSecurityPerimetersOperations
-from ._perimeter_associable_resource_types_operations import PerimeterAssociableResourceTypesOperations
+from ._subscription_network_manager_connections_operations import SubscriptionNetworkManagerConnectionsOperations
+from ._management_group_network_manager_connections_operations import ManagementGroupNetworkManagerConnectionsOperations
+from ._scope_connections_operations import ScopeConnectionsOperations
 
 __all__ = [
     'NetworkManagersOperations',
     'NetworkManagerCommitsOperations',
     'NetworkManagerDeploymentStatusOperations',
     'EffectiveVirtualNetworksOperations',
-    'ActiveConnectivityConfigurationsOperations',
-    'ActiveSecurityAdminRulesOperations',
-    'ActiveSecurityUserRulesOperations',
+    'NetworkManagementClientOperationsMixin',
     'ConnectivityConfigurationsOperations',
-    'EffectiveConnectivityConfigurationsOperations',
-    'NetworkManagerEffectiveSecurityAdminRulesOperations',
     'NetworkGroupsOperations',
+    'ListEffectiveVirtualNetworksOperations',
+    'StaticMembersOperations',
     'SecurityUserConfigurationsOperations',
     'UserRuleCollectionsOperations',
     'UserRulesOperations',
     'SecurityAdminConfigurationsOperations',
     'AdminRuleCollectionsOperations',
     'AdminRulesOperations',
-    'NetworkSecurityPerimetersOperations',
-    'PerimeterAssociableResourceTypesOperations',
+    'SubscriptionNetworkManagerConnectionsOperations',
+    'ManagementGroupNetworkManagerConnectionsOperations',
+    'ScopeConnectionsOperations',
 ]

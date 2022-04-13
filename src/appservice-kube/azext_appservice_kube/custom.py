@@ -18,7 +18,6 @@ from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
     _rename_server_farm_props,
     get_site_configs,
-    get_webapp,
     _get_site_credential,
     _format_fx_version,
     _get_extension_version_functionapp,
@@ -37,14 +36,19 @@ from azure.cli.command_modules.appservice.custom import (
     _validate_and_get_connection_string,
     _get_linux_multicontainer_encoded_config_from_file,
     _StackRuntimeHelper,
+    _FunctionAppStackRuntimeHelper,
     upload_zip_to_storage,
     is_plan_consumption,
     _configure_default_logging,
     assign_identity,
     delete_app_settings,
     update_app_settings,
-    list_hostnames)
-from azure.cli.command_modules.appservice.utils import retryable_method
+    list_hostnames,
+    _convert_camel_to_snake_case,
+    _get_content_share_name,
+    get_app_service_plan_from_webapp)
+from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
+from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
@@ -54,11 +58,8 @@ from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMi
 
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
-from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
-                         FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_EXACT_VERSION_DEFAULT,
-                         DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
-                         KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND,
-                         KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES)
+from ._constants import (KUBE_DEFAULT_SKU, KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND,
+                         KUBE_FUNCTION_CONTAINER_APP_KIND, KUBE_CONTAINER_APP_KIND)
 
 from ._utils import (_normalize_sku, get_sku_name, _generic_site_operation,
                      _get_location_from_resource_group, _validate_asp_sku)
@@ -69,7 +70,7 @@ from ._client_factory import web_client_factory, ex_handler_factory, customlocat
 
 logger = get_logger(__name__)
 
-# pylint: disable=too-many-locals,too-many-lines
+# pylint: disable=too-many-locals,too-many-lines,consider-using-f-string
 
 
 # TODO remove and replace with calls to KubeEnvironmentsOperations once the SDK gets updated
@@ -462,23 +463,36 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         custom_location_name = parsed_custom_location.get("name")
         resource_group = parsed_custom_location.get("resource_group")
 
+    _check_custom_location_exists(cmd, custom_location_name, resource_group)
+
     client = _get_kube_client(cmd)
     kube_envs = client.list_by_subscription()
 
     for kube in kube_envs:
-        parsed_custom_location_2 = None
-
         if kube.extended_location and kube.extended_location.type == "CustomLocation":
-            parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
-
-        if parsed_custom_location_2["name"].lower() == custom_location_name.lower() and parsed_custom_location_2.get("resource_group").lower() == resource_group.lower():
-            kube_environment_id = kube.id
-            break
+            if is_valid_resource_id(kube.extended_location.name):
+                candidate_custom_location = parse_resource_id(kube.extended_location.name)
+                matched_name = candidate_custom_location.get("name", "").lower() == custom_location_name.lower()
+                matched_rg = candidate_custom_location.get("resource_group", "").lower() == resource_group.lower()
+                if matched_name and matched_rg:
+                    kube_environment_id = kube.id
+                    break
 
     if not kube_environment_id:
         raise ResourceNotFoundError('Unable to find Kube Environment associated to the Custom Location')
 
     return kube_environment_id
+
+
+def _check_custom_location_exists(cmd, name, resource_group):
+    from azure.core.exceptions import ResourceNotFoundError as E
+    custom_location_client = customlocation_client_factory(cmd.cli_ctx)
+    try:
+        custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
+    except E as e:
+        custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
+        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        raise e
 
 
 def _get_custom_location_id_from_custom_location(cmd, custom_location_name, resource_group_name):
@@ -514,17 +528,20 @@ def _get_custom_location_id_from_kube_env(kube):
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
     if appservice_plan_json.get("properties") and (appservice_plan_json["properties"].get("kubeEnvironmentProfile")
                                                    is None and kube_env is not None):
-        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env
+        appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env.serialize()
 
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
-        appservice_plan_json["extendedLocation"] = extended_location
+        appservice_plan_json["extendedLocation"] = extended_location.serialize()
+
+    appservice_plan_json['type'] = 'Microsoft.Web/serverfarms'
+    if appservice_plan_json.get("extendedLocation") is not None:
+        appservice_plan_json["extendedLocation"]["type"] = "CustomLocation"
 
 
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                                   custom_location=None, app_service_environment=None, sku=None,
                                   number_of_workers=None, location=None, tags=None, no_wait=False):
-    HostingEnvironmentProfile, SkuDescription, AppServicePlan = cmd.get_models(
-        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan')
+    HostingEnvironmentProfile, SkuDescription, AppServicePlan, ExtendedLocation, KubeEnvironmentProfile = cmd.get_models('HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'ExtendedLocation', 'KubeEnvironmentProfile')  # pylint: disable=line-too-long
 
     sku = _normalize_sku(sku)
     _validate_asp_sku(app_service_environment, custom_location, sku)
@@ -560,16 +577,15 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     extended_location_envelope = None
     if kube_environment and (ase_def is None):
         kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
-        # kube_def = KubeEnvironmentProfile(id=kube_id)
-        kube_def = {"id": kube_id}
+        kube_def = KubeEnvironmentProfile(id=kube_id)
         kind = KUBE_ASP_KIND
         parsed_id = parse_resource_id(kube_id)
         kube_name = parsed_id.get("name")
         kube_rg = parsed_id.get("resource_group")
         if kube_name is not None and kube_rg is not None:
             kube_env = KubeEnvironmentClient.show(cmd=cmd, resource_group_name=kube_rg, name=kube_name)
-            extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env),
-                                          "type": "CustomLocation"}
+            extended_location_envelope = ExtendedLocation(name=_get_custom_location_id_from_kube_env(kube_env),
+                                                          type="CustomLocation")
 
             if kube_env is not None:
                 location = kube_env["location"]
@@ -751,7 +767,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.name)
 
     is_linux = plan_info.reserved
-    node_default_version = NODE_EXACT_VERSION_DEFAULT
     location = plan_info.location
 
     if isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() not in ['F1', 'FREE', 'SHARED', 'D1',
@@ -795,7 +810,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
-    helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
+    helper = _StackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -810,11 +825,11 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
         if runtime:
             site_config.linux_fx_version = runtime
-            match = helper.resolve(runtime)
+            match = helper.resolve(runtime, linux=True)
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
                                "Please invoke 'list-runtimes' to cross check".format(runtime))
-            match['setter'](cmd=cmd, stack=match, site_config=site_config)
+            helper.get_site_config_setter(match, linux=True)(cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             if name_validation.name_available:
@@ -841,17 +856,18 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             raise CLIError("usage error: --startup-file or --deployment-container-image-name or "
                            "--multicontainer-config-type and --multicontainer-config-file is "
                            "only appliable on linux webapp")
-        match = helper.resolve(runtime)
+        match = helper.resolve(runtime, linux=False)
         if not match:
             raise CLIError("Windows runtime '{}' is not supported. "
                            "Please invoke 'az webapp list-runtimes' to cross check".format(runtime))
-        match['setter'](cmd=cmd, stack=match, site_config=site_config)
+        helper.get_site_config_setter(match, linux=is_linux)(cmd=cmd, stack=match, site_config=site_config)
 
         # portal uses the current_stack propety in metadata to display stack for windows apps
         current_stack = get_current_stack_from_runtime(runtime)
 
     else:  # windows webapp without runtime specified
         if name_validation.name_available:  # If creating new webapp
+            node_default_version = helper.get_default_version("node", is_linux, get_windows_config_version=True)
             site_config.app_settings.append(NameValuePair(name="WEBSITE_NODE_DEFAULT_VERSION",
                                                           value=node_default_version))
 
@@ -896,6 +912,74 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     return webapp
 
 
+def update_webapp(cmd, instance, client_affinity_enabled=None, https_only=None, minimum_elastic_instance_count=None,
+                  prewarmed_instance_count=None):
+    if 'function' in instance.kind:
+        raise ValidationError("please use 'az functionapp update' to update this function app")
+    if minimum_elastic_instance_count or prewarmed_instance_count:
+        args = ["--minimum-elastic-instance-count", "--prewarmed-instance-count"]
+        plan = get_app_service_plan_from_webapp(cmd, instance)
+        sku = _normalize_sku(plan.sku.name)
+        if get_sku_tier(sku) not in ["PREMIUMV2", "PREMIUMV3"]:
+            raise ValidationError("{} are only supported for elastic premium V2/V3 SKUs".format(str(args)))
+        if not plan.elastic_scale_enabled:
+            raise ValidationError("Elastic scale is not enabled on the App Service Plan. Please update the plan ")
+        if (minimum_elastic_instance_count or 0) > plan.maximum_elastic_worker_count:
+            raise ValidationError("--minimum-elastic-instance-count: Minimum elastic instance count is greater than "
+                                  "the app service plan's maximum Elastic worker count. "
+                                  "Please choose a lower count or update the plan's maximum ")
+        if (prewarmed_instance_count or 0) > plan.maximum_elastic_worker_count:
+            raise ValidationError("--prewarmed-instance-count: Prewarmed instance count is greater than "
+                                  "the app service plan's maximum Elastic worker count. "
+                                  "Please choose a lower count or update the plan's maximum ")
+    from azure.mgmt.web.models import SkuDescription
+
+    if client_affinity_enabled is not None:
+        instance.client_affinity_enabled = client_affinity_enabled == 'true'
+    if https_only is not None:
+        instance.https_only = https_only == 'true'
+
+    if minimum_elastic_instance_count is not None:
+        from azure.mgmt.web.models import SiteConfig
+        # Need to create a new SiteConfig object to ensure that the new property is included in request body
+        conf = SiteConfig(**instance.site_config.as_dict())
+        conf.minimum_elastic_instance_count = minimum_elastic_instance_count
+        instance.site_config = conf
+
+    if prewarmed_instance_count is not None:
+        instance.site_config.pre_warmed_instance_count = prewarmed_instance_count
+
+    client = web_client_factory(cmd.cli_ctx)
+    plan_parsed = parse_resource_id(instance.server_farm_id)
+    plan_info = client.app_service_plans.get(plan_parsed['resource_group'], plan_parsed['name'])
+
+    is_kube = _is_webapp_kube(instance.extended_location, plan_info, SkuDescription)
+    has_custom_location_id = instance.extended_location and is_valid_resource_id(instance.extended_location.name)
+    if is_kube and has_custom_location_id:
+        custom_location_id = instance.extended_location.name
+        instance.enable_additional_properties_sending()
+        extended_loc = {'name': custom_location_id, 'type': 'CustomLocation'}
+        instance.additional_properties["extendedLocation"] = extended_loc
+
+    return instance
+
+
+# for generic updater
+def get_webapp(cmd, resource_group_name, name, slot=None):
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
+
+
+def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: disable=unused-argument
+    instance = kwargs['parameters']
+    client = web_client_factory(cmd.cli_ctx)
+    updater = client.web_apps.begin_create_or_update_slot if slot else client.web_apps.begin_create_or_update
+    kwargs = dict(resource_group_name=resource_group_name, name=name, site_envelope=instance)
+    if slot:
+        kwargs['slot'] = slot
+
+    return updater(**kwargs)
+
+
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
@@ -923,39 +1007,42 @@ def _is_function_kube(custom_location, plan_info, SkuDescription):
             isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU))
 
 
-def create_function(cmd, resource_group_name, name, storage_account, plan=None, custom_location=None,
-                    os_type=None, functions_version=None, runtime=None, runtime_version=None,
-                    consumption_plan_location=None, app_insights=None, app_insights_key=None,
-                    disable_app_insights=None, deployment_source_url=None,
-                    deployment_source_branch='master', deployment_local_git=None,
-                    docker_registry_server_password=None, docker_registry_server_user=None,
-                    deployment_container_image_name=None, tags=None,
-                    min_worker_count=None, max_worker_count=None):
+def create_functionapp(cmd, resource_group_name, name, storage_account, plan=None,
+                       os_type=None, functions_version=None, runtime=None, runtime_version=None,
+                       consumption_plan_location=None, app_insights=None, app_insights_key=None,
+                       disable_app_insights=None, deployment_source_url=None,
+                       deployment_source_branch='master', deployment_local_git=None,
+                       docker_registry_server_password=None, docker_registry_server_user=None,
+                       deployment_container_image_name=None, tags=None, assign_identities=None,
+                       role='Contributor', scope=None,
+                       custom_location=None, min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
-    SkuDescription = cmd.get_models('SkuDescription')
     if functions_version is None:
-        logger.warning("No functions version specified so defaulting to 2. In the future, specifying a version will "
-                       "be required. To create a 2.x function you would pass in the flag `--functions-version 2`")
-        functions_version = '2'
-    if deployment_source_url and deployment_local_git:
-        raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
+        logger.warning("No functions version specified so defaulting to 3. In the future, specifying a version will "
+                       "be required. To create a 3.x function you would pass in the flag `--functions-version 3`")
+        functions_version = '3'
 
+    if deployment_source_url and deployment_local_git:
+        raise MutuallyExclusiveArgumentError('usage error: --deployment-source-url <url> | --deployment-local-git')
     if not plan and not consumption_plan_location and not custom_location:
         raise RequiredArgumentMissingError("Either Plan, Consumption Plan or Custom Location must be specified")
-
     if consumption_plan_location and custom_location:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Custom Location cannot be used together")
-
     if consumption_plan_location and plan:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Plan cannot be used together")
 
-    SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
+    from azure.mgmt.web.models import Site
+    SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
+    disable_app_insights = (disable_app_insights == "true")
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
+
     site_config = SiteConfig(app_settings=[])
-    functionapp_def = Site(location=None, site_config=site_config, tags=tags)
     client = web_client_factory(cmd.cli_ctx)
+
+    functionapp_def = Site(location=None, site_config=site_config, tags=tags)
+
     plan_info = None
     if runtime is not None:
         runtime = runtime.lower()
@@ -964,11 +1051,11 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         locations = list_consumption_locations(cmd)
         location = next((loc for loc in locations if loc['name'].lower() == consumption_plan_location.lower()), None)
         if location is None:
-            raise CLIError("Location is invalid. Use: az functionapp list-consumption-locations")
+            raise ValidationError("Location is invalid. Use: az functionapp list-consumption-locations")
         functionapp_def.location = consumption_plan_location
         functionapp_def.kind = 'functionapp'
         # if os_type is None, the os type is windows
-        is_linux = os_type and os_type.lower() == 'linux'
+        is_linux = bool(os_type and os_type.lower() == LINUX_OS_NAME)
 
     else:  # apps with SKU based plan
         _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd,
@@ -980,7 +1067,6 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
             create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
                                     name=plan, is_linux=True, hyper_v=False, custom_location=custom_location,
                                     per_site_scaling=True, number_of_workers=1)
-
         if custom_location and plan:
             if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
                 raise ValidationError("Custom location's kube environment "
@@ -996,13 +1082,29 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         else:
             plan_info = client.app_service_plans.get(resource_group_name, plan)
         if not plan_info:
-            raise CLIError("The plan '{}' doesn't exist".format(plan))
+            raise ResourceNotFoundError("The plan '{}' doesn't exist".format(plan))
+
         location = plan_info.location
-        is_linux = plan_info.reserved
-        functionapp_def.server_farm_id = plan_info.id
+        is_linux = bool(plan_info.reserved)
+        functionapp_def.server_farm_id = plan
         functionapp_def.location = location
 
+    if functions_version == '2' and functionapp_def.location in FUNCTIONS_NO_V2_REGIONS:
+        raise ValidationError("2.x functions are not supported in this region. To create a 3.x function, "
+                              "pass in the flag '--functions-version 3'")
+
+    if is_linux and not runtime and (consumption_plan_location or not deployment_container_image_name):
+        raise ArgumentUsageError(
+            "usage error: --runtime RUNTIME required for linux functions apps without custom image.")
+
+    if runtime is None and runtime_version is not None:
+        raise ArgumentUsageError('Must specify --runtime to use --runtime-version')
+
     is_kube = _is_function_kube(custom_location, plan_info, SkuDescription)
+
+    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
+    matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
+                                             runtime_version, functions_version, is_linux)
 
     if is_kube:
         if min_worker_count is not None:
@@ -1011,35 +1113,8 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         if max_worker_count is not None:
             site_config.app_settings.append(NameValuePair(name='K8SE_APP_MAX_INSTANCE_COUNT', value=max_worker_count))
 
-    if is_linux and not runtime and (consumption_plan_location or not deployment_container_image_name):
-        raise CLIError(
-            "usage error: --runtime RUNTIME required for linux functions apps without custom image.")
-
-    if runtime:
-        if is_linux and runtime not in LINUX_RUNTIMES:
-            raise CLIError("usage error: Currently supported runtimes (--runtime) in linux function apps are: {}."
-                           .format(', '.join(LINUX_RUNTIMES)))
-        if not is_linux and runtime not in WINDOWS_RUNTIMES:
-            raise CLIError("usage error: Currently supported runtimes (--runtime) in windows function apps are: {}."
-                           .format(', '.join(WINDOWS_RUNTIMES)))
-        site_config.app_settings.append(NameValuePair(name='FUNCTIONS_WORKER_RUNTIME', value=runtime))
-
-    if runtime_version is not None:
-        if runtime is None:
-            raise CLIError('Must specify --runtime to use --runtime-version')
-        allowed_versions = FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS[functions_version][runtime]
-        if runtime_version not in allowed_versions:
-            if runtime == 'dotnet':
-                raise CLIError('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined '
-                               'by --functions-version. Dotnet version {} is not supported by Functions version {}.'
-                               .format(runtime_version, functions_version))
-            raise CLIError('--runtime-version {} is not supported for the selected --runtime {} and '
-                           '--functions-version {}. Supported versions are: {}.'
-                           .format(runtime_version, runtime, functions_version, ', '.join(allowed_versions)))
-        if runtime == 'dotnet':
-            logger.warning('--runtime-version is not supported for --runtime dotnet. Dotnet version is determined by '
-                           '--functions-version. Dotnet version will be %s for this function app.',
-                           FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime])
+    site_config_dict = matched_runtime.site_config_dict
+    app_settings_dict = matched_runtime.app_settings_dict
 
     con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
@@ -1091,39 +1166,45 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
                 site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                                                               value='false'))
                 site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
+
+                # clear all runtime specific configs and settings
+                site_config_dict.use32_bit_worker_process = False
+                app_settings_dict = {}
+
+                # ensure that app insights is created if not disabled
+                matched_runtime.app_insights = True
             else:
                 site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                                                               value='true'))
-                if runtime not in FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS[functions_version]:
-                    raise CLIError("An appropriate linux image for runtime:'{}', "
-                                   "functions_version: '{}' was not found".format(runtime, functions_version))
-        if deployment_container_image_name is None:
-            site_config.linux_fx_version = _get_linux_fx_functionapp(functions_version, runtime, runtime_version)
     else:
         functionapp_def.kind = 'functionapp'
-        if runtime == "java":
-            site_config.java_version = _get_java_version_functionapp(functions_version, runtime_version)
 
-    # adding appsetting to site to make it a function
+    # set site configs
+    for prop, value in site_config_dict.as_dict().items():
+        snake_case_prop = _convert_camel_to_snake_case(prop)
+        setattr(site_config, snake_case_prop, value)
+
+    # temporary workaround for dotnet-isolated linux consumption apps
+    if is_linux and consumption_plan_location is not None and runtime == 'dotnet-isolated':
+        site_config.linux_fx_version = ''
+
+    # adding app settings
+    for app_setting, value in app_settings_dict.items():
+        site_config.app_settings.append(NameValuePair(name=app_setting, value=value))
+
     site_config.app_settings.append(NameValuePair(name='FUNCTIONS_EXTENSION_VERSION',
                                                   value=_get_extension_version_functionapp(functions_version)))
     site_config.app_settings.append(NameValuePair(name='AzureWebJobsStorage', value=con_string))
-    site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
-    site_config.app_settings.append(NameValuePair(name='WEBSITE_NODE_DEFAULT_VERSION',
-                                                  value=_get_website_node_version_functionapp(functions_version,
-                                                                                              runtime,
-                                                                                              runtime_version)))
 
     # If plan is not consumption or elastic premium, we need to set always on
     if consumption_plan_location is None and not is_plan_elastic_premium(cmd, plan_info):
         site_config.always_on = True
 
-    # If plan is elastic premium or windows consumption, we need these app settings
-    is_windows_consumption = consumption_plan_location is not None and not is_linux
-    if is_plan_elastic_premium(cmd, plan_info) or is_windows_consumption:
+    # If plan is elastic premium or consumption, we need these app settings
+    if is_plan_elastic_premium(cmd, plan_info) or consumption_plan_location is not None:
         site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',
                                                       value=con_string))
-        site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=name.lower()))
+        site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=_get_content_share_name(name)))
 
     create_app_insights = False
 
@@ -1134,7 +1215,10 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group_name, app_insights)
         site_config.app_settings.append(NameValuePair(name='APPINSIGHTS_INSTRUMENTATIONKEY',
                                                       value=instrumentation_key))
-    elif not disable_app_insights:
+    elif disable_app_insights or not matched_runtime.app_insights:
+        # set up dashboard if no app insights
+        site_config.app_settings.append(NameValuePair(name='AzureWebJobsDashboard', value=con_string))
+    elif not disable_app_insights and matched_runtime.app_insights:
         create_app_insights = True
 
     poller = client.web_apps.begin_create_or_update(resource_group_name, name, functionapp_def)
@@ -1154,11 +1238,18 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         except Exception:  # pylint: disable=broad-except
             logger.warning('Error while trying to create and configure an Application Insights for the Function App. '
                            'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            update_app_settings(cmd, functionapp.resource_group, functionapp.name,
+                                ['AzureWebJobsDashboard={}'.format(con_string)])
 
     if deployment_container_image_name:
         update_container_settings_functionapp(cmd, resource_group_name, name, docker_registry_server_url,
                                               deployment_container_image_name, docker_registry_server_user,
                                               docker_registry_server_password)
+
+    if assign_identities is not None:
+        identity = assign_identity(cmd, resource_group_name, name, assign_identities,
+                                   role, None, scope)
+        functionapp.identity = identity
 
     return functionapp
 
@@ -1348,36 +1439,10 @@ def _resolve_kube_environment_id(cli_ctx, kube_environment, resource_group_name)
         name=kube_environment)
 
 
-def _get_linux_fx_functionapp(functions_version, runtime, runtime_version):
-    if runtime_version is None:
-        runtime_version = FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version][runtime]
-    if runtime == 'dotnet':
-        runtime_version = DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION[runtime_version]
-    else:
-        runtime = runtime.upper()
-    return '{}|{}'.format(runtime, runtime_version)
-
-
 def _get_linux_fx_kube_functionapp(runtime, runtime_version):
     if runtime.upper() == "DOTNET":
         runtime = "DOTNETCORE"
     return '{}|{}'.format(runtime.upper(), runtime_version)
-
-
-def _get_website_node_version_functionapp(functions_version, runtime, runtime_version):
-    if runtime is None or runtime != 'node':
-        return FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION[functions_version]
-    if runtime_version is not None:
-        return '~{}'.format(runtime_version)
-    return FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION[functions_version]
-
-
-def _get_java_version_functionapp(functions_version, runtime_version):
-    if runtime_version is None:
-        runtime_version = FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION[functions_version]['java']
-    if runtime_version == '8':
-        return '1.8'
-    return runtime_version
 
 
 def _set_remote_or_local_git(cmd, webapp, resource_group_name, name, deployment_source_url=None,
@@ -1395,17 +1460,6 @@ def _set_remote_or_local_git(cmd, webapp, resource_group_name, name, deployment_
         local_git_info = enable_local_git(cmd, resource_group_name, name)
         logger.warning("Local git is configured with url of '%s'", local_git_info['url'])
         setattr(webapp, 'deploymentLocalGitUrl', local_git_info['url'])
-
-
-def _add_fx_version(cmd, resource_group_name, name, custom_image_name, slot=None):
-    fx_version = _format_fx_version(custom_image_name)
-    web_app = get_webapp(cmd, resource_group_name, name, slot)
-    if not web_app:
-        raise CLIError("'{}' app doesn't exist in resource group {}".format(name, resource_group_name))
-    linux_fx = fx_version if (web_app.reserved or not web_app.is_xenon) else None
-    windows_fx = fx_version if web_app.is_xenon else None
-    return update_site_configs(cmd, resource_group_name, name,
-                               linux_fx_version=linux_fx, windows_fx_version=windows_fx, slot=slot)
 
 
 @retryable_method(3, 5)
@@ -1543,8 +1597,8 @@ def enable_zip_deploy_functionapp(cmd, resource_group_name, name, src, build_rem
     client = web_client_factory(cmd.cli_ctx)
     app = client.web_apps.get(resource_group_name, name)
     if app is None:
-        raise CLIError('The function app \'{}\' was not found in resource group \'{}\'. '
-                       'Please make sure these values are correct.'.format(name, resource_group_name))
+        raise ResourceNotFoundError('The function app \'{}\' was not found in resource group \'{}\'. '
+                                    'Please make sure these values are correct.'.format(name, resource_group_name))
     parse_plan_id = parse_resource_id(app.server_farm_id)
     plan_info = None
     retry_delay = 10  # seconds
@@ -1558,7 +1612,7 @@ def enable_zip_deploy_functionapp(cmd, resource_group_name, name, src, build_rem
         time.sleep(retry_delay)
 
     if build_remote and not app.reserved:
-        raise CLIError('Remote build is only available on Linux function apps')
+        raise ValidationError('Remote build is only available on Linux function apps')
 
     is_consumption = is_plan_consumption(cmd, plan_info)
     if (not build_remote) and is_consumption and app.reserved:
@@ -1756,9 +1810,10 @@ def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, 
                 found_cert = webapp_cert
     if found_cert:
         if len(found_cert.host_names) == 1 and not found_cert.host_names[0].startswith('*'):
-            return _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
-                                               found_cert.host_names[0], ssl_type,
-                                               certificate_thumbprint, slot)
+            _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
+                                        found_cert.host_names[0], ssl_type,
+                                        certificate_thumbprint, slot)
+            return show_webapp(cmd, resource_group_name, name, slot)
 
         query_result = list_hostnames(cmd, resource_group_name, name, slot)
         hostnames_in_webapp = [x.name.split('/')[-1] for x in query_result]

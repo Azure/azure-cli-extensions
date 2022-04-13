@@ -26,6 +26,7 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
@@ -325,6 +326,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
     if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        cmd_helm_install.extend(["--set", "global.isCustomCert={}".format(True)])
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if kube_config:
@@ -446,3 +448,40 @@ def validate_node_api_response(api_instance, node_api_response):
             return None
     else:
         return node_api_response
+
+
+def az_cli(args_str):
+    args = args_str.split()
+    cli = get_default_cli()
+    cli.invoke(args, out_file=open(os.devnull, 'w'))
+    if cli.result.result:
+        return cli.result.result
+    elif cli.result.error:
+        raise Exception(cli.result.error)
+    return True
+
+
+# def is_cli_using_msal_auth():
+#     response_cli_version = az_cli("version --output json")
+#     try:
+#         cli_version = response_cli_version['azure-cli']
+#     except Exception as ex:
+#         raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+#     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
+#         return True
+#     else:
+#         return False
+
+def is_cli_using_msal_auth():
+    response_cli_version = az_cli("version --output json")
+    try:
+        cli_version = response_cli_version['azure-cli']
+    except Exception as ex:
+        raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+    v1 = cli_version
+    v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
+    for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
+        if i == j:
+            continue
+        return i > j
+    return len(v1.split(".")) == len(v2.split("."))
