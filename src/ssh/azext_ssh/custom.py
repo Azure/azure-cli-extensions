@@ -418,9 +418,12 @@ def _decide_resource_type(cmd, op_info):
     if os_type:
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
 
+    target_resource_type = "Microsoft.Compute"
     if is_arc_server:
-        return "Microsoft.HybridCompute"
-    return "Microsoft.Compute"
+        target_resource_type = "Microsoft.HybridCompute"
+    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetResourceType': target_resource_type})
+    
+    return target_resource_type
 
 
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):
