@@ -323,5 +323,41 @@ class TestValidateHostGroupID(unittest.TestCase):
             validators.validate_host_group_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+class AzureKeyVaultKmsKeyIdNamespace:
+
+    def __init__(self, azure_keyvault_kms_key_id):
+        self.azure_keyvault_kms_key_id = azure_keyvault_kms_key_id
+
+class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
+    def test_invalid_azure_keyvault_kms_key_id_without_https(self):
+        invalid_azure_keyvault_kms_key_id = "dummy key id"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_azure_keyvault_kms_key_id_without_key_version(self):
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_azure_keyvault_kms_key_id_with_wrong_object_type(self):
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
+              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
 if __name__ == "__main__":
     unittest.main()

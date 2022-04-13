@@ -6,6 +6,12 @@ aks create:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+    enable_azure_keyvault_kms:
+      rule_exclusions:
+      - option_length_too_long
+    azure_keyvault_kms_key_id:
+      rule_exclusions:
+      - option_length_too_long
 aks enable-addons:
   parameters:
     enable_sgxquotehelper:
@@ -17,5 +23,11 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     disable_secret_rotation:
+      rule_exclusions:
+      - option_length_too_long
+    enable_azure_keyvault_kms:
+      rule_exclusions:
+      - option_length_too_long
+    azure_keyvault_kms_key_id:
       rule_exclusions:
       - option_length_too_long

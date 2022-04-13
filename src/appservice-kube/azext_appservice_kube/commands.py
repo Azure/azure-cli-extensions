@@ -48,6 +48,8 @@ def load_command_table(self, _):
         client_factory=cf_plans
     )
 
+    appservice_kube_custom = CliCommandType(operations_tmpl='azext_appservice_kube.custom#{}')
+
     with self.command_group('appservice kube', is_preview=True) as g:
         g.custom_show_command('show', 'show_kube_environments')
         g.custom_wait_command('wait', 'show_kube_environments')
@@ -70,6 +72,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output)
         g.custom_command('scale', 'scale_webapp')
         g.custom_command('restart', 'restart_webapp')
+        g.generic_update_command('update', getter_name='get_webapp', setter_name='set_webapp',
+                                 custom_func_name='update_webapp', command_type=appservice_kube_custom)
 
     with self.command_group('webapp config ssl') as g:
         g.custom_command('bind', 'bind_ssl_cert')

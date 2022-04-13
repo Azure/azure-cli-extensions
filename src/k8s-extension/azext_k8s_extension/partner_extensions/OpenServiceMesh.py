@@ -49,7 +49,7 @@ class OpenServiceMesh(DefaultExtension):
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
-        create_identity = False
+        create_identity = True
 
         _validate_tested_distro(cmd, resource_group_name, cluster_name, version)
 
@@ -83,7 +83,7 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
     cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
         '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
 
-    resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+    resource = resources.get_by_id(cluster_resource_id, '2021-10-01')
     cluster_distro = resource.properties['distribution'].lower()
 
     if cluster_distro == "general":
