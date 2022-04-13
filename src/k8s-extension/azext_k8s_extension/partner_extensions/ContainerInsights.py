@@ -73,25 +73,25 @@ class ContainerInsights(DefaultExtension):
         return extension, name, create_identity
 
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
-       # Delete DCR-A if it exists incase of MSI Auth
-       useAADAuth = False
-       isDCRAExists = False
-       cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-       try:
+        # Delete DCR-A if it exists incase of MSI Auth
+        useAADAuth = False
+        isDCRAExists = False
+        cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+        try:
            extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
-       except Exception:
+        except Exception:
            pass  # its OK to ignore the exception since MSI auth in preview
 
-       subscription_id = get_subscription_id(cmd.cli_ctx)
-       # handle cluster type here
-       cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
-       if (extension is not None) and (extension.configuration_settings is not None):
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        # handle cluster type here
+        cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
+        if (extension is not None) and (extension.configuration_settings is not None):
            configSettings = extension.configuration_settings
            if 'omsagent.useAADAuth' in configSettings:
                useAADAuthSetting = configSettings['omsagent.useAADAuth']
                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                    useAADAuth = True
-       if useAADAuth:
+        if useAADAuth:
           association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
           for _ in range(3):
             try:
@@ -105,7 +105,7 @@ class ContainerInsights(DefaultExtension):
             except Exception:
                pass  # its OK to ignore the exception since MSI auth in preview
 
-       if isDCRAExists:
+        if isDCRAExists:
           association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
           for _ in range(3):
             try:
