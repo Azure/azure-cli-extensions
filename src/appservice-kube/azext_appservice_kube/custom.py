@@ -1209,7 +1209,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     if is_plan_elastic_premium(cmd, plan_info) or consumption_plan_location is not None:
         if con_string:
             site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',
-                                                        value=con_string))
+                                                          value=con_string))
         site_config.app_settings.append(NameValuePair(name='WEBSITE_CONTENTSHARE', value=_get_content_share_name(name)))
 
     create_app_insights = False
