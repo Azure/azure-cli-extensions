@@ -128,7 +128,7 @@ helps['ssh arc'] = """
 
         - name: Give a local user name to SSH with local user credentials using certificate based authentication.
           text: |
-            az ssh arc --local-user username --resource-group myResourceGroup --name myMachine --certificate-file cert.pub --private-key key
+            az ssh arc --local-user username --resource-group myResourceGroup --name myMachine --certificate-file cert.pub --private-key-file key
 
         - name: Give a local user name to SSH with local user credentials using key based authentication.
           text: |
