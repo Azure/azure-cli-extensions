@@ -72,8 +72,8 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
             if is_update_containerapp:
-                raise ValidationError("Environment variables must be in the format \"<key>=<value>\" \"<key>=secretref:<value>\" ...\".")
-            raise ValidationError("Environment variables must be in the format \"<key>=<value>\" \"<key>=secretref:<value>\" ...\".")
+                raise ValidationError("Environment variables must be in the format \"<key>=<value> <key>=secretref:<value> ...\".")
+            raise ValidationError("Environment variables must be in the format \"<key>=<value> <key>=secretref:<value> ...\".")
         if key_val[0] in env_pairs:
             raise ValidationError("Duplicate environment variable {env} found, environment variable names must be unique.".format(env=key_val[0]))
         value = key_val[1].split('secretref:')
@@ -101,9 +101,9 @@ def parse_secret_flags(secret_list):
     for pair in secret_list:
         key_val = pair.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError("--secrets: must be in format \"<key>=<value>,<key>=<value>,...\"")
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
         if key_val[0] in secret_pairs:
-            raise ValidationError("--secrets: duplicate secret {secret} found, secret names must be unique.".format(secret=key_val[0]))
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
         secret_pairs[key_val[0]] = key_val[1]
 
     secret_var_def = []

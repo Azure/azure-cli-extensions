@@ -2,6 +2,21 @@
 
 Release History
 ===============
+0.5.0
++++++
+* 'az network manager list-effect-vnet': hide this command
+* 'az network manager security-user-config rule-collection': hide this command
+* 'az network manager security-user-config rule-collection rule ': hide this command
+* 'az network manager group static-member update': hide this command
+* 'az network manager list-active-security-user-rule': hide this command
+* 'az network manager connect-config create': rename parameter '--hub'
+* Bump up azure-mgmt-network SDK to 2022_02_01_preview
+
+0.4.1
++++++
+* 'az network manager connect-config update': update parameter '--connectivity-topology'
+* 'az network manager group create': update parameter '--member-type' and remove parameters `--group-members` and '--conditional-membership'
+* 'az network manager security-admin-config create': add parameter '--apply-on'
 
 0.4.0
 +++++

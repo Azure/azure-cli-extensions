@@ -70,7 +70,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {name} --network-manager-name {manager_name} '
-                 '--description {description} --display-name {display_name} --member-type {member_type}  -g {rg} ')
+                 '--description {description} --display-name {display_name} --member-type {member_type} -g {rg} ')
 
         self.cmd('network manager group update -g {rg} --name {name} --network-manager-name {manager_name} --description "Desc changed."')
         self.cmd('network manager group show -g {rg} --name {name} --network-manager-name {manager_name}')
@@ -99,13 +99,13 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name {display_name} --member-type {member_type}  -g {rg} ')
+                 '--display-name {display_name} --member-type {member_type} -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" -g {rg}')
 
-        self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
-                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"')
+        # self.cmd('network manager group static-member update -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+        #          '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"')
         self.cmd('network manager group static-member show -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member list -g {rg} --network-group-name {group_name} --network-manager-name {manager_name}')
         self.cmd('network manager group static-member delete -g {rg} --name {name} --network-group-name {group_name} --network-manager-name {manager_name} --yes')
@@ -200,7 +200,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 ' --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 ' --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -221,7 +221,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
-        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
@@ -249,7 +249,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -296,7 +296,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -339,7 +339,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
         
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
@@ -380,14 +380,14 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
         
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
@@ -420,14 +420,14 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} ')
+                 '--display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
 
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
+        # self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg} --regions eastus westus')
         self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-effective-security-admin-rule --virtual-network-name {virtual_network} -g {rg}')
@@ -499,6 +499,35 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connection subscription delete --connection-name {connection_name} --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config_v2', location='eastus2euap')
+    def test_network_manager_security_admin_config_v2(self, resource_group):
+
+        self.kwargs.update({
+            'name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig --apply-on None',
+                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'))
+
+        self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description "test_description" --apply-on None',
+                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'))
+        self.cmd('network manager security-admin-config list --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
+
+        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --yes')
 #     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2euap')
 #     def test_network_manager_scope_connection(self, resource_group):
 #

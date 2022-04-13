@@ -19,10 +19,14 @@ from ._models_py3 import ActiveSecurityUserRule
 from ._models_py3 import ActiveSecurityUserRulesListResult
 from ._models_py3 import AddressPrefixItem
 from ._models_py3 import AdminRule
+from ._models_py3 import AdminRuleCollection
+from ._models_py3 import AdminRuleCollectionListResult
 from ._models_py3 import AdminRuleListResult
+from ._models_py3 import AzureAsyncOperationResult
 from ._models_py3 import BaseAdminRule
 from ._models_py3 import BaseUserRule
 from ._models_py3 import CloudErrorBody
+from ._models_py3 import Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
 from ._models_py3 import ConfigurationGroup
 from ._models_py3 import ConnectivityConfiguration
 from ._models_py3 import ConnectivityConfigurationListResult
@@ -37,7 +41,11 @@ from ._models_py3 import EffectiveSecurityAdminRule
 from ._models_py3 import EffectiveVirtualNetwork
 from ._models_py3 import EffectiveVirtualNetworksListResult
 from ._models_py3 import EffectiveVirtualNetworksParameter
+from ._models_py3 import Error
+from ._models_py3 import ErrorDetails
+from ._models_py3 import ExtendedLocation
 from ._models_py3 import Hub
+from ._models_py3 import ManagedServiceIdentity
 from ._models_py3 import NetworkGroup
 from ._models_py3 import NetworkGroupListResult
 from ._models_py3 import NetworkManager
@@ -56,22 +64,28 @@ from ._models_py3 import PatchObject
 from ._models_py3 import ProxyResource
 from ._models_py3 import QueryRequestOptions
 from ._models_py3 import Resource
-from ._models_py3 import RuleCollection
-from ._models_py3 import RuleCollectionListResult
 from ._models_py3 import ScopeConnection
 from ._models_py3 import ScopeConnectionListResult
-from ._models_py3 import SecurityConfiguration
-from ._models_py3 import SecurityConfigurationListResult
+from ._models_py3 import SecurityAdminConfiguration
+from ._models_py3 import SecurityAdminConfigurationListResult
+from ._models_py3 import SecurityUserConfiguration
+from ._models_py3 import SecurityUserConfigurationListResult
 from ._models_py3 import StaticMember
 from ._models_py3 import StaticMemberListResult
+from ._models_py3 import SubResource
 from ._models_py3 import SystemData
+from ._models_py3 import TagsObject
 from ._models_py3 import UserRule
+from ._models_py3 import UserRuleCollection
+from ._models_py3 import UserRuleCollectionListResult
 from ._models_py3 import UserRuleListResult
 
 
 from ._network_management_client_enums import (
+    Access,
     AddressPrefixType,
     AdminRuleKind,
+    AuthenticationMethod,
     ConfigurationType,
     ConnectivityTopology,
     CreatedByType,
@@ -80,16 +94,20 @@ from ._network_management_client_enums import (
     DeploymentStatus,
     EffectiveAdminRuleKind,
     EffectiveUserRuleKind,
+    ExtendedLocationTypes,
     GroupConnectivity,
+    IPAllocationMethod,
+    IPVersion,
     IsGlobal,
     MembershipType,
     NetworkIntentPolicyBasedService,
+    NetworkOperationStatus,
     ProvisioningState,
+    ResourceIdentityType,
     ScopeConnectionState,
     SecurityConfigurationRuleAccess,
     SecurityConfigurationRuleDirection,
     SecurityConfigurationRuleProtocol,
-    SecurityType,
     UseHubGateway,
     UserRuleKind,
 )
@@ -108,10 +126,14 @@ __all__ = [
     'ActiveSecurityUserRulesListResult',
     'AddressPrefixItem',
     'AdminRule',
+    'AdminRuleCollection',
+    'AdminRuleCollectionListResult',
     'AdminRuleListResult',
+    'AzureAsyncOperationResult',
     'BaseAdminRule',
     'BaseUserRule',
     'CloudErrorBody',
+    'Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties',
     'ConfigurationGroup',
     'ConnectivityConfiguration',
     'ConnectivityConfigurationListResult',
@@ -126,7 +148,11 @@ __all__ = [
     'EffectiveVirtualNetwork',
     'EffectiveVirtualNetworksListResult',
     'EffectiveVirtualNetworksParameter',
+    'Error',
+    'ErrorDetails',
+    'ExtendedLocation',
     'Hub',
+    'ManagedServiceIdentity',
     'NetworkGroup',
     'NetworkGroupListResult',
     'NetworkManager',
@@ -145,19 +171,25 @@ __all__ = [
     'ProxyResource',
     'QueryRequestOptions',
     'Resource',
-    'RuleCollection',
-    'RuleCollectionListResult',
     'ScopeConnection',
     'ScopeConnectionListResult',
-    'SecurityConfiguration',
-    'SecurityConfigurationListResult',
+    'SecurityAdminConfiguration',
+    'SecurityAdminConfigurationListResult',
+    'SecurityUserConfiguration',
+    'SecurityUserConfigurationListResult',
     'StaticMember',
     'StaticMemberListResult',
+    'SubResource',
     'SystemData',
+    'TagsObject',
     'UserRule',
+    'UserRuleCollection',
+    'UserRuleCollectionListResult',
     'UserRuleListResult',
+    'Access',
     'AddressPrefixType',
     'AdminRuleKind',
+    'AuthenticationMethod',
     'ConfigurationType',
     'ConnectivityTopology',
     'CreatedByType',
@@ -166,16 +198,20 @@ __all__ = [
     'DeploymentStatus',
     'EffectiveAdminRuleKind',
     'EffectiveUserRuleKind',
+    'ExtendedLocationTypes',
     'GroupConnectivity',
+    'IPAllocationMethod',
+    'IPVersion',
     'IsGlobal',
     'MembershipType',
     'NetworkIntentPolicyBasedService',
+    'NetworkOperationStatus',
     'ProvisioningState',
+    'ResourceIdentityType',
     'ScopeConnectionState',
     'SecurityConfigurationRuleAccess',
     'SecurityConfigurationRuleDirection',
     'SecurityConfigurationRuleProtocol',
-    'SecurityType',
     'UseHubGateway',
     'UserRuleKind',
 ]

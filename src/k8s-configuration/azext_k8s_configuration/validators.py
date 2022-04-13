@@ -189,8 +189,6 @@ def validate_url_with_params(
                 consts.KNOWN_HOSTS_WITH_HTTP_URL_ERROR,
                 consts.KNOWN_HOSTS_WITH_HTTP_URL_HELP,
             )
-        if not (https_user and https_key) and scheme == "https":
-            logger.warning(consts.HTTP_URL_NO_AUTH_WARNING)
     else:
         if https_user or https_key:
             raise MutuallyExclusiveArgumentError(

@@ -16,13 +16,14 @@ def _is_number(s):
 
 
 def validate_memory(namespace):
-    memory = namespace.memory
-
-    if memory is not None:
+    if namespace.memory is not None:
         valid = False
 
-        if memory.endswith("Gi"):
-            valid = _is_number(memory[:-2])
+        if not namespace.memory.endswith("Gi"):
+            namespace.memory = namespace.memory.rstrip()
+            namespace.memory += "Gi"
+
+        valid = _is_number(namespace.memory[:-2])
 
         if not valid:
             raise ValidationError("Usage error: --memory must be a number ending with \"Gi\"")

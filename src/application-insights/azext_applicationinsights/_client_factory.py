@@ -13,7 +13,10 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
         resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
         subscription_id=subscription
     )
-    return ApplicationInsightsDataClient(cred)
+    return ApplicationInsightsDataClient(
+        cred,
+        base_url=f'{cli_ctx.cloud.endpoints.app_insights_resource_id}/v1'
+    )
 
 
 def applicationinsights_mgmt_plane_client(cli_ctx, **kwargs):

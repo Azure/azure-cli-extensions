@@ -119,14 +119,14 @@ Get_PublicKey_Info_Fault_Type = 'Error while fetching the PoP publickey informat
 PoP_Public_Key_Expried_Fault_Type = 'The PoP public key used to generate the at has expired'
 Post_AT_To_ClientProxy_Failed_Fault_Type = 'Failed to post access token to client proxy'
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
-CLIENT_PROXY_VERSION = '1.3.018802'
+CLIENT_PROXY_VERSION = '1.3.019103'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
 API_CALL_RETRIES = 12
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-RELEASE_DATE_WINDOWS = 'release04-03-22'
-RELEASE_DATE_LINUX = 'release04-03-22'
+RELEASE_DATE_WINDOWS = 'release31-03-22'
+RELEASE_DATE_LINUX = 'release31-03-22'
 CSP_REFRESH_TIME = 300
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
