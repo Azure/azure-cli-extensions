@@ -6,7 +6,7 @@
 
 import json
 import sre_parse
-from typing import List, Optional
+from typing import Dict, List, Optional
 import shutil
 import subprocess
 import requests
@@ -32,7 +32,7 @@ def aks_draft_app_init(destination: str,
     if run_successful:
         _init_finish()
     else:
-        raise ValueError('\'az aks app init\' was NOT executed successfully')
+        raise ValueError('`az aks app init` was NOT executed successfully')
 
 
 # Returns the path to Draft binary. None if missing the required binary
@@ -162,12 +162,21 @@ def _download_binary() -> Optional[str]:
 
 
 # Returns a list of arguments following the format `--arg=value`
+def _build_args(options: Dict[str: str]) -> List[str]:
+    args_list = []
+    for arg, val in options.items():
+        if val:
+            args_list.append(f'--{arg}={val}')
+    return args_list
+
+
+# Returns a list of arguments for `az aks app init`
 def _build_init_arguments(destination: str,
-                     app_name: str,
-                     language: str,
-                     create_config: str,
-                     dockerfile_only: str,
-                     deployment_only: str) -> List[str]:
+                          app_name: str,
+                          language: str,
+                          create_config: str,
+                          dockerfile_only: str,
+                          deployment_only: str) -> List[str]:
     options = {
         'destination': destination,
         'app-name': app_name,
@@ -183,7 +192,7 @@ def _build_init_arguments(destination: str,
     return args_list
 
 
-# Executes the Draft create command
+# Executes the `draft create` command
 # Returns True if the process executed sucessfully, False otherwise
 def _run_init(binary_path: str, arguments: List[str]) -> bool:
     if binary_path is None:
