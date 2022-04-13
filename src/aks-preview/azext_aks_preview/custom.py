@@ -2832,7 +2832,7 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          no_wait=False):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
-    
+
     user_assigned_identity = _get_user_assigned_identity(
         cmd.cli_ctx, identity_resource_id)
     _ensure_managed_identity_operator_permission(
