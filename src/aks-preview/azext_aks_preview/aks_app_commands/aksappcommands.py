@@ -185,11 +185,7 @@ def _build_init_arguments(destination: str,
         'dockerfile-only': dockerfile_only,
         'deployment-only': deployment_only
     }
-    args_list = []
-    for arg, val in options.items():
-        if val:
-            args_list.append(f'--{arg}={val}')
-    return args_list
+    return _build_args(options)
 
 
 # Executes the `draft create` command
