@@ -7,15 +7,21 @@ from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import cf_managed_clusters
 from ._client_factory import cf_maintenance_configurations
-from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
+from ._client_factory import cf_nodepool_snapshots
+from ._client_factory import cf_mc_snapshots
 from ._format import aks_show_table_format
+from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format, aks_addon_show_table_format
 from ._format import aks_agentpool_show_table_format
 from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 from ._format import aks_pod_identities_table_format
 from ._format import aks_pod_identity_exceptions_table_format
+from ._format import aks_show_nodepool_snapshot_table_format
+from ._format import aks_list_nodepool_snapshot_table_format
+from ._format import aks_show_snapshot_table_format
+from ._format import aks_list_snapshot_table_format
 
 
 def load_command_table(self, _):
@@ -25,13 +31,6 @@ def load_command_table(self, _):
                         'operations._managed_clusters_operations#ManagedClustersOperations.{}',
         operation_group='managed_clusters',
         client_factory=cf_managed_clusters
-    )
-
-    container_services_sdk = CliCommandType(
-        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.container_service_operations#ContainerServicesOperations.{}',
-        operation_group='container_services',
-        client_factory=cf_container_services
     )
 
     agent_pools_sdk = CliCommandType(
@@ -46,6 +45,17 @@ def load_command_table(self, _):
         client_factory=cf_maintenance_configurations
     )
 
+    nodepool_snapshot_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._snapshots_operations#SnapshotsOperations.{}',
+        client_factory=cf_nodepool_snapshots
+    )
+
+    mc_snapshot_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._managed_clusters_snapshots_operations#ManagedClusterSnapshotsOperations.{}',
+        client_factory=cf_mc_snapshots)
+
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('kollect', 'aks_kollect')
@@ -53,6 +63,8 @@ def load_command_table(self, _):
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
+        g.command('delete', 'begin_delete',
+                  supports_no_wait=True, confirmation=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)
         g.custom_command('disable-addons', 'aks_disable_addons',
                          supports_no_wait=True)
@@ -72,11 +84,6 @@ def load_command_table(self, _):
         g.command('start', 'begin_start', supports_no_wait=True)
         g.custom_command('get-os-options', 'aks_get_os_options')
 
-    # AKS container service commands
-    with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
-        g.custom_command('get-versions', 'aks_get_versions',
-                         table_transformer=aks_versions_table_format)
-
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
         g.custom_command('list', 'aks_maintenanceconfiguration_list')
@@ -84,6 +91,18 @@ def load_command_table(self, _):
         g.custom_command('add', 'aks_maintenanceconfiguration_add')
         g.custom_command('update', 'aks_maintenanceconfiguration_update')
         g.custom_command('delete', 'aks_maintenanceconfiguration_delete')
+
+    # AKS addon commands
+    with self.command_group('aks addon', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('list-available', 'aks_addon_list_available',
+                         table_transformer=aks_addon_list_available_table_format)
+        g.custom_command('list', 'aks_addon_list',
+                         table_transformer=aks_addon_list_table_format)
+        g.custom_show_command('show', 'aks_addon_show',
+                              table_transformer=aks_addon_show_table_format)
+        g.custom_command('enable', 'aks_addon_enable', supports_no_wait=True)
+        g.custom_command('disable', 'aks_addon_disable', supports_no_wait=True)
+        g.custom_command('update', 'aks_addon_update', supports_no_wait=True)
 
     # AKS agent pool commands
     with self.command_group('aks nodepool', agent_pools_sdk, client_factory=cf_agent_pools) as g:
@@ -100,6 +119,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'aks_agentpool_delete',
                          supports_no_wait=True)
         g.custom_command('get-upgrades', 'aks_agentpool_get_upgrade_profile')
+        g.custom_command('stop', 'aks_agentpool_stop', supports_no_wait=True)
+        g.custom_command('start', 'aks_agentpool_start', supports_no_wait=True)
 
     # AKS pod identity commands
     with self.command_group('aks pod-identity', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
@@ -119,3 +140,25 @@ def load_command_table(self, _):
     # AKS egress commands
     with self.command_group('aks egress-endpoints', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('list', 'aks_egress_endpoints_list')
+
+    # AKS nodepool snapshot commands
+    with self.command_group('aks nodepool snapshot', nodepool_snapshot_sdk, client_factory=cf_nodepool_snapshots) as g:
+        g.custom_command('list', 'aks_nodepool_snapshot_list',
+                         table_transformer=aks_list_nodepool_snapshot_table_format)
+        g.custom_show_command('show', 'aks_nodepool_snapshot_show',
+                              table_transformer=aks_show_nodepool_snapshot_table_format)
+        g.custom_command('create', 'aks_nodepool_snapshot_create',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'aks_nodepool_snapshot_delete',
+                         supports_no_wait=True)
+
+    # AKS mc snapshot commands
+    with self.command_group('aks snapshot', mc_snapshot_sdk, client_factory=cf_mc_snapshots) as g:
+        g.custom_command('list', 'aks_snapshot_list',
+                         table_transformer=aks_list_snapshot_table_format)
+        g.custom_show_command('show', 'aks_snapshot_show',
+                              table_transformer=aks_show_snapshot_table_format)
+        g.custom_command('create', 'aks_snapshot_create',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'aks_snapshot_delete',
+                         supports_no_wait=True)

@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.3.7"
+VERSION = "0.4.2"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -37,7 +37,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='caiddev@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/vm-repair',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     package_data={
@@ -47,7 +47,7 @@ setup(
             'scripts/enable-nestedhyperv.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
-            'linux-build_setup-cloud-init.txt',
+            'scripts/linux-build_setup-cloud-init.txt',
             'azext_metadata.json'
         ]
     },

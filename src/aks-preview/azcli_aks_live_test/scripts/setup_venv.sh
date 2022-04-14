@@ -28,7 +28,8 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    pip install azdev==0.1.32
+    # TODO: update to a new version with dependency version fixed
+    pip install azdev==0.1.36
 
     # pre-install-az: check existing az
     which az || az version || az extension list || true
@@ -47,7 +48,7 @@ setupAZ(){
 # need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
-    pip install pytest-json-report pytest-rerunfailures --upgrade
+    pip install pytest-json-report pytest-rerunfailures pytest-cov --upgrade
 
     # install coverage for measuring code coverage
     pip install coverage

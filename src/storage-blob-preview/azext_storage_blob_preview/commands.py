@@ -7,9 +7,8 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from azure.cli.core.profiles import ResourceType
 
-from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client, \
-    cf_mgmt_blob_services, cf_sa
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -24,26 +23,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             client_factory=client_factory,
             resource_type=resource_type
         )
-
-    blob_service_mgmt_sdk = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#'
-                        'BlobServicesOperations.{}',
-        client_factory=cf_mgmt_blob_services,
-        resource_type=CUSTOM_MGMT_STORAGE
-    )
-
-    storage_account_custom_type = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.operations.account#{}',
-        client_factory=cf_sa)
-
-    with self.command_group('storage account blob-service-properties', blob_service_mgmt_sdk,
-                            custom_command_type=storage_account_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2018-07-01', is_preview=True) as g:
-        g.show_command('show', 'get_service_properties')
-        g.generic_update_command('update',
-                                 getter_name='get_service_properties',
-                                 setter_name='set_service_properties',
-                                 custom_func_name='update_blob_service_properties')
 
     blob_client_sdk = CliCommandType(
         operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_storage_blob._blob_client#BlobClient.{}',
@@ -95,6 +74,13 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('delete-batch', 'storage_blob_delete_batch', client_factory=cf_blob_service,
                                        validator=process_blob_delete_batch_parameters)
         g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch', client_factory=cf_blob_service)
+        g.storage_custom_command_oauth('query', 'query_blob',
+                                       is_preview=True, min_api='2020-10-02')
+        g.storage_command_oauth('set-legal-hold', 'set_legal_hold', min_api='2020-10-02', is_preview=True)
+        g.storage_custom_command_oauth('immutability-policy set', 'set_blob_immutability_policy',
+                                       min_api='2020-10-02', is_preview=True)
+        g.storage_command_oauth('immutability-policy delete', 'delete_immutability_policy',
+                                min_api='2020-10-02', is_preview=True)
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',

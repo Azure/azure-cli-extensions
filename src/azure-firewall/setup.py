@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.12.0"
+VERSION = "0.13.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/azure-firewall',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/azure-firewall',
     classifiers=CLASSIFIERS,
     package_data={'azext_firewall': ['azext_metadata.json']},
     packages=find_packages(),

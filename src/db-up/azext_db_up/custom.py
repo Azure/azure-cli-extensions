@@ -209,7 +209,7 @@ def _ensure_pymssql():
         python_path = os.environ.get('PYTHONPATH', '')
         os.environ['PYTHONPATH'] = python_path + ':' + db_up_ext_path if python_path else db_up_ext_path
         cmd = [sys.executable, '-m', 'pip', 'install', '--target', db_up_ext_path,
-               'pymssql==2.1.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
+               'pymssql~=2.2.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
         logger.warning('  Installing "pymssql" pip packages')
         with HomebrewPipPatch():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
@@ -396,7 +396,7 @@ def _run_sql_commands(host, user, password, database):
     _ensure_pymssql()
     import pymssql
     with pymssql.connect(host, user, password, database, tds_version='7.0') as connection:
-        logger.warning('Successfully Connected to PostgreSQL.')
+        logger.warning('Successfully Connected to Azure SQL.')
         with connection.cursor() as cursor:
             try:
                 db_password = _create_db_password(database)

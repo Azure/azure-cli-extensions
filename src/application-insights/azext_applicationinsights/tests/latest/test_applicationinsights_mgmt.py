@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
@@ -387,3 +387,48 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az monitor app-insights component update --app {name_b} --kind {kind} -g {resource_group}', checks=[
             self.check('kind', '{kind}')
         ])
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_", location="westus")
+    def test_appinsights_webtest_crud(self, resource_group_location):
+        self.kwargs.update({
+            "loc": resource_group_location,
+            "app_name": "test-app",
+            "name": "test-webtest",
+            "kind": "standard",
+            "location_id1": "us-fl-mia-edge",
+            "location_id2": "apac-hk-hkn-azr",
+            "http_verb": "POST",
+            "request_body": "SGVsbG8gd29ybGQ=",
+            "request_url": "https://www.bing.com"
+        })
+
+        # prepare hidden-link
+        app_id = self.cmd("monitor app-insights component create -a {app_name} -l {loc} -g {rg} --kind web --application-type web").get_output_in_json()["id"]
+        self.kwargs["tag"] = f"hidden-link:{app_id}"
+
+        self.cmd(
+            "monitor app-insights web-test create -n {name} -l {loc} -g {rg} "
+            "--enabled true --frequency 900 --web-test-kind {kind} --locations Id={location_id1} --defined-web-test-name {name} "
+            "--http-verb {http_verb} --request-body {request_body} --request-url {request_url} --retry-enabled true --synthetic-monitor-id {name} --timeout 120 "
+            "--ssl-lifetime-check 100 --ssl-check true --tags {tag}=Resource",
+            checks=[
+                self.check("webTestName", "{name}"),
+                self.check("type", "microsoft.insights/webtests")
+            ]
+        )
+        self.cmd(
+            "monitor app-insights web-test list -g {rg} --component-name {app_name}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("@[0].webTestName", "{name}")
+            ]
+        )
+        self.cmd("monitor app-insights web-test update -n {name} -l {loc} -g {rg} --locations Id={location_id2}")
+        self.cmd(
+            "monitor app-insights web-test show -n {name} -g {rg}",
+            checks=[
+                self.check("locations[0].location", "{location_id2}"),
+                self.check("webTestName", "{name}")
+            ]
+        )
+        self.cmd("monitor app-insights web-test delete -n {name} -g {rg} --yes")

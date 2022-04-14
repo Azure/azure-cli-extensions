@@ -2,6 +2,72 @@
 
 Release History
 ===============
+1.2.8
+++++++
+
+* Bump up CSP version to 1.3.019103, bump up `pycryptodome` to 3.14.1 to support Python 3.10
+
+1.2.7
+++++++
+
+* Avoid using packaging module and revert minCliCoreVersion to 2.16.0
+
+1.2.6
+++++++
+
+* Update minCliCoreVersion to 2.23.0
+
+1.2.5
+++++++
+
+* Using MSAL based auth for CLI version >= 2.30.0
+
+1.2.4
+++++++
+
+* Custom cert changes, using "userValues.txt" for existing values in update command instead of --reuse-values, fix to wait for LRO to complete before starting agent installation/deletion
+
+1.2.3
+++++++
+
+* Fetching the tenantID from subscription object instead of graphclient
+
+1.2.2
+++++++
+
+* Updated connectedk8s proxy to support mooncake
+
+1.2.1
+++++++
+
+* Add maxCliCoreVersion as 2.29.0
+
+1.2.0
+++++++
+
+* Updated CSP version to 1.3.017131
+* Updated GA SDK to 2021-10-01
+* Updated CSP endpoint to CDN
+* Disabled proxy command in fairfax
+
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
+
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
+1.1.9
+++++++
+
+* Increase onboarding and upgrade timeout
+
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
 
 
 1.1.7

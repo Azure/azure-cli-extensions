@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.core.util import CLIError
 from azext_aem.custom import EnhancedMonitoring  # pylint: disable=unused-import
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import os
 import sys
 # pylint: disable=unused-argument,too-few-public-methods
@@ -733,6 +733,23 @@ class VMAEM(ScenarioTest):
         })
         self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
+        self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
+        self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
+
+        with self.assertRaises(CLIError) as cm:
+            self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
+        self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY)
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer()
+    def test_vm_aem_configure_v2_proxy(self, resource_group):
+        os.environ["AZURE_CLI_AEM_TEST"] = "test_vm_aem_configure_v2_proxy"
+
+        self.kwargs.update({
+            'vm': 'vm1',
+        })
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
 

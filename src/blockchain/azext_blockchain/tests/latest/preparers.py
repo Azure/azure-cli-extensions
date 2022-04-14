@@ -10,7 +10,7 @@
 
 import os
 from datetime import datetime
-from azure_devtools.scenario_tests import SingleValueReplacer
+from azure.cli.testsdk.scenario_tests import SingleValueReplacer
 
 from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure.cli.testsdk.exceptions import CliTestError

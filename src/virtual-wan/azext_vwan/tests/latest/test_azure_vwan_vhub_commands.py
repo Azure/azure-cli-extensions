@@ -4,9 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
+from unittest.case import skip
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
 from azure.cli.testsdk.checkers import StringContainCheck
+from azure.core.exceptions import HttpResponseError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -46,16 +49,16 @@ class AzureVWanVHubScenario(ScenarioTest):
         # ])
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection')
-    def test_azure_vhub_connection_basic_scenario(self, resource_group):
+    @VirtualNetworkPreparer()
+    def test_azure_vhub_connection_basic_scenario(self, virtual_network, resource_group):
         self.kwargs.update({
-            'vnet': 'clitestvnet2',
+            'vnet': virtual_network,
             'vwan': 'clitestvwan2',
             'vhub': 'clitestvhub2',
             'connection': 'clitestvhubconnection2',
             'rg': resource_group
         })
 
-        self.cmd('network vnet create -g {rg} -n {vnet}')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
         self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
@@ -361,6 +364,219 @@ class AzureVWanVHubScenario(ScenarioTest):
                      '-g {rg} '
                      '-n {connection} '
                      '--gateway-name {vpngateway}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway_connection_vpn_site_link', location='westus')
+    def test_azure_vwan_vpn_gateway_connection_vpn_site_link(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        # Test vpn site with links
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110')
+        with self.assertRaisesRegexp(HttpResponseError, 'MissingDefaultLinkForVpnSiteDuringMigrationToLinkFormat'):
+            self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0')
+        # Test ipsec policy
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 ')
+        self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+        self.cmd('network vpn-gateway connection ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection}')
+        self.cmd('network vpn-gateway connection ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection} --index 1')
+        self.cmd('network vpn-gateway connection delete -g {rg} -n {connection} --gateway-name {vpngateway}')
+        self.cmd('network vpn-site delete -g {rg} -n {vpn_site}')
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_2_name} --ip-address 10.0.1.112 --asn 1234 --bgp-peering-address 192.168.2.0')
+        self.cmd('network vpn-site link list -g {rg} --site-name {vpn_site}')
+        self.cmd('network vpn-site link remove -g {rg} --site-name {vpn_site} --index 2')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn', location='westus')
+    def test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+
+        # Test vpn gateway connection with links
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site}" '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 '
+                 '--with-link')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn add '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway} '
+                 '-n {vpn_site_link_conn} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site_link_name}" '
+                 '--vpn-connection-protocol-type IKEv2')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn list '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway}')
+
+        self.cmd('network vpn-gateway connection vpn-site-link-conn remove '
+                 '-g {rg} '
+                 '--connection-name {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--index 2')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_site_link_conn_ipsec_policy', location='westus')
+    def test_azure_vwan_vpn_site_link_conn_ipsec_policy(self):
+        self.kwargs.update({
+            'vwan': 'test_vwan',
+            'vhub': 'test_vhub',
+            'vpngateway': 'test_s2s_vpn_gateway',
+            'connection': 'test_s2s_vpn_gateway_connection',
+            'vpn_site': 'remote_vpn_site_1',
+            'route_table1': 'test_vhub_routing_1',
+            'route_table2': 'test_vhub_routing_2',
+            'vpn_site_link_conn': 'Connection-Link1',
+            'vpn_site_link_name': 'VPN-Site-Link1',
+            'vpn_site_link_2_name': 'VPN-Site-Link2',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        rt1 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table1}').get_output_in_json()
+        rt2 = self.cmd('network vhub route-table create -g {rg} --vhub-name {vhub} -n {route_table2}').get_output_in_json()
+
+        self.kwargs.update({
+            'route_table1': rt1['id'],
+            'route_table2': rt2['id'],
+        })
+
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpngateway}',
+                 checks=[])
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+
+        # Test vpn gateway connection with links
+        self.cmd('network vpn-gateway connection create '
+                 '-g {rg} '
+                 '-n {connection} '
+                 '--gateway-name {vpngateway} '
+                 '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
+                 '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site}" '
+                 '--associated-route-table {route_table1} '
+                 '--propagated-route-tables {route_table1} {route_table2} '
+                 '--labels label1 label2 '
+                 '--with-link')
+ 
+        # Test issue:
+        # Ipsec policy setted on conneciton will fail due to multi-links on connection
+        with self.assertRaisesRegexp(HttpResponseError, 'VpnConnectionPropertyIsDeprecated'):
+            self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
+                    '--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
+                    '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+
+        # Test link-conn ipsec policy
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
+                 '-n {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 '
+                 '--sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection}')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection} --index 1')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_bgpconnection', location='westus')
+    @VirtualNetworkPreparer()
+    def test_azure_vwan_vhub_bgpconnection(self, virtual_network, resource_group):
+        self.kwargs.update({
+            'vnet': virtual_network,
+            'vwan': 'testvwan',
+            'vhub': 'myclitestvhub',
+            'conn': 'myconnection',
+            'vhub_conn': 'clitestvhubconnection2',
+            'rg': resource_group,
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
+        self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {vhub_conn} --remote-vnet {vnet}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs.get('vhub_conn'))
+        ])
+
+        vhub = self.cmd('network vhub show -g {rg} -n {vhub}').get_output_in_json()
+        while (vhub['routingState'] != 'Provisioned'):
+            time.sleep(300)
+            vhub = self.cmd('network vhub show -g {rg} -n {vhub}').get_output_in_json()
+
+        self.cmd('network vhub bgpconnection create -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 20000  --peer-ip "10.5.0.3" '
+                    '--vhub-conn {sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{vhub}/hubVirtualNetworkConnections/{vhub_conn}')
+        self.cmd('network vhub bgpconnection list -g {rg} --vhub-name {vhub}')
+
+        # HubBgpConnectionPeerIpCannotBeUpdated and HubBgpConnectionPeerASNCannotBeUpdated
+        # self.cmd('network vhub bgpconnection update -n {conn} -g {rg} --vhub-name {vhub} --peer-ip "10.5.0.4"')
+
+        self.cmd('network vhub bgpconnection show -n {conn} -g {rg} --vhub-name {vhub}')
+        self.cmd('network vhub bgpconnection delete -n {conn} -g {rg} --vhub-name {vhub} -y')
 
     @record_only()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_p2s_gateway_routing_configuration', location='westus')

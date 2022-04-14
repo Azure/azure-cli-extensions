@@ -38,6 +38,22 @@ def cf_agent_pools(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).agent_pools
 
 
+def cf_mc_snapshots_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id).managed_cluster_snapshots
+
+
+def cf_mc_snapshots(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).managed_cluster_snapshots
+
+
+def cf_nodepool_snapshots_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id).snapshots
+
+
+def cf_nodepool_snapshots(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).snapshots
+
+
 def cf_maintenance_configurations(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).maintenance_configurations
 

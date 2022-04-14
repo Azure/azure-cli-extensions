@@ -3,10 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-import, line-too-long, unused-argument
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from .recording_processors import KeyReplacer
 
@@ -30,7 +31,7 @@ class WebpubsubEventHandlerTest(ScenarioTest):
         self.kwargs.update({
             'name': self.create_random_name('webpubsub', 16),
             'sku': 'Standard_S1',
-            'location': 'eastus',
+            'location': 'westcentralus',
             'tags': '{}={}'.format(tags_key, tags_val),
             'unit_count': 1,
             'updated_tags': '{}={}'.format(tags_key, updated_tags_val),
@@ -39,9 +40,12 @@ class WebpubsubEventHandlerTest(ScenarioTest):
             'urlTemplate1': 'http://host.com',
             'userEventPattern1': 'event1,event2',
             'systemEventPattern1': 'connect',
+            'systemEvents1': ['connect'],
             'urlTemplate2': 'http://host2.com',
             'userEventPattern2': 'event3,event4',
             'systemEventPattern2': 'disconnect,connected',
+            'systemEvents2': ['disconnect', 'connected'],
+            'authResource': 'uri://abc',
             'params': os.path.join(curr_dir, 'parameter.json').replace('\\', '\\\\'),
         })
 
@@ -57,27 +61,51 @@ class WebpubsubEventHandlerTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
-        # Test event handler update
-        self.cmd('webpubsub event-handler update -g {rg} -n {name} --items @"{params}"', checks=[
-            self.check('eventHandler.items.{hub}[0].urlTemplate', '{urlTemplate1}'),
-            self.check('eventHandler.items.{hub}[0].userEventPattern', '{userEventPattern1}'),
-            self.check('eventHandler.items.{hub}[0].systemEventPattern', '{systemEventPattern1}'),
+        # Test hub creation
+        self.cmd('webpubsub hub create -g {rg} -n {name} --hub-name {hub} --event-handler url-template={urlTemplate1} user-event-pattern={userEventPattern1} system-event=connect', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.anonymousConnectPolicy', 'deny'),
+            self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
+            self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
+            self.check('properties.eventHandlers[0].systemEvents[0]', 'connect'),
         ])
 
-        # Test event handler hub remove
-        self.cmd('webpubsub event-handler hub remove  -g {rg} -n {name} --hub-name {hub}', checks=[
-            self.check('length(eventHandler.items)', 0)
+        # Test hub show
+        self.cmd('webpubsub hub show -g {rg} -n {name} --hub-name {hub}', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.anonymousConnectPolicy', 'deny'),
+            self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
+            self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
+            self.check('properties.eventHandlers[0].systemEvents[0]', 'connect'),
         ])
 
-        # Test event handler hub update
-        self.cmd('webpubsub event-handler hub update -g {rg} -n {name} --hub-name {hub} --template url-template={urlTemplate2} user-event-pattern={userEventPattern2} system-event-pattern={systemEventPattern2}', checks=[
-            self.check('eventHandler.items.{hub}[0].urlTemplate', '{urlTemplate2}'),
-            self.check('eventHandler.items.{hub}[0].userEventPattern', '{userEventPattern2}'),
-            self.check('eventHandler.items.{hub}[0].systemEventPattern', '{systemEventPattern2}'),
+        # Test hub list
+        self.cmd('webpubsub hub list -g {rg} -n {name}', checks=[
+            self.check('[0].name', '{hub}'),
+            self.check('[0].properties.anonymousConnectPolicy', 'deny'),
+            self.check('[0].properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
+            self.check('[0].properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
+            self.check('[0].properties.eventHandlers[0].systemEvents[0]', 'connect'),
         ])
 
-        # delete
+        # Test hub update
+        self.cmd('webpubsub hub update -g {rg} -n {name} --hub-name {hub} --allow-anonymous --event-handler url-template={urlTemplate2} user-event-pattern={userEventPattern2} system-event=disconnect system-event=connected auth-type="ManagedIdentity" auth-resource={authResource}', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.anonymousConnectPolicy', 'allow'),
+            self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate2}'),
+            self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern2}'),
+            self.check('properties.eventHandlers[0].systemEvents[0]', 'disconnect'),
+            self.check('properties.eventHandlers[0].systemEvents[1]', 'connected'),
+            self.check('properties.eventHandlers[0].auth.type', 'ManagedIdentity'),
+            self.check('properties.eventHandlers[0].auth.managedIdentity.resource', '{authResource}'),
+        ])
+
+        # Test event handler hub delete
+        self.cmd('webpubsub hub delete  -g {rg} -n {name} --hub-name {hub}')
+        count = len(self.cmd('webpubsub hub list -g {rg} -n {name}').get_output_in_json())
+        self.assertTrue(count == 0)
+
+        # Delete resource
         self.cmd('webpubsub delete -g {rg} -n {name}')

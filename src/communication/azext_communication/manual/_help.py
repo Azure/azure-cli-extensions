@@ -111,3 +111,58 @@ helps['communication wait'] = """
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
+
+helps['communication identity'] = """
+    type: group
+    short-summary: Commands to manage User Identity for a CommunicationService resource.
+"""
+
+helps['communication identity issue-access-token'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: issue-access-token
+        text: |-
+               az communication identity issue-access-token --scope chat
+      - name: issue-access-token with multiple scopes and userid
+        text: |-
+               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+"""
+
+helps['communication sms'] = """
+    type: group
+    short-summary: Commands to manage SMS for a CommunicationService resource.
+"""
+
+helps['communication sms send-sms'] = """
+    type: command
+    short-summary: "Sends an SMS from the sender phone number to the recipient phone number."
+    examples:
+      - name: send sms
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" \
+--recipient "+1425xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication phonenumbers'] = """
+    type: group
+    short-summary: Commands to manage phone numbers for a CommunicationService resource.
+"""
+
+helps['communication phonenumbers list-phonenumbers'] = """
+    type: command
+    short-summary: "Lists all phone numbers associated with the CommunicationService resource."
+    examples:
+      - name: list phonenumbers
+        text: |-
+               az communication phonenumbers list-phonenumbers
+"""
+
+helps['communication phonenumbers show-phonenumber'] = """
+    type: command
+    short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
+    examples:
+      - name: show phonenumber
+        text: |-
+               az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
+"""

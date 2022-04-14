@@ -5,6 +5,11 @@
 
 import errno
 import os
+from knack import log
+
+from azure.cli.core import azclierror
+
+logger = log.get_logger(__name__)
 
 
 def make_dirs_for_file(file_path):
@@ -20,3 +25,27 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+
+def delete_file(file_path, message, warning=False):
+    # pylint: disable=broad-except
+    if os.path.isfile(file_path):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            if warning:
+                logger.warning(message)
+            else:
+                raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
+
+
+def delete_folder(dir_path, message, warning=False):
+    # pylint: disable=broad-except
+    if os.path.isdir(dir_path):
+        try:
+            os.rmdir(dir_path)
+        except Exception as e:
+            if warning:
+                logger.warning(message)
+            else:
+                raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
