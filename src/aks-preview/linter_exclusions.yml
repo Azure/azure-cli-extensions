@@ -12,6 +12,11 @@ aks create:
     azure_keyvault_kms_key_id:
       rule_exclusions:
       - option_length_too_long
+aks delete:
+  parameters:
+    ignore_pod_disruption_budget:
+      rule_exclusions:
+      - option_length_too_long
 aks enable-addons:
   parameters:
     enable_sgxquotehelper:

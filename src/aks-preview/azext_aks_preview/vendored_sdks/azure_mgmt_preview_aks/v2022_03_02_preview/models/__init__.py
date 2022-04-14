@@ -43,6 +43,8 @@ from ._models_py3 import ManagedClusterAgentPoolProfileProperties
 from ._models_py3 import ManagedClusterAutoUpgradeProfile
 from ._models_py3 import ManagedClusterHTTPProxyConfig
 from ._models_py3 import ManagedClusterIdentity
+from ._models_py3 import ManagedClusterIngressProfile
+from ._models_py3 import ManagedClusterIngressProfileWebAppRouting
 from ._models_py3 import ManagedClusterListResult
 from ._models_py3 import ManagedClusterLoadBalancerProfile
 from ._models_py3 import ManagedClusterLoadBalancerProfileManagedOutboundIPs
@@ -64,9 +66,14 @@ from ._models_py3 import ManagedClusterPropertiesForSnapshot
 from ._models_py3 import ManagedClusterSKU
 from ._models_py3 import ManagedClusterSecurityProfile
 from ._models_py3 import ManagedClusterSecurityProfileAzureDefender
+from ._models_py3 import ManagedClusterSecurityProfileWorkloadIdentity
 from ._models_py3 import ManagedClusterServicePrincipalProfile
 from ._models_py3 import ManagedClusterSnapshot
 from ._models_py3 import ManagedClusterSnapshotListResult
+from ._models_py3 import ManagedClusterStorageProfile
+from ._models_py3 import ManagedClusterStorageProfileDiskCSIDriver
+from ._models_py3 import ManagedClusterStorageProfileFileCSIDriver
+from ._models_py3 import ManagedClusterStorageProfileSnapshotController
 from ._models_py3 import ManagedClusterUpgradeProfile
 from ._models_py3 import ManagedClusterWindowsProfile
 from ._models_py3 import ManagedServiceIdentityUserAssignedIdentitiesValue
@@ -96,6 +103,7 @@ from ._models_py3 import SystemData
 from ._models_py3 import TagsObject
 from ._models_py3 import TimeInWeek
 from ._models_py3 import TimeSpan
+from ._models_py3 import TrackedResource
 from ._models_py3 import UserAssignedIdentity
 from ._models_py3 import WindowsGmsaProfile
 
@@ -177,6 +185,8 @@ __all__ = [
     'ManagedClusterAutoUpgradeProfile',
     'ManagedClusterHTTPProxyConfig',
     'ManagedClusterIdentity',
+    'ManagedClusterIngressProfile',
+    'ManagedClusterIngressProfileWebAppRouting',
     'ManagedClusterListResult',
     'ManagedClusterLoadBalancerProfile',
     'ManagedClusterLoadBalancerProfileManagedOutboundIPs',
@@ -198,9 +208,14 @@ __all__ = [
     'ManagedClusterSKU',
     'ManagedClusterSecurityProfile',
     'ManagedClusterSecurityProfileAzureDefender',
+    'ManagedClusterSecurityProfileWorkloadIdentity',
     'ManagedClusterServicePrincipalProfile',
     'ManagedClusterSnapshot',
     'ManagedClusterSnapshotListResult',
+    'ManagedClusterStorageProfile',
+    'ManagedClusterStorageProfileDiskCSIDriver',
+    'ManagedClusterStorageProfileFileCSIDriver',
+    'ManagedClusterStorageProfileSnapshotController',
     'ManagedClusterUpgradeProfile',
     'ManagedClusterWindowsProfile',
     'ManagedServiceIdentityUserAssignedIdentitiesValue',
@@ -230,6 +245,7 @@ __all__ = [
     'TagsObject',
     'TimeInWeek',
     'TimeSpan',
+    'TrackedResource',
     'UserAssignedIdentity',
     'WindowsGmsaProfile',
     'AgentPoolMode',

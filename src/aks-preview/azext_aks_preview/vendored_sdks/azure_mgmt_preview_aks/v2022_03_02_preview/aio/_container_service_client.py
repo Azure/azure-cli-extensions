@@ -25,31 +25,31 @@ class ContainerServiceClient:
     """The Container Service Client.
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.Operations
+    :vartype operations: azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.Operations
     :ivar managed_clusters: ManagedClustersOperations operations
     :vartype managed_clusters:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.ManagedClustersOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.ManagedClustersOperations
     :ivar maintenance_configurations: MaintenanceConfigurationsOperations operations
     :vartype maintenance_configurations:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.MaintenanceConfigurationsOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.MaintenanceConfigurationsOperations
     :ivar agent_pools: AgentPoolsOperations operations
     :vartype agent_pools:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.AgentPoolsOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.AgentPoolsOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
     :vartype private_endpoint_connections:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.PrivateEndpointConnectionsOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.PrivateEndpointConnectionsOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
     :vartype private_link_resources:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.PrivateLinkResourcesOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.PrivateLinkResourcesOperations
     :ivar resolve_private_link_service_id: ResolvePrivateLinkServiceIdOperations operations
     :vartype resolve_private_link_service_id:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.ResolvePrivateLinkServiceIdOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.ResolvePrivateLinkServiceIdOperations
     :ivar snapshots: SnapshotsOperations operations
     :vartype snapshots:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.SnapshotsOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.SnapshotsOperations
     :ivar managed_cluster_snapshots: ManagedClusterSnapshotsOperations operations
     :vartype managed_cluster_snapshots:
-     azure.mgmt.containerservice.v2022_02_02_preview.aio.operations.ManagedClusterSnapshotsOperations
+     azure.mgmt.containerservice.v2022_03_02_preview.aio.operations.ManagedClusterSnapshotsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
