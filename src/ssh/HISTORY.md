@@ -7,6 +7,8 @@ Release History
 * New command az ssh arc.
 * New parameters: --resource-type and --ssh-proxy-folder.
 * Validate that target machine exists before attempting to connect.
+* Stop looking for OpenSSH client executables under C:\Windows\System32\OpenSSH on Windows. Path variable must be set properly for pre-installed OpenSSH.
+* Append username to host name on config files when using local user credentials.
 
 1.0.1
 -----
