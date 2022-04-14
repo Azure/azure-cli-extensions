@@ -31,7 +31,7 @@ class PrivateEndpointConnectionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_03_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -65,7 +65,7 @@ class PrivateEndpointConnectionsOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnectionListResult, or the result of cls(response)
         :rtype:
-         ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnectionListResult
+         ~azure.mgmt.containerservice.v2022_03_02_preview.models.PrivateEndpointConnectionListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnectionListResult"]
@@ -122,7 +122,7 @@ class PrivateEndpointConnectionsOperations:
         :type private_endpoint_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+        :rtype: ~azure.mgmt.containerservice.v2022_03_02_preview.models.PrivateEndpointConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]
@@ -180,10 +180,10 @@ class PrivateEndpointConnectionsOperations:
         :type private_endpoint_connection_name: str
         :param parameters: The updated private endpoint connection.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+         ~azure.mgmt.containerservice.v2022_03_02_preview.models.PrivateEndpointConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+        :rtype: ~azure.mgmt.containerservice.v2022_03_02_preview.models.PrivateEndpointConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]

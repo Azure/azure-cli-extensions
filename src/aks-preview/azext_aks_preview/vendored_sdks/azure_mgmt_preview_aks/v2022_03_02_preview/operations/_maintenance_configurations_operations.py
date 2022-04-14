@@ -6,17 +6,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 import functools
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
-from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 from msrest import Serializer
 
 from .. import models as _models
@@ -28,16 +27,16 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dic
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
-def build_list_request(
+def build_list_by_managed_cluster_request(
     subscription_id: str,
     resource_group_name: str,
     resource_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-02-02-preview"
+    api_version = "2022-03-02-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
@@ -67,18 +66,18 @@ def build_get_request(
     subscription_id: str,
     resource_group_name: str,
     resource_name: str,
-    private_endpoint_connection_name: str,
+    config_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-02-02-preview"
+    api_version = "2022-03-02-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-        "privateEndpointConnectionName": _SERIALIZER.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+        "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -100,11 +99,11 @@ def build_get_request(
     )
 
 
-def build_update_request(
+def build_create_or_update_request(
     subscription_id: str,
     resource_group_name: str,
     resource_name: str,
-    private_endpoint_connection_name: str,
+    config_name: str,
     *,
     json: JSONType = None,
     content: Any = None,
@@ -112,15 +111,15 @@ def build_update_request(
 ) -> HttpRequest:
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2022-02-02-preview"
+    api_version = "2022-03-02-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-        "privateEndpointConnectionName": _SERIALIZER.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+        "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -146,22 +145,22 @@ def build_update_request(
     )
 
 
-def build_delete_request_initial(
+def build_delete_request(
     subscription_id: str,
     resource_group_name: str,
     resource_name: str,
-    private_endpoint_connection_name: str,
+    config_name: str,
     **kwargs: Any
 ) -> HttpRequest:
-    api_version = "2022-02-02-preview"
+    api_version = "2022-03-02-preview"
     accept = "application/json"
     # Construct URL
-    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}')
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}')
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-        "privateEndpointConnectionName": _SERIALIZER.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+        "configName": _SERIALIZER.url("config_name", config_name, 'str'),
     }
 
     url = _format_url_section(url, **path_format_arguments)
@@ -182,14 +181,14 @@ def build_delete_request_initial(
         **kwargs
     )
 
-class PrivateEndpointConnectionsOperations(object):
-    """PrivateEndpointConnectionsOperations operations.
+class MaintenanceConfigurationsOperations(object):
+    """MaintenanceConfigurationsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2022_02_02_preview.models
+    :type models: ~azure.mgmt.containerservice.v2022_03_02_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -205,85 +204,106 @@ class PrivateEndpointConnectionsOperations(object):
         self._config = config
 
     @distributed_trace
-    def list(
+    def list_by_managed_cluster(
         self,
         resource_group_name: str,
         resource_name: str,
         **kwargs: Any
-    ) -> "_models.PrivateEndpointConnectionListResult":
-        """Gets a list of private endpoint connections in the specified managed cluster.
+    ) -> Iterable["_models.MaintenanceConfigurationListResult"]:
+        """Gets a list of maintenance configurations in the specified managed cluster.
 
-        To learn more about private clusters, see:
-        https://docs.microsoft.com/azure/aks/private-clusters.
+        Gets a list of maintenance configurations in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PrivateEndpointConnectionListResult, or the result of cls(response)
+        :return: An iterator like instance of either MaintenanceConfigurationListResult or the result
+         of cls(response)
         :rtype:
-         ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnectionListResult
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2022_03_02_preview.models.MaintenanceConfigurationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnectionListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfigurationListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_by_managed_cluster_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    resource_name=resource_name,
+                    template_url=self.list_by_managed_cluster.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-        
-        request = build_list_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            resource_name=resource_name,
-            template_url=self.list.metadata['url'],
+            else:
+                
+                request = build_list_by_managed_cluster_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    resource_name=resource_name,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("MaintenanceConfigurationListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+
+        return ItemPaged(
+            get_next, extract_data
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('PrivateEndpointConnectionListResult', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections'}  # type: ignore
-
+    list_by_managed_cluster.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations'}  # type: ignore
 
     @distributed_trace
     def get(
         self,
         resource_group_name: str,
         resource_name: str,
-        private_endpoint_connection_name: str,
+        config_name: str,
         **kwargs: Any
-    ) -> "_models.PrivateEndpointConnection":
-        """Gets the specified private endpoint connection.
+    ) -> "_models.MaintenanceConfiguration":
+        """Gets the specified maintenance configuration of a managed cluster.
 
-        To learn more about private clusters, see:
-        https://docs.microsoft.com/azure/aks/private-clusters.
+        Gets the specified maintenance configuration of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection.
-        :type private_endpoint_connection_name: str
+        :param config_name: The name of the maintenance configuration.
+        :type config_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+        :return: MaintenanceConfiguration, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_03_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -294,7 +314,7 @@ class PrivateEndpointConnectionsOperations(object):
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            private_endpoint_connection_name=private_endpoint_connection_name,
+            config_name=config_name,
             template_url=self.get.metadata['url'],
         )
         request = _convert_request(request)
@@ -307,44 +327,44 @@ class PrivateEndpointConnectionsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('PrivateEndpointConnection', pipeline_response)
+        deserialized = self._deserialize('MaintenanceConfiguration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}'}  # type: ignore
 
 
     @distributed_trace
-    def update(
+    def create_or_update(
         self,
         resource_group_name: str,
         resource_name: str,
-        private_endpoint_connection_name: str,
-        parameters: "_models.PrivateEndpointConnection",
+        config_name: str,
+        parameters: "_models.MaintenanceConfiguration",
         **kwargs: Any
-    ) -> "_models.PrivateEndpointConnection":
-        """Updates a private endpoint connection.
+    ) -> "_models.MaintenanceConfiguration":
+        """Creates or updates a maintenance configuration in the specified managed cluster.
 
-        Updates a private endpoint connection.
+        Creates or updates a maintenance configuration in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection.
-        :type private_endpoint_connection_name: str
-        :param parameters: The updated private endpoint connection.
+        :param config_name: The name of the maintenance configuration.
+        :type config_name: str
+        :param parameters: The maintenance configuration to create or update.
         :type parameters:
-         ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+         ~azure.mgmt.containerservice.v2022_03_02_preview.models.MaintenanceConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2022_02_02_preview.models.PrivateEndpointConnection
+        :return: MaintenanceConfiguration, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2022_03_02_preview.models.MaintenanceConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.MaintenanceConfiguration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -352,16 +372,16 @@ class PrivateEndpointConnectionsOperations(object):
 
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        _json = self._serialize.body(parameters, 'PrivateEndpointConnection')
+        _json = self._serialize.body(parameters, 'MaintenanceConfiguration')
 
-        request = build_update_request(
+        request = build_create_or_update_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            private_endpoint_connection_name=private_endpoint_connection_name,
+            config_name=config_name,
             content_type=content_type,
             json=_json,
-            template_url=self.update.metadata['url'],
+            template_url=self.create_or_update.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -373,23 +393,39 @@ class PrivateEndpointConnectionsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('PrivateEndpointConnection', pipeline_response)
+        deserialized = self._deserialize('MaintenanceConfiguration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}'}  # type: ignore
 
 
-    def _delete_initial(
+    @distributed_trace
+    def delete(
         self,
         resource_group_name: str,
         resource_name: str,
-        private_endpoint_connection_name: str,
+        config_name: str,
         **kwargs: Any
     ) -> None:
+        """Deletes a maintenance configuration.
+
+        Deletes a maintenance configuration.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param resource_name: The name of the managed cluster resource.
+        :type resource_name: str
+        :param config_name: The name of the maintenance configuration.
+        :type config_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -397,12 +433,12 @@ class PrivateEndpointConnectionsOperations(object):
         error_map.update(kwargs.pop('error_map', {}))
 
         
-        request = build_delete_request_initial(
+        request = build_delete_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             resource_name=resource_name,
-            private_endpoint_connection_name=private_endpoint_connection_name,
-            template_url=self._delete_initial.metadata['url'],
+            config_name=config_name,
+            template_url=self.delete.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -417,72 +453,5 @@ class PrivateEndpointConnectionsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/maintenanceConfigurations/{configName}'}  # type: ignore
 
-
-    @distributed_trace
-    def begin_delete(
-        self,
-        resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
-        **kwargs: Any
-    ) -> LROPoller[None]:
-        """Deletes a private endpoint connection.
-
-        Deletes a private endpoint connection.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
-        :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection.
-        :type private_endpoint_connection_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, azure.core.polling.PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._delete_initial(
-                resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                private_endpoint_connection_name=private_endpoint_connection_name,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-        kwargs.pop('error_map', None)
-
-        def get_long_running_output(pipeline_response):
-            if cls:
-                return cls(pipeline_response, None, {})
-
-
-        if polling is True: polling_method = ARMPolling(lro_delay, **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
