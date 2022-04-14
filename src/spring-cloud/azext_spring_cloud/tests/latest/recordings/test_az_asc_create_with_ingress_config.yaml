@@ -1,0 +1,964 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"networkProfile": {"ingressConfig":
+      {"readTimeoutInSeconds": 600}}, "zoneRedundant": false}, "sku": {"name": "S0",
+      "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '178'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest-ingress1?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Creating","zoneRedundant":false,"version":3,"serviceId":"3b14e980c29749bbb511b4f65bf33691","networkProfile":{"ingressConfig":{"readTimeoutInSeconds":600}},"powerState":"Running","fqdn":"cli-unittest-ingress1.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest-ingress1","name":"cli-unittest-ingress1","systemData":{"createdBy":"haital@microsoft.com","createdByType":"User","createdAt":"2022-04-14T06:04:41.4795217Z","lastModifiedBy":"haital@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-14T06:04:41.4795217Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '783'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:04:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationResults/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac/Spring/cli-unittest-ingress1?api-version=2022-05-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1198'
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:05:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:05:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:05:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:05:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:05:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:06:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:06:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:06:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:06:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:06:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Running","startTime":"2022-04-14T06:04:43.6664164Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","name":"1c8a629a-b09a-4ac9-a158-90f6be1eb2ac","status":"Succeeded","startTime":"2022-04-14T06:04:43.6664164Z","endTime":"2022-04-14T06:07:49.2722567Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '370'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --disable-app-insights --ingress-read-timeout
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest-ingress1?api-version=2022-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"3b14e980c29749bbb511b4f65bf33691","networkProfile":{"outboundIPs":{"publicIPs":["52.253.224.123","52.253.224.161"]},"ingressConfig":{"readTimeoutInSeconds":600}},"powerState":"Running","fqdn":"cli-unittest-ingress1.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest-ingress1","name":"cli-unittest-ingress1","systemData":{"createdBy":"haital@microsoft.com","createdByType":"User","createdAt":"2022-04-14T06:04:41.4795217Z","lastModifiedBy":"haital@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-14T06:04:41.4795217Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 14 Apr 2022 06:07:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --no-wait
+      User-Agent:
+      - AZURECLI/2.35.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest-ingress1?api-version=2022-05-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationStatus/cli-unittest-ingress1/operationId/32f78509-55d6-49d0-9267-4ae26c4fe3a7?api-version=2022-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 14 Apr 2022 06:08:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/eastus2euap/operationResults/32f78509-55d6-49d0-9267-4ae26c4fe3a7/Spring/cli-unittest-ingress1?api-version=2022-05-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-rp-server-mvid:
+      - efc3ab14-6d58-447b-9970-2590ee62f0df
+    status:
+      code: 202
+      message: Accepted
+version: 1
