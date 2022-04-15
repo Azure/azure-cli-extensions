@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.5.61
+++++++
+* Add support for `--format` parameter in `az aks get-credentials` command.  
 
 0.5.60
 ++++++
