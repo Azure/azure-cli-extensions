@@ -1649,6 +1649,121 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
+    def test_get_workload_identity_profile__create_no_set(self):
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        self.assertIsNone(ctx.get_workload_identity_profile())
+
+    def test_get_workload_identity_profile__create_enable_without_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__create_enable_with_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_oidc_issuer": True,
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        profile = ctx.get_workload_identity_profile()
+        self.assertTrue(profile.enabled)
+
+    def test_get_workload_identity_profile__update_not_set(self):
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        self.assertIsNone(ctx.get_workload_identity_profile())
+
+    def test_get_workload_identity_profile__update_with_enable_and_disable(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+                "disable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__update_with_enable_without_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__update_with_enable(self):
+        for previous_enablement_status in [
+            None,  # preivous not set
+            True,  # previous set to enabled=true
+            False, # previous set to enabled=false
+        ]:
+            ctx = AKSPreviewContext(
+                self.cmd,
+                {
+                    "enable_workload_identity": True,
+                },
+                self.models, decorator_mode=DecoratorMode.UPDATE
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+            if previous_enablement_status is None:
+                mc.security_profile = None
+            else:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile(
+                    workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                        enabled=previous_enablement_status
+                    )
+                )
+            ctx.attach_mc(mc)
+            profile = ctx.get_workload_identity_profile()
+            self.assertTrue(profile.enabled)
+
+    def test_get_workload_identity_profile__update_with_disable(self):
+        for previous_enablement_status in [
+            None,  # preivous not set
+            True,  # previous set to enabled=true
+            False, # previous set to enabled=false
+        ]:
+            ctx = AKSPreviewContext(
+                self.cmd,
+                {
+                    "disable_workload_identity": True,
+                },
+                self.models, decorator_mode=DecoratorMode.UPDATE
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+            if previous_enablement_status is None:
+                mc.security_profile = None
+            else:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile(
+                    workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                        enabled=previous_enablement_status
+                    )
+                )
+            ctx.attach_mc(mc)
+            profile = ctx.get_workload_identity_profile()
+            self.assertFalse(profile.enabled)
+
     def test_get_crg_id(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -2744,6 +2859,27 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
+    def test_set_up_workload_identity_profile__default_value(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile)
+
+    def test_set_up_workload_identity_profile__enabled(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_oidc_issuer": True,
+                "enable_workload_identity": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
+
     def test_set_up_azure_keyvault_kms(self):
         dec_1 = AKSPreviewCreateDecorator(
             self.cmd,
@@ -3821,6 +3957,57 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         updated_mc = dec.update_oidc_issuer_profile(mc)
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
+
+    def test_update_workload_identity_profile__default_value(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile)
+
+    def test_update_workload_identity_profile__default_value_mc_enabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.security_profile = self.models.ManagedClusterSecurityProfile(
+            workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                enabled=True,
+            )
+        )
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile.workload_identity)
+
+    def test_update_workload_identity_profile__enabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_workload_identity": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
+
+    def test_update_workload_identity_profile__disabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_workload_identity": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertFalse(updated_mc.security_profile.workload_identity.enabled)
 
     def test_update_azure_keyvault_kms(self):
         dec_1 = AKSPreviewUpdateDecorator(

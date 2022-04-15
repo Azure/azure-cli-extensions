@@ -169,6 +169,7 @@ def load_arguments(self, _):
         c.argument('http_proxy_config', options_list=[
                    '--http-proxy-config'], type=str)
         c.argument('enable_pod_identity', action='store_true')
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('appgw_name', options_list=[
                    '--appgw-name'], arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', options_list=[
@@ -255,6 +256,8 @@ def load_arguments(self, _):
                    validator=validate_assign_identity)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('disable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
         c.argument('rotation_poll_interval', type=str)
