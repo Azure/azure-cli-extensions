@@ -3618,12 +3618,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--enable-managed-identity ' \
-                     '--enable-oidc-issuer ' \
-                     '--enable-workload-idenitty' \
-                     '--ssh-key-value={ssh_key_value}' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview'
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--enable-managed-identity', '--enable-oidc-issuer', '--enable-workload-identity',
+            '--ssh-key-value={ssh_key_value}',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+        ])
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('oidcIssuerProfile.enabled', True),
@@ -3646,25 +3646,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--enable-managed-identity ' \
-                     '--enable-oidc-issuer' \
-                     '--ssh-key-value={ssh_key_value}'
+        create_cmd = ' '.join([
+            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
+            '--enable-managed-identity', '--enable-oidc-issuer',
+            '--ssh-key-value={ssh_key_value}',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+        ])
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        enable_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--enable-workload-idenetity' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview'
+        enable_cmd = ' '.join([
+            'aks', 'update', '--resource-group={resource_group}', '--name={name}',
+            '--enable-workload-identity',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+        ])
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.workloadIdentity.enabled', True),
         ])
 
-        disable_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-workload-idenetity' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview'
+        disable_cmd = ' '.join([
+            'aks', 'update', '--resource-group={resource_group}', '--name={name}',
+            '--disable-workload-identity',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+        ])
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.workloadIdentity.disable', True),
