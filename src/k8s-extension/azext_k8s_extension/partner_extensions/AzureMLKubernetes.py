@@ -126,10 +126,18 @@ class AzureMLKubernetes(DefaultExtension):
             resource = resources.get_by_id(
                 cluster_resource_id, parent_api_version)
             cluster_location = resource.location.lower()
-            if resource.properties['totalNodeCount'] == 1 or resource.properties['totalNodeCount'] == 2:
-                configuration_settings['clusterPurpose'] = 'DevTest'
-            if resource.properties['distribution'].lower() == "openshift":
-                configuration_settings[self.OPEN_SHIFT] = "true"
+            try:
+                if cluster_type.lower() == 'connectedclusters':
+                    if resource.properties['totalNodeCount'] < 3:
+                        configuration_settings['clusterPurpose'] = 'DevTest'
+                if cluster_type.lower() == 'managedclusters':
+                    nodeCount = 0
+                    for agent in resource.properties['agentPoolProfiles']:
+                        nodeCount += agent['count']
+                    if nodeCount < 3:
+                        configuration_settings['clusterPurpose'] = 'DevTest'
+            except:
+                pass
         except CloudError as ex:
             raise ex
 
