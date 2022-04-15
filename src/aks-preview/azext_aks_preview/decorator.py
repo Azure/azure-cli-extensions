@@ -2101,8 +2101,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
-        mc = self.set_up_oidc_issuer_profile(mc)
+
+        # update workload identity & OIDC issuer settings
+        # NOTE: in current implementation, workload identity settings setup requires checking
+        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
+        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
+        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
         mc = self.set_up_workload_identity_profile(mc)
+        mc = self.set_up_oidc_issuer_profile(mc)
+
         mc = self.set_up_azure_keyvault_kms(mc)
         return mc
 
@@ -2464,8 +2471,15 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-        mc = self.update_oidc_issuer_profile(mc)
+
+        # update workload identity & OIDC issuer settings
+        # NOTE: in current implementation, workload identity settings setup requires checking
+        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
+        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
+        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
         mc = self.update_workload_identity_profile(mc)
+        mc = self.update_oidc_issuer_profile(mc)
+
         mc = self.update_http_proxy_config(mc)
         mc = self.update_azure_keyvault_kms(mc)
         return mc
