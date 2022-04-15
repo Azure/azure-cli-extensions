@@ -24,8 +24,8 @@ if TYPE_CHECKING:
         PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 
-class OperationsResultsOperations(object):
-    """OperationsResultsOperations operations.
+class OperationsResultsLocationOperations(object):
+    """OperationsResultsLocationOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -52,7 +52,7 @@ class OperationsResultsOperations(object):
         operation_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.OperationResult"
+        # type: (...) -> None
         """Returns operation results.
 
         :param location: Azure location (region) name.
@@ -60,18 +60,16 @@ class OperationsResultsOperations(object):
         :param operation_id: The Guid of the operation ID.
         :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: OperationResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.kusto.models.OperationResult
+        :return: None, or the result of cls(response)
+        :rtype: None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.OperationResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2022-02-01"
-        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -89,26 +87,21 @@ class OperationsResultsOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(
             request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code,
                       response=response, error_map=error_map)
             raise HttpResponseError(
                 response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('OperationResult', pipeline_response)
-
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, None, {})
 
-        return deserialized
     # type: ignore
     get.metadata = {
         'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Kusto/locations/{location}/operationResults/{operationId}'}
