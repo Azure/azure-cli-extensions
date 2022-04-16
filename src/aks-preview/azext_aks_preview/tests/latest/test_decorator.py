@@ -81,8 +81,10 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         )
         module = importlib.import_module(module_name)
 
-        self.assertEqual(models.KubeletConfig, getattr(module, "KubeletConfig"))
-        self.assertEqual(models.LinuxOSConfig, getattr(module, "LinuxOSConfig"))
+        self.assertEqual(models.KubeletConfig,
+                         getattr(module, "KubeletConfig"))
+        self.assertEqual(models.LinuxOSConfig,
+                         getattr(module, "LinuxOSConfig"))
         self.assertEqual(
             models.ManagedClusterHTTPProxyConfig,
             getattr(module, "ManagedClusterHTTPProxyConfig"),
@@ -1293,6 +1295,49 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # test cache
         self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
 
+    def test_get_cluster_snapshot_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_cluster_snapshot_id(), None)
+        creation_data = self.models.CreationData(
+            source_resource_id="test_source_resource_id"
+        )
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name")
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile],
+            creation_data=creation_data,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_cluster_snapshot_id(),
+                         "test_source_resource_id")
+
+    def test_get_cluster_snapshot(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": "test_source_resource_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock()
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_1.get_cluster_snapshot(), mock_snapshot)
+        # test cache
+        self.assertEqual(ctx_1.get_cluster_snapshot(), mock_snapshot)
+
     def test_get_host_group_id(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -1373,6 +1418,44 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ):
             self.assertEqual(
                 ctx_3.get_kubernetes_version(), "custom_kubernetes_version"
+            )
+
+        # custom value
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": "", "cluster_snapshot_id": "test_cluster_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(
+            kubernetes_version="test_cluster_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_2.get_kubernetes_version(), "test_cluster_kubernetes_version"
+            )
+
+        # custom value
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": "test_cluster_snapshot_id",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        mock_mc_snapshot = Mock(
+            kubernetes_version="test_cluster_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_mc_snapshot,
+        ):
+            self.assertEqual(
+                ctx_3.get_kubernetes_version(), "custom_cluster_kubernetes_version"
             )
 
     def test_get_os_sku(self):
@@ -1683,7 +1766,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertIsNone(ctx_0.get_enable_azure_keyvault_kms())
-        
+
         ctx_1 = AKSPreviewContext(
             self.cmd,
             {
@@ -1765,7 +1848,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_id())
-        
+
         key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -1928,7 +2011,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             host_group_id=None,
             capacity_reservation_group_id=None,
         )
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -2036,7 +2120,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             capacity_reservation_group_id="test_crg_id",
             host_group_id="test_host_group_id",
         )
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -2055,7 +2140,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_http_proxy_config(None)
         dec_mc_1 = dec_1.set_up_http_proxy_config(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2093,7 +2179,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_node_resource_group(None)
         dec_mc_1 = dec_1.set_up_node_resource_group(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2312,7 +2399,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_pod_identity_profile(None)
         dec_mc_1 = dec_1.set_up_pod_identity_profile(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2372,7 +2460,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             return_value=None,
         ):
-            self.assertEqual(dec_1.context.get_intermediate("monitoring"), None)
+            self.assertEqual(
+                dec_1.context.get_intermediate("monitoring"), None)
             monitoring_addon_profile = dec_1.build_monitoring_addon_profile()
             ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
                 enabled=True,
@@ -2384,7 +2473,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             self.assertEqual(
                 monitoring_addon_profile, ground_truth_monitoring_addon_profile
             )
-            self.assertEqual(dec_1.context.get_intermediate("monitoring"), True)
+            self.assertEqual(
+                dec_1.context.get_intermediate("monitoring"), True)
 
         # custom value
         dec_2 = AKSPreviewCreateDecorator(
@@ -2408,7 +2498,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             return_value=None,
         ):
-            self.assertEqual(dec_2.context.get_intermediate("monitoring"), None)
+            self.assertEqual(
+                dec_2.context.get_intermediate("monitoring"), None)
             monitoring_addon_profile = dec_2.build_monitoring_addon_profile()
             ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
                 enabled=True,
@@ -2420,7 +2511,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             self.assertEqual(
                 monitoring_addon_profile, ground_truth_monitoring_addon_profile
             )
-            self.assertEqual(dec_2.context.get_intermediate("monitoring"), True)
+            self.assertEqual(
+                dec_2.context.get_intermediate("monitoring"), True)
 
     def test_build_ingress_appgw_addon_profile(self):
         # default
@@ -2666,7 +2758,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             dec_1.set_up_windows_profile(None)
         dec_mc_1 = dec_1.set_up_windows_profile(mc_1)
 
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2786,6 +2879,24 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_creationdata_of_cluster_snapshot(self):
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "cluster_snapshot_id": "test_cluster_snapshot_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_mc_1 = dec_1.set_up_creationdata_of_cluster_snapshot(mc_1)
+        cd = self.models.CreationData(
+            source_resource_id="test_cluster_snapshot_id"
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", creation_data=cd)
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_construct_mc_preview_profile(self):
         import inspect
