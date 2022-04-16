@@ -1282,6 +1282,13 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     features = [x.lower() for x in features]
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
+    # Check if cluster is private link enabled
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    if connected_cluster.private_link_state.lower() == "enabled" and (enable_cluster_connect or enable_cl):
+        telemetry.set_exception(exception='Invalid arguments provided', fault_type=consts.Invalid_Argument_Fault_Type,
+                                summary='Invalid arguments provided')
+        raise InvalidArgumentValueError("The features 'cluster-connect' and 'custom-locations' cannot be enabled for a private link enabled connected cluster.")
+
     if enable_azure_rbac:
         if (azrbac_client_id is None) or (azrbac_client_secret is None):
             telemetry.set_exception(exception='Application ID or secret is not provided for Azure RBAC', fault_type=consts.Application_Details_Not_Provided_For_Azure_RBAC_Fault,
