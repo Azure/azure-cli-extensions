@@ -93,7 +93,7 @@ helps['quantum job wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until the job finishes running.
     examples:
-      - name: Wait for completion of a job for 60 seconds.
+      - name: Wait for completion of a job, check at 60 second intervals.
         text: |-
             az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table

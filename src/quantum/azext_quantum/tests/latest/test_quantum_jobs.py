@@ -9,13 +9,14 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -181,3 +182,31 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(table['Target'], notFound)
         self.assertEquals(table['Job ID'], notFound)
         self.assertEquals(table['Submission Time'], notFound)
+
+    def test_validate_max_poll_wait_secs(self):
+        wait_secs = _validate_max_poll_wait_secs(1)
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 1.0)
+
+        wait_secs = _validate_max_poll_wait_secs("60")
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 60.0)
+
+        # Invalid values should raise errors
+        try:
+            wait_secs = _validate_max_poll_wait_secs(0.999999999)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: 0.999999999"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs(-1.0)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs("foobar")
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
