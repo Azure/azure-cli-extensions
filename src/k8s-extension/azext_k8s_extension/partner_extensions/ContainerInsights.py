@@ -316,6 +316,28 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     return ws_resource_id
 
 
+def _is_container_insights_solution_exists(cmd, workspace_resource_id):
+    # extract subscription ID and resource group from workspace_resource_id URL
+    is_exists = False
+    _MAX_RETRY_TIMES = 3
+    parsed = parse_resource_id(workspace_resource_id)
+    subscription_id, resource_group, workspace_name = parsed["subscription"], parsed["resource_group"], parsed["name"]
+    solution_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationsManagement/solutions/ContainerInsights({2})".format(subscription_id, resource_group, workspace_name)
+    resources = cf_resources(cmd.cli_ctx, subscription_id)
+    for retry_count in range(0, _MAX_RETRY_TIMES):
+        try:
+            resources.get_by_id(solution_resource_id, '2015-11-01-preview')
+            is_exists = True
+            break
+        except HttpResponseError as ex:
+            if ex.status_code == 404:
+                is_exists = False
+                break
+            if retry_count >= (_MAX_RETRY_TIMES - 1):
+                raise ex
+    return is_exists
+
+
 def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -461,11 +483,12 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
             raise InvalidArgumentValueError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
 
     if is_ci_extension_type:
-        if useAADAuth:
-            logger.info("MSI onboarding since omsagent.useAADAuth set to true")
-            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
-        else:
+        if not _is_container_insights_solution_exists(cmd, workspace_resource_id):
+            logger.info("creating containerinsights solution resource since it doesnt exist")
             _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
+        if useAADAuth:
+            logger.info("creating data collection rule and association")
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
 
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -507,7 +530,7 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
                 cmd.cli_ctx, "GET", dcr_url
             )
             json_response = json.loads(resp.text)
-            if json_response["tags"] is not None:
+            if ("tags" in json_response) and (json_response["tags"] is not None):
                 tags = json_response["tags"]
             break
         except CLIError as e:
