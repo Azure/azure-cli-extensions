@@ -131,10 +131,11 @@ def load_arguments(self, _):
         c.argument('registry_url', help='The container registry server, e.g. myregistry.azurecr.io')
         c.argument('registry_username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
         c.argument('registry_password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
-        c.argument('docker_file_path', help='The dockerfile location, e.g. ./Dockerfile')
+        c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./"')
         c.argument('service_principal_client_id', help='The service principal client ID. ')
         c.argument('service_principal_client_secret', help='The service principal client secret.')
         c.argument('service_principal_tenant_id', help='The service principal tenant ID.')
+        c.argument('image', type=str, options_list=['--image', '-i'], help="Container image name that the Github Action should use. Defaults to the Container App name.")
 
     with self.argument_context('containerapp github-action delete') as c:
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')

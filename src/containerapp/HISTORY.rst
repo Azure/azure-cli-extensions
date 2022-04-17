@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* Update "az containerapp github-action add" parameters
+
 0.3.0
 ++++++
 * Subgroup commands for managed identities: az containerapp identity

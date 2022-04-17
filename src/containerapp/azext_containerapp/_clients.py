@@ -527,7 +527,7 @@ class GitHubActionClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = "2022-03-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
         request_url = url_fmt.format(
@@ -556,7 +556,7 @@ class GitHubActionClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = "2022-03-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
         request_url = url_fmt.format(
