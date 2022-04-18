@@ -18,7 +18,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @live_only()
 class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="centraluseuap")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
 
@@ -98,7 +98,7 @@ class ContainerappScenarioTest(ScenarioTest):
         # Create ACR
         acr = self.cmd('acr create -g {} -n {} --sku Basic --admin-enabled'.format(resource_group, registry_name)).get_output_in_json()
         registry_server = acr["loginServer"]
-        
+
         acr_credentials = self.cmd('acr credential show -g {} -n {}'.format(resource_group, registry_name)).get_output_in_json()
         registry_username = acr_credentials["username"]
         registry_password = acr_credentials["passwords"][0]["value"]
