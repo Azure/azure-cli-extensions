@@ -12,6 +12,7 @@ import os
 import platform
 from pathlib import Path
 from knack.prompting import prompt_y_n
+import logging
 
 
 # `az aks app init` function
@@ -35,12 +36,12 @@ def aks_draft_app_init(destination: str,
 
 # Returns the path to Draft binary. None if missing the required binary
 def _binary_pre_check() -> Optional[str]:
-    print('The Draft setup is in progress...')
+    logging.info('The Draft binary check is in progress...')
     draft_binary_path = _get_existing_path()
 
     if draft_binary_path:  # found binary
         if _is_latest_version(draft_binary_path):  # no need to update
-            print('Your local version of Draft is up to date.')
+            logging.info('Your local version of Draft is up to date.')
         else:  # prompt the user to update
             msg = 'We have detected a newer version of Draft. Would you like to download it?'
             response = prompt_y_n(msg, default='n')
@@ -85,7 +86,7 @@ def _get_filename() -> Optional[str]:
     if architecture == 'x86_64':
         architecture = 'amd64'
     if architecture not in ['arm64', 'amd64']:
-        print('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
+        logging.error('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
         return None
 
     return f'draftv2-{operating_system}-{architecture}'
@@ -93,7 +94,7 @@ def _get_filename() -> Optional[str]:
 
 # Returns path to existing draft binary, None otherwise
 def _get_existing_path() -> Optional[str]:
-    print('Checking if Draft binary exists locally...')
+    logging.info('Checking if Draft binary exists locally...')
 
     filename = _get_filename()
     if not filename:
@@ -101,13 +102,13 @@ def _get_existing_path() -> Optional[str]:
 
     paths = _get_potential_paths()
     if not paths:
-        print('List of potential Draft paths is empty')
+        logging.error('List of potential Draft paths is empty')
         return None
 
     for path in paths:
         binary_file_path = path + '/' + filename
         if os.path.exists(binary_file_path):
-            print('Existing binary found at: ' + binary_file_path)
+            logging.info('Existing binary found at: ' + binary_file_path)
             return binary_file_path
     return None
 
@@ -125,7 +126,7 @@ def _get_potential_paths() -> List[str]:
 # Downloads the latest binary to ~/.aksapp
 # Returns path to the binary if sucessful, None otherwise
 def _download_binary() -> Optional[str]:
-    print('Attempting to download dependency...')
+    logging.info('Attempting to download dependency...')
 
     filename = _get_filename()
     if not filename:
@@ -143,7 +144,7 @@ def _download_binary() -> Optional[str]:
     if os.path.exists(binary_path) is False:
         os.chdir(str(Path.home()))
         os.mkdir(dir_name)
-        print(f'Directory {dir_name} was created inside of your HOME directory')
+        logging.info(f'Directory {dir_name} was created inside of your HOME directory')
 
     if response.ok:
         # Split URL to get the file name 'draftv2-darwin-amd64'
@@ -151,11 +152,11 @@ def _download_binary() -> Optional[str]:
         # Writing the file to the local file system
         with open(filename, 'wb') as output_file:
             output_file.write(response.content)
-        print('Download of Draft binary was successful with a status code: ' + str(response.status_code))
+        logging.info(f'Download of Draft binary was successful with a status code: {response.status_code}')
         os.chmod(binary_path + '/' + filename, 0o755)
         return binary_path + '/' + filename
 
-    print('Download of Draft binary was unsuccessful with a status code: ' + str(response.status_code))
+    logging.error(f'Download of Draft binary was unsuccessful with a status code: {response.status_code}')
     return None
 
 
@@ -192,7 +193,7 @@ def _run_init(binary_path: str, arguments: List[str]) -> bool:
     if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
-    print('Running Draft Binary ...')
+    logging.info('Running Draft Binary ...')
     cmd = [binary_path, 'create'] + arguments
     process = subprocess.Popen(cmd)
     exit_code = process.wait()
@@ -202,4 +203,4 @@ def _run_init(binary_path: str, arguments: List[str]) -> bool:
 # Function for clean up logic
 def _init_finish():
     # Clean up logic can go here if needed
-    print('Finishing running `az aks app init`')
+    logging.info('Finishing running `az aks app init`')
