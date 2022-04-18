@@ -26,7 +26,12 @@ def aks_draft_cmd_create(destination: str,
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
-    arguments = _build_create_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
+    arguments = _build_args(destination=destination,
+                            app_name=app_name,
+                            language=language,
+                            create_config=create_config,
+                            dockerfile_only=dockerfile_only,
+                            deployment_only=deployment_only)
     run_successful = _run_create(file_path, arguments)
     if run_successful:
         _create_finish()
@@ -161,30 +166,13 @@ def _download_binary() -> Optional[str]:
 
 
 # Returns a list of arguments following the format `--arg=value`
-def _build_args(options: Dict[str, str]) -> List[str]:
+def _build_args(**kwargs) -> List[str]:
     args_list = []
-    for arg, val in options.items():
+    for key, val in kwargs.items():
+        arg = key.replace('_', '-')
         if val:
             args_list.append(f'--{arg}={val}')
     return args_list
-
-
-# Returns a list of arguments for `az aks draft create`
-def _build_create_arguments(destination: str,
-                          app_name: str,
-                          language: str,
-                          create_config: str,
-                          dockerfile_only: str,
-                          deployment_only: str) -> List[str]:
-    options = {
-        'destination': destination,
-        'app-name': app_name,
-        'language': language,
-        'create-config': create_config,
-        'dockerfile-only': dockerfile_only,
-        'deployment-only': deployment_only
-    }
-    return _build_args(options)
 
 
 # Executes the `draft create` command
