@@ -202,7 +202,7 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(
             workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
-        c.argument('cluster_snapshot_id', type=str,
+        c.argument('cluster_snapshot_id',
                    validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('host_group_id',

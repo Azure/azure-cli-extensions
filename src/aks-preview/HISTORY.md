@@ -242,7 +242,7 @@ and `az aks nodepool add`
 0.5.24
 +++++
 
-  * * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
 
 0.5.23
 +++++
