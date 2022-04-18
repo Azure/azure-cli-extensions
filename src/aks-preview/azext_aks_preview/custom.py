@@ -149,8 +149,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_02_02_preview.models import (
     UserAssignedIdentity,
 )
 
-from .aks_app_commands.aksappcommands import (
-    aks_draft_app_init
+from .aks_draft.commands import (
+    aks_draft_cmd_create
 )
 
 logger = get_logger(__name__)
@@ -2817,13 +2817,13 @@ def _get_http_proxy_config(file_path):
     return config_object
 
 
-def aks_app_init(destination='.',
+def aks_draft_create(destination='.',
                  app_name=None,
                  language=None,
                  create_config=None,
                  dockerfile_only=None,
                  deployment_only=None):
-    aks_draft_app_init(destination, app_name, language, create_config, dockerfile_only, deployment_only)
+    aks_draft_cmd_create(destination, app_name, language, create_config, dockerfile_only, deployment_only)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,

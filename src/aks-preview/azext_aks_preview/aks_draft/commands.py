@@ -15,8 +15,8 @@ from knack.prompting import prompt_y_n
 import logging
 
 
-# `az aks app init` function
-def aks_draft_app_init(destination: str,
+# `az aks draft create` function
+def aks_draft_cmd_create(destination: str,
                        app_name: str,
                        language: str,
                        create_config: str,
@@ -26,12 +26,12 @@ def aks_draft_app_init(destination: str,
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
-    arguments = _build_init_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
-    run_successful = _run_init(file_path, arguments)
+    arguments = _build_create_arguments(destination, app_name, language, create_config, dockerfile_only, deployment_only)
+    run_successful = _run_create(file_path, arguments)
     if run_successful:
-        _init_finish()
+        _create_finish()
     else:
-        raise ValueError('`az aks app init` was NOT executed successfully')
+        raise ValueError('`az aks draft create` was NOT executed successfully')
 
 
 # Returns the path to Draft binary. None if missing the required binary
@@ -169,8 +169,8 @@ def _build_args(options: Dict[str, str]) -> List[str]:
     return args_list
 
 
-# Returns a list of arguments for `az aks app init`
-def _build_init_arguments(destination: str,
+# Returns a list of arguments for `az aks draft create`
+def _build_create_arguments(destination: str,
                           app_name: str,
                           language: str,
                           create_config: str,
@@ -189,7 +189,7 @@ def _build_init_arguments(destination: str,
 
 # Executes the `draft create` command
 # Returns True if the process executed sucessfully, False otherwise
-def _run_init(binary_path: str, arguments: List[str]) -> bool:
+def _run_create(binary_path: str, arguments: List[str]) -> bool:
     if binary_path is None:
         raise ValueError('The given Binary path was null or empty')
 
@@ -201,6 +201,6 @@ def _run_init(binary_path: str, arguments: List[str]) -> bool:
 
 
 # Function for clean up logic
-def _init_finish():
+def _create_finish():
     # Clean up logic can go here if needed
-    logging.info('Finishing running `az aks app init`')
+    logging.info('Finishing running `az aks draft create`')

@@ -124,8 +124,7 @@ def load_command_table(self, _):
 
     # AKS App commands
     with self.command_group('aks app', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
-        g.custom_command('init', 'aks_app_init')
-        # g.custom_command('up', 'aks_app_up')
+        g.custom_command('create', 'aks_draft_create')
 
     # AKS pod identity commands
     with self.command_group('aks pod-identity', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:

@@ -1629,7 +1629,7 @@ helps['aks nodepool snapshot delete'] = """
     short-summary: Delete a nodepool snapshot.
 """
 
-helps['aks app init'] = """
+helps['aks draft create'] = """
     type: command
     short-summary: Generate a Dockerfile and the minimum required Kubernetes deployment files (helm, kustomize, manifests) for your project directory.
     parameters:
