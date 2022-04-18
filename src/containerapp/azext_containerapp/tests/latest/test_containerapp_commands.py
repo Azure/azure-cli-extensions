@@ -8,27 +8,21 @@ import time
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
+@live_only()
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="canadacentral")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_name = self.create_random_name(prefix='logs', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-
-        logs_customer_id = self.cmd('az monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["customerId"]
-
-        logs_customer_key= self.cmd('az monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_customer_id, logs_customer_key))
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -69,17 +63,12 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="canadacentral")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_identity_system(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
-        logs_name = self.create_random_name(prefix='logs', length=24)
 
-        logs_customer_id = self.cmd('az monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["customerId"]
-
-        logs_customer_key= self.cmd('az monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_customer_id, logs_customer_key))
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -106,19 +95,14 @@ class ContainerappIdentityTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="canadacentral")
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_user(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
-        logs_name = self.create_random_name(prefix='logs', length=24)
 
-        logs_customer_id = self.cmd('az monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["customerId"]
-
-        logs_customer_key= self.cmd('az monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_name)).get_output_in_json()["primarySharedKey"]
-
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_customer_id, logs_customer_key))
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
