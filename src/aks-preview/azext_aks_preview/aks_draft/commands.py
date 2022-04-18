@@ -57,6 +57,22 @@ def _run(binary_path: str, command: str, arguments: List[str]) -> bool:
     return exit_code == 0
 
 
+# Function for clean up logic
+def _run_finish():
+    # Clean up logic can go here if needed
+    logging.info('Finished running Draft command')
+
+
+# Returns a list of arguments following the format `--arg=value`
+def _build_args(kwargs: Dict[str, str]) -> List[str]:
+    args_list = []
+    for key, val in kwargs.items():
+        arg = key.replace('_', '-')
+        if val:
+            args_list.append(f'--{arg}={val}')
+    return args_list
+
+
 # Returns the path to Draft binary. None if missing the required binary
 def _binary_pre_check() -> Optional[str]:
     logging.info('The Draft binary check is in progress...')
@@ -181,19 +197,3 @@ def _download_binary() -> Optional[str]:
 
     logging.error(f'Download of Draft binary was unsuccessful with a status code: {response.status_code}')
     return None
-
-
-# Returns a list of arguments following the format `--arg=value`
-def _build_args(kwargs: Dict[str, str]) -> List[str]:
-    args_list = []
-    for key, val in kwargs.items():
-        arg = key.replace('_', '-')
-        if val:
-            args_list.append(f'--{arg}={val}')
-    return args_list
-
-
-# Function for clean up logic
-def _create_finish():
-    # Clean up logic can go here if needed
-    logging.info('Finishing running `az aks draft create`')
