@@ -131,7 +131,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_02_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_03_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -920,18 +920,23 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                             '~'), '.kube', 'config'),
                         overwrite_existing=False,
                         context_name=None,
-                        public_fqdn=False):
+                        public_fqdn=False,
+                        credential_format=None):
     credentialResults = None
     serverType = None
     if public_fqdn:
         serverType = 'public'
+    if credential_format:
+        credential_format = credential_format.lower()
+        if admin:
+            raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
             resource_group_name, name, serverType)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType)
+                resource_group_name, name, serverType, credential_format)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
                 resource_group_name, name, serverType)
