@@ -1719,6 +1719,10 @@ class EventHubDataConnection(DataConnection):
      each message. Possible values include: "MULTIJSON", "JSON", "CSV", "TSV", "SCSV", "SOHSV",
      "PSV", "TXT", "RAW", "SINGLEJSON", "AVRO", "TSVE", "PARQUET", "ORC", "APACHEAVRO",
      "W3CLOGFILE".
+    :type data_format: str or ~kusto_management_client.models.EventHubDataFormat
+    :param event_system_properties: System properties of the event hub. System properties are
+     supported for Json and tabular formats (Csv, Tsv etc.) and aren't supported on compressed data.
+     You can provide multiple system properties within quotes. Example: "x-opt-enqueued-time" "x-opt-offset" "x-opt-publisher".
     :type data_format: str or ~azure.mgmt.kusto.models.EventHubDataFormat
     :param event_system_properties: System properties of the event hub.
     :type event_system_properties: list[str]
@@ -1931,6 +1935,10 @@ class IotHubDataConnection(DataConnection):
      each message. Possible values include: "MULTIJSON", "JSON", "CSV", "TSV", "SCSV", "SOHSV",
      "PSV", "TXT", "RAW", "SINGLEJSON", "AVRO", "TSVE", "PARQUET", "ORC", "APACHEAVRO",
      "W3CLOGFILE".
+    :type data_format: str or ~kusto_management_client.models.IotHubDataFormat
+    :param event_system_properties: System properties of the iot hub. System properties are
+     supported for Json and tabular formats (Csv, Tsv etc.) and aren't supported on compressed data.
+     You can provide multiple system properties within quotes. Example: "message-id" "iothub-enqueuedtime" "iothub-connection-device-id".
     :type data_format: str or ~azure.mgmt.kusto.models.IotHubDataFormat
     :param event_system_properties: System properties of the iot hub.
     :type event_system_properties: list[str]
