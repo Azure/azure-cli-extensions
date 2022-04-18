@@ -28,7 +28,7 @@ def aks_draft_cmd_create(destination: str,
                                     create_config=create_config,
                                     dockerfile_only=dockerfile_only,
                                     deployment_only=deployment_only)
-    run_successful = _run_create(file_path, arguments)
+    run_successful = _run(file_path, 'create', arguments)
     if run_successful:
         _create_finish()
     else:
@@ -42,6 +42,19 @@ def _pre_run(**kwargs) -> Tuple[str, List[str]]:
 
     arguments = _build_args(kwargs)
     return file_path, arguments
+
+
+# Executes the Draft command
+# Returns True if the process executed sucessfully, False otherwise
+def _run(binary_path: str, command: str, arguments: List[str]) -> bool:
+    if binary_path is None:
+        raise ValueError('The given Binary path was null or empty')
+
+    logging.info(f'Running `az aks draft {command}`')
+    cmd = [binary_path, command] + arguments
+    process = subprocess.Popen(cmd)
+    exit_code = process.wait()
+    return exit_code == 0
 
 
 # Returns the path to Draft binary. None if missing the required binary
@@ -178,19 +191,6 @@ def _build_args(kwargs: Dict[str, str]) -> List[str]:
         if val:
             args_list.append(f'--{arg}={val}')
     return args_list
-
-
-# Executes the `draft create` command
-# Returns True if the process executed sucessfully, False otherwise
-def _run_create(binary_path: str, arguments: List[str]) -> bool:
-    if binary_path is None:
-        raise ValueError('The given Binary path was null or empty')
-
-    logging.info('Running Draft Binary ...')
-    cmd = [binary_path, 'create'] + arguments
-    process = subprocess.Popen(cmd)
-    exit_code = process.wait()
-    return exit_code == 0
 
 
 # Function for clean up logic
