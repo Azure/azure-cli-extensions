@@ -53,7 +53,7 @@ def _binary_pre_check() -> Optional[str]:
         msg = 'The required binary was not found. Would you like us to download the required binary for you?'
 
         if not prompt_y_n(msg, default='n'):
-            raise ValueError('`az aks app` requires the missing dependency')
+            raise ValueError('`az aks draft` requires the missing dependency')
 
         return _download_binary()
 
