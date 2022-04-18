@@ -10,7 +10,8 @@ from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_th
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           validate_blob_type, validate_included_datasets_v2, get_datetime_type,
                           add_download_progress_callback, add_upload_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
+                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
+                          validate_blob_name_for_upload)
 
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
@@ -437,6 +438,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
         c.register_precondition_options()
         c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group="Content Control")
+
+        c.extra('blob_name', validator=validate_blob_name_for_upload)
 
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
                    help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
