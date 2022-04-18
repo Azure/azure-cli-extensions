@@ -30,7 +30,7 @@ def aks_draft_cmd_create(destination: str,
                                     deployment_only=deployment_only)
     run_successful = _run(file_path, 'create', arguments)
     if run_successful:
-        _create_finish()
+        _run_finish()
     else:
         raise ValueError('`az aks draft create` was NOT executed successfully')
 
