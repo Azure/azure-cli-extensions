@@ -1434,7 +1434,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             return_value=mock_snapshot,
         ):
             self.assertEqual(
-                ctx_2.get_kubernetes_version(), "test_cluster_kubernetes_version"
+                ctx_4.get_kubernetes_version(), "test_cluster_kubernetes_version"
             )
 
         # custom value
@@ -1453,9 +1453,12 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with patch(
             "azext_aks_preview.decorator._get_cluster_snapshot",
             return_value=mock_mc_snapshot,
+        ), patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
         ):
             self.assertEqual(
-                ctx_3.get_kubernetes_version(), "custom_cluster_kubernetes_version"
+                ctx_5.get_kubernetes_version(), "test_cluster_kubernetes_version"
             )
 
     def test_get_os_sku(self):
