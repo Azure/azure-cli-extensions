@@ -2867,6 +2867,15 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         updated_mc = dec.set_up_workload_identity_profile(mc)
         self.assertIsNone(updated_mc.security_profile)
 
+    def test_set_up_workload_identity_profile__default_value_with_security_profile(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.security_profile = self.models.ManagedClusterSecurityProfile()
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile.workload_identity)
+
     def test_set_up_workload_identity_profile__enabled(self):
         dec = AKSPreviewCreateDecorator(
             self.cmd, self.client,
