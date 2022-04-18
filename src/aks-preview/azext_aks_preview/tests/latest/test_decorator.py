@@ -1428,7 +1428,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         mock_snapshot = Mock(
-            kubernetes_version="test_cluster_kubernetes_version")
+            managed_cluster_properties_read_only=Mock(kubernetes_version="test_cluster_kubernetes_version"))
         with patch(
             "azext_aks_preview.decorator._get_cluster_snapshot",
             return_value=mock_snapshot,
@@ -1449,7 +1449,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
         mock_mc_snapshot = Mock(
-            kubernetes_version="test_cluster_kubernetes_version")
+            managed_cluster_properties_read_only=Mock(kubernetes_version="test_cluster_kubernetes_version"))
         with patch(
             "azext_aks_preview.decorator._get_cluster_snapshot",
             return_value=mock_mc_snapshot,
