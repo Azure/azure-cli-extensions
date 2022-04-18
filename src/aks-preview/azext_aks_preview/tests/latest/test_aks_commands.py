@@ -3673,7 +3673,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
         self.cmd(disable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile.workloadIdentity.enabled', True),
+            self.check('securityProfile.workloadIdentity.enabled', False),
         ])
 
     @AllowLargeResponse()
