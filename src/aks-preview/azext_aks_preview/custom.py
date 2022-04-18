@@ -2818,11 +2818,11 @@ def _get_http_proxy_config(file_path):
 
 
 def aks_draft_create(destination='.',
-                 app_name=None,
-                 language=None,
-                 create_config=None,
-                 dockerfile_only=None,
-                 deployment_only=None):
+                     app_name=None,
+                     language=None,
+                     create_config=None,
+                     dockerfile_only=None,
+                     deployment_only=None):
     aks_draft_cmd_create(destination, app_name, language, create_config, dockerfile_only, deployment_only)
 
 

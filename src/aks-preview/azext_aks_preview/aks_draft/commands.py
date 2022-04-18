@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import subprocess
 import requests
 import os
@@ -17,26 +17,31 @@ import logging
 
 # `az aks draft create` function
 def aks_draft_cmd_create(destination: str,
-                       app_name: str,
-                       language: str,
-                       create_config: str,
-                       dockerfile_only: str,
-                       deployment_only: str) -> None:
-    file_path = _binary_pre_check()
-    if not file_path:
-        raise ValueError('Binary check was NOT executed successfully')
-
-    arguments = _build_args(destination=destination,
-                            app_name=app_name,
-                            language=language,
-                            create_config=create_config,
-                            dockerfile_only=dockerfile_only,
-                            deployment_only=deployment_only)
+                         app_name: str,
+                         language: str,
+                         create_config: str,
+                         dockerfile_only: str,
+                         deployment_only: str) -> None:
+    file_path, arguments = _pre_run(destination=destination,
+                                    app_name=app_name,
+                                    language=language,
+                                    create_config=create_config,
+                                    dockerfile_only=dockerfile_only,
+                                    deployment_only=deployment_only)
     run_successful = _run_create(file_path, arguments)
     if run_successful:
         _create_finish()
     else:
         raise ValueError('`az aks draft create` was NOT executed successfully')
+
+
+def _pre_run(**kwargs) -> Tuple[str, List[str]]:
+    file_path = _binary_pre_check()
+    if not file_path:
+        raise ValueError('Binary check was NOT executed successfully')
+
+    arguments = _build_args(kwargs)
+    return file_path, arguments
 
 
 # Returns the path to Draft binary. None if missing the required binary
@@ -166,7 +171,7 @@ def _download_binary() -> Optional[str]:
 
 
 # Returns a list of arguments following the format `--arg=value`
-def _build_args(**kwargs) -> List[str]:
+def _build_args(kwargs: Dict[str, str]) -> List[str]:
     args_list = []
     for key, val in kwargs.items():
         arg = key.replace('_', '-')
