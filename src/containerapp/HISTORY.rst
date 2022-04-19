@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* Update "az containerapp github-action add" parameters: replace --docker-file-path with --context-path, add --image.
+
 0.3.0
 ++++++
 * Subgroup commands for managed identities: az containerapp identity
