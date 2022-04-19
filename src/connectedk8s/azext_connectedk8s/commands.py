@@ -22,7 +22,7 @@ def load_command_table(self, _):
     )
     with self.command_group('connectedk8s', connectedk8s_sdk, client_factory=cf_connected_cluster) as g:
         g.custom_command('connect', 'create_connectedk8s', supports_no_wait=True)
-        g.custom_command('update', 'update_agents_or_resource', supports_no_wait=True)
+        g.custom_command('update', 'update_connected_cluster', supports_no_wait=True)
         g.custom_command('upgrade', 'upgrade_agents')
         g.custom_command('delete', 'delete_connectedk8s', confirmation=True, supports_no_wait=True)
         g.custom_command('enable-features', 'enable_features', is_preview=True)

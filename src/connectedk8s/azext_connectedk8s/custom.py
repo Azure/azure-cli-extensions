@@ -100,6 +100,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if os.getenv('SKIP_PROMPT') != "true":
             if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
                 return
+        if cl_oid:
+            logger.warning("The parameter '--custom-locations-oid' will be ignored as private link feature is being enabled.")
 
     # Set preview client if private link properties are provided.
     if enable_private_link:
@@ -833,8 +835,8 @@ def update_connectedk8s(client, resource_group_name, cluster_name, tags=None, en
 # pylint: disable=line-too-long
 
 
-def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
+def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
+                             disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
