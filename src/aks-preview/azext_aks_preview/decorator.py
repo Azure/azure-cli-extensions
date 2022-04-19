@@ -1433,10 +1433,11 @@ class AKSPreviewContext(AKSContext):
         # read the original value passed by the command
         snapshot_id = self.raw_param.get("cluster_snapshot_id")
         # try to read the property value corresponding to the parameter from the `mc` object
-        if (self.mc and
-                self.mc.creation_data and
-                self.mc.creation_data.source_resource_id is not None
-            ):
+        if (
+            self.mc and
+            self.mc.creation_data and
+            self.mc.creation_data.source_resource_id is not None
+        ):
             snapshot_id = (
                 self.mc.creation_data.source_resource_id
             )
