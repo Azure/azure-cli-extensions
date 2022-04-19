@@ -112,7 +112,7 @@ def _is_latest_version(binary_path: str) -> bool:
     if stderr.decode():
         return False
     # return string of result is "version: v0.0.x"
-    current_version = stdout.decode().strip().split()[-1]
+    current_version = stdout.decode().split('\n')[0].strip().split()[-1]
     return latest_version == current_version
 
 
@@ -128,7 +128,7 @@ def _get_filename() -> Optional[str]:
         logging.error('Cannot find a suitable download for the current system architecture. Draft only supports AMD64 and ARM64.')
         return None
 
-    return f'draftv2-{operating_system}-{architecture}'
+    return f'draft-{operating_system}-{architecture}'
 
 
 # Returns path to existing draft binary, None otherwise
@@ -156,13 +156,13 @@ def _get_existing_path() -> Optional[str]:
 def _get_potential_paths() -> List[str]:
     paths = os.environ['PATH'].split(':')
     # the download location of _download_binary()
-    default_dir = str(Path.home()) + '/' + '.aksapp'
+    default_dir = str(Path.home()) + '/' + '.aksdraft'
     paths.append(default_dir)
 
     return paths
 
 
-# Downloads the latest binary to ~/.aksapp
+# Downloads the latest binary to ~/.aksdraft
 # Returns path to the binary if sucessful, None otherwise
 def _download_binary() -> Optional[str]:
     logging.info('Attempting to download dependency...')
@@ -176,7 +176,7 @@ def _download_binary() -> Optional[str]:
     url = f'https://github.com/Azure/aks-app/releases/latest/download/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
-    dir_name = '.aksapp'
+    dir_name = '.aksdraft'
     # Downloading the file by sending the request to the URL
     response = requests.get(url, headers=headers)
     binary_path = str(Path.home()) + '/' + dir_name
@@ -188,7 +188,7 @@ def _download_binary() -> Optional[str]:
         logging.info(f'Directory {dir_name} was created inside of your HOME directory')
 
     if response.ok:
-        # Split URL to get the file name 'draftv2-darwin-amd64'
+        # Split URL to get the file name 'draft-darwin-amd64'
         os.chdir(binary_path)
         # Writing the file to the local file system
         with open(filename, 'wb') as output_file:
