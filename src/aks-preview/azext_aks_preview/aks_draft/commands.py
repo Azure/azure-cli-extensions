@@ -28,7 +28,6 @@ def aks_draft_cmd_create(destination: str,
                                     create_config=create_config,
                                     dockerfile_only=dockerfile_only,
                                     deployment_only=deployment_only)
-    subprocess.run(['pwd'])
     run_successful = _run(file_path, 'create', arguments)
     if run_successful:
         _run_finish()
