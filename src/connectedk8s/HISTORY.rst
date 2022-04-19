@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.2.8
+++++++
+
+* Bump up CSP version to 1.3.019103, bump up `pycryptodome` to 3.14.1 to support Python 3.10
+
+1.2.7
+++++++
+
+* Avoid using packaging module and revert minCliCoreVersion to 2.16.0
+
+1.2.6
+++++++
+
+* Update minCliCoreVersion to 2.23.0
+
+1.2.5
+++++++
+
+* Using MSAL based auth for CLI version >= 2.30.0
+
 1.2.4
 ++++++
 

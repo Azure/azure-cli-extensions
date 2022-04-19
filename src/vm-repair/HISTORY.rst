@@ -4,7 +4,7 @@ Release History
 
 0.4.2
 ++++++
-Adding a new distro option for creating the recovery VM, adding the detect for gen2 Linux machine and create a gen2 recovery VM
+Linux only: Fixing duplicated UUID issue. Data disk gets attached only after VM got created.
 
 0.4.1
 ++++++

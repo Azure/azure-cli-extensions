@@ -64,7 +64,8 @@ from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from ._client_factory import (
     cf_agent_pools,
     cf_container_registry_service,
-    cf_snapshots_client,
+    cf_nodepool_snapshots_client,
+    cf_mc_snapshots_client,
     cf_storage,
     get_auth_management_client,
     get_graph_rbac_management_client,
@@ -130,7 +131,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_03_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -143,6 +144,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2022_01_02_preview.models import (
     ManagedClusterPodIdentityException,
     PowerState,
     Snapshot,
+    ManagedClusterSnapshot,
     SysctlConfig,
     UserAssignedIdentity,
 )
@@ -524,6 +526,11 @@ _re_snapshot_resource_id = re.compile(
     flags=re.IGNORECASE)
 
 
+_re_mc_snapshot_resource_id = re.compile(
+    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/managedclustersnapshots/(.*)',
+    flags=re.IGNORECASE)
+
+
 def _get_snapshot(cli_ctx, snapshot_id):
     snapshot_id = snapshot_id.lower()
     match = _re_snapshot_resource_id.search(snapshot_id)
@@ -531,12 +538,35 @@ def _get_snapshot(cli_ctx, snapshot_id):
         subscription_id = match.group(1)
         resource_group_name = match.group(2)
         snapshot_name = match.group(3)
-        snapshot_client = cf_snapshots_client(cli_ctx, subscription_id=subscription_id)
+        snapshot_client = cf_nodepool_snapshots_client(
+            cli_ctx, subscription_id=subscription_id)
         try:
             snapshot = snapshot_client.get(resource_group_name, snapshot_name)
         except CloudError as ex:
             if 'was not found' in ex.message:
-                raise InvalidArgumentValueError("Snapshot {} not found.".format(snapshot_id))
+                raise InvalidArgumentValueError(
+                    "Snapshot {} not found.".format(snapshot_id))
+            raise CLIError(ex.message)
+        return snapshot
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
+def _get_cluster_snapshot(cli_ctx, snapshot_id):
+    snapshot_id = snapshot_id.lower()
+    match = _re_mc_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        snapshot_client = cf_mc_snapshots_client(
+            cli_ctx, subscription_id=subscription_id)
+        try:
+            snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise InvalidArgumentValueError(
+                    "Managed cluster snapshot {} not found.".format(snapshot_id))
             raise CLIError(ex.message)
         return snapshot
     raise InvalidArgumentValueError(
@@ -744,6 +774,8 @@ def aks_create(cmd,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
+               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
+               enable_workload_identity=None,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
                edge_zone=None,
@@ -758,10 +790,13 @@ def aks_create(cmd,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                snapshot_id=None,
+               cluster_snapshot_id=None,
                enable_oidc_issuer=False,
                host_group_id=None,
                crg_id=None,
                message_of_the_day=None,
+               enable_azure_keyvault_kms=False,
+               azure_keyvault_kms_key_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -823,6 +858,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
+               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
+               enable_workload_identity=None,
+               disable_workload_identity=None,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                rotation_poll_interval=None,
@@ -839,7 +877,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
-               enable_oidc_issuer=False):
+               enable_oidc_issuer=False,
+               http_proxy_config=None,
+               enable_azure_keyvault_kms=False,
+               azure_keyvault_kms_key_id=None):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
@@ -906,18 +947,23 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                             '~'), '.kube', 'config'),
                         overwrite_existing=False,
                         context_name=None,
-                        public_fqdn=False):
+                        public_fqdn=False,
+                        credential_format=None):
     credentialResults = None
     serverType = None
     if public_fqdn:
         serverType = 'public'
+    if credential_format:
+        credential_format = credential_format.lower()
+        if admin:
+            raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
             resource_group_name, name, serverType)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType)
+                resource_group_name, name, serverType, credential_format)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
                 resource_group_name, name, serverType)
@@ -1046,10 +1092,12 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
     deployment_yaml = _read_periscope_yaml()
-    deployment_yaml = deployment_yaml.replace("# <accountName, string>", storage_account_name)
+    deployment_yaml = deployment_yaml.replace(
+        "# <accountName, string>", storage_account_name)
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("# <containerName, string>", container_name)
+    deployment_yaml = deployment_yaml.replace(
+        "# <containerName, string>", container_name)
 
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
@@ -1134,7 +1182,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
 def _read_periscope_yaml():
     curr_dir = os.path.dirname(os.path.realpath(__file__))
-    periscope_yaml_file = os.path.join(curr_dir, "deploymentyaml", "aks-periscope.yaml")
+    periscope_yaml_file = os.path.join(
+        curr_dir, "deploymentyaml", "aks-periscope.yaml")
     yaml_file = open(periscope_yaml_file, "r")
     data_loaded = yaml_file.read()
 
@@ -1174,9 +1223,8 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                     "Cannot scale cluster autoscaler enabled node pool.")
 
             agent_profile.count = int(node_count)  # pylint: disable=no-member
-            # null out the SP and AAD profile because otherwise validation complains
+            # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            instance.aad_profile = None
             return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
@@ -1265,9 +1313,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
@@ -1317,7 +1364,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             # use default workspace if exists else create default workspace
             workspace_resource_id = ensure_default_log_analytics_workspace_for_monitoring(
                 cmd, subscription_id, resource_group_name)
-        workspace_resource_id = sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+        workspace_resource_id = sanitize_loganalytics_ws_resource_id(
+            workspace_resource_id)
         addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True,
                                                                                  config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
                                                                                          CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring})
@@ -1353,7 +1401,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'azure-keyvault-secrets-provider' in addons:
-        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={
+                                                   CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
         if enable_secret_rotation:
             addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
         if rotation_poll_interval is not None:
@@ -1684,7 +1733,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
 
     if message_of_the_day:
-        agent_pool.message_of_the_day = _get_message_of_the_day(message_of_the_day)
+        agent_pool.message_of_the_day = _get_message_of_the_day(
+            message_of_the_day)
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
@@ -2057,7 +2107,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False  # this is overwritten by _update_addons(), so the value needs to be recorded here
+    # this is overwritten by _update_addons(), so the value needs to be recorded here
+    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
@@ -2069,13 +2120,16 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
                 str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
             if not msi_auth:
-                raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
+                raise ArgumentUsageError(
+                    "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
-                ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
+                ensure_container_insights_for_monitoring(
+                    cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
         else:
             # monitoring addon will use legacy path
-            ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=False)
+            ensure_container_insights_for_monitoring(
+                cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=False)
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
@@ -2184,9 +2238,11 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         cmd,
                         subscription_id,
                         resource_group_name)
-                workspace_resource_id = sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+                workspace_resource_id = sanitize_loganalytics_ws_resource_id(
+                    workspace_resource_id)
 
-                addon_profile.config = {logAnalyticsConstName: workspace_resource_id}
+                addon_profile.config = {
+                    logAnalyticsConstName: workspace_resource_id}
                 addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
@@ -2266,9 +2322,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     instance.addon_profiles = addon_profiles
 
-    # null out the SP and AAD profile because otherwise validation complains
+    # null out the SP profile because otherwise validation complains
     instance.service_principal_profile = None
-    instance.aad_profile = None
 
     return instance
 
@@ -2655,17 +2710,20 @@ def _is_msi_cluster(managed_cluster):
 
 def _get_message_of_the_day(file_path):
     if not os.path.isfile(file_path):
-        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+        raise CLIError(
+            "{} is not valid file, or not accessable.".format(file_path))
     content = read_file_content(file_path)
     if not content:
-        raise ArgumentUsageError("message of the day should point to a non-empty file if specified.")
+        raise ArgumentUsageError(
+            "message of the day should point to a non-empty file if specified.")
     content = base64.b64encode(bytes(content, 'ascii')).decode('ascii')
     return content
 
 
 def _get_kubelet_config(file_path):
     if not os.path.isfile(file_path):
-        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+        raise CLIError(
+            "{} is not valid file, or not accessable.".format(file_path))
     kubelet_config = get_file_json(file_path)
     if not isinstance(kubelet_config, dict):
         raise CLIError(
@@ -2697,7 +2755,8 @@ def _get_kubelet_config(file_path):
 
 def _get_linux_os_config(file_path):
     if not os.path.isfile(file_path):
-        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+        raise CLIError(
+            "{} is not valid file, or not accessable.".format(file_path))
     os_config = get_file_json(file_path)
     if not isinstance(os_config, dict):
         raise CLIError(
@@ -2771,7 +2830,8 @@ def _get_linux_os_config(file_path):
 
 def _get_http_proxy_config(file_path):
     if not os.path.isfile(file_path):
-        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+        raise CLIError(
+            "{} is not valid file, or not accessable.".format(file_path))
     hp_config = get_file_json(file_path)
     if not isinstance(hp_config, dict):
         raise CLIError(
@@ -2816,7 +2876,8 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
     from azext_aks_preview.decorator import AKSPreviewModels
 
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+    pod_identity_models = AKSPreviewModels(
+        cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
@@ -2845,7 +2906,8 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
     from azext_aks_preview.decorator import AKSPreviewModels
 
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+    pod_identity_models = AKSPreviewModels(
+        cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=pod_identities,
@@ -2877,7 +2939,8 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
     from azext_aks_preview.decorator import AKSPreviewModels
 
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+    pod_identity_models = AKSPreviewModels(
+        cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
@@ -2905,7 +2968,8 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
     from azext_aks_preview.decorator import AKSPreviewModels
 
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+    pod_identity_models = AKSPreviewModels(
+        cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
@@ -2941,7 +3005,8 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
     from azext_aks_preview.decorator import AKSPreviewModels
 
     # store all the models used by pod identity
-    pod_identity_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
+    pod_identity_models = AKSPreviewModels(
+        cmd, CUSTOM_MGMT_AKS_PREVIEW).pod_identity_models
     _update_addon_pod_identity(
         instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
@@ -2974,7 +3039,8 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
 
     if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                is_service_principal=False, scope=scope):
-        raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
+        raise CLIError(
+            'Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
 
 
 def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
@@ -2985,7 +3051,7 @@ def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-state
                         client,
                         resource_group_name,
                         name,
-                        nodepool_id,
+                        cluster_id,
                         location=None,
                         tags=None,
                         aks_custom_headers=None,
@@ -2996,14 +3062,15 @@ def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-state
         location = rg_location
 
     creationData = CreationData(
-        source_resource_id=nodepool_id
+        source_resource_id=cluster_id
     )
 
-    snapshot = Snapshot(
+    snapshot = ManagedClusterSnapshot(
         name=name,
         tags=tags,
         location=location,
-        creation_data=creationData
+        creation_data=creationData,
+        snapshot_type="ManagedCluster",
     )
 
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -3023,7 +3090,8 @@ def aks_snapshot_delete(cmd,    # pylint: disable=unused-argument
                         yes=False):
 
     from knack.prompting import prompt_y_n
-    msg = 'This will delete the snapshot "{}" in resource group "{}", Are you sure?'.format(name, resource_group_name)
+    msg = 'This will delete the cluster snapshot "{}" in resource group "{}", Are you sure?'.format(
+        name, resource_group_name)
     if not yes and not prompt_y_n(msg, default="n"):
         return None
 
@@ -3031,6 +3099,63 @@ def aks_snapshot_delete(cmd,    # pylint: disable=unused-argument
 
 
 def aks_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable=unused-argument
+    if resource_group_name is None or resource_group_name == '':
+        return client.list()
+
+    return client.list_by_resource_group(resource_group_name)
+
+
+def aks_nodepool_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+                                 client,
+                                 resource_group_name,
+                                 snapshot_name,
+                                 nodepool_id,
+                                 location=None,
+                                 tags=None,
+                                 aks_custom_headers=None,
+                                 no_wait=False):
+
+    rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    if location is None:
+        location = rg_location
+
+    creationData = CreationData(
+        source_resource_id=nodepool_id
+    )
+
+    snapshot = Snapshot(
+        name=snapshot_name,
+        tags=tags,
+        location=location,
+        creation_data=creationData
+    )
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.create_or_update(resource_group_name, snapshot_name, snapshot, headers=headers)
+
+
+def aks_nodepool_snapshot_show(cmd, client, resource_group_name, snapshot_name):   # pylint: disable=unused-argument
+    snapshot = client.get(resource_group_name, snapshot_name)
+    return snapshot
+
+
+def aks_nodepool_snapshot_delete(cmd,    # pylint: disable=unused-argument
+                                 client,
+                                 resource_group_name,
+                                 snapshot_name,
+                                 no_wait=False,
+                                 yes=False):
+
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the nodepool snapshot "{}" in resource group "{}", Are you sure?'.format(
+        snapshot_name, resource_group_name)
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+
+    return client.delete(resource_group_name, snapshot_name)
+
+
+def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable=unused-argument
     if resource_group_name is None or resource_group_name == '':
         return client.list()
 

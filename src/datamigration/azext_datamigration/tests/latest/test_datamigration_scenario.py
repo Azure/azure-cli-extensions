@@ -22,14 +22,22 @@ from .example_steps import step_sql_service_delete_node
 from .example_steps import step_sql_service_regenerate_auth_key
 from .example_steps import step_sql_service_list_auth_key
 from .example_steps import step_sql_service_list_integration_runtime_metric
+from .example_steps import step_sql_db_create
+from .example_steps import step_sql_db_create2
+from .example_steps import step_sql_db_show
+from .example_steps import step_sql_db_show2
+from .example_steps import step_sql_db_cancel
+from .example_steps import step_sql_db_delete
 from .example_steps import step_sql_managed_instance_create
 from .example_steps import step_sql_managed_instance_create2
 from .example_steps import step_sql_managed_instance_show
+from .example_steps import step_sql_managed_instance_show2
 from .example_steps import step_sql_managed_instance_cutover
 from .example_steps import step_sql_managed_instance_cancel
 from .example_steps import step_sql_vm_create
 from .example_steps import step_sql_vm_create2
 from .example_steps import step_sql_vm_show
+from .example_steps import step_sql_vm_show2
 from .example_steps import step_sql_vm_cutover
 from .example_steps import step_sql_vm_cancel
 from .example_steps import step_sql_service_delete
@@ -84,14 +92,22 @@ def call_scenario(test):
     step_sql_service_regenerate_auth_key(test, checks=[])
     step_sql_service_list_auth_key(test, checks=[])
     step_sql_service_list_integration_runtime_metric(test, checks=[])
+    step_sql_db_create(test, checks=[])
+    step_sql_db_create2(test, checks=[])
+    step_sql_db_show(test, checks=[])
+    step_sql_db_show2(test, checks=[])
+    step_sql_db_cancel(test, checks=[])
+    step_sql_db_delete(test, checks=[])
     step_sql_managed_instance_create(test, checks=[])
     step_sql_managed_instance_create2(test, checks=[])
     step_sql_managed_instance_show(test, checks=[])
+    step_sql_managed_instance_show2(test, checks=[])
     step_sql_managed_instance_cutover(test, checks=[])
     step_sql_managed_instance_cancel(test, checks=[])
     step_sql_vm_create(test, checks=[])
     step_sql_vm_create2(test, checks=[])
     step_sql_vm_show(test, checks=[])
+    step_sql_vm_show2(test, checks=[])
     step_sql_vm_cutover(test, checks=[])
     step_sql_vm_cancel(test, checks=[])
     step_sql_service_delete(test, checks=[])

@@ -45,6 +45,18 @@
                 "description": "Storage account location"
             }
         },
+        "storageAccountSku": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account SKU"
+            }
+        },
+        "storageAccountKind": {
+            "type": "string",
+            "metadata": {
+                "description": "Kind of storage account"
+            }
+        },
         "storageAccountDeploymentName": {
             "type": "string",
             "metadata": {
@@ -88,9 +100,9 @@
                             "location": "[parameters('storageAccountLocation')]",
                             "type": "Microsoft.Storage/storageAccounts",
                             "sku": {
-                                "name": "Standard_LRS"
+                                "name": "[parameters('storageAccountSku')]"
                             },
-                            "kind": "Storage",
+                            "kind": "[parameters('storageAccountKind')]",
                             "resources": [
                                 {
                                     "name": "default",

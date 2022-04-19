@@ -1,5 +1,25 @@
 Release History
 ===============
+1.1.0
+-----
+* SSHArc Public Preview
+* Add support for connecting to Arc Servers using AAD Certificates or Local User credentials.
+* New command az ssh arc.
+* New parameters: --resource-type and --ssh-proxy-folder.
+* Validate that target machine exists before attempting to connect.
+* Stop looking for OpenSSH client executables under C:\Windows\System32\OpenSSH on Windows. Path variable must be set properly for pre-installed OpenSSH.
+* Append username to host name on config files when using local user credentials.
+
+1.0.1
+-----
+* Added --ssh-client-folder parameter.
+* Fixed issues caused when there are spaces or non-english characters in paths provided by users.
+* Ensure all paths provided by users are converted to absolute paths.
+* Print OpenSSH error messages to console on "az ssh vm".
+* Print level1 SSH client log messages when running "az ssh vm" in debug mode.
+* Change "isPreview".
+* Correctly find pre-installed OpenSSH binaries on Windows 32bit machines.
+
 1.0.0
 -----
 * Delete all keys and certificates created during execution of ssh vm.
