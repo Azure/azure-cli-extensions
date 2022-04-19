@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.5.63
+++++++
+
+* Add support to create cluster with managed cluster snapshot. Command is
+  * `az aks create --cluster-snapshot-id <snapshot-id>`
+
 0.5.62
 ++++++
 
@@ -10,6 +16,7 @@ Release History
 
 0.5.61
 ++++++
+
 * Add support for `--format` parameter in `az aks get-credentials` command.  
 
 0.5.60

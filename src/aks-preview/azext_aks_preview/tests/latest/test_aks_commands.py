@@ -1642,6 +1642,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group {resource_group} --name {name} --location {location} ' \
                      '--nodepool-name {nodepool_name} ' \
                      '--node-count 1 ' \
+                     '-k {upgrade_k8s_version} ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         response = self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
@@ -1654,7 +1655,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
         print("The cluster resource id %s " % cluster_resource_id)
 
-
         # create snapshot from the cluster
         create_snapshot_cmd = 'aks snapshot create --resource-group {resource_group} --name {snapshot_name} --location {location} ' \
                               '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedClusterSnapshotPreview ' \
@@ -1665,6 +1665,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         snapshot_resource_id = response["id"]
         assert snapshot_resource_id is not None
+        self.kwargs.update({
+            'snapshot_resource_id': snapshot_resource_id,
+        })
         print("The snapshot resource id %s " % snapshot_resource_id)
 
         # delete the original AKS cluster
@@ -1681,6 +1684,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         list_snapshot_cmd = 'aks snapshot list --resource-group {resource_group} -o json'
         response = self.cmd(list_snapshot_cmd, checks=[]).get_output_in_json()
         assert len(response) > 0
+
+        # create another aks cluster using this snapshot
+        create_cmd = 'aks create --resource-group {resource_group} --name {aks_name2} --location {location} ' \
+                     '--nodepool-name {nodepool_name} ' \
+                     '--node-count 1 --cluster-snapshot-id {snapshot_resource_id} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedClusterSnapshotPreview ' \
+                     '--ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'creationData.sourceResourceId', snapshot_resource_id),
+            self.check(
+                'kubernetesVersion', upgrade_version)
+        ]).get_output_in_json()
+
+        # delete the 2nd AKS cluster
+        self.cmd(
+            'aks delete -g {resource_group} -n {aks_name2} --yes --no-wait', checks=[self.is_empty()])
 
         # delete the snapshot
         delete_snapshot_cmd = 'aks snapshot delete --resource-group {resource_group} --name {snapshot_name} --yes --no-wait'

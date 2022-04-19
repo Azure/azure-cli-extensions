@@ -552,6 +552,27 @@ def _get_snapshot(cli_ctx, snapshot_id):
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
+def _get_cluster_snapshot(cli_ctx, snapshot_id):
+    snapshot_id = snapshot_id.lower()
+    match = _re_mc_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        snapshot_client = cf_mc_snapshots_client(
+            cli_ctx, subscription_id=subscription_id)
+        try:
+            snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise InvalidArgumentValueError(
+                    "Managed cluster snapshot {} not found.".format(snapshot_id))
+            raise CLIError(ex.message)
+        return snapshot
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
 def aks_browse(
     cmd,
     client,
@@ -769,6 +790,7 @@ def aks_create(cmd,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                snapshot_id=None,
+               cluster_snapshot_id=None,
                enable_oidc_issuer=False,
                host_group_id=None,
                crg_id=None,
