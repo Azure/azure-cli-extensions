@@ -135,7 +135,7 @@ def load_arguments(self, _):
         c.argument('service_principal_client_id', help='The service principal client ID. ')
         c.argument('service_principal_client_secret', help='The service principal client secret.')
         c.argument('service_principal_tenant_id', help='The service principal tenant ID.')
-        c.argument('image', type=str, options_list=['--image', '-i'], help="Container image name that the Github Action should use. Defaults to the Container App name.")
+        c.argument('image', options_list=['--image', '-i'], help="Container image name that the Github Action should use. Defaults to the Container App name.")
 
     with self.argument_context('containerapp github-action delete') as c:
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
