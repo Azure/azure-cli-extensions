@@ -39,7 +39,8 @@ Param (
     [string] $SwaggerTagVersion
 )
 
-$OutputFolder = Join-Path $PSScriptRoot "../azext_quantum/vendored_sdks/azure_quantum/"
+# $OutputFolder = Join-Path $PSScriptRoot "../azext_quantum/vendored_sdks/azure_quantum/"
+$OutputFolder = "../azext_quantum/vendored_sdks/azure_quantum/"
 
 Write-Verbose "Output folder: $OutputFolder"
 
@@ -48,7 +49,8 @@ if (Test-Path $OutputFolder) {
     Remove-Item $OutputFolder -Recurse | Write-Verbose
 }
 
-$AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md"
+# $AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md"
+$AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/resource-manager/readme.md"
 
 Write-Verbose "Installing latest AutoRest client"
 npm install -g autorest@latest | Write-Verbose

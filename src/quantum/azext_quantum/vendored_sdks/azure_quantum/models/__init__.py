@@ -7,64 +7,102 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import BlobDetails
-    from ._models_py3 import CostEstimate
-    from ._models_py3 import ErrorData
-    from ._models_py3 import JobDetails
-    from ._models_py3 import JobDetailsList
-    from ._models_py3 import JsonPatchDocument
-    from ._models_py3 import ProviderStatus
-    from ._models_py3 import ProviderStatusList
-    from ._models_py3 import Quota
-    from ._models_py3 import QuotaList
-    from ._models_py3 import RestError
-    from ._models_py3 import SasUriResponse
-    from ._models_py3 import TargetStatus
-    from ._models_py3 import UsageEvent
+    from ._models_py3 import CheckNameAvailabilityParameters
+    from ._models_py3 import CheckNameAvailabilityResult
+    from ._models_py3 import ErrorAdditionalInfo
+    from ._models_py3 import ErrorDetail
+    from ._models_py3 import ErrorResponse
+    from ._models_py3 import OfferingsListResult
+    from ._models_py3 import Operation
+    from ._models_py3 import OperationDisplay
+    from ._models_py3 import OperationsList
+    from ._models_py3 import PricingDetail
+    from ._models_py3 import PricingDimension
+    from ._models_py3 import Provider
+    from ._models_py3 import ProviderDescription
+    from ._models_py3 import ProviderProperties
+    from ._models_py3 import ProviderPropertiesAad
+    from ._models_py3 import ProviderPropertiesManagedApplication
+    from ._models_py3 import QuantumWorkspace
+    from ._models_py3 import QuantumWorkspaceIdentity
+    from ._models_py3 import QuotaDimension
+    from ._models_py3 import Resource
+    from ._models_py3 import SkuDescription
+    from ._models_py3 import SystemData
+    from ._models_py3 import TagsObject
+    from ._models_py3 import TargetDescription
+    from ._models_py3 import TrackedResource
+    from ._models_py3 import WorkspaceListResult
 except (SyntaxError, ImportError):
-    from ._models import BlobDetails  # type: ignore
-    from ._models import CostEstimate  # type: ignore
-    from ._models import ErrorData  # type: ignore
-    from ._models import JobDetails  # type: ignore
-    from ._models import JobDetailsList  # type: ignore
-    from ._models import JsonPatchDocument  # type: ignore
-    from ._models import ProviderStatus  # type: ignore
-    from ._models import ProviderStatusList  # type: ignore
-    from ._models import Quota  # type: ignore
-    from ._models import QuotaList  # type: ignore
-    from ._models import RestError  # type: ignore
-    from ._models import SasUriResponse  # type: ignore
-    from ._models import TargetStatus  # type: ignore
-    from ._models import UsageEvent  # type: ignore
+    from ._models import CheckNameAvailabilityParameters  # type: ignore
+    from ._models import CheckNameAvailabilityResult  # type: ignore
+    from ._models import ErrorAdditionalInfo  # type: ignore
+    from ._models import ErrorDetail  # type: ignore
+    from ._models import ErrorResponse  # type: ignore
+    from ._models import OfferingsListResult  # type: ignore
+    from ._models import Operation  # type: ignore
+    from ._models import OperationDisplay  # type: ignore
+    from ._models import OperationsList  # type: ignore
+    from ._models import PricingDetail  # type: ignore
+    from ._models import PricingDimension  # type: ignore
+    from ._models import Provider  # type: ignore
+    from ._models import ProviderDescription  # type: ignore
+    from ._models import ProviderProperties  # type: ignore
+    from ._models import ProviderPropertiesAad  # type: ignore
+    from ._models import ProviderPropertiesManagedApplication  # type: ignore
+    from ._models import QuantumWorkspace  # type: ignore
+    from ._models import QuantumWorkspaceIdentity  # type: ignore
+    from ._models import QuotaDimension  # type: ignore
+    from ._models import Resource  # type: ignore
+    from ._models import SkuDescription  # type: ignore
+    from ._models import SystemData  # type: ignore
+    from ._models import TagsObject  # type: ignore
+    from ._models import TargetDescription  # type: ignore
+    from ._models import TrackedResource  # type: ignore
+    from ._models import WorkspaceListResult  # type: ignore
 
-from ._quantum_client_enums import (
-    DimensionScope,
-    JobStatus,
-    JsonPatchOperation,
-    MeterPeriod,
-    ProviderAvailability,
-    TargetAvailability,
+from ._azure_quantum_management_client_enums import (
+    CreatedByType,
+    ProvisioningStatus,
+    ResourceIdentityType,
+    Status,
+    UsableStatus,
 )
-
+from ._patch import __all__ as _patch_all
+from ._patch import *  # type: ignore # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 __all__ = [
-    'BlobDetails',
-    'CostEstimate',
-    'ErrorData',
-    'JobDetails',
-    'JobDetailsList',
-    'JsonPatchDocument',
-    'ProviderStatus',
-    'ProviderStatusList',
-    'Quota',
-    'QuotaList',
-    'RestError',
-    'SasUriResponse',
-    'TargetStatus',
-    'UsageEvent',
-    'DimensionScope',
-    'JobStatus',
-    'JsonPatchOperation',
-    'MeterPeriod',
-    'ProviderAvailability',
-    'TargetAvailability',
+    'CheckNameAvailabilityParameters',
+    'CheckNameAvailabilityResult',
+    'ErrorAdditionalInfo',
+    'ErrorDetail',
+    'ErrorResponse',
+    'OfferingsListResult',
+    'Operation',
+    'OperationDisplay',
+    'OperationsList',
+    'PricingDetail',
+    'PricingDimension',
+    'Provider',
+    'ProviderDescription',
+    'ProviderProperties',
+    'ProviderPropertiesAad',
+    'ProviderPropertiesManagedApplication',
+    'QuantumWorkspace',
+    'QuantumWorkspaceIdentity',
+    'QuotaDimension',
+    'Resource',
+    'SkuDescription',
+    'SystemData',
+    'TagsObject',
+    'TargetDescription',
+    'TrackedResource',
+    'WorkspaceListResult',
+    'CreatedByType',
+    'ProvisioningStatus',
+    'ResourceIdentityType',
+    'Status',
+    'UsableStatus',
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

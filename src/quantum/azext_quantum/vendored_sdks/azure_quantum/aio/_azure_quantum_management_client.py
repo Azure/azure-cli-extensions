@@ -7,64 +7,71 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Awaitable, Optional, TYPE_CHECKING
+from typing import Any, Awaitable, TYPE_CHECKING
 
-from azure.core import AsyncPipelineClient
-from azure.core.rest import AsyncHttpResponse, HttpRequest
 from msrest import Deserializer, Serializer
 
+from azure.core.rest import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core import AsyncARMPipelineClient
+
 from .. import models
-from ._configuration import QuantumClientConfiguration
-from .operations import JobsOperations, ProvidersOperations, QuotasOperations, StorageOperations
+from ._configuration import AzureQuantumManagementClientConfiguration
+from .operations import OfferingsOperations, Operations, WorkspaceOperations, WorkspacesOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-class QuantumClient:
-    """Azure Quantum REST API client.
+class AzureQuantumManagementClient:
+    """AzureQuantumManagementClient.
 
-    :ivar jobs: JobsOperations operations
-    :vartype jobs: azure.quantum._client.aio.operations.JobsOperations
-    :ivar providers: ProvidersOperations operations
-    :vartype providers: azure.quantum._client.aio.operations.ProvidersOperations
-    :ivar storage: StorageOperations operations
-    :vartype storage: azure.quantum._client.aio.operations.StorageOperations
-    :ivar quotas: QuotasOperations operations
-    :vartype quotas: azure.quantum._client.aio.operations.QuotasOperations
+    :ivar workspaces: WorkspacesOperations operations
+    :vartype workspaces: azure.mgmt.quantum.aio.operations.WorkspacesOperations
+    :ivar offerings: OfferingsOperations operations
+    :vartype offerings: azure.mgmt.quantum.aio.operations.OfferingsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.quantum.aio.operations.Operations
+    :ivar workspace: WorkspaceOperations operations
+    :vartype workspace: azure.mgmt.quantum.aio.operations.WorkspaceOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g.
-     00000000-0000-0000-0000-000000000000).
+    :param subscription_id: The Azure subscription ID.
     :type subscription_id: str
-    :param resource_group_name: Name of an Azure resource group.
-    :type resource_group_name: str
-    :param workspace_name: Name of the workspace.
-    :type workspace_name: str
-    :param base_url: Service URL. Default value is 'https://quantum.azure.com'.
+    :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
+    :keyword api_version: Api Version. Default value is "2022-01-10-preview". Note that overriding
+     this default value may result in unsupported behavior.
+    :paramtype api_version: str
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+     Retry-After header is present.
     """
 
     def __init__(
         self,
         credential: "AsyncTokenCredential",
         subscription_id: str,
-        resource_group_name: str,
-        workspace_name: str,
-        base_url: str = "https://quantum.azure.com",
+        base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
-        self._config = QuantumClientConfiguration(credential=credential, subscription_id=subscription_id, resource_group_name=resource_group_name, workspace_name=workspace_name, **kwargs)
-        self._client = AsyncPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._config = AzureQuantumManagementClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.jobs = JobsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.providers = ProvidersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.storage = StorageOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.quotas = QuotasOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.workspaces = WorkspacesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.offerings = OfferingsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.workspace = WorkspaceOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
 
     def _send_request(
@@ -96,7 +103,7 @@ class QuantumClient:
     async def close(self) -> None:
         await self._client.close()
 
-    async def __aenter__(self) -> "QuantumClient":
+    async def __aenter__(self) -> "AzureQuantumManagementClient":
         await self._client.__aenter__()
         return self
 
