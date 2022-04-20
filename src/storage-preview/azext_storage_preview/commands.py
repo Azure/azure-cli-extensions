@@ -98,7 +98,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
     def _adls_deprecate_message(self):
-        msg = "This {} has been deprecated and will be removed in future release.".format(self.object_type)
+        msg = "This {} has been partially deprecated.".format(self.object_type)
         msg += " The old storage account can use this command,"
         msg += " ADLS Gen2 account use '{}' instead.".format(self.redirect)
         msg += " For more information go to"
