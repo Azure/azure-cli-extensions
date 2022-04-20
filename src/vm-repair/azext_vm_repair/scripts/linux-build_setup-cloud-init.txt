@@ -6,6 +6,7 @@ runcmd:
  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustinstall.sh
  - chmod 700 rustinstall.sh
  - ./rustinstall.sh -y --default-toolchain nightly
- - apt-get update
- - apt install -y build-essential
+ #Commenting the below lines to stop for the alar2, till the complete of the distro feature , then it will updated on the next build.
+ #- apt-get update
+ #- apt install -y build-essential
 
