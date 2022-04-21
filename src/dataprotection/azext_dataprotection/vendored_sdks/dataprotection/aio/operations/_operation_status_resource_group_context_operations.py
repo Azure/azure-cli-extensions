@@ -18,8 +18,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class RestorableTimeRangesOperations:
-    """RestorableTimeRangesOperations async operations.
+class OperationStatusResourceGroupContextOperations:
+    """OperationStatusResourceGroupContextOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -40,45 +40,39 @@ class RestorableTimeRangesOperations:
         self._deserialize = deserializer
         self._config = config
 
-    async def find(
+    async def get(
         self,
         resource_group_name: str,
-        vault_name: str,
-        backup_instance_name: str,
-        parameters: "models.AzureBackupFindRestorableTimeRangesRequest",
+        operation_id: str,
         **kwargs
-    ) -> "models.AzureBackupFindRestorableTimeRangesResponseResource":
-        """find.
+    ) -> "models.OperationResource":
+        """Gets the operation status for an operation over a ResourceGroup's context.
+
+        Gets the operation status for an operation over a ResourceGroup's context.
 
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
-        :param backup_instance_name: The name of the backup instance.
-        :type backup_instance_name: str
-        :param parameters: Request body for operation.
-        :type parameters: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesRequest
+        :param operation_id:
+        :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AzureBackupFindRestorableTimeRangesResponseResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesResponseResource
+        :return: OperationResource, or the result of cls(response)
+        :rtype: ~azure.mgmt.dataprotection.models.OperationResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AzureBackupFindRestorableTimeRangesResponseResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResource"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2022-03-01"
-        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        url = self.find.metadata['url']  # type: ignore
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'operationId': self._serialize.url("operation_id", operation_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -88,13 +82,9 @@ class RestorableTimeRangesOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'AzureBackupFindRestorableTimeRangesRequest')
-        body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -102,10 +92,10 @@ class RestorableTimeRangesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('AzureBackupFindRestorableTimeRangesResponseResource', pipeline_response)
+        deserialized = self._deserialize('OperationResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    find.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/findRestorableTimeRanges'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/operationStatus/{operationId}'}  # type: ignore
