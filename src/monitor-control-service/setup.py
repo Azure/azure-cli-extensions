@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 try:
     from azext_amcs.manual.version import VERSION
 except ImportError:
@@ -48,7 +48,7 @@ setup(
     description='Microsoft Azure Command-Line Tools MonitorClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/monitor-control-service',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/monitor-control-service',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,

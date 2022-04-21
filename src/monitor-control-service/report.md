@@ -34,6 +34,7 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az monitor data-collection rule association list](#DataCollectionRuleAssociationsListByRule)|ListByRule|[Parameters](#ParametersDataCollectionRuleAssociationsListByRule)|[Example](#ExamplesDataCollectionRuleAssociationsListByRule)|
+|[az monitor data-collection rule association list](#DataCollectionRuleAssociationsListByDataCollectionEndpoint)|ListByDataCollectionEndpoint|[Parameters](#ParametersDataCollectionRuleAssociationsListByDataCollectionEndpoint)|[Example](#ExamplesDataCollectionRuleAssociationsListByDataCollectionEndpoint)|
 |[az monitor data-collection rule association list](#DataCollectionRuleAssociationsListByResource)|ListByResource|[Parameters](#ParametersDataCollectionRuleAssociationsListByResource)|[Example](#ExamplesDataCollectionRuleAssociationsListByResource)|
 |[az monitor data-collection rule association show](#DataCollectionRuleAssociationsGet)|Get|[Parameters](#ParametersDataCollectionRuleAssociationsGet)|[Example](#ExamplesDataCollectionRuleAssociationsGet)|
 |[az monitor data-collection rule association delete](#DataCollectionRuleAssociationsDelete)|Delete|[Parameters](#ParametersDataCollectionRuleAssociationsDelete)|[Example](#ExamplesDataCollectionRuleAssociationsDelete)|
@@ -144,6 +145,19 @@ az monitor data-collection rule association list --rule-name "myCollectionRule" 
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--data-collection-rule-name**|string|The name of the data collection rule. The name is case insensitive.|data_collection_rule_name|dataCollectionRuleName|
+
+#### <a name="DataCollectionRuleAssociationsListByDataCollectionEndpoint">Command `az monitor data-collection rule association list`</a>
+
+##### <a name="ExamplesDataCollectionRuleAssociationsListByDataCollectionEndpoint">Example</a>
+```
+az monitor data-collection rule association list --data-collection-endpoint-name "myDataCollectionEndpointName" \
+--resource-group "myResourceGroup"
+```
+##### <a name="ParametersDataCollectionRuleAssociationsListByDataCollectionEndpoint">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--data-collection-endpoint-name**|string|The name of the data collection endpoint. The name is case insensitive.|data_collection_endpoint_name|dataCollectionEndpointName|
 
 #### <a name="DataCollectionRuleAssociationsListByResource">Command `az monitor data-collection rule association list`</a>
 
