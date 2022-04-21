@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import DataMigrationManagementClientConfiguration
+from .operations import DatabaseMigrationsSqlDbOperations
 from .operations import DatabaseMigrationsSqlMiOperations
 from .operations import DatabaseMigrationsSqlVmOperations
 from .operations import Operations
@@ -35,6 +36,8 @@ from . import models
 class DataMigrationManagementClient(object):
     """Data Migration Client.
 
+    :ivar database_migrations_sql_db: DatabaseMigrationsSqlDbOperations operations
+    :vartype database_migrations_sql_db: azure.mgmt.datamigration.operations.DatabaseMigrationsSqlDbOperations
     :ivar database_migrations_sql_mi: DatabaseMigrationsSqlMiOperations operations
     :vartype database_migrations_sql_mi: azure.mgmt.datamigration.operations.DatabaseMigrationsSqlMiOperations
     :ivar database_migrations_sql_vm: DatabaseMigrationsSqlVmOperations operations
@@ -83,6 +86,8 @@ class DataMigrationManagementClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
+        self.database_migrations_sql_db = DatabaseMigrationsSqlDbOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.database_migrations_sql_mi = DatabaseMigrationsSqlMiOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.database_migrations_sql_vm = DatabaseMigrationsSqlVmOperations(

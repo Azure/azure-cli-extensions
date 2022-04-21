@@ -15,7 +15,8 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 API_VERSION = "2021-03-01"
-NEW_API_VERSION = "2022-01-01-preview"
+PREVIEW_API_VERSION = "2022-01-01-preview"
+STABLE_API_VERSION = "2022-03-01"
 POLLING_TIMEOUT = 60  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 
@@ -73,7 +74,7 @@ class ContainerAppClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(
@@ -102,7 +103,7 @@ class ContainerAppClient():
     @classmethod
     def update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(
@@ -131,7 +132,7 @@ class ContainerAppClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(
@@ -165,7 +166,7 @@ class ContainerAppClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(
@@ -183,7 +184,7 @@ class ContainerAppClient():
         app_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/containerApps?api-version={}".format(
             management_hostname.strip('/'),
@@ -211,7 +212,7 @@ class ContainerAppClient():
         app_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps?api-version={}"
         request_url = url_fmt.format(
@@ -240,7 +241,7 @@ class ContainerAppClient():
     def list_secrets(cls, cmd, resource_group_name, name):
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/listSecrets?api-version={}"
         request_url = url_fmt.format(
@@ -259,7 +260,7 @@ class ContainerAppClient():
         revisions_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions?api-version={}"
         request_url = url_fmt.format(
@@ -288,7 +289,7 @@ class ContainerAppClient():
     @classmethod
     def show_revision(cls, cmd, resource_group_name, container_app_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}?api-version={}"
         request_url = url_fmt.format(
@@ -305,7 +306,7 @@ class ContainerAppClient():
     @classmethod
     def restart_revision(cls, cmd, resource_group_name, container_app_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/restart?api-version={}"
         request_url = url_fmt.format(
@@ -322,7 +323,7 @@ class ContainerAppClient():
     @classmethod
     def activate_revision(cls, cmd, resource_group_name, container_app_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/activate?api-version={}"
         request_url = url_fmt.format(
@@ -339,7 +340,7 @@ class ContainerAppClient():
     @classmethod
     def deactivate_revision(cls, cmd, resource_group_name, container_app_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/revisions/{}/deactivate?api-version={}"
         request_url = url_fmt.format(
@@ -358,7 +359,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def create(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -387,7 +388,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -416,7 +417,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -451,7 +452,7 @@ class ManagedEnvironmentClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
         request_url = url_fmt.format(
@@ -469,7 +470,7 @@ class ManagedEnvironmentClient():
         env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/managedEnvironments?api-version={}".format(
             management_hostname.strip('/'),
@@ -497,7 +498,7 @@ class ManagedEnvironmentClient():
         env_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments?api-version={}"
         request_url = url_fmt.format(
@@ -527,7 +528,7 @@ class GitHubActionClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
         request_url = url_fmt.format(
@@ -556,7 +557,7 @@ class GitHubActionClient():
     @classmethod
     def show(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
         request_url = url_fmt.format(
@@ -572,7 +573,7 @@ class GitHubActionClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, name, headers, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/sourcecontrols/current?api-version={}"
         request_url = url_fmt.format(
@@ -610,7 +611,7 @@ class DaprComponentClient():
     def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}?api-version={}"
         request_url = url_fmt.format(
@@ -641,7 +642,7 @@ class DaprComponentClient():
     @classmethod
     def delete(cls, cmd, resource_group_name, environment_name, name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}?api-version={}"
         request_url = url_fmt.format(
@@ -678,7 +679,7 @@ class DaprComponentClient():
     @classmethod
     def show(cls, cmd, resource_group_name, environment_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents/{}?api-version={}"
         request_url = url_fmt.format(
@@ -697,7 +698,7 @@ class DaprComponentClient():
         app_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = NEW_API_VERSION
+        api_version = PREVIEW_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/daprComponents?api-version={}".format(
             management_hostname.strip('/'),
