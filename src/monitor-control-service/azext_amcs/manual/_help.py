@@ -165,7 +165,7 @@ helps['monitor data-collection rule create'] = """
     type: command
     short-summary: "Create a data collection rule."
     parameters:
-      - name: --rule-file 
+      - name: --rule-file
         short-summary: "The json file for rule parameters."
     examples:
       - name: Create data collection rule
