@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
                    help=('Path to the folder where the ssh proxy should be saved. '
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
+        c.argument('winrdp', options_list=['--winrdp'], help=('RDP'), action='store_true')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
@@ -87,4 +88,5 @@ def load_arguments(self, _):
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
                    help=('Path to the folder where the ssh proxy should be saved. '
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
+        c.argument('winrdp', options_list=['--winrdp'], help=('RDP'), action='store_true')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')

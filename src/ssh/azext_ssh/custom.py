@@ -21,6 +21,7 @@ from azure.cli.core import telemetry
 from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 
 from . import ip_utils
+from . import rdp_utils
 from . import rsa_parser
 from . import ssh_utils
 from . import connectivity_utils
@@ -33,7 +34,8 @@ logger = log.get_logger(__name__)
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_folder=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None, ssh_args=None):
+           ssh_client_folder=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None,
+           winrdp=False, ssh_args=None):
 
     # delete_credentials can only be used by Azure Portal to provide one-click experience on CloudShell.
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
@@ -41,7 +43,11 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
 
     # include openssh client logs to --debug output to make it easier to users to debug connection issued.
     if '--debug' in cmd.cli_ctx.data['safe_params'] and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_args):
-        ssh_args = ['-vvv'] if not ssh_args else ['-vvv'] + ssh_args
+        # This is temporary, because -vvv logs are a little messed up with RDP
+        if winrdp:
+            ssh_args = ['-v'] if not ssh_args else ['-v'] + ssh_args
+        else:
+            ssh_args = ['-vvv'] if not ssh_args else ['-vvv'] + ssh_args
 
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 
@@ -49,10 +55,15 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     credentials_folder = None
 
     op_call = ssh_utils.start_ssh_connection
+    if winrdp:
+        if platform.system() != 'Windows':
+            raise azclierror.BadRequestError("Platform is not supported for this command. Supported platforms: Windows")
+        op_call = rdp_utils.start_rdp_connection
+
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
                                       private_key_file, use_private_ip, local_user, cert_file, port,
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
-                                      ssh_proxy_folder, credentials_folder)
+                                      ssh_proxy_folder, credentials_folder, winrdp)
     ssh_session.resource_type = _decide_resource_type(cmd, ssh_session)
     _do_ssh_op(cmd, ssh_session, op_call)
 
@@ -134,10 +145,10 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
             local_user=None, cert_file=None, port=None, ssh_client_folder=None, delete_credentials=False,
-            ssh_proxy_folder=None, ssh_args=None):
+            ssh_proxy_folder=None, winrdp=False, ssh_args=None):
 
     ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file, False, local_user, cert_file,
-           port, ssh_client_folder, delete_credentials, "Microsoft.HybridCompute", ssh_proxy_folder, ssh_args)
+           port, ssh_client_folder, delete_credentials, "Microsoft.HybridCompute", ssh_proxy_folder, winrdp, ssh_args)
 
 
 def _do_ssh_op(cmd, op_info, op_call):
@@ -409,11 +420,15 @@ def _decide_resource_type(cmd, op_info):
         os_type = arc.properties.os_name
 
     # Note 2: This is a temporary check while AAD login is not enabled for Windows.
-    if os_type and os_type.lower() == 'windows' and not op_info.local_user:
-        colorama.init()
-        raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
-                                                      "for Windows.",
-                                                      Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
+    if os_type and os_type.lower() == 'windows':
+        if not op_info.local_user:
+            colorama.init()
+            raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
+                                                          "for Windows.",
+                                                          Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
+    else:
+        if op_info.winrdp:
+            raise azclierror.BadRequestError("OS type on target resource doesn't support RDP connections.")
 
     if os_type:
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
