@@ -494,7 +494,7 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestmonitor_control_service_myResourceGroup'[:7], key='rg',
                            parameter_name='rg')
-    def test_monitor_control_service_Scenario(self, rg):
+    def test_monitor_control_service_scenario(self, rg):
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
