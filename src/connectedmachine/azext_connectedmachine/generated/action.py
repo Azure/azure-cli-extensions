@@ -16,7 +16,7 @@
 
 import argparse
 from collections import defaultdict
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from knack.util import CLIError
 
 
 class AddStatus(argparse.Action):
@@ -31,7 +31,7 @@ class AddStatus(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise InvalidArgumentValueError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -53,7 +53,7 @@ class AddStatus(argparse.Action):
                 d['time'] = v[0]
 
             else:
-                raise InvalidArgumentValueError(
+                raise CLIError(
                     'Unsupported Key {} is provided for parameter status. All possible keys are: code, level,'
                     ' display-status, message, time'.format(k)
                 )
@@ -73,7 +73,7 @@ class AddConnectionState(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise InvalidArgumentValueError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -86,7 +86,7 @@ class AddConnectionState(argparse.Action):
                 d['description'] = v[0]
 
             else:
-                raise InvalidArgumentValueError(
+                raise CLIError(
                     'Unsupported Key {} is provided for parameter connection-state. All possible keys are: status,'
                     ' description'.format(k)
                 )

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.0
++++++	
+* Upgrade the API version to stable/2022-03-10 
+
 0.4.1	
 +++++	
 * Add the enable-auto-upgrade parameter in az connectedmachine extension create/update functions
