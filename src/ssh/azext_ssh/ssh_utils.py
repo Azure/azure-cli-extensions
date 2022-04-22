@@ -211,13 +211,6 @@ def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
-    for line in lines:
-        if substring in line:
-            return line
-    return None
-
-
-def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
