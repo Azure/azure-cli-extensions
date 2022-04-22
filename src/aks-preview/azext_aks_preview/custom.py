@@ -552,6 +552,27 @@ def _get_snapshot(cli_ctx, snapshot_id):
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
+def _get_cluster_snapshot(cli_ctx, snapshot_id):
+    snapshot_id = snapshot_id.lower()
+    match = _re_mc_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        snapshot_client = cf_mc_snapshots_client(
+            cli_ctx, subscription_id=subscription_id)
+        try:
+            snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise InvalidArgumentValueError(
+                    "Managed cluster snapshot {} not found.".format(snapshot_id))
+            raise CLIError(ex.message)
+        return snapshot
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
 def aks_browse(
     cmd,
     client,
@@ -753,6 +774,8 @@ def aks_create(cmd,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
+               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
+               enable_workload_identity=None,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
                edge_zone=None,
@@ -767,6 +790,7 @@ def aks_create(cmd,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
                snapshot_id=None,
+               cluster_snapshot_id=None,
                enable_oidc_issuer=False,
                host_group_id=None,
                crg_id=None,
@@ -834,6 +858,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
+               # NOTE: for workload identity flags, we need to know if it's set to True/False or not set (None)
+               enable_workload_identity=None,
+               disable_workload_identity=None,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                rotation_poll_interval=None,

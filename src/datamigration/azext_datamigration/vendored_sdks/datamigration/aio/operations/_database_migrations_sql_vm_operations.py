@@ -51,7 +51,7 @@ class DatabaseMigrationsSqlVmOperations:
         expand: Optional[str] = None,
         **kwargs
     ) -> "models.DatabaseMigrationSqlVm":
-        """Retrieve the Database Migration resource.
+        """Retrieve the specified database migration for a given SQL VM.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -64,7 +64,7 @@ class DatabaseMigrationsSqlVmOperations:
          details of migration operation for that ID are retrieved. If not provided (default), then
          details related to most recent or current operation are retrieved.
         :type migration_operation_id: str
-        :param expand: The child resources to include in the response.
+        :param expand: Complete migration details be included in the response.
         :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DatabaseMigrationSqlVm, or the result of cls(response)
@@ -76,7 +76,7 @@ class DatabaseMigrationsSqlVmOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         accept = "application/json"
 
         # Construct URL
@@ -130,7 +130,7 @@ class DatabaseMigrationsSqlVmOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -266,7 +266,7 @@ class DatabaseMigrationsSqlVmOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -311,7 +311,7 @@ class DatabaseMigrationsSqlVmOperations:
         parameters: "models.MigrationOperationInput",
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Stop ongoing migration for the database.
+        """Stop in-progress database migration to SQL VM.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -390,7 +390,7 @@ class DatabaseMigrationsSqlVmOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-10-30-preview"
+        api_version = "2022-03-30-preview"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL
@@ -435,7 +435,7 @@ class DatabaseMigrationsSqlVmOperations:
         parameters: "models.MigrationOperationInput",
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Cutover online migration operation for the database.
+        """Initiate cutover for in-progress online database migration to SQL VM.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.

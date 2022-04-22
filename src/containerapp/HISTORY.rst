@@ -3,6 +3,7 @@
 Release History
 ===============
 
+
 0.3.2
 ++++++
 * Added 'az containerapp up' to create or update a container app and all associated resources (container app environment, ACR, Github Actions, resource group, etc.)

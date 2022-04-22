@@ -17,7 +17,7 @@ from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list, get_ossku_completion_list)
 from ._validators import (
     validate_create_parameters, validate_k8s_version, validate_linux_host_name,
-    validate_ssh_key, validate_nodes_count, validate_ip_ranges, validate_snapshot_name,
+    validate_ssh_key, validate_nodes_count, validate_ip_ranges, validate_snapshot_name, validate_cluster_snapshot_id,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_cluster_id, validate_snapshot_id, validate_crg_id,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
@@ -169,6 +169,7 @@ def load_arguments(self, _):
         c.argument('http_proxy_config', options_list=[
                    '--http-proxy-config'], type=str)
         c.argument('enable_pod_identity', action='store_true')
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('appgw_name', options_list=[
                    '--appgw-name'], arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', options_list=[
@@ -202,6 +203,8 @@ def load_arguments(self, _):
         c.argument('workload_runtime', arg_type=get_enum_type(
             workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('snapshot_id', type=str, validator=validate_snapshot_id)
+        c.argument('cluster_snapshot_id',
+                   validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('host_group_id',
                    validator=validate_host_group_id, is_preview=True)
@@ -255,6 +258,8 @@ def load_arguments(self, _):
                    validator=validate_assign_identity)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('disable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
         c.argument('rotation_poll_interval', type=str)
