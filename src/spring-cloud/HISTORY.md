@@ -1,5 +1,9 @@
 Release History
 ===============
+3.1.4
+---
+* The argument "--build-env" accepts key[=value] instead of json.
+
 3.1.3
 ---
 * Revert new RBAC requirement for Standard and Basic sku Spring resource for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.

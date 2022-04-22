@@ -39,6 +39,12 @@ def not_support_enterprise(cmd, namespace):
 def validate_build_env(cmd, namespace):
     if namespace.build_env is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
         raise ArgumentUsageError("'--build-env' only supports for Enterprise tier Spring instance.")
+    else:
+        if isinstance(namespace.build_env, list):
+            env_dict = {}
+        for item in namespace.build_env:
+            env_dict.update(validate_tag(item))
+        namespace.build_env = env_dict
 
 
 def validate_target_module(cmd, namespace):
