@@ -256,10 +256,10 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
 
         if not os.path.isfile(ssh_path):
             raise azclierror.UnclassifiedUserFault(
-                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". "
-                "Make sure OpenSSH is installed correctly: "
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". ",
+                Fore.YELLOW + "Make sure OpenSSH is installed correctly: "
                 "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
-                "Or use --ssh-client-folder to provide folder path with ssh executables. ")
+                "Or use --ssh-client-folder to provide folder path with ssh executables. " + Style.RESET_ALL)
 
     return ssh_path
 
