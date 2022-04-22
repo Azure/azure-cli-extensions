@@ -907,8 +907,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
 # Do a get and put to try and bring clusters to a desired state.
 def aks_reconcile(cmd, client, resource_group_name, name, # pylint: disable=unused-argument
-               headers, no_wait):
+               aks_custom_headers, no_wait):
     mc = client.get(resource_group_name, name)
+    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                               resource_group_name=resource_group_name,
                               resource_name=name,
