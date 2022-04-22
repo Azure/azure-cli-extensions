@@ -211,6 +211,13 @@ def _print_error_messages_from_ssh_log(log_file, connection_status, delete_cert)
 
 
 def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
+    for line in lines:
+        if substring in line:
+            return line
+    return None
+
+
+def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
     if ssh_client_folder:
         ssh_path = os.path.join(ssh_client_folder, ssh_command)
         if platform.system() == 'Windows':
@@ -219,9 +226,48 @@ def _get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
             logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
             return ssh_path
         logger.warning("Could not find %s in provided --ssh-client-folder %s. "
-                       "Attempting to use pre-installed OpenSSH.", ssh_path, ssh_client_folder)
+                       "Attempting to get pre-installed OpenSSH bits.", ssh_command, ssh_client_folder)
 
     ssh_path = ssh_command
+
+    if platform.system() == 'Windows':
+        # If OS architecture is 64bit and python architecture is 32bit,
+        # look for System32 under SysNative folder.
+        machine = platform.machine()
+        os_architecture = None
+        # python interpreter architecture
+        platform_architecture = platform.architecture()[0]
+        sys_path = None
+
+        if machine.endswith('64'):
+            os_architecture = '64bit'
+        elif machine.endswith('86'):
+            os_architecture = '32bit'
+        elif machine == '':
+            raise azclierror.BadRequestError("Couldn't identify the OS architecture.")
+        else:
+            raise azclierror.BadRequestError(f"Unsuported OS architecture: {machine} is not currently supported")
+
+        if os_architecture == "64bit":
+            sys_path = 'SysNative' if platform_architecture == '32bit' else 'System32'
+        else:
+            sys_path = 'System32'
+
+        system_root = os.environ['SystemRoot']
+        system32_path = os.path.join(system_root, sys_path)
+        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
+        logger.debug("Platform architecture: %s", platform_architecture)
+        logger.debug("OS architecture: %s", os_architecture)
+        logger.debug("System Root: %s", system_root)
+        logger.debug("Attempting to run %s from path %s", ssh_command, ssh_path)
+
+        if not os.path.isfile(ssh_path):
+            raise azclierror.UnclassifiedUserFault(
+                "Could not find " + ssh_command + ".exe on path " + ssh_path + ". "
+                "Make sure OpenSSH is installed correctly: "
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse . "
+                "Or use --ssh-client-folder to provide folder path with ssh executables. ")
+
     return ssh_path
 
 
