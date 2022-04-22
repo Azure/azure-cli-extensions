@@ -63,6 +63,7 @@ def load_command_table(self, _):
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
+        g.custom_command('reconcile', 'aks_reconcile', supports_no_wait=True)
         g.command('delete', 'begin_delete',
                   supports_no_wait=True, confirmation=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)

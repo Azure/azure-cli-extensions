@@ -905,6 +905,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     return aks_update_decorator.update_mc_preview(mc)
 
 
+# Do a get and put to try and bring clusters to a desired state.
+def aks_reconcile(cmd, client, resource_group_name, name,
+               headers, no_wait):
+    mc = client.get(resource_group_name, name)
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
+                              resource_group_name=resource_group_name,
+                              resource_name=name,
+                              parameters=mc,
+                              headers=headers)
+
 # pylint: disable=unused-argument
 def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
