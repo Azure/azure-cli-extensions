@@ -2,10 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement
+# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking
 
+import threading
+import sys
+import time
 from urllib.parse import urlparse
-from azure.cli.command_modules.appservice.custom import (_get_acr_cred)
+import requests
+
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError,
@@ -14,6 +18,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import open_page_in_browser
 from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -47,7 +52,11 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _registry_exists, _remove_env_vars, _update_revision_env_secretrefs)
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
+                     _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name)
+
+from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
+                         SSH_BACKUP_ENCODING)
 
 logger = get_logger(__name__)
 
@@ -57,7 +66,8 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn", "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn",
+                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
@@ -85,7 +95,6 @@ def load_yaml_file(file_name):
 def create_deserializer():
     from ._sdk_models import ContainerApp  # pylint: disable=unused-import
     from msrest import Deserializer
-    import sys
     import inspect
 
     sdkClasses = inspect.getmembers(sys.modules["azext_containerapp._sdk_models"])
@@ -294,6 +303,7 @@ def create_containerapp(cmd,
                         tags=None,
                         no_wait=False,
                         system_assigned=False,
+                        disable_warnings=False,
                         user_assigned=None):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
@@ -302,7 +312,7 @@ def create_containerapp(cmd,
             revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
             registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
                 startup_command or args or tags:
-            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+            not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if not image:
@@ -352,14 +362,14 @@ def create_containerapp(cmd,
 
         # Infer credentials if not supplied and its azurecr
         if registry_user is None or registry_pass is None:
-            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server)
+            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server, disable_warnings)
 
         registries_def["server"] = registry_server
         registries_def["username"] = registry_user
 
         if secrets_def is None:
             secrets_def = []
-        registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass)
+        registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, disable_warnings=disable_warnings)
 
     dapr_def = None
     if dapr_enabled:
@@ -445,12 +455,12 @@ def create_containerapp(cmd,
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
+            not disable_warnings and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
-            logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+            not disable_warnings and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
-            logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
+            not disable_warnings and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
 
         return r
     except Exception as e:
@@ -740,6 +750,7 @@ def create_managed_environment(cmd,
                                platform_reserved_dns_ip=None,
                                internal_only=False,
                                tags=None,
+                               disable_warnings=False,
                                no_wait=False):
 
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
@@ -794,9 +805,9 @@ def create_managed_environment(cmd,
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
+            not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
 
-        logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
         return r
     except Exception as e:
@@ -1021,6 +1032,36 @@ def show_managed_identity(cmd, name, resource_group_name):
         return r["identity"]
 
 
+def _validate_github(repo, branch, token):
+    from github import Github, GithubException
+    from github.GithubException import BadCredentialsException
+
+    if repo:
+        g = Github(token)
+        github_repo = None
+        try:
+            github_repo = g.get_repo(repo)
+            if not github_repo.permissions.push or not github_repo.permissions.maintain:
+                raise ValidationError("The token does not have appropriate access rights to repository {}.".format(repo))
+            try:
+                github_repo.get_branch(branch=branch)
+            except GithubException as e:
+                error_msg = "Encountered GitHub error when accessing {} branch in {} repo.".format(branch, repo)
+                if e.data and e.data['message']:
+                    error_msg += " Error: {}".format(e.data['message'])
+                raise CLIInternalError(error_msg) from e
+            logger.warning('Verified GitHub repo and branch')
+        except BadCredentialsException as e:
+            raise ValidationError("Could not authenticate to the repository. Please create a Personal Access Token and use "
+                                  "the --token argument. Run 'az webapp deployment github-actions add --help' "
+                                  "for more information.") from e
+        except GithubException as e:
+            error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
+            if e.data and e.data['message']:
+                error_msg += " Error: {}".format(e.data['message'])
+            raise CLIInternalError(error_msg) from e
+
+
 def create_or_update_github_action(cmd,
                                    name,
                                    resource_group_name,
@@ -1035,7 +1076,8 @@ def create_or_update_github_action(cmd,
                                    context_path=None,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
-                                   service_principal_tenant_id=None):
+                                   service_principal_tenant_id=None,
+                                   no_wait=False):
     if not token and not login_with_github:
         raise_missing_token_suggestion()
     elif not token:
@@ -1044,45 +1086,10 @@ def create_or_update_github_action(cmd,
     elif token and login_with_github:
         logger.warning("Both token and --login-with-github flag are provided. Will use provided token")
 
-    try:
-        # Verify github repo
-        from github import Github, GithubException
-        from github.GithubException import BadCredentialsException
+    repo = repo_url_to_name(repo_url)
+    repo_url = f"https://github.com/{repo}"  # allow specifying repo as <user>/<repo> without the full github url
 
-        repo = None
-        repo = repo_url.split('/')
-        if len(repo) >= 2:
-            repo = '/'.join(repo[-2:])
-
-        if repo:
-            g = Github(token)
-            github_repo = None
-            try:
-                github_repo = g.get_repo(repo)
-                if not github_repo.permissions.push or not github_repo.permissions.maintain:
-                    raise ValidationError("The token does not have appropriate access rights to repository {}.".format(repo))
-                try:
-                    github_repo.get_branch(branch=branch)
-                except GithubException as e:
-                    error_msg = "Encountered GitHub error when accessing {} branch in {} repo.".format(branch, repo)
-                    if e.data and e.data['message']:
-                        error_msg += " Error: {}".format(e.data['message'])
-                    raise CLIInternalError(error_msg) from e
-                logger.warning('Verified GitHub repo and branch')
-            except BadCredentialsException as e:
-                raise ValidationError("Could not authenticate to the repository. Please create a Personal Access Token and use "
-                                      "the --token argument. Run 'az webapp deployment github-actions add --help' "
-                                      "for more information.") from e
-            except GithubException as e:
-                error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
-                if e.data and e.data['message']:
-                    error_msg += " Error: {}".format(e.data['message'])
-                raise CLIInternalError(error_msg) from e
-    except CLIError as clierror:
-        raise clierror
-    except Exception:
-        # If exception due to github package missing, etc just continue without validating the repo and rely on api validation
-        pass
+    _validate_github(repo, branch, token)
 
     source_control_info = None
 
@@ -1120,7 +1127,7 @@ def create_or_update_github_action(cmd,
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
 
         try:
-            registry_username, registry_password = _get_acr_cred(cmd.cli_ctx, registry_name)
+            registry_username, registry_password, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
         except Exception as ex:
             raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
 
@@ -1140,7 +1147,10 @@ def create_or_update_github_action(cmd,
     headers = ["x-ms-github-auxiliary={}".format(token)]
 
     try:
-        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers)
+        logger.warning("Creating Github action...")
+        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
+        if not no_wait:
+            await_github_action(cmd, token, repo, branch, name, resource_group_name)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1351,7 +1361,7 @@ def show_ingress(cmd, name, resource_group_name):
         raise ValidationError("The containerapp '{}' does not have ingress enabled.".format(name)) from e
 
 
-def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, no_wait=False):  # pylint: disable=redefined-builtin
+def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, disable_warnings=False, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None
@@ -1385,7 +1395,7 @@ def enable_ingress(cmd, name, resource_group_name, type, target_port, transport=
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        logger.warning("\nIngress enabled. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        not disable_warnings and logger.warning("\nIngress enabled. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         return r["properties"]["configuration"]["ingress"]
     except Exception as e:
         handle_raw_exception(e)
@@ -1507,7 +1517,7 @@ def list_registry(cmd, name, resource_group_name):
         raise ValidationError("The containerapp {} has no assigned registries.".format(name)) from e
 
 
-def set_registry(cmd, name, resource_group_name, server, username=None, password=None, no_wait=False):
+def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     containerapp_def = None
@@ -1533,12 +1543,12 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
         # If registry is Azure Container Registry, we can try inferring credentials
         if '.azurecr.io' not in server:
             raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
-        logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+        not disable_warnings and logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
         parsed = urlparse(server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
 
         try:
-            username, password = _get_acr_cred(cmd.cli_ctx, registry_name)
+            username, password, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
         except Exception as ex:
             raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
 
@@ -1546,7 +1556,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
     updating_existing_registry = False
     for r in registries_def:
         if r['server'].lower() == server.lower():
-            logger.warning("Updating existing registry.")
+            not disable_warnings and logger.warning("Updating existing registry.")
             updating_existing_registry = True
             if username:
                 r["username"] = username
@@ -1712,7 +1722,6 @@ def set_secrets(cmd, name, resource_group_name, secrets,
                 # yaml=None,
                 no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
-
     # if not yaml and not secrets:
     #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
 
@@ -1880,3 +1889,279 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+def list_replicas(cmd, resource_group_name, name, revision=None):
+    app = ContainerAppClient.show(cmd, resource_group_name, name)
+    if not revision:
+        revision = app["properties"]["latestRevisionName"]
+    return ContainerAppClient.list_replicas(cmd=cmd,
+                                            resource_group_name=resource_group_name,
+                                            container_app_name=name,
+                                            revision_name=revision)
+
+
+def get_replica(cmd, resource_group_name, name, replica, revision=None):
+    app = ContainerAppClient.show(cmd, resource_group_name, name)
+    if not revision:
+        revision = app["properties"]["latestRevisionName"]
+    return ContainerAppClient.get_replica(cmd=cmd,
+                                          resource_group_name=resource_group_name,
+                                          container_app_name=name,
+                                          revision_name=revision,
+                                          replica_name=replica)
+
+
+def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, startup_command="sh"):
+    if isinstance(startup_command, list):
+        startup_command = startup_command[0]  # CLI seems a little buggy when calling a param "--command"
+
+    conn = WebSocketConnection(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
+                               replica=replica, container=container, startup_command=startup_command)
+
+    encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
+    reader = threading.Thread(target=read_ssh, args=(conn, encodings))
+    reader.daemon = True
+    reader.start()
+
+    writer = get_stdin_writer(conn)
+    writer.daemon = True
+    writer.start()
+
+    logger.warning("Use ctrl + D to exit.")
+    while conn.is_connected:
+        try:
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            if conn.is_connected:
+                logger.info("Caught KeyboardInterrupt. Sending ctrl+c to server")
+                conn.send(SSH_CTRL_C_MSG)
+
+
+def stream_containerapp_logs(cmd, resource_group_name, name, container=None, revision=None, replica=None, follow=False,
+                             tail=None, output_format=None):
+    if tail:
+        if tail < 0 or tail > 300:
+            raise ValidationError("--tail must be between 0 and 300.")
+
+    sub = get_subscription_id(cmd.cli_ctx)
+    token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+    logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
+    base_url = logstream_endpoint[:logstream_endpoint.index("/subscriptions/")]
+
+    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
+           f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
+
+    logger.warning("connecting to : %s", url)
+    request_params = {"follow": str(follow).lower(), "output": output_format, "tailLines": tail}
+    headers = {"Authorization": f"Bearer {token}"}
+    resp = requests.get(url, timeout=None, stream=True, params=request_params, headers=headers)
+
+    if not resp.ok:
+        ValidationError(f"Got bad status from the logstream API: {resp.status_code}")
+
+    for line in resp.iter_lines():
+        if line:
+            logger.info("received raw log line: %s", line)
+            # these .replaces are needed to display color/quotations properly
+            # for some reason the API returns garbled unicode special characters (may need to add more in the future)
+            print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
+
+
+def open_containerapp_in_browser(cmd, name, resource_group_name):
+    app = ContainerAppClient.show(cmd, resource_group_name, name)
+    url = safe_get(app, "properties", "configuration", "ingress", "fqdn")
+    if not url:
+        raise ValidationError("Could not open in browser: no public URL for this app")
+    if not url.startswith("http"):
+        url = f"http://{url}"
+    open_page_in_browser(url)
+
+
+def containerapp_up(cmd,
+                    name,
+                    resource_group_name=None,
+                    managed_env=None,
+                    location=None,
+                    registry_server=None,
+                    image=None,
+                    source=None,
+                    ingress=None,
+                    target_port=None,
+                    registry_user=None,
+                    registry_pass=None,
+                    env_vars=None,
+                    logs_customer_id=None,
+                    logs_key=None,
+                    repo=None,
+                    token=None,
+                    branch=None,
+                    browse=False,
+                    context_path=None,
+                    service_principal_client_id=None,
+                    service_principal_client_secret=None,
+                    service_principal_tenant_id=None):
+    from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
+                            ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
+                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry)
+
+    dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
+
+    _validate_up_args(source, image, repo)
+
+    image = _reformat_image(source, repo, image)
+    token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
+
+    if image and "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest" in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 80 if not target_port else target_port
+
+    dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
+    ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+
+    resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
+    env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, ingress)
+
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
+
+    if app.check_exists():
+        if app.get()["properties"]["provisioningState"] == "InProgress":
+            raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
+
+    if source or repo:
+        _get_registry_from_app(app)  # if the app exists, get the registry
+        _get_registry_details(cmd, app)  # fetch ACR creds from arguments registry arguments
+
+    resource_group.create_if_needed()
+    env.create_if_needed(name)
+    app.create_acr_if_needed()
+
+    if source:
+        app.run_acr_build(dockerfile, source, False)
+
+    app.create(no_registry=bool(repo))
+    if repo:
+        _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
+                              service_principal_tenant_id, branch, token, repo, context_path)
+
+    if browse:
+        open_containerapp_in_browser(cmd, app.name, app.resource_group.name)
+
+    up_output(app)
+
+
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, registry_pass):
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    try:
+        location = ManagedEnvironmentClient.show(cmd, resource_group_name, managed_env.split('/')[-1])["location"]
+    except:
+        pass
+
+    ca_exists = False
+    if containerapp_def:
+        ca_exists = True
+
+    if not ca_exists:
+        containerapp_def = None
+        containerapp_def = ContainerAppModel
+        containerapp_def["location"] = location
+        containerapp_def["properties"]["managedEnvironmentId"] = managed_env
+        containerapp_def["properties"]["configuration"] = ConfigurationModel
+    else:
+        # check provisioning state here instead of secrets so no error
+        _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    container = ContainerModel
+    container["image"] = image
+    container["name"] = name
+
+    if env_vars:
+        container["env"] = parse_env_var_flags(env_vars)
+
+    external_ingress = None
+    if ingress is not None:
+        if ingress.lower() == "internal":
+            external_ingress = False
+        elif ingress.lower() == "external":
+            external_ingress = True
+
+    ingress_def = None
+    if target_port is not None and ingress is not None:
+        ingress_def = IngressModel
+        ingress_def["external"] = external_ingress
+        ingress_def["targetPort"] = target_port
+        containerapp_def["properties"]["configuration"]["ingress"] = ingress_def
+
+    # handle multi-container case
+    if ca_exists:
+        existing_containers = containerapp_def["properties"]["template"]["containers"]
+        if len(existing_containers) == 0:
+            # No idea how this would ever happen, failed provisioning maybe?
+            containerapp_def["properties"]["template"] = TemplateModel
+            containerapp_def["properties"]["template"]["containers"] = [container]
+        if len(existing_containers) == 1:
+            # Assume they want it updated
+            existing_containers[0] = container
+        if len(existing_containers) > 1:
+            # Assume they want to update, if not existing just add it
+            existing_containers = [x for x in existing_containers if x['name'].lower() == name.lower()]
+            if len(existing_containers) == 1:
+                existing_containers[0] = container
+            else:
+                existing_containers.append(container)
+        containerapp_def["properties"]["template"]["containers"] = existing_containers
+    else:
+        containerapp_def["properties"]["template"] = TemplateModel
+        containerapp_def["properties"]["template"]["containers"] = [container]
+
+    registries_def = None
+    registry = None
+
+    if "secrets" not in containerapp_def["properties"]["configuration"] or containerapp_def["properties"]["configuration"]["secrets"] is None:
+        containerapp_def["properties"]["configuration"]["secrets"] = []
+
+    if "registries" not in containerapp_def["properties"]["configuration"] or containerapp_def["properties"]["configuration"]["registries"] is None:
+        containerapp_def["properties"]["configuration"]["registries"] = []
+
+    registries_def = containerapp_def["properties"]["configuration"]["registries"]
+
+    if registry_server:
+        # Check if updating existing registry
+        updating_existing_registry = False
+        for r in registries_def:
+            if r['server'].lower() == registry_server.lower():
+                updating_existing_registry = True
+                if registry_user:
+                    r["username"] = registry_user
+                if registry_pass:
+                    r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                        containerapp_def["properties"]["configuration"]["secrets"],
+                        r["username"],
+                        r["server"],
+                        registry_pass,
+                        update_existing_secret=True)
+
+        # If not updating existing registry, add as new registry
+        if not updating_existing_registry:
+            registry = RegistryCredentialsModel
+            registry["server"] = registry_server
+            registry["username"] = registry_user
+            registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                containerapp_def["properties"]["configuration"]["secrets"],
+                registry_user,
+                registry_server,
+                registry_pass,
+                update_existing_secret=True)
+
+            registries_def.append(registry)
+
+    if ca_exists:
+        return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
+    return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
