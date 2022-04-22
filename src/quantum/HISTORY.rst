@@ -5,7 +5,7 @@ Release History
 
 0.15.0
 ++++++
-* [2022-04-22] Version intended to work with QDK version v0.25.n (Release was done prior to the full QDK release.)
+* [2022-04-25] Version intended to work with QDK version v0.24.206417
 * Extended error message and added help examples for provider/SKU '-r' parameter.
 * Fixed issue azure-cli-extensions/4697, which allows setting a polling interval when waiting for an Azure Quantum job to complete.
 * Outputting job submission progress messages to stderr so stdout will only contain valid JSON by default.
