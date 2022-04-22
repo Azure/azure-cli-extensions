@@ -138,7 +138,7 @@ helps['ssh arc'] = """
           text: |
             az ssh arc --local-user username --resource-group myResourceGroup --name myMachine
 
-        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempts to use pre-installed OpenSSH client (on Windows, extension looks for pre-installed executables under C:\Windows\System32\OpenSSH).
+        - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe and ssh.exe. If not provided, the extension attempts to use pre-installed OpenSSH client (on Windows, extension looks for pre-installed executables under C:\\Windows\\System32\\OpenSSH).
           text: |
             az ssh arc --resource-group myResourceGroup --name myMachine --ssh-client-folder "C:\\Program Files\\OpenSSH"
 """
