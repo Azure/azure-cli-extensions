@@ -349,7 +349,7 @@ class ContainerappScenarioTest(ScenarioTest):
             self.assertIn(line, expected_output)
 
 
-    @live_only
+    @live_only()
     @ResourceGroupPreparer(location="centraluseuap")
     def test_containerapp_logstream(self, resource_group):
         containerapp_name = self.create_random_name(prefix='capp', length=24)
