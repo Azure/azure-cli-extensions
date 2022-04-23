@@ -52,12 +52,13 @@ from azure.graphrbac.models import (
 from dateutil.parser import parse  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from knack.log import get_logger
-from knack.prompting import NoTTYException
+from knack.prompting import NoTTYException, prompt_pass
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from tabulate import tabulate  # pylint: disable=import-error
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
 from ._client_factory import (
