@@ -37,7 +37,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_path.assert_called_once_with('ssh', 'client')
         mock_startcleanup.assert_called_with('cert', 'priv', 'pub', False, True, True, ['arg1', 'arg2', 'arg3'])
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, text=True)
+        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(True, True, False, 'cleanup process', 'cert', 'priv', 'pub', 'log', 0)
     
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
@@ -66,7 +66,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_relay_str.assert_called_once_with('relay')
         mock_path.assert_called_once_with('ssh', 'client')
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, text=True)
+        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(False, False, False, None, 'cert', 'priv', 'pub', None, 0)
     
     

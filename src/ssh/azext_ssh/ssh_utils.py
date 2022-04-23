@@ -59,10 +59,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # pylint: disable=subprocess-run-check
         try:
             if set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) or log_file:
-                connection_status = subprocess.run(command, env=env, stderr=subprocess.PIPE, text=True)
+                connection_status = subprocess.run(command, env=env, stderr=subprocess.PIPE, encoding='utf-8')
             else:
                 # Logs are sent to stderr. In that case, we shouldn't capture stderr.
-                connection_status = subprocess.run(command, env=env, text=True)
+                connection_status = subprocess.run(command, env=env)
         except Exception as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
