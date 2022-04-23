@@ -59,11 +59,12 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # pylint: disable=subprocess-run-check
         try:
             if set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) or log_file:
-                connection_status = subprocess.run(command, env=env, stderr=subprocess.PIPE, encoding='utf-8')
+                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env, 
+                                                   stderr=subprocess.PIPE, encoding='utf-8')
             else:
                 # Logs are sent to stderr. In that case, we shouldn't capture stderr.
-                connection_status = subprocess.run(command, env=env)
-        except Exception as e:
+                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env)
+        except OSError as e:
             colorama.init()
             raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
                                              const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
@@ -101,7 +102,7 @@ def create_ssh_keyfile(private_key_file, ssh_client_folder=None):
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     try:
         subprocess.call(command)
-    except Exception as e:
+    except OSError as e:
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to create ssh key file with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
@@ -113,7 +114,7 @@ def get_ssh_cert_info(cert_file, ssh_client_folder=None):
     logger.debug("Running ssh-keygen command %s", ' '.join(command))
     try:
         return subprocess.check_output(command).decode().splitlines()
-    except Exception as e:
+    except OSError as e:
         colorama.init()
         raise azclierror.BadRequestError(f"Failed to get certificate info with error: {str(e)}.",
                                          const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
