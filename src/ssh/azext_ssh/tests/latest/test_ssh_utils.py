@@ -18,7 +18,8 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('os.environ.copy')
-    def test_start_ssh_connection_compute(self, mock_copy_env, mock_call, mock_path, mock_terminatecleanup, mock_startcleanup):
+    @mock.patch('platform.system')
+    def test_start_ssh_connection_compute(self, mock_system, mock_copy_env, mock_call, mock_path, mock_terminatecleanup, mock_startcleanup):
 
         op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute", None, None)
         op_info.public_key_file = "pub"
@@ -26,6 +27,7 @@ class SSHUtilsTests(unittest.TestCase):
         op_info.cert_file = "cert"
         op_info.ssh_client_folder = "client"
 
+        mock_system.return_value = 'Windows'
         mock_call.return_value = 0
         mock_path.return_value = 'ssh'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
@@ -37,7 +39,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_path.assert_called_once_with('ssh', 'client')
         mock_startcleanup.assert_called_with('cert', 'priv', 'pub', False, True, True, ['arg1', 'arg2', 'arg3'])
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, encoding='utf-8')
+        mock_call.assert_called_once_with(expected_command, shell=True, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(True, True, False, 'cleanup process', 'cert', 'priv', 'pub', 'log', 0)
     
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
@@ -45,7 +47,8 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
-    def test_start_ssh_connection_arc(self, mock_relay_str, mock_call, mock_path, mock_copy_env, mock_terminatecleanup):
+    @mock.patch('platform.system')
+    def test_start_ssh_connection_arc(self, mock_system, mock_relay_str, mock_call, mock_path, mock_copy_env, mock_terminatecleanup):
         
         op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute", None, None)
         op_info.public_key_file = "pub"
@@ -55,6 +58,7 @@ class SSHUtilsTests(unittest.TestCase):
         op_info.proxy_path = "proxy"
         op_info.relay_info = "relay"
         
+        mock_system.return_value = 'Linux'
         mock_call.return_value = 0
         mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
@@ -66,7 +70,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_relay_str.assert_called_once_with('relay')
         mock_path.assert_called_once_with('ssh', 'client')
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, encoding='utf-8')
+        mock_call.assert_called_once_with(expected_command, shell=False, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(False, False, False, None, 'cert', 'priv', 'pub', None, 0)
     
     

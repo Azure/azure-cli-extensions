@@ -59,7 +59,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # pylint: disable=subprocess-run-check
         try:
             if set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) or log_file:
-                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env, 
+                connection_status = subprocess.run(command, shell=platform.system() == 'Windows', env=env,
                                                    stderr=subprocess.PIPE, encoding='utf-8')
             else:
                 # Logs are sent to stderr. In that case, we shouldn't capture stderr.
