@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import base64
 import os
 import tempfile
 
@@ -1492,13 +1491,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         node_pool_name_second = self.create_random_name('c', 6)
         self.kwargs.update({
             'resource_group': resource_group,
-            'cluster_name': aks_name,
+            'name': aks_name,
             'node_pool_name': node_pool_name,
             'node_pool_name_second': node_pool_name_second,
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={cluster_name} ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--nodepool-name {node_pool_name} -c 1 ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
@@ -1507,7 +1506,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd('aks nodepool add '
                  '--resource-group={resource_group} '
-                 '--cluster-name={cluster_name} '
+                 '--cluster-name={name} '
                  '-c 1 '
                  '--name={node_pool_name_second}',
                  checks=[
@@ -1516,7 +1515,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool delete
         self.cmd(
-            'aks nodepool delete --resource-group={resource_group} --cluster-name={cluster_name} --name={node_pool_name_second} --ignore-pod-disruption-budget', checks=[self.is_empty()])
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} --ignore-pod-disruption-budget', checks=[self.is_empty()])
 
         # delete
         self.cmd(

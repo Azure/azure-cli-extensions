@@ -1219,12 +1219,12 @@ helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
     parameters:
-        - name: --ignore-pod-disruption-budget
+        - name: --ignore-pod-disruption-budget -i
           type: bool
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
     examples:
-        - name: Delete an agent pool with --ignore-pod-disruption-budget
-          text: az aks nodepool delete --nodepool-name nodepool1 -g MyResourceGroup --cluster-name MyManagedCluster --ignore-pod-disruption-budget
+        - name: Delete an agent pool with ignore-pod-disruption-budget
+          text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget
 """
 
 helps['aks addon'] = """
