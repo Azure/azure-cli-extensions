@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import os
 import tempfile
 
@@ -1515,7 +1516,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool delete
         self.cmd(
-            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} --ignore-pod-disruption-budget', checks=[self.is_empty()])
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} --ignore-pod-disruption-budget --no-wait', checks=[self.is_empty()])
 
         # delete
         self.cmd(
