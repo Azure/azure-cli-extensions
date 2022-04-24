@@ -42,9 +42,9 @@ def validate_build_env(cmd, namespace):
     else:
         if isinstance(namespace.build_env, list):
             env_dict = {}
-        for item in namespace.build_env:
-            env_dict.update(validate_tag(item))
-        namespace.build_env = env_dict
+            for item in namespace.build_env:
+                env_dict.update(validate_tag(item))
+            namespace.build_env = env_dict
 
 
 def validate_target_module(cmd, namespace):
