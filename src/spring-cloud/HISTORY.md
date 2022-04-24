@@ -1,5 +1,10 @@
 Release History
 ===============
+3.1.4
+---
+* Fix API portal clear SSO
+* Enhance Application Configuration Service settings update
+
 3.1.3
 ---
 * Revert new RBAC requirement for Standard and Basic sku Spring resource for `az spring-cloud app set-deployment` and `az spring-cloud app unset-deployment` commands.
