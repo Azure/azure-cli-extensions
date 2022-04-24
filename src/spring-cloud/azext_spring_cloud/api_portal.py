@@ -25,13 +25,17 @@ def api_portal_update(cmd, client, resource_group, service,
     api_portal = client.api_portals.get(resource_group, service, DEFAULT_NAME)
 
     sso_properties = api_portal.properties.sso_properties
-    if scope and client_id and client_secret and issuer_uri:
-        sso_properties = models.SsoProperties(
-            scope=scope,
-            client_id=client_id,
-            client_secret=client_secret,
-            issuer_uri=issuer_uri,
-        )
+    if scope is not None and client_id is not None and client_secret is not None and issuer_uri is not None:
+        if not client_id and not client_secret and not issuer_uri:
+            # clear SSO properties
+            sso_properties = None
+        else:
+            sso_properties = models.SsoProperties(
+                scope=scope,
+                client_id=client_id,
+                client_secret=client_secret,
+                issuer_uri=issuer_uri,
+            )
 
     properties = models.ApiPortalProperties(
         public=assign_endpoint if assign_endpoint is not None else api_portal.properties.public,
