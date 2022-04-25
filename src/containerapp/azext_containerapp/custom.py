@@ -2012,7 +2012,7 @@ def containerapp_up(cmd,
     image = _reformat_image(source, repo, image)
     token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
 
-    if image and "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest" in image.lower():
+    if image and "mcr.microsoft.com/azuredocs/containerapps-helloworld" in image.lower():
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
