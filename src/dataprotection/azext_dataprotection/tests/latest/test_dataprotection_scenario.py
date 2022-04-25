@@ -15,7 +15,8 @@ from .example_steps import step_backup_policy_create
 from .example_steps import step_backup_policy_show
 from .example_steps import step_backup_policy_list
 from .example_steps import step_backup_instance_create
-from .example_steps import step_backup_instance_list
+from .example_steps import step_backup_instance_stop_protection
+from .example_steps import step_backup_instance_suspend_backup
 from .example_steps import step_backup_instance_adhoc_backup
 from .example_steps import step_backup_instance_restore_trigger
 from .example_steps import step_backup_instance_restore_trigger2
@@ -29,6 +30,8 @@ from .example_steps import step_backup_vault_show
 from .example_steps import step_backup_vault_show2
 from .example_steps import step_backup_vault_update
 from .example_steps import step_backup_instance_show
+from .example_steps import step_backup_instance_list
+from .example_steps import step_backup_instance_resume_protection
 from .example_steps import step_backup_instance_delete
 from .example_steps import step_backup_vault_delete
 from .example_steps import step_job_show
@@ -46,22 +49,22 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# # Env setup_scenario
-# @try_manual
-# def setup_scenario(test):
-#     pass
+# Env setup_scenario
+@try_manual
+def setup_scenario(test):
+    pass
 
 
-# # Env cleanup_scenario
-# @try_manual
-# def cleanup_scenario(test):
-#     pass
+# Env cleanup_scenario
+@try_manual
+def cleanup_scenario(test):
+    pass
 
 
 # Testcase: Scenario
 @try_manual
 def call_scenario(test):
-    # setup_scenario(test)
+    setup_scenario(test)
     step_backup_policy_create(test, checks=[
         test.check("name", "{myBackupPolicy}", case_sensitive=False),
     ])
@@ -84,9 +87,8 @@ def call_scenario(test):
                    "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
                    case_sensitive=False),
     ])
-    step_backup_instance_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
+    step_backup_instance_stop_protection(test, checks=[])
+    step_backup_instance_suspend_backup(test, checks=[])
     step_backup_instance_adhoc_backup(test, checks=[])
     step_backup_instance_restore_trigger(test, checks=[])
     step_backup_instance_restore_trigger2(test, checks=[])
@@ -100,6 +102,10 @@ def call_scenario(test):
     step_backup_vault_show2(test, checks=[])
     step_backup_vault_update(test, checks=[])
     step_backup_instance_show(test, checks=[])
+    step_backup_instance_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_backup_instance_resume_protection(test, checks=[])
     step_backup_instance_delete(test, checks=[])
     step_backup_vault_delete(test, checks=[])
     step_job_show(test, checks=[])
@@ -107,7 +113,7 @@ def call_scenario(test):
     step_recovery_point_show(test, checks=[])
     step_recovery_point_list(test, checks=[])
     step_restorable_time_range_find(test, checks=[])
-    # cleanup_scenario(test)
+    cleanup_scenario(test)
 
 
 # Test class for Scenario
@@ -124,15 +130,17 @@ class DataprotectionScenarioTest(ScenarioTest):
             'myBackupPolicy2': 'PratikPolicy1',
             'myBackupPolicy': 'OSSDBPolicy',
             'myBackupInstance': 'testInstance1',
-            'myBackupInstance2': 'zblobbackuptestsa58',
+            'myBackupInstance2': 'testbi',
+            'myBackupInstance3': 'zblobbackuptestsa58',
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_viveksipgtest'[:7], key='rg_3', parameter_name='rg_3')
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_000pikumar'[:7], key='rg_2', parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_SampleResourceGroup'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_BugBash1'[:7], key='rg_4', parameter_name='rg_4')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_Blob-Backup'[:7], key='rg_5', parameter_name='rg_5')
-    def test_dataprotection_Scenario(self):
+    @ResourceGroupPreparer(name_prefix='clitestdataprotection_testrg'[:7], key='rg_4', parameter_name='rg_4')
+    @ResourceGroupPreparer(name_prefix='clitestdataprotection_BugBash1'[:7], key='rg_5', parameter_name='rg_5')
+    @ResourceGroupPreparer(name_prefix='clitestdataprotection_Blob-Backup'[:7], key='rg_6', parameter_name='rg_6')
+    def test_dataprotection_Scenario(self, rg_3, rg_2, rg, rg_4, rg_5, rg_6):
         call_scenario(self)
         calc_coverage(__file__)
         raise_if()

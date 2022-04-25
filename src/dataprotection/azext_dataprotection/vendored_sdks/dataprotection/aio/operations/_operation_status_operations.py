@@ -25,7 +25,7 @@ class OperationStatusOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class OperationStatusOperations:
         :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OperationResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.OperationResource
+        :rtype: ~azure.mgmt.dataprotection.models.OperationResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationResource"]
@@ -64,7 +64,7 @@ class OperationStatusOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL

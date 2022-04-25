@@ -2,7 +2,8 @@ Release History
 ===============
 3.1.4
 ---
-* The argument "--build-env" accepts key[=value] instead of json.
+* Fix API portal clear SSO
+* Enhance Application Configuration Service settings update
 
 3.1.3
 ---

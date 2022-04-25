@@ -18,7 +18,8 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('os.environ.copy')
-    def test_start_ssh_connection_compute(self, mock_copy_env, mock_call, mock_path, mock_terminatecleanup, mock_startcleanup):
+    @mock.patch('platform.system')
+    def test_start_ssh_connection_compute(self, mock_system, mock_copy_env, mock_call, mock_path, mock_terminatecleanup, mock_startcleanup):
 
         op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute", None, None)
         op_info.public_key_file = "pub"
@@ -26,6 +27,7 @@ class SSHUtilsTests(unittest.TestCase):
         op_info.cert_file = "cert"
         op_info.ssh_client_folder = "client"
 
+        mock_system.return_value = 'Windows'
         mock_call.return_value = 0
         mock_path.return_value = 'ssh'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
@@ -37,7 +39,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_path.assert_called_once_with('ssh', 'client')
         mock_startcleanup.assert_called_with('cert', 'priv', 'pub', False, True, True, ['arg1', 'arg2', 'arg3'])
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, text=True)
+        mock_call.assert_called_once_with(expected_command, shell=True, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(True, True, False, 'cleanup process', 'cert', 'priv', 'pub', 'log', 0)
     
     @mock.patch.object(ssh_utils, '_terminate_cleanup')
@@ -45,7 +47,8 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, '_get_ssh_client_path')
     @mock.patch('subprocess.run')
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
-    def test_start_ssh_connection_arc(self, mock_relay_str, mock_call, mock_path, mock_copy_env, mock_terminatecleanup):
+    @mock.patch('platform.system')
+    def test_start_ssh_connection_arc(self, mock_system, mock_relay_str, mock_call, mock_path, mock_copy_env, mock_terminatecleanup):
         
         op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute", None, None)
         op_info.public_key_file = "pub"
@@ -55,6 +58,7 @@ class SSHUtilsTests(unittest.TestCase):
         op_info.proxy_path = "proxy"
         op_info.relay_info = "relay"
         
+        mock_system.return_value = 'Linux'
         mock_call.return_value = 0
         mock_relay_str.return_value = 'relay_string'
         mock_copy_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
@@ -66,7 +70,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         mock_relay_str.assert_called_once_with('relay')
         mock_path.assert_called_once_with('ssh', 'client')
-        mock_call.assert_called_once_with(expected_command, env=expected_env, stderr=mock.ANY, text=True)
+        mock_call.assert_called_once_with(expected_command, shell=False, env=expected_env, stderr=mock.ANY, encoding='utf-8')
         mock_terminatecleanup.assert_called_once_with(False, False, False, None, 'cert', 'priv', 'pub', None, 0)
     
     
@@ -139,23 +143,94 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('os.path.join')
     @mock.patch('platform.system')
     @mock.patch('os.path.isfile')
-    def test_get_ssh_client_path_not_found(self, mock_isfile, mock_system, mock_join):
+    def test_get_ssh_client_path_with_client_folder_non_windows(self, mock_isfile, mock_system, mock_join):
         mock_join.return_value = "ssh_path"
-        mock_system.return_value = "Mac"
-        mock_isfile.return_value = False
-        path = ssh_utils._get_ssh_client_path("ssh", "folder")
-        self.assertEqual(path, "ssh")
-    
+        mock_system.return_value = "Linux"
+        mock_isfile.return_value = True
+        actual_path = ssh_utils._get_ssh_client_path(ssh_client_folder='/client/folder')
+        self.assertEqual(actual_path, "ssh_path")
+        mock_join.assert_called_once_with('/client/folder', 'ssh')
+        mock_isfile.assert_called_once_with("ssh_path")
+
     @mock.patch('os.path.join')
     @mock.patch('platform.system')
     @mock.patch('os.path.isfile')
-    def test_get_ssh_client_path_found(self, mock_isfile, mock_system, mock_join):
-        mock_join.return_value = "ssh_path"
+    def test_get_ssh_client_path_with_client_folder_windows(self, mock_isfile, mock_system, mock_join):
+        mock_join.return_value = "ssh_keygen_path"
         mock_system.return_value = "Windows"
         mock_isfile.return_value = True
-        path = ssh_utils._get_ssh_client_path("ssh-keygen", "folder")
-        self.assertEqual(path, "ssh_path.exe")
-    
-    def test_get_ssh_client_preinstalled(self):
-        path = ssh_utils._get_ssh_client_path("ssh-keygen", None)
-        self.assertEqual(path, "ssh-keygen")
+        actual_path = ssh_utils._get_ssh_client_path(ssh_command='ssh-keygen', ssh_client_folder='/client/folder')
+        self.assertEqual(actual_path, "ssh_keygen_path.exe")
+        mock_join.assert_called_once_with('/client/folder', 'ssh-keygen')
+        mock_isfile.assert_called_once_with("ssh_keygen_path.exe")
+
+    @mock.patch('os.path.join')
+    @mock.patch('platform.system')
+    @mock.patch('os.path.isfile')
+    def test_get_ssh_client_path_with_client_folder_no_file(self, mock_isfile, mock_system, mock_join):
+        mock_join.return_value = "ssh_path"
+        mock_system.return_value = "Mac"
+        mock_isfile.return_value = False
+        actual_path = ssh_utils._get_ssh_client_path(ssh_client_folder='/client/folder')
+        self.assertEqual(actual_path, "ssh")
+        mock_join.assert_called_once_with('/client/folder', 'ssh')
+        mock_isfile.assert_called_once_with("ssh_path")
+
+    @mock.patch('platform.system')
+    def test_get_ssh_client_preinstalled_non_windows(self, mock_system):
+        mock_system.return_value = "Mac"
+        actual_path = ssh_utils._get_ssh_client_path()
+        self.assertEqual('ssh', actual_path)
+        mock_system.assert_called_once_with()
+
+    def test_get_ssh_client_preinstalled_windows_32bit(self):
+        self._test_get_ssh_client_path_preinstalled_windows('32bit', 'x86', 'System32')
+
+    def test_get_ssh_client_preinstalled_windows_64bitOS_32bitPlatform(self):
+        self._test_get_ssh_client_path_preinstalled_windows('32bit', 'x64', 'SysNative')
+
+    def test_get_ssh_client_preinstalled_windows_64bitOS_64bitPlatform(self):
+        self._test_get_ssh_client_path_preinstalled_windows('64bit', 'x64', 'System32')
+
+    @mock.patch('platform.system')
+    @mock.patch('platform.architecture')
+    @mock.patch('platform.machine')
+    @mock.patch('os.path.join')
+    @mock.patch('os.environ')
+    @mock.patch('os.path.isfile')
+    def _test_get_ssh_client_path_preinstalled_windows(self, platform_arch, os_arch, expected_sysfolder, mock_isfile, mock_environ, mock_join, mock_machine, mock_arch, mock_system):
+        mock_system.return_value = "Windows"
+        mock_arch.return_value = (platform_arch, "foo", "bar")
+        mock_machine.return_value = os_arch
+        mock_environ.__getitem__.return_value = "rootpath"
+        mock_join.side_effect = ["system32path", "sshfilepath"]
+        mock_isfile.return_value = True
+
+        expected_join_calls = [
+            mock.call("rootpath", expected_sysfolder),
+            mock.call("system32path", "openSSH", "ssh.exe")
+        ]
+        
+        actual_path = ssh_utils._get_ssh_client_path()
+
+        self.assertEqual("sshfilepath", actual_path)
+        mock_system.assert_called_once_with()
+        mock_arch.assert_called_once_with()
+        mock_environ.__getitem__.assert_called_once_with("SystemRoot")
+        mock_join.assert_has_calls(expected_join_calls)
+        mock_isfile.assert_called_once_with("sshfilepath")
+
+
+    @mock.patch('platform.system')
+    @mock.patch('platform.architecture')
+    @mock.patch('platform.machine')
+    @mock.patch('os.environ')
+    @mock.patch('os.path.isfile')
+    def test_get_ssh_path_windows_ssh_preinstalled_not_found(self, mock_isfile, mock_environ, mock_machine, mock_arch, mock_sys):
+        mock_sys.return_value = "Windows"
+        mock_arch.return_value = ("32bit", "foo", "bar")
+        mock_machine.return_value = "x64"
+        mock_environ.__getitem__.return_value = "rootpath"
+        mock_isfile.return_value = False
+
+        self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils._get_ssh_client_path)

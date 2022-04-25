@@ -28,7 +28,7 @@ class BackupInstancesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,19 +45,19 @@ class BackupInstancesOperations:
 
     def list(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         **kwargs
     ) -> AsyncIterable["models.BackupInstanceResourceList"]:
         """Gets a backup instances belonging to a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either BackupInstanceResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.BackupInstanceResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.BackupInstanceResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupInstanceResourceList"]
@@ -65,7 +65,7 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -77,9 +77,9 @@ class BackupInstancesOperations:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -119,22 +119,22 @@ class BackupInstancesOperations:
 
     async def get(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         **kwargs
     ) -> "models.BackupInstanceResource":
         """Gets a backup instance with name in a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BackupInstanceResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.BackupInstanceResource
+        :rtype: ~azure.mgmt.dataprotection.models.BackupInstanceResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupInstanceResource"]
@@ -142,15 +142,15 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -181,27 +181,27 @@ class BackupInstancesOperations:
 
     async def _create_or_update_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.BackupInstanceResource",
         **kwargs
-    ) -> "models.BackupInstanceResource":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupInstanceResource"]
+    ) -> Optional["models.BackupInstanceResource"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.BackupInstanceResource"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -222,40 +222,46 @@ class BackupInstancesOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('BackupInstanceResource', pipeline_response)
 
         if response.status_code == 201:
             deserialized = self._deserialize('BackupInstanceResource', pipeline_response)
 
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
     _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.BackupInstanceResource",
         **kwargs
     ) -> AsyncLROPoller["models.BackupInstanceResource"]:
         """Create or update a backup instance in a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.BackupInstanceResource
+        :type parameters: ~azure.mgmt.dataprotection.models.BackupInstanceResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -263,7 +269,7 @@ class BackupInstancesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either BackupInstanceResource or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_protection_client.models.BackupInstanceResource]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.dataprotection.models.BackupInstanceResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -275,8 +281,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._create_or_update_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 backup_instance_name=backup_instance_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -294,9 +300,9 @@ class BackupInstancesOperations:
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
 
@@ -316,8 +322,8 @@ class BackupInstancesOperations:
 
     async def _delete_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         **kwargs
     ) -> None:
@@ -326,15 +332,15 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -368,17 +374,17 @@ class BackupInstancesOperations:
 
     async def begin_delete(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Delete a backup instance in a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -400,8 +406,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._delete_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 backup_instance_name=backup_instance_name,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -415,9 +421,9 @@ class BackupInstancesOperations:
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
 
@@ -437,8 +443,8 @@ class BackupInstancesOperations:
 
     async def _adhoc_backup_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.TriggerBackupRequest",
         **kwargs
@@ -448,16 +454,16 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._adhoc_backup_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -500,22 +506,22 @@ class BackupInstancesOperations:
 
     async def begin_adhoc_backup(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.TriggerBackupRequest",
         **kwargs
     ) -> AsyncLROPoller["models.OperationJobExtendedInfo"]:
         """Trigger adhoc backup.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.TriggerBackupRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.TriggerBackupRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -523,7 +529,7 @@ class BackupInstancesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either OperationJobExtendedInfo or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_protection_client.models.OperationJobExtendedInfo]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.dataprotection.models.OperationJobExtendedInfo]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -535,8 +541,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._adhoc_backup_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 backup_instance_name=backup_instance_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -554,9 +560,9 @@ class BackupInstancesOperations:
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
 
@@ -576,8 +582,8 @@ class BackupInstancesOperations:
 
     async def _validate_for_backup_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         parameters: "models.ValidateForBackupRequest",
         **kwargs
     ) -> Optional["models.OperationJobExtendedInfo"]:
@@ -586,16 +592,16 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._validate_for_backup_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -637,19 +643,19 @@ class BackupInstancesOperations:
 
     async def begin_validate_for_backup(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         parameters: "models.ValidateForBackupRequest",
         **kwargs
     ) -> AsyncLROPoller["models.OperationJobExtendedInfo"]:
         """Validate whether adhoc backup will be successful or not.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.ValidateForBackupRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.ValidateForBackupRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -657,7 +663,7 @@ class BackupInstancesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either OperationJobExtendedInfo or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_protection_client.models.OperationJobExtendedInfo]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.dataprotection.models.OperationJobExtendedInfo]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -669,8 +675,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._validate_for_backup_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -687,9 +693,9 @@ class BackupInstancesOperations:
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -706,6 +712,74 @@ class BackupInstancesOperations:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_validate_for_backup.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/validateForBackup'}  # type: ignore
 
+    async def get_backup_instance_operation_result(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        operation_id: str,
+        **kwargs
+    ) -> Optional["models.BackupInstanceResource"]:
+        """Get result of backup instance creation operation.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :param operation_id:
+        :type operation_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: BackupInstanceResource, or the result of cls(response)
+        :rtype: ~azure.mgmt.dataprotection.models.BackupInstanceResource or None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.BackupInstanceResource"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_backup_instance_operation_result.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+            'operationId': self._serialize.url("operation_id", operation_id, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('BackupInstanceResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_backup_instance_operation_result.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/operationResults/{operationId}'}  # type: ignore
+
     async def _trigger_rehydrate_initial(
         self,
         resource_group_name: str,
@@ -719,7 +793,7 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -781,7 +855,7 @@ class BackupInstancesOperations:
         :param backup_instance_name:
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.AzureBackupRehydrationRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.AzureBackupRehydrationRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -839,8 +913,8 @@ class BackupInstancesOperations:
 
     async def _trigger_restore_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.AzureBackupRestoreRequest",
         **kwargs
@@ -850,16 +924,16 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._trigger_restore_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -902,22 +976,22 @@ class BackupInstancesOperations:
 
     async def begin_trigger_restore(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.AzureBackupRestoreRequest",
         **kwargs
     ) -> AsyncLROPoller["models.OperationJobExtendedInfo"]:
         """Triggers restore for a BackupInstance.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.AzureBackupRestoreRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.AzureBackupRestoreRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -925,7 +999,7 @@ class BackupInstancesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either OperationJobExtendedInfo or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_protection_client.models.OperationJobExtendedInfo]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.dataprotection.models.OperationJobExtendedInfo]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -937,8 +1011,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._trigger_restore_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 backup_instance_name=backup_instance_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -956,9 +1030,9 @@ class BackupInstancesOperations:
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
 
@@ -976,10 +1050,626 @@ class BackupInstancesOperations:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_trigger_restore.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/restore'}  # type: ignore
 
+    async def _resume_backups_initial(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._resume_backups_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _resume_backups_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/resumeBackups'}  # type: ignore
+
+    async def begin_resume_backups(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """This operation will resume backups for backup instance.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._resume_backups_initial(
+                resource_group_name=resource_group_name,
+                vault_name=vault_name,
+                backup_instance_name=backup_instance_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_resume_backups.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/resumeBackups'}  # type: ignore
+
+    async def _resume_protection_initial(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._resume_protection_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _resume_protection_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/resumeProtection'}  # type: ignore
+
+    async def begin_resume_protection(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """This operation will resume protection for a stopped backup instance.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._resume_protection_initial(
+                resource_group_name=resource_group_name,
+                vault_name=vault_name,
+                backup_instance_name=backup_instance_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_resume_protection.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/resumeProtection'}  # type: ignore
+
+    async def _stop_protection_initial(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._stop_protection_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _stop_protection_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/stopProtection'}  # type: ignore
+
+    async def begin_stop_protection(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """This operation will stop protection of a backup instance and data will be held forever.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._stop_protection_initial(
+                resource_group_name=resource_group_name,
+                vault_name=vault_name,
+                backup_instance_name=backup_instance_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_stop_protection.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/stopProtection'}  # type: ignore
+
+    async def _suspend_backups_initial(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._suspend_backups_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _suspend_backups_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/suspendBackups'}  # type: ignore
+
+    async def begin_suspend_backups(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """This operation will stop backups for backup instance.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._suspend_backups_initial(
+                resource_group_name=resource_group_name,
+                vault_name=vault_name,
+                backup_instance_name=backup_instance_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_suspend_backups.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/suspendBackups'}  # type: ignore
+
+    async def _sync_backup_instance_initial(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        parameters: "models.SyncBackupInstanceRequest",
+        **kwargs
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2022-03-01"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._sync_backup_instance_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(parameters, 'SyncBackupInstanceRequest')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            response_headers['Azure-AsyncOperation']=self._deserialize('str', response.headers.get('Azure-AsyncOperation'))
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+
+        if cls:
+            return cls(pipeline_response, None, response_headers)
+
+    _sync_backup_instance_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/sync'}  # type: ignore
+
+    async def begin_sync_backup_instance(
+        self,
+        resource_group_name: str,
+        vault_name: str,
+        backup_instance_name: str,
+        parameters: "models.SyncBackupInstanceRequest",
+        **kwargs
+    ) -> AsyncLROPoller[None]:
+        """Sync backup instance again in case of failure
+        This action will retry last failed operation and will bring backup instance to valid state.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_instance_name:
+        :type backup_instance_name: str
+        :param parameters: Request body for operation.
+        :type parameters: ~azure.mgmt.dataprotection.models.SyncBackupInstanceRequest
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._sync_backup_instance_initial(
+                resource_group_name=resource_group_name,
+                vault_name=vault_name,
+                backup_instance_name=backup_instance_name,
+                parameters=parameters,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
+            'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_sync_backup_instance.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/sync'}  # type: ignore
+
     async def _validate_for_restore_initial(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.ValidateRestoreRequestObject",
         **kwargs
@@ -989,16 +1679,16 @@ class BackupInstancesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._validate_for_restore_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1041,22 +1731,22 @@ class BackupInstancesOperations:
 
     async def begin_validate_for_restore(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.ValidateRestoreRequestObject",
         **kwargs
     ) -> AsyncLROPoller["models.OperationJobExtendedInfo"]:
         """Validates if Restore can be triggered for a DataSource.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.ValidateRestoreRequestObject
+        :type parameters: ~azure.mgmt.dataprotection.models.ValidateRestoreRequestObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -1064,7 +1754,7 @@ class BackupInstancesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either OperationJobExtendedInfo or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_protection_client.models.OperationJobExtendedInfo]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.dataprotection.models.OperationJobExtendedInfo]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -1076,8 +1766,8 @@ class BackupInstancesOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._validate_for_restore_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 backup_instance_name=backup_instance_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -1095,9 +1785,9 @@ class BackupInstancesOperations:
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
 
