@@ -1490,11 +1490,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
         node_pool_name_second = self.create_random_name('c', 6)
+        node_pool_name_third = self.create_random_name('c', 6)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'node_pool_name': node_pool_name,
             'node_pool_name_second': node_pool_name_second,
+            'node_pool_name_third': node_pool_name_third,
             'ssh_key_value': self.generate_ssh_keys()
         })
 
@@ -1513,12 +1515,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
                  ])
+        self.cmd('aks nodepool add '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '-c 1 '
+                 '--name={node_pool_name_third}',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
 
-        # nodepool delete
+        # nodepool delete the third
         self.cmd(
-            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} --ignore-pod-disruption-budget', checks=[self.is_empty()])
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_third} --ignore-pod-disruption-budget=false --no-wait', checks=[self.is_empty()])
+        # nodepool delete the second
+        self.cmd(
+            'aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} --ignore-pod-disruption-budget=true', checks=[self.is_empty()])
 
-        # delete
+
+        # delete the cluster
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
