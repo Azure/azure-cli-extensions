@@ -708,7 +708,7 @@ def up_output(app):
     )
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
-        f"Stream logs for your container with: az containerapp logs -n {app.name} -g {app.resource_group.name} \n"
+        f"Stream logs for your container with: az containerapp logs show -n {app.name} -g {app.resource_group.name} \n"
     )
     logger.warning(
         f"See full output using: az containerapp show -n {app.name} -g {app.resource_group.name} \n"

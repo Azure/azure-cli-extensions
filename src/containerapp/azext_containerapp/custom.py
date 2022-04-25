@@ -1996,7 +1996,7 @@ def containerapp_up(cmd,
                     logs_key=None,
                     repo=None,
                     token=None,
-                    branch=None,
+                    branch="main",
                     browse=False,
                     context_path=None,
                     service_principal_client_id=None,
@@ -2067,6 +2067,9 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     ca_exists = False
     if containerapp_def:
         ca_exists = True
+
+    if image is None:
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 
     if not ca_exists:
         containerapp_def = None

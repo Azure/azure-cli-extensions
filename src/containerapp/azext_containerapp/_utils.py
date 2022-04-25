@@ -44,14 +44,14 @@ def create_service_principal_for_rbac(  # pylint:disable=too-many-statements,too
 
     if not name:
         # No name is provided, create a new one
-        app_display_name = 'azure-cli-' + datetime.datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S')
+        app_display_name = 'azure-cli-' + datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S')
     else:
         app_display_name = name
         # patch existing app with the same displayName to make the command idempotent
         query_exp = "displayName eq '{}'".format(name)
         existing_sps = list(graph_client.service_principals.list(filter=query_exp))
 
-    app_start_date = datetime.datetime.now(TZ_UTC)
+    app_start_date = datetime.now(TZ_UTC)
     app_end_date = app_start_date + relativedelta(years=years or 1)
 
     password, public_cert_string, cert_file, cert_start_date, cert_end_date = \
@@ -154,7 +154,7 @@ def is_int(s):
     return False
 
 
-def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=300):
+def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
     from .custom import show_github_action
     from github import Github
     from time import sleep
@@ -189,7 +189,10 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
     animation.flush()
     animation.tick()
     animation.flush()
-    run = workflow.get_runs()[0]
+    runs = workflow.get_runs()
+    while runs is None or runs.totalCount < 1:
+        runs = workflow.get_runs()
+    run = runs[0]
     logger.warning(f"Github action run: https://github.com/{repo}/actions/runs/{run.id}")
     logger.warning("Waiting for deployment to complete...")
     run_id = run.id
@@ -674,7 +677,7 @@ def _add_or_update_tags(containerapp_def, tags):
 def _object_to_dict(obj):
 
     def default_handler(x):
-        if isinstance(x, datetime.datetime):
+        if isinstance(x, datetime):
             return x.isoformat()
         return x.__dict__
 
