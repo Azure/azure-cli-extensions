@@ -26,7 +26,7 @@ def load_arguments(self, _):
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
-                   help=('[Deprecated] This is an internal argument. This argument is used by Azure Portal to '
+                   help=('This is an internal argument. This argument is used by Azure Portal to '
                          'provide a one click SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
@@ -81,7 +81,7 @@ def load_arguments(self, _):
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
         c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
-                   help=('[Deprecated] This is an internal argument. This argument is used by Azure Portal to '
+                   help=('This is an internal argument. This argument is used by Azure Portal to '
                          'provide a one click SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
         c.argument('ssh_proxy_folder', options_list=['--ssh-proxy-folder'],
