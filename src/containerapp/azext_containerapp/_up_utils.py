@@ -704,7 +704,7 @@ def up_output(app):
         url = f"http://{url}"
 
     logger.warning(
-        f"\nYour container app ({app.name}) has been created a deployed! Congrats! \n"
+        f"\nYour container app ({app.name}) has been created and deployed! Congrats! \n"
     )
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
