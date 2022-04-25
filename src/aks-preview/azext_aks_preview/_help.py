@@ -515,6 +515,12 @@ helps['aks upgrade'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
+helps['aks nodepool reconcile'] = """
+    type: command
+    short-summary: Try and bring the managed cluster to a successful state by doing a GET and PUT with the same contents
+"""
+
+
 helps['aks update'] = """
     type: command
     short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
@@ -954,6 +960,11 @@ helps['aks nodepool'] = """
 helps['aks nodepool show'] = """
     type: command
     short-summary: Show the details for a node pool in the managed Kubernetes cluster.
+"""
+
+helps['aks nodepool reconcile'] = """
+    type: command
+    short-summary: Try and bring the agentpool to a successful state by doing a GET and PUT with the same contents
 """
 
 helps['aks nodepool list'] = """
