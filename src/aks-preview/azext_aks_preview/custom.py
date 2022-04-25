@@ -1829,9 +1829,10 @@ def aks_agentpool_reconcile(cmd,     # pylint: disable=unused-argument
                        client,
                        resource_group_name,
                        cluster_name,
-                       nodepool_name, no_wait):
+                       nodepool_name, aks_custom_headers, no_wait):
     ap = client.get(resource_group_name, cluster_name, nodepool_name)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, ap)
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, ap, headers=headers)
     
 
 def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
