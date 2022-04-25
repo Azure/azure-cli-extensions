@@ -376,7 +376,7 @@ def load_arguments(self, _):
                        '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
     with self.argument_context('aks nodepool delete') as c:
-        c.argument('nodepool_name', type=str, options_list=[
+        c.argument('nodepool_name', options_list=[
             '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
         c.argument('ignore_pod_disruption_budget', options_list=[
                    "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
