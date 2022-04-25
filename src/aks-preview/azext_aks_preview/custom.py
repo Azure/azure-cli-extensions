@@ -1963,7 +1963,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          resource_group_name,
                          cluster_name,
                          nodepool_name,
-                         ignore_pod_disruption_budget=False,
+                         ignore_pod_disruption_budget=None,
                          no_wait=False):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
