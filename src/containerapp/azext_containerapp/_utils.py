@@ -600,7 +600,7 @@ def _remove_secret(containerapp_def, secret_name):
             break
 
 
-def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
+def _add_or_update_env_vars(existing_env_vars, new_env_vars):
     for new_env_var in new_env_vars:
 
         # Check if updating existing env var
@@ -608,8 +608,6 @@ def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
         for existing_env_var in existing_env_vars:
             if existing_env_var["name"].lower() == new_env_var["name"].lower():
                 is_existing = True
-                if is_add:
-                    logger.warning("Environment variable {} already exists. Replacing environment variable value.".format(new_env_var["name"]))  # pylint: disable=logging-format-interpolation
 
                 if "value" in new_env_var:
                     existing_env_var["value"] = new_env_var["value"]
@@ -624,8 +622,6 @@ def _add_or_update_env_vars(existing_env_vars, new_env_vars, is_add=False):
 
         # If not updating existing env var, add it as a new env var
         if not is_existing:
-            if not is_add:
-                logger.warning("Environment variable {} does not exist. Adding as new environment variable.".format(new_env_var["name"]))  # pylint: disable=logging-format-interpolation
             existing_env_vars.append(new_env_var)
 
 

@@ -68,10 +68,10 @@ def load_arguments(self, _):
 
     # Env vars
     with self.argument_context('containerapp', arg_group='Environment variables') as c:
-        c.argument('set_env_vars', nargs='*', help="A list of environment variable(s) to add to the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
-        c.argument('remove_env_vars', nargs='*', help="A list of environment variable(s) to remove from container. Space-separated env var name values.")
-        c.argument('replace_env_vars', nargs='*', help="A list of environment variable(s) to replace from the container. Space-separated values in 'key=value' format. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
-        c.argument('remove_all_env_vars', help="Option to remove all environment variable(s) from the container.")
+        c.argument('set_env_vars', nargs='*', help="Add or update environment variable(s) in container. Existing environmentenvironment variables are not modified. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
+        c.argument('remove_env_vars', nargs='*', help="Remove environment variable(s) from container. Space-separated environment variable names.")
+        c.argument('replace_env_vars', nargs='*', help="Replace environment variable(s) in container. Other existing environment variables are removed. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
+        c.argument('remove_all_env_vars', help="Remove all environment variable(s) from container..")
 
     # Scale
     with self.argument_context('containerapp', arg_group='Scale') as c:

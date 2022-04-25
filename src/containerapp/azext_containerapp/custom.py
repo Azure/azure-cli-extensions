@@ -554,12 +554,11 @@ def update_containerapp_logic(cmd,
                     if "env" not in c or not c["env"]:
                         c["env"] = []
                     # env vars
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars), is_add=True)
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars))
 
                 if replace_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
+                    # Remove other existing env_vars, then add them
+                    c["env"] = []
                     _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
 
                 if remove_env_vars is not None:
@@ -611,7 +610,7 @@ def update_containerapp_logic(cmd,
 
             if set_env_vars is not None:
                 # env vars
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars), is_add=True)
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars))
 
             if replace_env_vars is not None:
                 # env vars
