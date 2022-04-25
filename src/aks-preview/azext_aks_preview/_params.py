@@ -185,7 +185,7 @@ def load_arguments(self, _):
         c.argument('docker_bridge_address')
         c.argument('pod_cidrs')
         c.argument('service_cidrs')
-        c.argument('load_balancer_sku', type=get_enum_type(load_balancer_skus),
+        c.argument('load_balancer_sku', arg_type=get_enum_type(load_balancer_skus),
                    validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
