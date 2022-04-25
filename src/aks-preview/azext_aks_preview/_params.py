@@ -215,6 +215,7 @@ def load_arguments(self, _):
                    action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id',
                    validator=validate_azure_keyvault_kms_key_id, is_preview=True)
+        c.argument('enable_namespace_resources', options_list=['--enable-namespace-resources'], help='Enables namespace resources.')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
@@ -491,6 +492,7 @@ def load_arguments(self, _):
         c.argument('public_fqdn', default=False, action='store_true')
         c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(
             [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]))
+        c.argument('namespace_name', options_list=['--namespace'], help='If specified, the credentials are returned at the namespace scope, assuming the developer has access on the ARM resource for that namespace.')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')

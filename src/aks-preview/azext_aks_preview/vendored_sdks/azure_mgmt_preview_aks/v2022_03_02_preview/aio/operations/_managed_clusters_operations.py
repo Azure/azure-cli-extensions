@@ -417,6 +417,7 @@ class ManagedClustersOperations:
         resource_name: str,
         server_fqdn: Optional[str] = None,
         format: Optional[Union[str, "_models.Format"]] = None,
+        namespace_name = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the user credentials of a managed cluster.
@@ -443,15 +444,19 @@ class ManagedClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
         
+        if namespace_name is None:
+            url = self.list_cluster_user_credentials.metadata['url']
+        else:
+            url = self.list_cluster_user_credentials.metadata['namespace_scoped_url']
         request = build_list_cluster_user_credentials_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
             resource_name=resource_name,
             server_fqdn=server_fqdn,
             format=format,
-            template_url=self.list_cluster_user_credentials.metadata['url'],
+            namespace_name=namespace_name,
+            template_url=url,
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -470,7 +475,7 @@ class ManagedClustersOperations:
 
         return deserialized
 
-    list_cluster_user_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential'}  # type: ignore
+    list_cluster_user_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential', "namespace_scoped_url": '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/providers/Microsoft.KubernetesConfiguration/namespaces/{namespaceName}/listUserCredential' }  # type: ignore
 
 
     @distributed_trace_async
