@@ -115,7 +115,7 @@ helps['ssh cert'] = """
 helps['ssh arc'] = """
     type: command
     short-summary: SSH into Azure Arc Servers
-    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates as azure automatically rotate SSH CA keys. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
+    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates. To SSH using local user credentials you must provide the local user name using the --local-user parameter.
     examples:
         - name: Give a resource group name and machine name to SSH using AAD issued certificates
           text: |
