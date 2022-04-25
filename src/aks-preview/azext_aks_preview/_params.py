@@ -216,6 +216,10 @@ def load_arguments(self, _):
         c.argument('azure_keyvault_kms_key_id',
                    validator=validate_azure_keyvault_kms_key_id, is_preview=True)
 
+    with self.argument_context('aks reconcile') as c:
+        c.argument('aks_custom_headers')
+
+
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
                    "--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -370,10 +374,13 @@ def load_arguments(self, _):
             c.argument('message_of_the_day', type=str,
                        validator=validate_message_of_the_day)
 
-    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
+    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update', 'aks nodepool reconcile']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=[
                        '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+    
+    with self.argument_context('aks nodepool reconcile') as c:
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
