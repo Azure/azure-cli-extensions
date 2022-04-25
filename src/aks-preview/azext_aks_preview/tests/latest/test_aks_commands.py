@@ -3671,7 +3671,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
             '--enable-managed-identity', '--enable-oidc-issuer',
             '--ssh-key-value={ssh_key_value}',
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview',
         ])
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
