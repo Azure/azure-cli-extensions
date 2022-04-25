@@ -2016,6 +2016,11 @@ def containerapp_up(cmd,
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
+    if image:
+        if ingress and not target_port:
+            target_port = 80
+            logger.warning("No ingress provided, defaulting to port 80.")
+
     dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
     ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
