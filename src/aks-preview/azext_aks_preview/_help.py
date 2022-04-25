@@ -51,9 +51,9 @@ helps['aks create'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
-        - name: --node-osdisk-diskencryptionset-id
+        - name: --node-osdisk-diskencryptionset-id -d
           type: string
-          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
+          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".

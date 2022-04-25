@@ -237,7 +237,7 @@ def load_arguments(self, _):
         c.argument('gmsa_root_domain_name', options_list=[
                    '--gmsa-root-domain-name'])
         c.argument('attach_acr', acr_arg_type)
-        c.argument('skip_subnet_role_assignment', action='store_true')        
+        c.argument('skip_subnet_role_assignment', action='store_true')
         # addons
         c.argument('enable_addons', options_list=[
                    '--enable-addons', '-a'], validator=validate_addons)
