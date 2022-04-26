@@ -613,10 +613,13 @@ helps['aks update'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+          short-summary: Update current cluster to managed identity to manage cluster resource group.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Update cluster's kubelet identity to an existing user assigned identity. Note, this operation will recreate all agent node in the cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.

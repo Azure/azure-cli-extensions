@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.5.64
+++++++
+
+* Add support for updating kubelet identity. Command is
+  * `az aks create --cluster-snapshot-id <snapshot-id>`
+
 0.5.63
 ++++++
 
