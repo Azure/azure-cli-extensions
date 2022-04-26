@@ -35,6 +35,7 @@ def load_arguments(self, _):
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs.', action=JobParamsAction, nargs='+')
+    runtime_capability_type = CLIArgumentType(options_list=['--runtime-capability'], help='Runtime-capability parameter passed to the target.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
@@ -69,6 +70,7 @@ def load_arguments(self, _):
 
     with self.argument_context('quantum job submit') as c:
         c.argument('job_params', job_params_type)
+        c.argument('runtime_capability', runtime_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
@@ -80,6 +82,7 @@ def load_arguments(self, _):
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
+        c.argument('runtime_capability', runtime_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum run') as c:
@@ -91,6 +94,7 @@ def load_arguments(self, _):
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
         c.argument('job_params', job_params_type)
+        c.argument('runtime_capability', runtime_capability_type)
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum offerings') as c:
