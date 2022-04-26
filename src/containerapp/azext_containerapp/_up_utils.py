@@ -371,7 +371,7 @@ def _get_or_create_sp(  # pylint: disable=inconsistent-return-statements
         # return client_id, secret, tenant_id
 
 
-def _get_dockerfile_content_from_repo(  # pylint: disable=inconsistent-return-statements
+def _get_dockerfile_content_from_repo(
     repo_url, branch, token, context_path, dockerfile
 ):
     from github import Github
@@ -386,6 +386,8 @@ def _get_dockerfile_content_from_repo(  # pylint: disable=inconsistent-return-st
             resp = requests.get(f.download_url)
             if resp.ok and resp.content:
                 return resp.content.decode("utf-8").split("\n")
+    raise ValidationError("Could not find Dockerfile in Github repo/branch. Please ensure it is named 'Dockerfile'. "
+                          "Set the path with --context-path if not in the root directory.")
 
 
 def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list[str]"):
