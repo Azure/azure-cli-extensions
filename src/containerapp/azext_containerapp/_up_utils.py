@@ -41,6 +41,7 @@ from ._utils import (
     create_service_principal_for_rbac,
     repo_url_to_name,
     get_container_app_if_exists,
+    trigger_workflow
 )
 
 from .custom import (
@@ -384,7 +385,7 @@ def _get_or_create_sp(  # pylint: disable=inconsistent-return-statements
         # return client_id, secret, tenant_id
 
 
-def _get_dockerfile_content_from_repo(  # pylint: disable=inconsistent-return-statements
+def _get_dockerfile_content_from_repo(
     repo_url, branch, token, context_path, dockerfile
 ):
     from github import Github
@@ -399,6 +400,8 @@ def _get_dockerfile_content_from_repo(  # pylint: disable=inconsistent-return-st
             resp = requests.get(f.download_url)
             if resp.ok and resp.content:
                 return resp.content.decode("utf-8").split("\n")
+    raise ValidationError("Could not find Dockerfile in Github repo/branch. Please ensure it is named 'Dockerfile'. "
+                          "Set the path with --context-path if not in the root directory.")
 
 
 def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list[str]"):
@@ -620,10 +623,10 @@ def _get_registry_details(cmd, app: "ContainerApp"):
         registry_rg = app.resource_group.name
         registry_name = app.env.name.replace("-", "").lower()
         registry_name = (
-            registry_name
+            (registry_name
             + str(hash((app.env.resource_group.name, app.env.name)))
             .replace("-", "")
-            .replace(".", "")[:10]
+            .replace(".", ""))[:10]
         )  # cap at 15 characters total
         registry_name = (
             f"ca{registry_name}acr"  # ACR names must start + end in a letter
@@ -685,6 +688,14 @@ def _create_github_action(
         service_principal_client_secret,
         service_principal_tenant_id,
     ) = sp
+
+    # need to trigger the workflow manually if it already exists (performing an update)
+    try:
+        source_control_info = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
+        trigger_workflow(token, repo, app.name, branch)
+    except Exception as ex:
+        pass
+
     create_or_update_github_action(
         cmd=app.cmd,
         name=app.name,
