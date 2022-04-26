@@ -57,6 +57,7 @@ from azure.cli.core.azclierror import (
     UnknownError,
 )
 from knack.util import CLIError
+from knack.prompting import NoTTYException
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
 
@@ -4257,6 +4258,80 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                 identity_profile=identity_profile_2,
             )
             self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        with self.assertRaises(NoTTYException):
+            dec_3 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            cluster_identity = self.models.ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities={
+                    "test_assign_identity": {}
+                },
+            )
+            mc_3 = self.models.ManagedCluster(location="test_location", identity=cluster_identity)
+            dec_3.context.attach_mc(mc_3)
+            dec_mc_3 = dec_3.update_identity_profile(mc_3)
+
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                    "yes": True,
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            mc_4 = self.models.ManagedCluster(location="test_location")
+            dec_4.context.attach_mc(mc_4)
+            dec_mc_4 = dec_4.update_identity_profile(mc_4)
+
+        with patch(
+            "azure.cli.command_modules.acs.decorator.AKSContext.get_identity_by_msi_client",
+            side_effect=[cluster_identity_obj],
+        ), patch(
+            "azext_aks_preview.decorator._ensure_cluster_identity_permission_on_kubelet_identity",
+            return_value=None,
+        ):
+            dec_5 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "enable_managed_identity": True,
+                    "assign_identity": "test_assign_identity",
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                    "yes": True,
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            cluster_identity = self.models.ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities={
+                    "test_assign_identity": {}
+                },
+            )
+            mc_5 = self.models.ManagedCluster(location="test_location", identity=cluster_identity)
+            dec_5.context.attach_mc(mc_5)
+            dec_mc_5 = dec_5.update_identity_profile(mc_5)
+
+            identity_profile_5 = {
+                "kubeletidentity": self.models.UserAssignedIdentity(
+                    resource_id="test_assign_kubelet_identity",
+                )
+            }
+            ground_truth_mc_5 = self.models.ManagedCluster(
+                location="test_location",
+                identity=cluster_identity,
+                identity_profile=identity_profile_5,
+            )
+            self.assertEqual(dec_mc_2, ground_truth_mc_5)
+
 
     def test_patch_mc(self):
         # custom value
