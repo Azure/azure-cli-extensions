@@ -19,8 +19,15 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
+from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH
 
 logger = get_logger(__name__)
+
+
+def validate_container_app_name(name):
+    if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+        raise ValidationError(f"Container App names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                              f"Please shorten {name}")
 
 
 # original implementation at azure.cli.command_modules.role.custom.create_service_principal_for_rbac
@@ -154,34 +161,52 @@ def is_int(s):
     return False
 
 
+def get_github_repo(token, repo):
+    from github import Github
+
+    g = Github(token)
+    return g.get_repo(repo)
+
+
+def get_workflow(github_repo, name):
+    workflows = github_repo.get_workflows()
+    for wf in workflows:
+        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
+            return wf
+
+
+def trigger_workflow(token, repo, name, branch):
+    logger.warning("Triggering Github Action")
+    get_workflow(get_github_repo(token, repo), name).create_dispatch(branch)
+
+
 def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
     from .custom import show_github_action
-    from github import Github
-    from time import sleep
     from ._clients import PollingAnimation
 
     start = datetime.utcnow()
-
     animation = PollingAnimation()
     animation.tick()
-    g = Github(token)
 
-    github_repo = g.get_repo(repo)
+    github_repo = get_github_repo(token, repo)
+
+    gh_action_status = "InProgress"
+    while gh_action_status == "InProgress":
+        time.sleep(1)
+        animation.tick()
+        gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
+        if (datetime.utcnow() - start).seconds >= timeout_secs:
+            raise CLIInternalError("Timed out while waiting for the Github action to be created.")
+        animation.flush()
+    if gh_action_status == "Failed":
+            raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
 
     workflow = None
     while workflow is None:
-        workflows = github_repo.get_workflows()
-        animation.flush()
-        for wf in workflows:
-            if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
-                workflow = wf
-                break
-
-        gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
-        if gh_action_status == "Failed":
-            raise CLIInternalError("The Github Action creation failed.")
-        sleep(1)
+        workflow = get_workflow(github_repo, name)
         animation.tick()
+        time.sleep(1)
+        animation.flush()
 
         if (datetime.utcnow() - start).seconds >= timeout_secs:
             raise CLIInternalError("Timed out while waiting for the Github action to start.")
@@ -190,23 +215,29 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
     animation.tick()
     animation.flush()
     runs = workflow.get_runs()
-    while runs is None or runs.totalCount < 1:
+    while runs is None or not [r for r in runs if r.status in ('queued', 'in_progress')]:
         runs = workflow.get_runs()
-    run = runs[0]
+        if (datetime.utcnow() - start).seconds >= timeout_secs:
+            raise CLIInternalError("Timed out while waiting for the Github action to be started.")
+    runs = [r for r in runs if r.status in ('queued', 'in_progress')]
+    runs.sort(key=lambda r: r.created_at, reverse=True)
+    run = runs[0]  # run with the latest created_at date that's either in progress or queued
     logger.warning(f"Github action run: https://github.com/{repo}/actions/runs/{run.id}")
     logger.warning("Waiting for deployment to complete...")
     run_id = run.id
     status = run.status
     while status in ('queued', 'in_progress'):
-        sleep(3)
+        time.sleep(3)
         animation.tick()
-        status = [wf.status for wf in workflow.get_runs() if wf.id == run_id][0]
+        status = github_repo.get_workflow_run(run_id).status
         animation.flush()
         if (datetime.utcnow() - start).seconds >= timeout_secs:
-            raise CLIInternalError("Timed out while waiting for the Github action to start.")
+            raise CLIInternalError("Timed out while waiting for the Github action to complete.")
 
-    if status != "completed":
-        raise ValidationError(f"Github action deployment ended with status: {status}")
+    run = github_repo.get_workflow_run(run_id)
+    if run.status != "completed" or run.conclusion != "success":
+        raise ValidationError("Github action build or deployment failed. "
+                              f"Please see https://github.com/{repo}/actions/runs/{run.id} for more details")
 
 
 def repo_url_to_name(repo_url):

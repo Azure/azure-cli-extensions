@@ -53,10 +53,12 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
-                     _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name)
+                     _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
+                     validate_container_app_name)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
+from ._constants import MAXIMUM_SECRET_LENGTH
 
 logger = get_logger(__name__)
 
@@ -306,6 +308,7 @@ def create_containerapp(cmd,
                         disable_warnings=False,
                         user_assigned=None):
     _validate_subscription_registered(cmd, "Microsoft.App")
+    validate_container_app_name(name)
 
     if yaml:
         if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
@@ -1721,6 +1724,15 @@ def set_secrets(cmd, name, resource_group_name, secrets,
                 # yaml=None,
                 no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
+
+    for s in secrets:
+        if s:
+            parsed = s.split("=")
+            if parsed:
+                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH:
+                    raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
+                                          f"Please shorten {parsed[0]}")
+
     # if not yaml and not secrets:
     #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
 
@@ -2008,6 +2020,7 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     _validate_up_args(source, image, repo)
+    validate_container_app_name(name)
 
     image = _reformat_image(source, repo, image)
     token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)

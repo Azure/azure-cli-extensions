@@ -41,6 +41,7 @@ from ._utils import (
     create_service_principal_for_rbac,
     repo_url_to_name,
     get_container_app_if_exists,
+    trigger_workflow
 )
 
 from .custom import (
@@ -610,10 +611,10 @@ def _get_registry_details(cmd, app: "ContainerApp"):
         user = get_profile_username()
         registry_name = app.name.replace("-", "").lower()
         registry_name = (
-            registry_name
+            (registry_name
             + str(hash((registry_rg, user, app.name)))
             .replace("-", "")
-            .replace(".", "")[:10]
+            .replace(".", ""))[:10]
         )  # cap at 15 characters total
         registry_name = (
             f"ca{registry_name}acr"  # ACR names must start + end in a letter
@@ -675,6 +676,14 @@ def _create_github_action(
         service_principal_client_secret,
         service_principal_tenant_id,
     ) = sp
+
+    # need to trigger the workflow manually if it already exists (performing an update)
+    try:
+        source_control_info = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
+        trigger_workflow(token, repo, app.name, branch)
+    except Exception as ex:
+        pass
+
     create_or_update_github_action(
         cmd=app.cmd,
         name=app.name,
