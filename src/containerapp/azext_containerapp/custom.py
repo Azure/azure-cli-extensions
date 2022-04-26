@@ -2016,7 +2016,7 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry)
-
+    HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     _validate_up_args(source, image, repo)
@@ -2025,14 +2025,14 @@ def containerapp_up(cmd,
     image = _reformat_image(source, repo, image)
     token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
 
-    if image and "mcr.microsoft.com/azuredocs/containerapps-helloworld" in image.lower():
+    if image and HELLOWORLD in image.lower():
         ingress = "external" if not ingress else ingress
         target_port = 80 if not target_port else target_port
 
     if image:
         if ingress and not target_port:
             target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80.")
+            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
     ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
@@ -2047,12 +2047,13 @@ def containerapp_up(cmd,
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
+    resource_group.create_if_needed()
+    env.create_if_needed(name)
+
     if source or repo:
         _get_registry_from_app(app)  # if the app exists, get the registry
         _get_registry_details(cmd, app)  # fetch ACR creds from arguments registry arguments
 
-    resource_group.create_if_needed()
-    env.create_if_needed(name)
     app.create_acr_if_needed()
 
     if source:
@@ -2085,6 +2086,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     if containerapp_def:
         ca_exists = True
 
+    # When using repo, image is not passed, so we have to assign it a value (will be overwritten with gh-action)
     if image is None:
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
 
@@ -2166,7 +2168,8 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
                         r["username"],
                         r["server"],
                         registry_pass,
-                        update_existing_secret=True)
+                        update_existing_secret=True,
+                        disable_warnings=True)
 
         # If not updating existing registry, add as new registry
         if not updating_existing_registry:
@@ -2178,10 +2181,14 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
                 registry_user,
                 registry_server,
                 registry_pass,
-                update_existing_secret=True)
+                update_existing_secret=True,
+                disable_warnings=True)
 
             registries_def.append(registry)
 
-    if ca_exists:
-        return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
-    return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
+    try:
+        if ca_exists:
+            return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
+        return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
+    except Exception as e:
+        handle_raw_exception(e)
