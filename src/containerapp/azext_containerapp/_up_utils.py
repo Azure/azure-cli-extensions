@@ -90,10 +90,10 @@ class ResourceGroup:
         if not self.check_exists():
             if not self.name:
                 self.name = get_randomized_name(get_profile_username())
-            logger.warning(f"Creating resoure group '{self.name}'")
+            logger.warning(f"Creating resource group '{self.name}'")
             self.create()
         else:
-            logger.warning(f"Using resoure group '{self.name}'")  # TODO use .info()
+            logger.warning(f"Using resource group '{self.name}'")  # TODO use .info()
 
 
 class Resource:
@@ -127,17 +127,6 @@ class Resource:
         else:
             self.exists = self.get() is not None
         return self.exists
-
-    def create_if_needed(self, *args, **kwargs):
-        if not self.check_exists():
-            logger.warning(
-                f"Creating {type(self).__name__} '{self.name}' in resource group {self.resource_group.name}"
-            )
-            self.create(*args, **kwargs)
-        else:
-            logger.warning(
-                f"Using {type(self).__name__} '{self.name}' in resource group {self.resource_group.name}"
-            )  # TODO use .info()
 
 
 class ContainerAppEnvironment(Resource):
@@ -182,9 +171,20 @@ class ContainerAppEnvironment(Resource):
             self.cmd, self.resource_group.name, self.name
         )
 
-    def create(self, app_name):
-        if self.name is None:
-            self.name = "{}-env".format(app_name).replace("_", "-")
+    def create_if_needed(self, app_name):
+        if not self.check_exists():
+            if self.name is None:
+                self.name = "{}-env".format(app_name).replace("_", "-")
+            logger.warning(
+                f"Creating {type(self).__name__} '{self.name}' in resource group {self.resource_group.name}"
+            )
+            self.create()
+        else:
+            logger.warning(
+                f"Using {type(self).__name__} '{self.name}' in resource group {self.resource_group.name}"
+            )  # TODO use .info()
+
+    def create(self):
         env = create_managed_environment(
             self.cmd,
             self.name,
@@ -618,7 +618,6 @@ def _get_registry_details(cmd, app: "ContainerApp"):
             registry_rg = _get_acr_rg(app)
     else:
         registry_rg = app.resource_group.name
-        user = get_profile_username()
         registry_name = app.env.name.replace("-", "").lower()
         registry_name = (
             registry_name
@@ -734,13 +733,10 @@ def find_existing_acr(cmd, resource_group_name, env_name, default_name, default_
     client = cf_acr_registries(cmd.cli_ctx)
     acr_list = list_acr(client, resource_group_name)
     acr_list = list(acr_list)
-    acr = None
-    acr_list = [a for a in acr_list if env_name.lower().replace('-','') in a.name.lower()]
+    acr_list = [a for a in acr_list if env_name.lower().replace('-', '') in a.name.lower()]
 
     if acr_list:
         acr = acr_list[0]
-
-    if acr:
         app.should_create_acr = False
         return acr.name, parse_resource_id(acr.id)["resource_group"], True
     else:

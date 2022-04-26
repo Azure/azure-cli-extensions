@@ -2019,7 +2019,7 @@ def containerapp_up(cmd,
     if image:
         if ingress and not target_port:
             target_port = 80
-            logger.warning("No ingress provided, defaulting to port 80. Try specifying --target-port or run `az containerapp ingress enable` after your containerapp has been created.")
+            logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
     dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
     ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
@@ -2034,12 +2034,13 @@ def containerapp_up(cmd,
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
+    resource_group.create_if_needed()
+    env.create_if_needed(name)
+
     if source or repo:
         _get_registry_from_app(app)  # if the app exists, get the registry
         _get_registry_details(cmd, app)  # fetch ACR creds from arguments registry arguments
 
-    resource_group.create_if_needed()
-    env.create_if_needed(name)
     app.create_acr_if_needed()
 
     if source:
@@ -2172,6 +2173,9 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
             registries_def.append(registry)
 
-    if ca_exists:
-        return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
-    return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
+    try:
+        if ca_exists:
+            return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
+        return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
+    except Exception as e:
+        handle_raw_exception(e)
