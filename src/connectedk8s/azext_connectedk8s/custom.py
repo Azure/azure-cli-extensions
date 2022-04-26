@@ -98,10 +98,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Prompt if private link is getting enabled
     if enable_private_link == "true":
         if os.getenv('SKIP_PROMPT') != "true":
-            if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+            if not prompt_y_n("The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"):
                 return
         if cl_oid:
-            logger.warning("The parameter '--custom-locations-oid' will be ignored as private link feature is being enabled.")
+            logger.warning("Private Link is being enabled, and Custom Location is not supported by Private Link at this time, so the '--custom-locations-oid' parameter will be ignored.")
 
     # Set preview client if private link properties are provided.
     if enable_private_link:
@@ -864,7 +864,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Prompt if private link is getting enabled
     if enable_private_link == "true":
         if os.getenv('SKIP_PROMPT') != "true":
-            if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+            if not prompt_y_n("The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"):
                 return
 
     # Set preview client if private link properties are provided.
