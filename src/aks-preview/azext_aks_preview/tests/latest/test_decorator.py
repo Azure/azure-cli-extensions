@@ -4259,7 +4259,10 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             )
             self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-        with self.assertRaises(NoTTYException):
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
             dec_3 = AKSPreviewUpdateDecorator(
                 self.cmd,
                 self.client,
@@ -4330,7 +4333,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                 identity=cluster_identity,
                 identity_profile=identity_profile_5,
             )
-            self.assertEqual(dec_mc_2, ground_truth_mc_5)
+            self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
 
     def test_patch_mc(self):
