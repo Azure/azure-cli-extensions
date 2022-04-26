@@ -1839,6 +1839,7 @@ class AKSPreviewContext(AKSContext):
             cluster_identity_resource_id = assigned_identity
         return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
 
+
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
     def __init__(
