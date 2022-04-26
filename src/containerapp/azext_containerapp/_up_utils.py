@@ -276,22 +276,23 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         )
 
     def create_acr_if_needed(self):
-        self.acr.name, self.acr.resource_group.name, acr_found = find_existing_acr(self.cmd, self.env.resource_group.name, self.env.name, self.acr.name, self.acr.resource_group.name, self)
-        if self.should_create_acr:
-            logger.warning(
-                f"Creating Azure Container Registry {self.acr.name} in resource group "
-                f"{self.acr.resource_group.name}"
-            )
-            self.create_acr()
-        if acr_found:
-            self.registry_user, self.registry_pass, _ = _get_acr_cred(
-                self.cmd.cli_ctx, self.acr.name
-            )
-            self.registry_server = self.acr.name + ".azurecr.io"
-            logger.warning(
-                f"Using Azure Container Registry {self.acr.name} in resource group "
-                f"{self.acr.resource_group.name}"
-            )
+        if self.acr:
+            self.acr.name, self.acr.resource_group.name, acr_found = find_existing_acr(self.cmd, self.env.resource_group.name, self.env.name, self.acr.name, self.acr.resource_group.name, self)
+            if self.should_create_acr:
+                logger.warning(
+                    f"Creating Azure Container Registry {self.acr.name} in resource group "
+                    f"{self.acr.resource_group.name}"
+                )
+                self.create_acr()
+            if acr_found:
+                self.registry_user, self.registry_pass, _ = _get_acr_cred(
+                    self.cmd.cli_ctx, self.acr.name
+                )
+                self.registry_server = self.acr.name + ".azurecr.io"
+                logger.warning(
+                    f"Using Azure Container Registry {self.acr.name} in resource group "
+                    f"{self.acr.resource_group.name}"
+                )
 
     def create_acr(self):
         registry_rg = self.resource_group
@@ -716,7 +717,7 @@ def up_output(app):
         url = f"http://{url}"
 
     logger.warning(
-        f"\nYour container app ({app.name}) has been created and deployed! Congrats! \n"
+        f"\nYour container app {app.name} has been created and deployed! Congrats! \n"
     )
     url and logger.warning(f"Browse to your container app at: {url} \n")
     logger.warning(
