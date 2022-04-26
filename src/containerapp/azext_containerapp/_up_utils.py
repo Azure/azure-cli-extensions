@@ -64,8 +64,6 @@ class ResourceGroup:
         self.check_exists()
 
     def create(self):
-        if not self.name:
-            self.name = get_randomized_name(get_profile_username())
         g = create_resource_group(self.cmd, self.name, self.location)
         self.exists = True
         return g
@@ -90,6 +88,8 @@ class ResourceGroup:
 
     def create_if_needed(self):
         if not self.check_exists():
+            if not self.name:
+                self.name = get_randomized_name(get_profile_username())
             logger.warning(f"Creating resoure group '{self.name}'")
             self.create()
         else:
@@ -155,9 +155,10 @@ class ContainerAppEnvironment(Resource):
         super().__init__(cmd, name, resource_group, exists)
         if is_valid_resource_id(name):
             self.name = parse_resource_id(name)["name"]
-            rg = parse_resource_id(name)["resource_group"]
-            if resource_group.name != rg:
-                self.resource_group = ResourceGroup(cmd, rg, location)
+            if "resource_group" in parse_resource_id(name):
+                rg = parse_resource_id(name)["resource_group"]
+                if resource_group.name != rg:
+                    self.resource_group = ResourceGroup(cmd, rg, location)
         self.location = _get_default_containerapps_location(cmd, location)
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
@@ -165,13 +166,14 @@ class ContainerAppEnvironment(Resource):
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
             self.name = parse_resource_id(name_or_rid)["name"]
-            rg = parse_resource_id(name_or_rid)["resource_group"]
-            if self.resource_group.name != rg:
-                self.resource_group = ResourceGroup(
-                    self.cmd,
-                    rg,
-                    _get_default_containerapps_location(self.cmd, self.location),
-                )
+            if "resource_group" in parse_resource_id(name_or_rid):
+                rg = parse_resource_id(name_or_rid)["resource_group"]
+                if self.resource_group.name != rg:
+                    self.resource_group = ResourceGroup(
+                        self.cmd,
+                        rg,
+                        _get_default_containerapps_location(self.cmd, self.location),
+                    )
         else:
             self.name = name_or_rid
 
@@ -619,7 +621,7 @@ def _get_registry_details(cmd, app: "ContainerApp"):
         registry_name = app.env.name.replace("-", "").lower()
         registry_name = (
             registry_name
-            + str(hash((registry_rg, user, app.name)))
+            + str(hash((app.env.resource_group.name, app.env.name)))
             .replace("-", "")
             .replace(".", "")[:10]
         )  # cap at 15 characters total
@@ -734,7 +736,7 @@ def find_existing_acr(cmd, resource_group_name, env_name, default_name, default_
     acr = None
     acr_list = [a for a in acr_list if env_name.lower().replace('-','') in a.name.lower()]
 
-    if len(acr_list) > 0:
+    if acr_list:
         acr = acr_list[0]
 
     if acr:
