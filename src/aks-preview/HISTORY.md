@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.5.67
+++++++
+* Add support for csi drivers extensibility.
+
+
 0.5.66
 ++++++
 * Prompt when no arguments are given to update and nodepool update to see if the customer wants to try goal seek to current settings.

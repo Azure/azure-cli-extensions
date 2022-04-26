@@ -268,6 +268,9 @@ def load_arguments(self, _):
         c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('kubelet_config')
         c.argument('linux_os_config')
+        c.argument('disable_disk_driver', arg_type=get_three_state_flag())
+        c.argument('disable_file_driver', arg_type=get_three_state_flag())
+        c.argument('disable_snapshot_controller', arg_type=get_three_state_flag())
         c.argument('yes', options_list=[
                    '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -324,6 +327,12 @@ def load_arguments(self, _):
         c.argument('enable_windows_gmsa', action='store_true')
         c.argument('gmsa_dns_server')
         c.argument('gmsa_root_domain_name')
+        c.argument('enable_disk_driver', arg_type=get_three_state_flag())
+        c.argument('disable_disk_driver', arg_type=get_three_state_flag())
+        c.argument('enable_file_driver', arg_type=get_three_state_flag())
+        c.argument('disable_file_driver', arg_type=get_three_state_flag())
+        c.argument('enable_snapshot_controller', arg_type=get_three_state_flag())
+        c.argument('disable_snapshot_controller', arg_type=get_three_state_flag())
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         # addons
