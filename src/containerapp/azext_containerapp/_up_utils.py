@@ -274,12 +274,22 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         )
 
     def create_acr_if_needed(self):
+        self.acr.name, self.acr.resource_group.name, acr_found = find_existing_acr(self.cmd, self.env.resource_group.name, self.env.name, self.acr.name, self.acr.resource_group.name, self)
         if self.should_create_acr:
             logger.warning(
                 f"Creating Azure Container Registry {self.acr.name} in resource group "
                 f"{self.acr.resource_group.name}"
             )
             self.create_acr()
+        if acr_found:
+            self.registry_user, self.registry_pass, _ = _get_acr_cred(
+                self.cmd.cli_ctx, self.acr.name
+            )
+            self.registry_server = self.acr.name + ".azurecr.io"
+            logger.warning(
+                f"Using Azure Container Registry {self.acr.name} in resource group "
+                f"{self.acr.resource_group.name}"
+            )
 
     def create_acr(self):
         registry_rg = self.resource_group
@@ -606,7 +616,7 @@ def _get_registry_details(cmd, app: "ContainerApp"):
     else:
         registry_rg = app.resource_group.name
         user = get_profile_username()
-        registry_name = app.name.replace("-", "").lower()
+        registry_name = app.env.name.replace("-", "").lower()
         registry_name = (
             registry_name
             + str(hash((registry_rg, user, app.name)))
@@ -713,3 +723,22 @@ def up_output(app):
     logger.warning(
         f"See full output using: az containerapp show -n {app.name} -g {app.resource_group.name} \n"
     )
+
+
+def find_existing_acr(cmd, resource_group_name, env_name, default_name, default_rg, app: "ContainerApp"):
+    from azure.cli.command_modules.acr.custom import acr_list as list_acr
+    from azure.cli.command_modules.acr._client_factory import cf_acr_registries
+    client = cf_acr_registries(cmd.cli_ctx)
+    acr_list = list_acr(client, resource_group_name)
+    acr_list = list(acr_list)
+    acr = None
+    acr_list = [a for a in acr_list if env_name.lower().replace('-','') in a.name.lower()]
+
+    if len(acr_list) > 0:
+        acr = acr_list[0]
+
+    if acr:
+        app.should_create_acr = False
+        return acr.name, parse_resource_id(acr.id)["resource_group"], True
+    else:
+        return default_name, default_rg, False
