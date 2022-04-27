@@ -354,6 +354,12 @@ def _get_or_create_sp(  # pylint: disable=inconsistent-return-statements
     service_principal_client_secret,
     service_principal_tenant_id,
 ):
+    if service_principal_client_id and service_principal_client_secret and service_principal_tenant_id:
+        return (
+            service_principal_client_id,
+            service_principal_client_secret,
+            service_principal_tenant_id,
+        )
     try:
         GitHubActionClient.show(
             cmd=cmd, resource_group_name=resource_group_name, name=name
