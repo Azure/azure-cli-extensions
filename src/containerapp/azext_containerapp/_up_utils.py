@@ -450,7 +450,7 @@ def _validate_up_args(source, image, repo, registry_server):
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
             raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
-                                   "characters when using --repo")
+                                  "characters when using --repo")
 
 
 def _reformat_image(source, repo, image):
