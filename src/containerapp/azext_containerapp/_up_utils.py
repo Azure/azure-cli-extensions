@@ -393,8 +393,14 @@ def _get_dockerfile_content_from_repo(
     g = Github(token)
     context_path = context_path or "."
     repo = repo_url_to_name(repo_url)
-    r = g.get_repo(repo)
-    files = r.get_contents(context_path, ref=branch)
+    try:
+        r = g.get_repo(repo)
+    except:
+        raise ValidationError(f"Could not find repo {repo_url}")
+    try:
+        files = r.get_contents(context_path, ref=branch)
+    except:
+        raise ValidationError(f"Could not find branch {branch}")
     for f in files:
         if f.path == dockerfile or f.path.endswith(f"/{dockerfile}"):
             resp = requests.get(f.download_url)
@@ -596,14 +602,18 @@ def _get_acr_rg(app):
 
 
 def _get_default_registry_name(app):
-    base_name = app.env.name.replace("-", "").lower()
+    import hashlib
+
+    h = hashlib.sha256()
+    h.update(f"{app.env.resource_group.name}/{app.env.name}".encode("utf-8"))
+
     registry_name = (
-        (base_name
-        + str(hash((app.env.resource_group.name, app.env.name)))
+        f"{app.env.name}{h.hexdigest()}"
         .replace("-", "")
-        .replace(".", ""))[:10]
+        .replace(".", "")[:10]
     )  # cap at 15 characters total
     return f"ca{registry_name}acr"  # ACR names must start + end in a letter
+
 
 def _get_registry_details(cmd, app: "ContainerApp"):
     registry_rg = None
