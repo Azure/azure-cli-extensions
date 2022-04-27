@@ -2155,6 +2155,13 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     registries_def = containerapp_def["properties"]["configuration"]["registries"]
 
     if registry_server:
+        if not registry_pass or not registry_user:
+            if '.azurecr.io' not in registry_server:
+                raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
+            logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+            parsed = urlparse(registry_server)
+            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+            registry_user, registry_pass, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
         # Check if updating existing registry
         updating_existing_registry = False
         for r in registries_def:
