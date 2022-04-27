@@ -19,7 +19,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
-from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH
+from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS
 
 logger = get_logger(__name__)
 
@@ -31,7 +31,7 @@ def validate_container_app_name(name):
 
 
 # original implementation at azure.cli.command_modules.role.custom.create_service_principal_for_rbac
-# reimplemented to remove unnecessary warning statements
+# reimplemented to remove incorrect warning statements
 def create_service_principal_for_rbac(  # pylint:disable=too-many-statements,too-many-locals, too-many-branches, unused-argument, inconsistent-return-statements
         cmd, name=None, years=None, create_cert=False, cert=None, scopes=None, role=None,
         show_auth_for_sdk=None, skip_assignment=False, keyvault=None):
@@ -192,7 +192,7 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
     gh_action_status = "InProgress"
     while gh_action_status == "InProgress":
-        time.sleep(1)
+        time.sleep(SHORT_POLLING_INTERVAL_SECS)
         animation.tick()
         gh_action_status = safe_get(show_github_action(cmd, name, resource_group_name), "properties", "operationState")
         if (datetime.utcnow() - start).seconds >= timeout_secs:
@@ -203,19 +203,17 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
     workflow = None
     while workflow is None:
-        workflow = get_workflow(github_repo, name)
         animation.tick()
-        time.sleep(1)
+        time.sleep(SHORT_POLLING_INTERVAL_SECS)
+        workflow = get_workflow(github_repo, name)
         animation.flush()
 
         if (datetime.utcnow() - start).seconds >= timeout_secs:
             raise CLIInternalError("Timed out while waiting for the Github action to start.")
 
-    animation.flush()
-    animation.tick()
-    animation.flush()
     runs = workflow.get_runs()
     while runs is None or not [r for r in runs if r.status in ('queued', 'in_progress')]:
+        time.sleep(SHORT_POLLING_INTERVAL_SECS)
         runs = workflow.get_runs()
         if (datetime.utcnow() - start).seconds >= timeout_secs:
             raise CLIInternalError("Timed out while waiting for the Github action to be started.")
@@ -227,13 +225,14 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
     run_id = run.id
     status = run.status
     while status in ('queued', 'in_progress'):
-        time.sleep(3)
+        time.sleep(LONG_POLLING_INTERVAL_SECS)
         animation.tick()
         status = github_repo.get_workflow_run(run_id).status
         animation.flush()
         if (datetime.utcnow() - start).seconds >= timeout_secs:
             raise CLIInternalError("Timed out while waiting for the Github action to complete.")
 
+    animation.flush()  # needed to clear the animation from the terminal
     run = github_repo.get_workflow_run(run_id)
     if run.status != "completed" or run.conclusion != "success":
         raise ValidationError("Github action build or deployment failed. "

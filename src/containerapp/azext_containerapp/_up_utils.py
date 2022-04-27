@@ -715,8 +715,9 @@ def _create_github_action(
 
     # need to trigger the workflow manually if it already exists (performing an update)
     try:
-        GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
-        trigger_workflow(token, repo, app.name, branch)
+        action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
+        if action:
+            trigger_workflow(token, repo, app.name, branch)
     except:  # pylint: disable=bare-except
         pass
 

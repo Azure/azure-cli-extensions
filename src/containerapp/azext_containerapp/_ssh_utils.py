@@ -162,7 +162,7 @@ def ping_container_app(app):
     if site:
         resp = requests.get(f'https://{site}')
         if not resp.ok:
-            logger.info("Got bad status pinging app: {resp.status_code}")
+            logger.info(f"Got bad status pinging app: {resp.status_code}")
     else:
         logger.info("Could not fetch site external URL")
 
