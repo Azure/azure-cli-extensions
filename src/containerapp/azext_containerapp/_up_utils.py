@@ -41,7 +41,8 @@ from ._utils import (
     create_service_principal_for_rbac,
     repo_url_to_name,
     get_container_app_if_exists,
-    trigger_workflow
+    trigger_workflow,
+    _ensure_location_allowed
 )
 
 from .custom import (
@@ -186,6 +187,7 @@ class ContainerAppEnvironment(Resource):
             )  # TODO use .info()
 
     def create(self):
+        validate_environment_location(self.cmd, self.location)
         env = create_managed_environment(
             self.cmd,
             self.name,
@@ -777,3 +779,37 @@ def find_existing_acr(cmd, app: "ContainerApp"):
         app.should_create_acr = False
         return acr.name, parse_resource_id(acr.id)["resource_group"]
     return None, None
+
+
+def validate_environment_location(cmd, location):
+    try:
+        _ensure_location_allowed(cmd, location, "Microsoft.OperationalInsights", "workspaces")
+    except Exception:  # pylint: disable=broad-except
+        location = _get_default_containerapps_location(cmd)
+
+    env_list = list_managed_environments(cmd)
+
+    locations = [l["location"] for l in env_list]
+    locations = list(set(locations))  # remove duplicates
+    location_count = {}
+    for loc in locations:
+        location_count[loc] = sum(1 for e in env_list if e["location"] == loc)
+
+    print(location_count)
+
+    if location_count[location] > 1:
+        from ._utils import providers_client_factory
+        providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+
+        if providers_client is not None:
+            resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+            res_locations = []
+            for res in resource_types:
+                if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+                    res_locations = getattr(res, 'locations', [])
+
+            res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+            print(res_locations)
+        raise ValidationError("Test")
+        # choose another location from _ensure_location_allowed string
+        pass
