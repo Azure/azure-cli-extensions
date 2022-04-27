@@ -477,17 +477,15 @@ def _get_dockerfile_content(repo, branch, token, source, context_path, dockerfil
 
 
 def _get_app_env_and_group(
-    cmd, name, resource_group: "ResourceGroup", env: "ContainerAppEnvironment"
+    cmd, name, resource_group: "ResourceGroup", env: "ContainerAppEnvironment", location
 ):
     if not resource_group.name and not resource_group.exists:
-        matched_apps = [
-            c for c in list_containerapp(cmd) if c["name"].lower() == name.lower()
-        ]
+        matched_apps = [c for c in list_containerapp(cmd) if c["name"].lower() == name.lower()]
+        if env.name:
+            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["managedEnvironmentId"])["name"].lower() == env.name.lower()]
+        if location:
+            matched_apps = [c for c in matched_apps if c["location"].lower() == location.lower()]
         if len(matched_apps) == 1:
-            if env.name:
-                logger.warning(
-                    "User passed custom environment name for an existing containerapp. Using existing environment."
-                )
             resource_group.name = parse_resource_id(matched_apps[0]["id"])[
                 "resource_group"
             ]
@@ -666,7 +664,7 @@ def _set_up_defaults(
     app: "ContainerApp",
 ):
     # If no RG passed in and a singular app exists with the same name, get its env and rg
-    _get_app_env_and_group(cmd, name, resource_group, env)
+    _get_app_env_and_group(cmd, name, resource_group, env, location)
 
     # If no env passed in (and not creating a new RG), then try getting an env by location / log analytics ID
     _get_env_and_group_from_log_analytics(
@@ -681,8 +679,11 @@ def _set_up_defaults(
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and e["location"] == location]
         if len(env_list) == 1:
             resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
-
-    # get ACR details from --image, if possible
+        if len(env_list) > 1:
+            raise ValidationError(
+                f"There are multiple environments with name {env.name} on the subscription. "
+                "Please specify which resource group your Containerapp environment is in."
+            )    # get ACR details from --image, if possible
     _get_acr_from_image(cmd, app)
 
 
