@@ -168,7 +168,7 @@ def get_github_repo(token, repo):
     return g.get_repo(repo)
 
 
-def get_workflow(github_repo, name):
+def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-statements
     workflows = github_repo.get_workflows()
     for wf in workflows:
         if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
@@ -199,7 +199,7 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
             raise CLIInternalError("Timed out while waiting for the Github action to be created.")
         animation.flush()
     if gh_action_status == "Failed":
-            raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
+        raise CLIInternalError("The Github Action creation failed.")  # TODO ask backend team for a status url / message
 
     workflow = None
     while workflow is None:

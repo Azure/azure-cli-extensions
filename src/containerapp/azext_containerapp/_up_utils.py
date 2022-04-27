@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
 
 
 from urllib.parse import urlparse
@@ -278,12 +278,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
     def create_acr_if_needed(self):
         if self.should_create_acr:
-             logger.warning(
-                 f"Creating Azure Container Registry {self.acr.name} in resource group "
-                 f"{self.acr.resource_group.name}"
-             )
-             self.create_acr()
-
+            logger.warning(
+                f"Creating Azure Container Registry {self.acr.name} in resource group "
+                f"{self.acr.resource_group.name}"
+            )
+            self.create_acr()
 
     def create_acr(self):
         registry_rg = self.resource_group
@@ -392,12 +391,12 @@ def _get_dockerfile_content_from_repo(
     repo = repo_url_to_name(repo_url)
     try:
         r = g.get_repo(repo)
-    except:
-        raise ValidationError(f"Could not find repo {repo_url}")
+    except Exception as e:
+        raise ValidationError(f"Could not find repo {repo_url}") from e
     try:
         files = r.get_contents(context_path, ref=branch)
-    except:
-        raise ValidationError(f"Could not find branch {branch}")
+    except Exception as e:
+        raise ValidationError(f"Could not find branch {branch}") from e
     for f in files:
         if f.path == dockerfile or f.path.endswith(f"/{dockerfile}"):
             resp = requests.get(f.download_url)
@@ -612,10 +611,8 @@ def _get_default_registry_name(app):
     return f"ca{registry_name}acr"  # ACR names must start + end in a letter
 
 
-def _set_acr_creds(cmd, app:"ContainerApp", registry_name):
-    logger.info(
-                "No credential was provided to access Azure Container Registry. Trying to look up..."
-            )
+def _set_acr_creds(cmd, app: "ContainerApp", registry_name):
+    logger.info("No credential was provided to access Azure Container Registry. Trying to look up...")
     try:
         app.registry_user, app.registry_pass, registry_rg = _get_acr_cred(
             cmd.cli_ctx, registry_name
@@ -683,7 +680,7 @@ def _set_up_defaults(
         else:
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and e["location"] == location]
         if len(env_list) == 1:
-            resource_group.name =  parse_resource_id(env_list[0]["id"])["resource_group"]
+            resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
 
     # get ACR details from --image, if possible
     _get_acr_from_image(cmd, app)
@@ -718,9 +715,9 @@ def _create_github_action(
 
     # need to trigger the workflow manually if it already exists (performing an update)
     try:
-        source_control_info = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
+        GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
         trigger_workflow(token, repo, app.name, branch)
-    except Exception as ex:
+    except:  # pylint: disable=bare-except
         pass
 
     create_or_update_github_action(
@@ -766,7 +763,6 @@ def up_output(app):
 
 
 def find_existing_acr(cmd, app: "ContainerApp"):
-    from azure.cli.command_modules.acr.custom import acr_show
     from azure.cli.command_modules.acr._client_factory import cf_acr_registries
     client = cf_acr_registries(cmd.cli_ctx)
 
