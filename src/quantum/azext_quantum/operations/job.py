@@ -73,7 +73,7 @@ def build(cmd, target_id=None, project=None, target_capability=None):
 
     if target_capability:
         args.append(f"-property:RuntimeCapability={target_capability}")
-    
+
     logger.debug("Building project with arguments:")
     logger.debug(args)
 
@@ -91,7 +91,8 @@ def build(cmd, target_id=None, project=None, target_capability=None):
     raise AzureInternalError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params, target_capability):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params,
+                          target_capability):
     """ Generates the list of arguments for calling submit on a Q# project """
 
     args = ["dotnet", "run", "--no-build"]
@@ -173,7 +174,8 @@ def _has_completed(job):
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
+           target_capability=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -191,7 +193,8 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params, target_capability)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params,
+                                 target_capability)
     _set_cli_version()
 
     knack_logger.warning('Submitting job...')
