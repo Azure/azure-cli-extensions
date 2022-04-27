@@ -44,6 +44,8 @@ from ._utils import (
     trigger_workflow
 )
 
+from ._constants import MAXIMUM_SECRET_LENGTH
+
 from .custom import (
     create_managed_environment,
     containerapp_up_logic,
@@ -339,7 +341,7 @@ def _create_service_principal(cmd, resource_group_name, env_resource_group_name)
         )
     sp = create_service_principal_for_rbac(cmd, scopes=scopes, role="contributor")
 
-    logger.info(f"Created service principal: {sp['displayName']}")
+    logger.warning(f"Created service principal: {sp['displayName']} with ID {sp['appId']}")
 
     return sp["appId"], sp["password"], sp["tenant"]
 
@@ -433,7 +435,7 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(source, image, repo):
+def _validate_up_args(source, image, repo, registry_server):
     if not source and not image and not repo:
         raise RequiredArgumentMissingError(
             "You must specify either --source, --repo, or --image"
@@ -443,6 +445,12 @@ def _validate_up_args(source, image, repo):
             "Cannot use --source and --repo togther. "
             "Can either deploy from a local directory or a Github repo"
         )
+    if repo and registry_server and "azurecr.io" in registry_server:
+        parsed = urlparse(registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
+        if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
+            raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
+                                   "characters when using --repo")
 
 
 def _reformat_image(source, repo, image):
