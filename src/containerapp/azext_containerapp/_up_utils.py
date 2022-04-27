@@ -595,6 +595,16 @@ def _get_acr_rg(app):
     ]
 
 
+def _get_default_registry_name(app):
+    base_name = app.env.name.replace("-", "").lower()
+    registry_name = (
+        (base_name
+        + str(hash((app.env.resource_group.name, app.env.name)))
+        .replace("-", "")
+        .replace(".", ""))[:10]
+    )  # cap at 15 characters total
+    return f"ca{registry_name}acr"  # ACR names must start + end in a letter
+
 def _get_registry_details(cmd, app: "ContainerApp"):
     registry_rg = None
     registry_name = None
@@ -621,16 +631,7 @@ def _get_registry_details(cmd, app: "ContainerApp"):
             registry_rg = _get_acr_rg(app)
     else:
         registry_rg = app.resource_group.name
-        registry_name = app.env.name.replace("-", "").lower()
-        registry_name = (
-            (registry_name
-            + str(hash((app.env.resource_group.name, app.env.name)))
-            .replace("-", "")
-            .replace(".", ""))[:10]
-        )  # cap at 15 characters total
-        registry_name = (
-            f"ca{registry_name}acr"  # ACR names must start + end in a letter
-        )
+        registry_name = _get_default_registry_name(app)
         app.registry_server = registry_name + ".azurecr.io"
         app.should_create_acr = True
 
@@ -739,15 +740,17 @@ def up_output(app):
 
 
 def find_existing_acr(cmd, resource_group_name, env_name, default_name, default_rg, app: "ContainerApp"):
-    from azure.cli.command_modules.acr.custom import acr_list as list_acr
+    from azure.cli.command_modules.acr.custom import acr_show
     from azure.cli.command_modules.acr._client_factory import cf_acr_registries
     client = cf_acr_registries(cmd.cli_ctx)
-    acr_list = list_acr(client, resource_group_name)
-    acr_list = list(acr_list)
-    acr_list = [a for a in acr_list if env_name.lower().replace('-', '') in a.name.lower()]
 
-    if acr_list:
-        acr = acr_list[0]
+    acr = None
+    try:
+        acr = acr_show(cmd, client=client, registry_name=_get_default_registry_name(app))
+    except Exception:
+        pass
+
+    if acr:
         app.should_create_acr = False
         return acr.name, parse_resource_id(acr.id)["resource_group"], True
     else:
