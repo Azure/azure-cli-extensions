@@ -256,25 +256,31 @@ helps['spring-cloud app log tail'] = """
 
 helps['spring-cloud app identity'] = """
     type: group
-    short-summary: Manage an app's managed service identity.
+    short-summary: Manage an app's managed identities.
 """
 
 helps['spring-cloud app identity assign'] = """
     type: command
-    short-summary: Enable managed service identity on an app.
+    short-summary: Enable system-assigned managed identity or assign user-assigned managed identities to an app.
     examples:
     - name: Enable the system assigned identity.
-      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
     - name: Enable the system assigned identity on an app with the 'Reader' role.
-      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --role Reader --scope /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxx/providers/Microsoft.KeyVault/vaults/xxxxx
+    - name: Assign two user-assigned managed identities to an app.
+      text: az spring-cloud app identity assign -n MyApp -s MyCluster -g MyResourceGroup --user-assigned IdentityResourceId1 IdentityResourceId2
 """
 
 helps['spring-cloud app identity remove'] = """
     type: command
-    short-summary: Remove managed service identity from an app.
+    short-summary: Remove managed identity from an app.
     examples:
-    - name: Remove the system assigned identity from an app.
-      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup
+    - name: Remove the system-assigned managed identity from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned
+    - name: Remove the system-assigned and user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --system-assigned --user-assigned IdentityResourceId1 IdentityResourceId2
+    - name: Remove ALL user-assigned managed identities from an app.
+      text: az spring-cloud app identity remove -n MyApp -s MyCluster -g MyResourceGroup --user-assigned
 """
 
 helps['spring-cloud app identity show'] = """
@@ -283,6 +289,18 @@ helps['spring-cloud app identity show'] = """
     examples:
     - name: Display an app's managed identity info.
       text: az spring-cloud app identity show -n MyApp -s MyCluster -g MyResourceGroup
+"""
+
+helps['spring-cloud app identity force-set'] = """
+    type: command
+    short-summary: Force set managed identities on an app.
+    examples:
+    - name: Force remove all managed identities on an app.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned disable
+    - name: Force remove all user-assigned managed identities on an app, and enable or keep system-assigned managed identity.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned enable --user-assigned disable
+    - name: Force remove system-assigned managed identity on an app, and assign or keep user-assigned managed identities.
+      text: az spring-cloud app identity force-set -n MyApp -s MyCluster -g MyResourceGroup --system-assigned disable --user-assigned IdentityResourceId1 IdentityResourceId2
 """
 
 helps['spring-cloud app set-deployment'] = """
@@ -589,7 +607,7 @@ helps['spring-cloud app-insights update'] = """
 
 helps['spring-cloud service-registry'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage Service Registry in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage Service Registry in Azure Spring Cloud.
 """
 
 helps['spring-cloud service-registry show'] = """
@@ -657,7 +675,7 @@ helps['spring-cloud build-service builder delete'] = """
 
 helps['spring-cloud application-configuration-service'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage Application Configuration Service in Azure Spring Cloud.
 """
 
 helps['spring-cloud application-configuration-service show'] = """
@@ -727,7 +745,7 @@ helps['spring-cloud application-configuration-service unbind'] = """
 
 helps['spring-cloud gateway'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage gateway in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage gateway in Azure Spring Cloud.
 """
 
 helps['spring-cloud gateway clear'] = """
@@ -834,7 +852,7 @@ helps['spring-cloud gateway custom-domain unbind'] = """
 
 helps['spring-cloud api-portal'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage API portal in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage API portal in Azure Spring Cloud.
 """
 
 helps['spring-cloud api-portal clear'] = """
@@ -896,22 +914,22 @@ helps['spring-cloud api-portal custom-domain unbind'] = """
 
 helps['spring-cloud build-service'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage build service in Azure Spring Cloud.
+    short-summary: (Enterprise Tier Only) Commands to manage build service in Azure Spring Cloud.
 """
 
 helps['spring-cloud build-service builder'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage builder of build service.
+    short-summary: (Enterprise Tier Only) Commands to manage builder of build service.
 """
 
 helps['spring-cloud build-service builder buildpack-binding'] = """
     type: group
-    short-summary: (Support Enterprise Tier Only) Commands to manage buildpack-binding of builder.
+    short-summary: (Enterprise Tier Only) Commands to manage buildpack-binding of builder.
 """
 
 helps['spring-cloud build-service builder buildpack-binding create'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Create a buildpack binding.
+    short-summary: (Enterprise Tier Only) Create a buildpack binding.
     examples:
         - name: Create a buildpack binding without properties or secrets.
           text: az spring-cloud build-service builder buildpack-binding create --name first-binding --builder-name first-builder --type ApplicationInsights --service MyCluster --resource-group MyResourceGroup
@@ -925,7 +943,7 @@ helps['spring-cloud build-service builder buildpack-binding create'] = """
 
 helps['spring-cloud build-service builder buildpack-binding set'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Set a buildpack binding.
+    short-summary: (Enterprise Tier Only) Set a buildpack binding.
     examples:
         - name: Set a buildpack binding with properties and secrets.
           text: az spring-cloud build-service builder buildpack-binding set --name first-binding --builder-name first-builder --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
@@ -933,7 +951,7 @@ helps['spring-cloud build-service builder buildpack-binding set'] = """
 
 helps['spring-cloud build-service builder buildpack-binding show'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Show a buildpack binding. The secrets will be masked.
+    short-summary: (Enterprise Tier Only) Show a buildpack binding. The secrets will be masked.
     examples:
         - name: Show a buildpack binding.
           text: az spring-cloud build-service builder buildpack-binding show --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
@@ -941,7 +959,7 @@ helps['spring-cloud build-service builder buildpack-binding show'] = """
 
 helps['spring-cloud build-service builder buildpack-binding list'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
+    short-summary: (Enterprise Tier Only) List all buildpack binding in a builder. The secrets will be masked.
     examples:
         - name: List all buildpack binding of a builder.
           text: az spring-cloud build-service builder buildpack-binding list --builder-name first-builder --service MyCluster --resource-group MyResourceGroup
@@ -949,7 +967,7 @@ helps['spring-cloud build-service builder buildpack-binding list'] = """
 
 helps['spring-cloud build-service builder buildpack-binding delete'] = """
     type: command
-    short-summary: (Support Enterprise Tier Only) Delete a buildpack binding.
+    short-summary: (Enterprise Tier Only) Delete a buildpack binding.
     examples:
         - name: Delete a buildpack binding.
           text: az spring-cloud build-service builder buildpack-binding delete --name first-binding --builder-name first-builder --service MyCluster --resource-group MyResourceGroup

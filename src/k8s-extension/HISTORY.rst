@@ -3,6 +3,19 @@
 Release History
 ===============
 
+1.2.0
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
+* microsoft.openservicemesh: Change extension validation logic osm-arc 
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+
+1.1.0
+++++++++++++++++++
+* Migrate Extensions api-version to 2022-03-01
+* microsoft.azureml.kubernetes: Remove inference private review warning message
+* microsoft.openservicemesh: Enable System-assigned identity
+
 1.0.4
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Support SSL secret

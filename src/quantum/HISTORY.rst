@@ -3,6 +3,27 @@
 Release History
 ===============
 
+0.15.0
+++++++
+* [2022-04-25] Version intended to work with QDK version v0.24.206417
+* Extended error message and added help examples for provider/SKU '-r' parameter.
+* Fixed issue azure-cli-extensions/4697, which allows setting a polling interval when waiting for an Azure Quantum job to complete.
+* Outputting job submission progress messages to stderr so stdout will only contain valid JSON by default.
+* Added 'Microsoft.AzureQuantum-' prefix to workspace creation deployment name.
+* Increased workspace creation timeout to 15 minutes.
+
+0.14.0
+++++++
+* [2022-03-30] Version intended to work with QDK version v0.24.201332
+* Extended error message in failed jobs to include details originated from the provider.
+* Completed support in workspace creation for all storage account types allowed in the Azure Quantum service.
+* Improved visual feedback in 'az quantum execute' command indicating to the user that the process has started.
+
+0.13.0
+++++++
+* [2022-03-03] Version intended to work with QDK version v0.23.195983
+* Fixed workspace race condition using an Azure Resource Manager template to synchronize deployment.
+
 0.12.0
 ++++++
 * [2022-01-26] Version intended to work with QDK version v0.22.187631

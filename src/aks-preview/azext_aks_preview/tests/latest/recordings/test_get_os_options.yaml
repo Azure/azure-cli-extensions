@@ -13,30 +13,31 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-containerservice/16.4.0 Python/3.8.10
-        (Linux-5.10.60.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-containerservice/18.0.0b Python/3.8.10
+        (Linux-5.13.0-1021-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/osOptions/default?api-version=2021-10-01&resource-type=managedClusters
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/osOptions/default?api-version=2022-03-02-preview&resource-type=managedClusters
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/osOptions/default\",\n
         \ \"name\": \"default\",\n  \"type\": \"Microsoft.ContainerService/locations/osOptions\",\n
         \ \"properties\": {\n   \"osOptionPropertyList\": [\n    {\n     \"os-type\":
         \"Linux\",\n     \"os-sku\": \"Ubuntu\",\n     \"enable-fips-image\": false\n
-        \   },\n    {\n     \"os-type\": \"Windows\",\n     \"os-sku\": \"\",\n     \"enable-fips-image\":
-        false\n    },\n    {\n     \"os-type\": \"Linux\",\n     \"os-sku\": \"Ubuntu\",\n
-        \    \"enable-fips-image\": true\n    },\n    {\n     \"os-type\": \"Linux\",\n
-        \    \"os-sku\": \"CBLMariner\",\n     \"enable-fips-image\": false\n    }\n
-        \  ]\n  }\n }"
+        \   },\n    {\n     \"os-type\": \"Linux\",\n     \"os-sku\": \"Ubuntu\",\n
+        \    \"enable-fips-image\": true\n    },\n    {\n     \"os-type\": \"Windows\",\n
+        \    \"os-sku\": \"\",\n     \"enable-fips-image\": false\n    },\n    {\n
+        \    \"os-type\": \"Windows\",\n     \"os-sku\": \"\",\n     \"enable-fips-image\":
+        true\n    },\n    {\n     \"os-type\": \"Linux\",\n     \"os-sku\": \"CBLMariner\",\n
+        \    \"enable-fips-image\": false\n    }\n   ]\n  }\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '655'
+      - '745'
       content-type:
       - application/json
       date:
-      - Wed, 01 Dec 2021 14:44:52 GMT
+      - Thu, 14 Apr 2022 05:53:23 GMT
       expires:
       - '-1'
       pragma:

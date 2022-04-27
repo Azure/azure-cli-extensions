@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0"
+VERSION = "1.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -22,7 +22,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'cryptography'
+    'cryptography',
+    'oschmod==0.3.12'
 ]
 
 setup(

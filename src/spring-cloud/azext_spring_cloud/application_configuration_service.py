@@ -180,6 +180,8 @@ def _get_or_default_acs_resource(client, resource_group, service):
 def _get_acs_properties(properties):
     if properties is None:
         properties = models.ConfigurationServiceProperties()
+    if properties.provisioning_state == "Updating":
+        raise ClientRequestError("Application Configuration Service is updating, please try again later.")
     properties.settings = _get_acs_settings(properties.settings)
     return properties
 

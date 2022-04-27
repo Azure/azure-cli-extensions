@@ -300,6 +300,28 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+containerapp env create:
+  parameters:
+    infrastructure_subnet_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    instrumentation_key:
+      rule_exclusions:
+      - option_length_too_long
+    platform_reserved_dns_ip:
+      rule_exclusions:
+      - option_length_too_long
+containerapp github-action add:
+  parameters:
+    service_principal_client_id:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_client_secret:
+      rule_exclusions:
+      - option_length_too_long
+    service_principal_tenant_id:
+      rule_exclusions:
+      - option_length_too_long
 costmanagement export create:
   parameters:
     definition_dataset_configuration:
@@ -2261,6 +2283,11 @@ spring-cloud update:
       rule_exclusions:
       - option_length_too_long
 ssh vm:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
+ssh arc:
   parameters:
     ssh_args:
       rule_exclusions:

@@ -23,7 +23,9 @@ if TYPE_CHECKING:
     from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[
+        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class DatabaseOperations(object):
     """DatabaseOperations operations.
@@ -71,7 +73,8 @@ class DatabaseOperations(object):
         :rtype: ~kusto_management_client.models.CheckNameResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.CheckNameResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
@@ -90,24 +93,30 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(resource_name, 'CheckNameRequest')
         body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.post(
+            url, query_parameters, header_parameters, **body_content_kwargs)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('CheckNameResult', pipeline_response)
 
@@ -115,7 +124,8 @@ class DatabaseOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/checkNameAvailability'}  # type: ignore
+    check_name_availability.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/checkNameAvailability'}  # type: ignore
 
     def list_by_cluster(
         self,
@@ -135,7 +145,8 @@ class DatabaseOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~kusto_management_client.models.DatabaseListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabaseListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DatabaseListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-18"
@@ -156,17 +167,21 @@ class DatabaseOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatabaseListResult', pipeline_response)
+            deserialized = self._deserialize(
+                'DatabaseListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -175,19 +190,23 @@ class DatabaseOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_cluster.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases'}  # type: ignore
+    list_by_cluster.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases'}  # type: ignore
 
     def get(
         self,
@@ -227,19 +246,23 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Accept'] = 'application/json'
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Database', pipeline_response)
 
@@ -276,24 +299,30 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(parameters, 'Database')
         body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, **body_content_kwargs)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('Database', pipeline_response)
@@ -308,7 +337,8 @@ class DatabaseOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    _create_or_update_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
@@ -339,20 +369,22 @@ class DatabaseOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~kusto_management_client.models.Database]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 database_name=database_name,
                 parameters=parameters,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -366,9 +398,12 @@ class DatabaseOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay,  **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -378,7 +413,8 @@ class DatabaseOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    begin_create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def _update_initial(
         self,
@@ -407,24 +443,30 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(parameters, 'Database')
         body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, **body_content_kwargs)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('Database', pipeline_response)
@@ -439,7 +481,8 @@ class DatabaseOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    _update_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def begin_update(
         self,
@@ -470,20 +513,22 @@ class DatabaseOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~kusto_management_client.models.Database]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._update_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 database_name=database_name,
                 parameters=parameters,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -497,9 +542,12 @@ class DatabaseOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay,  **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -509,7 +557,8 @@ class DatabaseOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    begin_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def _delete_initial(
         self,
@@ -536,23 +585,28 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
 
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 202, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    _delete_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def begin_delete(
         self,
@@ -580,19 +634,21 @@ class DatabaseOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 cluster_name=cluster_name,
                 database_name=database_name,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -603,9 +659,12 @@ class DatabaseOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay,  **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -615,7 +674,8 @@ class DatabaseOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
+    begin_delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}'}  # type: ignore
 
     def list_principal(
         self,
@@ -638,7 +698,8 @@ class DatabaseOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~kusto_management_client.models.DatabasePrincipalListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-18"
@@ -660,17 +721,21 @@ class DatabaseOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.post(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatabasePrincipalListResult', pipeline_response)
+            deserialized = self._deserialize(
+                'DatabasePrincipalListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -679,19 +744,23 @@ class DatabaseOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_principal.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/listPrincipals'}  # type: ignore
+    list_principal.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/listPrincipals'}  # type: ignore
 
     def add_principal(
         self,
@@ -717,11 +786,13 @@ class DatabaseOperations(object):
         :rtype: ~kusto_management_client.models.DatabasePrincipalListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        database_principals_to_add = models.DatabasePrincipalListRequest(value=value)
+        database_principals_to_add = models.DatabasePrincipalListRequest(
+            value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -737,32 +808,41 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(database_principals_to_add, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(
+            database_principals_to_add, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.post(
+            url, query_parameters, header_parameters, **body_content_kwargs)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('DatabasePrincipalListResult', pipeline_response)
+        deserialized = self._deserialize(
+            'DatabasePrincipalListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    add_principal.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/addPrincipals'}  # type: ignore
+    add_principal.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/addPrincipals'}  # type: ignore
 
     def remove_principal(
         self,
@@ -788,11 +868,13 @@ class DatabaseOperations(object):
         :rtype: ~kusto_management_client.models.DatabasePrincipalListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.DatabasePrincipalListResult"]
         error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
 
-        database_principals_to_remove = models.DatabasePrincipalListRequest(value=value)
+        database_principals_to_remove = models.DatabasePrincipalListRequest(
+            value=value)
         api_version = "2020-09-18"
         content_type = kwargs.pop("content_type", "application/json")
 
@@ -808,29 +890,38 @@ class DatabaseOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
         header_parameters['Accept'] = 'application/json'
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(database_principals_to_remove, 'DatabasePrincipalListRequest')
+        body_content = self._serialize.body(
+            database_principals_to_remove, 'DatabasePrincipalListRequest')
         body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.post(
+            url, query_parameters, header_parameters, **body_content_kwargs)
 
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            raise HttpResponseError(
+                response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('DatabasePrincipalListResult', pipeline_response)
+        deserialized = self._deserialize(
+            'DatabasePrincipalListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    remove_principal.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/removePrincipals'}  # type: ignore
+    remove_principal.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/databases/{databaseName}/removePrincipals'}  # type: ignore

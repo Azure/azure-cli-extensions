@@ -9,13 +9,14 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -104,4 +105,108 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
         table = transform_output(json.loads(test_job_results))
         self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
-        
+
+        # Call with output from a failed job
+        test_job_results = \
+        '{\
+            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "cancellationTime": null,\
+            "containerUri": "https://foo...",\
+            "costEstimate": null,\
+            "creationTime": "2022-02-25T18:56:53.275035+00:00",\
+            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "errorData": {\
+                "code": "InsufficientResources",\
+                "message": "Too many qubits requested"\
+            },\
+            "id": "11111111-2222-3333-4444-555555555555",\
+            "inputDataFormat": "microsoft.ionq-ir.v2",\
+            "inputDataUri": "https://bar...",\
+            "inputParams": {\
+                "shots": "500"\
+            },\
+            "isCancelling": false,\
+            "metadata": {\
+                "entryPointInput": {\"Qubits\":null},\
+                "outputMappingBlobUri": "https://baz..."\
+            },\
+            "name": "",\
+            "outputDataFormat": "microsoft.quantum-results.v1",\
+            "outputDataUri": "https://quux...",\
+            "providerId": "ionq",\
+            "status": "Failed",\
+            "tags": [],\
+            "target": "ionq.simulator"\
+        }'
+
+        table = transform_output(json.loads(test_job_results))
+        self.assertEquals(table['Status'], "Failed")
+        self.assertEquals(table['Error Code'], "InsufficientResources")
+        self.assertEquals(table['Error Message'], "Too many qubits requested")
+        self.assertEquals(table['Target'], "ionq.simulator")
+        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+
+        # Call with missing "status", "code", "message", "target", "id", and "creationTime"
+        test_job_results = \
+        '{\
+            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "cancellationTime": null,\
+            "containerUri": "https://foo...",\
+            "costEstimate": null,\
+            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+            "errorData": {\
+            },\
+            "inputDataFormat": "microsoft.ionq-ir.v2",\
+            "inputDataUri": "https://bar...",\
+            "inputParams": {\
+                "shots": "500"\
+            },\
+            "isCancelling": false,\
+            "metadata": {\
+                "entryPointInput": {\"Qubits\":null},\
+                "outputMappingBlobUri": "https://baz..."\
+            },\
+            "name": "",\
+            "outputDataFormat": "microsoft.quantum-results.v1",\
+            "outputDataUri": "https://quux...",\
+            "providerId": "ionq",\
+            "tags": []\
+        }'
+
+        table = transform_output(json.loads(test_job_results))
+        notFound = "Not found"
+        self.assertEquals(table['Status'], notFound)
+        self.assertEquals(table['Error Code'], notFound)
+        self.assertEquals(table['Error Message'], notFound)
+        self.assertEquals(table['Target'], notFound)
+        self.assertEquals(table['Job ID'], notFound)
+        self.assertEquals(table['Submission Time'], notFound)
+
+    def test_validate_max_poll_wait_secs(self):
+        wait_secs = _validate_max_poll_wait_secs(1)
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 1.0)
+
+        wait_secs = _validate_max_poll_wait_secs("60")
+        self.assertEquals(type(wait_secs), float)
+        self.assertEquals(wait_secs, 60.0)
+
+        # Invalid values should raise errors
+        try:
+            wait_secs = _validate_max_poll_wait_secs(0.999999999)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: 0.999999999"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs(-1.0)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: -1.0"
+
+        try:
+            wait_secs = _validate_max_poll_wait_secs("foobar")
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"

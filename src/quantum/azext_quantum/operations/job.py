@@ -6,6 +6,7 @@
 # pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
+import knack.log
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError)
@@ -14,7 +15,10 @@ from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
+MINIMUM_MAX_POLL_WAIT_SECS = 1
+
 logger = logging.getLogger(__name__)
+knack_logger = knack.log.get_logger(__name__)
 
 
 def list(cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -69,6 +73,8 @@ def build(cmd, target_id=None, project=None):
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
+
+    knack_logger.warning('Building project...')
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
@@ -181,6 +187,8 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
+    knack_logger.warning('Submitting job...')
+
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
@@ -237,7 +245,10 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         logger.debug("Downloading job results blob into %s", path)
 
         if job.status != "Succeeded":
-            return f"Job status: {job.status}. Output only available if Succeeded."
+            return job  # If "-o table" is specified, this allows transform_output() in commands.py
+            #             to format the output, so the error info is shown. If "-o json" or no "-o"
+            #             parameter is specified, then the full JSON job output is displayed, being
+            #             consistent with other commands.
 
         args = _parse_blob_url(job.output_data_uri)
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)
@@ -274,6 +285,22 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         return data
 
 
+def _validate_max_poll_wait_secs(max_poll_wait_secs):
+    valid_max_poll_wait_secs = 0.0
+    error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
+    error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
+
+    try:
+        valid_max_poll_wait_secs = float(max_poll_wait_secs)
+    except ValueError as e:
+        raise InvalidArgumentValueError(error_message, error_recommendation) from e
+
+    if valid_max_poll_wait_secs < MINIMUM_MAX_POLL_WAIT_SECS:
+        raise InvalidArgumentValueError(error_message, error_recommendation)
+
+    return valid_max_poll_wait_secs
+
+
 def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
@@ -286,6 +313,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     # TODO: LROPoller...
     wait_indicators_used = False
     poll_wait = 0.2
+    max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
     job = client.get(job_id)
 
     while not _has_completed(job):

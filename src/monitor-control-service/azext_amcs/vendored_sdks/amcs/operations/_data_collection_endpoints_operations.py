@@ -30,7 +30,7 @@ class DataCollectionEndpointsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.amcs.models
+    :type models: ~$(python-base-namespace).v2021_09_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class DataCollectionEndpointsOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionEndpointResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionEndpointResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionEndpointResourceListResult"]
@@ -67,7 +67,7 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,7 +80,7 @@ class DataCollectionEndpointsOperations(object):
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -108,7 +108,7 @@ class DataCollectionEndpointsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponseCommonV2, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -130,7 +130,7 @@ class DataCollectionEndpointsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionEndpointResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionEndpointResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionEndpointResourceListResult"]
@@ -138,7 +138,7 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -178,7 +178,7 @@ class DataCollectionEndpointsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponseCommonV2, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -207,7 +207,7 @@ class DataCollectionEndpointsOperations(object):
         :type data_collection_endpoint_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionEndpointResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.amcs.models.DataCollectionEndpointResource
+        :rtype: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionEndpointResource"]
@@ -215,14 +215,14 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dataCollectionEndpointName': self._serialize.url("data_collection_endpoint_name", data_collection_endpoint_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -241,7 +241,7 @@ class DataCollectionEndpointsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DataCollectionEndpointResource', pipeline_response)
@@ -270,10 +270,10 @@ class DataCollectionEndpointsOperations(object):
          case insensitive.
         :type data_collection_endpoint_name: str
         :param body: The payload.
-        :type body: ~azure.mgmt.amcs.models.DataCollectionEndpointResource
+        :type body: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionEndpointResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.amcs.models.DataCollectionEndpointResource
+        :rtype: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionEndpointResource"]
@@ -281,7 +281,7 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -289,7 +289,7 @@ class DataCollectionEndpointsOperations(object):
         url = self.create.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dataCollectionEndpointName': self._serialize.url("data_collection_endpoint_name", data_collection_endpoint_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -315,7 +315,7 @@ class DataCollectionEndpointsOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
@@ -348,10 +348,10 @@ class DataCollectionEndpointsOperations(object):
          case insensitive.
         :type data_collection_endpoint_name: str
         :param body: The payload.
-        :type body: ~azure.mgmt.amcs.models.ResourceForUpdate
+        :type body: ~$(python-base-namespace).v2021_09_01_preview.models.ResourceForUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionEndpointResource, or the result of cls(response)
-        :rtype: ~azure.mgmt.amcs.models.DataCollectionEndpointResource
+        :rtype: ~$(python-base-namespace).v2021_09_01_preview.models.DataCollectionEndpointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionEndpointResource"]
@@ -359,7 +359,7 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -367,7 +367,7 @@ class DataCollectionEndpointsOperations(object):
         url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dataCollectionEndpointName': self._serialize.url("data_collection_endpoint_name", data_collection_endpoint_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -393,7 +393,7 @@ class DataCollectionEndpointsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DataCollectionEndpointResource', pipeline_response)
@@ -430,14 +430,14 @@ class DataCollectionEndpointsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-04-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dataCollectionEndpointName': self._serialize.url("data_collection_endpoint_name", data_collection_endpoint_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -456,7 +456,7 @@ class DataCollectionEndpointsOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponseCommonV2, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:

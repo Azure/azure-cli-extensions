@@ -9,6 +9,7 @@ from msrestazure.tools import resource_id
 from ...vendored_sdks.appplatform.v2022_01_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
+from ...custom import (app_set_deployment, app_unset_deployment)
 try:
     import unittest.mock as mock
 except ImportError:
@@ -60,6 +61,50 @@ class BasicTest(unittest.TestCase):
         deployment.sku.tier = sku
         deployment.sku.name = _get_sku_name(sku)
         return deployment
+
+
+class TestSetActiveDeploy(BasicTest):
+    def test_blue_green_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        call_args = client.apps.begin_set_active_deployments.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('default', request.active_deployment_names[0])
+
+    def test_unset_active_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        call_args = client.apps.begin_set_active_deployments.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual(0, len(request.active_deployment_names))
+
+    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    def test_blue_green_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
+        client = self._get_basic_mock_client(sku='Standard')
+        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        call_args = client_mock.apps.begin_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('default', request.properties.active_deployment_name)
+
+    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    def test_unset_active_standard(self, client_mock_factory):
+        client_mock = self._get_basic_mock_client(sku='Standard')
+        client_mock_factory.return_value = client_mock
+        client = self._get_basic_mock_client(sku='Standard')
+        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        call_args = client_mock.apps.begin_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        request = call_args[0][0][3]
+        self.assertEqual('', request.properties.active_deployment_name)
 
 
 class TestAppDeploy_Patch(BasicTest):
@@ -265,7 +310,15 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
-    
+
+    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_build_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment=self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env='{"BP_JVM_VERSION": "8.*"}')
+        resource = self.put_build_resource
+        self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
+
     @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
@@ -435,6 +488,30 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_deployment_resource
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_clear_jvm_option_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='')
+        resource = self.patch_deployment_resource
+        self.assertEqual({"foo": "bar"}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_in_enterprise_with_new_set_env(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+
+    def test_app_update_env_and_jvm_in_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment=self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option', env={'key': 'value'})
+        resource = self.patch_deployment_resource
+        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'}, resource.properties.deployment_settings.environment_variables)
 
     def test_app_update_custom_container_deployment(self):
         deployment=self._get_deployment()

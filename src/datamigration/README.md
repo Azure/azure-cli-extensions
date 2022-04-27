@@ -19,6 +19,16 @@ az datamigration get-assessment --connection-string "Data Source=LabServer.datab
 az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc"
 ```
 
+##### Performance-data-collection #####
+```
+az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-interation 5 --perf-query-interval 10 --static-query-interval 60
+```
+
+##### Get-sku-recommendation #####
+```
+az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+```
+
 #### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```
@@ -96,6 +106,33 @@ az datamigration sql-vm cancel --migration-operation-id "4124fe90-d1b6-4b50-b4d9
 az datamigration sql-vm cutover --migration-operation-id "4124fe90-d1b6-4b50-b4d9-46d02381f59a" \
     --resource-group "testrg" --sql-virtual-machine-name "testvm" --target-db-name "db1" 
 ```
+#### datamigration sql-db ####
+##### Create #####
+```
+az datamigration sql-db create \
+    --migration-service "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/MyGroup/providers/Microsoft.DataMigration/SqlMigrationServices/MyService" \
+    --scope "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/MyGroup/providers/Microsoft.Sql/servers/labserver" \
+    --source-database-name "AdventureWorks" \
+    --source-sql-connection authentication="SQLAuthentication" data-source="aaa" password="bbb" user-name="ccc" \
+    --target-sql-connection authentication="SQLAuthentication" data-source="aaa" password="bbb" user-name="ccc" \
+    --resource-group "MyGroup" --sqldb-instance-name "labserver" --target-db-name AdventureWorksTarget
+```
+##### Show #####
+```
+az datamigration sql-db show --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+    --target-db-name "db1"
+```
+##### Delete #####
+```
+az datamigration sql-db delete --resource-group "testrg" --sqldb-instance-name "sqldbinstance" \
+    --target-db-name "db1"
+```
+##### Cancel #####
+```
+az datamigration sql-db cancel --migration-operation-id "9a90bb84-e70f-46f7-b0ae-1aef5b3b9f07" \
+    --resource-group "testrg" --sqldb-instance-name "sqldbinstance" --target-db-name "db1" 
+```
+
 #### datamigration sql-service ####
 ##### Create #####
 ```
