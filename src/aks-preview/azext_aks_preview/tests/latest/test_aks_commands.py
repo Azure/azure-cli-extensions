@@ -443,23 +443,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.openServiceMesh.enabled', True),
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_aks_addon_list_available(self):
         list_available_cmd = 'aks addon list-available -o json'
         addon_list = self.cmd(list_available_cmd).get_output_in_json()
-
         assert len(addon_list) == 10
         assert addon_list[0]['name'] == "http_application_routing"
         assert addon_list[1]['name'] == "monitoring"
         assert addon_list[2]['name'] == "virtual-node"
-        assert addon_list[3]['name'] == "azure-policy"
-        assert addon_list[4]['name'] == "kube-dashboard"
+        assert addon_list[3]['name'] == "kube-dashboard"
+        assert addon_list[4]['name'] == "azure-policy"
         assert addon_list[5]['name'] == "ingress-appgw"
-        assert addon_list[6]['name'] == "open-service-mesh"
-        assert addon_list[7]['name'] == "confcom"
-        assert addon_list[8]['name'] == "gitops"
-        assert addon_list[9]['name'] == "azure-keyvault-secrets-provider"
+        assert addon_list[6]['name'] == "confcom"
+        assert addon_list[7]['name'] == "open-service-mesh"
+        assert addon_list[8]['name'] == "azure-keyvault-secrets-provider"
+        assert addon_list[9]['name'] == "gitops"
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -3587,6 +3586,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--enable-managed-identity ' \
                      '--enable-oidc-issuer ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3617,6 +3617,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview ' \
                      '--enable-oidc-issuer'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
