@@ -19,7 +19,7 @@ helps['connectedmachine'] = '''
 
 helps['connectedmachine list'] = """
     type: command
-    short-summary: "Lists all the hybrid machines in the specified resource group. Use the nextLink property in the \
+    short-summary: "List all the hybrid machines in the specified resource group. Use the nextLink property in the \
 response to get the next page of hybrid machines. And Lists all the hybrid machines in the specified subscription. Use \
 the nextLink property in the response to get the next page of hybrid machines."
     examples:
@@ -33,7 +33,7 @@ the nextLink property in the response to get the next page of hybrid machines."
 
 helps['connectedmachine show'] = """
     type: command
-    short-summary: "Retrieves information about the model view or the instance view of a hybrid machine."
+    short-summary: "Retrieve information about the model view or the instance view of a hybrid machine."
     examples:
       - name: Get Machine
         text: |-
@@ -58,7 +58,7 @@ helps['connectedmachine extension list'] = """
     type: command
     short-summary: "The operation to get all extensions of a non-Azure machine."
     examples:
-      - name: GET all Machine Extensions
+      - name: Get all Machine Extensions
         text: |-
                az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
 """
@@ -67,7 +67,7 @@ helps['connectedmachine extension show'] = """
     type: command
     short-summary: "The operation to get the extension."
     examples:
-      - name: GET Machine Extension
+      - name: Get Machine Extension
         text: |-
                az connectedmachine extension show --name "CustomScriptExtension" --machine-name "myMachine" \
 --resource-group "myResourceGroup"
@@ -81,7 +81,6 @@ helps['connectedmachine extension create'] = """
         short-summary: "Instance view status."
         long-summary: |
             Usage: --status code=XX level=XX display-status=XX message=XX time=XX
-
             code: The status code.
             level: The level code.
             display-status: The short localizable label for the status.
@@ -138,7 +137,7 @@ helps['connectedmachine extension wait'] = """
 
 helps['connectedmachine upgrade-extension'] = """
     type: command
-    short-summary: "The operation to Upgrade Machine Extensions."
+    short-summary: "The operation to upgrade Machine Extensions."
     examples:
       - name: Upgrade Machine Extensions
         text: |-
@@ -154,7 +153,7 @@ helps['connectedmachine private-link-scope'] = """
 
 helps['connectedmachine private-link-scope list'] = """
     type: command
-    short-summary: "Gets a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure \
+    short-summary: "Get a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure \
 Arc PrivateLinkScopes within a subscription."
     examples:
       - name: PrivateLinkScopeListByResourceGroup
@@ -167,7 +166,7 @@ Arc PrivateLinkScopes within a subscription."
 
 helps['connectedmachine private-link-scope show'] = """
     type: command
-    short-summary: "Returns a Azure Arc PrivateLinkScope."
+    short-summary: "Return a Azure Arc PrivateLinkScope."
     examples:
       - name: PrivateLinkScopeGet
         text: |-
@@ -177,7 +176,7 @@ helps['connectedmachine private-link-scope show'] = """
 
 helps['connectedmachine private-link-scope create'] = """
     type: command
-    short-summary: "Creates (or updates) a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
+    short-summary: "Create (or update) a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
 InstrumentationKey nor AppId in the Put operation."
     examples:
       - name: PrivateLinkScopeCreate
@@ -188,7 +187,7 @@ InstrumentationKey nor AppId in the Put operation."
 
 helps['connectedmachine private-link-scope update'] = """
     type: command
-    short-summary: "Update (or updates) a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
+    short-summary: "Update a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
 InstrumentationKey nor AppId in the Put operation."
     examples:
       - name: PrivateLinkScopeUpdate
@@ -199,7 +198,7 @@ InstrumentationKey nor AppId in the Put operation."
 
 helps['connectedmachine private-link-scope delete'] = """
     type: command
-    short-summary: "Deletes a Azure Arc PrivateLinkScope."
+    short-summary: "Delete a Azure Arc PrivateLinkScope."
     examples:
       - name: PrivateLinkScopesDelete
         text: |-
@@ -209,7 +208,7 @@ helps['connectedmachine private-link-scope delete'] = """
 
 helps['connectedmachine private-link-scope show-validation-detail'] = """
     type: command
-    short-summary: "Returns a Azure Arc PrivateLinkScope's validation details."
+    short-summary: "Return a Azure Arc PrivateLinkScope's validation details."
     examples:
       - name: PrivateLinkScopeGet
         text: |-
@@ -219,7 +218,7 @@ helps['connectedmachine private-link-scope show-validation-detail'] = """
 
 helps['connectedmachine private-link-scope show-validation-detail-for-machine'] = """
     type: command
-    short-summary: "Returns a Azure Arc PrivateLinkScope's validation details for a given machine."
+    short-summary: "Return a Azure Arc PrivateLinkScope's validation details for a given machine."
     examples:
       - name: PrivateLinkScopeGet
         text: |-
@@ -229,7 +228,7 @@ helps['connectedmachine private-link-scope show-validation-detail-for-machine'] 
 
 helps['connectedmachine private-link-scope update-tag'] = """
     type: command
-    short-summary: "Updates an existing PrivateLinkScope's tags. To update other fields use the CreateOrUpdate \
+    short-summary: "Update an existing PrivateLinkScope's tags. To update other fields use the CreateOrUpdate \
 method."
     examples:
       - name: PrivateLinkScopeUpdateTagsOnly
@@ -257,9 +256,9 @@ helps['connectedmachine private-link-resource'] = """
 
 helps['connectedmachine private-link-resource list'] = """
     type: command
-    short-summary: "Gets the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
+    short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-link-resource list --resource-group "myResourceGroup" --scope-name \
 "myPrivateLinkScope"
@@ -267,9 +266,9 @@ helps['connectedmachine private-link-resource list'] = """
 
 helps['connectedmachine private-link-resource show'] = """
     type: command
-    short-summary: "Gets the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
+    short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-link-resource show --group-name "hybridcompute" --resource-group \
 "myResourceGroup" --scope-name "myPrivateLinkScope"
@@ -282,9 +281,9 @@ helps['connectedmachine private-endpoint-connection'] = """
 
 helps['connectedmachine private-endpoint-connection list'] = """
     type: command
-    short-summary: "Gets all private endpoint connections on a private link scope."
+    short-summary: "Get all private endpoint connections on a private link scope."
     examples:
-      - name: Gets list of private endpoint connections on a private link scope.
+      - name: Get list of private endpoint connections on a private link scope.
         text: |-
                az connectedmachine private-endpoint-connection list --resource-group "myResourceGroup" --scope-name \
 "myPrivateLinkScope"
@@ -292,9 +291,9 @@ helps['connectedmachine private-endpoint-connection list'] = """
 
 helps['connectedmachine private-endpoint-connection show'] = """
     type: command
-    short-summary: "Gets a private endpoint connection."
+    short-summary: "Get a private endpoint connection."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-endpoint-connection show --name "private-endpoint-connection-name" \
 --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
@@ -321,9 +320,9 @@ johndoe@contoso.com" status="Approved" --name "private-endpoint-connection-name"
 
 helps['connectedmachine private-endpoint-connection delete'] = """
     type: command
-    short-summary: "Deletes a private endpoint connection with a given name."
+    short-summary: "Delete a private endpoint connection with a given name."
     examples:
-      - name: Deletes a private endpoint connection with a given name.
+      - name: Delete a private endpoint connection with a given name.
         text: |-
                az connectedmachine private-endpoint-connection delete --name "private-endpoint-connection-name" \
 --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
