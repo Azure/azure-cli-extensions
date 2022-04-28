@@ -68,6 +68,7 @@ from azext_aks_preview.addonconfiguration import (
 from azext_aks_preview.custom import (
     _get_snapshot,
     _get_cluster_snapshot,
+    _ensure_cluster_identity_permission_on_kubelet_identity,
 )
 
 logger = get_logger(__name__)
@@ -1810,6 +1811,34 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_azure_keyvault_kms_key_id(enable_validation=True)
 
+    def get_updated_assign_kubelet_identity(self) -> str:
+        """Obtain the value of assign_kubelet_identity based on the user input.
+
+        :return: str
+        """
+        kubelet_identity_resource_id = self.raw_param.get("assign_kubelet_identity")
+        if not kubelet_identity_resource_id:
+            return ""
+
+        msg = "You're going to update kubelet identity to {}, which will upgrade every node pool in the cluster " \
+              "and might take a while, do you wish to continue?".format(kubelet_identity_resource_id)
+        if not self.get_yes() and not prompt_y_n(msg, default="n"):
+            raise DecoratorEarlyExitException
+
+        return kubelet_identity_resource_id
+
+    def get_cluster_uaidentity_object_id(self) -> str:
+        assigned_identity = self.get_assign_identity()
+        cluster_identity_resource_id = ""
+        if assigned_identity is None or assigned_identity == "":
+            # Suppose identity is present on mc
+            if not(self.mc and self.mc.identity and self.mc.identity.user_assigned_identities):
+                raise RequiredArgumentMissingError("--assign-identity is not provided and the cluster identity type is not user assigned, cannot update kubelet identity")
+            cluster_identity_resource_id = list(self.mc.identity.user_assigned_identities.keys())[0]
+        else:
+            cluster_identity_resource_id = assigned_identity
+        return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -2545,6 +2574,29 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
+    def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update identity profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        assign_kubelet_identity = self.context.get_updated_assign_kubelet_identity()
+        if assign_kubelet_identity:
+            identity_profile = {
+                'kubeletidentity': self.models.UserAssignedIdentity(
+                    resource_id=assign_kubelet_identity,
+                )
+            }
+            cluster_identity_object_id = self.context.get_cluster_uaidentity_object_id()
+            # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
+            _ensure_cluster_identity_permission_on_kubelet_identity(
+                self.cmd.cli_ctx,
+                cluster_identity_object_id,
+                assign_kubelet_identity)
+            mc.identity_profile = identity_profile
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2587,6 +2639,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         mc = self.update_http_proxy_config(mc)
         mc = self.update_azure_keyvault_kms(mc)
+        # update identity profile
+        mc = self.update_identity_profile(mc)
+
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
