@@ -258,9 +258,9 @@ def load_arguments(self, _):
         c.argument('node_osdisk_size', type=int)
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('vm_set_type', validator=validate_vm_set_type)
-        c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.', hide=True)
-        c.argument('node_zones', zones_type, options_list=[
-                   '--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated, use --zones) Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.', deprecate_info=c.deprecate(redirect='--vm-set-type', hide=True))
+        c.argument('node_zones', zones_type, options_list=['--node-zones'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.', deprecate_info=c.deprecate(redirect='--zones', hide='2.37.0'))
+        c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_ultra_ssd', action='store_true')
@@ -421,8 +421,8 @@ def load_arguments(self, _):
             c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
             c.argument('max_surge', validator=validate_max_surge)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
-            c.argument('node_zones', zones_type, options_list=[
-                       '--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.')
+            c.argument('node_zones', zones_type, options_list=['--node-zones'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.', deprecate_info=c.deprecate(redirect='--zones', hide='2.37.0'))
+            c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
             c.argument('ppg')
             c.argument('enable_encryption_at_host', options_list=[
                        '--enable-encryption-at-host'], action='store_true')
