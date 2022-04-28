@@ -782,34 +782,47 @@ def find_existing_acr(cmd, app: "ContainerApp"):
 
 
 def validate_environment_location(cmd, location):
-    try:
-        _ensure_location_allowed(cmd, location, "Microsoft.OperationalInsights", "workspaces")
-    except Exception:  # pylint: disable=broad-except
-        location = _get_default_containerapps_location(cmd)
+    MAX_ENV_PER_LOCATION = 2
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
+        except Exception:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}".format(location))
+            location = _get_default_containerapps_location(cmd)
 
     env_list = list_managed_environments(cmd)
 
     locations = [l["location"] for l in env_list]
     locations = list(set(locations))  # remove duplicates
+    
     location_count = {}
     for loc in locations:
         location_count[loc] = sum(1 for e in env_list if e["location"] == loc)
 
-    print(location_count)
+    disallowed_locations = []
+    for _, value in enumerate(location_count):
+        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
+            disallowed_locations.append(value)
 
-    if location_count[location] > 1:
+    if location in disallowed_locations:
         from ._utils import providers_client_factory
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+        resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+        res_locations = []
+        for res in resource_types:
+            if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+                res_locations = getattr(res, 'locations', [])
 
-        if providers_client is not None:
-            resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
-            res_locations = []
-            for res in resource_types:
-                if res and getattr(res, 'resource_type', "") == "managedEnvironments":
-                    res_locations = getattr(res, 'locations', [])
+        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [l for l in res_locations if l not in disallowed_locations]
 
-            res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
-            print(res_locations)
+        if len(res_locations) > 0:
+            if location:
+                logger.warning("You have more than {} environments in location {}. Creating environment on location {} instead.".format(MAX_ENV_PER_LOCATION, location, res_locations[0]))
+            else:
+                logger.warning("Creating environment on location {}.".format(res_locations[0]))        
+            # return res_locations[0]
+        else:
+            raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
         raise ValidationError("Test")
-        # choose another location from _ensure_location_allowed string
-        pass
+    # return location
