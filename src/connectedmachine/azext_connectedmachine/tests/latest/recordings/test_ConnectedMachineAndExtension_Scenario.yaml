@@ -15,21 +15,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface?api-version=2022-03-10&$expand=instanceView
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine?api-version=2022-03-10&$expand=instanceView
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface","name":"DorothysSurface","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"4353a0a9-f37e-4979-9bc7-cf328661b146","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.17.01931.201","status":"Connected","lastStatusChange":"2022-04-28T16:54:49.5798585Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1586","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"11e86833-2e07-4c37-94d3-3c903b287bf7","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAqEd7f6jsvabDyMVf5MbMfxcZ70HQQLIWT7tCiXIJOpuOD6gHNHm/ogbHboP35U471wSVCd1sLlW8dKJLCsz8rBSdUD75xe4nkQl3sMtRQTXN3WwOOp9tipFjToINZC1FklnVfD4E3QOfbvGh/8HnGtXipnWC7dfHOKTwketWTD7rUL2VsPczC9ck6i3DJBRQosEysrhIwpzOzHJSibXMkIXoJWdCKsFrXrK8WC6D1UZNW672E2Hdj1GW2vc5c7+ZUXTgLL2cwfCa8WvPxcoeQNch5HcfmpyZ1vOdok4Nr3dCwZAffH0rQ2Pbd9SOzgMlKTzirksrkXOeXrzADMQt8wIDAQAB","osSku":"Windows
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine","name":"testMachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"458511ee-e147-4d0c-b942-90140c909e32","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.17.01931.201","status":"Connected","lastStatusChange":"2022-04-28T18:45:38.1739376Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1586","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"d2a1e588-0447-4f34-b9d4-b17e9c333ed1","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAvzGUtp7uBWHamkyhvKNPYI1RXJXAVdry3RMAlZXD8iK0BIWqJfsNxM2yvyRed8UpM82voSkQLmCYUko/wMZRM8zgdN2KHQPCSxDJ5agjs83FmlN8KBuZg7CW/9rT+nCsTl9Bedklp9upPjX9t4Z+bLkpuRCNtNOuTJLhBAUKuM2muJf1YDX14+HWUQmP5324paStoveHFZo+DgWYyoIlTGK8Am9WPdSovrlK2HGeiBzitCe5qCCBtyFLg6P663NZmfC1/Z1//Uctb31+MwKDP83KiXFAqV0dPMNmCeZVdp4ZD3ejwz91md6b7zbOUAThWS1ksXve4uIoYuRMbhvahQIDAQAB","osSku":"Windows
         10 Enterprise","domainName":"WORKGROUP","adFqdn":"DorothysSurface","dnsFqdn":"DorothysSurface","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
         Corporation","model":"Surface Book 2","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}}},"resources":[]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1890'
+      - '1882'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:44:31 GMT
+      - Thu, 28 Apr 2022 18:51:10 GMT
       expires:
       - '-1'
       pragma:
@@ -66,20 +66,20 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines?api-version=2022-03-10
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/dorothylinux2-Virtual-Machine","name":"dorothylinux2-Virtual-Machine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"5ce02094-bd55-44ba-b1e4-2d56b6a6ba69","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.7.21162.005","status":"Expired","lastStatusChange":"2021-09-30T06:14:01.8555779Z","errorDetails":[],"displayName":"dorothylinux2-Virtual-Machine","machineFqdn":"dorothylinux2-Virtual-Machine","osName":"linux","osVersion":"5.8.0-59-generic","osType":"linux","osProfile":{"computerName":"dorothylinux2-Virtual-Machine","linuxConfiguration":{"patchSettings":{"assessmentMode":"null"}}},"vmId":"8948ef10-f369-471d-b363-8e2ff44614ca","vmUuid":"80f26cf0-d9a7-4637-a2ff-587bd51626fc","clientPublicKey":"MIIBCgKCAQEAukhdoNaMfaHRGP6MvgdWdyefHdET/mV0J3NdpMU+LFRE5IWwZxG+mGOb2lK3dsgX6HenWyRiumC2BMDX6RuLfRuscZw+HT/W4W/9ScDxbD18o4vECD7DmiFmIs4iPaF8GLTjO2fJzjAl59k7nblfr38SexA8EKo5WqG2LFhbT6CAXtBMPtWebWeZCQ3uXCri8838nDtqhQtqY6Efg4A2sEV9s4Mk7LjINpzcVuPYdvxcFngM22hixUawE9GH8UKIV5XF+/c8xk1b1fvUGizf+sNbgSMZFyJ3Vgg5ne5ibepxyR3WBtmvd3L/mF1negSh/5h9QQKTt7djeUYCb+ztjwIDAQAB","osSku":"Ubuntu
-        20.04 LTS","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"dorothylinux2-Virtual-Machine","mssqlDiscovered":"false","detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
-        Corporation","model":"Virtual Machine","mssqldiscovered":"false"},"agentConfiguration":{}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface","name":"DorothysSurface","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"4353a0a9-f37e-4979-9bc7-cf328661b146","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.17.01931.201","status":"Connected","lastStatusChange":"2022-04-28T16:54:49.5798585Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1586","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"11e86833-2e07-4c37-94d3-3c903b287bf7","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAqEd7f6jsvabDyMVf5MbMfxcZ70HQQLIWT7tCiXIJOpuOD6gHNHm/ogbHboP35U471wSVCd1sLlW8dKJLCsz8rBSdUD75xe4nkQl3sMtRQTXN3WwOOp9tipFjToINZC1FklnVfD4E3QOfbvGh/8HnGtXipnWC7dfHOKTwketWTD7rUL2VsPczC9ck6i3DJBRQosEysrhIwpzOzHJSibXMkIXoJWdCKsFrXrK8WC6D1UZNW672E2Hdj1GW2vc5c7+ZUXTgLL2cwfCa8WvPxcoeQNch5HcfmpyZ1vOdok4Nr3dCwZAffH0rQ2Pbd9SOzgMlKTzirksrkXOeXrzADMQt8wIDAQAB","osSku":"Windows
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine","name":"testMachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"458511ee-e147-4d0c-b942-90140c909e32","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.17.01931.201","status":"Connected","lastStatusChange":"2022-04-28T18:45:38.1739376Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1586","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"d2a1e588-0447-4f34-b9d4-b17e9c333ed1","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAvzGUtp7uBWHamkyhvKNPYI1RXJXAVdry3RMAlZXD8iK0BIWqJfsNxM2yvyRed8UpM82voSkQLmCYUko/wMZRM8zgdN2KHQPCSxDJ5agjs83FmlN8KBuZg7CW/9rT+nCsTl9Bedklp9upPjX9t4Z+bLkpuRCNtNOuTJLhBAUKuM2muJf1YDX14+HWUQmP5324paStoveHFZo+DgWYyoIlTGK8Am9WPdSovrlK2HGeiBzitCe5qCCBtyFLg6P663NZmfC1/Z1//Uctb31+MwKDP83KiXFAqV0dPMNmCeZVdp4ZD3ejwz91md6b7zbOUAThWS1ksXve4uIoYuRMbhvahQIDAQAB","osSku":"Windows
         10 Enterprise","domainName":"WORKGROUP","adFqdn":"DorothysSurface","dnsFqdn":"DorothysSurface","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
-        Corporation","model":"Surface Book 2","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}}}}]}'
+        Corporation","model":"Surface Book 2","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/dorothylinux2-Virtual-Machine","name":"dorothylinux2-Virtual-Machine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"5ce02094-bd55-44ba-b1e4-2d56b6a6ba69","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.7.21162.005","status":"Expired","lastStatusChange":"2021-09-30T06:14:01.8555779Z","errorDetails":[],"displayName":"dorothylinux2-Virtual-Machine","machineFqdn":"dorothylinux2-Virtual-Machine","osName":"linux","osVersion":"5.8.0-59-generic","osType":"linux","osProfile":{"computerName":"dorothylinux2-Virtual-Machine","linuxConfiguration":{"patchSettings":{"assessmentMode":"null"}}},"vmId":"8948ef10-f369-471d-b363-8e2ff44614ca","vmUuid":"80f26cf0-d9a7-4637-a2ff-587bd51626fc","clientPublicKey":"MIIBCgKCAQEAukhdoNaMfaHRGP6MvgdWdyefHdET/mV0J3NdpMU+LFRE5IWwZxG+mGOb2lK3dsgX6HenWyRiumC2BMDX6RuLfRuscZw+HT/W4W/9ScDxbD18o4vECD7DmiFmIs4iPaF8GLTjO2fJzjAl59k7nblfr38SexA8EKo5WqG2LFhbT6CAXtBMPtWebWeZCQ3uXCri8838nDtqhQtqY6Efg4A2sEV9s4Mk7LjINpzcVuPYdvxcFngM22hixUawE9GH8UKIV5XF+/c8xk1b1fvUGizf+sNbgSMZFyJ3Vgg5ne5ibepxyR3WBtmvd3L/mF1negSh/5h9QQKTt7djeUYCb+ztjwIDAQAB","osSku":"Ubuntu
+        20.04 LTS","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"dorothylinux2-Virtual-Machine","mssqlDiscovered":"false","detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
+        Corporation","model":"Virtual Machine","mssqldiscovered":"false"},"agentConfiguration":{}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3524'
+      - '3516'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:44:32 GMT
+      - Thu, 28 Apr 2022 18:51:11 GMT
       expires:
       - '-1'
       pragma:
@@ -121,13 +121,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/30bffea3-44ef-4a1d-a3d7-56f7a3518347?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/344b42af-35a2-49dd-9987-042c14c9768b?api-version=2022-03-10
       cache-control:
       - no-cache
       content-length:
@@ -135,11 +135,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 17:44:36 GMT
+      - Thu, 28 Apr 2022 18:51:16 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/30bffea3-44ef-4a1d-a3d7-56f7a3518347?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/344b42af-35a2-49dd-9987-042c14c9768b?api-version=2022-03-10
       pragma:
       - no-cache
       server:
@@ -170,20 +170,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/30bffea3-44ef-4a1d-a3d7-56f7a3518347?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/344b42af-35a2-49dd-9987-042c14c9768b?api-version=2022-03-10
   response:
     body:
-      string: '{"name":"30bffea3-44ef-4a1d-a3d7-56f7a3518347","status":"Succeeded","startTime":"2022-04-28T17:44:36.6134675Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"name":"344b42af-35a2-49dd-9987-042c14c9768b","status":"Succeeded","startTime":"2022-04-28T18:51:16.4462389Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '882'
+      - '878'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:49:37 GMT
+      - Thu, 28 Apr 2022 18:56:16 GMT
       expires:
       - '-1'
       pragma:
@@ -218,20 +218,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '757'
+      - '753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:49:37 GMT
+      - Thu, 28 Apr 2022 18:56:17 GMT
       expires:
       - '-1'
       pragma:
@@ -265,20 +265,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions?api-version=2022-03-10
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '769'
+      - '765'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:49:38 GMT
+      - Thu, 28 Apr 2022 18:56:18 GMT
       expires:
       - '-1'
       pragma:
@@ -312,20 +312,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '757'
+      - '753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:49:38 GMT
+      - Thu, 28 Apr 2022 18:56:20 GMT
       expires:
       - '-1'
       pragma:
@@ -364,13 +364,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/upgradeExtensions?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/upgradeExtensions?api-version=2022-03-10
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/0cd33313-7902-4026-af8c-a5b73c87112f?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/5b3e7f25-1b24-4d4e-8595-1099d8f0bb10?api-version=2022-03-10
       cache-control:
       - no-cache
       content-length:
@@ -378,11 +378,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 17:49:40 GMT
+      - Thu, 28 Apr 2022 18:56:20 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/0cd33313-7902-4026-af8c-a5b73c87112f?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/5b3e7f25-1b24-4d4e-8595-1099d8f0bb10?api-version=2022-03-10
       pragma:
       - no-cache
       server:
@@ -412,20 +412,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/0cd33313-7902-4026-af8c-a5b73c87112f?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/5b3e7f25-1b24-4d4e-8595-1099d8f0bb10?api-version=2022-03-10
   response:
     body:
-      string: '{"name":"0cd33313-7902-4026-af8c-a5b73c87112f","status":"Succeeded","startTime":"2022-04-28T17:49:40.353787Z","properties":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"name":"5b3e7f25-1b24-4d4e-8595-1099d8f0bb10","status":"Succeeded","startTime":"2022-04-28T18:56:21.3506894Z","properties":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '884'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:54:41 GMT
+      - Thu, 28 Apr 2022 19:01:21 GMT
       expires:
       - '-1'
       pragma:
@@ -459,20 +459,20 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/0cd33313-7902-4026-af8c-a5b73c87112f?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/5b3e7f25-1b24-4d4e-8595-1099d8f0bb10?api-version=2022-03-10
   response:
     body:
-      string: '[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+      string: '[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '760'
+      - '756'
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 17:54:41 GMT
+      - Thu, 28 Apr 2022 19:01:21 GMT
       expires:
       - '-1'
       pragma:
@@ -510,13 +510,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/34abe573-ab14-4f3d-ba08-6e2489b5ac03?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/85127739-a62a-440d-89ec-fe6114481d96?api-version=2022-03-10
       cache-control:
       - no-cache
       content-length:
@@ -524,11 +524,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 17:54:42 GMT
+      - Thu, 28 Apr 2022 19:01:23 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/34abe573-ab14-4f3d-ba08-6e2489b5ac03?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/85127739-a62a-440d-89ec-fe6114481d96?api-version=2022-03-10
       pragma:
       - no-cache
       server:
@@ -558,24 +558,24 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/34abe573-ab14-4f3d-ba08-6e2489b5ac03?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/85127739-a62a-440d-89ec-fe6114481d96?api-version=2022-03-10
   response:
     body:
-      string: '{"name":"34abe573-ab14-4f3d-ba08-6e2489b5ac03","status":"Succeeded","startTime":"2022-04-28T17:54:42.1294748Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"name":"85127739-a62a-440d-89ec-fe6114481d96","status":"Succeeded","startTime":"2022-04-28T19:01:24.5404982Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut:  Volume in drive C has no label.\r\n
-        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n04/28/2022  10:56
-        AM    <DIR>          .\r\n04/28/2022  10:56 AM    <DIR>          ..\r\n               0
-        File(s)              0 bytes\r\n               2 Dir(s)  297,897,152,512 bytes
+        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n04/28/2022  12:01
+        PM    <DIR>          .\r\n04/28/2022  12:01 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  297,885,577,216 bytes
         free\r\n"}}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1237'
+      - '1233'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:59:42 GMT
+      - Thu, 28 Apr 2022 19:06:24 GMT
       expires:
       - '-1'
       pragma:
@@ -609,24 +609,24 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
         Message: Command execution finished, StdOut:  Volume in drive C has no label.\r\n
-        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n04/28/2022  10:56
-        AM    <DIR>          .\r\n04/28/2022  10:56 AM    <DIR>          ..\r\n               0
-        File(s)              0 bytes\r\n               2 Dir(s)  297,897,152,512 bytes
+        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n04/28/2022  12:01
+        PM    <DIR>          .\r\n04/28/2022  12:01 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  297,885,577,216 bytes
         free\r\n"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1112'
+      - '1108'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 17:59:43 GMT
+      - Thu, 28 Apr 2022 19:06:25 GMT
       expires:
       - '-1'
       pragma:
@@ -662,13 +662,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface/extensions/custom-000001?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/dc6c3d4f-e7d6-4e8f-bf78-19bf8f5816ce?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/608eb108-335f-4c92-80c3-c38423e7bd19?api-version=2022-03-10
       cache-control:
       - no-cache
       content-length:
@@ -676,11 +676,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 17:59:45 GMT
+      - Thu, 28 Apr 2022 19:06:27 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/dc6c3d4f-e7d6-4e8f-bf78-19bf8f5816ce?api-version=2022-03-10
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationresults/608eb108-335f-4c92-80c3-c38423e7bd19?api-version=2022-03-10
       pragma:
       - no-cache
       server:
@@ -710,10 +710,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/dc6c3d4f-e7d6-4e8f-bf78-19bf8f5816ce?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/centraluseuap/operationstatus/608eb108-335f-4c92-80c3-c38423e7bd19?api-version=2022-03-10
   response:
     body:
-      string: '{"name":"dc6c3d4f-e7d6-4e8f-bf78-19bf8f5816ce","status":"Succeeded","startTime":"2022-04-28T17:59:45.0209043Z"}'
+      string: '{"name":"608eb108-335f-4c92-80c3-c38423e7bd19","status":"Succeeded","startTime":"2022-04-28T19:06:28.4245178Z"}'
     headers:
       cache-control:
       - no-cache
@@ -722,7 +722,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Apr 2022 18:04:45 GMT
+      - Thu, 28 Apr 2022 19:11:28 GMT
       expires:
       - '-1'
       pragma:
@@ -758,7 +758,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/DorothysSurface?api-version=2022-03-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine?api-version=2022-03-10
   response:
     body:
       string: ''
@@ -770,7 +770,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Apr 2022 18:04:50 GMT
+      - Thu, 28 Apr 2022 19:11:34 GMT
       expires:
       - '-1'
       pragma:
