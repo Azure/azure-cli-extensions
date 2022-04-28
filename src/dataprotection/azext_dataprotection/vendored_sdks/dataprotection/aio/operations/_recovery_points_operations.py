@@ -26,7 +26,7 @@ class RecoveryPointsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -43,8 +43,8 @@ class RecoveryPointsOperations:
 
     def list(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         filter: Optional[str] = None,
         skip_token: Optional[str] = None,
@@ -52,10 +52,10 @@ class RecoveryPointsOperations:
     ) -> AsyncIterable["models.AzureBackupRecoveryPointResourceList"]:
         """Returns a list of Recovery Points for a DataSource in a vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param filter: OData filter options.
@@ -64,7 +64,7 @@ class RecoveryPointsOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either AzureBackupRecoveryPointResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.AzureBackupRecoveryPointResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.AzureBackupRecoveryPointResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AzureBackupRecoveryPointResourceList"]
@@ -72,7 +72,7 @@ class RecoveryPointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -84,9 +84,9 @@ class RecoveryPointsOperations:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
                     'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -131,25 +131,25 @@ class RecoveryPointsOperations:
 
     async def get(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         recovery_point_id: str,
         **kwargs
     ) -> "models.AzureBackupRecoveryPointResource":
         """Gets a Recovery Point using recoveryPointId for a Datasource.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
-        :param recovery_point_id: Id of the recovery point.
+        :param recovery_point_id:
         :type recovery_point_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AzureBackupRecoveryPointResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.AzureBackupRecoveryPointResource
+        :rtype: ~azure.mgmt.dataprotection.models.AzureBackupRecoveryPointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AzureBackupRecoveryPointResource"]
@@ -157,15 +157,15 @@ class RecoveryPointsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
             'recoveryPointId': self._serialize.url("recovery_point_id", recovery_point_id, 'str'),
         }

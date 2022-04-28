@@ -443,23 +443,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.openServiceMesh.enabled', True),
         ])
 
-    @live_only()  # live only is required for test environment setup like `az login`
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_aks_addon_list_available(self):
         list_available_cmd = 'aks addon list-available -o json'
         addon_list = self.cmd(list_available_cmd).get_output_in_json()
-
         assert len(addon_list) == 10
         assert addon_list[0]['name'] == "http_application_routing"
         assert addon_list[1]['name'] == "monitoring"
         assert addon_list[2]['name'] == "virtual-node"
-        assert addon_list[3]['name'] == "azure-policy"
-        assert addon_list[4]['name'] == "kube-dashboard"
+        assert addon_list[3]['name'] == "kube-dashboard"
+        assert addon_list[4]['name'] == "azure-policy"
         assert addon_list[5]['name'] == "ingress-appgw"
-        assert addon_list[6]['name'] == "open-service-mesh"
-        assert addon_list[7]['name'] == "confcom"
-        assert addon_list[8]['name'] == "gitops"
-        assert addon_list[9]['name'] == "azure-keyvault-secrets-provider"
+        assert addon_list[6]['name'] == "confcom"
+        assert addon_list[7]['name'] == "open-service-mesh"
+        assert addon_list[8]['name'] == "azure-keyvault-secrets-provider"
+        assert addon_list[9]['name'] == "gitops"
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -2905,16 +2904,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
     def test_aks_custom_kubelet_identity(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         control_plane_identity_name = self.create_random_name('cliakstest', 16)
         kubelet_identity_name = self.create_random_name('cliakstest', 16)
+        new_kubelet_identity_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'control_plane_identity_name': control_plane_identity_name,
             'kubelet_identity_name': kubelet_identity_name,
+            "new_kubelet_identity_name": new_kubelet_identity_name,
             'ssh_key_value': self.generate_ssh_keys()
         })
 
@@ -2951,6 +2952,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('identityProfile.kubeletidentity.resourceId',
                        kubelet_identity_resource_id),
+        ])
+
+        # create new kubelet identity
+        new_kubelet_identity = 'identity create --resource-group={resource_group} --name={new_kubelet_identity_name}'
+        new_identity = self.cmd(new_kubelet_identity, checks=[
+            self.check('name', new_kubelet_identity_name)
+        ]).get_output_in_json()
+        new_kubelet_identity_resource_id = new_identity["id"]
+        assert new_kubelet_identity_resource_id is not None
+        self.kwargs.update({
+            'new_kubelet_identity_resource_id': new_kubelet_identity_resource_id,
+        })
+
+        # update to new kubelet identity
+        self.cmd('aks update --resource-group={resource_group} --name={name} --assign-kubelet-identity {new_kubelet_identity_resource_id} --yes', checks=[
+            self.exists('identity'),
+            self.exists('identityProfile'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('identityProfile.kubeletidentity.resourceId',
+                       new_kubelet_identity_resource_id),
         ])
 
         # delete
@@ -3587,6 +3608,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--enable-managed-identity ' \
                      '--enable-oidc-issuer ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3617,6 +3639,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview ' \
                      '--enable-oidc-issuer'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -3671,7 +3694,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
             '--enable-managed-identity', '--enable-oidc-issuer',
             '--ssh-key-value={ssh_key_value}',
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview',
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableWorkloadIdentityPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOIDCIssuerPreview',
         ])
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),

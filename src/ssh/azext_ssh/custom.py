@@ -408,15 +408,15 @@ def _decide_resource_type(cmd, op_info):
     if is_arc_server and arc and arc.properties and arc.properties and arc.properties.os_name:
         os_type = arc.properties.os_name
 
+    if os_type:
+        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
+
     # Note 2: This is a temporary check while AAD login is not enabled for Windows.
     if os_type and os_type.lower() == 'windows' and not op_info.local_user:
         colorama.init()
         raise azclierror.RequiredArgumentMissingError("SSH Login using AAD credentials is not currently supported "
                                                       "for Windows.",
                                                       Fore.YELLOW + "Please provide --local-user." + Style.RESET_ALL)
-
-    if os_type:
-        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
 
     target_resource_type = "Microsoft.Compute"
     if is_arc_server:
