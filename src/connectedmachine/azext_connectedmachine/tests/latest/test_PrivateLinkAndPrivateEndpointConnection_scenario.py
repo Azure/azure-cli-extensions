@@ -45,7 +45,6 @@ def cleanup_scenario(test):
     pass
 
 
-
 def test_private_link(test):
     rand_string = test.create_random_name('', 5)
     test.kwargs.update({
