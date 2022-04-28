@@ -2015,7 +2015,7 @@ def containerapp_up(cmd,
                     service_principal_tenant_id=None):
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry)
+                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry, validate_environment_location)
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
@@ -2036,6 +2036,7 @@ def containerapp_up(cmd,
 
     dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
     ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+    # location = validate_environment_location(cmd, location)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)

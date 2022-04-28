@@ -150,7 +150,7 @@ class ContainerAppEnvironment(Resource):
                 rg = parse_resource_id(name)["resource_group"]
                 if resource_group.name != rg:
                     self.resource_group = ResourceGroup(cmd, rg, location)
-        self.location = _get_default_containerapps_location(cmd, location)
+        self.location = location
         self.logs_key = logs_key
         self.logs_customer_id = logs_customer_id
 
@@ -163,7 +163,7 @@ class ContainerAppEnvironment(Resource):
                     self.resource_group = ResourceGroup(
                         self.cmd,
                         rg,
-                        _get_default_containerapps_location(self.cmd, self.location),
+                        self.location,
                     )
         else:
             self.name = name_or_rid
@@ -187,7 +187,7 @@ class ContainerAppEnvironment(Resource):
             )  # TODO use .info()
 
     def create(self):
-        validate_environment_location(self.cmd, self.location)
+        self.location = validate_environment_location(self.cmd, self.location)
         env = create_managed_environment(
             self.cmd,
             self.name,
@@ -788,7 +788,6 @@ def validate_environment_location(cmd, location):
             _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
         except Exception:  # pylint: disable=broad-except
             raise ValidationError("You cannot create a Containerapp environment in location {}".format(location))
-            location = _get_default_containerapps_location(cmd)
 
     env_list = list_managed_environments(cmd)
 
@@ -804,25 +803,29 @@ def validate_environment_location(cmd, location):
         if location_count[value] > MAX_ENV_PER_LOCATION - 1:
             disallowed_locations.append(value)
 
-    if location in disallowed_locations:
-        from ._utils import providers_client_factory
-        providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-        resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
-        res_locations = []
-        for res in resource_types:
-            if res and getattr(res, 'resource_type', "") == "managedEnvironments":
-                res_locations = getattr(res, 'locations', [])
+    res_locations = list_environment_locations(cmd)
+    res_locations = [l for l in res_locations if l not in disallowed_locations]
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
-        res_locations = [l for l in res_locations if l not in disallowed_locations]
+    if len(res_locations) > 0:
+        if not location:
+            logger.warning("Creating environment on location {}.".format(res_locations[0]))        
+            return res_locations[0]
+        if location in disallowed_locations:
+            logger.warning("You have more than {} environments in location {}. Creating environment on location {} instead.".format(MAX_ENV_PER_LOCATION, location, res_locations[0]))
+            return res_locations[0]
+        return location
+    else:
+        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
 
-        if len(res_locations) > 0:
-            if location:
-                logger.warning("You have more than {} environments in location {}. Creating environment on location {} instead.".format(MAX_ENV_PER_LOCATION, location, res_locations[0]))
-            else:
-                logger.warning("Creating environment on location {}.".format(res_locations[0]))        
-            # return res_locations[0]
-        else:
-            raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
-        raise ValidationError("Test")
-    # return location
+def list_environment_locations(cmd):
+    from ._utils import providers_client_factory
+    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+    res_locations = []
+    for res in resource_types:
+        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+            res_locations = getattr(res, 'locations', [])
+
+    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+    return res_locations
