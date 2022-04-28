@@ -2,7 +2,7 @@ Release History
 ===============
 3.1.5
 ---
-* The argument '--build-env' accepts key[=value] instead of json.
+* [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
 
 3.1.4
 ---
