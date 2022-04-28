@@ -1,5 +1,9 @@
 Release History
 ===============
+3.1.5
+---
+* [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
+
 3.1.4
 ---
 * Fix API portal clear SSO
