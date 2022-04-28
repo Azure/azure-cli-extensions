@@ -48,7 +48,7 @@ def cleanup_scenario(test):
 def test_private_link(test):
     rand_string = test.create_random_name('', 5)
     test.kwargs.update({
-        'machine': 'DorothysSurface',
+        'machine': 'testMachine',
         'rg': 'az-sdk-test-' + rand_string,
         'scope': 'scope-' + rand_string,
         'vnet': 'vnet-' + rand_string,

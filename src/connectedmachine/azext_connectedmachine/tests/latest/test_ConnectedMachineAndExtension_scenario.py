@@ -45,7 +45,7 @@ def cleanup_scenario(test):
 @try_manual
 def test_machine_and_extension(test):
     test.kwargs.update({
-        'machine': 'DorothysSurface',
+        'machine': 'testMachine',
         'rg': 'az-sdk-test',
         'location': 'eastus2euap',
         'customScriptName': test.create_random_name('custom-', 20),
