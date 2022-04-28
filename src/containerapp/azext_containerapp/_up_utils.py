@@ -607,13 +607,9 @@ def _get_default_registry_name(app):
     import hashlib
 
     h = hashlib.sha256()
-    h.update(f"{app.env.resource_group.name}/{app.env.name}".encode("utf-8"))
+    h.update(f"{get_subscription_id(app.cmd.cli_ctx)}/{app.env.resource_group.name}/{app.env.name}".encode("utf-8"))
 
-    registry_name = (
-        f"{app.env.name}{h.hexdigest()}"
-        .replace("-", "")
-        .replace(".", "")[:10]
-    )  # cap at 15 characters total
+    registry_name = f"{h.hexdigest()}"[:10]  # cap at 15 characters total
     return f"ca{registry_name}acr"  # ACR names must start + end in a letter
 
 
