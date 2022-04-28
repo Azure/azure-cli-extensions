@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.5.64
+++++++
+
+* Add support for updating kubelet identity. Command is
+  * `az aks update --assign-kubelet-identity <kubelelt-identity-resource-id>`
+
 0.5.63
 ++++++
 
