@@ -94,6 +94,8 @@ def load_arguments(self, _):
         c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
                    'is "CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+        c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicate whether the extension '
+                   'should be automatically upgraded by the platform if there is a newer version available.')
         c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicates whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                    'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
