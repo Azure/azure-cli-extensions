@@ -521,7 +521,7 @@ helps['aks reconcile'] = """
     parameters:
         - name: --aks-custom-headers
           type: string
-          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2  
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 
