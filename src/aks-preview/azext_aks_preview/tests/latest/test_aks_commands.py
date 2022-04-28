@@ -288,7 +288,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-namespace-resources --generate-ssh-keys'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('enableNamespaceResources', 'true')
+            self.check('enableNamespaceResources', True)
         ])
 
     @AllowLargeResponse()
@@ -303,12 +303,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('enableNamespaceResources', 'true')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-namespace-resources --generate-ssh-keys'
         self.cmd(update_cmd, checks=[
-            self.check('enableNamespaceResources', 'true')
+            self.check('enableNamespaceResources', True)
         ])
 
     
