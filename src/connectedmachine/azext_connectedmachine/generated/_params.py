@@ -63,9 +63,9 @@ def load_arguments(self, _):
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
+        c.argument('type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
                    'is "CustomScriptExtension".')
-        c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+        c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
         c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
                    'should be automatically upgraded by the platform if there is a newer version available.')
         c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicates whether the extension should '
@@ -76,9 +76,9 @@ def load_arguments(self, _):
         c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
                    'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                    'value: json-string/json-file/@json-file.')
-        c.argument('instance_view_type', type=str, help='Specifies the type of the extension; an example is '
+        c.argument('instance_view_type', type=str, help='Specify the type of the extension; an example is '
                    '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument('inst_handler_version', type=str, help='Specifies the version of the script handler.',
+        c.argument('inst_handler_version', type=str, help='Specify the version of the script handler.',
                    arg_group='Instance View')
         c.argument('status', action=AddStatus, nargs='+', help='Instance view status.', arg_group='Instance View')
 
@@ -91,12 +91,12 @@ def load_arguments(self, _):
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
+        c.argument('type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
                    'is "CustomScriptExtension".')
-        c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+        c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
         c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicate whether the extension '
                    'should be automatically upgraded by the platform if there is a newer version available.')
-        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicates whether the extension should '
+        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                    'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
         c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
@@ -119,7 +119,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedmachine upgrade-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the hybrid machine.', id_part='name')
-        c.argument('extension_targets', type=validate_file_or_dict, help='Describes the Extension Target Properties. '
+        c.argument('extension_targets', type=validate_file_or_dict, help='Describe the Extension Target Properties. '
                    'Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('connectedmachine private-link-scope list') as c:
@@ -136,7 +136,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
                    'machines associated with the private link scope can also use public Azure Arc service endpoints.')
 
     with self.argument_context('connectedmachine private-link-scope update') as c:
@@ -146,7 +146,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
                    'machines associated with the private link scope can also use public Azure Arc service endpoints.')
         c.ignore('parameters')
 
