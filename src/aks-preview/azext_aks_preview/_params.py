@@ -328,7 +328,6 @@ def load_arguments(self, _):
     with self.argument_context('aks reconcile') as c:
         c.argument('aks_custom_headers')
 
-
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
         c.argument('disable_local_accounts', action='store_true')
@@ -497,7 +496,7 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=[
                        '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
-    
+
     with self.argument_context('aks nodepool reconcile') as c:
         c.argument('aks_custom_headers')
 
