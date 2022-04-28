@@ -16,7 +16,7 @@
 
 import argparse
 from collections import defaultdict
-from azure.cli.core.azInvalidArgumentValueError import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class AddStatus(argparse.Action):
