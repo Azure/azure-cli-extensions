@@ -29,7 +29,7 @@ class DataProtectionOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,10 +58,10 @@ class DataProtectionOperations(object):
         :param location:
         :type location: str
         :param parameters: Feature support request object.
-        :type parameters: ~data_protection_client.models.FeatureValidationRequestBase
+        :type parameters: ~azure.mgmt.dataprotection.models.FeatureValidationRequestBase
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FeatureValidationResponseBase, or the result of cls(response)
-        :rtype: ~data_protection_client.models.FeatureValidationResponseBase
+        :rtype: ~azure.mgmt.dataprotection.models.FeatureValidationResponseBase
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.FeatureValidationResponseBase"]
@@ -69,7 +69,7 @@ class DataProtectionOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

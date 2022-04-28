@@ -33,12 +33,12 @@ from azext_dataprotection.action import (
 def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-vault show') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
     with self.argument_context('dataprotection backup-vault create') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('e_tag', type=str, help='Optional ETag.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -48,57 +48,57 @@ def load_arguments(self, _):
         c.argument('storage_settings', action=AddStorageSettings, nargs='+', help='Storage Settings')
 
     with self.argument_context('dataprotection backup-vault update') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
                    'SystemAssigned or None', arg_group='Identity')
 
     with self.argument_context('dataprotection backup-vault delete') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
     with self.argument_context('dataprotection backup-vault wait') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
     with self.argument_context('dataprotection backup-policy list') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
 
     with self.argument_context('dataprotection backup-policy show') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
                    'of the policy', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-policy create') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
                    'of the policy')
         c.argument('backup_policy', action=AddBackupPolicy, nargs='+', help='Rule based backup policy',
                    arg_group='Properties')
 
     with self.argument_context('dataprotection backup-policy delete') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
                    'of the policy', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-instance list') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
 
     with self.argument_context('dataprotection backup-instance show') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-instance create') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance')
         c.argument('friendly_name', type=str, help='Gets or sets the Backup Instance friendly name.')
@@ -108,20 +108,23 @@ def load_arguments(self, _):
                    'set information.')
         c.argument('secret_store_based_auth_credentials', action=AddSecretStoreBasedAuthCredentials, nargs='+',
                    help='Secret store based authentication credentials.', arg_group='DatasourceAuthCredentials')
+        c.argument('validation_type', arg_type=get_enum_type(['ShallowValidation', 'DeepValidation']), help='Specifies '
+                   'the type of validation. In case of DeepValidation, all validations from /validateForBackup API '
+                   'will run again.')
         c.argument('object_type', type=str, help='')
         c.argument('policy_id', type=str, help='', arg_group='Policy Info')
         c.argument('policy_parameters', action=AddPolicyParameters, nargs='+', help='Policy parameters for the backup '
                    'instance', arg_group='Policy Info')
 
     with self.argument_context('dataprotection backup-instance delete') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-instance adhoc-backup') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('rule_name', type=str, help='Specify backup policy rule name.', arg_group='Backup Rule Options')
@@ -129,16 +132,34 @@ def load_arguments(self, _):
                    'Options Trigger Option')
 
     with self.argument_context('dataprotection backup-instance restore trigger') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('parameters', options_list=['--restore-request-object'], type=validate_file_or_dict, help='Request '
                    'body for operation Expected value: json-string/@json-file.')
 
-    with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+    with self.argument_context('dataprotection backup-instance resume-protection') as c:
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+        c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
+                   help='The name of the backup instance', id_part='child_name_1')
+
+    with self.argument_context('dataprotection backup-instance stop-protection') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+        c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
+                   help='The name of the backup instance', id_part='child_name_1')
+
+    with self.argument_context('dataprotection backup-instance suspend-backup') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+        c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
+                   help='The name of the backup instance', id_part='child_name_1')
+
+    with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('friendly_name', type=str, help='Gets or sets the Backup Instance friendly name.',
                    arg_group='Backup Instance')
         c.argument('data_source_info', action=AddDataSourceInfo, nargs='+', help='Gets or sets the data source '
@@ -147,35 +168,38 @@ def load_arguments(self, _):
                    'set information.', arg_group='Backup Instance')
         c.argument('secret_store_based_auth_credentials', action=AddSecretStoreBasedAuthCredentials, nargs='+',
                    help='Secret store based authentication credentials.', arg_group='DatasourceAuthCredentials')
+        c.argument('validation_type', arg_type=get_enum_type(['ShallowValidation', 'DeepValidation']), help='Specifies '
+                   'the type of validation. In case of DeepValidation, all validations from /validateForBackup API '
+                   'will run again.', arg_group='Backup Instance')
         c.argument('object_type', type=str, help='', arg_group='Backup Instance')
         c.argument('policy_id', type=str, help='', arg_group='Backup Instance Policy Info')
         c.argument('policy_parameters', action=AddPolicyParameters, nargs='+', help='Policy parameters for the backup '
                    'instance', arg_group='Backup Instance Policy Info')
 
     with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
                    'object. Expected value: json-string/@json-file.')
 
     with self.argument_context('dataprotection backup-instance wait') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
 
     with self.argument_context('dataprotection recovery-point list') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.')
         c.argument('backup_instance_name', type=str, help='The name of the backup instance')
         c.argument('filter_', options_list=['--filter'], type=str, help='OData filter options.')
         c.argument('skip_token', type=str, help='skipToken Filter.')
 
     with self.argument_context('dataprotection recovery-point show') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', type=str, help='The name of the backup instance', id_part='child_name_1')
         c.argument('recovery_point_id', type=str, help='Id of the recovery point.', id_part='child_name_2')
 
@@ -190,8 +214,8 @@ def load_arguments(self, _):
                    '00000000-0000-0000-0000-000000000000).', id_part='child_name_1')
 
     with self.argument_context('dataprotection restorable-time-range find') as c:
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', type=str, help='The name of the backup instance', id_part='child_name_1')
         c.argument('source_data_store_type', help='Gets or sets the type of the source data store.',
                    arg_type=get_enum_type(['OperationalStore', 'VaultStore', 'ArchiveStore']))

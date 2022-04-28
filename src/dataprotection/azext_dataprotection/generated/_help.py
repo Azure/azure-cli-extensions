@@ -222,10 +222,11 @@ resources, this will be the ID created by backup service via Fabric/Vault.
       - name: --secret-store-based-auth-credentials
         short-summary: "Secret store based authentication credentials."
         long-summary: |
-            Usage: --secret-store-based-auth-credentials uri=XX secret-store-type=XX object-type=XX
+            Usage: --secret-store-based-auth-credentials uri=XX secret-store-type=XX value=XX object-type=XX
 
             uri: Uri to get to the resource
             secret-store-type: Gets or sets the type of secret store
+            value: Gets or sets value stored in secret store resource
             object-type: Required. Type of the specific object - used for deserializing
       - name: --policy-parameters
         short-summary: "Policy parameters for the backup instance"
@@ -237,19 +238,20 @@ resources, this will be the ID created by backup service via Fabric/Vault.
       - name: Create BackupInstance
         text: |-
                az dataprotection backup-instance create --name "testInstance1" --data-source-info \
-datasource-type="OssDB" object-type="Datasource" resource-id="/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resou\
-rceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/testdb" \
-resource-location="" resource-name="testdb" resource-type="Microsoft.DBforPostgreSQL/servers/databases" \
-resource-uri="" --data-source-set-info datasource-type="OssDB" object-type="DatasourceSet" \
-resource-id="/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBfor\
-PostgreSQL/servers/viveksipgtest" resource-location="" resource-name="viveksipgtest" resource-type="Microsoft.DBforPost\
-greSQL/servers" resource-uri="" --policy-parameters objectType="SecretStoreBasedAuthCredentials" \
-secretStoreResource={"secretStoreType":"AzureKeyVault","uri":"https://samplevault.vault.azure.net/secrets/credentials"}\
- --friendly-name "harshitbi2" --object-type "BackupInstance" --policy-id "/subscriptions/04cf684a-d41f-4550-9f70-7708a3\
-a2283b/resourceGroups/000pikumar/providers/Microsoft.DataProtection/Backupvaults/PratikPrivatePreviewVault1/backupPolic\
-ies/PratikPolicy1" --policy-parameters data-store-parameters-list={"dataStoreType":"OperationalStore","objectType":"Azu\
-reOperationalStoreParameters","resourceGroupId":"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viv\
-eksipgtest"} --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
+datasource-type="Microsoft.DBforPostgreSQL/servers/databases" object-type="Datasource" resource-id="/subscriptions/f75d\
+8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest\
+/databases/testdb" resource-location="" resource-name="testdb" resource-type="Microsoft.DBforPostgreSQL/servers/databas\
+es" resource-uri="" --data-source-set-info datasource-type="Microsoft.DBforPostgreSQL/servers/databases" \
+object-type="DatasourceSet" resource-id="/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgte\
+st/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest" resource-location="" resource-name="viveksipgtest" \
+resource-type="Microsoft.DBforPostgreSQL/servers" resource-uri="" --policy-parameters objectType="SecretStoreBasedAuthC\
+redentials" secretStoreResource={"secretStoreType":"AzureKeyVault","uri":"https://samplevault.vault.azure.net/secrets/c\
+redentials"} --friendly-name "harshitbi2" --object-type "BackupInstance" --policy-id "/subscriptions/04cf684a-d41f-4550\
+-9f70-7708a3a2283b/resourceGroups/000pikumar/providers/Microsoft.DataProtection/Backupvaults/PratikPrivatePreviewVault1\
+/backupPolicies/PratikPolicy1" --policy-parameters data-store-parameters-list={"dataStoreType":"OperationalStore","obje\
+ctType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resour\
+ceGroups/viveksipgtest"} --validation-type "ShallowValidation" --resource-group "000pikumar" --vault-name \
+"PratikPrivatePreviewVault1"
 """
 
 helps['dataprotection backup-instance delete'] = """
@@ -287,16 +289,18 @@ helps['dataprotection backup-instance restore trigger'] = """
 "{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":\\"hardcodedRP\\",\\"restore\
 TargetInfo\\":{\\"datasourceAuthCredentials\\":{\\"objectType\\":\\"SecretStoreBasedAuthCredentials\\",\\"secretStoreRe\
 source\\":{\\"secretStoreType\\":\\"AzureKeyVault\\",\\"uri\\":\\"https://samplevault.vault.azure.net/secrets/credentia\
-ls\\"}},\\"datasourceInfo\\":{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasource\\",\\"resourceID\\":\\"/s\
-ubscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/serv\
-ers/viveksipgtest/databases/testdb\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"testdb\\",\\"resourceType\\":\
-\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\"},\\"datasourceSetInfo\\":{\\"datasourceType\
-\\":\\"OssDB\\",\\"objectType\\":\\"DatasourceSet\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff\
-0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest\\",\\"resourceLocation\\":\
-\\"\\",\\"resourceName\\":\\"viveksipgtest\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\
-\\":\\"\\"},\\"objectType\\":\\"RestoreTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"s\
-outheastasia\\"},\\"sourceDataStoreType\\":\\"VaultStore\\"}" --resource-group "000pikumar" --vault-name \
-"PratikPrivatePreviewVault1"
+ls\\"}},\\"datasourceInfo\\":{\\"datasourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"objectType\\":\
+\\"Datasource\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/p\
+roviders/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/targetdb\\",\\"resourceLocation\\":\\"\\",\\"resourc\
+eName\\":\\"targetdb\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\"},\
+\\"datasourceSetInfo\\":{\\"datasourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"objectType\\":\\"Dat\
+asourceSet\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/prov\
+iders/Microsoft.DBforPostgreSQL/servers/viveksipgtest\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"viveksipgt\
+est\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"},\\"objectType\\":\\"Restore\
+TargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"},\\"sourceDataStoreType\
+\\":\\"VaultStore\\",\\"sourceResourceId\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/vivek\
+sipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/testdb\\"}" --resource-group "000pikumar" \
+--vault-name "PratikPrivatePreviewVault1"
       - name: Trigger Restore As Files
         text: |-
                az dataprotection backup-instance restore trigger --name "testInstance1" --restore-request-object \
@@ -304,7 +308,9 @@ outheastasia\\"},\\"sourceDataStoreType\\":\\"VaultStore\\"}" --resource-group "
 TargetInfo\\":{\\"objectType\\":\\"RestoreFilesTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\
 \\":\\"southeastasia\\",\\"targetDetails\\":{\\"filePrefix\\":\\"restoredblob\\",\\"restoreTargetLocationType\\":\\"Azu\
 reBlobs\\",\\"url\\":\\"https://teststorage.blob.core.windows.net/restoretest\\"}},\\"sourceDataStoreType\\":\\"VaultSt\
-ore\\"}" --resource-group "000pikumar" --vault-name "PrivatePreviewVault1"
+ore\\",\\"sourceResourceId\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/provi\
+ders/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/testdb\\"}" --resource-group "000pikumar" --vault-name \
+"PrivatePreviewVault1"
       - name: Trigger Restore With Rehydration
         text: |-
                az dataprotection backup-instance restore trigger --name "testInstance1" --restore-request-object \
@@ -318,7 +324,39 @@ rs/databases\\",\\"resourceUri\\":\\"\\"},\\"datasourceSetInfo\\":{\\"datasource
 providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"viveks\
 ipgtest\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"},\\"objectType\\":\\"Res\
 toreTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"},\\"sourceDataStore\
-Type\\":\\"VaultStore\\"}" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
+Type\\":\\"VaultStore\\",\\"sourceResourceId\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/v\
+iveksipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/testdb\\"}" --resource-group \
+"000pikumar" --vault-name "PratikPrivatePreviewVault1"
+"""
+
+helps['dataprotection backup-instance resume-protection'] = """
+    type: command
+    short-summary: "This operation will resume protection for a stopped backup instance."
+    examples:
+      - name: ResumeProtection
+        text: |-
+               az dataprotection backup-instance resume-protection --name "testbi" --resource-group "testrg" \
+--vault-name "testvault"
+"""
+
+helps['dataprotection backup-instance stop-protection'] = """
+    type: command
+    short-summary: "This operation will stop protection of a backup instance and data will be held forever."
+    examples:
+      - name: StopProtection
+        text: |-
+               az dataprotection backup-instance stop-protection --name "testbi" --resource-group "testrg" \
+--vault-name "testvault"
+"""
+
+helps['dataprotection backup-instance suspend-backup'] = """
+    type: command
+    short-summary: "This operation will stop backups for backup instance."
+    examples:
+      - name: SuspendBackups
+        text: |-
+               az dataprotection backup-instance suspend-backup --name "testbi" --resource-group "testrg" --vault-name \
+"testvault"
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """
@@ -356,10 +394,11 @@ resources, this will be the ID created by backup service via Fabric/Vault.
       - name: --secret-store-based-auth-credentials
         short-summary: "Secret store based authentication credentials."
         long-summary: |
-            Usage: --secret-store-based-auth-credentials uri=XX secret-store-type=XX object-type=XX
+            Usage: --secret-store-based-auth-credentials uri=XX secret-store-type=XX value=XX object-type=XX
 
             uri: Uri to get to the resource
             secret-store-type: Gets or sets the type of secret store
+            value: Gets or sets value stored in secret store resource
             object-type: Required. Type of the specific object - used for deserializing
       - name: --policy-parameters
         short-summary: "Policy parameters for the backup instance"
@@ -394,16 +433,18 @@ helps['dataprotection backup-instance validate-for-restore'] = """
 "{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":\\"hardcodedRP\\",\\"restore\
 TargetInfo\\":{\\"datasourceAuthCredentials\\":{\\"objectType\\":\\"SecretStoreBasedAuthCredentials\\",\\"secretStoreRe\
 source\\":{\\"secretStoreType\\":\\"AzureKeyVault\\",\\"uri\\":\\"https://samplevault.vault.azure.net/secrets/credentia\
-ls\\"}},\\"datasourceInfo\\":{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasource\\",\\"resourceID\\":\\"/s\
-ubscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/serv\
-ers/viveksipgtest/databases/testdb\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"testdb\\",\\"resourceType\\":\
-\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\"},\\"datasourceSetInfo\\":{\\"datasourceType\
-\\":\\"OssDB\\",\\"objectType\\":\\"DatasourceSet\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff\
-0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest\\",\\"resourceLocation\\":\
-\\"\\",\\"resourceName\\":\\"viveksipgtest\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\
-\\":\\"\\"},\\"objectType\\":\\"RestoreTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"s\
-outheastasia\\"},\\"sourceDataStoreType\\":\\"VaultStore\\"}" --resource-group "000pikumar" --vault-name \
-"PratikPrivatePreviewVault1"
+ls\\"}},\\"datasourceInfo\\":{\\"datasourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"objectType\\":\
+\\"Datasource\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/p\
+roviders/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/targetdb\\",\\"resourceLocation\\":\\"\\",\\"resourc\
+eName\\":\\"targetdb\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\"},\
+\\"datasourceSetInfo\\":{\\"datasourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"objectType\\":\\"Dat\
+asourceSet\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/prov\
+iders/Microsoft.DBforPostgreSQL/servers/viveksipgtest\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"viveksipgt\
+est\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"},\\"objectType\\":\\"Restore\
+TargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"},\\"sourceDataStoreType\
+\\":\\"VaultStore\\",\\"sourceResourceId\\":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/vivek\
+sipgtest/providers/Microsoft.DBforPostgreSQL/servers/viveksipgtest/databases/testdb\\"}" --resource-group "000pikumar" \
+--vault-name "PratikPrivatePreviewVault1"
 """
 
 helps['dataprotection backup-instance wait'] = """
