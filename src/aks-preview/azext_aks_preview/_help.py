@@ -30,6 +30,9 @@ helps['aks create'] = """
           type: bool
           short-summary: Skip role assignment for subnet (advanced networking).
           long-summary:  If specified, please make sure your service principal has the access to your subnet.
+        - name: --zones -z
+          type: string array
+          short-summary: Space-separated list of availability zones where agent nodes will be placed.
         - name: --client-secret
           type: string
           short-summary: Secret associated with the service principal. This argument is required if
@@ -990,9 +993,9 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
-        - name: --node-zones --zones -z
+        - name: --zones -z
           type: string array
-          short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
+          short-summary: Space-separated list of availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
