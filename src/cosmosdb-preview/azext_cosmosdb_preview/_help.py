@@ -649,3 +649,27 @@ helps['cosmosdb dts show'] = """
         text: |-
                az cosmosdb dts show --account-name "ddb1" --job-name "j1" -g "rg1"
 """
+
+helps['cosmosdb dts pause'] = """
+    type: command
+    examples:
+      - name: Pause job j1
+        text: |-
+               az cosmosdb dts pause --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb dts resume'] = """
+    type: command
+    examples:
+      - name: Resume job j1
+        text: |-
+               az cosmosdb dts resume --account-name "ddb1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb dts cancel'] = """
+    type: command
+    examples:
+      - name: Cancel job j1
+        text: |-
+               az cosmosdb dts cancel --account-name "ddb1" --job-name "j1" -g "rg1"
+"""

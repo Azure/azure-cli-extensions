@@ -175,3 +175,7 @@ def load_command_table(self, _):
         g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
         g.command('list', 'list_by_database_account')
         g.show_command('show', 'get')
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
+        g.command('cancel', 'cancel')
+
