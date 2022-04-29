@@ -820,6 +820,7 @@ def validate_environment_location(cmd, location):
     else:
         raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
 
+
 def list_environment_locations(cmd):
     from ._utils import providers_client_factory
     providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
@@ -832,3 +833,15 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+
+def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
+    if managed_env and resource_group_name and location:
+        env_def = None
+        try:
+            env_def = ManagedEnvironmentClient.show(cmd, resource_group_name, parse_resource_id(managed_env)["name"])
+        except:
+            pass
+        if env_def:
+            if location != env_def["location"]:
+                raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"]), location)
