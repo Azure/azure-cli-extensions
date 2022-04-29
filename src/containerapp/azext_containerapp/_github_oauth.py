@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=consider-using-f-string
 
+from azure.cli.core.util import open_page_in_browser
 from azure.cli.core.azclierror import (ValidationError, CLIInternalError, UnclassifiedUserFault)
 from knack.log import get_logger
 
@@ -24,7 +25,9 @@ GITHUB_OAUTH_SCOPES = [
 ]
 
 
-def get_github_access_token(cmd, scope_list=None):  # pylint: disable=unused-argument
+def get_github_access_token(cmd, scope_list=None, token=None):  # pylint: disable=unused-argument
+    if token:
+        return token
     if scope_list:
         for scope in scope_list:
             if scope not in GITHUB_OAUTH_SCOPES:
@@ -52,6 +55,7 @@ def get_github_access_token(cmd, scope_list=None):  # pylint: disable=unused-arg
         expires_in_seconds = int(parsed_response['expires_in'][0])
         logger.warning('Please navigate to %s and enter the user code %s to activate and '
                        'retrieve your github personal access token', verification_uri, user_code)
+        open_page_in_browser("https://github.com/login/device")
 
         timeout = time.time() + expires_in_seconds
         logger.warning("Waiting up to '%s' minutes for activation", str(expires_in_seconds // 60))
