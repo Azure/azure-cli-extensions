@@ -73,6 +73,7 @@ def _fuzzy_match(query, arr):
 
     return matches
 
+
 def get_nodepool_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
     _re_snapshot_resource_id = re.compile(
         r"/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)",
