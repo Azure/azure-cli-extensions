@@ -32,7 +32,7 @@ class BackupVaultsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class BackupVaultsOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either BackupVaultResourceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.BackupVaultResourceList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.dataprotection.models.BackupVaultResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResourceList"]
@@ -64,7 +64,7 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -126,7 +126,7 @@ class BackupVaultsOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either BackupVaultResourceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.BackupVaultResourceList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.dataprotection.models.BackupVaultResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResourceList"]
@@ -134,7 +134,7 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -187,20 +187,20 @@ class BackupVaultsOperations(object):
 
     def get(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.BackupVaultResource"
         """Returns a resource belonging to a resource group.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BackupVaultResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.BackupVaultResource
+        :rtype: ~azure.mgmt.dataprotection.models.BackupVaultResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResource"]
@@ -208,15 +208,15 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -246,8 +246,8 @@ class BackupVaultsOperations(object):
 
     def _create_or_update_initial(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         parameters,  # type: "models.BackupVaultResource"
         **kwargs  # type: Any
     ):
@@ -257,16 +257,16 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -304,20 +304,20 @@ class BackupVaultsOperations(object):
 
     def begin_create_or_update(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         parameters,  # type: "models.BackupVaultResource"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.BackupVaultResource"]
         """Creates or updates a BackupVault resource belonging to a resource group.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.BackupVaultResource
+        :type parameters: ~azure.mgmt.dataprotection.models.BackupVaultResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -325,7 +325,7 @@ class BackupVaultsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either BackupVaultResource or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_protection_client.models.BackupVaultResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.dataprotection.models.BackupVaultResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -337,8 +337,8 @@ class BackupVaultsOperations(object):
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_or_update_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -355,9 +355,9 @@ class BackupVaultsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -376,17 +376,17 @@ class BackupVaultsOperations(object):
 
     def delete(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         """Deletes a BackupVault resource from the resource group.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -397,15 +397,15 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -432,8 +432,8 @@ class BackupVaultsOperations(object):
 
     def _update_initial(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         parameters,  # type: "models.PatchResourceRequestInput"
         **kwargs  # type: Any
     ):
@@ -443,16 +443,16 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -488,8 +488,8 @@ class BackupVaultsOperations(object):
 
     def begin_update(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         parameters,  # type: "models.PatchResourceRequestInput"
         **kwargs  # type: Any
     ):
@@ -497,12 +497,12 @@ class BackupVaultsOperations(object):
         """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a
         resource.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.PatchResourceRequestInput
+        :type parameters: ~azure.mgmt.dataprotection.models.PatchResourceRequestInput
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -510,7 +510,7 @@ class BackupVaultsOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either BackupVaultResource or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_protection_client.models.BackupVaultResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.dataprotection.models.BackupVaultResource]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -522,8 +522,8 @@ class BackupVaultsOperations(object):
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._update_initial(
-                vault_name=vault_name,
                 resource_group_name=resource_group_name,
+                vault_name=vault_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -540,9 +540,9 @@ class BackupVaultsOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -576,10 +576,10 @@ class BackupVaultsOperations(object):
         :param location: The location in which uniqueness will be verified.
         :type location: str
         :param parameters: Check name availability request.
-        :type parameters: ~data_protection_client.models.CheckNameAvailabilityRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.CheckNameAvailabilityRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckNameAvailabilityResult, or the result of cls(response)
-        :rtype: ~data_protection_client.models.CheckNameAvailabilityResult
+        :rtype: ~azure.mgmt.dataprotection.models.CheckNameAvailabilityResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameAvailabilityResult"]
@@ -587,7 +587,7 @@ class BackupVaultsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

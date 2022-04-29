@@ -57,6 +57,7 @@ from azure.cli.core.azclierror import (
     UnknownError,
 )
 from knack.util import CLIError
+from knack.prompting import NoTTYException
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError
 
@@ -81,8 +82,10 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         )
         module = importlib.import_module(module_name)
 
-        self.assertEqual(models.KubeletConfig, getattr(module, "KubeletConfig"))
-        self.assertEqual(models.LinuxOSConfig, getattr(module, "LinuxOSConfig"))
+        self.assertEqual(models.KubeletConfig,
+                         getattr(module, "KubeletConfig"))
+        self.assertEqual(models.LinuxOSConfig,
+                         getattr(module, "LinuxOSConfig"))
         self.assertEqual(
             models.ManagedClusterHTTPProxyConfig,
             getattr(module, "ManagedClusterHTTPProxyConfig"),
@@ -1293,6 +1296,49 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # test cache
         self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
 
+    def test_get_cluster_snapshot_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_cluster_snapshot_id(), None)
+        creation_data = self.models.CreationData(
+            source_resource_id="test_source_resource_id"
+        )
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name")
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile],
+            creation_data=creation_data,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_cluster_snapshot_id(),
+                         "test_source_resource_id")
+
+    def test_get_cluster_snapshot(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": "test_source_resource_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock()
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_1.get_cluster_snapshot(), mock_snapshot)
+        # test cache
+        self.assertEqual(ctx_1.get_cluster_snapshot(), mock_snapshot)
+
     def test_get_host_group_id(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -1373,6 +1419,47 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ):
             self.assertEqual(
                 ctx_3.get_kubernetes_version(), "custom_kubernetes_version"
+            )
+
+        # custom value
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": "", "cluster_snapshot_id": "test_cluster_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(
+            managed_cluster_properties_read_only=Mock(kubernetes_version="test_cluster_kubernetes_version"))
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_4.get_kubernetes_version(), "test_cluster_kubernetes_version"
+            )
+
+        # custom value
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "cluster_snapshot_id": "test_cluster_snapshot_id",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        mock_mc_snapshot = Mock(
+            managed_cluster_properties_read_only=Mock(kubernetes_version="test_cluster_kubernetes_version"))
+        with patch(
+            "azext_aks_preview.decorator._get_cluster_snapshot",
+            return_value=mock_mc_snapshot,
+        ), patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_5.get_kubernetes_version(), "test_cluster_kubernetes_version"
             )
 
     def test_get_os_sku(self):
@@ -1649,6 +1736,121 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertIsNotNone(profile)
         self.assertTrue(profile.enabled)
 
+    def test_get_workload_identity_profile__create_no_set(self):
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        self.assertIsNone(ctx.get_workload_identity_profile())
+
+    def test_get_workload_identity_profile__create_enable_without_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__create_enable_with_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_oidc_issuer": True,
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.CREATE
+        )
+        profile = ctx.get_workload_identity_profile()
+        self.assertTrue(profile.enabled)
+
+    def test_get_workload_identity_profile__update_not_set(self):
+        ctx = AKSPreviewContext(
+            self.cmd, {}, self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        self.assertIsNone(ctx.get_workload_identity_profile())
+
+    def test_get_workload_identity_profile__update_with_enable_and_disable(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+                "disable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__update_with_enable_without_oidc_issuer(self):
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_workload_identity": True,
+            },
+            self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx.get_workload_identity_profile()
+
+    def test_get_workload_identity_profile__update_with_enable(self):
+        for previous_enablement_status in [
+            None,  # preivous not set
+            True,  # previous set to enabled=true
+            False, # previous set to enabled=false
+        ]:
+            ctx = AKSPreviewContext(
+                self.cmd,
+                {
+                    "enable_workload_identity": True,
+                },
+                self.models, decorator_mode=DecoratorMode.UPDATE
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+            if previous_enablement_status is None:
+                mc.security_profile = None
+            else:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile(
+                    workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                        enabled=previous_enablement_status
+                    )
+                )
+            ctx.attach_mc(mc)
+            profile = ctx.get_workload_identity_profile()
+            self.assertTrue(profile.enabled)
+
+    def test_get_workload_identity_profile__update_with_disable(self):
+        for previous_enablement_status in [
+            None,  # preivous not set
+            True,  # previous set to enabled=true
+            False, # previous set to enabled=false
+        ]:
+            ctx = AKSPreviewContext(
+                self.cmd,
+                {
+                    "disable_workload_identity": True,
+                },
+                self.models, decorator_mode=DecoratorMode.UPDATE
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+            if previous_enablement_status is None:
+                mc.security_profile = None
+            else:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile(
+                    workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                        enabled=previous_enablement_status
+                    )
+                )
+            ctx.attach_mc(mc)
+            profile = ctx.get_workload_identity_profile()
+            self.assertFalse(profile.enabled)
+
     def test_get_crg_id(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -1683,7 +1885,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertIsNone(ctx_0.get_enable_azure_keyvault_kms())
-        
+
         ctx_1 = AKSPreviewContext(
             self.cmd,
             {
@@ -1765,7 +1967,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertIsNone(ctx_0.get_azure_keyvault_kms_key_id())
-        
+
         key_id_1 = "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -1843,6 +2045,26 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_5.get_azure_keyvault_kms_key_id()
+
+    def test_get_updated_assign_kubelet_identity(self):
+        ctx_0 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_updated_assign_kubelet_identity(), "")
+
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "assign_kubelet_identity": "fakeresourceid",
+                "yes": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_updated_assign_kubelet_identity(), "fakeresourceid")
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
@@ -1928,7 +2150,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             host_group_id=None,
             capacity_reservation_group_id=None,
         )
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -2036,7 +2259,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             capacity_reservation_group_id="test_crg_id",
             host_group_id="test_host_group_id",
         )
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
@@ -2055,7 +2279,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_http_proxy_config(None)
         dec_mc_1 = dec_1.set_up_http_proxy_config(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2093,7 +2318,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_node_resource_group(None)
         dec_mc_1 = dec_1.set_up_node_resource_group(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2312,7 +2538,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             dec_1.set_up_pod_identity_profile(None)
         dec_mc_1 = dec_1.set_up_pod_identity_profile(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2372,7 +2599,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             return_value=None,
         ):
-            self.assertEqual(dec_1.context.get_intermediate("monitoring"), None)
+            self.assertEqual(
+                dec_1.context.get_intermediate("monitoring"), None)
             monitoring_addon_profile = dec_1.build_monitoring_addon_profile()
             ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
                 enabled=True,
@@ -2384,7 +2612,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             self.assertEqual(
                 monitoring_addon_profile, ground_truth_monitoring_addon_profile
             )
-            self.assertEqual(dec_1.context.get_intermediate("monitoring"), True)
+            self.assertEqual(
+                dec_1.context.get_intermediate("monitoring"), True)
 
         # custom value
         dec_2 = AKSPreviewCreateDecorator(
@@ -2408,7 +2637,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             return_value=None,
         ):
-            self.assertEqual(dec_2.context.get_intermediate("monitoring"), None)
+            self.assertEqual(
+                dec_2.context.get_intermediate("monitoring"), None)
             monitoring_addon_profile = dec_2.build_monitoring_addon_profile()
             ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
                 enabled=True,
@@ -2420,7 +2650,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             self.assertEqual(
                 monitoring_addon_profile, ground_truth_monitoring_addon_profile
             )
-            self.assertEqual(dec_2.context.get_intermediate("monitoring"), True)
+            self.assertEqual(
+                dec_2.context.get_intermediate("monitoring"), True)
 
     def test_build_ingress_appgw_addon_profile(self):
         # default
@@ -2666,7 +2897,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             dec_1.set_up_windows_profile(None)
         dec_mc_1 = dec_1.set_up_windows_profile(mc_1)
 
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -2744,6 +2976,36 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
+    def test_set_up_workload_identity_profile__default_value(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile)
+
+    def test_set_up_workload_identity_profile__default_value_with_security_profile(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.security_profile = self.models.ManagedClusterSecurityProfile()
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile.workload_identity)
+
+    def test_set_up_workload_identity_profile__enabled(self):
+        dec = AKSPreviewCreateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_oidc_issuer": True,
+                "enable_workload_identity": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        updated_mc = dec.set_up_workload_identity_profile(mc)
+        self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
+
     def test_set_up_azure_keyvault_kms(self):
         dec_1 = AKSPreviewCreateDecorator(
             self.cmd,
@@ -2786,6 +3048,24 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_creationdata_of_cluster_snapshot(self):
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "cluster_snapshot_id": "test_cluster_snapshot_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_mc_1 = dec_1.set_up_creationdata_of_cluster_snapshot(mc_1)
+        cd = self.models.CreationData(
+            source_resource_id="test_cluster_snapshot_id"
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", creation_data=cd)
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_construct_mc_preview_profile(self):
         import inspect
@@ -3822,6 +4102,57 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(updated_mc.oidc_issuer_profile)
         self.assertTrue(updated_mc.oidc_issuer_profile.enabled)
 
+    def test_update_workload_identity_profile__default_value(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile)
+
+    def test_update_workload_identity_profile__default_value_mc_enabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.security_profile = self.models.ManagedClusterSecurityProfile(
+            workload_identity=self.models.ManagedClusterSecurityProfileWorkloadIdentity(
+                enabled=True,
+            )
+        )
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertIsNone(updated_mc.security_profile.workload_identity)
+
+    def test_update_workload_identity_profile__enabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_workload_identity": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
+
+    def test_update_workload_identity_profile__disabled(self):
+        dec = AKSPreviewUpdateDecorator(
+            self.cmd, self.client,
+            {
+                "enable_workload_identity": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.oidc_issuer_profile = self.models.ManagedClusterOIDCIssuerProfile(enabled=True)
+        dec.context.attach_mc(mc)
+        updated_mc = dec.update_workload_identity_profile(mc)
+        self.assertFalse(updated_mc.security_profile.workload_identity.enabled)
+
     def test_update_azure_keyvault_kms(self):
         dec_1 = AKSPreviewUpdateDecorator(
             self.cmd,
@@ -3868,6 +4199,142 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_identity_profile(self):
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_identity_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        cluster_identity_obj = Mock(
+            client_id="test_cluster_identity_client_id",
+            principal_id="test_cluster_identity_object_id",
+        )
+        with patch(
+            "azure.cli.command_modules.acs.decorator.AKSContext.get_identity_by_msi_client",
+            side_effect=[cluster_identity_obj],
+        ), patch(
+            "azext_aks_preview.decorator._ensure_cluster_identity_permission_on_kubelet_identity",
+            return_value=None,
+        ):
+            dec_2 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                    "yes": True,
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            cluster_identity = self.models.ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities={
+                    "test_assign_identity": {}
+                },
+            )
+            mc_2 = self.models.ManagedCluster(location="test_location", identity=cluster_identity)
+            dec_2.context.attach_mc(mc_2)
+            dec_mc_2 = dec_2.update_identity_profile(mc_2)
+
+            identity_profile_2 = {
+                "kubeletidentity": self.models.UserAssignedIdentity(
+                    resource_id="test_assign_kubelet_identity",
+                )
+            }
+            ground_truth_mc_2 = self.models.ManagedCluster(
+                location="test_location",
+                identity=cluster_identity,
+                identity_profile=identity_profile_2,
+            )
+            self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            dec_3 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            cluster_identity = self.models.ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities={
+                    "test_assign_identity": {}
+                },
+            )
+            mc_3 = self.models.ManagedCluster(location="test_location", identity=cluster_identity)
+            dec_3.context.attach_mc(mc_3)
+            dec_mc_3 = dec_3.update_identity_profile(mc_3)
+
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                    "yes": True,
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            mc_4 = self.models.ManagedCluster(location="test_location")
+            dec_4.context.attach_mc(mc_4)
+            dec_mc_4 = dec_4.update_identity_profile(mc_4)
+
+        with patch(
+            "azure.cli.command_modules.acs.decorator.AKSContext.get_identity_by_msi_client",
+            side_effect=[cluster_identity_obj],
+        ), patch(
+            "azext_aks_preview.decorator._ensure_cluster_identity_permission_on_kubelet_identity",
+            return_value=None,
+        ):
+            dec_5 = AKSPreviewUpdateDecorator(
+                self.cmd,
+                self.client,
+                {
+                    "enable_managed_identity": True,
+                    "assign_identity": "test_assign_identity",
+                    "assign_kubelet_identity": "test_assign_kubelet_identity",
+                    "yes": True,
+                },
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            cluster_identity = self.models.ManagedClusterIdentity(
+                type="UserAssigned",
+                user_assigned_identities={
+                    "test_assign_identity": {}
+                },
+            )
+            mc_5 = self.models.ManagedCluster(location="test_location", identity=cluster_identity)
+            dec_5.context.attach_mc(mc_5)
+            dec_mc_5 = dec_5.update_identity_profile(mc_5)
+
+            identity_profile_5 = {
+                "kubeletidentity": self.models.UserAssignedIdentity(
+                    resource_id="test_assign_kubelet_identity",
+                )
+            }
+            ground_truth_mc_5 = self.models.ManagedCluster(
+                location="test_location",
+                identity=cluster_identity,
+                identity_profile=identity_profile_5,
+            )
+            self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
 
     def test_patch_mc(self):
         # custom value

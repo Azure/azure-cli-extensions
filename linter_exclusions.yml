@@ -188,6 +188,9 @@ aks update:
     enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -2283,6 +2286,11 @@ spring-cloud update:
       rule_exclusions:
       - option_length_too_long
 ssh vm:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
+ssh arc:
   parameters:
     ssh_args:
       rule_exclusions:

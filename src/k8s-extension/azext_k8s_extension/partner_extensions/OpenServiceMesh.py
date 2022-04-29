@@ -7,6 +7,7 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=no-member
 
+import json
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -51,7 +52,7 @@ class OpenServiceMesh(DefaultExtension):
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
         create_identity = True
 
-        _validate_tested_distro(cmd, resource_group_name, cluster_name, version)
+        _validate_tested_distro(cmd, resource_group_name, cluster_name, version, release_train)
 
         extension = Extension(
             extension_type=extension_type,
@@ -67,15 +68,12 @@ class OpenServiceMesh(DefaultExtension):
         return extension, name, create_identity
 
 
-def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version):
+def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version, extension_release_train):
 
     field_unavailable_error = '\"testedDistros\" field unavailable for version {0} of microsoft.openservicemesh, ' \
         'cannot determine if this Kubernetes distribution has been properly tested'.format(extension_version)
 
-    logger.debug('Input version: %s', version)
-    if version.parse(str(extension_version)) <= version.parse("0.8.3"):
-        logger.warning(field_unavailable_error)
-        return
+    logger.debug('Input version: %s', extension_version)
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
@@ -84,7 +82,29 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
         '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
 
     resource = resources.get_by_id(cluster_resource_id, '2021-10-01')
+    cluster_location = resource.location
     cluster_distro = resource.properties['distribution'].lower()
+
+    if extension_version is None and extension_release_train != "staging":
+        if str(cluster_location) == "eastus2euap":
+            ring = "canary"
+        else:
+            ring = "batch1"
+
+        if extension_release_train is None:
+            extension_release_train = "stable"
+
+        req_url = 'https://mcr.microsoft.com/v2/oss/openservicemesh/{0}/{1}/osm-arc/tags/list'\
+            .format(ring, extension_release_train)
+        req = requests.get(url=req_url)
+        req_json = json.loads(req.text)
+        tags = req_json['tags']
+
+        extension_version = tags[len(tags) - 1]
+
+    if version.parse(str(extension_version)) <= version.parse("0.8.3"):
+        logger.warning(field_unavailable_error)
+        return
 
     if cluster_distro == "general":
         logger.warning('Unable to determine if distro has been tested for microsoft.openservicemesh, '

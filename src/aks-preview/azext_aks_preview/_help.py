@@ -51,9 +51,9 @@ helps['aks create'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
-        - name: --node-osdisk-diskencryptionset-id
+        - name: --node-osdisk-diskencryptionset-id -d
           type: string
-          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
+          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
@@ -350,6 +350,9 @@ helps['aks create'] = """
         - name: --enable-pod-identity-with-kubenet
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
+        - name: --enable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Enable workload identity addon.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -394,7 +397,10 @@ helps['aks create'] = """
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to create this cluster.
+          short-summary: The source nodepool snapshot id used to create this cluster.
+        - name: --cluster-snapshot-id
+          type: string
+          short-summary: The source cluster snapshot id is used to create new cluster.
         - name: --enable-oidc-issuer
           type: bool
           short-summary: (PREVIEW) Enable OIDC issuer.
@@ -466,8 +472,10 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa
         - name: Create a kubernetes cluster with enabling Windows gmsa but without setting DNS server in the vnet used by the cluster.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
-        - name: create a kubernetes cluster with a snapshot id.
+        - name: create a kubernetes cluster with a nodepool snapshot id.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
+        - name: create a kubernetes cluster with a cluster snapshot id.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
         - name: create a kubernetes cluster with a Capacity Reservation Group(CRG) ID.
           text: az aks create -g MyResourceGroup -n MyMC --kubernetes-version 1.20.9 --node-vm-size VMSize --assign-identity CRG-RG-ID --enable-managed-identity --crg-id "subscriptions/SubID/resourceGroups/RGName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
         - name: create a kubernetes cluster with support of hostgroup id.
@@ -605,10 +613,13 @@ helps['aks update'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+          short-summary: Update current cluster to managed identity to manage cluster resource group.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Update cluster's kubelet identity to an existing user assigned identity. Note, this operation will recreate all agent node in the cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
@@ -618,6 +629,12 @@ helps['aks update'] = """
         - name: --disable-pod-identity
           type: bool
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
+        - name: --enable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
+        - name: --disable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1477,6 +1494,10 @@ parameters:
   - name: --public-fqdn
     type: bool
     short-summary: Get private cluster credential with server address to be public fqdn.
+  - name: --format
+    type: string
+    short-summary: Specify the format of the returned credential. Available values are ["exec", "azure"].
+                  Only take effect when requesting clusterUser credential of AAD clusters.
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup

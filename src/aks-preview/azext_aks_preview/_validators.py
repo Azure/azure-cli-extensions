@@ -544,6 +544,14 @@ def validate_snapshot_id(namespace):
                 "--snapshot-id is not a valid Azure resource ID.")
 
 
+def validate_cluster_snapshot_id(namespace):
+    if namespace.cluster_snapshot_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.cluster_snapshot_id):
+            raise InvalidArgumentValueError(
+                "--cluster-snapshot-id is not a valid Azure resource ID.")
+
+
 def validate_host_group_id(namespace):
     if namespace.host_group_id:
         from msrestazure.tools import is_valid_resource_id

@@ -7,7 +7,7 @@ import base64
 import os
 import time
 from types import SimpleNamespace
-from typing import Dict, List, Tuple, TypeVar, Union
+from typing import Dict, List, Tuple, TypeVar, Union, Optional
 
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
@@ -65,7 +65,11 @@ from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
 )
-from azext_aks_preview.custom import _get_snapshot
+from azext_aks_preview.custom import (
+    _get_snapshot,
+    _get_cluster_snapshot,
+    _ensure_cluster_identity_permission_on_kubelet_identity,
+)
 
 logger = get_logger(__name__)
 
@@ -73,7 +77,8 @@ logger = get_logger(__name__)
 ContainerServiceClient = TypeVar("ContainerServiceClient")
 Identity = TypeVar("Identity")
 ManagedCluster = TypeVar("ManagedCluster")
-ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
+ManagedClusterLoadBalancerProfile = TypeVar(
+    "ManagedClusterLoadBalancerProfile")
 ResourceReference = TypeVar("ResourceReference")
 KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
@@ -81,7 +86,9 @@ ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
+ManagedClusterSecurityProfileWorkloadIdentity = TypeVar('ManagedClusterSecurityProfileWorkloadIdentity')
 Snapshot = TypeVar("Snapshot")
+ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
 
 
@@ -117,6 +124,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterOIDCIssuerProfile = self.__cmd.get_models(
             "ManagedClusterOIDCIssuerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterSecurityProfileWorkloadIdentity = self.__cmd.get_models(
+            "ManagedClusterSecurityProfileWorkloadIdentity",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -350,7 +362,8 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
-                hasattr(agent_pool_profile, "workload_runtime") and  # backward compatibility
+                # backward compatibility
+                hasattr(agent_pool_profile, "workload_runtime") and
                 agent_pool_profile.workload_runtime is not None
             ):
                 workload_runtime = agent_pool_profile.workload_runtime
@@ -373,7 +386,8 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
-                hasattr(agent_pool_profile, "gpu_instance_profile") and  # backward compatibility
+                # backward compatibility
+                hasattr(agent_pool_profile, "gpu_instance_profile") and
                 agent_pool_profile.gpu_instance_profile is not None
             ):
                 gpu_instance_profile = agent_pool_profile.gpu_instance_profile
@@ -398,8 +412,10 @@ class AKSPreviewContext(AKSContext):
                         message_of_the_day_file_path
                     )
                 )
-            message_of_the_day = read_file_content(message_of_the_day_file_path)
-            message_of_the_day = base64.b64encode(bytes(message_of_the_day, 'ascii')).decode('ascii')
+            message_of_the_day = read_file_content(
+                message_of_the_day_file_path)
+            message_of_the_day = base64.b64encode(
+                bytes(message_of_the_day, 'ascii')).decode('ascii')
 
         # try to read the property value corresponding to the parameter from the `mc` object
         if self.mc and self.mc.agent_pool_profiles:
@@ -408,7 +424,8 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
-                hasattr(agent_pool_profile, "message_of_the_day") and  # backward compatibility
+                # backward compatibility
+                hasattr(agent_pool_profile, "message_of_the_day") and
                 agent_pool_profile.message_of_the_day is not None
             ):
                 message_of_the_day = agent_pool_profile.message_of_the_day
@@ -554,7 +571,8 @@ class AKSPreviewContext(AKSContext):
         :return: int or None
         """
         # read the original value passed by the command
-        nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
+        nat_gateway_managed_outbound_ip_count = self.raw_param.get(
+            "nat_gateway_managed_outbound_ip_count")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -580,7 +598,8 @@ class AKSPreviewContext(AKSContext):
         :return: int or None
         """
         # read the original value passed by the command
-        nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
+        nat_gateway_idle_timeout = self.raw_param.get(
+            "nat_gateway_idle_timeout")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -606,7 +625,8 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
-        enable_pod_security_policy = self.raw_param.get("enable_pod_security_policy")
+        enable_pod_security_policy = self.raw_param.get(
+            "enable_pod_security_policy")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -644,7 +664,8 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
-        disable_pod_security_policy = self.raw_param.get("disable_pod_security_policy")
+        disable_pod_security_policy = self.raw_param.get(
+            "disable_pod_security_policy")
         # We do not support this option in create mode, therefore we do not read the value from `mc`.
 
         # this parameter does not need dynamic completion
@@ -680,7 +701,8 @@ class AKSPreviewContext(AKSContext):
 
         :return: bool
         """
-        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only)
+        enable_managed_identity = super()._get_enable_managed_identity(
+            enable_validation, read_only)
         # additional validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
@@ -801,7 +823,8 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
-        enable_pod_identity_with_kubenet = self.raw_param.get("enable_pod_identity_with_kubenet")
+        enable_pod_identity_with_kubenet = self.raw_param.get(
+            "enable_pod_identity_with_kubenet")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -862,8 +885,10 @@ class AKSPreviewContext(AKSContext):
         """
         # determine the value of constants
         addon_consts = self.get_addon_consts()
-        CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
-        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
+        CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get(
+            "CONST_INGRESS_APPGW_ADDON_NAME")
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get(
+            "CONST_INGRESS_APPGW_SUBNET_CIDR")
 
         # read the original value passed by the command
         appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
@@ -894,11 +919,14 @@ class AKSPreviewContext(AKSContext):
         """
         # determine the value of constants
         addon_consts = self.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+        CONST_MONITORING_ADDON_NAME = addon_consts.get(
+            "CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
+            "CONST_MONITORING_USING_AAD_MSI_AUTH")
 
         # read the original value passed by the command
-        enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
+        enable_msi_auth_for_monitoring = self.raw_param.get(
+            "enable_msi_auth_for_monitoring")
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
@@ -929,7 +957,8 @@ class AKSPreviewContext(AKSContext):
         no_wait = super().get_no_wait()
 
         if self.get_intermediate("monitoring") and self.get_enable_msi_auth_for_monitoring():
-            logger.warning("Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
+            logger.warning(
+                "Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
             if no_wait:
                 logger.warning("The set option '--no-wait' has been ignored")
                 no_wait = False
@@ -956,7 +985,8 @@ class AKSPreviewContext(AKSContext):
         """
         # determine the value of constants
         addon_consts = self.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_ADDON_NAME = addon_consts.get(
+            "CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
             "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
         )
@@ -1195,7 +1225,8 @@ class AKSPreviewContext(AKSContext):
                 # not been decorated into the mc object at this time, only the value after dynamic completion is
                 # meaningful here.
                 if safe_lower(self._get_load_balancer_sku(enable_validation=False)) == "basic":
-                    raise InvalidArgumentValueError("{} doesn't support basic load balancer sku".format(outbound_type))
+                    raise InvalidArgumentValueError(
+                        "{} doesn't support basic load balancer sku".format(outbound_type))
                 if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
                     if self.get_vnet_subnet_id() in ["", None]:
                         raise RequiredArgumentMissingError(
@@ -1245,7 +1276,8 @@ class AKSPreviewContext(AKSContext):
             if (
                 self.mc and
                 self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                # backward compatibility
+                hasattr(self.mc.windows_profile, "gmsa_profile") and
                 self.mc.windows_profile.gmsa_profile and
                 self.mc.windows_profile.gmsa_profile.enabled is not None
             ):
@@ -1296,7 +1328,8 @@ class AKSPreviewContext(AKSContext):
             if (
                 self.mc and
                 self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                # backward compatibility
+                hasattr(self.mc.windows_profile, "gmsa_profile") and
                 self.mc.windows_profile.gmsa_profile and
                 self.mc.windows_profile.gmsa_profile.dns_server is not None
             ):
@@ -1312,7 +1345,8 @@ class AKSPreviewContext(AKSContext):
             if (
                 self.mc and
                 self.mc.windows_profile and
-                hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+                # backward compatibility
+                hasattr(self.mc.windows_profile, "gmsa_profile") and
                 self.mc.windows_profile.gmsa_profile and
                 self.mc.windows_profile.gmsa_profile.root_domain_name is not None
             ):
@@ -1398,6 +1432,50 @@ class AKSPreviewContext(AKSContext):
             self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
         return snapshot
 
+    def get_cluster_snapshot_id(self) -> Union[str, None]:
+        """Obtain the values of cluster_snapshot_id.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        snapshot_id = self.raw_param.get("cluster_snapshot_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.creation_data and
+            self.mc.creation_data.source_resource_id is not None
+        ):
+            snapshot_id = (
+                self.mc.creation_data.source_resource_id
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return snapshot_id
+
+    def get_cluster_snapshot(self) -> Union[ManagedClusterSnapshot, None]:
+        """Helper function to retrieve the ManagedClusterSnapshot object corresponding to a cluster snapshot id.
+
+        This fuction will store an intermediate "managedclustersnapshot" to avoid sending the same request multiple times.
+
+        Function "_get_cluster_snapshot" will be called to retrieve the ManagedClusterSnapshot object corresponding to a cluster snapshot id, which
+        internally used the managedclustersnapshot client (managedclustersnapshots operations belonging to container service client) to send
+        the request.
+
+        :return: ManagedClusterSnapshot or None
+        """
+        # try to read from intermediates
+        snapshot = self.get_intermediate("managedclustersnapshot")
+        if snapshot:
+            return snapshot
+
+        snapshot_id = self.get_cluster_snapshot_id()
+        if snapshot_id:
+            snapshot = _get_cluster_snapshot(self.cmd.cli_ctx, snapshot_id)
+            self.set_intermediate("managedclustersnapshot",
+                                  snapshot, overwrite_exists=True)
+        return snapshot
+
     def get_host_group_id(self) -> Union[str, None]:
         return self._get_host_group_id()
 
@@ -1433,11 +1511,17 @@ class AKSPreviewContext(AKSContext):
             value_obtained_from_mc = self.mc.kubernetes_version
         # try to retrieve the value from snapshot
         value_obtained_from_snapshot = None
+        value_obtained_from_cluster_snapshot = None
         # skip dynamic completion if read_only is specified
         if not read_only:
             snapshot = self.get_snapshot()
             if snapshot:
                 value_obtained_from_snapshot = snapshot.kubernetes_version
+
+        if not read_only:
+            snapshot = self.get_cluster_snapshot()
+            if snapshot:
+                value_obtained_from_cluster_snapshot = snapshot.managed_cluster_properties_read_only.kubernetes_version
 
         # set default value
         if value_obtained_from_mc is not None:
@@ -1445,6 +1529,8 @@ class AKSPreviewContext(AKSContext):
         # default value is an empty string
         elif raw_value:
             kubernetes_version = raw_value
+        elif not read_only and value_obtained_from_cluster_snapshot is not None:
+            kubernetes_version = value_obtained_from_cluster_snapshot
         elif not read_only and value_obtained_from_snapshot is not None:
             kubernetes_version = value_obtained_from_snapshot
         else:
@@ -1579,6 +1665,56 @@ class AKSPreviewContext(AKSContext):
 
         return profile
 
+    def get_workload_identity_profile(self) -> Optional[ManagedClusterSecurityProfileWorkloadIdentity]:
+        """Obtrain the value of security_profile.workload_identity.
+
+        :return: Optional[ManagedClusterSecurityProfileWorkloadIdentity]
+        """
+        enable_workload_identity = self.raw_param.get("enable_workload_identity")
+        disable_workload_identity = self.raw_param.get("disable_workload_identity")
+        if self.decorator_mode == DecoratorMode.CREATE:
+            # CREATE mode has no --disable-workload-identity flag
+            disable_workload_identity = None
+
+        if enable_workload_identity is None and disable_workload_identity is None:
+            # no flags have been set, return None; server side will backfill the default/existing value
+            return None
+
+        if enable_workload_identity and disable_workload_identity:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-workload-identity and "
+                "--disable-workload-identity at the same time."
+            )
+
+        profile = self.models.ManagedClusterSecurityProfileWorkloadIdentity()
+        if self.decorator_mode == DecoratorMode.CREATE:
+            profile.enabled = bool(enable_workload_identity)
+        elif self.decorator_mode == DecoratorMode.UPDATE:
+            if self.mc.security_profile is not None and self.mc.security_profile.workload_identity is not None:
+                profile = self.mc.security_profile.workload_identity
+            if enable_workload_identity:
+                profile.enabled = True
+            elif disable_workload_identity:
+                profile.enabled = False
+
+        if profile.enabled:
+            # in enable case, we need to check if OIDC issuer has been enabled
+            oidc_issuer_profile = self.get_oidc_issuer_profile()
+            if self.decorator_mode == DecoratorMode.UPDATE and oidc_issuer_profile is None:
+                # if the cluster has enabled OIDC issuer before, in update call:
+                #
+                #    az aks update --enable-workload-identity
+                #
+                # we need to use previous OIDC issuer profile
+                oidc_issuer_profile = self.mc.oidc_issuer_profile
+            oidc_issuer_enabled = oidc_issuer_profile is not None and oidc_issuer_profile.enabled
+            if not oidc_issuer_enabled:
+                raise RequiredArgumentMissingError(
+                    "Enabling workload identity requires enabling OIDC issuer (--enable-oidc-issuer)."
+                )
+
+        return profile
+
     def get_crg_id(self) -> str:
         """Obtain the values of crg_id.
 
@@ -1598,7 +1734,8 @@ class AKSPreviewContext(AKSContext):
         """
         # read the original value passed by the command
         # TODO: set default value as False after the get function of AKSParamDict accepts parameter `default`
-        enable_azure_keyvault_kms = self.raw_param.get("enable_azure_keyvault_kms")
+        enable_azure_keyvault_kms = self.raw_param.get(
+            "enable_azure_keyvault_kms")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1637,7 +1774,8 @@ class AKSPreviewContext(AKSContext):
         :return: string or None
         """
         # read the original value passed by the command
-        azure_keyvault_kms_key_id = self.raw_param.get("azure_keyvault_kms_key_id")
+        azure_keyvault_kms_key_id = self.raw_param.get(
+            "azure_keyvault_kms_key_id")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1649,7 +1787,8 @@ class AKSPreviewContext(AKSContext):
                 azure_keyvault_kms_key_id = self.mc.security_profile.azure_key_vault_kms.key_id
 
         if enable_validation:
-            enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(enable_validation=False)
+            enable_azure_keyvault_kms = self._get_enable_azure_keyvault_kms(
+                enable_validation=False)
             if (
                 azure_keyvault_kms_key_id and
                 (
@@ -1657,7 +1796,8 @@ class AKSPreviewContext(AKSContext):
                     enable_azure_keyvault_kms is False
                 )
             ):
-                raise RequiredArgumentMissingError('"--azure-keyvault-kms-key-id" requires "--enable-azure-keyvault-kms".')
+                raise RequiredArgumentMissingError(
+                    '"--azure-keyvault-kms-key-id" requires "--enable-azure-keyvault-kms".')
 
         return azure_keyvault_kms_key_id
 
@@ -1670,6 +1810,34 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         return self._get_azure_keyvault_kms_key_id(enable_validation=True)
+
+    def get_updated_assign_kubelet_identity(self) -> str:
+        """Obtain the value of assign_kubelet_identity based on the user input.
+
+        :return: str
+        """
+        kubelet_identity_resource_id = self.raw_param.get("assign_kubelet_identity")
+        if not kubelet_identity_resource_id:
+            return ""
+
+        msg = "You're going to update kubelet identity to {}, which will upgrade every node pool in the cluster " \
+              "and might take a while, do you wish to continue?".format(kubelet_identity_resource_id)
+        if not self.get_yes() and not prompt_y_n(msg, default="n"):
+            raise DecoratorEarlyExitException
+
+        return kubelet_identity_resource_id
+
+    def get_cluster_uaidentity_object_id(self) -> str:
+        assigned_identity = self.get_assign_identity()
+        cluster_identity_resource_id = ""
+        if assigned_identity is None or assigned_identity == "":
+            # Suppose identity is present on mc
+            if not(self.mc and self.mc.identity and self.mc.identity.user_assigned_identities):
+                raise RequiredArgumentMissingError("--assign-identity is not provided and the cluster identity type is not user assigned, cannot update kubelet identity")
+            cluster_identity_resource_id = list(self.mc.identity.user_assigned_identities.keys())[0]
+        else:
+            cluster_identity_resource_id = assigned_identity
+        return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
 
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
@@ -1737,6 +1905,23 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         agent_pool_profile.capacity_reservation_group_id = self.context.get_crg_id()
 
         mc.agent_pool_profiles = [agent_pool_profile]
+        return mc
+
+    def set_up_creationdata_of_cluster_snapshot(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up creationData of cluster snapshot for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set some additional properties.
+
+        :return: the ManagedCluster object
+        """
+        # snapshot creation data
+        creation_data = None
+        snapshot_id = self.context.get_cluster_snapshot_id()
+        if snapshot_id:
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+        mc.creation_data = creation_data
         return mc
 
     def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
@@ -1905,7 +2090,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             create_dcra=False,
         )
         # set intermediate
-        self.context.set_intermediate("monitoring", True, overwrite_exists=True)
+        self.context.set_intermediate(
+            "monitoring", True, overwrite_exists=True)
         return monitoring_addon_profile
 
     def build_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
@@ -1992,6 +2178,24 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up workload identity for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        profile = self.context.get_workload_identity_profile()
+        if profile is None:
+            if mc.security_profile is not None:
+                # set the value to None to let server side to fill in the default value
+                mc.security_profile.workload_identity = None
+            return mc
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()
+        mc.security_profile.workload_identity = profile
+
+        return mc
+
     def set_up_azure_keyvault_kms(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile azureKeyVaultKms for the ManagedCluster object.
 
@@ -2027,8 +2231,17 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_security_policy(mc)
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
+
+        # update workload identity & OIDC issuer settings
+        # NOTE: in current implementation, workload identity settings setup requires checking
+        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
+        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
+        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
+        mc = self.set_up_workload_identity_profile(mc)
         mc = self.set_up_oidc_issuer_profile(mc)
+
         mc = self.set_up_azure_keyvault_kms(mc)
+        mc = self.set_up_creationdata_of_cluster_snapshot(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2043,7 +2256,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         # determine the value of constants
         addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_ADDON_NAME = addon_consts.get(
+            "CONST_MONITORING_ADDON_NAME")
 
         # Due to SPN replication latency, we do a few retries here
         max_retry = 30
@@ -2119,7 +2333,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         excluded_keys = ("cmd", "client", "resource_group_name", "name")
         # check whether the remaining parameters are set
         # the default value None or False (and other empty values, like empty string) will be considered as not set
-        is_changed = any(v for k, v in self.context.raw_param.items() if k not in excluded_keys)
+        is_changed = any(
+            v for k, v in self.context.raw_param.items() if k not in excluded_keys)
 
         # special cases
         # some parameters support the use of empty string or dictionary to update/remove previously set values
@@ -2181,7 +2396,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--nodepool-labels" or '
                 '"--enable-oidc-issuer" or '
                 '"--http-proxy-config" or '
-                '"--enable-azure-keyvault-kms".'
+                '"--enable-azure-keyvault-kms" or '
+                '"--enable-workload-identity" or '
+                '"--disable-workload-identity".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2303,7 +2520,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 )
 
         if self.context.get_disable_pod_identity():
-            _update_addon_pod_identity(mc, enable=False, models=self.models.pod_identity_models)
+            _update_addon_pod_identity(
+                mc, enable=False, models=self.models.pod_identity_models)
         return mc
 
     def update_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2314,6 +2532,26 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         self._ensure_mc(mc)
 
         mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
+
+        return mc
+
+    def update_workload_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update workload identity profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        profile = self.context.get_workload_identity_profile()
+        if profile is None:
+            if mc.security_profile is not None:
+                # set the value to None to let server side to fill in the default value
+                mc.security_profile.workload_identity = None
+            return mc
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()
+        mc.security_profile.workload_identity = profile
 
         return mc
 
@@ -2334,6 +2572,29 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     key_id=key_id,
                 )
 
+        return mc
+
+    def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update identity profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        assign_kubelet_identity = self.context.get_updated_assign_kubelet_identity()
+        if assign_kubelet_identity:
+            identity_profile = {
+                'kubeletidentity': self.models.UserAssignedIdentity(
+                    resource_id=assign_kubelet_identity,
+                )
+            }
+            cluster_identity_object_id = self.context.get_cluster_uaidentity_object_id()
+            # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
+            _ensure_cluster_identity_permission_on_kubelet_identity(
+                self.cmd.cli_ctx,
+                cluster_identity_object_id,
+                assign_kubelet_identity)
+            mc.identity_profile = identity_profile
         return mc
 
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2367,9 +2628,20 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
+
+        # update workload identity & OIDC issuer settings
+        # NOTE: in current implementation, workload identity settings setup requires checking
+        #       previous OIDC issuer profile. However, the OIDC issuer settings setup will
+        #       overrides the previous OIDC issuer profile based on user input. Therefore, we have
+        #       to make sure the workload identity settings setup is done after OIDC issuer settings.
+        mc = self.update_workload_identity_profile(mc)
         mc = self.update_oidc_issuer_profile(mc)
+
         mc = self.update_http_proxy_config(mc)
         mc = self.update_azure_keyvault_kms(mc)
+        # update identity profile
+        mc = self.update_identity_profile(mc)
+
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:

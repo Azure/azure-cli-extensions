@@ -30,7 +30,7 @@ class BackupPoliciesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -47,20 +47,20 @@ class BackupPoliciesOperations(object):
 
     def list(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.BaseBackupPolicyResourceList"]
         """Returns list of backup policies belonging to a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either BaseBackupPolicyResourceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.BaseBackupPolicyResourceList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.dataprotection.models.BaseBackupPolicyResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BaseBackupPolicyResourceList"]
@@ -68,7 +68,7 @@ class BackupPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,9 +80,9 @@ class BackupPoliciesOperations(object):
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -122,8 +122,8 @@ class BackupPoliciesOperations(object):
 
     def get(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         backup_policy_name,  # type: str
         **kwargs  # type: Any
     ):
@@ -132,15 +132,15 @@ class BackupPoliciesOperations(object):
 
         Gets a backup policy belonging to a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param backup_policy_name: Name of the policy.
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_policy_name:
         :type backup_policy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BaseBackupPolicyResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.BaseBackupPolicyResource
+        :rtype: ~azure.mgmt.dataprotection.models.BaseBackupPolicyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BaseBackupPolicyResource"]
@@ -148,15 +148,15 @@ class BackupPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupPolicyName': self._serialize.url("backup_policy_name", backup_policy_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -187,8 +187,8 @@ class BackupPoliciesOperations(object):
 
     def create_or_update(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         backup_policy_name,  # type: str
         parameters,  # type: "models.BaseBackupPolicyResource"
         **kwargs  # type: Any
@@ -198,17 +198,17 @@ class BackupPoliciesOperations(object):
 
         Creates or Updates a backup policy belonging to a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_policy_name: Name of the policy.
         :type backup_policy_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.BaseBackupPolicyResource
+        :type parameters: ~azure.mgmt.dataprotection.models.BaseBackupPolicyResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BaseBackupPolicyResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.BaseBackupPolicyResource
+        :rtype: ~azure.mgmt.dataprotection.models.BaseBackupPolicyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.BaseBackupPolicyResource"]
@@ -216,16 +216,16 @@ class BackupPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupPolicyName': self._serialize.url("backup_policy_name", backup_policy_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -260,8 +260,8 @@ class BackupPoliciesOperations(object):
 
     def delete(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        vault_name,  # type: str
         backup_policy_name,  # type: str
         **kwargs  # type: Any
     ):
@@ -270,11 +270,11 @@ class BackupPoliciesOperations(object):
 
         Deletes a backup policy belonging to a backup vault.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param backup_policy_name: Name of the policy.
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
+        :param backup_policy_name:
         :type backup_policy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
@@ -286,15 +286,15 @@ class BackupPoliciesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupPolicyName': self._serialize.url("backup_policy_name", backup_policy_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)

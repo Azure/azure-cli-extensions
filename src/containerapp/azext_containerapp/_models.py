@@ -211,7 +211,8 @@ SourceControl = {
 GitHubActionConfiguration = {
     "registryInfo": None,  # [RegistryInfo]
     "azureCredentials": None,  # [AzureCredentials]
-    "dockerfilePath": None,  # str
+    "image": None,  # str
+    "contextPath": None,  # str
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str

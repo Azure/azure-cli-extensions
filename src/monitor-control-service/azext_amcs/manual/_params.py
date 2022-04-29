@@ -92,6 +92,7 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor data-collection rule create') as c:
         c.argument('data_collection_rule_name', id_part=None)
+        c.argument('rule_file', type=str, help='The json file for rule parameters.', required=True)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
 
