@@ -489,10 +489,17 @@ def load_arguments(self, _):
             c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
             c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
 
-    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
+    for scope in ['aks nodepool show', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=[
                        '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+
+    with self.argument_context('aks nodepool delete') as c:
+        c.argument('nodepool_name', options_list=[
+            '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+        c.argument('ignore_pod_disruption_budget', options_list=[
+                   "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
+                   help='delete an AKS nodepool by ignoring PodDisruptionBudget setting')
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)

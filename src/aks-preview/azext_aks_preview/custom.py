@@ -1964,6 +1964,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          resource_group_name,
                          cluster_name,
                          nodepool_name,
+                         ignore_pod_disruption_budget=None,
                          no_wait=False):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
@@ -1976,7 +1977,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name, ignore_pod_disruption_budget=ignore_pod_disruption_budget)
 
 
 def aks_addon_list_available():
