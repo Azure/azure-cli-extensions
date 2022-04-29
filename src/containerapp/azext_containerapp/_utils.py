@@ -177,8 +177,9 @@ def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-stat
 
 
 def trigger_workflow(token, repo, name, branch):
-    logger.warning("Triggering Github Action")
-    get_workflow(get_github_repo(token, repo), name).create_dispatch(branch)
+    wf = get_workflow(get_github_repo(token, repo), name)
+    logger.warning(f"Triggering Github Action: {wf.path}")
+    wf.create_dispatch(branch)
 
 
 def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
