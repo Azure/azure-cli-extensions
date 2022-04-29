@@ -305,7 +305,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-namespace-resources --generate-ssh-keys'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-namespace-resources'
         self.cmd(update_cmd, checks=[
             self.check('enableNamespaceResources', True)
         ])
