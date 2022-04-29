@@ -792,7 +792,7 @@ def validate_environment_location(cmd, location):
     
     location_count = {}
     for loc in locations:
-        location_count[loc] = sum(1 for e in env_list if e["location"] == loc)
+        location_count[loc] = len([e for e in env_list if e["location"] == loc])
 
     disallowed_locations = []
     for _, value in enumerate(location_count):
@@ -802,10 +802,7 @@ def validate_environment_location(cmd, location):
     res_locations = list_environment_locations(cmd)
     res_locations = [l for l in res_locations if l not in disallowed_locations]
 
-    allowed_locs = ""
-    for res_loc in res_locations:
-        allowed_locs += res_loc + ", "
-    allowed_locs = allowed_locs[:-2]
+    allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
@@ -839,6 +836,8 @@ def list_environment_locations(cmd):
 
 
 def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
+    if location:
+        _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
     if managed_env and resource_group_name and location:
         env_def = None
         try:
@@ -847,4 +846,4 @@ def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
             pass
         if env_def:
             if location != env_def["location"]:
-                raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"]), location)
+                raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
