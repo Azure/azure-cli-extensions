@@ -51,6 +51,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         agentpool_decorator_mode: AgentPoolDecoratorMode,
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode, agentpool_decorator_mode)
+        # used to store external functions
         self.__external_functions = None
 
     @property

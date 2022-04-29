@@ -280,6 +280,8 @@ def load_arguments(self, _):
         # managed cluster
         c.argument('node_resource_group')
         c.argument('ip_families')
+        c.argument('pod_cidrs')
+        c.argument('service_cidrs')
         c.argument('http_proxy_config')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
