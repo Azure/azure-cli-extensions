@@ -61,6 +61,8 @@ class ResourceGroup:
         self.cmd = cmd
         self.name = name
         self.location = _get_default_containerapps_location(cmd, location)
+        if self.location.lower() == "northcentralusstage":
+            self.location = "eastus"
         self.exists = exists
 
         self.check_exists()
@@ -291,7 +293,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         url = self.registry_server
         registry_name = url[: url.rindex(".azurecr.io")]
         registry_def = create_new_acr(
-            self.cmd, registry_name, registry_rg.name, self.env.location
+            self.cmd, registry_name, registry_rg.name, self.env.location if self.env.location.lower() != "northcentralusstage" else "eastus"
         )
         self.registry_server = registry_def.login_server
 
@@ -783,12 +785,6 @@ def find_existing_acr(cmd, app: "ContainerApp"):
 
 def validate_environment_location(cmd, location):
     MAX_ENV_PER_LOCATION = 2
-    if location:
-        try:
-            _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
-        except Exception:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}.".format(location))
-
     env_list = list_managed_environments(cmd)
 
     locations = [l["location"] for l in env_list]
@@ -806,15 +802,22 @@ def validate_environment_location(cmd, location):
     res_locations = list_environment_locations(cmd)
     res_locations = [l for l in res_locations if l not in disallowed_locations]
 
+    allowed_locs = ""
+    for res_loc in res_locations:
+        allowed_locs += res_loc + ", "
+    allowed_locs = allowed_locs[:-2]
+
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
+        except Exception:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs))
+
     if len(res_locations) > 0:
         if not location:
             logger.warning("Creating environment on location {}.".format(res_locations[0]))        
             return res_locations[0]
         if location in disallowed_locations:
-            allowed_locs = ""
-            for res_loc in res_locations:
-                allowed_locs += res_loc + ", "
-            allowed_locs = allowed_locs[:-2]
             raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
         return location
     else:
