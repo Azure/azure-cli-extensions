@@ -787,7 +787,7 @@ def validate_environment_location(cmd, location):
         try:
             _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
         except Exception:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}".format(location))
+            raise ValidationError("You cannot create a Containerapp environment in location {}.".format(location))
 
     env_list = list_managed_environments(cmd)
 
@@ -811,8 +811,11 @@ def validate_environment_location(cmd, location):
             logger.warning("Creating environment on location {}.".format(res_locations[0]))        
             return res_locations[0]
         if location in disallowed_locations:
-            logger.warning("You have more than {} environments in location {}. Creating environment on location {} instead.".format(MAX_ENV_PER_LOCATION, location, res_locations[0]))
-            return res_locations[0]
+            allowed_locs = ""
+            for res_loc in res_locations:
+                allowed_locs += res_loc + ", "
+            allowed_locs = allowed_locs[:-2]
+            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
         return location
     else:
         raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
