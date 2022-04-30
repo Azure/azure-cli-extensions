@@ -20,6 +20,10 @@ from azext_cosmosdb_preview._validators import (
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddSqlContainerAction)
 
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+    ContinuousTier
+)
+
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
@@ -210,6 +214,7 @@ def load_arguments(self, _):
             c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
             c.argument('analytical_storage_schema_type', options_list=['--analytical-storage-schema-type', '--as-schema'], arg_type=get_enum_type(AnalyticalStorageSchemaType), help="Schema type for analytical storage.", arg_group='Analytical Storage Configuration')
             c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
+            c.argument('continuous_tier', arg_type=get_enum_type(ContinuousTier), help="The tier of Continuous backup", arg_group='Backup Policy')
             c.argument('enable_materialized_views', options_list=['--enable-materialized-views', '--enable-mv'], arg_type=get_three_state_flag(), help="Flag to enable MaterializedViews on the account.", is_preview=True)
 
     with self.argument_context('cosmosdb restore') as c:

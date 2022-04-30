@@ -414,7 +414,7 @@ examples:
 
 helps['cosmosdb update'] = """
 type: command
-short-summary:  Update an Azure Cosmos DB database account.
+short-summary:  Blab Update an Azure Cosmos DB database account.
 parameters:
   - name: --locations
     short-summary: Add a location to the Cosmos DB database account
