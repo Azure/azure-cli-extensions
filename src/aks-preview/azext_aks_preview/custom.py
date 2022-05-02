@@ -908,7 +908,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
 # Do a get and put to try and bring clusters to a desired state.
 def aks_reconcile(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                  aks_custom_headers, no_wait):
+                  aks_custom_headers=None, no_wait=False):
     mc = client.get(resource_group_name, name)
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -1832,7 +1832,7 @@ def aks_agentpool_reconcile(cmd,     # pylint: disable=unused-argument
                             client,
                             resource_group_name,
                             cluster_name,
-                            nodepool_name, aks_custom_headers, no_wait):
+                            nodepool_name, aks_custom_headers=None, no_wait=False):
     ap = client.get(resource_group_name, cluster_name, nodepool_name)
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, ap, headers=headers)
