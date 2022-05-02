@@ -499,7 +499,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool reconcile') as c:
         c.argument('aks_custom_headers')
-        
+
     with self.argument_context('aks nodepool delete') as c:
         c.argument('nodepool_name', options_list=[
             '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
