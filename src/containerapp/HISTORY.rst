@@ -3,6 +3,9 @@
 Release History
 ===============
 
+0.3.3
+++++++
+* Improved 'az containerapp up' handling of environment locations
 
 0.3.2
 ++++++
