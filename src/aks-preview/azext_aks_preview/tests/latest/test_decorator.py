@@ -3271,6 +3271,13 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         ),self.assertRaises(RequiredArgumentMissingError):
             dec_1.check_raw_parameters()
 
+        # unless user says they want to reconcile
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=True,
+        ):
+            dec_1.check_raw_parameters()
+
         # custom value
         dec_2 = AKSPreviewUpdateDecorator(
             self.cmd,
