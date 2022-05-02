@@ -294,8 +294,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_rg = self.resource_group
         url = self.registry_server
         registry_name = url[: url.rindex(".azurecr.io")]
+        location = "eastus"
+        if self.env.location and self.env.location.lower() != "northcentralusstage":
+            location = self.env.location
         registry_def = create_new_acr(
-            self.cmd, registry_name, registry_rg.name, self.env.location if self.env.location.lower() != "northcentralusstage" else "eastus"
+            self.cmd, registry_name, registry_rg.name, location
         )
         self.registry_server = registry_def.login_server
 
@@ -794,7 +797,7 @@ def validate_environment_location(cmd, location):
 
     locations = [l["location"] for l in env_list]
     locations = list(set(locations))  # remove duplicates
-    
+
     location_count = {}
     for loc in locations:
         location_count[loc] = len([e for e in env_list if e["location"] == loc])
@@ -817,7 +820,7 @@ def validate_environment_location(cmd, location):
 
     if len(res_locations) > 0:
         if not location:
-            logger.warning("Creating environment on location {}.".format(res_locations[0]))        
+            logger.warning("Creating environment on location {}.".format(res_locations[0]))
             return res_locations[0]
         if location in disallowed_locations:
             raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
