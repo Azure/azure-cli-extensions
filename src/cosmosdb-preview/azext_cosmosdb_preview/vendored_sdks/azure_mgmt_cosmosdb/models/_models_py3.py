@@ -3223,7 +3223,7 @@ class ContinuousModeProperties(msrest.serialization.Model):
         **kwargs
     ):
         """
-        :keyword tier: Enum to indicate type of Continuos backup mode. Possible values include:
+        :keyword tier: Enum to indicate type of Continuous backup mode. Possible values include:
          "Continuous7Days", "Continuous30Days".
         :paramtype tier: str or ~azure.mgmt.cosmosdb.models.ContinuousTier
         """

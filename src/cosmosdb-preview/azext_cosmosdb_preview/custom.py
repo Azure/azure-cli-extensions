@@ -18,7 +18,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoUserDefinitionCreateUpdateParameters,
     DatabaseAccountKind,
     ContinuousBackupRestoreLocation,
-    DatabaseAccountCreateUpdateParameters,
     DatabaseAccountUpdateParameters,
     RestoreParameters
 )
@@ -37,15 +36,16 @@ from azure.mgmt.cosmosdb.models import (
     ConsistencyPolicy,
     ResourceIdentityType,
     ManagedServiceIdentity,
-    PeriodicModeBackupPolicy,
-    PeriodicModeProperties,
     AnalyticalStorageConfiguration,
-    ContinuousModeBackupPolicy,
     Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    ContinuousModeProperties
+    PeriodicModeBackupPolicy,
+    PeriodicModeProperties,
+    ContinuousModeBackupPolicy,
+    ContinuousModeProperties,
+    DatabaseAccountCreateUpdateParameters,
 )
 
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
@@ -673,7 +673,7 @@ def cli_cosmosdb_update(client,
                 )
             else:
                 continuous_mode_properties = ContinuousModeProperties(
-                    tier=Continuous30Days
+                    tier='Continuous30Days'
                 )
             backup_policy.continuous_mode_properties = continuous_mode_properties
         else:
@@ -934,11 +934,12 @@ def _create_database_account(client,
                 )
             else:
                 continuous_mode_properties = ContinuousModeProperties(
-                    tier = 'somerandomstuffs'
+                    tier = 'Continuous30Days'
                 )
             backup_policy.continuous_mode_properties = continuous_mode_properties
         else:
             raise CLIError('backup-policy-type argument is invalid.')
+
     elif backup_interval is not None or backup_retention is not None:
         backup_policy = PeriodicModeBackupPolicy()
         periodic_mode_properties = PeriodicModeProperties(
