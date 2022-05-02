@@ -47,7 +47,7 @@ az cosmosdb create \
 az cosmosdb update \
     --resource-group "my-rg" \
     --name "my-continuous-backup-account" \
-    --backup-policy-type "Continuous" \
+    --backup-policy-type "Continuous"
 ```
 
 #### Convert a periodic backup policy CosmosDB account to continuous backup Account with 7 days retention ####
