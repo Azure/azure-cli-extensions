@@ -166,9 +166,11 @@ class AddSecretStoreBasedAuthCredentials(argparse.Action):
                 d['uri'] = v[0]
             elif kl == 'secret-store-type':
                 d['secret_store_type'] = v[0]
+            elif kl == 'value':
+                d['value'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter secret_store_based_auth_credentials. All '
-                               'possible keys are: uri, secret-store-type'.format(k))
+                               'possible keys are: uri, secret-store-type, value'.format(k))
         d['object_type'] = 'SecretStoreBasedAuthCredentials'
         return d
 

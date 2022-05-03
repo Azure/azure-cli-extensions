@@ -51,9 +51,9 @@ helps['aks create'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
-        - name: --node-osdisk-diskencryptionset-id
+        - name: --node-osdisk-diskencryptionset-id -d
           type: string
-          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
+          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
@@ -613,10 +613,13 @@ helps['aks update'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+          short-summary: Update current cluster to managed identity to manage cluster resource group.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Update cluster's kubelet identity to an existing user assigned identity. Note, this operation will recreate all agent node in the cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
@@ -1218,6 +1221,13 @@ helps['aks nodepool start'] = """
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
+    parameters:
+        - name: --ignore-pod-disruption-budget -i
+          type: bool
+          short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
+    examples:
+        - name: Delete an agent pool with ignore-pod-disruption-budget
+          text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
 """
 
 helps['aks addon'] = """

@@ -26,7 +26,7 @@ class ResourceGuardsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,7 +51,7 @@ class ResourceGuardsOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourceGuardResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.ResourceGuardResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.ResourceGuardResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResourceList"]
@@ -59,7 +59,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -122,7 +122,7 @@ class ResourceGuardsOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourceGuardResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.ResourceGuardResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.ResourceGuardResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResourceList"]
@@ -130,7 +130,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -197,10 +197,10 @@ class ResourceGuardsOperations:
         :param resource_guards_name: The name of ResourceGuard.
         :type resource_guards_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.ResourceGuardResource
+        :type parameters: ~azure.mgmt.dataprotection.models.ResourceGuardResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourceGuardResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.ResourceGuardResource
+        :rtype: ~azure.mgmt.dataprotection.models.ResourceGuardResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
@@ -208,7 +208,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -265,7 +265,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourceGuardResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.ResourceGuardResource
+        :rtype: ~azure.mgmt.dataprotection.models.ResourceGuardResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
@@ -273,7 +273,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -333,7 +333,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -383,10 +383,10 @@ class ResourceGuardsOperations:
         :param resource_guards_name: The name of ResourceGuard.
         :type resource_guards_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.PatchResourceRequestInput
+        :type parameters: ~azure.mgmt.dataprotection.models.PatchResourceRequestInput
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourceGuardResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.ResourceGuardResource
+        :rtype: ~azure.mgmt.dataprotection.models.ResourceGuardResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
@@ -394,7 +394,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -452,7 +452,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -460,7 +460,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -529,7 +529,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -537,7 +537,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -606,7 +606,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -614,7 +614,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -683,7 +683,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -691,7 +691,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -760,7 +760,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -768,7 +768,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -837,7 +837,7 @@ class ResourceGuardsOperations:
         :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.dataprotection.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
@@ -845,7 +845,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -917,7 +917,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -925,7 +925,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -982,7 +982,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -990,7 +990,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1047,7 +1047,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -1055,7 +1055,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1112,7 +1112,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -1120,7 +1120,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1177,7 +1177,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -1185,7 +1185,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1242,7 +1242,7 @@ class ResourceGuardsOperations:
         :type request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DppBaseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.DppBaseResource
+        :rtype: ~azure.mgmt.dataprotection.models.DppBaseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
@@ -1250,7 +1250,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         accept = "application/json"
 
         # Construct URL

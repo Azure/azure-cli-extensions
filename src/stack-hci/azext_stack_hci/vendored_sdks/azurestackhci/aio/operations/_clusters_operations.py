@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models as _models
+from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class ClustersOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -44,7 +44,7 @@ class ClustersOperations:
     def list_by_subscription(
         self,
         **kwargs
-    ) -> AsyncIterable["_models.ClusterList"]:
+    ) -> AsyncIterable["models.ClusterList"]:
         """List all HCI clusters in a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -52,12 +52,12 @@ class ClustersOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.azurestackhci.models.ClusterList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClusterList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -97,7 +97,7 @@ class ClustersOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(_models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -112,7 +112,7 @@ class ClustersOperations:
         self,
         resource_group_name: str,
         **kwargs
-    ) -> AsyncIterable["_models.ClusterList"]:
+    ) -> AsyncIterable["models.ClusterList"]:
         """List all HCI clusters in a resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -122,12 +122,12 @@ class ClustersOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.azurestackhci.models.ClusterList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClusterList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ClusterList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -140,7 +140,7 @@ class ClustersOperations:
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -168,7 +168,7 @@ class ClustersOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(_models.ErrorResponse, response)
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -184,7 +184,7 @@ class ClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         **kwargs
-    ) -> "_models.Cluster":
+    ) -> "models.Cluster":
         """Get HCI cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -196,19 +196,19 @@ class ClustersOperations:
         :rtype: ~azure.mgmt.azurestackhci.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Cluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -227,7 +227,7 @@ class ClustersOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Cluster', pipeline_response)
@@ -242,9 +242,9 @@ class ClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        cluster: "_models.Cluster",
+        cluster: "models.Cluster",
         **kwargs
-    ) -> "_models.Cluster":
+    ) -> "models.Cluster":
         """Create an HCI cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -258,12 +258,12 @@ class ClustersOperations:
         :rtype: ~azure.mgmt.azurestackhci.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Cluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -271,7 +271,7 @@ class ClustersOperations:
         url = self.create.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -294,7 +294,7 @@ class ClustersOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Cluster', pipeline_response)
@@ -309,9 +309,9 @@ class ClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        cluster: "_models.ClusterUpdate",
+        cluster: "models.ClusterPatch",
         **kwargs
-    ) -> "_models.Cluster":
+    ) -> "models.Cluster":
         """Update an HCI cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -319,18 +319,18 @@ class ClustersOperations:
         :param cluster_name: The name of the cluster.
         :type cluster_name: str
         :param cluster: Details of the HCI cluster.
-        :type cluster: ~azure.mgmt.azurestackhci.models.ClusterUpdate
+        :type cluster: ~azure.mgmt.azurestackhci.models.ClusterPatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Cluster, or the result of cls(response)
         :rtype: ~azure.mgmt.azurestackhci.models.Cluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.Cluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -338,7 +338,7 @@ class ClustersOperations:
         url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -353,7 +353,7 @@ class ClustersOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(cluster, 'ClusterUpdate')
+        body_content = self._serialize.body(cluster, 'ClusterPatch')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -361,7 +361,7 @@ class ClustersOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('Cluster', pipeline_response)
@@ -394,14 +394,14 @@ class ClustersOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-10-01"
+        api_version = "2022-01-01"
         accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -420,7 +420,7 @@ class ClustersOperations:
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(_models.ErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:

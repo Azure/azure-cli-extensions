@@ -65,7 +65,7 @@ class BuildService:
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
-            env=json.loads(build_env) if build_env else None)
+            env=build_env if build_env else None)
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,

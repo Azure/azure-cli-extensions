@@ -25,7 +25,7 @@ class RestorableTimeRangesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_protection_client.models
+    :type models: ~azure.mgmt.dataprotection.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -42,25 +42,25 @@ class RestorableTimeRangesOperations:
 
     async def find(
         self,
-        vault_name: str,
         resource_group_name: str,
+        vault_name: str,
         backup_instance_name: str,
         parameters: "models.AzureBackupFindRestorableTimeRangesRequest",
         **kwargs
     ) -> "models.AzureBackupFindRestorableTimeRangesResponseResource":
         """find.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param vault_name: The name of the backup vault.
+        :type vault_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
         :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.AzureBackupFindRestorableTimeRangesRequest
+        :type parameters: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AzureBackupFindRestorableTimeRangesResponseResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.AzureBackupFindRestorableTimeRangesResponseResource
+        :rtype: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesResponseResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AzureBackupFindRestorableTimeRangesResponseResource"]
@@ -68,16 +68,16 @@ class RestorableTimeRangesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2022-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self.find.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'backupInstanceName': self._serialize.url("backup_instance_name", backup_instance_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
