@@ -2315,23 +2315,23 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         handle_raw_exception(e)
 
 
-def show_storage(cmd, name, managed_env, resource_group_name):
+def show_storage(cmd, name, storage_name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     try:
-        return StorageClient.show(cmd, resource_group_name, managed_env, name)
+        return StorageClient.show(cmd, resource_group_name, name, storage_name)
     except CLIError as e:
         handle_raw_exception(e)
 
-def list_storage(cmd, managed_env, resource_group_name):
+def list_storage(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     try:
-        return StorageClient.list(cmd, resource_group_name, managed_env)
+        return StorageClient.list(cmd, resource_group_name, name)
     except CLIError as e:
         handle_raw_exception(e)
 
-def create_or_update_storage(cmd, name, resource_group_name, managed_env, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
     from ._models import AzureFileProperties as AzureFilePropertiesModel
     if type.lower() != "azurefile":
@@ -2347,14 +2347,14 @@ def create_or_update_storage(cmd, name, resource_group_name, managed_env, accoun
     storage_envelope["properties"]["azureFile"] = storage_def
 
     try:
-        return StorageClient.create_or_update(cmd, resource_group_name, managed_env, name, storage_envelope, no_wait)
+        return StorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
 
-def remove_storage(cmd, name, managed_env, resource_group_name, no_wait=False):
+def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
     try:
-        return StorageClient.delete(cmd, resource_group_name, managed_env, name, no_wait)
+        return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)

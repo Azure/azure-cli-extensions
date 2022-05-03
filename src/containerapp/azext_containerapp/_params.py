@@ -149,9 +149,12 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
     with self.argument_context('containerapp env storage') as c:
-        c.argument('managed_env', options_list=['--environment'], help="Name or resource ID of the container app's environment.", validator = None)
-        c.argument('name', id_part=None)
-        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]))
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the storage.")
+        c.argument('account_key', help="Key of the storage account.")
+        c.argument('share_name', help="Name of the share on the storage.")
+        c.argument('account_name', help="Name of the storage account.")
+        c.ignore('type')
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")

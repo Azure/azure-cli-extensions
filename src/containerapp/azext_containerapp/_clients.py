@@ -844,14 +844,13 @@ class StorageClient():
                 env_name,
                 name,
                 api_version)
-
-            if r.status_code == 202:
+            if r.status_code == 200:  # 200 successful delete, 204 means storage not found
                 from azure.cli.core.azclierror import ResourceNotFoundError
                 try:
                     poll(cmd, request_url, "scheduledfordelete")
                 except ResourceNotFoundError:
                     pass
-                logger.warning('Containerapp environment successfully deleted')
+                logger.warning('Containerapp environment storage successfully deleted')
         return
 
     @classmethod
