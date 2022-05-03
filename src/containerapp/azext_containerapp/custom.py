@@ -45,7 +45,8 @@ from ._models import (
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel)
+    ManagedServiceIdentity as ManagedServiceIdentityModel,
+    AzureFileProperties as AzureFilePropertiesModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -2322,6 +2323,7 @@ def show_storage(cmd, name, storage_name, resource_group_name):
     except CLIError as e:
         handle_raw_exception(e)
 
+
 def list_storage(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
@@ -2330,9 +2332,10 @@ def list_storage(cmd, name, resource_group_name):
     except CLIError as e:
         handle_raw_exception(e)
 
-def create_or_update_storage(cmd, storage_name, resource_group_name, name, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):
+
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, "Microsoft.App")
-    from ._models import AzureFileProperties as AzureFilePropertiesModel
+
     if type.lower() != "azurefile":
         raise ValidationError("Only AzureFile type is supported at this time.")
 
@@ -2350,6 +2353,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, accou
         return StorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
+
 
 def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
