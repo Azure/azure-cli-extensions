@@ -5,6 +5,7 @@
 import unittest
 from argparse import Namespace
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
 from azure.cli.core.util import CLIError
@@ -124,6 +125,36 @@ class TestAppInsightsValidators(unittest.TestCase):
         with self.assertRaises(CLIError) as context:
             validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
         self.assertTrue("Invalid value: Sampling Rate must be in the range [0,100]." in str(context.exception))
+
+    def test_validate_tracing_parameters_asc_create_param_conflict_10(self):
+        ns = Namespace(app_insights=None,
+                       app_insights_key=None,
+                       sampling_rate=5,
+                       disable_app_insights=None,
+                       enable_java_agent=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as context:
+            validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
+        self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' can not be set with '--disable-app-insights'." in str(context.exception))
+
+    def test_validate_tracing_parameters_asc_create_param_conflict_11(self):
+        ns = Namespace(app_insights=None,
+                       app_insights_key="0000-0000-0000",
+                       sampling_rate=None,
+                       disable_app_insights=None,
+                       enable_java_agent=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as context:
+            validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
+        self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' can not be set with '--disable-app-insights'." in str(context.exception))
+
+    def test_validate_tracing_parameters_asc_create_param_conflict_12(self):
+        ns = Namespace(app_insights="fale-app-insights-name",
+                       app_insights_key=None,
+                       sampling_rate=None,
+                       disable_app_insights=None,
+                       enable_java_agent=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as context:
+            validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
+        self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' can not be set with '--disable-app-insights'." in str(context.exception))
 
     def test_validate_tracing_parameters_asc_update_param_conflict_1(self):
         ns = Namespace(app_insights="fake-app-insights-name",
