@@ -156,6 +156,19 @@ class TestAppInsightsValidators(unittest.TestCase):
             validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
         self.assertTrue("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' can not be set with '--disable-app-insights'." in str(context.exception))
 
+    def test_validate_tracing_parameters_asc_create_param_conflict_13(self):
+        ns_list = [
+            Namespace(disable_app_insights=False, enable_java_agent=False),
+            Namespace(disable_app_insights=False, enable_java_agent=True),
+            Namespace(disable_app_insights=True, enable_java_agent=False),
+            Namespace(disable_app_insights=True, enable_java_agent=True),
+        ]
+        for ns in ns_list:
+            with self.assertRaises(MutuallyExclusiveArgumentError) as context:
+                validate_tracing_parameters_asc_create(_get_test_cmd(), ns)
+            self.assertTrue("Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
+                "can not be set at the same time." in str(context.exception))
+
     def test_validate_tracing_parameters_asc_update_param_conflict_1(self):
         ns = Namespace(app_insights="fake-app-insights-name",
                        app_insights_key=None,
