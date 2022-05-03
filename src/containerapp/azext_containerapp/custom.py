@@ -2336,6 +2336,12 @@ def list_storage(cmd, name, resource_group_name):
 def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, "Microsoft.App")
 
+    if len(azure_file_share_name) < 3:
+        raise ValidationError("File share name must be longer than 2 characters.")
+
+    if len(azure_file_account_name) < 3:
+        raise ValidationError("Account name must be longer than 2 characters.")
+
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = azure_file_account_key
     storage_def["accountName"] = azure_file_account_name
