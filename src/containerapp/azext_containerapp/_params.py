@@ -154,7 +154,7 @@ def load_arguments(self, _):
         c.argument('account_key', help="Key of the storage account.")
         c.argument('share_name', help="Name of the share on the storage.")
         c.argument('account_name', help="Name of the storage account.")
-        c.ignore('type')
+        c.argument('type', help="Type of the storage.")
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
