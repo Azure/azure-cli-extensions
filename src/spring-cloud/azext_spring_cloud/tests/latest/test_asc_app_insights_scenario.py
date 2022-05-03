@@ -5,8 +5,8 @@
 
 import os
 import time
-
 from azure.cli.testsdk import (ScenarioTest, record_only)
+from ..._clierror import ApplicationInsightsNotFoundError
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -405,6 +405,20 @@ class AzureSpringCloudEnterpriseTierTests(ScenarioTest):
         self.cmd('spring-cloud create -n {serviceName} -g {rg} --sku {SKU} -l {location} '
                  '--no-wait')
         self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
+
+    def test_create_service_instance_with_not_existed_app_insights_name(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-e-10',
+            'appInsightsName': 'not-existed-ai-name',
+            'SKU': 'Enterprise',
+            'location': 'westus3',
+            'rg': 'cli-unittest-rg'
+        })
+        with self.assertRaises(ApplicationInsightsNotFoundError) as context:
+            self.cmd('az spring-cloud create -n {serviceName} -g {rg}  -l {location} --app-insights {appInsightsName}')
+        print(context.exception)
+        self.assertTrue("(ResourceNotFound) The Resource 'Microsoft.Insights/components/{}'".format(
+            self.kwargs['appInsightsName']) in str(context.exception))
 
     def _wait_service(self, rg, service_name):
         while True:

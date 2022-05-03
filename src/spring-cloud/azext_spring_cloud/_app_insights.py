@@ -6,6 +6,7 @@
 from ._clierror import ApplicationInsightsNotFoundError
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from knack.log import get_logger
@@ -22,15 +23,18 @@ def get_app_insights_connection_string(cmd, resource_group, app_insights):
     if not app_insights:
         return None
 
-    if is_valid_resource_id(app_insights):
-        resource_id_dict = parse_resource_id(app_insights)
-        connection_string = get_app_insights_connection_string_by_name(
-            cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
-    else:
-        connection_string = get_app_insights_connection_string_by_name(cmd.cli_ctx, resource_group, app_insights)
+    try:
+        if is_valid_resource_id(app_insights):
+            resource_id_dict = parse_resource_id(app_insights)
+            connection_string = get_app_insights_connection_string_by_name(
+                cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
+        else:
+            connection_string = get_app_insights_connection_string_by_name(cmd.cli_ctx, resource_group, app_insights)
 
-    if not connection_string:
-        raise ApplicationInsightsNotFoundError("Cannot find Connection string from application insights:{}".format(app_insights))
+        if not connection_string:
+            raise ApplicationInsightsNotFoundError("Cannot find Connection string from application insights:{}".format(app_insights))
+    except ResourceNotFoundError as ex:
+        raise ApplicationInsightsNotFoundError("Cannot find Connection string from application insights:{} with error:{}.".format(app_insights, ex))
 
     return connection_string
 
