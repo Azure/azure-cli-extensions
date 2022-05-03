@@ -382,6 +382,48 @@ helps['containerapp env dapr-component remove'] = """
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
 
+helps['containerapp env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps environment.
+"""
+
+helps['containerapp env storage list'] = """
+    type: command
+    short-summary: List the storages for an environment.
+    examples:
+    - name: List the storages for an environment.
+      text: |
+          az containerapp env storage list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp env storage show -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+helps['containerapp env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --account-key MyAccountKey --account-name MyAccountName --share-name MyShareName
+"""
+
+helps['containerapp env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from an environment.
+    examples:
+    - name: Remove a storage from a Container Apps environment.
+      text: |
+          az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+
 # Identity Commands
 helps['containerapp identity'] = """
     type: group

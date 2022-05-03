@@ -149,6 +149,7 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
     with self.argument_context('containerapp env storage') as c:
+        c.argument('name', id_part=None)
         c.argument('storage_name', help="Name of the storage.")
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the storage.")
         c.argument('account_key', help="Key of the storage account.")
