@@ -5,6 +5,7 @@
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
+from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -380,6 +381,7 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_intrusion_detection')
+    #@AllowLargeResponse
     def test_azure_firewall_policy_intrusion_detection(self, resource_group):
         self.kwargs.update({
             'policy': 'myFirewallPolicy',
@@ -401,19 +403,25 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('intrusionDetection.configuration.signatureOverrides', []),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001',
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001 --private-ranges 167.220.204.0/24 167.221.205.101/32'
+,
                  checks=[
                      self.check('bypassTrafficSettings', []),
                      self.check('length(signatureOverrides)', 1),
                      self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('privateRanges[0]', "167.220.204.0/24"),
+                     self.check('privateRanges[1]', "167.221.205.101/32")
+
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001',
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001 --private-ranges 167.220.208.0/24 167.221.205.102/32',
                  checks=[
                      self.check('bypassTrafficSettings', []),
                      self.check('length(signatureOverrides)', 2),
                      self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
                      self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
+                     self.check('privateRanges[0]', "167.220.208.0/24"),
+                     self.check('privateRanges[1]', "167.221.205.102/32")
                  ])
 
         self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} '
@@ -438,6 +446,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(bypassTrafficSettings)', 1),
                      self.check('length(signatureOverrides)', 2),
+                     self.check('length(privateRanges)', 2)
                  ])
 
         self.cmd('network firewall policy intrusion-detection remove -g {rg} --policy-name {policy} '
@@ -448,6 +457,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(bypassTrafficSettings)', 0),
                      self.check('length(signatureOverrides)', 1),
+                     self.check('length(privateRanges)', 2)
                  ])
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='centralus')

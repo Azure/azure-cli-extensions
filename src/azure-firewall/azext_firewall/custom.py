@@ -646,6 +646,7 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
 def add_firewall_policy_intrusion_detection_config(cmd,
                                                    resource_group_name,
                                                    firewall_policy_name,
+                                                   private_ranges=None,
                                                    signature_id=None,
                                                    signature_mode=None,
                                                    bypass_rule_name=None,
@@ -693,6 +694,9 @@ def add_firewall_policy_intrusion_detection_config(cmd,
             destination_ip_groups=bypass_rule_destination_ip_groups,
         )
         firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
+
+    if private_ranges is not None:
+        firewall_policy.intrusion_detection.configuration.private_ranges.append(private_ranges)    
 
     result = sdk_no_wait(False,
                          client.begin_create_or_update,

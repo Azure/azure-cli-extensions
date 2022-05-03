@@ -359,7 +359,7 @@ helps['network firewall policy intrusion-detection list'] = """
 
 helps['network firewall policy intrusion-detection remove'] = """
     type: command
-    short-summary: Remove overrided intrusion signature or a bypass rule or private ranges list
+    short-summary: Remove overrided intrusion signature or a bypass rule
 """
 
 helps['network firewall policy rule-collection-group'] = """
