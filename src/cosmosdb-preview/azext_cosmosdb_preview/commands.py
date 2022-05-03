@@ -20,7 +20,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_gremlin_graphs,
     cf_restorable_gremlin_resources,
     cf_restorable_tables,
-    cf_restorable_table_resources
+    cf_restorable_table_resources,
+    cf_restorable_database_accounts
 )
 
 
@@ -116,8 +117,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableTableResourcesOperations.{}',
         client_factory=cf_restorable_table_resources)
 
+    cosmosdb_restorable_database_accounts_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#RestorableDatabaseAccountsOperations.{}',
+        client_factory=cf_restorable_database_accounts)
+
     # define commands
     # Restorable apis for sql,mongodb,gremlin and table
+    # Provisioning/migrate Continuous 7 days accounts
     with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
         g.custom_command('restore', 'cli_cosmosdb_restore', is_preview=True)
         g.custom_command('create', 'cli_cosmosdb_create', is_preview=True)
@@ -145,6 +151,10 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb table restorable-resource', cosmosdb_restorable_table_resources_sdk, client_factory=cf_restorable_table_resources, is_preview=True) as g:
         g.command('list', 'list')
+
+    with self.command_group('cosmosdb restorable-database-account', cosmosdb_restorable_database_accounts_sdk, client_factory=cf_restorable_database_accounts) as g:
+        g.custom_command('show', 'cli_cosmosdb_restorable_database_account_get_by_location')
+        g.custom_command('list', 'cli_cosmosdb_restorable_database_account_list')
 
     # Retrieve backup info for gremlin
     cosmosdb_gremlin_sdk = CliCommandType(
