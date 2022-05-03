@@ -420,6 +420,19 @@ class AzureSpringCloudEnterpriseTierTests(ScenarioTest):
         self.assertTrue("(ResourceNotFound) The Resource 'Microsoft.Insights/components/{}'".format(
             self.kwargs['appInsightsName']) in str(context.exception))
 
+    def test_create_service_instance_with_not_existed_app_insights_resource_id(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-e-10',
+            'appInsightsId': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-unittest-rg/providers/microsoft.insights/components/fake-name',
+            'SKU': 'Enterprise',
+            'location': 'westus3',
+            'rg': 'cli-unittest-rg'
+        })
+        with self.assertRaises(ApplicationInsightsNotFoundError) as context:
+            self.cmd('az spring-cloud create -n {serviceName} -g {rg}  -l {location} --app-insights {appInsightsId}')
+        print(context.exception)
+        self.assertTrue("(ResourceNotFound) The Resource 'Microsoft.Insights/components/fake-name'" in str(context.exception))
+
     def _wait_service(self, rg, service_name):
         while True:
             result = self.cmd('spring-cloud show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
