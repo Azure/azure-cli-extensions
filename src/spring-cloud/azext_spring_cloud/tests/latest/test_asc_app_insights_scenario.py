@@ -406,6 +406,20 @@ class AzureSpringCloudEnterpriseTierTests(ScenarioTest):
                  '--no-wait')
         self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
 
+    def test_create_service_instance_in_supported_region(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-e-13',
+            'SKU': 'Enterprise',
+            'location': 'westus2',
+            'rg': 'cli-unittest-rg'
+        })
+        self.cmd('spring-cloud create -n {serviceName} -g {rg} --sku {SKU} -l {location} '
+                 '--no-wait')
+        self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
+        result = self.cmd('spring-cloud build-service builder buildpack-binding show -n default -s {serviceName} -g {rg}').get_output_in_json()
+        self.assertEquals(result['properties']['provisioningState'], 'Succeeded')
+        self.assertEquals(result['properties']['bindingType'], 'ApplicationInsights')
+
     def test_create_service_instance_with_not_existed_app_insights_name(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-e-10',
