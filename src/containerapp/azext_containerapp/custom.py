@@ -2020,7 +2020,7 @@ def containerapp_up(cmd,
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
-    _validate_up_args(source, image, repo, registry_server)
+    _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 

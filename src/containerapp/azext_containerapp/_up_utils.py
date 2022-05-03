@@ -442,7 +442,13 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(source, image, repo, registry_server):
+def _validate_up_args(cmd, source, image, repo, registry_server):
+    disallowed_params = ["--only-show-errors", "--output", "-o"]
+    command_args = cmd.cli_ctx.data.get("safe_params", [])
+    for a in disallowed_params:
+        if a in command_args:
+            raise ValidationError(f"Argument {a} is not allowed for 'az containerapp up'")
+
     if not source and not image and not repo:
         raise RequiredArgumentMissingError(
             "You must specify either --source, --repo, or --image"
