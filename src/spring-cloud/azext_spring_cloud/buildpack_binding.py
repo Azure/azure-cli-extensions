@@ -80,7 +80,7 @@ def _build_buildpack_binding_resource(binding_type, properties_dict, secrets_dic
 def _get_buildpack_binding_properties(cmd, resource_group, service_name, location,
                                       app_insights_key, sampling_rate):
     sampling_rate = sampling_rate or 10
-    connection_string = _safe_get_connection_string(cmd, resource_group, service_name, location, app_insights_key)
+    connection_string = _get_connection_string_or_warn(cmd, resource_group, service_name, location, app_insights_key)
     if not connection_string:
         return None
 
@@ -92,7 +92,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
     return models.BuildpackBindingProperties(binding_type="ApplicationInsights", launch_properties=launch_properties)
 
 
-def _safe_get_connection_string(cmd, resource_group, service_name, location, app_insights_key):
+def _get_connection_string_or_warn(cmd, resource_group, service_name, location, app_insights_key):
     creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
                            'Please use the Azure Portal to manually create and configure the Application Insights, ' \
                            'if needed.'
