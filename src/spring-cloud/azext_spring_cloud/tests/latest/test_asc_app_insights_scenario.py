@@ -386,3 +386,32 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         ai_connection_string = 'InstrumentationKey=00000000-0000-0000-0000-000000000000;' \
                                'IngestionEndpoint=https://xxxxxxxxxxxxxxxxxxxxxxxx/'
         return ai_resource_id, ai_instrumentation_key, ai_connection_string
+
+
+@record_only()
+class AzureSpringCloudEnterpriseTierTests(ScenarioTest):
+
+    """
+    1. Application Insights is not supported in Canary and Pilot regions
+    2. Application Insights doesn't support classic mode in regions: West US 3
+    """
+    def test_create_service_instance_in_not_supported_region(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-e-2',
+            'SKU': 'Enterprise',
+            'location': 'westus3',
+            'rg': 'cli-unittest-rg'
+        })
+        self.cmd('spring-cloud create -n {serviceName} -g {rg} --sku {SKU} -l {location} '
+                 '--no-wait')
+        self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
+
+    def _wait_service(self, rg, service_name):
+        while True:
+            result = self.cmd('spring-cloud show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
+            if result['properties']['provisioningState'] == "Succeeded":
+                break
+            elif result['properties']['provisioningState'] == "Failed":
+                exit(1)
+            sleep_in_seconds = 10
+            time.sleep(sleep_in_seconds)
