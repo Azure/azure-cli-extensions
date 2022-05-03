@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking
 
+from os import access
 import threading
 import sys
 import time
@@ -25,7 +26,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -2311,4 +2312,49 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
             return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
         return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
     except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_storage(cmd, name, managed_env, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.show(cmd, resource_group_name, managed_env, name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+def list_storage(cmd, managed_env, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.list(cmd, resource_group_name, managed_env)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+def create_or_update_storage(cmd, name, resource_group_name, managed_env, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+    from ._models import AzureFileProperties as AzureFilePropertiesModel
+    if type.lower() != "azurefile":
+        raise ValidationError("Only AzureFile type is supported at this time.")
+
+    storage_def = AzureFilePropertiesModel
+    storage_def["accountKey"] = account_key
+    storage_def["accountName"] = account_name
+    storage_def["shareName"] = share_name
+    storage_def["accessMode"] = access_mode
+    storage_envelope = {}
+    storage_envelope["properties"] = {}
+    storage_envelope["properties"]["azureFile"] = storage_def
+
+    try:
+        return StorageClient.create_or_update(cmd, resource_group_name, managed_env, name, storage_envelope, no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+def remove_storage(cmd, name, managed_env, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.delete(cmd, resource_group_name, managed_env, name, no_wait)
+    except CLIError as e:
         handle_raw_exception(e)

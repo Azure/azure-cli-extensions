@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements, consider-using-f-string
 
+from wsgiref.validate import validator
 from knack.arguments import CLIArgumentType
 
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
@@ -146,6 +147,11 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
+
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('managed_env', options_list=['--environment'], help="Name or resource ID of the container app's environment.", validator = None)
+        c.argument('name', id_part=None)
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]))
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
