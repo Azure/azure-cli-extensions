@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking
 
-from os import access
 import threading
 import sys
 import time
@@ -2337,6 +2336,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, accou
     if type.lower() != "azurefile":
         raise ValidationError("Only AzureFile type is supported at this time.")
 
+    # We will replace this with sdk at some point
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = account_key
     storage_def["accountName"] = account_name
