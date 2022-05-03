@@ -411,7 +411,7 @@ helps['containerapp env storage set'] = """
     examples:
     - name: Create a storage.
       text: |
-          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --account-key MyAccountKey --account-name MyAccountName --share-name MyShareName
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
 """
 
 helps['containerapp env storage remove'] = """

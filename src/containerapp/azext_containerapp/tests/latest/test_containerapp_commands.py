@@ -335,7 +335,7 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
 
-        self.cmd('containerapp env storage set -g {} -n {} --storage-name {} --account-name {} --account-key {} --access-mode ReadOnly --share-name {}'.format(resource_group, env_name, storage_name, storage_name, storage_keys["value"], shares_name), checks=[
+        self.cmd('containerapp env storage set -g {} -n {} --storage-name {} --azure-file-account-name {} --azure-file-account-key {} --access-mode ReadOnly --azure-file-share-name {}'.format(resource_group, env_name, storage_name, storage_name, storage_keys["value"], shares_name), checks=[
             JMESPathCheck('name', storage_name),
         ])
 

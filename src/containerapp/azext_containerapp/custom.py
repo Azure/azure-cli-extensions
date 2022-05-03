@@ -2333,17 +2333,13 @@ def list_storage(cmd, name, resource_group_name):
         handle_raw_exception(e)
 
 
-def create_or_update_storage(cmd, storage_name, resource_group_name, name, account_name, share_name, account_key, access_mode, type="AzureFile", no_wait=False):  # pylint: disable=redefined-builtin
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    if type.lower() != "azurefile":
-        raise ValidationError("Only AzureFile type is supported at this time.")
-
-    # We will replace this with sdk at some point
     storage_def = AzureFilePropertiesModel
-    storage_def["accountKey"] = account_key
-    storage_def["accountName"] = account_name
-    storage_def["shareName"] = share_name
+    storage_def["accountKey"] = azure_file_account_key
+    storage_def["accountName"] = azure_file_account_name
+    storage_def["shareName"] = azure_file_share_name
     storage_def["accessMode"] = access_mode
     storage_envelope = {}
     storage_envelope["properties"] = {}

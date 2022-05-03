@@ -150,11 +150,10 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env storage') as c:
         c.argument('name', id_part=None)
         c.argument('storage_name', help="Name of the storage.")
-        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the storage.")
-        c.argument('account_key', help="Key of the storage account.")
-        c.argument('share_name', help="Name of the share on the storage.")
-        c.argument('account_name', help="Name of the storage account.")
-        c.argument('type', help="Type of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', help="Name of the AzureFile storage account.")
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
