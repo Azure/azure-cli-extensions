@@ -227,9 +227,9 @@ def validate_java_agent_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
             "can not be set at the same time.")
-    if namespace.enable_java_agent == True:
+    if namespace.enable_java_agent is True:
         namespace.disable_app_insights = False
-    elif namespace.enable_java_agent == False:
+    elif namespace.enable_java_agent is False:
         namespace.disable_app_insights = True
     namespace.enable_java_agent = None
 
