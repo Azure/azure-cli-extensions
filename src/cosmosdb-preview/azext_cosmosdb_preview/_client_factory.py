@@ -70,5 +70,9 @@ def cf_restorable_table_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_table_resources
 
 
+def cf_restorable_database_accounts(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).restorable_database_accounts
+
+
 def cf_data_transfer_job(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).data_transfer_jobs

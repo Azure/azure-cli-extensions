@@ -19,12 +19,18 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseAccountKind,
     ContinuousBackupRestoreLocation,
     DatabaseAccountUpdateParameters,
-    RestoreParameters
+    RestoreParameters,
+    PeriodicModeBackupPolicy,
+    PeriodicModeProperties,
+    ContinuousModeBackupPolicy,
+    ContinuousModeProperties,
+    DatabaseAccountCreateUpdateParameters,
 )
 
 from azext_cosmosdb_preview._client_factory import (
     cf_restorable_gremlin_resources,
-    cf_restorable_table_resources
+    cf_restorable_table_resources,
+    cf_restorable_database_accounts
 )
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -38,14 +44,6 @@ from azure.mgmt.cosmosdb.models import (
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
     Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties
-)
-
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    PeriodicModeBackupPolicy,
-    PeriodicModeProperties,
-    ContinuousModeBackupPolicy,
-    ContinuousModeProperties,
-    DatabaseAccountCreateUpdateParameters,
 )
 
 from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
@@ -714,6 +712,33 @@ def cli_cosmosdb_update(client,
     docdb_account = async_docdb_update.result()
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
+
+# pylint: disable=too-many-branches
+def cli_cosmosdb_restorable_database_account_list(client,
+                                                  location=None,
+                                                  account_name=None):
+    restorable_database_accounts = None
+    if location is not None:
+        restorable_database_accounts = client.list_by_location(location)
+    else:
+        restorable_database_accounts = client.list()
+
+    if account_name is None:
+        return restorable_database_accounts
+
+    matching_restorable_accounts = []
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            matching_restorable_accounts.append(account)
+    return matching_restorable_accounts
+
+
+# pylint: disable=too-many-branches
+def cli_cosmosdb_restorable_database_account_get_by_location(client,
+                                                  location=None,
+                                                  instance_id=None):
+    return client.get_by_location(location, instance_id)
 
 
 # restore cosmosdb account with gremlin databases and tables to restore

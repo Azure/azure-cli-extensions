@@ -641,3 +641,36 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         updated_continuous_tier = updated_account['backupPolicy']['continuousModeProperties']['tier']
         assert updated_continuous_tier == 'Continuous30Days'
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_oldestRestorableTime', location='eastus2')
+    def test_cosmosdb_sql_oldestRestorableTime(self, resource_group):
+        col = self.create_random_name(prefix='cli', length=15)
+        db_name = self.create_random_name(prefix='cli', length=15)
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli-continuous7-', length=25),
+            'db_name': db_name,
+            'col': col,
+            'loc': 'eastus2'
+        })
+
+        # Create periodic backup account (by default is --backup-policy-type is not specified, then it is a Periodic account)
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.kwargs.update({
+            'ins_id': account['instanceId']
+        })
+
+        restorable_database_account_show = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        account_oldest_restorable_time = restorable_database_account_show['oldestRestorableTime']
+        assert account_oldest_restorable_time is not None
+
+        restorable_accounts_list = self.cmd('az cosmosdb restorable-database-account list').get_output_in_json()
+        restorable_database_account = next(acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
+        account_oldest_restorable_time = restorable_database_account['oldestRestorableTime']
+        assert account_oldest_restorable_time is not None
