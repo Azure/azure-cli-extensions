@@ -381,7 +381,7 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_intrusion_detection')
-    #@AllowLargeResponse
+    @AllowLargeResponse()
     def test_azure_firewall_policy_intrusion_detection(self, resource_group):
         self.kwargs.update({
             'policy': 'myFirewallPolicy',
