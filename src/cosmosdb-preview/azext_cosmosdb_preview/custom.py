@@ -925,7 +925,7 @@ def _create_database_account(client,
                     backup_retention_interval_in_hours=backup_retention,
                     backup_storage_redundancy=backup_redundancy
                 )
-            backup_policy.periodic_mode_properties = periodic_mode_properties
+                backup_policy.periodic_mode_properties = periodic_mode_properties
         elif backup_policy_type.lower() == 'continuous':
             backup_policy = ContinuousModeBackupPolicy()
             if continuous_tier is not None:
