@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._data_protection_client import DataProtectionClient
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['DataProtectionClient']
 
 try:

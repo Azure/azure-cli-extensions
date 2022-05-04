@@ -12,11 +12,12 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
+from .._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-VERSION = "unknown"
 
 class DataProtectionClientConfiguration(Configuration):
     """Configuration for DataProtectionClient.
@@ -44,9 +45,9 @@ class DataProtectionClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2021-07-01"
+        self.api_version = "2022-03-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'dataprotectionclient/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'mgmt-dataprotection/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

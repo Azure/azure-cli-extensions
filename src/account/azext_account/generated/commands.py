@@ -35,7 +35,7 @@ def load_command_table(self, _):
     account_alias = CliCommandType(
         operations_tmpl='azext_account.vendored_sdks.subscription.operations._alias_operations#AliasOperations.{}',
         client_factory=cf_alias)
-    with self.command_group('account alias', account_alias, client_factory=cf_alias, is_experimental=True) as g:
+    with self.command_group('account alias', account_alias, client_factory=cf_alias) as g:
         g.custom_command('list', 'account_alias_list')
         g.custom_show_command('show', 'account_alias_show')
         g.custom_command('create', 'account_alias_create', supports_no_wait=True)

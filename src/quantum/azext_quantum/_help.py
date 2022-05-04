@@ -120,7 +120,7 @@ helps['quantum offerings list'] = """
     examples:
       - name: List offerings available in an Azure location.
         text: |-
-            az quantum offerings list -l MyLocation
+            az quantum offerings list -l MyLocation -o table
 """
 
 helps['quantum offerings show-terms'] = """
@@ -203,7 +203,9 @@ helps['quantum workspace create'] = """
       - name: Create a new Azure Quantum workspace with a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName
+                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName\n
+            To display a list of available providers and their SKUs, use the following command:
+                az quantum offerings list -l MyLocation -o table
 """
 
 helps['quantum workspace delete'] = """

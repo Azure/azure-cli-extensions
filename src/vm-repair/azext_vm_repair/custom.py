@@ -34,6 +34,9 @@ from .repair_utils import (
     _invoke_run_command,
     _check_hyperV_gen,
     _get_cloud_init_script,
+    _select_distro_linux,
+    _check_linux_hyperV_gen,
+    _select_distro_linux_gen2,
     _set_repair_map_url,
     _is_gen2
 )
@@ -41,8 +44,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False):
-
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu'):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -62,8 +64,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
-            os_image_urn = "UbuntuLTS"
+            # os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
+            hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
+            if hyperV_generation_linux == 'V2':
+                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.debug('gen2 machine detected')
+                os_image_urn = _select_distro_linux_gen2(distro)
+            else:
+                os_image_urn = _select_distro_linux(distro)
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
@@ -105,6 +114,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
+            elif is_linux and hyperV_generation_linux == 'V2':
+                logger.info('The disk did not contian the info of gen2 , but the machine is created from gen2 image')
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
             # Set availability zone for vm when available
             if source_vm.zones:
                 zone = source_vm.zones[0]
