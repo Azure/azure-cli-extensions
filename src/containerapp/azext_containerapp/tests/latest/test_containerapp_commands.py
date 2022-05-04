@@ -147,3 +147,44 @@ class ContainerappIdentityTests(ScenarioTest):
         self.cmd('containerapp identity show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'None'),
         ])
+
+
+@live_only()
+class ContainerappEnvStorageTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_env_storage(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        storage_name = self.create_random_name(prefix='storage', length=24)
+        shares_name = self.create_random_name(prefix='share', length=24)
+
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_ZRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
+
+        storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
+
+        self.cmd('containerapp env storage set -g {} -n {} --storage-name {} --azure-file-account-name {} --azure-file-account-key {} --access-mode ReadOnly --azure-file-share-name {}'.format(resource_group, env_name, storage_name, storage_name, storage_keys["value"], shares_name), checks=[
+            JMESPathCheck('name', storage_name),
+        ])
+
+        self.cmd('containerapp env storage show -g {} -n {} --storage-name {}'.format(resource_group, env_name, storage_name), checks=[
+            JMESPathCheck('name', storage_name),
+        ])
+
+        self.cmd('containerapp env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('[0].name', storage_name),
+        ])
+
+        self.cmd('containerapp env storage remove -g {} -n {} --storage-name {} --yes'.format(resource_group, env_name, storage_name))
+
+        self.cmd('containerapp env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
