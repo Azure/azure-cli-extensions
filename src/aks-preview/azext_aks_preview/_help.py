@@ -517,7 +517,8 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler.  No argumentss reconciles the cluster to its current state.
+    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler.  
+    ents attempts to move the cluster to its goal state without changing the current cluster configuration. . This operation can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -1134,7 +1135,7 @@ helps['aks nodepool upgrade'] = """
 
 helps['aks nodepool update'] = """
     type: command
-    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count. No argumentss reconciles the nodepool to its current state.
+    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  No arguments attempts to move the cluster to its goal state without changing the current cluster configuration. This operation can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
