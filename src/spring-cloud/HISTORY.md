@@ -1,5 +1,9 @@
 Release History
 ===============
+3.1.6
+---
+* Enhance enable Application Insights when create service instance.
+
 3.1.5
 ---
 * [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
