@@ -272,7 +272,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('[1].weight', 50),
         ])
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
+        self.cmd('containerapp ingress traffic show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('[0].latestRevision', True),
             JMESPathCheck('[0].weight', 50),
             JMESPathCheck('[1].revisionName', revisions_list[0]["name"]),
