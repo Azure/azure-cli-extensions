@@ -14,23 +14,21 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.utils import case_insensitive_dict
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._offerings_operations import build_list_request
+from ...operations._providers_operations import build_get_status_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class OfferingsOperations:
+class ProvidersOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.quantum.aio.AzureQuantumManagementClient`'s
-        :attr:`offerings` attribute.
+        :class:`~azure.quantum._client.aio.QuantumClient`'s
+        :attr:`providers` attribute.
     """
 
     models = _models
@@ -44,25 +42,22 @@ class OfferingsOperations:
 
 
     @distributed_trace
-    def list(
+    def get_status(
         self,
-        location_name: str,
         **kwargs: Any
-    ) -> AsyncIterable[_models.OfferingsListResult]:
-        """Returns the list of all provider offerings available for the given location.
+    ) -> AsyncIterable[_models.ProviderStatusList]:
+        """Get provider status.
 
-        :param location_name: Location.
-        :type location_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either OfferingsListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.quantum.models.OfferingsListResult]
+        :return: An iterator like instance of either ProviderStatusList or the result of cls(response)
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.quantum._client.models.ProviderStatusList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
-        api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-01-10-preview"))  # type: str
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.OfferingsListResult]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.ProviderStatusList]
 
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -71,11 +66,11 @@ class OfferingsOperations:
         def prepare_request(next_link=None):
             if not next_link:
                 
-                request = build_list_request(
+                request = build_get_status_request(
                     subscription_id=self._config.subscription_id,
-                    location_name=location_name,
-                    api_version=api_version,
-                    template_url=self.list.metadata['url'],
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
+                    template_url=self.get_status.metadata['url'],
                     headers=_headers,
                     params=_params,
                 )
@@ -84,10 +79,10 @@ class OfferingsOperations:
 
             else:
                 
-                request = build_list_request(
+                request = build_get_status_request(
                     subscription_id=self._config.subscription_id,
-                    location_name=location_name,
-                    api_version=api_version,
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
                     template_url=next_link,
                     headers=_headers,
                     params=_params,
@@ -98,7 +93,7 @@ class OfferingsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("OfferingsListResult", pipeline_response)
+            deserialized = self._deserialize("ProviderStatusList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -116,8 +111,8 @@ class OfferingsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -125,4 +120,4 @@ class OfferingsOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': "/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/locations/{locationName}/offerings"}  # type: ignore
+    get_status.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/providerStatus"}  # type: ignore

@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._azure_quantum_management_client import AzureQuantumManagementClient
+from ._quantum_client import QuantumClient
 
 try:
     from ._patch import __all__ as _patch_all
@@ -14,7 +14,7 @@ try:
 except ImportError:
     _patch_all = []
 from ._patch import patch_sdk as _patch_sdk
-__all__ = ['AzureQuantumManagementClient']
+__all__ = ['QuantumClient']
 __all__.extend([p for p in _patch_all if p not in __all__])
 
 _patch_sdk()

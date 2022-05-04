@@ -17,7 +17,6 @@ from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
 from azure.core.utils import case_insensitive_dict
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models as _models
 from .._vendor import _convert_request, _format_url_section
@@ -32,29 +31,26 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 # fmt: off
 
-def build_list_request(
+def build_get_status_request(
     subscription_id,  # type: str
-    location_name,  # type: str
+    resource_group_name,  # type: str
+    workspace_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-01-10-preview"))  # type: str
     accept = _headers.pop('Accept', "application/json")
 
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/locations/{locationName}/offerings")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/providerStatus")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "locationName": _SERIALIZER.url("location_name", location_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workspaceName": _SERIALIZER.url("workspace_name", workspace_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _params['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
 
     # Construct headers
     _headers['Accept'] = _SERIALIZER.header("accept", accept, 'str')
@@ -62,20 +58,19 @@ def build_list_request(
     return HttpRequest(
         method="GET",
         url=_url,
-        params=_params,
         headers=_headers,
         **kwargs
     )
 
 # fmt: on
-class OfferingsOperations(object):
+class ProvidersOperations(object):
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.quantum.AzureQuantumManagementClient`'s
-        :attr:`offerings` attribute.
+        :class:`~azure.quantum._client.QuantumClient`'s
+        :attr:`providers` attribute.
     """
 
     models = _models
@@ -89,26 +84,22 @@ class OfferingsOperations(object):
 
 
     @distributed_trace
-    def list(
+    def get_status(
         self,
-        location_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable[_models.OfferingsListResult]
-        """Returns the list of all provider offerings available for the given location.
+        # type: (...) -> Iterable[_models.ProviderStatusList]
+        """Get provider status.
 
-        :param location_name: Location.
-        :type location_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either OfferingsListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.quantum.models.OfferingsListResult]
+        :return: An iterator like instance of either ProviderStatusList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.quantum._client.models.ProviderStatusList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
-        api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-01-10-preview"))  # type: str
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.OfferingsListResult]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.ProviderStatusList]
 
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
@@ -117,11 +108,11 @@ class OfferingsOperations(object):
         def prepare_request(next_link=None):
             if not next_link:
                 
-                request = build_list_request(
+                request = build_get_status_request(
                     subscription_id=self._config.subscription_id,
-                    location_name=location_name,
-                    api_version=api_version,
-                    template_url=self.list.metadata['url'],
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
+                    template_url=self.get_status.metadata['url'],
                     headers=_headers,
                     params=_params,
                 )
@@ -130,10 +121,10 @@ class OfferingsOperations(object):
 
             else:
                 
-                request = build_list_request(
+                request = build_get_status_request(
                     subscription_id=self._config.subscription_id,
-                    location_name=location_name,
-                    api_version=api_version,
+                    resource_group_name=self._config.resource_group_name,
+                    workspace_name=self._config.workspace_name,
                     template_url=next_link,
                     headers=_headers,
                     params=_params,
@@ -144,7 +135,7 @@ class OfferingsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("OfferingsListResult", pipeline_response)
+            deserialized = self._deserialize("ProviderStatusList", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -162,8 +153,8 @@ class OfferingsOperations(object):
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+                raise HttpResponseError(response=response, model=error)
 
             return pipeline_response
 
@@ -171,4 +162,4 @@ class OfferingsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': "/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/locations/{locationName}/offerings"}  # type: ignore
+    get_status.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/providerStatus"}  # type: ignore

@@ -14,22 +14,21 @@ from azure.core.pipeline.transport import AsyncHttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
-from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._workspace_operations import build_check_name_availability_request
+from ...operations._storage_operations import build_sas_uri_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class WorkspaceOperations:
+class StorageOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.quantum.aio.AzureQuantumManagementClient`'s
-        :attr:`workspace` attribute.
+        :class:`~azure.quantum._client.aio.QuantumClient`'s
+        :attr:`storage` attribute.
     """
 
     models = _models
@@ -43,22 +42,19 @@ class WorkspaceOperations:
 
 
     @distributed_trace_async
-    async def check_name_availability(
+    async def sas_uri(
         self,
-        location_name: str,
-        check_name_availability_parameters: _models.CheckNameAvailabilityParameters,
+        blob_details: _models.BlobDetails,
         **kwargs: Any
-    ) -> _models.CheckNameAvailabilityResult:
-        """Check the availability of the resource name.
+    ) -> _models.SasUriResponse:
+        """Gets a URL with SAS token for a container/blob in the storage account associated with the
+        workspace. The SAS URL can be used to upload job input and/or download job output.
 
-        :param location_name: Location.
-        :type location_name: str
-        :param check_name_availability_parameters: The name and type of the resource.
-        :type check_name_availability_parameters:
-         ~azure.mgmt.quantum.models.CheckNameAvailabilityParameters
+        :param blob_details: The details (name and container) of the blob to store or download data.
+        :type blob_details: ~azure.quantum._client.models.BlobDetails
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CheckNameAvailabilityResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.quantum.models.CheckNameAvailabilityResult
+        :return: SasUriResponse, or the result of cls(response)
+        :rtype: ~azure.quantum._client.models.SasUriResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         error_map = {
@@ -67,21 +63,20 @@ class WorkspaceOperations:
         error_map.update(kwargs.pop('error_map', {}) or {})
 
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
-        api_version = kwargs.pop('api_version', _params.pop('api-version', "2022-01-10-preview"))  # type: str
         content_type = kwargs.pop('content_type', _headers.pop('Content-Type', "application/json"))  # type: Optional[str]
-        cls = kwargs.pop('cls', None)  # type: ClsType[_models.CheckNameAvailabilityResult]
+        cls = kwargs.pop('cls', None)  # type: ClsType[_models.SasUriResponse]
 
-        _json = self._serialize.body(check_name_availability_parameters, 'CheckNameAvailabilityParameters')
+        _json = self._serialize.body(blob_details, 'BlobDetails')
 
-        request = build_check_name_availability_request(
+        request = build_sas_uri_request(
             subscription_id=self._config.subscription_id,
-            location_name=location_name,
-            api_version=api_version,
+            resource_group_name=self._config.resource_group_name,
+            workspace_name=self._config.workspace_name,
             content_type=content_type,
             json=_json,
-            template_url=self.check_name_availability.metadata['url'],
+            template_url=self.sas_uri.metadata['url'],
             headers=_headers,
             params=_params,
         )
@@ -97,15 +92,15 @@ class WorkspaceOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.RestError, pipeline_response)
+            raise HttpResponseError(response=response, model=error)
 
-        deserialized = self._deserialize('CheckNameAvailabilityResult', pipeline_response)
+        deserialized = self._deserialize('SasUriResponse', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    check_name_availability.metadata = {'url': "/subscriptions/{subscriptionId}/providers/Microsoft.Quantum/locations/{locationName}/checkNameAvailability"}  # type: ignore
+    sas_uri.metadata = {'url': "/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/storage/sasUri"}  # type: ignore
 
