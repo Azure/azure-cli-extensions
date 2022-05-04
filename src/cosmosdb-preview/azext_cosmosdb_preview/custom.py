@@ -713,6 +713,7 @@ def cli_cosmosdb_update(client,
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
 
+
 # pylint: disable=too-many-branches
 def cli_cosmosdb_restorable_database_account_list(client,
                                                   location=None,
@@ -736,8 +737,8 @@ def cli_cosmosdb_restorable_database_account_list(client,
 
 # pylint: disable=too-many-branches
 def cli_cosmosdb_restorable_database_account_get_by_location(client,
-                                                  location=None,
-                                                  instance_id=None):
+                                                             location=None,
+                                                             instance_id=None):
     return client.get_by_location(location, instance_id)
 
 
@@ -753,7 +754,6 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None):
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -955,11 +955,11 @@ def _create_database_account(client,
             backup_policy = ContinuousModeBackupPolicy()
             if continuous_tier is not None:
                 continuous_mode_properties = ContinuousModeProperties(
-                    tier = continuous_tier
+                    tier=continuous_tier
                 )
             else:
                 continuous_mode_properties = ContinuousModeProperties(
-                    tier = 'Continuous30Days'
+                    tier='Continuous30Days'
                 )
             backup_policy.continuous_mode_properties = continuous_mode_properties
         else:
