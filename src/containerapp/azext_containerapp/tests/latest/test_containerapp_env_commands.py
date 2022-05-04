@@ -98,3 +98,9 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('containerapp env dapr-component show -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name), checks=[
             JMESPathCheck('name', dapr_comp_name),
         ])
+
+        self.cmd('containerapp env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name))
+
+        self.cmd('containerapp env dapr-component list -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
