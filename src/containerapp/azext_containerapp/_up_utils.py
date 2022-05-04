@@ -42,10 +42,12 @@ from ._utils import (
     repo_url_to_name,
     get_container_app_if_exists,
     trigger_workflow,
-    _ensure_location_allowed
+    _ensure_location_allowed,
+    _is_resource_provider_registered,
+    _register_resource_provider
 )
 
-from ._constants import MAXIMUM_SECRET_LENGTH
+from ._constants import MAXIMUM_SECRET_LENGTH, LOG_ANALYTICS_RP
 
 from .custom import (
     create_managed_environment,
@@ -192,6 +194,8 @@ class ContainerAppEnvironment(Resource):
 
     def create(self):
         self.location = validate_environment_location(self.cmd, self.location)
+        if not _is_resource_provider_registered(self.cmd, LOG_ANALYTICS_RP):
+            _register_resource_provider(self.cmd, LOG_ANALYTICS_RP)
         env = create_managed_environment(
             self.cmd,
             self.name,
