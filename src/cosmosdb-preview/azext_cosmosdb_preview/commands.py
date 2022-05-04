@@ -154,7 +154,7 @@ def load_command_table(self, _):
         g.command('list', 'list')
 
     with self.command_group('cosmosdb restorable-database-account', cosmosdb_restorable_database_accounts_sdk, client_factory=cf_restorable_database_accounts) as g:
-        g.custom_command('show', 'cli_cosmosdb_restorable_database_account_get_by_location')
+        g.custom_show_command('show', 'cli_cosmosdb_restorable_database_account_get_by_location')
         g.custom_command('list', 'cli_cosmosdb_restorable_database_account_list')
 
     # Retrieve backup info for gremlin
