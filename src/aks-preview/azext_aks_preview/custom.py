@@ -1833,7 +1833,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         disable_cluster_autoscaler + update_cluster_autoscaler
 
     if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
-        reconcilePrompt = "no argument specified to update would you like to reconcile to current settings?"
+        reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
         if not prompt_y_n(reconcilePrompt, default="n"):
             raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                            '"--disable-cluster-autoscaler" or '

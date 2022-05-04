@@ -2345,7 +2345,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         )
 
         if not is_changed and is_default:
-            reconcilePrompt = "no argument specified to update would you like to reconcile to current settings?"
+            reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
             if not prompt_y_n(reconcilePrompt, default="n"):
                 # Note: Uncomment the followings to automatically generate the error message.
                 # option_names = [
