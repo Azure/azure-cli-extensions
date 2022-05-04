@@ -188,3 +188,93 @@ class ContainerappEnvStorageTests(ScenarioTest):
         self.cmd('containerapp env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+
+@live_only()
+class ContainerappIngressTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_ingress_e2e(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', True),
+            JMESPathCheck('targetPort', 80),
+        ])
+
+        self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name, env_name))
+
+        containerapp_def = self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+
+        self.assertEqual("fqdn" in containerapp_def["properties"]["configuration"], False)
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
+
+    def test_containerapp_ingress_traffic_e2e(self, resource_group):
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', True),
+            JMESPathCheck('targetPort', 80),
+        ])
+
+        self.cmd('containerapp ingress traffic set -g {} -n {} --traffic-weight latest=100'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].latestRevision', True),
+            JMESPathCheck('[0].weight', 100),
+        ])
+
+        containerapp_def = self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
+
+        self.assertEqual("fqdn" in containerapp_def["properties"]["configuration"], False)
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
