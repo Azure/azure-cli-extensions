@@ -43,7 +43,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
 
         # Sleep in case env delete takes a while
-        time.sleep(60)
         self.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
