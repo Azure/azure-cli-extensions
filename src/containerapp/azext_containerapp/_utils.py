@@ -260,8 +260,7 @@ def _register_resource_provider(cmd, resource_provider):
     from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
     logger.warning(f"Registering resource provider {resource_provider} ...")
-    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(
-                                                consent_to_authorization=True))
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
 
     client = providers_client_factory(cmd.cli_ctx)
     try:
@@ -278,10 +277,10 @@ def _register_resource_provider(cmd, resource_provider):
 
     except Exception as e:
         msg = ("This operation requires requires registering the resource provider {0}. "
-                "We were unable to perform that registration on your behalf: "
-                "Server responded with error message -- {1} . "
-                "Please check with your admin on permissions, "
-                "or try running registration manually with: az provider register --wait --namespace {0}")
+               "We were unable to perform that registration on your behalf: "
+               "Server responded with error message -- {1} . "
+               "Please check with your admin on permissions, "
+               "or try running registration manually with: az provider register --wait --namespace {0}")
         raise ValidationError(resource_provider, msg.format(e.args)) from e
 
 
