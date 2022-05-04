@@ -1,5 +1,9 @@
 Release History
 ===============
+3.1.7
+---
+* Enhance warning when operate Application Insights for Enterprise tier with `spring-cloud app-insights` command group.
+
 3.1.5
 ---
 * [BREAKING CHANGE] The argument '--build-env' accepts key[=value] instead of json.
