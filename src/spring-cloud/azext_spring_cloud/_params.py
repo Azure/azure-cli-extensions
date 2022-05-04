@@ -522,20 +522,21 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
+                   arg_group='Application Insights',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
+                   arg_group='Application Insights',
                    help="Name of the existing Application Insights in the same Resource Group. "
-                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
-                   validator=validate_app_insights_parameters)
+                        "Or Resource ID of the existing Application Insights in a different Resource Group."),
         c.argument('sampling_rate',
                    type=float,
-                   help="Sampling Rate of application insights. Maximum is 100.",
-                   validator=validate_app_insights_parameters)
+                   arg_group='Application Insights',
+                   help="Sampling Rate of application insights. Maximum is 100.")
         c.argument('disable',
                    arg_type=get_three_state_flag(),
-                   help="Disable Application Insights.",
-                   validator=validate_app_insights_parameters)
+                   arg_group='Application Insights',
+                   help="Disable Application Insights.")
 
     with self.argument_context('spring-cloud build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)

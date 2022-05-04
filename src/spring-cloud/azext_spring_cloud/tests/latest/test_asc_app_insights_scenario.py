@@ -43,9 +43,9 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self.kwargs.update({
             'serviceName': 'cli-unittest',
             'SKU': 'Basic',
-            'location': 'eastus',
-            'rg': 'cli',
-            'shared_ai_name': 'cli_scenario_test_20210906102205'
+            'location': 'westus2',
+            'rg': 'cli-unittest-rg',
+            'shared_ai_name': 'cli-unittest-e-13'
         })
         rg = self.kwargs['rg']
         ai_id, ai_i_key, ai_c_string = self._get_ai_info(rg, self.kwargs['shared_ai_name'])
@@ -86,10 +86,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_create_asc_without_ai_cases(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest',
+            'serviceName': 'cli-unittest-10',
             'SKU': 'Basic',
-            'location': 'eastus',
-            'rg': 'cli',
+            'location': 'westus2',
+            'rg': 'cli-unittest-rg',
         })
         rg = self.kwargs['rg']
 
@@ -154,9 +154,9 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
-            'rg': 'cli',
-            'shared_ai_name': 'cli_scenario_test_20210906102205'
+            'serviceName': 'test-ai-s-20220504',
+            'rg': 'cli-unittest-rg',
+            'shared_ai_name': 'cli-unittest-e-13'
         })
         rg = self.kwargs['rg']
         service_name = self.kwargs['serviceName']
@@ -206,9 +206,9 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def test_asc_app_insights_update(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest10',
-            'rg': 'cli',
-            'shared_ai_name': 'cli_scenario_test_20210906102205'
+            'serviceName': 'test-ai-s-20220504',
+            'rg': 'cli-unittest-rg',
+            'shared_ai_name': 'cli-unittest-e-13'
         })
         rg = self.kwargs['rg']
         service_name = self.kwargs['serviceName']
@@ -264,8 +264,6 @@ class AzureSpringCloudCreateTests(ScenarioTest):
     def test_negative_asc_app_insights_update(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
-            'SKU': 'Basic',
-            'location': 'eastus',
             'rg': 'cli',
             'anyString': 'anyString'
         })
@@ -380,8 +378,8 @@ class AzureSpringCloudCreateTests(ScenarioTest):
     in ./recording folder, need to use the unmasked ai_instrumentation_key and ai_connection_string.
     '''
     def _get_ai_info(self, rg, ai_name):
-        ai_resource_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli' \
-                         '/providers/microsoft.insights/components/cli_scenario_test_20210906102205'
+        ai_resource_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-unittest-rg' \
+                         '/providers/microsoft.insights/components/cli-unittest-e-13'
         ai_instrumentation_key = '00000000-0000-0000-0000-000000000000'
         ai_connection_string = 'InstrumentationKey=00000000-0000-0000-0000-000000000000;' \
                                'IngestionEndpoint=https://xxxxxxxxxxxxxxxxxxxxxxxx/'
