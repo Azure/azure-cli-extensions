@@ -18,22 +18,22 @@ The Swagger version to be used (defaults to "", which will use the default tag f
 Select which client to generate: data-plane or control-plane (defaults to "data-plane")
 
 .EXAMPLE
-./eng/Generate-DataPlane-Client.ps1
+./eng/Generate-Client.ps1
 
 # Regenerate the data-plane client using the latest published Swagger from the official repo
 
 .EXAMPLE
-./eng/Generate-DataPlane-Client.ps1 -SwaggerRepoBranch "feature/quantum/update-clients"
+./eng/Generate-Client.ps1 -SwaggerRepoBranch "feature/quantum/update-clients"
 
 # Regenerate the data-plane client using the Swagger from the official repo, but from a feature branch
 
 .EXAMPLE
-./eng/Generate-DataPlane-Client.ps1 -SwaggerTagVersion "package-2019-11-04-preview"
+./eng/Generate-Client.ps1 -SwaggerTagVersion "package-2019-11-04-preview"
 
 # Regenerate the data-plane client using the an older version of the Swagger
 
 .EXAMPLE
-./eng/Generate-DataPlane-Client.ps1 -ClientToGenerate "control-plane"
+./eng/Generate-Client.ps1 -ClientToGenerate "control-plane"
 
 # Regenerate the control-plane client using the latest published Swagger from the official repo
 
