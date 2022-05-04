@@ -20,21 +20,21 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"0bc34a54-27ba-46d0-9f1f-372a32d22a6a\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"46856bc8-f3bb-4e8e-884e-8818598628b3\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"79db4fee-8498-477b-be08-c4be1ab83834\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"fabaa98a-9bd1-4d41-8d6a-f51c5ac3d212\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"0bc34a54-27ba-46d0-9f1f-372a32d22a6a\\\"\",\r\n
+        \       \"etag\": \"W/\\\"46856bc8-f3bb-4e8e-884e-8818598628b3\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -45,7 +45,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/dffc9143-0eb2-457d-b060-f7ef3fb166b2?api-version=2021-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/862e1573-1952-4e5c-993e-332a5a80a5d1?api-version=2021-05-01
       cache-control:
       - no-cache
       content-length:
@@ -53,7 +53,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:48:58 GMT
+      - Wed, 04 May 2022 00:35:23 GMT
       expires:
       - '-1'
       pragma:
@@ -66,7 +66,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8157fc9e-c42b-46ee-b669-d17b4cd0d9a5
+      - bcc4bb26-c0b0-4383-ac5c-08b6ca7f24cd
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
     status:
@@ -86,9 +86,9 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/dffc9143-0eb2-457d-b060-f7ef3fb166b2?api-version=2021-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/862e1573-1952-4e5c-993e-332a5a80a5d1?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -100,7 +100,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:49:01 GMT
+      - Wed, 04 May 2022 00:35:26 GMT
       expires:
       - '-1'
       pragma:
@@ -117,7 +117,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f0d7a733-ecd9-47bb-acca-0f05c31e6e26
+      - b01b440f-2649-40af-a774-da7e07347100
     status:
       code: 200
       message: OK
@@ -135,21 +135,21 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"741ac936-4c41-4887-bdc9-266213473905\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"79db4fee-8498-477b-be08-c4be1ab83834\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"fabaa98a-9bd1-4d41-8d6a-f51c5ac3d212\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a\\\"\",\r\n
+        \       \"etag\": \"W/\\\"741ac936-4c41-4887-bdc9-266213473905\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -164,9 +164,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:49:01 GMT
+      - Wed, 04 May 2022 00:35:26 GMT
       etag:
-      - W/"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a"
+      - W/"741ac936-4c41-4887-bdc9-266213473905"
       expires:
       - '-1'
       pragma:
@@ -183,7 +183,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0a8d4c2b-ecfa-49e7-91e7-a109f2811ac8
+      - 50d6093b-0154-4dc4-8c6a-89bee28e23b4
     status:
       code: 200
       message: OK
@@ -201,21 +201,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"741ac936-4c41-4887-bdc9-266213473905\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"79db4fee-8498-477b-be08-c4be1ab83834\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"fabaa98a-9bd1-4d41-8d6a-f51c5ac3d212\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
         \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a\\\"\",\r\n
+        \       \"etag\": \"W/\\\"741ac936-4c41-4887-bdc9-266213473905\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -230,9 +230,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:49:02 GMT
+      - Wed, 04 May 2022 00:35:27 GMT
       etag:
-      - W/"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a"
+      - W/"741ac936-4c41-4887-bdc9-266213473905"
       expires:
       - '-1'
       pragma:
@@ -249,7 +249,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 66edfee9-8a97-4836-aec3-ee06ab262ad3
+      - f8e470a7-3de8-44fb-b878-cf8c933099b1
     status:
       code: 200
       message: OK
@@ -267,8 +267,8 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.32.0
+      - python/3.10.4 (Windows-10-10.0.22598-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.36.0
       accept-language:
       - en-US
     method: GET
@@ -288,19 +288,19 @@ interactions:
       dataserviceversion:
       - 3.0;
       date:
-      - Sat, 19 Feb 2022 05:49:04 GMT
+      - Wed, 04 May 2022 00:35:27 GMT
       duration:
-      - '1105444'
+      - '509384'
       expires:
       - '-1'
       ocp-aad-diagnostics-server-name:
-      - HeAFbIus4/0e7EGEYFAT+vg0zNTU0pLKrYLHSQDoejI=
+      - NPrzEtVTdImvxFEOIVjdN8yhtkNLP9X4LIVCrNsmeHc=
       ocp-aad-session-key:
-      - kIxtQnofibIATT3UxrP97mrRI1sbj-BP_iLu3Hp5aiVFxiLFLwTFui0XafgdkAtu6h3AZiNdU-cesRnoENlsUECK98oI1QDPsPKcJyc1vU79J82qj0Q4aqLECxeaD1Jz.F-sYq7K-oKtE249wW4JtIY8xI_O4pf4EmV1b1GTYi8E
+      - ZTc8w05w5FUourQnfSXLs2sB62I6Qxcea6bGScOsLsNrfi9MWTwPjySkWc0OuxX_LGS7mES9l4UNENZtH7VDi35kKywySzQkrtX9gjuFiuE-0WXdiTK4Y0s1KlH7pp8B.btKE1tSgay2Hco71fmpZ9wcp0PNVWU93tPMYgDTUoyk
       pragma:
       - no-cache
       request-id:
-      - 9188a439-ac8a-47b1-b243-e7045d0f9949
+      - 9dc9812e-97d5-483b-a4e7-e070719ff734
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-aspnet-version:
@@ -333,8 +333,8 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.32.0
+      - python/3.10.4 (Windows-10-10.0.22598-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.36.0
       accept-language:
       - en-US
     method: POST
@@ -361,19 +361,19 @@ interactions:
       dataserviceversion:
       - 3.0;
       date:
-      - Sat, 19 Feb 2022 05:49:05 GMT
+      - Wed, 04 May 2022 00:35:27 GMT
       duration:
-      - '750547'
+      - '821939'
       expires:
       - '-1'
       ocp-aad-diagnostics-server-name:
-      - eXea6VZBPAzDA8oBiQ9KQsUVPKOJddcvR5hYkqBnv0g=
+      - OW5Ls4wH6VgO4QIgU2wPOu2xo67dyJD/1zcg8lPFwxk=
       ocp-aad-session-key:
-      - rL-0sFLIyY4iDKPjaUiURbb5ROM5Agx7tUyUR6xfwDbCpyQcd5JyAfbW--eb_uOOjRxmJLzOF-CJLfvpkrCX2k4O5pA8K-tT1Tah4QjeRDs8yEh4pKARcnlKm7aLysjw.emSJRM1uc3wPxB1qL08ukwc_0PTk7e2bTZ5kx8jctIU
+      - oVxFOen3VDHwX5wOZ6jopFZa4SMIjYJHkJ6Ir6fVDEQIWG7VP9ptEzviUkTZ5KebS05OyzrjCfiQ7Ka-SqkTVGvha3Atp394uAfuwUGmtqK5J-GIoGB7qIMHNs4LqeDq.09X3zVywjOf7QtPztxO_G3Dvs284XC_4gtz1NuU9ozY
       pragma:
       - no-cache
       request-id:
-      - 41f5fca0-8a76-49fe-bef7-4ecb0da3eb79
+      - 1bf10e5b-09f2-4388-b18d-1faeee977aee
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-aspnet-version:
@@ -406,15 +406,15 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.32.0
+      - python/3.10.4 (Windows-10-10.0.22598-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.36.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2020-04-01-preview
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2022-02-19T05:49:06.7436305Z","updatedOn":"2022-02-19T05:49:07.3061353Z","createdBy":null,"updatedBy":"27f82b5d-ce19-4257-a337-dabea1926ae2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2022-05-04T00:35:29.3070433Z","updatedOn":"2022-05-04T00:35:29.6976117Z","createdBy":null,"updatedBy":"8015c9f4-0885-4714-9a00-fc433f509d38","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
     headers:
       cache-control:
       - no-cache
@@ -423,7 +423,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:49:08 GMT
+      - Wed, 04 May 2022 00:35:31 GMT
       expires:
       - '-1'
       pragma:
@@ -453,13 +453,13 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004?api-version=2021-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \ \"etag\": \"W/\\\"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"741ac936-4c41-4887-bdc9-266213473905\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Enabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -472,9 +472,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 19 Feb 2022 05:49:09 GMT
+      - Wed, 04 May 2022 00:35:31 GMT
       etag:
-      - W/"c5e69b3a-cbe7-43fe-97eb-f24c3fe1a44a"
+      - W/"741ac936-4c41-4887-bdc9-266213473905"
       expires:
       - '-1'
       pragma:
@@ -491,7 +491,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 15daa94f-a410-4e6b-aae5-18308231e315
+      - 0f54b87b-e275-4e5b-8a18-5172afcc8036
     status:
       code: 200
       message: OK
@@ -516,15 +516,15 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -e --external-seed-nodes
       User-Agent:
-      - AZURECLI/2.32.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.36.0 azsdk-python-mgmt-cosmosdb/7.0.0b4 Python/3.10.4 (Windows-10-10.0.22598-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2021-11-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-02-15-preview
   response:
     body:
       string: '{"code":"BadRequest","message":"\r\nCode: \r\nDetail message: The certificates
         submitted in externalGossipCertificates cannot be parsed: Cannot find the
         requested object.\r\n Certificate: ./test.pem\r\nDetail code: BadRequest\r\nTarget:
-        \r\nActivityId: a86e367c-9147-11ec-86ca-9c7bef4baa38, Microsoft.Azure.Documents.Common/2.14.0"}'
+        \r\nActivityId: 1a367413-cb42-11ec-9fc5-8045dd1923fe, Microsoft.Azure.Documents.Common/2.14.0"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -533,7 +533,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 19 Feb 2022 05:49:13 GMT
+      - Wed, 04 May 2022 00:35:34 GMT
       pragma:
       - no-cache
       server:
