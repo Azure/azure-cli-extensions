@@ -2342,6 +2342,16 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
     if len(azure_file_account_name) < 3:
         raise ValidationError("Account name must be longer than 2 characters.")
 
+    r = None
+
+    try:
+        r = StorageClient.show(cmd, resource_group_name, name, storage_name)
+    except:
+        pass
+
+    if r:
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = azure_file_account_key
     storage_def["accountName"] = azure_file_account_name
