@@ -15,11 +15,15 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @live_only()
 class ContainerappEnvScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="centraluseuap")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -46,10 +50,17 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="centraluseuap")
+    @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_dapr_components(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         dapr_comp_name = self.create_random_name(prefix='dapr-component', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
         import tempfile
 
         file_ref, dapr_file = tempfile.mkstemp(suffix=".yml")
@@ -75,8 +86,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         
         with open(dapr_file, 'w') as outfile:
             yaml.dump(daprloaded, outfile, default_flow_style=False)
-
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
