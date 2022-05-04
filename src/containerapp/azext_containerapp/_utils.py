@@ -820,8 +820,9 @@ def _update_traffic_weights(containerapp_def, list_weights):
 
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
-                "revisionName": key_val[0],
-                "weight": int(key_val[1])
+                "revisionName": key_val[0] if key_val[0].lower() != "latest" else None,
+                "weight": int(key_val[1]),
+                "latestRevision": key_val[0].lower() == "latest"
             })
 
 
