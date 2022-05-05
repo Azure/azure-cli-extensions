@@ -248,7 +248,6 @@ def build_list_cluster_user_credentials_request(
     *,
     server_fqdn: Optional[str] = None,
     format: Optional[Union[str, "_models.Format"]] = None,
-    namespace_name: str = None,
     **kwargs: Any
 ) -> HttpRequest:
     api_version = "2022-03-02-preview"
@@ -260,10 +259,6 @@ def build_list_cluster_user_credentials_request(
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "resourceName": _SERIALIZER.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
     }
-
-    if namespace_name is not None:
-        path_format_arguments["namespaceName"] = _SERIALIZER.url("namespace_name", namespace_name, 'str')
-        api_version="2021-12-01-preview"
 
     url = _format_url_section(url, **path_format_arguments)
 
@@ -1223,7 +1218,6 @@ class ManagedClustersOperations(object):
         resource_name: str,
         server_fqdn: Optional[str] = None,
         format: Optional[Union[str, "_models.Format"]] = None,
-        namespace_name: str = None,
         **kwargs: Any
     ) -> "_models.CredentialResults":
         """Lists the user credentials of a managed cluster.
@@ -1250,13 +1244,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        
-        if namespace_name is None:
-            url = self.list_cluster_user_credentials.metadata['url']
-        else:
-            url = self.list_cluster_user_credentials.metadata['namespace_scoped_url']
-            
+        url = self.list_cluster_user_credentials.metadata['url']
 
         request = build_list_cluster_user_credentials_request(
             subscription_id=self._config.subscription_id,
@@ -1264,7 +1252,6 @@ class ManagedClustersOperations(object):
             resource_name=resource_name,
             server_fqdn=server_fqdn,
             format=format,
-            namespace_name=namespace_name,
             template_url=url,
         )
         request = _convert_request(request)

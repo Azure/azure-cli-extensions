@@ -962,16 +962,24 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
             raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         if namespace_name is not None:
-            raise InvalidArgumentValueError("--namespace is not valid for admin credentials") # Do we want this?
+            raise InvalidArgumentValueError("--namespace is not valid for admin credentials") 
         credentialResults = client.list_cluster_admin_credentials(
             resource_group_name, name, serverType)
     else:
         if user.lower() == 'clusteruser':
-            credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType, credential_format, namespace_name)
+            if namespace_name is not None:
+                from azext_aks_preview.vendored_sdks.namespace_client import NamespaceClient
+                from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+                client = get_mgmt_service_client(cmd.cli_ctx, NamespaceClient)
+                credentialResults = client.list_user_credential(resource_group_name, "Microsoft.ContainerService", "managedClusters", name, namespace_name)
+                
+            else:
+                credentialResults = client.list_cluster_user_credentials(
+                resource_group_name, name, serverType, credential_format)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name, serverType, namespace_name=namespace_name)
+                resource_group_name, name, serverType)
         else:
             raise CLIError("The user is invalid.")
     if not credentialResults:
