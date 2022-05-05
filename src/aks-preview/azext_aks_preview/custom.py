@@ -798,7 +798,7 @@ def aks_create(cmd,
                enable_azure_keyvault_kms=False,
                azure_keyvault_kms_key_id=None,
                yes=False,
-               enable_namespace_resources=False): # Check what this name should be.
+               enable_namespace_resources=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 

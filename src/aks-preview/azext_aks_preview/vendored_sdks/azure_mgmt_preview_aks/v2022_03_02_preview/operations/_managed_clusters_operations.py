@@ -1244,7 +1244,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        url = self.list_cluster_user_credentials.metadata['url']
+
 
         request = build_list_cluster_user_credentials_request(
             subscription_id=self._config.subscription_id,
@@ -1252,7 +1252,7 @@ class ManagedClustersOperations(object):
             resource_name=resource_name,
             server_fqdn=server_fqdn,
             format=format,
-            template_url=url,
+            template_url=self.list_cluster_user_credentials.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -1271,7 +1271,7 @@ class ManagedClustersOperations(object):
 
         return deserialized
 
-    list_cluster_user_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential', "namespace_scoped_url": '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/providers/Microsoft.KubernetesConfiguration/namespaces/{namespaceName}/listUserCredential' }  # type: ignore
+    list_cluster_user_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential'}  # type: ignore
 
 
     @distributed_trace
