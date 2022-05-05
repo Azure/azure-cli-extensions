@@ -96,7 +96,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Prompt if private link is getting enabled
-    if enable_private_link == "true":
+    if enable_private_link is True:
         if os.getenv('SKIP_PROMPT') != "true":
             if not prompt_y_n("The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"):
                 return
@@ -104,7 +104,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             logger.warning("Private Link is being enabled, and Custom Location is not supported by Private Link at this time, so the '--custom-locations-oid' parameter will be ignored.")
 
     # Set preview client if private link properties are provided.
-    if enable_private_link:
+    if enable_private_link is not None:
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
@@ -200,7 +200,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
                 # Disabling cluster-connect if private link is getting enabled
-                if enable_private_link == "true":
+                if enable_private_link is True:
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
                 return cc_response
             else:
@@ -601,8 +601,8 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link:
-        private_link_state = "Enabled" if enable_private_link.lower() == "true" else "Disabled"
+    if enable_private_link is not None:
+        private_link_state = "Enabled" if enable_private_link is True else "Disabled"
         cc = ConnectedClusterPreview(
             location=location,
             identity=identity,
@@ -620,8 +620,8 @@ def generate_patch_payload(tags, enable_private_link, private_link_scope_resourc
     cc = ConnectedClusterPatch(
         tags=tags
     )
-    if enable_private_link:
-        private_link_state = "Enabled" if enable_private_link.lower() == "true" else "Disabled"
+    if enable_private_link is not None:
+        private_link_state = "Enabled" if enable_private_link is True else "Disabled"
         cc = ConnectedClusterPatchPreview(
             tags=tags,
             private_link_scope_resource_id=private_link_scope_resource_id,
@@ -862,7 +862,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Prompt if private link is getting enabled
-    if enable_private_link == "true":
+    if enable_private_link is True:
         if os.getenv('SKIP_PROMPT') != "true":
             if not prompt_y_n("The Cluster Connect and Custom Location features are not supported by Private Link at this time. Enabling Private Link will disable these features. Are you sure you want to continue?"):
                 return
@@ -870,14 +870,14 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Set preview client if private link properties are provided.
     preview_sdk = False
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-    if enable_private_link or connected_cluster.private_link_state.lower() == "enabled":
+    if enable_private_link is not None or connected_cluster.private_link_state.lower() == "enabled":
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
         preview_sdk = True
 
     # Patching the connected cluster ARM resource
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait, preview_sdk)
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and not enable_private_link:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and enable_private_link is None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -998,7 +998,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    if enable_private_link == "true":
+    if enable_private_link is True:
         # Disable cluster-connect
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
         # Disable custom location

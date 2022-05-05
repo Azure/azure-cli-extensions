@@ -307,11 +307,11 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
     # Add custom-locations related params
-    if enable_custom_locations and (enable_private_link is None or enable_private_link == "false"):
+    if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
     # Disable cluster connect if private link is enabled
-    if enable_private_link == "true":
+    if enable_private_link is True:
         cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     # To set some other helm parameters through file
     if values_file_provided:

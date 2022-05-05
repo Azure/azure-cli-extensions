@@ -24,7 +24,7 @@ def example_name_or_id_validator(cmd, namespace):
 
 
 def validate_private_link_properties(namespace):
-    if (not namespace.enable_private_link or namespace.enable_private_link == "false") and namespace.private_link_scope_resource_id:
+    if not namespace.enable_private_link and namespace.private_link_scope_resource_id:
         raise ArgumentUsageError("Conflicting private link parameters received. The parameter '--private-link-scope-resource-id' should not be set if '--enable-private-link' is passed as null or False.")
-    if namespace.enable_private_link == "true" and not namespace.private_link_scope_resource_id:
+    if namespace.enable_private_link is True and not namespace.private_link_scope_resource_id:
         raise ArgumentUsageError("The parameter '--private-link-scope-resource-id' was not provided. It is mandatory to pass this parameter for enabling private link on the connected cluster resource.")
