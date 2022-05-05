@@ -70,16 +70,11 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         metadata:
         - name: accountName
           secretRef: storage-account-name
-        - name: accountKey
-          secretRef: storage-account-key
-        - name: containerName
-          value: mycontainer
         secrets:
         - name: storage-account-name
           value: storage-account-name
-        - name: storage-account-key
-          value: mycontainer
         """
+
         daprloaded = yaml.safe_load(dapr_yaml)
         
         with open(dapr_file, 'w') as outfile:
@@ -104,6 +99,10 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env dapr-component show -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name), checks=[
             JMESPathCheck('name', dapr_comp_name),
+            JMESPathCheck('properties.version', 'v1'),
+            JMESPathCheck('properties.secrets[0].name', 'storage-account-name'),
+            JMESPathCheck('properties.metadata[0].name', 'accountName'),
+            JMESPathCheck('properties.metadata[0].secretRef', 'storage-account-name'),
         ])
 
         self.cmd('containerapp env dapr-component remove -n {} -g {} --dapr-component-name {}'.format(env_name, resource_group, dapr_comp_name))
