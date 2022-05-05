@@ -802,7 +802,7 @@ def find_existing_acr(cmd, app: "ContainerApp"):
 
 
 def validate_environment_location(cmd, location):
-    MAX_ENV_PER_LOCATION = 2
+    from ._constants import MAX_ENV_PER_LOCATION
     env_list = list_managed_environments(cmd)
 
     locations = [l["location"] for l in env_list]
