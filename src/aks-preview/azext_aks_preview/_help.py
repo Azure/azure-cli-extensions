@@ -517,7 +517,8 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
+    short-summary: Update the properties of a managed Kubernetes cluster.
+    long-summary: Update the properties of a managed Kubernetes cluster. Can be used for example to enable/disable cluster-autoscaler.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -707,6 +708,8 @@ helps['aks update'] = """
           type: string
           short-summary: Identifier of Azure Key Vault key.
     examples:
+      - name: Reconcile the cluster back to its current state.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -1132,7 +1135,8 @@ helps['aks nodepool upgrade'] = """
 
 helps['aks nodepool update'] = """
     type: command
-    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count
+    short-summary: Update a node pool properties.
+    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -1165,6 +1169,8 @@ helps['aks nodepool update'] = """
           type: string
           short-summary: The node taints for the node pool.
     examples:
+      - name: Reconcile the nodepool back to its current state.
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster

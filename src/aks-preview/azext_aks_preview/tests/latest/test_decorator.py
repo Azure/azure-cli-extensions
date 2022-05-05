@@ -3265,7 +3265,17 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         # fail on no updated parameter provided
-        with self.assertRaises(RequiredArgumentMissingError):
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ),self.assertRaises(RequiredArgumentMissingError):
+            dec_1.check_raw_parameters()
+
+        # unless user says they want to reconcile
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=True,
+        ):
             dec_1.check_raw_parameters()
 
         # custom value

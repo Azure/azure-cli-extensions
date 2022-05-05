@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.66
+++++++
+* Prompt when no arguments are given to update and nodepool update to see if the customer wants to try goal seek to current settings.
+
 0.5.65
 ++++++
 * Add `--ignore-pod-disruption-budget` flag for `az aks nodepool delete` for ignoring PodDisruptionBudget.
