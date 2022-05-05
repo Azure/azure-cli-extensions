@@ -14,15 +14,15 @@ from azure.cli.core.util import sdk_no_wait
 
 
 def dataprotection_backup_vault_show(client,
-                                     vault_name,
-                                     resource_group_name):
-    return client.get(vault_name=vault_name,
-                      resource_group_name=resource_group_name)
+                                     resource_group_name,
+                                     vault_name):
+    return client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name)
 
 
 def dataprotection_backup_vault_create(client,
-                                       vault_name,
                                        resource_group_name,
+                                       vault_name,
                                        storage_settings,
                                        e_tag=None,
                                        location=None,
@@ -39,14 +39,14 @@ def dataprotection_backup_vault_create(client,
     parameters['properties']['storage_settings'] = storage_settings
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        parameters=parameters)
 
 
 def dataprotection_backup_vault_update(client,
-                                       vault_name,
                                        resource_group_name,
+                                       vault_name,
                                        tags=None,
                                        type_=None,
                                        no_wait=False):
@@ -56,37 +56,37 @@ def dataprotection_backup_vault_update(client,
     parameters['identity']['type'] = type_
     return sdk_no_wait(no_wait,
                        client.begin_update,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        parameters=parameters)
 
 
 def dataprotection_backup_vault_delete(client,
-                                       vault_name,
-                                       resource_group_name):
-    return client.delete(vault_name=vault_name,
-                         resource_group_name=resource_group_name)
+                                       resource_group_name,
+                                       vault_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         vault_name=vault_name)
 
 
 def dataprotection_backup_policy_list(client,
-                                      vault_name,
-                                      resource_group_name):
-    return client.list(vault_name=vault_name,
-                       resource_group_name=resource_group_name)
+                                      resource_group_name,
+                                      vault_name):
+    return client.list(resource_group_name=resource_group_name,
+                       vault_name=vault_name)
 
 
 def dataprotection_backup_policy_show(client,
-                                      vault_name,
                                       resource_group_name,
+                                      vault_name,
                                       backup_policy_name):
-    return client.get(vault_name=vault_name,
-                      resource_group_name=resource_group_name,
+    return client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name,
                       backup_policy_name=backup_policy_name)
 
 
 def dataprotection_backup_policy_create(client,
-                                        vault_name,
                                         resource_group_name,
+                                        vault_name,
                                         backup_policy_name,
                                         backup_policy=None):
     all_properties = []
@@ -97,45 +97,46 @@ def dataprotection_backup_policy_create(client,
     properties = all_properties[0] if len(all_properties) == 1 else None
     parameters = {}
     parameters['properties'] = properties
-    return client.create_or_update(vault_name=vault_name,
-                                   resource_group_name=resource_group_name,
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   vault_name=vault_name,
                                    backup_policy_name=backup_policy_name,
                                    parameters=parameters)
 
 
 def dataprotection_backup_policy_delete(client,
-                                        vault_name,
                                         resource_group_name,
+                                        vault_name,
                                         backup_policy_name):
-    return client.delete(vault_name=vault_name,
-                         resource_group_name=resource_group_name,
+    return client.delete(resource_group_name=resource_group_name,
+                         vault_name=vault_name,
                          backup_policy_name=backup_policy_name)
 
 
 def dataprotection_backup_instance_list(client,
-                                        vault_name,
-                                        resource_group_name):
-    return client.list(vault_name=vault_name,
-                       resource_group_name=resource_group_name)
+                                        resource_group_name,
+                                        vault_name):
+    return client.list(resource_group_name=resource_group_name,
+                       vault_name=vault_name)
 
 
 def dataprotection_backup_instance_show(client,
-                                        vault_name,
                                         resource_group_name,
+                                        vault_name,
                                         backup_instance_name):
-    return client.get(vault_name=vault_name,
-                      resource_group_name=resource_group_name,
+    return client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name,
                       backup_instance_name=backup_instance_name)
 
 
 def dataprotection_backup_instance_create(client,
-                                          vault_name,
                                           resource_group_name,
+                                          vault_name,
                                           backup_instance_name,
                                           friendly_name=None,
                                           data_source_info=None,
                                           data_source_set_info=None,
                                           secret_store_based_auth_credentials=None,
+                                          validation_type=None,
                                           object_type=None,
                                           policy_id=None,
                                           policy_parameters=None,
@@ -153,33 +154,34 @@ def dataprotection_backup_instance_create(client,
     parameters['properties']['data_source_info'] = data_source_info
     parameters['properties']['data_source_set_info'] = data_source_set_info
     parameters['properties']['datasource_auth_credentials'] = datasource_auth_credentials
+    parameters['properties']['validation_type'] = validation_type
     parameters['properties']['object_type'] = object_type
     parameters['properties']['policy_info'] = {}
     parameters['properties']['policy_info']['policy_id'] = policy_id
     parameters['properties']['policy_info']['policy_parameters'] = policy_parameters
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
 
 
 def dataprotection_backup_instance_delete(client,
-                                          vault_name,
                                           resource_group_name,
+                                          vault_name,
                                           backup_instance_name,
                                           no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name)
 
 
 def dataprotection_backup_instance_adhoc_backup(client,
-                                                vault_name,
                                                 resource_group_name,
+                                                vault_name,
                                                 backup_instance_name,
                                                 rule_name,
                                                 retention_tag_override=None,
@@ -191,35 +193,72 @@ def dataprotection_backup_instance_adhoc_backup(client,
     parameters['backup_rule_options']['trigger_option']['retention_tag_override'] = retention_tag_override
     return sdk_no_wait(no_wait,
                        client.begin_adhoc_backup,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
 
 
 def dataprotection_backup_instance_restore_trigger(client,
-                                                   vault_name,
                                                    resource_group_name,
+                                                   vault_name,
                                                    backup_instance_name,
                                                    parameters,
                                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_trigger_restore,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
 
 
+def dataprotection_backup_instance_resume_protection(client,
+                                                     resource_group_name,
+                                                     vault_name,
+                                                     backup_instance_name,
+                                                     no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_resume_protection,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       backup_instance_name=backup_instance_name)
+
+
+def dataprotection_backup_instance_stop_protection(client,
+                                                   resource_group_name,
+                                                   vault_name,
+                                                   backup_instance_name,
+                                                   no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_stop_protection,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       backup_instance_name=backup_instance_name)
+
+
+def dataprotection_backup_instance_suspend_backup(client,
+                                                  resource_group_name,
+                                                  vault_name,
+                                                  backup_instance_name,
+                                                  no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_suspend_backups,
+                       resource_group_name=resource_group_name,
+                       vault_name=vault_name,
+                       backup_instance_name=backup_instance_name)
+
+
 def dataprotection_backup_instance_validate_for_backup(client,
-                                                       vault_name,
                                                        resource_group_name,
+                                                       vault_name,
                                                        data_source_info,
                                                        object_type,
                                                        policy_id,
                                                        friendly_name=None,
                                                        data_source_set_info=None,
                                                        secret_store_based_auth_credentials=None,
+                                                       validation_type=None,
                                                        policy_parameters=None,
                                                        no_wait=False):
     all_datasource_auth_credentials = []
@@ -235,20 +274,21 @@ def dataprotection_backup_instance_validate_for_backup(client,
     parameters['backup_instance']['data_source_info'] = data_source_info
     parameters['backup_instance']['data_source_set_info'] = data_source_set_info
     parameters['backup_instance']['datasource_auth_credentials'] = datasource_auth_credentials
+    parameters['backup_instance']['validation_type'] = validation_type
     parameters['backup_instance']['object_type'] = object_type
     parameters['backup_instance']['policy_info'] = {}
     parameters['backup_instance']['policy_info']['policy_id'] = policy_id
     parameters['backup_instance']['policy_info']['policy_parameters'] = policy_parameters
     return sdk_no_wait(no_wait,
                        client.begin_validate_for_backup,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        parameters=parameters)
 
 
 def dataprotection_backup_instance_validate_for_restore(client,
-                                                        vault_name,
                                                         resource_group_name,
+                                                        vault_name,
                                                         backup_instance_name,
                                                         restore_request_object,
                                                         no_wait=False):
@@ -256,32 +296,32 @@ def dataprotection_backup_instance_validate_for_restore(client,
     parameters['restore_request_object'] = restore_request_object
     return sdk_no_wait(no_wait,
                        client.begin_validate_for_restore,
-                       vault_name=vault_name,
                        resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
 
 
 def dataprotection_recovery_point_list(client,
-                                       vault_name,
                                        resource_group_name,
+                                       vault_name,
                                        backup_instance_name,
                                        filter_=None,
                                        skip_token=None):
-    return client.list(vault_name=vault_name,
-                       resource_group_name=resource_group_name,
+    return client.list(resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        filter=filter_,
                        skip_token=skip_token)
 
 
 def dataprotection_recovery_point_show(client,
-                                       vault_name,
                                        resource_group_name,
+                                       vault_name,
                                        backup_instance_name,
                                        recovery_point_id):
-    return client.get(vault_name=vault_name,
-                      resource_group_name=resource_group_name,
+    return client.get(resource_group_name=resource_group_name,
+                      vault_name=vault_name,
                       backup_instance_name=backup_instance_name,
                       recovery_point_id=recovery_point_id)
 
@@ -303,8 +343,8 @@ def dataprotection_job_show(client,
 
 
 def dataprotection_restorable_time_range_find(client,
-                                              vault_name,
                                               resource_group_name,
+                                              vault_name,
                                               backup_instance_name,
                                               source_data_store_type,
                                               start_time=None,
@@ -313,7 +353,7 @@ def dataprotection_restorable_time_range_find(client,
     parameters['source_data_store_type'] = source_data_store_type
     parameters['start_time'] = start_time
     parameters['end_time'] = end_time
-    return client.find(vault_name=vault_name,
-                       resource_group_name=resource_group_name,
+    return client.find(resource_group_name=resource_group_name,
+                       vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)

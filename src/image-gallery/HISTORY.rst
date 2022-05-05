@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.3
++++++++++++++++
+* Update SDK
+* Update `az sig create --eula` description
+
 0.1.2
 +++++++++++++++
 * Add new command `az sig create` to support create a gallery with community sharing info
