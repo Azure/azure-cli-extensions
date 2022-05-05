@@ -231,10 +231,3 @@ AzureCredentials = {
     "tenantId": None,  # str
     "subscriptionId": None  # str
 }
-
-AzureFileProperties = {
-    "accountName": None,
-    "accountKey": None,
-    "accessMode": None,
-    "shareName": None
-}

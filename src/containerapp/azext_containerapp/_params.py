@@ -147,14 +147,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
-    with self.argument_context('containerapp env storage') as c:
-        c.argument('name', id_part=None)
-        c.argument('storage_name', options_list=["--storage-name", "-s"], help="Name of the storage.")
-        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
-        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "-k"], help="Key of the AzureFile storage account.")
-        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "-f"], help="Name of the share on the AzureFile storage.")
-        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "-a"], help="Name of the AzureFile storage account.")
-
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
