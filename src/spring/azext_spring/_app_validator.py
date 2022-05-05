@@ -9,19 +9,19 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
 from azure.core.exceptions import (ResourceNotFoundError)
 from ._resource_quantity import (validate_cpu as validate_cpu_value, validate_memory as validate_memory_value)
-from ._client_factory import cf_spring_cloud_20220101preview
+from ._client_factory import cf_spring_20220101preview
 
 
 logger = get_logger(__name__)
 
 
 # pylint: disable=line-too-long,raise-missing-from
-NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
-NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
+NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create"
+NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment."
 
 
 def fulfill_deployment_param(cmd, namespace):
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    client = cf_spring_20220101preview(cmd.cli_ctx)
     name = _get_app_name_from_namespace(namespace)
     if not name or not namespace.service or not namespace.resource_group:
         return
@@ -32,7 +32,7 @@ def fulfill_deployment_param(cmd, namespace):
 
 
 def fulfill_deployment_param_or_warning(cmd, namespace):
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    client = cf_spring_20220101preview(cmd.cli_ctx)
     name = _get_app_name_from_namespace(namespace)
     if not name or not namespace.service or not namespace.resource_group:
         return
@@ -48,7 +48,7 @@ def active_deployment_exist(cmd, namespace):
     name = _get_app_name_from_namespace(namespace)
     if not name or not namespace.service or not namespace.resource_group:
         return
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    client = cf_spring_20220101preview(cmd.cli_ctx)
     deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, name)
     if not deployment:
         raise InvalidArgumentValueError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
@@ -58,7 +58,7 @@ def active_deployment_exist_or_warning(cmd, namespace):
     name = _get_app_name_from_namespace(namespace)
     if not name or not namespace.service or not namespace.resource_group:
         return
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    client = cf_spring_20220101preview(cmd.cli_ctx)
     deployment = _get_active_deployment(client, namespace.resource_group, namespace.service, name)
     if not deployment:
         logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
@@ -70,7 +70,7 @@ def ensure_not_active_deployment(cmd, namespace):
     """
     if not namespace.deployment or not namespace.resource_group or not namespace.service or not namespace.name:
         return
-    client = cf_spring_cloud_20220101preview(cmd.cli_ctx)
+    client = cf_spring_20220101preview(cmd.cli_ctx)
     deployment = _ensure_deployment_exist(client, namespace.resource_group, namespace.service, namespace.name, namespace.deployment)
     if deployment.properties.active:
         raise InvalidArgumentValueError('Deployment {} is already the production deployment'.format(deployment.name))

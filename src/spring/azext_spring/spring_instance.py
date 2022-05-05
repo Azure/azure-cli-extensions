@@ -104,7 +104,7 @@ def _get_factory(cmd, client, resource_group, name, location=None, sku=None):
     return DefaultSpringCloud(cmd, client, resource_group, name, location)
 
 
-def spring_cloud_create(cmd, client, resource_group, name,
+def spring_create(cmd, client, resource_group, name,
                         location=None,
                         vnet=None,
                         service_runtime_subnet=None,
@@ -157,8 +157,8 @@ def spring_cloud_create(cmd, client, resource_group, name,
         'no_wait': no_wait
     }
 
-    spring_cloud_factory = _get_factory(cmd, client, resource_group, name, location=location, sku=sku)
-    return spring_cloud_factory.create(**kwargs)
+    spring_factory = _get_factory(cmd, client, resource_group, name, location=location, sku=sku)
+    return spring_factory.create(**kwargs)
 
 
 def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key, app_insights,

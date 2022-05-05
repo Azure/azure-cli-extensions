@@ -1,21 +1,21 @@
-Microsoft Azure CLI 'spring-cloud' Extension
+Microsoft Azure CLI 'spring' Extension
 ==========================================
 
-This package is for the 'spring-cloud' extension.
-i.e. 'az spring-cloud'
+This package is for the 'spring' extension.
+i.e. 'az spring'
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name spring-cloud
+az extension add --name spring
 ```
 
 ### Sample Commands ###
 Create a service and not wait
 ```
-az spring-cloud create -n <service name> --no-wait
+az spring create -n <service name> --no-wait
 ```
 Create a green deployment with default configuration
 ```
-az spring-cloud app deployment  create --app <app name> -n <deployment name> --jar-path <jar path>
+az spring app deployment  create --app <app name> -n <deployment name> --jar-path <jar path>
 ```

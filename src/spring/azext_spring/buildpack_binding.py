@@ -90,7 +90,7 @@ def _get_buildpack_binding_properties(cmd, resource_group, service_name, locatio
         _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
 
     if not connection_string:
-        raise InvalidArgumentValueError('Error while trying to get the ConnectionString of Application Insights for the Azure Spring Cloud. '
+        raise InvalidArgumentValueError('Error while trying to get the ConnectionString of Application Insights for the Azure Spring Apps. '
                                         'Please use the Azure Portal to create and configure the Application Insights, if needed.')
 
     launch_properties = models.BuildpackBindingLaunchProperties(properties={
@@ -109,7 +109,7 @@ def _create_app_insights_and_get_connection_string(cmd, resource_group, service_
             return created_app_insights.connection_string
     except Exception:  # pylint: disable=broad-except
         logger.warning(
-            'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
+            'Error while trying to create and configure an Application Insights for the Azure Spring Apps. '
             'Please use the Azure Portal to create and configure the Application Insights, if needed.')
     return None
 
@@ -148,7 +148,7 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
 
 
 def _try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
+    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
                            'Please use the Azure Portal to manually create and configure the Application Insights, ' \
                            'if needed.'
 
@@ -173,7 +173,7 @@ def _try_create_application_insights(cmd, resource_group, name, location):
 
     portal_url = get_portal_uri(cmd.cli_ctx)
     # We make this success message as a warning to no interfere with regular JSON output in stdout
-    logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
+    logger.warning('Application Insights \"%s\" was created for this Azure Spring Apps. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
 

@@ -8,7 +8,7 @@
 from azure.mgmt.core.tools import parse_resource_id
 
 
-def transform_spring_cloud_table_output(result):
+def transform_spring_table_output(result):
     is_list = isinstance(result, list)
 
     if not is_list:
@@ -63,7 +63,7 @@ def _parse_item_resource_id(addon, key, secondary):
     return resource_dict.get('resource_name', '')
 
 
-def transform_spring_cloud_deployment_output(result):
+def transform_spring_deployment_output(result):
     is_list = isinstance(result, list)
 
     if not is_list:
@@ -76,7 +76,7 @@ def transform_spring_cloud_deployment_output(result):
     return result if is_list else result[0]
 
 
-def transform_spring_cloud_certificate_output(result):
+def transform_spring_certificate_output(result):
     is_list = isinstance(result, list)
 
     if not is_list:
@@ -94,7 +94,7 @@ def transform_spring_cloud_certificate_output(result):
     return result if is_list else result[0]
 
 
-def transform_spring_cloud_custom_domain_output(result):
+def transform_spring_custom_domain_output(result):
     is_list = isinstance(result, list)
 
     if not is_list:

@@ -6,19 +6,19 @@
 from azure.cli.core import AzCommandsLoader
 
 from azure.cli.core.commands import CliCommandType
-from azext_spring_cloud._help import helps  # pylint: disable=unused-import
-from azext_spring_cloud._client_factory import cf_spring_cloud
-from azext_spring_cloud.commands import load_command_table
-from azext_spring_cloud._params import load_arguments
+from azext_spring._help import helps  # pylint: disable=unused-import
+from azext_spring._client_factory import cf_spring
+from azext_spring.commands import load_command_table
+from azext_spring._params import load_arguments
 
 
-class spring_cloudCommandsLoader(AzCommandsLoader):
+class springCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        spring_cloud_custom = CliCommandType(
-            operations_tmpl='azext_spring_cloud.custom#{}',
-            client_factory=cf_spring_cloud)
-        super(spring_cloudCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=spring_cloud_custom)
+        spring_custom = CliCommandType(
+            operations_tmpl='azext_spring.custom#{}',
+            client_factory=cf_spring)
+        super(springCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=spring_custom)
 
     def load_command_table(self, args):
         load_command_table(self, args)
@@ -28,4 +28,4 @@ class spring_cloudCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = spring_cloudCommandsLoader
+COMMAND_LOADER_CLS = springCommandsLoader

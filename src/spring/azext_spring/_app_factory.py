@@ -127,7 +127,7 @@ class BasicTierApp(DefaultApp):
 class EnterpriseTierApp(DefaultApp):
     def _get_persistent_disk_size(self, enable_persistent_storage, **_):
         if enable_persistent_storage:
-            raise InvalidArgumentValueError('Enterprise tier Spring-Cloud instance does not support --enable-persistent-storage')
+            raise InvalidArgumentValueError('Enterprise tier Spring instance does not support --enable-persistent-storage')
 
 
 def app_selector(sku, **_):

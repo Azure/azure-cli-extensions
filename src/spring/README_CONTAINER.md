@@ -8,26 +8,26 @@ Added the following arguments:
     --registry-username            : The username of the container registry.
 ```
 
-Use `az spring-cloud app deploy`
+Use `az spring app deploy`
 
 Deploy a container image on Docker Hub to an app.
 ```
-az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
+az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
 ```
  
 Deploy a container image on a private registry to an app.
 ```
-az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
+az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
 ```
 
-Or `az spring-cloud app deployment create`
+Or `az spring app deployment create`
  
 Deploy a container image on Docker Hub to an app.
 ```
-az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
+az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1
 ```
 
 Deploy a container image on a private registry to an app.
 ```
-az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
+az spring app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --container-image contoso/your-app:v1 --container-registry myacr.azurecr.io --registry-username <username> --registry-password <password>
 ```

@@ -248,7 +248,7 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
-def get_spring_cloud_sku(client, resource_group, name):
+def get_spring_sku(client, resource_group, name):
     return client.services.get(resource_group, name).sku
 
 

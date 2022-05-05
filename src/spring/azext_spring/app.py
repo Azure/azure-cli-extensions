@@ -8,7 +8,7 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
 from .custom import app_get
-from ._utils import (get_spring_cloud_sku, wait_till_end, convert_argument_to_parameter_list)
+from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
                                   deployment_source_options_from_resource,
@@ -61,7 +61,7 @@ def app_create(cmd, client, resource_group, service, name,
     '''
     logger.warning(LOG_RUNNING_PROMPT)
     _ensure_app_not_exist(client, resource_group, service, name)
-    sku = get_spring_cloud_sku(client, resource_group, service)
+    sku = get_spring_sku(client, resource_group, service)
     basic_kwargs = {
         'cmd': cmd,
         'client': client,
@@ -155,7 +155,7 @@ def app_update(cmd, client, resource_group, service, name,
         'resource_group': resource_group,
         'service': service,
         'app': name,
-        'sku': deployment.sku if deployment else get_spring_cloud_sku(client, resource_group, service),
+        'sku': deployment.sku if deployment else get_spring_sku(client, resource_group, service),
         'deployment': deployment.name if deployment else None,
         'deployment_resource': deployment,
     }
@@ -406,6 +406,6 @@ def _fulfill_deployment_creation_options(skip_clone_settings, client, resource_g
             options.update(deployment_settings_options_from_resource(active_deployment))
             options.update(deployment_source_options_from_resource(active_deployment))
     if not options.get('sku', None):
-        options['sku'] = get_spring_cloud_sku(client, resource_group, service)
+        options['sku'] = get_spring_sku(client, resource_group, service)
     options.update({k: v for k, v in kwargs.items() if v})
     return options

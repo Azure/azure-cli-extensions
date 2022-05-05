@@ -15,7 +15,7 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_cloud_sku)
+from ._utils import (get_portal_uri, get_spring_sku)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
@@ -24,7 +24,7 @@ from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_manageme
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
-from ._client_factory import (cf_spring_cloud)
+from ._client_factory import (cf_spring)
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -49,8 +49,8 @@ DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
 APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
-NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
-NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
+NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create"
+NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment."
 DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
@@ -84,7 +84,7 @@ def _update_application_insights_asc_create(cmd,
                         monitoring_setting_resource=monitoring_setting_resource)
 
 
-def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
+def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                         disable_app_insights=None, sku=None, tags=None, build_pool_size=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
@@ -163,12 +163,12 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
                         monitoring_setting_resource=monitoring_setting_resource)
 
 
-def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
-    logger.warning("Stop using Azure Spring Cloud? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
+def spring_delete(cmd, client, resource_group, name, no_wait=False):
+    logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/springclouddeletesurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
 
 
-def spring_cloud_start(cmd, client, resource_group, name, no_wait=False):
+def spring_start(cmd, client, resource_group, name, no_wait=False):
     resource = client.services.get(resource_group, name)
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
@@ -177,7 +177,7 @@ def spring_cloud_start(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.services.begin_start, resource_group_name=resource_group, service_name=name)
 
 
-def spring_cloud_stop(cmd, client, resource_group, name, no_wait=False):
+def spring_stop(cmd, client, resource_group, name, no_wait=False):
     resource = client.services.get(resource_group, name)
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
@@ -186,13 +186,13 @@ def spring_cloud_stop(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
 
 
-def spring_cloud_list(cmd, client, resource_group=None):
+def spring_list(cmd, client, resource_group=None):
     if resource_group is None:
         return client.services.list_by_subscription()
     return client.services.list(resource_group)
 
 
-def spring_cloud_get(cmd, client, resource_group, name):
+def spring_get(cmd, client, resource_group, name):
     return client.services.get(resource_group, name)
 
 
@@ -374,7 +374,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
     log_stream = LogStream(client, resource_group, service)
     if not log_stream:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
 
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
         log_stream.base_url, name, instance)
@@ -401,7 +401,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
-    sku = get_spring_cloud_sku(client, resource_group, service)
+    sku = get_spring_sku(client, resource_group, service)
     if sku.tier == 'Enterprise':
         return _set_active_in_preview_api(cmd, client, resource_group, service, name, deployment)
     else:
@@ -409,7 +409,7 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
 
 
 def app_unset_deployment(cmd, client, resource_group, service, name):
-    sku = get_spring_cloud_sku(client, resource_group, service)
+    sku = get_spring_sku(client, resource_group, service)
     if sku.tier == 'Enterprise':
         return _set_active_in_preview_api(cmd, client, resource_group, service, name)
     else:
@@ -427,7 +427,7 @@ def _set_active_in_lagecy_api(cmd, client, resource_group, service, name, deploy
     app = models.AppResource(
         properties=models.AppResourceProperties(active_deployment_name=deployment)
     )
-    client = cf_spring_cloud(cmd.cli_ctx)
+    client = cf_spring(cmd.cli_ctx)
     return client.apps.begin_update(resource_group, service, name, app)
 
 
@@ -1322,7 +1322,7 @@ def update_java_agent_config(cmd, resource_group, service_name, location,
                     trace_enabled=True, app_insights_instrumentation_key=created_app_insights.connection_string)
         except Exception:  # pylint: disable=broad-except
             logger.warning(
-                'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
+                'Error while trying to create and configure an Application Insights for the Azure Spring Apps. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
             return None
     if monitoring_setting_properties:
@@ -1362,7 +1362,7 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Cloud. ' \
+    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
                            'Please use the Azure Portal to manually create and configure the Application Insights, ' \
                            'if needed.'
 
@@ -1386,7 +1386,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
 
     portal_url = get_portal_uri(cmd.cli_ctx)
     # We make this success message as a warning to no interfere with regular JSON output in stdout
-    logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
+    logger.warning('Application Insights \"%s\" was created for this Azure Spring Apps. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
 

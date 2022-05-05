@@ -22,27 +22,27 @@ from .vendored_sdks.appplatform.v2021_09_01_preview import (
 )
 
 
-def cf_spring_cloud_20220301preview(cli_ctx, *_):
+def cf_spring_20220301preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220301preview)
 
 
-def cf_spring_cloud_20220101preview(cli_ctx, *_):
+def cf_spring_20220101preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20220101preview)
 
 
-def cf_spring_cloud(cli_ctx, *_):
+def cf_spring(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient)
 
 
-def cf_spring_cloud_20201101preview(cli_ctx, *_):
+def cf_spring_20201101preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20201101preview)
 
 
-def cf_spring_cloud_20210601preview(cli_ctx, *_):
+def cf_spring_20210601preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20210601preview)
 
 
-def cf_spring_cloud_20210901preview(cli_ctx, *_):
+def cf_spring_20210901preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20210901preview)
 
 
@@ -52,28 +52,28 @@ def cf_resource_groups(cli_ctx, subscription_id=None):
 
 
 def cf_app_services(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).services
+    return cf_spring(cli_ctx).services
 
 
 def cf_apps(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).apps
+    return cf_spring(cli_ctx).apps
 
 
 def cf_deployments(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).deployments
+    return cf_spring(cli_ctx).deployments
 
 
 def cf_bindings(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).bindings
+    return cf_spring(cli_ctx).bindings
 
 
 def cf_config_servers(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).config_servers
+    return cf_spring(cli_ctx).config_servers
 
 
 def cf_certificates(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).certificates
+    return cf_spring(cli_ctx).certificates
 
 
 def cf_custom_domains(cli_ctx, *_):
-    return cf_spring_cloud(cli_ctx).custom_domains
+    return cf_spring(cli_ctx).custom_domains

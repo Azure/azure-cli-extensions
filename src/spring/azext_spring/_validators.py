@@ -74,14 +74,14 @@ def _validate_terms(cmd, namespace):
                       offer_id='azure-spring-cloud-vmware-tanzu-2',
                       plan_id='tanzu-asc-ent-mtr')
     if not term.accepted:
-        raise InvalidArgumentValueError('Terms for Azure Spring Cloud Enterprise is not accepted.\n'
+        raise InvalidArgumentValueError('Terms for Azure Spring Apps Enterprise is not accepted.\n'
                                         'Run "az term accept --publisher vmware-inc '
                                         '--product azure-spring-cloud-vmware-tanzu-2 '
                                         '--plan tanzu-asc-ent-mtr" to accept the term.')
 
 
 def _check_tanzu_components_not_enable(cmd, namespace):
-    suffix = 'can only be used for Azure Spring Cloud Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
+    suffix = 'can only be used for Azure Spring Apps Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
     if namespace.enable_application_configuration_service:
         raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
     if namespace.enable_service_registry:
@@ -300,7 +300,7 @@ def validate_vnet(cmd, namespace):
         instance_location = "".join([piece.lower()
                                      for piece in instance_location_slice])
     if vnet_obj.location.lower() != instance_location.lower():
-        raise InvalidArgumentValueError('--vnet and Azure Spring Cloud instance should be in the same location.')
+        raise InvalidArgumentValueError('--vnet and Azure Spring Apps instance should be in the same location.')
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
     _validate_route_table(namespace, vnet_obj)
