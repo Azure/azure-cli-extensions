@@ -22,6 +22,7 @@ class DefaultApp:
         kwargs['loaded_certificates'] = self._load_public_certificate_file(**kwargs)
         kwargs['persistent_disk'] = self._load_persistent_disk(**kwargs)
         kwargs['temporary_disk'] = self._load_temp_disk(**kwargs)
+        kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
@@ -117,6 +118,14 @@ class DefaultApp:
                     storage_id=storage_resource.id,
                     custom_persistent_disk_properties=custom_persistent_disk_properties))
         return custom_persistent_disks
+
+    def _load_vnet_addons(self, public_for_vnet=None, **_):
+        if public_for_vnet is not None:
+            return models.VnetAddons(
+                publicEndpoint=public_for_vnet
+            )
+        else:
+            return None
 
 
 class BasicTierApp(DefaultApp):

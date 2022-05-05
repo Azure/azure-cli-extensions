@@ -85,7 +85,7 @@ def _update_application_insights_asc_create(cmd,
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_app_insights=None, sku=None, tags=None, build_pool_size=None, no_wait=False):
+                        disable_app_insights=None, sku=None, tags=None, build_pool_size=None, enable_log_stream_public_endpoint=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -104,6 +104,12 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     location = resource.location
     updated_resource_properties = models_20220101preview.ClusterResourceProperties()
     updated_resource_properties.zone_redundant = None
+    if enable_log_stream_public_endpoint is not None:
+        updated_resource_properties.VnetAddons = models_20220501preview.VnetAddons(
+                logStreamPublicEndpoint=enable_log_stream_public_endpoint
+            )
+    else:
+        updated_resource_properties.VnetAddons = None
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)

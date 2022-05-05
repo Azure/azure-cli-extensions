@@ -52,6 +52,7 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                persistent_storage=None,
                assign_endpoint=None,
+               assign_public_endpoint=None,
                loaded_public_certificate_file=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
@@ -79,6 +80,7 @@ def app_create(cmd, client, resource_group, service, name,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint,
         'loaded_public_certificate_file': loaded_public_certificate_file
     }
     create_deployment_kwargs = {
@@ -94,6 +96,7 @@ def app_create(cmd, client, resource_group, service, name,
     update_app_kwargs = {
         'enable_persistent_storage': enable_persistent_storage,
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint
     }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
@@ -128,6 +131,7 @@ def app_update(cmd, client, resource_group, service, name,
                deployment=None,  # set by validator
                # app
                assign_endpoint=None,
+               assign_public_endpoint=None,
                enable_persistent_storage=None,
                enable_ingress_to_app_tls=None,
                https_only=None,
@@ -172,6 +176,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     app_kwargs = {
         'public': assign_endpoint,
+        'public_for_vnet': assign_public_endpoint,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
         'loaded_public_certificate_file': loaded_public_certificate_file,

@@ -53,6 +53,7 @@ class DefaultSpringCloud:
                        reserved_cidr_range=None,
                        service_runtime_network_resource_group=None,
                        app_network_resource_group=None,
+                       enable_log_stream_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
@@ -60,6 +61,13 @@ class DefaultSpringCloud:
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
         )
+
+        if enable_log_stream_public_endpoint is not None:
+            updated_resource_properties.VnetAddons = models_20220501preview.VnetAddons(
+                logStreamPublicEndpoint=enable_log_stream_public_endpoint
+            )
+        else:
+            updated_resource_properties.VnetAddons = None
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(
@@ -127,6 +135,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
                         gateway_instance_count=None,
                         enable_api_portal=False,
                         api_portal_instance_count=None,
+                        enable_log_stream_public_endpoint=None,
                         no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -154,6 +163,7 @@ def spring_cloud_create(cmd, client, resource_group, name,
         'gateway_instance_count': gateway_instance_count,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
+        'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
         'no_wait': no_wait
     }
 
