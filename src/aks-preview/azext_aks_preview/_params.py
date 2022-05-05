@@ -280,20 +280,17 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
+        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
+        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         # no validation for aks create because it already only supports Linux.
-        c.argument('message_of_the_day', type=str)
-        c.argument('enable_azure_keyvault_kms',
-                   action='store_true', is_preview=True)
-        c.argument('azure_keyvault_kms_key_id',
-                   validator=validate_azure_keyvault_kms_key_id, is_preview=True)
-        c.argument('enable_namespace_resources', options_list=['--enable-namespace-resources'], help='Enables namespace resources.')
-        c.argument('gpu_instance_profile',
-                   arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('message_of_the_day')        
+        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('enable_namespace_resources', help='Enables namespace as an ARM resource')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
