@@ -21,6 +21,8 @@ from ._configuration import DataProtectionClientConfiguration
 from .operations import BackupVaultsOperations
 from .operations import OperationResultOperations
 from .operations import OperationStatusOperations
+from .operations import OperationStatusBackupVaultContextOperations
+from .operations import OperationStatusResourceGroupContextOperations
 from .operations import BackupVaultOperationResultsOperations
 from .operations import DataProtectionOperations
 from .operations import DataProtectionOperationsOperations
@@ -39,33 +41,37 @@ class DataProtectionClient(object):
     """Open API 2.0 Specs for Azure Data Protection service.
 
     :ivar backup_vaults: BackupVaultsOperations operations
-    :vartype backup_vaults: data_protection_client.operations.BackupVaultsOperations
+    :vartype backup_vaults: azure.mgmt.dataprotection.operations.BackupVaultsOperations
     :ivar operation_result: OperationResultOperations operations
-    :vartype operation_result: data_protection_client.operations.OperationResultOperations
+    :vartype operation_result: azure.mgmt.dataprotection.operations.OperationResultOperations
     :ivar operation_status: OperationStatusOperations operations
-    :vartype operation_status: data_protection_client.operations.OperationStatusOperations
+    :vartype operation_status: azure.mgmt.dataprotection.operations.OperationStatusOperations
+    :ivar operation_status_backup_vault_context: OperationStatusBackupVaultContextOperations operations
+    :vartype operation_status_backup_vault_context: azure.mgmt.dataprotection.operations.OperationStatusBackupVaultContextOperations
+    :ivar operation_status_resource_group_context: OperationStatusResourceGroupContextOperations operations
+    :vartype operation_status_resource_group_context: azure.mgmt.dataprotection.operations.OperationStatusResourceGroupContextOperations
     :ivar backup_vault_operation_results: BackupVaultOperationResultsOperations operations
-    :vartype backup_vault_operation_results: data_protection_client.operations.BackupVaultOperationResultsOperations
+    :vartype backup_vault_operation_results: azure.mgmt.dataprotection.operations.BackupVaultOperationResultsOperations
     :ivar data_protection: DataProtectionOperations operations
-    :vartype data_protection: data_protection_client.operations.DataProtectionOperations
+    :vartype data_protection: azure.mgmt.dataprotection.operations.DataProtectionOperations
     :ivar data_protection_operations: DataProtectionOperationsOperations operations
-    :vartype data_protection_operations: data_protection_client.operations.DataProtectionOperationsOperations
+    :vartype data_protection_operations: azure.mgmt.dataprotection.operations.DataProtectionOperationsOperations
     :ivar backup_policies: BackupPoliciesOperations operations
-    :vartype backup_policies: data_protection_client.operations.BackupPoliciesOperations
+    :vartype backup_policies: azure.mgmt.dataprotection.operations.BackupPoliciesOperations
     :ivar backup_instances: BackupInstancesOperations operations
-    :vartype backup_instances: data_protection_client.operations.BackupInstancesOperations
+    :vartype backup_instances: azure.mgmt.dataprotection.operations.BackupInstancesOperations
     :ivar recovery_points: RecoveryPointsOperations operations
-    :vartype recovery_points: data_protection_client.operations.RecoveryPointsOperations
+    :vartype recovery_points: azure.mgmt.dataprotection.operations.RecoveryPointsOperations
     :ivar jobs: JobsOperations operations
-    :vartype jobs: data_protection_client.operations.JobsOperations
+    :vartype jobs: azure.mgmt.dataprotection.operations.JobsOperations
     :ivar restorable_time_ranges: RestorableTimeRangesOperations operations
-    :vartype restorable_time_ranges: data_protection_client.operations.RestorableTimeRangesOperations
+    :vartype restorable_time_ranges: azure.mgmt.dataprotection.operations.RestorableTimeRangesOperations
     :ivar export_jobs: ExportJobsOperations operations
-    :vartype export_jobs: data_protection_client.operations.ExportJobsOperations
+    :vartype export_jobs: azure.mgmt.dataprotection.operations.ExportJobsOperations
     :ivar export_jobs_operation_result: ExportJobsOperationResultOperations operations
-    :vartype export_jobs_operation_result: data_protection_client.operations.ExportJobsOperationResultOperations
+    :vartype export_jobs_operation_result: azure.mgmt.dataprotection.operations.ExportJobsOperationResultOperations
     :ivar resource_guards: ResourceGuardsOperations operations
-    :vartype resource_guards: data_protection_client.operations.ResourceGuardsOperations
+    :vartype resource_guards: azure.mgmt.dataprotection.operations.ResourceGuardsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription Id.
@@ -97,6 +103,10 @@ class DataProtectionClient(object):
         self.operation_result = OperationResultOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.operation_status = OperationStatusOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status_backup_vault_context = OperationStatusBackupVaultContextOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status_resource_group_context = OperationStatusResourceGroupContextOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.backup_vault_operation_results = BackupVaultOperationResultsOperations(
             self._client, self._config, self._serialize, self._deserialize)

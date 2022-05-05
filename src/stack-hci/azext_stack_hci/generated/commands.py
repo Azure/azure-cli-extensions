@@ -7,17 +7,45 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
 # pylint: disable=line-too-long
+
 from azure.cli.core.commands import CliCommandType
+from azext_stack_hci.generated._client_factory import cf_arc_setting, cf_cluster, cf_extension
+
+
+stack_hci_arc_setting = CliCommandType(
+    operations_tmpl=(
+        'azext_stack_hci.vendored_sdks.azurestackhci.operations._arc_settings_operations#ArcSettingsOperations.{}'
+    ),
+    client_factory=cf_arc_setting,
+)
+
+
+stack_hci_cluster = CliCommandType(
+    operations_tmpl='azext_stack_hci.vendored_sdks.azurestackhci.operations._clusters_operations#ClustersOperations.{}',
+    client_factory=cf_cluster,
+)
+
+
+stack_hci_extension = CliCommandType(
+    operations_tmpl=(
+        'azext_stack_hci.vendored_sdks.azurestackhci.operations._extensions_operations#ExtensionsOperations.{}'
+    ),
+    client_factory=cf_extension,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_stack_hci.generated._client_factory import cf_cluster
-    stack_hci_cluster = CliCommandType(
-        operations_tmpl='azext_stack_hci.vendored_sdks.azurestackhci.operations._cluster_operations#ClusterOperations.{}',
-        client_factory=cf_cluster)
+    with self.command_group('stack-hci arc-setting', stack_hci_arc_setting, client_factory=cf_arc_setting) as g:
+        g.custom_command('list', 'stack_hci_arc_setting_list')
+        g.custom_show_command('show', 'stack_hci_arc_setting_show')
+        g.custom_command('create', 'stack_hci_arc_setting_create')
+        g.custom_command('delete', 'stack_hci_arc_setting_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'stack_hci_arc_setting_show')
 
     with self.command_group('stack-hci cluster', stack_hci_cluster, client_factory=cf_cluster) as g:
         g.custom_command('list', 'stack_hci_cluster_list')
@@ -25,3 +53,12 @@ def load_command_table(self, _):
         g.custom_command('create', 'stack_hci_cluster_create')
         g.custom_command('update', 'stack_hci_cluster_update')
         g.custom_command('delete', 'stack_hci_cluster_delete', confirmation=True)
+
+    with self.command_group('stack-hci extension', stack_hci_extension, client_factory=cf_extension) as g:
+        g.custom_command('list', 'stack_hci_extension_list')
+        g.custom_show_command('show', 'stack_hci_extension_show')
+        g.custom_command('create', 'stack_hci_extension_create', supports_no_wait=True)
+        # service team found a bug on this api
+        # g.custom_command('update', 'stack_hci_extension_update', supports_no_wait=True)
+        g.custom_command('delete', 'stack_hci_extension_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'stack_hci_extension_show')

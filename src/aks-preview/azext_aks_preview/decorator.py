@@ -68,6 +68,7 @@ from azext_aks_preview.addonconfiguration import (
 from azext_aks_preview.custom import (
     _get_snapshot,
     _get_cluster_snapshot,
+    _ensure_cluster_identity_permission_on_kubelet_identity,
 )
 
 logger = get_logger(__name__)
@@ -1810,6 +1811,34 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_azure_keyvault_kms_key_id(enable_validation=True)
 
+    def get_updated_assign_kubelet_identity(self) -> str:
+        """Obtain the value of assign_kubelet_identity based on the user input.
+
+        :return: str
+        """
+        kubelet_identity_resource_id = self.raw_param.get("assign_kubelet_identity")
+        if not kubelet_identity_resource_id:
+            return ""
+
+        msg = "You're going to update kubelet identity to {}, which will upgrade every node pool in the cluster " \
+              "and might take a while, do you wish to continue?".format(kubelet_identity_resource_id)
+        if not self.get_yes() and not prompt_y_n(msg, default="n"):
+            raise DecoratorEarlyExitException
+
+        return kubelet_identity_resource_id
+
+    def get_cluster_uaidentity_object_id(self) -> str:
+        assigned_identity = self.get_assign_identity()
+        cluster_identity_resource_id = ""
+        if assigned_identity is None or assigned_identity == "":
+            # Suppose identity is present on mc
+            if not(self.mc and self.mc.identity and self.mc.identity.user_assigned_identities):
+                raise RequiredArgumentMissingError("--assign-identity is not provided and the cluster identity type is not user assigned, cannot update kubelet identity")
+            cluster_identity_resource_id = list(self.mc.identity.user_assigned_identities.keys())[0]
+        else:
+            cluster_identity_resource_id = assigned_identity
+        return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -2326,61 +2355,63 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         )
 
         if not is_changed and is_default:
-            # Note: Uncomment the followings to automatically generate the error message.
-            # option_names = [
-            #     '"{}"'.format(format_parameter_name_to_option_name(x))
-            #     for x in self.context.raw_param.keys()
-            #     if x not in excluded_keys
-            # ]
-            # error_msg = "Please specify one or more of {}.".format(
-            #     " or ".join(option_names)
-            # )
-            # raise RequiredArgumentMissingError(error_msg)
-            raise RequiredArgumentMissingError(
-                'Please specify "--enable-cluster-autoscaler" or '
-                '"--disable-cluster-autoscaler" or '
-                '"--update-cluster-autoscaler" or '
-                '"--cluster-autoscaler-profile" or '
-                '"--enable-pod-security-policy" or '
-                '"--disable-pod-security-policy" or '
-                '"--api-server-authorized-ip-ranges" or '
-                '"--attach-acr" or '
-                '"--detach-acr" or '
-                '"--uptime-sla" or '
-                '"--no-uptime-sla" or '
-                '"--load-balancer-managed-outbound-ip-count" or '
-                '"--load-balancer-outbound-ips" or '
-                '"--load-balancer-outbound-ip-prefixes" or '
-                '"--nat-gateway-managed-outbound-ip-count" or '
-                '"--nat-gateway-idle-timeout" or '
-                '"--enable-aad" or '
-                '"--aad-tenant-id" or '
-                '"--aad-admin-group-object-ids" or '
-                '"--enable-ahub" or '
-                '"--disable-ahub" or '
-                '"--enable-managed-identity" or '
-                '"--enable-pod-identity" or '
-                '"--disable-pod-identity" or '
-                '"--auto-upgrade-channel" or '
-                '"--enable-secret-rotation" or '
-                '"--disable-secret-rotation" or '
-                '"--rotation-poll-interval" or '
-                '"--tags" or '
-                '"--windows-admin-password" or '
-                '"--enable-azure-rbac" or '
-                '"--disable-azure-rbac" or '
-                '"--enable-local-accounts" or '
-                '"--disable-local-accounts" or '
-                '"--enable-public-fqdn" or '
-                '"--disable-public-fqdn"'
-                '"--enble-windows-gmsa" or '
-                '"--nodepool-labels" or '
-                '"--enable-oidc-issuer" or '
-                '"--http-proxy-config" or '
-                '"--enable-azure-keyvault-kms" or '
-                '"--enable-workload-identity" or '
-                '"--disable-workload-identity".'
-            )
+            reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
+            if not prompt_y_n(reconcilePrompt, default="n"):
+                # Note: Uncomment the followings to automatically generate the error message.
+                # option_names = [
+                #     '"{}"'.format(format_parameter_name_to_option_name(x))
+                #     for x in self.context.raw_param.keys()
+                #     if x not in excluded_keys
+                # ]
+                # error_msg = "Please specify one or more of {}.".format(
+                #     " or ".join(option_names)
+                # )
+                # raise RequiredArgumentMissingError(error_msg)
+                raise RequiredArgumentMissingError(
+                    'Please specify "--enable-cluster-autoscaler" or '
+                    '"--disable-cluster-autoscaler" or '
+                    '"--update-cluster-autoscaler" or '
+                    '"--cluster-autoscaler-profile" or '
+                    '"--enable-pod-security-policy" or '
+                    '"--disable-pod-security-policy" or '
+                    '"--api-server-authorized-ip-ranges" or '
+                    '"--attach-acr" or '
+                    '"--detach-acr" or '
+                    '"--uptime-sla" or '
+                    '"--no-uptime-sla" or '
+                    '"--load-balancer-managed-outbound-ip-count" or '
+                    '"--load-balancer-outbound-ips" or '
+                    '"--load-balancer-outbound-ip-prefixes" or '
+                    '"--nat-gateway-managed-outbound-ip-count" or '
+                    '"--nat-gateway-idle-timeout" or '
+                    '"--enable-aad" or '
+                    '"--aad-tenant-id" or '
+                    '"--aad-admin-group-object-ids" or '
+                    '"--enable-ahub" or '
+                    '"--disable-ahub" or '
+                    '"--enable-managed-identity" or '
+                    '"--enable-pod-identity" or '
+                    '"--disable-pod-identity" or '
+                    '"--auto-upgrade-channel" or '
+                    '"--enable-secret-rotation" or '
+                    '"--disable-secret-rotation" or '
+                    '"--rotation-poll-interval" or '
+                    '"--tags" or '
+                    '"--windows-admin-password" or '
+                    '"--enable-azure-rbac" or '
+                    '"--disable-azure-rbac" or '
+                    '"--enable-local-accounts" or '
+                    '"--disable-local-accounts" or '
+                    '"--enable-public-fqdn" or '
+                    '"--disable-public-fqdn"'
+                    '"--enble-windows-gmsa" or '
+                    '"--nodepool-labels" or '
+                    '"--enable-oidc-issuer" or '
+                    '"--http-proxy-config" or '
+                    '"--enable-azure-keyvault-kms" or '
+                    '"--enable-workload-identity" or '
+                    '"--disable-workload-identity".'
+                )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -2564,6 +2595,29 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             mc.enable_namespace_resources = True
         return mc
 
+    def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update identity profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        assign_kubelet_identity = self.context.get_updated_assign_kubelet_identity()
+        if assign_kubelet_identity:
+            identity_profile = {
+                'kubeletidentity': self.models.UserAssignedIdentity(
+                    resource_id=assign_kubelet_identity,
+                )
+            }
+            cluster_identity_object_id = self.context.get_cluster_uaidentity_object_id()
+            # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
+            _ensure_cluster_identity_permission_on_kubelet_identity(
+                self.cmd.cli_ctx,
+                cluster_identity_object_id,
+                assign_kubelet_identity)
+            mc.identity_profile = identity_profile
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2607,6 +2661,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_http_proxy_config(mc)
         mc = self.update_azure_keyvault_kms(mc)
         mc = self.update_enable_namespace_resources(mc)
+        # update identity profile
+        mc = self.update_identity_profile(mc)
+
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:

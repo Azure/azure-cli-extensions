@@ -86,7 +86,7 @@ pyenv install 3.8.10
 2. [Lightweight nodejs version manager](https://github.com/mklement0/n-install)
 
 ```
-curl -L https://git.io/n-install | bash -s -- -y lts
+curl -L https://bit.ly/n-install | bash -s -- -y lts
 exec $SHELL
 ```
 

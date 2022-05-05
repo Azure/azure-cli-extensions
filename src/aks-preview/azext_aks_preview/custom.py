@@ -52,7 +52,7 @@ from azure.graphrbac.models import (
 from dateutil.parser import parse  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from knack.log import get_logger
-from knack.prompting import NoTTYException, prompt_pass
+from knack.prompting import NoTTYException, prompt_pass, prompt_y_n
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
@@ -398,7 +398,6 @@ def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resourc
             assignments_client.delete_by_id(i)
         return
     if not any([ids, assignee, role, resource_group_name, scope, assignee, yes]):
-        from knack.prompting import prompt_y_n
         msg = 'This will delete all role assignments under the subscription. Are you sure?'
         if not prompt_y_n(msg, default="n"):
             return
@@ -742,6 +741,7 @@ def aks_create(cmd,
                aad_tenant_id=None,
                tags=None,
                node_zones=None,
+               zones=None,
                enable_node_public_ip=False,
                node_public_ip_prefix_id=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
@@ -856,6 +856,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                auto_upgrade_channel=None,
                enable_managed_identity=False,
                assign_identity=None,
+               assign_kubelet_identity=None,
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
@@ -1070,8 +1071,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
         readonly_sas_token = readonly_sas_token.strip('?')
 
-    from knack.prompting import prompt_y_n
-
     print()
     print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
           f'save them to the storage account '
@@ -1252,7 +1251,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 node_image_only=False,
                 aks_custom_headers=None,
                 yes=False):
-    from knack.prompting import prompt_y_n
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -1609,6 +1607,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       tags=None,
                       kubernetes_version=None,
                       node_zones=None,
+                      zones=None,
                       enable_node_public_ip=False,
                       node_public_ip_prefix_id=None,
                       node_vm_size=None,
@@ -1849,10 +1848,12 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         disable_cluster_autoscaler + update_cluster_autoscaler
 
     if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and labels is None and node_taints is None):
-        raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
-                       '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
+        reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
+        if not prompt_y_n(reconcilePrompt, default="n"):
+            raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
+                           '"--disable-cluster-autoscaler" or '
+                           '"--update-cluster-autoscaler" or '
+                           '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels" or "--node-taints')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -1976,6 +1977,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          resource_group_name,
                          cluster_name,
                          nodepool_name,
+                         ignore_pod_disruption_budget=None,
                          no_wait=False):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
@@ -1988,7 +1990,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name, ignore_pod_disruption_budget=ignore_pod_disruption_budget)
 
 
 def aks_addon_list_available():

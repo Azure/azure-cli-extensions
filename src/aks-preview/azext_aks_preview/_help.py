@@ -30,6 +30,9 @@ helps['aks create'] = """
           type: bool
           short-summary: Skip role assignment for subnet (advanced networking).
           long-summary:  If specified, please make sure your service principal has the access to your subnet.
+        - name: --zones -z
+          type: string array
+          short-summary: Space-separated list of availability zones where agent nodes will be placed.
         - name: --client-secret
           type: string
           short-summary: Secret associated with the service principal. This argument is required if
@@ -51,9 +54,9 @@ helps['aks create'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
-        - name: --node-osdisk-diskencryptionset-id
+        - name: --node-osdisk-diskencryptionset-id -d
           type: string
-          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
+          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
@@ -517,7 +520,8 @@ helps['aks upgrade'] = """
 
 helps['aks update'] = """
     type: command
-    short-summary: Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler
+    short-summary: Update the properties of a managed Kubernetes cluster.
+    long-summary: Update the properties of a managed Kubernetes cluster. Can be used for example to enable/disable cluster-autoscaler.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -613,10 +617,13 @@ helps['aks update'] = """
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
+          short-summary: Update current cluster to managed identity to manage cluster resource group.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Update cluster's kubelet identity to an existing user assigned identity. Note, this operation will recreate all agent node in the cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
@@ -704,6 +711,8 @@ helps['aks update'] = """
           type: string
           short-summary: Identifier of Azure Key Vault key.
     examples:
+      - name: Reconcile the cluster back to its current state.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -987,9 +996,9 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
-        - name: --node-zones --zones -z
+        - name: --zones -z
           type: string array
-          short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
+          short-summary: Space-separated list of availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -1129,7 +1138,8 @@ helps['aks nodepool upgrade'] = """
 
 helps['aks nodepool update'] = """
     type: command
-    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count
+    short-summary: Update a node pool properties.
+    long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the cluster to its goal state without changing the current cluster configuration. This can be used to move out of a non succeeded state.
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
@@ -1162,6 +1172,8 @@ helps['aks nodepool update'] = """
           type: string
           short-summary: The node taints for the node pool.
     examples:
+      - name: Reconcile the nodepool back to its current state.
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -1218,6 +1230,13 @@ helps['aks nodepool start'] = """
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
+    parameters:
+        - name: --ignore-pod-disruption-budget -i
+          type: bool
+          short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
+    examples:
+        - name: Delete an agent pool with ignore-pod-disruption-budget
+          text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
 """
 
 helps['aks addon'] = """
