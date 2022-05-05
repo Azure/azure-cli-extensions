@@ -166,9 +166,9 @@ class TestValidateIPRanges(unittest.TestCase):
             '--reserved-cidr-range should not overlap each other, but 10.0.0.0/8 and 10.0.0.0/16 overlapping.',
             str(context.exception))
 
-    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
-    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
-    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
+    @mock.patch('azext_spring._validators._get_vnet', _mock_get_vnet)
+    @mock.patch('azext_spring._validators._get_authorization_client', _mock_get_authorization_client)
+    @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_valid_vnet(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', vnet='test-vnet', app_subnet='app', location='eastus',
@@ -194,9 +194,9 @@ class TestValidateIPRanges(unittest.TestCase):
             validate_vnet(_get_test_cmd(), ns)
         self.assertTrue('is not a valid subnet resource ID' in str(context.exception))
 
-    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
-    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
-    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
+    @mock.patch('azext_spring._validators._get_vnet', _mock_get_vnet)
+    @mock.patch('azext_spring._validators._get_authorization_client', _mock_get_authorization_client)
+    @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_valid_subnets(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
@@ -208,9 +208,9 @@ class TestValidateIPRanges(unittest.TestCase):
         self.assertEqual(ns.service_runtime_subnet.lower(),
                          '/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc'.lower())
 
-    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
-    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
-    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
+    @mock.patch('azext_spring._validators._get_vnet', _mock_get_vnet)
+    @mock.patch('azext_spring._validators._get_authorization_client', _mock_get_authorization_client)
+    @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_subnet_with_route_table(self):
         # bind with different route tables
@@ -267,9 +267,9 @@ class TestValidateIPRanges(unittest.TestCase):
             'Cannot set "reserved-cidr-range" automatically.Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.',
             str(context.exception))
 
-    @mock.patch('azext_spring_cloud._validators._get_vnet', _mock_get_vnet)
-    @mock.patch('azext_spring_cloud._validators._get_authorization_client', _mock_get_authorization_client)
-    @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
+    @mock.patch('azext_spring._validators._get_vnet', _mock_get_vnet)
+    @mock.patch('azext_spring._validators._get_authorization_client', _mock_get_authorization_client)
+    @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_vnet_location(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.1/16', resource_group='test', vnet=None, sku=None, location='westus',
@@ -277,7 +277,7 @@ class TestValidateIPRanges(unittest.TestCase):
                        service_runtime_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('--vnet and Azure Spring Cloud instance should be in the same location.' in str(context.exception))
+        self.assertTrue('--vnet and Azure Spring instance should be in the same location.' in str(context.exception))
 
 
 def _mock_term_client(accepted, registered):
@@ -317,7 +317,7 @@ class TestSkuValidator(unittest.TestCase):
         ns = Namespace(sku='Enterprise')
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_sku(_get_test_cmd(), ns)
-        self.assertTrue('Terms for Azure Spring Cloud Enterprise is not accepted.' in str(context.exception))
+        self.assertTrue('Terms for Azure Spring Enterprise is not accepted.' in str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_registered_client)
     def test_provider_not_registered(self):

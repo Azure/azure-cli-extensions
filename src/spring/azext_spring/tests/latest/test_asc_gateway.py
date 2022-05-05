@@ -28,7 +28,7 @@ class GatewayTest(ScenarioTest):
             'thumbprint': 'ef16ce1a35ecd6b7a9d4e546a5b1d480b38f3e5d'
         })
 
-        self.cmd('spring-cloud gateway update -g {rg} -s {serviceName} '
+        self.cmd('spring gateway update -g {rg} -s {serviceName} '
                  '--assign-endpoint true --https-only true --cpu 1 --memory 2Gi --instance-count 3 '
                  '--api-title "Pet clinic" --api-description "Demo for pet clinic" --api-doc-location "doc" --api-version v1 '
                  '--server-url https://tx-enterprise-gateway-fd0c7.svc.asc-test.net '
@@ -59,32 +59,32 @@ class GatewayTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud gateway show -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring gateway show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),
             self.check('properties.httpsOnly', True),
             self.check('sku.capacity', 3),
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud gateway route-config create -g {rg} -s {serviceName} -n {routeName} '
+        self.cmd('spring gateway route-config create -g {rg} -s {serviceName} -n {routeName} '
                  '--app-name customers-service --routes-file {routeFile}', checks=[
             self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/customers-service'),
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
+        self.cmd('spring gateway route-config update -g {rg} -s {serviceName} -n {routeName} '
                  '--app-name vets-service', checks=[
             self.check('properties.appResourceId', '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/vets-service'),
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        result = self.cmd('spring-cloud gateway route-config list -g {rg} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring gateway route-config list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud gateway route-config remove --name {routeName} -g {rg} -s {serviceName}')
-        self.cmd('spring-cloud gateway route-config show --name {routeName} -g {rg} -s {serviceName}', expect_failure=True)
+        self.cmd('spring gateway route-config remove --name {routeName} -g {rg} -s {serviceName}')
+        self.cmd('spring gateway route-config show --name {routeName} -g {rg} -s {serviceName}', expect_failure=True)
 
-        self.cmd('spring-cloud gateway clear -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring gateway clear -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', False),
             self.check('properties.httpsOnly', False),
             self.check('sku.capacity', 2),
@@ -92,25 +92,25 @@ class GatewayTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{cert}')
         ])
 
-        self.cmd('spring-cloud gateway custom-domain bind --domain-name {domain} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring gateway custom-domain bind --domain-name {domain} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}')
         ])
 
-        self.cmd('spring-cloud gateway custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring gateway custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}')
         ])
 
-        result = self.cmd('spring-cloud gateway custom-domain list -g {rg} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring gateway custom-domain list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud gateway custom-domain update --domain-name {domain} --certificate {cert} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring gateway custom-domain update --domain-name {domain} --certificate {cert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}'),
             self.check('properties.thumbprint', '{thumbprint}')
         ])
 
-        self.cmd('spring-cloud gateway custom-domain unbind --domain-name {domain} -g {rg} -s {serviceName}')
-        self.cmd('spring-cloud gateway custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', expect_failure=True)
+        self.cmd('spring gateway custom-domain unbind --domain-name {domain} -g {rg} -s {serviceName}')
+        self.cmd('spring gateway custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', expect_failure=True)

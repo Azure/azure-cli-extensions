@@ -42,7 +42,7 @@ class CreateAppWithBothIdentity(ScenarioTest):
             'ua2': USER_IDENTITY_RESOURCE_ID_2
         })
 
-        app = self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
+        app = self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
             self.exists('identity.principalId'),
             self.exists('identity.tenantId'),

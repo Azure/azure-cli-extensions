@@ -82,7 +82,7 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual(0, len(request.active_deployment_names))
 
-    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
     def test_blue_green_standard(self, client_mock_factory):
         client_mock = self._get_basic_mock_client(sku='Standard')
         client_mock_factory.return_value = client_mock
@@ -94,7 +94,7 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual('default', request.properties.active_deployment_name)
 
-    @mock.patch('azext_spring_cloud.custom.cf_spring_cloud', autospec=True)
+    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
     def test_unset_active_standard(self, client_mock_factory):
         client_mock = self._get_basic_mock_client(sku='Standard')
         client_mock_factory.return_value = client_mock
@@ -133,7 +133,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.patch_deployment_resource = call_args[0][0][4]
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path')
@@ -144,7 +144,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         # self.assertIsNone(resource.sku)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_with_runtime_version(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path', runtime_version='Java_8')
@@ -154,7 +154,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual('Java_8', resource.properties.source.runtime_version)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path', runtime_version='NetCore_31', main_entry='test')
@@ -165,7 +165,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
         self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_net_with_jvm_options(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment = self._get_deployment()
@@ -178,7 +178,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
         self.assertEqual('test', resource.properties.source.net_core_main_entry_path)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_continous_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -195,7 +195,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
         self.assertEqual('new-test', resource.properties.source.net_core_main_entry_path)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_source(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), source_path='my-path')
@@ -205,7 +205,7 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_continous_deploy_source(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -299,7 +299,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         deployment.properties.deployment_settings.addon_configs = None
         return deployment
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -311,15 +311,15 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
             resource.properties.deployment_settings.addon_configs)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env={'BP_JVM_VERSION': '8.*'})
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env='{"BP_JVM_VERSION": "8.*"}')
         resource = self.put_build_resource
         self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FolderUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -329,7 +329,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_waiting_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         client = self._get_basic_mock_client()
@@ -345,7 +345,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
     
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_failed_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         client = self._get_basic_mock_client()
@@ -395,7 +395,7 @@ class TestAppDeploy_Put(BasicTest):
         self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
         self.assertEqual(2, resource.sku.capacity)
 
-    @mock.patch('azext_spring_cloud._deployment_uploadable_factory.FileUpload.upload_and_build')
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_jar_from_container(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
@@ -615,7 +615,7 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_persistent_storage_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Enterprise tier Spring-Cloud instance does not support --enable-persistent-storage'):
+        with self.assertRaisesRegexp(CLIError, 'Enterprise tier spring instance does not support --enable-persistent-storage'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
 
     def test_app_with_persistent_storage(self):

@@ -23,7 +23,7 @@ class BuildServiceBuilderTest(ScenarioTest):
             'builderFile': builder_file
         })
 
-        self.cmd('spring-cloud build-service builder create -n {name} -g {rg} --service {serviceName} --builder-file {builderFile}', checks=[
+        self.cmd('spring build-service builder create -n {name} -g {rg} --service {serviceName} --builder-file {builderFile}', checks=[
             self.check('name', '{name}'),
             self.check('properties.buildpackGroups[0].buildpacks[0].id', 'tanzu-buildpacks/java-azure'),
             self.check('properties.buildpackGroups[0].name', 'mix'),
@@ -32,7 +32,7 @@ class BuildServiceBuilderTest(ScenarioTest):
             self.check('properties.stack.version', 'base'),
         ])
         
-        self.cmd('spring-cloud build-service builder update -n test -g {rg} --service {serviceName} --builder-file {builderFile}', checks=[
+        self.cmd('spring build-service builder update -n test -g {rg} --service {serviceName} --builder-file {builderFile}', checks=[
             self.check('name', 'test'),
             self.check('properties.buildpackGroups[0].buildpacks[0].id', 'tanzu-buildpacks/java-azure'),
             self.check('properties.buildpackGroups[0].name', 'mix'),
@@ -41,7 +41,7 @@ class BuildServiceBuilderTest(ScenarioTest):
             self.check('properties.stack.version', 'base'),
         ])
 
-        self.cmd('spring-cloud build-service builder show -n {name} -g {rg} --service {serviceName}', checks=[
+        self.cmd('spring build-service builder show -n {name} -g {rg} --service {serviceName}', checks=[
             self.check('name', '{name}'),
             self.check('properties.buildpackGroups[0].buildpacks[0].id', 'tanzu-buildpacks/java-azure'),
             self.check('properties.buildpackGroups[0].name', 'mix'),
@@ -50,4 +50,4 @@ class BuildServiceBuilderTest(ScenarioTest):
             self.check('properties.stack.version', 'base'),
         ])
 
-        self.cmd('spring-cloud build-service builder delete -n {name} -g {rg} --service {serviceName} -y')
+        self.cmd('spring build-service builder delete -n {name} -g {rg} --service {serviceName} -y')

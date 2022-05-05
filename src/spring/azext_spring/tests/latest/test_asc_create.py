@@ -7,7 +7,7 @@ from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
 from ...vendored_sdks.appplatform.v2022_01_01_preview import models
-from ...spring_cloud_instance import (spring_cloud_create)
+from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 try:
     import unittest.mock as mock
@@ -61,10 +61,10 @@ class BasicTest(unittest.TestCase):
                 name=_get_sku_name(tier)
             )
 
-    @mock.patch('azext_spring_cloud._utils.cf_resource_groups', _cf_resource_group)
+    @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
-        spring_cloud_create(_get_test_cmd(), client, resource_group, name, **kwargs)
+        spring_create(_get_test_cmd(), client, resource_group, name, **kwargs)
         call_args = client.services.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(3, len(call_args[0][0]))
@@ -95,7 +95,7 @@ class TestSpringCloudCreateWithAI(BasicTest):
         super().__init__(methodName=methodName)
         self.monitoring_settings_resource = None
     
-    @mock.patch('azext_spring_cloud.custom.get_mgmt_service_client', _get_ai_client)
+    @mock.patch('azext_spring.custom.get_mgmt_service_client', _get_ai_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
         super()._execute(resource_group, name, client=client, **kwargs)
@@ -153,7 +153,7 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
         super().__init__(methodName=methodName)
         self.buildpack_binding_resource = None
 
-    @mock.patch('azext_spring_cloud.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
+    @mock.patch('azext_spring.buildpack_binding.get_mgmt_service_client', _get_application_insights_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
         super()._execute(resource_group, name, client=client, **kwargs)

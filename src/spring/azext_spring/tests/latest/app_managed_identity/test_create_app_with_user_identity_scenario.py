@@ -42,7 +42,7 @@ class CreateAppWithUserIdentity(ScenarioTest):
             'ua2': USER_IDENTITY_RESOURCE_ID_2
         })
 
-        app = self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName} --user-assigned {ua1} {ua2}', checks=[
+        app = self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --user-assigned {ua1} {ua2}', checks=[
             self.check('identity.type', ManagedIdentityType.USER_ASSIGNED, case_sensitive=False),
             self.check('identity.principalId', None),
             self.exists('identity.tenantId'),

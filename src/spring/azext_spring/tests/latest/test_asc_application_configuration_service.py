@@ -26,33 +26,33 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             "app": "app1"
         })
         
-        self.cmd('spring-cloud application-configuration-service show -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring application-configuration-service show -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud application-configuration-service git repo add -g {rg} -s {serviceName} '
+        self.cmd('spring application-configuration-service git repo add -g {rg} -s {serviceName} '
                  '-n {repo} --label {label} --patterns {patterns} --uri {uri}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring-cloud application-configuration-service git repo update -g {rg} -s {serviceName} '
+        self.cmd('spring application-configuration-service git repo update -g {rg} -s {serviceName} '
                  '-n {repo} --label {label}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        result = self.cmd('spring-cloud application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
         
-        self.cmd('spring-cloud application-configuration-service git repo remove --name {repo} -g {rg} -s {serviceName}')
-        result = self.cmd('spring-cloud application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
+        self.cmd('spring application-configuration-service git repo remove --name {repo} -g {rg} -s {serviceName}')
+        result = self.cmd('spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) == 0)
 
-        self.cmd('spring-cloud application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/configurationServices/default")
         ])
-        self.cmd('spring-cloud application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
+        self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
 
-        self.cmd('spring-cloud application-configuration-service clear -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])

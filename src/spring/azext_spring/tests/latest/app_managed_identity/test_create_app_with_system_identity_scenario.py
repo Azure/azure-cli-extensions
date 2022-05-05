@@ -18,7 +18,7 @@ class CreateAppWithSystemIdentity(ScenarioTest):
             'rg': 'cli'
         })
 
-        self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName} --assign-identity', checks=[
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --assign-identity', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
             self.exists('identity.principalId'),
             self.exists('identity.tenantId'),
@@ -33,7 +33,7 @@ class CreateAppWithSystemIdentity(ScenarioTest):
             'rg': 'cli'
         })
 
-        self.cmd('spring-cloud app create -n {app} -g {rg} -s {serviceName} --system-assigned', checks=[
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --system-assigned', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
             self.exists('identity.principalId'),
             self.exists('identity.tenantId'),

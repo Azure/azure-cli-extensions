@@ -43,13 +43,13 @@ class AppIdentityForceSet(ScenarioTest):
         })
 
         self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned disable',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned disable',
             checks=[
                 self.check('identity', None)
             ])
 
         self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned disable',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned disable',
             checks=[
                 self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
                 self.exists('identity.tenantId'),
@@ -58,7 +58,7 @@ class AppIdentityForceSet(ScenarioTest):
             ])
 
         app = self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned {ua1}',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned {ua1}',
             checks=[
                 self.check('identity.type', ManagedIdentityType.USER_ASSIGNED, case_sensitive=False),
                 self.exists('identity.tenantId'),
@@ -71,7 +71,7 @@ class AppIdentityForceSet(ScenarioTest):
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
 
         app = self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned {ua2}',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned {ua2}',
             checks=[
                 self.check('identity.type', ManagedIdentityType.USER_ASSIGNED, case_sensitive=False),
                 self.exists('identity.tenantId'),
@@ -84,7 +84,7 @@ class AppIdentityForceSet(ScenarioTest):
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
         app = self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned {ua1} {ua2}',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned {ua1} {ua2}',
             checks=[
                 self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
                 self.exists('identity.tenantId'),
@@ -98,7 +98,7 @@ class AppIdentityForceSet(ScenarioTest):
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
         self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned disable',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned enable --user-assigned disable',
             checks=[
                 self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
                 self.exists('identity.tenantId'),
@@ -107,7 +107,7 @@ class AppIdentityForceSet(ScenarioTest):
             ])
 
         self.cmd(
-            'spring-cloud app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned disable',
+            'spring app identity force-set -n {app} -g {rg} -s {serviceName} --system-assigned disable --user-assigned disable',
             checks=[
                 self.check('identity', None)
             ])

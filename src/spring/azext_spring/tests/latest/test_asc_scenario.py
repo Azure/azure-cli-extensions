@@ -28,42 +28,42 @@ class CustomDomainTests(ScenarioTest):
             'serviceName': 'cli-unittest',
             'rg': 'cli'
         })
-        self.cmd('spring-cloud app create -n {app} -s {serviceName} -g {rg}')
+        self.cmd('spring app create -n {app} -s {serviceName} -g {rg}')
 
-        self.cmd('spring-cloud certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{cert}')
         ])
 
-        self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{cert}')
         ])
 
-        result = self.cmd('spring-cloud certificate list -g {rg} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring certificate list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud app custom-domain bind --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring app custom-domain bind --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}')
         ])
 
-        self.cmd('spring-cloud app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}'),
             self.check('properties.appName', '{app}')
         ])
 
-        result = self.cmd('spring-cloud app custom-domain list --app {app} -g {rg} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring app custom-domain list --app {app} -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud app custom-domain update --domain-name {domain} --certificate {cert} --app {app} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring app custom-domain update --domain-name {domain} --certificate {cert} --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{domain}'),
             self.check('properties.appName', '{app}'),
             self.check('properties.certName', '{cert}')
         ])
 
-        self.cmd('spring-cloud app custom-domain unbind --domain-name {domain} --app {app} -g {rg} -s {serviceName}')
-        self.cmd('spring-cloud app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', expect_failure=True)
+        self.cmd('spring app custom-domain unbind --domain-name {domain} --app {app} -g {rg} -s {serviceName}')
+        self.cmd('spring app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', expect_failure=True)
 
-        self.cmd('spring-cloud certificate remove --name {cert} -g {rg} -s {serviceName}')
-        self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
+        self.cmd('spring certificate remove --name {cert} -g {rg} -s {serviceName}')
+        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
 
 
 class ByosTest(ScenarioTest):
@@ -85,25 +85,25 @@ class ByosTest(ScenarioTest):
             'storage_account': storage_account,
         })
 
-        self.cmd('spring-cloud create -n {serviceName} -g {resource_group} -l {location}')
+        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
 
-        self.cmd('spring-cloud storage add --name {storage} --storage-type {storageType} --account-name {storage_account} --account-key {accountKey} -g {resource_group} -s {serviceName}', checks=[
+        self.cmd('spring storage add --name {storage} --storage-type {storageType} --account-name {storage_account} --account-key {accountKey} -g {resource_group} -s {serviceName}', checks=[
             self.check('name', '{storage}'),
             self.check('properties.storageType', '{storageType}'),
             self.check('properties.accountName', '{storage_account}'),
         ])
 
-        self.cmd('spring-cloud storage show --name {storage} -g {resource_group} -s {serviceName}', checks=[
+        self.cmd('spring storage show --name {storage} -g {resource_group} -s {serviceName}', checks=[
             self.check('name', '{storage}')
         ])
 
-        result = self.cmd('spring-cloud storage list -g {resource_group} -s {serviceName}').get_output_in_json()
+        result = self.cmd('spring storage list -g {resource_group} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(result) > 0)
 
-        self.cmd('spring-cloud storage remove --name {storage} -g {resource_group} -s {serviceName}')
-        self.cmd('spring-cloud storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
+        self.cmd('spring storage remove --name {storage} -g {resource_group} -s {serviceName}')
+        self.cmd('spring storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
 
-        self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
+        self.cmd('spring delete -n {serviceName} -g {rg}')
 
 class StartStopAscTest(ScenarioTest):
 
@@ -115,20 +115,20 @@ class StartStopAscTest(ScenarioTest):
         })
 
         self.cmd('group create -n {resource_group} -l {location}')
-        self.cmd('spring-cloud create -n {serviceName} -g {resource_group} -l {location}')
-        self.cmd('spring-cloud stop -n {serviceName} -g {resource_group}')
-        self.cmd('spring-cloud show --name {serviceName} -g {resource_group}', checks=[
+        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
+        self.cmd('spring stop -n {serviceName} -g {resource_group}')
+        self.cmd('spring show --name {serviceName} -g {resource_group}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('properties.powerState', 'Stopped')
         ])
 
-        self.cmd('spring-cloud start -n {serviceName} -g {resource_group}')
-        self.cmd('spring-cloud show --name {serviceName} -g {resource_group}', checks=[
+        self.cmd('spring start -n {serviceName} -g {resource_group}')
+        self.cmd('spring show --name {serviceName} -g {resource_group}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('properties.powerState', 'Running')
         ])
 
-        self.cmd('spring-cloud delete -n {serviceName} -g {resource_group} --no-wait')
+        self.cmd('spring delete -n {serviceName} -g {resource_group} --no-wait')
 
 class SslTests(ScenarioTest):
 
@@ -153,43 +153,43 @@ class SslTests(ScenarioTest):
         })
 
         self.cmd(
-            'spring-cloud certificate add --name {digiCert} -f {digiCertPath} -g {rg} -s {serviceName}',
+            'spring certificate add --name {digiCert} -f {digiCertPath} -g {rg} -s {serviceName}',
             checks=[
                 self.check('name', '{digiCert}')
             ])
 
         self.cmd(
-            'spring-cloud certificate add --name {baltiCert} -f {baltiCertPath} -g {rg} -s {serviceName}',
+            'spring certificate add --name {baltiCert} -f {baltiCertPath} -g {rg} -s {serviceName}',
             checks=[
                 self.check('name', '{baltiCert}')
             ])
 
         self.cmd(
-            'spring-cloud certificate show --name {digiCert} -g {rg} -s {serviceName}', checks=[
+            'spring certificate show --name {digiCert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{digiCert}')
         ])
 
         self.cmd(
-            'spring-cloud certificate show --name {baltiCert} -g {rg} -s {serviceName}', checks=[
+            'spring certificate show --name {baltiCert} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{baltiCert}')
         ])
 
         cert_result = self.cmd(
-            'spring-cloud certificate list -g {rg} -s {serviceName}').get_output_in_json()
+            'spring certificate list -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(cert_result) == 2)
 
         self.cmd(
-            'spring-cloud app create --name {app} -f {loadCertPath} -g {rg} -s {serviceName}')
+            'spring app create --name {app} -f {loadCertPath} -g {rg} -s {serviceName}')
 
         self.cmd(
-            'spring-cloud app append-loaded-public-certificate --name {app} --certificate-name {digiCert} --load-trust-store true -g {rg} -s {serviceName}')
+            'spring app append-loaded-public-certificate --name {app} --certificate-name {digiCert} --load-trust-store true -g {rg} -s {serviceName}')
 
         app_result = self.cmd(
-            'spring-cloud certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
+            'spring certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(app_result) > 0)
 
         app_result = self.cmd(
-            'spring-cloud certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
+            'spring certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(app_result) > 0)
 
 
@@ -206,23 +206,23 @@ class CustomImageTest(ScenarioTest):
             'file': file_path
         })
 
-        self.cmd('spring-cloud app create -s {serviceName} -g {resourceGroup} -n {app}')
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
-        self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
             self.check('name', 'default'),
             self.check('properties.source.type', 'Container'),
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
         ])
 
-        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
+        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
                  + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
         ])
 
         with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
-            self.cmd('spring-cloud app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
+            self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
 
-        self.cmd('spring-cloud app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[
+        self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[
             self.check('name', 'default'),
             self.check('properties.source.type', 'Jar'),
             self.check('properties.source.runtimeVersion', 'Java_8'),

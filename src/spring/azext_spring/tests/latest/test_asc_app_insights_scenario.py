@@ -14,7 +14,7 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 '''
-Since the scenarios covered here involves a lot of Azure Spring Cloud service creation. 
+Since the scenarios covered here involves a lot of Azure Spring service creation. 
 It will take around 5~10 minutes to create one. And may take 1~2 hours to finish all.
 So as a trade-off, mark it as record_only. It will run against the requests and responses
 in yaml files under recordings fold. If the yaml file is not here, it will call to backend 
@@ -33,7 +33,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             'location': 'eastus',
             'rg': 'cli'
         })
-        self.cmd('spring-cloud create -n {serviceName} -g {rg} --sku {SKU} -l {location} '
+        self.cmd('spring create -n {serviceName} -g {rg} --sku {SKU} -l {location} '
                  '--no-wait')
         self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
         self._test_app_insights_enable_status(self.kwargs['rg'], self.kwargs['serviceName'], True)
@@ -147,7 +147,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--sampling-rate 101",
             "--sampling-rate 200",
         ]
-        cmd_base = 'az spring-cloud create -g {rg} -n {serviceName} --sku {SKU} -l {location}'
+        cmd_base = 'az spring create -g {rg} -n {serviceName} --sku {SKU} -l {location}'
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
@@ -181,7 +181,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             'location': 'eastus2euap',
             'rg': 'cli'
         })
-        self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location} --disable-app-insights=true --zone-redundant=true', checks=[
+        self.cmd('spring create -n {serviceName} -g {rg} -l {location} --disable-app-insights=true --zone-redundant=true', checks=[
             self.check('properties.zoneRedundant', True)
         ])
         self._clean_service(self.kwargs['rg'], self.kwargs['serviceName'])
@@ -199,7 +199,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--disable-app-insights true --app-insights {anyString}",
             "--app-insights-key {anyString} --app-insights {anyString}",
         ]
-        cmd_base = 'az spring-cloud update -g {rg} -n {serviceName}'
+        cmd_base = 'az spring update -g {rg} -n {serviceName}'
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
@@ -295,7 +295,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--app-insights $(anyString) --sampling-rate 110",
             "--app-insights $(anyString) --sampling-rate 1000",
         ]
-        cmd_base = 'az spring-cloud app-insights update -g {rg} -n {serviceName}'
+        cmd_base = 'az spring app-insights update -g {rg} -n {serviceName}'
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
@@ -303,7 +303,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
     def _test_create_asc_with_suffix(self, sku, location,
                                      rg, service_name, target_ai_status, cmd_suffix,
                                      target_sampling_rate=default_sampling_rate):
-        cmd_base = 'spring-cloud create -n {} -g {} --sku {} -l {} --no-wait'.format(service_name, rg, sku, location)
+        cmd_base = 'spring create -n {} -g {} --sku {} -l {} --no-wait'.format(service_name, rg, sku, location)
         cmd = '{} {}'.format(cmd_base, cmd_suffix)
         self.cmd(cmd)
         self._wait_service(rg, service_name)
@@ -317,19 +317,19 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                                                   disable_ai_first=True):
         if disable_ai_first:
             self._asc_app_insights_update_disable_ai(rg, service_name)
-        self.cmd('spring-cloud app-insights update -g {} -n {} --no-wait {}'
+        self.cmd('spring app-insights update -g {} -n {} --no-wait {}'
                  .format(rg, service_name, cmd_suffix))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, target_ai_status)
         self._test_sampling_rate(rg, service_name, target_sampling_rate)
 
     def _clean_service(self, rg, service_name):
-        self.cmd('spring-cloud delete -n {} -g {} --no-wait'
+        self.cmd('spring delete -n {} -g {} --no-wait'
                  .format(service_name, rg))
 
     def _wait_service(self, rg, service_name):
         for i in range(10):
-            result = self.cmd('spring-cloud show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
+            result = self.cmd('spring show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
             if result['properties']['provisioningState'] == "Succeeded":
                 break
             elif result['properties']['provisioningState'] == "Failed":
@@ -339,32 +339,32 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
     def _test_asc_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
         self._asc_update_disable_ai(rg, service_name)
-        self.cmd('spring-cloud update -g {} -n {} --no-wait {}'
+        self.cmd('spring update -g {} -n {} --no-wait {}'
                  .format(rg, service_name, cmd_suffix))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, target_ai_status)
 
     def _test_app_insights_enable_status(self, rg, service_name, target_status):
-        result = self.cmd('spring-cloud app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
+        result = self.cmd('spring app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
         self.assertEquals(result['traceEnabled'], target_status)
 
     def _test_sampling_rate(self, rg, service_name, target_sampling_rate):
-        result = self.cmd('spring-cloud app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
+        result = self.cmd('spring app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
         self.assertEquals(result['appInsightsSamplingRate'], target_sampling_rate)
 
     def _asc_update_disable_ai(self, rg, service_name):
-        self.cmd('spring-cloud update -g {} -n {} --disable-app-insights --no-wait'.format(rg, service_name))
+        self.cmd('spring update -g {} -n {} --disable-app-insights --no-wait'.format(rg, service_name))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, False)
 
     def _asc_app_insights_update_disable_ai(self, rg, service_name):
-        self.cmd('spring-cloud app-insights update -g {} -n {} --disable --no-wait'.format(rg, service_name))
+        self.cmd('spring app-insights update -g {} -n {} --disable --no-wait'.format(rg, service_name))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, False)
 
     def _wait_ai(self, rg, service_name):
         for i in range(100):
-            result = self.cmd('spring-cloud app-insights show -g {} -n {} '
+            result = self.cmd('spring app-insights show -g {} -n {} '
                               '--query "provisioningState" -o tsv'
                               .format(rg, service_name)).output.strip()
             if result == "Succeeded":

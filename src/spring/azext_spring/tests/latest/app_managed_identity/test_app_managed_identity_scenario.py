@@ -42,21 +42,21 @@ class AppIdentityAssign(ScenarioTest):
             'ua2': USER_IDENTITY_RESOURCE_ID_2
         })
 
-        self.cmd('spring-cloud app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned', checks=[
+        self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned', checks=[
             self.check('identity.type', None)
         ])
 
-        self.cmd('spring-cloud app identity show -n {app} -g {rg} -s {serviceName}', checks=[
+        self.cmd('spring app identity show -n {app} -g {rg} -s {serviceName}', checks=[
             self.is_empty()
         ])
 
-        self.cmd('spring-cloud app identity assign -n {app} -g {rg} -s {serviceName} --system-assigned', checks=[
+        self.cmd('spring app identity assign -n {app} -g {rg} -s {serviceName} --system-assigned', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
             self.exists('identity.tenantId'),
             self.exists('identity.principalId')
         ])
 
-        app = self.cmd('spring-cloud app identity assign -n {app} -g {rg} -s {serviceName} --user-assigned {ua1} {ua2}', checks=[
+        app = self.cmd('spring app identity assign -n {app} -g {rg} -s {serviceName} --user-assigned {ua1} {ua2}', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
             self.exists('identity.tenantId'),
             self.exists('identity.principalId'),
@@ -67,7 +67,7 @@ class AppIdentityAssign(ScenarioTest):
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
-        app = self.cmd('spring-cloud app identity remove -n {app} -g {rg} -s {serviceName} --user-assigned {ua1}', checks=[
+        app = self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --user-assigned {ua1}', checks=[
             self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
             self.exists('identity.tenantId'),
             self.exists('identity.principalId'),
@@ -78,17 +78,17 @@ class AppIdentityAssign(ScenarioTest):
         self.assertTrue(len(user_identity_dict) == 1)
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
-        self.cmd('spring-cloud app identity remove -n {app} -g {rg} -s {serviceName} --user-assigned {ua2}',checks=[
+        self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --user-assigned {ua2}',checks=[
            self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED, case_sensitive=False),
            self.exists('identity.tenantId'),
            self.exists('identity.principalId'),
            self.check('identity.userAssignedIdentities', None)
         ])
 
-        self.cmd('spring-cloud app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned',
+        self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned',
                  checks=[self.check('identity', None)])
 
-        app = self.cmd('spring-cloud app identity assign -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
+        app = self.cmd('spring app identity assign -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
            self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
            self.exists('identity.tenantId'),
            self.exists('identity.principalId'),
@@ -99,7 +99,7 @@ class AppIdentityAssign(ScenarioTest):
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
-        self.cmd('spring-cloud app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}',
+        self.cmd('spring app identity remove -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}',
                  checks=[self.check('identity', None)])
 
 
