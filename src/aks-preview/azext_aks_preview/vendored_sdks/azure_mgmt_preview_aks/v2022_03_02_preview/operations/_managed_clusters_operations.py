@@ -1245,7 +1245,7 @@ class ManagedClustersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-
+        
         request = build_list_cluster_user_credentials_request(
             subscription_id=self._config.subscription_id,
             resource_group_name=resource_group_name,
