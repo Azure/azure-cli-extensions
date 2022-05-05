@@ -58,7 +58,7 @@ class WebSocketConnection:
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container, startup_command=startup_command)
         self._socket = websocket.WebSocket(enable_multithread=True)
-        logger.warning("Attempting to connect to %s", self._url)
+        logger.info("Attempting to connect to %s", self._url)
         self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])
 
         self.is_connected = True

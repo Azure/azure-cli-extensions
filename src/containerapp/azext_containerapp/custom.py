@@ -1965,7 +1965,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
            f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
 
-    logger.warning("connecting to : %s", url)
+    logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(), "output": output_format, "tailLines": tail}
     headers = {"Authorization": f"Bearer {token}"}
     resp = requests.get(url, timeout=None, stream=True, params=request_params, headers=headers)

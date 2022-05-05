@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-statements, consider-using-f-string, option_length_too_long
+# pylint: disable=line-too-long, too-many-statements, consider-using-f-string
 
 from knack.arguments import CLIArgumentType
 
@@ -149,11 +149,11 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env storage') as c:
         c.argument('name', id_part=None)
-        c.argument('storage_name', help="Name of the storage.")
+        c.argument('storage_name', options_list=["--storage-name", "-s"], help="Name of the storage.")
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
-        c.argument('azure_file_account_key', help="Key of the AzureFile storage account.")
-        c.argument('azure_file_share_name', help="Name of the share on the AzureFile storage.")
-        c.argument('azure_file_account_name', help="Name of the AzureFile storage account.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "-a"], help="Name of the AzureFile storage account.")
 
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
