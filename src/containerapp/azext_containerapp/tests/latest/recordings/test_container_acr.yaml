@@ -1,0 +1,3515 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T17:05:05Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '311'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"sku": {"name": "PerGB2018"}, "retentionInDays":
+      30, "workspaceCapping": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '116'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-loganalytics/13.0.0b2 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003?api-version=2021-12-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
+        \"04671cf0-00c2-45a7-99c1-3605aca44dd2\",\r\n    \"provisioningState\": \"Creating\",\r\n
+        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
+        \"Thu, 05 May 2022 17:05:10 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
+        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
+        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
+        \"Thu, 05 May 2022 23:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
+        \"Enabled\",\r\n    \"createdDate\": \"Thu, 05 May 2022 17:05:10 GMT\",\r\n
+        \   \"modifiedDate\": \"Thu, 05 May 2022 17:05:10 GMT\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.operationalinsights/workspaces/containerapp-env000003\",\r\n
+        \ \"name\": \"containerapp-env000003\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
+        \ \"location\": \"eastus2\"\r\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1079'
+      content-type:
+      - application/json
+      date:
+      - Thu, 05 May 2022 17:05:10 GMT
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-loganalytics/13.0.0b2 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003?api-version=2021-12-01-preview
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
+        \"04671cf0-00c2-45a7-99c1-3605aca44dd2\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
+        \"Thu, 05 May 2022 17:05:10 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
+        \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
+        \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
+        \"Thu, 05 May 2022 23:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
+        \"Enabled\",\r\n    \"createdDate\": \"Thu, 05 May 2022 17:05:10 GMT\",\r\n
+        \   \"modifiedDate\": \"Thu, 05 May 2022 17:05:12 GMT\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.operationalinsights/workspaces/containerapp-env000003\",\r\n
+        \ \"name\": \"containerapp-env000003\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
+        \ \"location\": \"eastus2\"\r\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1080'
+      content-type:
+      - application/json
+      date:
+      - Thu, 05 May 2022 17:05:41 GMT
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace get-shared-keys
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-loganalytics/13.0.0b2 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
+  response:
+    body:
+      string: "{\r\n  \"primarySharedKey\": \"F+EAXFspv8srJ3vq9NrUXZBorfMLQhpn8HlNHDssuQJJ1lnQPBDKg56OMvzrxEppdN2ejG2euxrpTxZs4KzUVA==\",\r\n
+        \ \"secondarySharedKey\": \"2w0mz2QH/G9iLBi1tAGWGj9elW0NCRZ38OtUxzZq4N3s6+SNRXgsenhO4pJOrACQop22c/SJGs9SH+PfoLU8Sg==\"\r\n}"
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      cachecontrol:
+      - no-cache
+      content-length:
+      - '235'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ams-apiversion:
+      - WebAPI1.0
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T17:05:05Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '311'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "tags": null, "properties": {"daprAIInstrumentationKey":
+      null, "vnetConfiguration": null, "internalLoadBalancerEnabled": false, "appLogsConfiguration":
+      {"destination": "log-analytics", "logAnalyticsConfiguration": {"customerId":
+      "04671cf0-00c2-45a7-99c1-3605aca44dd2", "sharedKey": "F+EAXFspv8srJ3vq9NrUXZBorfMLQhpn8HlNHDssuQJJ1lnQPBDKg56OMvzrxEppdN2ejG2euxrpTxZs4KzUVA=="}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '400'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543Z"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus2/managedEnvironmentOperationStatuses/257e81f8-878f-47e3-b258-770c12e78484?api-version=2022-01-01-preview&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:05:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Waiting","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Succeeded","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Succeeded","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --admin-enabled
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T17:05:05Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '311'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "sku": {"name": "Basic"}, "properties": {"adminUserEnabled":
+      true, "anonymousPullEnabled": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '122'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --admin-enabled
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerregistry/8.2.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2021-08-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:33.7916296+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:33.7916296+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-05-05T17:06:33.7916296Z","provisioningState":"Creating","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-05-05T17:06:35.0408241+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
+    headers:
+      api-supported-versions:
+      - 2021-08-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/operationStatuses/registries-b5e3f96f-cc95-11ec-8554-f4b301586573?api-version=2021-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1220'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --admin-enabled
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerregistry/8.2.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/operationStatuses/registries-b5e3f96f-cc95-11ec-8554-f4b301586573?api-version=2021-08-01-preview
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      api-supported-versions:
+      - 2021-08-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/operationStatuses/registries-b5e3f96f-cc95-11ec-8554-f4b301586573?api-version=2021-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --admin-enabled
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerregistry/8.2.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2021-08-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:33.7916296+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:33.7916296+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-05-05T17:06:33.7916296Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-05-05T17:06:35.0408241+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
+    headers:
+      api-supported-versions:
+      - 2021-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1221'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr credential show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerregistry/8.2.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005?api-version=2021-08-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005","name":"containerapp000005","location":"eastus2","tags":{},"systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:33.7916296+00:00","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:33.7916296+00:00"},"properties":{"loginServer":"containerapp000005.azurecr.io","creationDate":"2022-05-05T17:06:33.7916296Z","provisioningState":"Succeeded","adminUserEnabled":true,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2022-05-05T17:06:35.0408241+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
+    headers:
+      api-supported-versions:
+      - 2021-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1221'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr credential show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-containerregistry/8.2.0 Python/3.8.10
+        (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/containerapp000005/listCredentials?api-version=2021-08-01-preview
+  response:
+    body:
+      string: '{"username":"containerapp000005","passwords":[{"name":"password","value":"wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"},{"name":"password2","value":"WUbP7Z4Lk4lBFtj=nlLsHJ17bw7tkI7L"}]}'
+    headers:
+      api-supported-versions:
+      - 2021-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '174'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","name":"containerapp-e2e-env000002","type":"Microsoft.App/managedEnvironments","location":"eastus2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:05:45.2042543","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:05:45.2042543"},"properties":{"provisioningState":"Succeeded","defaultDomain":"redsky-5606fbe7.eastus2.azurecontainerapps.io","staticIp":"20.190.207.193","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04671cf0-00c2-45a7-99c1-3605aca44dd2"}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "identity": {"type": "None", "userAssignedIdentities":
+      null}, "properties": {"managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002",
+      "configuration": {"secrets": [{"name": "containerapp000005azurecrio-containerapp000005",
+      "value": "wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"}], "activeRevisionsMode": "single",
+      "ingress": null, "dapr": null, "registries": [{"server": "containerapp000005.azurecr.io",
+      "username": "containerapp000005", "passwordSecretRef": "containerapp000005azurecrio-containerapp000005"}]},
+      "template": {"revisionSuffix": null, "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp-e2e000006", "command": null, "args": null, "env": null,
+      "resources": null, "volumeMounts": null}], "scale": null, "volumes": null}},
+      "tags": null}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '943'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777Z","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus2/containerappOperationStatuses/71a77b54-3594-4c74-bb0c-a9afc7129f1e?api-version=2022-03-01&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '1439'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:06:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --registry-username --registry-server --registry-password
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1467'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:06:50.2425777"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1467'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006/listSecrets?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"containerapp000005azurecrio-containerapp000005","value":"wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"}]}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006",
+      "name": "containerapp-e2e000006", "type": "Microsoft.App/containerApps", "location":
+      "East US 2", "systemData": {"createdBy": "haroonfeisal@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-05T17:06:50.2425777", "lastModifiedBy": "haroonfeisal@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T17:06:50.2425777"},
+      "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002",
+      "outboundIpAddresses": ["20.190.207.198", "20.190.207.202", "20.190.207.204"],
+      "latestRevisionName": "containerapp-e2e000006--1ful7fx", "latestRevisionFqdn":
+      "", "customDomainVerificationId": "99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E",
+      "configuration": {"secrets": [{"name": "containerapp000005azurecrio-containerapp000005",
+      "value": "wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"}], "activeRevisionsMode": "Single",
+      "registries": [{"server": "containerapp000005.azurecr.io", "username": "containerapp000005",
+      "passwordSecretRef": "containerapp000005azurecrio-containerapp000005"}]}, "template":
+      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp-e2e000006", "resources": {"cpu": 0.5, "memory": "1Gi"},
+      "env": [{"name": "testenv", "value": "testing"}]}], "scale": {"maxReplicas":
+      1, "minReplicas": 0}}}, "identity": {"type": "None"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1644'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--1ful7fx","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus2/containerappOperationStatuses/94924c84-9cd3-45bd-aa6f-c4ec3175131f?api-version=2022-03-01&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '1529'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1528'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1528'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1528'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --min-replicas --max-replicas --set-env-vars
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:04.7354521"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006/listSecrets?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"containerapp000005azurecrio-containerapp000005","value":"wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"}]}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006",
+      "name": "containerapp-e2e000006", "type": "Microsoft.App/containerApps", "location":
+      "East US 2", "systemData": {"createdBy": "haroonfeisal@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-05T17:06:50.2425777", "lastModifiedBy": "haroonfeisal@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T17:07:04.7354521"},
+      "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002",
+      "outboundIpAddresses": ["20.190.207.198", "20.190.207.202", "20.190.207.204"],
+      "latestRevisionName": "containerapp-e2e000006--w04da81", "latestRevisionFqdn":
+      "", "customDomainVerificationId": "99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E",
+      "configuration": {"secrets": [{"name": "containerapp000005azurecrio-containerapp000005",
+      "value": "wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"}, {"name": "newsecret", "value":
+      "test"}], "activeRevisionsMode": "Single", "registries": [{"server": "containerapp000005.azurecr.io",
+      "username": "containerapp000005", "passwordSecretRef": "containerapp000005azurecrio-containerapp000005"}]},
+      "template": {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp-e2e000006", "env": [{"name": "testenv", "value": "testing"}],
+      "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale": {"minReplicas": 0, "maxReplicas":
+      1}}}, "identity": {"type": "None"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1684'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus2/containerappOperationStatuses/801f3e54-953f-47ff-971e-1fbe7f4b58aa?api-version=2022-03-01&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '1550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secrets
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1548'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secret-names
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","Central US EUAP"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","Canada Central","West Europe","North
+        Europe","East US","East US 2"],"apiVersions":["2022-03-01","2022-01-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2863'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --secret-names
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006","name":"containerapp-e2e000006","type":"Microsoft.App/containerApps","location":"East
+        US 2","systemData":{"createdBy":"haroonfeisal@microsoft.com","createdByType":"User","createdAt":"2022-05-05T17:06:50.2425777","lastModifiedBy":"haroonfeisal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T17:07:18.6444842"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002","outboundIpAddresses":["20.190.207.198","20.190.207.202","20.190.207.204"],"latestRevisionName":"containerapp-e2e000006--w04da81","latestRevisionFqdn":"","customDomainVerificationId":"99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E","configuration":{"secrets":[{"name":"containerapp000005azurecrio-containerapp000005"},{"name":"newsecret"}],"activeRevisionsMode":"Single","registries":[{"server":"containerapp000005.azurecr.io","username":"containerapp000005","passwordSecretRef":"containerapp000005azurecrio-containerapp000005"}]},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp-e2e000006","env":[{"name":"testenv","value":"testing"}],"resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"minReplicas":0,"maxReplicas":1}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1548'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --secret-names
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006/listSecrets?api-version=2022-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"name":"containerapp000005azurecrio-containerapp000005","value":"wHbrp=m7YL4u6aROY6b85suOAjg/jO7l"},{"name":"newsecret","value":"test"}]}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006",
+      "name": "containerapp-e2e000006", "type": "Microsoft.App/containerApps", "location":
+      "East US 2", "systemData": {"createdBy": "haroonfeisal@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-05T17:06:50.2425777", "lastModifiedBy": "haroonfeisal@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T17:07:18.6444842"},
+      "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-e2e-env000002",
+      "outboundIpAddresses": ["20.190.207.198", "20.190.207.202", "20.190.207.204"],
+      "latestRevisionName": "containerapp-e2e000006--w04da81", "latestRevisionFqdn":
+      "", "customDomainVerificationId": "99A6464610F70E526E50B6B7BECF7E0698398F28CB03C7A235D70FDF654D411E",
+      "configuration": {"secrets": [{"name": "newsecret", "value": "test"}], "activeRevisionsMode":
+      "Single", "registries": [{"server": "containerapp000005.azurecr.io", "username":
+      "containerapp000005", "passwordSecretRef": "containerapp000005azurecrio-containerapp000005"}]},
+      "template": {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "containerapp-e2e000006", "env": [{"name": "testenv", "value": "testing"}],
+      "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale": {"minReplicas": 0, "maxReplicas":
+      1}}}, "identity": {"type": "None"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp secret remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1579'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --secret-names
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19044-SP0) AZURECLI/2.34.1
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp-e2e000006?api-version=2022-03-01
+  response:
+    body:
+      string: '{"code":"ContainerAppRegistriesPasswordSecretRefNotFound","message":"PasswordSecretRef
+        ''containerapp000005azurecrio-containerapp000005'' defined for registry server
+        ''containerapp000005.azurecr.io'' not found."}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '208'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 May 2022 17:07:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+version: 1
