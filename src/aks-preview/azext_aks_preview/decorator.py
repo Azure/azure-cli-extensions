@@ -2663,7 +2663,6 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_enable_namespace_resources(mc)
         # update identity profile
         mc = self.update_identity_profile(mc)
-
         return mc
 
     def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:

@@ -280,17 +280,20 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
-        c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
-        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         # nodepool
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         # no validation for aks create because it already only supports Linux.
-        c.argument('message_of_the_day')
-        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
-        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)        
+        c.argument('message_of_the_day', type=str)
+        c.argument('enable_azure_keyvault_kms',
+                   action='store_true', is_preview=True)
+        c.argument('azure_keyvault_kms_key_id',
+                   validator=validate_azure_keyvault_kms_key_id, is_preview=True)
         c.argument('enable_namespace_resources', options_list=['--enable-namespace-resources'], help='Enables namespace resources.')
+        c.argument('gpu_instance_profile',
+                   arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -567,7 +570,7 @@ def load_arguments(self, _):
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
         c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(credential_formats))
-        c.argument('namespace_name', options_list=['--namespace'], help='If specified, the credentials are returned at the namespace scope, assuming the developer has access on the ARM resource for that namespace.')
+        c.argument('namespace_name', options_list=['--namespace'], help='If specified, the credentials are returned at the namespace scope, assuming the user has access on the ARM resource for that namespace.')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', help='The cluster name.')
