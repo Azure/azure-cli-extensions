@@ -160,9 +160,12 @@ def _getch_windows():
 def ping_container_app(app):
     site = safe_get(app, "properties", "configuration", "ingress", "fqdn")
     if site:
-        resp = requests.get(f'https://{site}')
-        if not resp.ok:
-            logger.info(f"Got bad status pinging app: {resp.status_code}")
+        try:
+            resp = requests.get(f'https://{site}', timeout=30)
+            if not resp.ok:
+                logger.info(f"Got bad status pinging app: {resp.status_code}")
+        except requests.exceptions.ReadTimeout:
+            logger.info("Timed out while pinging app external URL")
     else:
         logger.info("Could not fetch site external URL")
 
