@@ -21,14 +21,14 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class PrivateEndpointConnectionOperations:
-    """PrivateEndpointConnectionOperations async operations.
+class FhirServicesOperations:
+    """FhirServicesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~healthcare_apis_management_client.models
+    :type models: ~azure.mgmt.healthcareapis.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -43,29 +43,29 @@ class PrivateEndpointConnectionOperations:
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_service(
+    def list_by_workspace(
         self,
         resource_group_name: str,
-        resource_name: str,
+        workspace_name: str,
         **kwargs
-    ) -> AsyncIterable["models.PrivateEndpointConnectionListResult"]:
-        """Lists all private endpoint connections for a service.
+    ) -> AsyncIterable["models.FhirServiceCollection"]:
+        """Lists all FHIR Services for the given workspace.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either PrivateEndpointConnectionListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~healthcare_apis_management_client.models.PrivateEndpointConnectionListResult]
+        :return: An iterator like instance of either FhirServiceCollection or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.healthcareapis.models.FhirServiceCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnectionListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirServiceCollection"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-30"
+        api_version = "2021-11-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -75,11 +75,11 @@ class PrivateEndpointConnectionOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_service.metadata['url']  # type: ignore
+                url = self.list_by_workspace.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -94,11 +94,11 @@ class PrivateEndpointConnectionOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('PrivateEndpointConnectionListResult', pipeline_response)
+            deserialized = self._deserialize('FhirServiceCollection', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -116,44 +116,43 @@ class PrivateEndpointConnectionOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_service.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections'}  # type: ignore
+    list_by_workspace.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
+        workspace_name: str,
+        fhir_service_name: str,
         **kwargs
-    ) -> "models.PrivateEndpointConnection":
-        """Gets the specified private endpoint connection associated with the service.
+    ) -> "models.FhirService":
+        """Gets the properties of the specified FHIR Service.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection associated
-         with the Azure resource.
-        :type private_endpoint_connection_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
+        :param fhir_service_name: The name of FHIR Service resource.
+        :type fhir_service_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~healthcare_apis_management_client.models.PrivateEndpointConnection
+        :return: FhirService, or the result of cls(response)
+        :rtype: ~azure.mgmt.healthcareapis.models.FhirService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnection"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-30"
+        api_version = "2021-11-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
-            'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -174,42 +173,38 @@ class PrivateEndpointConnectionOperations:
             error = self._deserialize(models.ErrorDetails, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('PrivateEndpointConnection', pipeline_response)
+        deserialized = self._deserialize('FhirService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
-        status: Optional[Union[str, "models.PrivateEndpointServiceConnectionStatus"]] = None,
-        description: Optional[str] = None,
-        actions_required: Optional[str] = None,
+        workspace_name: str,
+        fhir_service_name: str,
+        fhirservice: "models.FhirService",
         **kwargs
-    ) -> "models.PrivateEndpointConnection":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnection"]
+    ) -> "models.FhirService":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        properties = models.PrivateEndpointConnection(status=status, description=description, actions_required=actions_required)
-        api_version = "2020-03-30"
+        api_version = "2021-11-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
-            'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -223,64 +218,62 @@ class PrivateEndpointConnectionOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(properties, 'PrivateEndpointConnection')
+        body_content = self._serialize.body(fhirservice, 'FhirService')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 201, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorDetails, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('PrivateEndpointConnection', pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize('FhirService', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('FhirService', pipeline_response)
+
+        if response.status_code == 202:
+            deserialized = self._deserialize('FhirService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
         resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
-        status: Optional[Union[str, "models.PrivateEndpointServiceConnectionStatus"]] = None,
-        description: Optional[str] = None,
-        actions_required: Optional[str] = None,
+        workspace_name: str,
+        fhir_service_name: str,
+        fhirservice: "models.FhirService",
         **kwargs
-    ) -> AsyncLROPoller["models.PrivateEndpointConnection"]:
-        """Update the state of the specified private endpoint connection associated with the service.
+    ) -> AsyncLROPoller["models.FhirService"]:
+        """Creates or updates a FHIR Service resource with the specified parameters.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection associated
-         with the Azure resource.
-        :type private_endpoint_connection_name: str
-        :param status: Indicates whether the connection has been Approved/Rejected/Removed by the owner
-         of the service.
-        :type status: str or ~healthcare_apis_management_client.models.PrivateEndpointServiceConnectionStatus
-        :param description: The reason for approval/rejection of the connection.
-        :type description: str
-        :param actions_required: A message indicating if changes on the service provider require any
-         updates on the consumer.
-        :type actions_required: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
+        :param fhir_service_name: The name of FHIR Service resource.
+        :type fhir_service_name: str
+        :param fhirservice: The parameters for creating or updating a Fhir Service resource.
+        :type fhirservice: ~azure.mgmt.healthcareapis.models.FhirService
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either PrivateEndpointConnection or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~healthcare_apis_management_client.models.PrivateEndpointConnection]
+        :return: An instance of AsyncLROPoller that returns either FhirService or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.healthcareapis.models.FhirService]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnection"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirService"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -289,11 +282,9 @@ class PrivateEndpointConnectionOperations:
         if cont_token is None:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                private_endpoint_connection_name=private_endpoint_connection_name,
-                status=status,
-                description=description,
-                actions_required=actions_required,
+                workspace_name=workspace_name,
+                fhir_service_name=fhir_service_name,
+                fhirservice=fhirservice,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -302,17 +293,17 @@ class PrivateEndpointConnectionOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('PrivateEndpointConnection', pipeline_response)
+            deserialized = self._deserialize('FhirService', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
-            'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -327,13 +318,149 @@ class PrivateEndpointConnectionOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
+
+    async def _update_initial(
+        self,
+        resource_group_name: str,
+        fhir_service_name: str,
+        workspace_name: str,
+        fhirservice_patch_resource: "models.FhirServicePatchResource",
+        **kwargs
+    ) -> "models.FhirService":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirService"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-11-01"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._update_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(fhirservice_patch_resource, 'FhirServicePatchResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        if response.status_code == 200:
+            deserialized = self._deserialize('FhirService', pipeline_response)
+
+        if response.status_code == 202:
+            deserialized = self._deserialize('FhirService', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
+
+    async def begin_update(
+        self,
+        resource_group_name: str,
+        fhir_service_name: str,
+        workspace_name: str,
+        fhirservice_patch_resource: "models.FhirServicePatchResource",
+        **kwargs
+    ) -> AsyncLROPoller["models.FhirService"]:
+        """Patch FHIR Service details.
+
+        :param resource_group_name: The name of the resource group that contains the service instance.
+        :type resource_group_name: str
+        :param fhir_service_name: The name of FHIR Service resource.
+        :type fhir_service_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
+        :param fhirservice_patch_resource: The parameters for updating a Fhir Service.
+        :type fhirservice_patch_resource: ~azure.mgmt.healthcareapis.models.FhirServicePatchResource
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either FhirService or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.healthcareapis.models.FhirService]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.FhirService"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._update_initial(
+                resource_group_name=resource_group_name,
+                fhir_service_name=fhir_service_name,
+                workspace_name=workspace_name,
+                fhirservice_patch_resource=fhirservice_patch_resource,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('FhirService', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
 
     async def _delete_initial(
         self,
         resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
+        fhir_service_name: str,
+        workspace_name: str,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -341,7 +468,7 @@ class PrivateEndpointConnectionOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-30"
+        api_version = "2021-11-01"
         accept = "application/json"
 
         # Construct URL
@@ -349,8 +476,8 @@ class PrivateEndpointConnectionOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
-            'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -368,30 +495,29 @@ class PrivateEndpointConnectionOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorDetails, response)
+            error = self._deserialize(models.Error, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore
 
     async def begin_delete(
         self,
         resource_group_name: str,
-        resource_name: str,
-        private_endpoint_connection_name: str,
+        fhir_service_name: str,
+        workspace_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Deletes a private endpoint connection.
+        """Deletes a FHIR Service.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
-        :param private_endpoint_connection_name: The name of the private endpoint connection associated
-         with the Azure resource.
-        :type private_endpoint_connection_name: str
+        :param fhir_service_name: The name of FHIR Service resource.
+        :type fhir_service_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -412,8 +538,8 @@ class PrivateEndpointConnectionOperations:
         if cont_token is None:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                private_endpoint_connection_name=private_endpoint_connection_name,
+                fhir_service_name=fhir_service_name,
+                workspace_name=workspace_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -428,8 +554,8 @@ class PrivateEndpointConnectionOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
-            'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
+            'fhirServiceName': self._serialize.url("fhir_service_name", fhir_service_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -444,4 +570,4 @@ class PrivateEndpointConnectionOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/fhirservices/{fhirServiceName}'}  # type: ignore

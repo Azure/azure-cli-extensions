@@ -19,14 +19,14 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class OperationOperations:
-    """OperationOperations async operations.
+class Operations:
+    """Operations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~healthcare_apis_management_client.models
+    :type models: ~azure.mgmt.healthcareapis.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -44,20 +44,20 @@ class OperationOperations:
     def list(
         self,
         **kwargs
-    ) -> AsyncIterable["models.OperationListResult"]:
-        """Lists all of the available Healthcare service REST API operations.
+    ) -> AsyncIterable["models.ListOperations"]:
+        """Lists all of the available operations supported by Microsoft Healthcare resource provider.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either OperationListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~healthcare_apis_management_client.models.OperationListResult]
+        :return: An iterator like instance of either ListOperations or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.healthcareapis.models.ListOperations]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ListOperations"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-30"
+        api_version = "2021-11-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -80,7 +80,7 @@ class OperationOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('OperationListResult', pipeline_response)
+            deserialized = self._deserialize('ListOperations', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
