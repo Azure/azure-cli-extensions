@@ -68,6 +68,7 @@ from ._validators import (
     validate_acr,
     validate_addon,
     validate_addons,
+    validate_apiserver_subnet_id,
     validate_assign_identity,
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
@@ -200,6 +201,8 @@ def load_arguments(self, _):
         c.argument('uptime_sla', action='store_true')
         c.argument('fqdn_subdomain')
         c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
+        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('disable_public_fqdn', action='store_true')
@@ -365,6 +368,8 @@ def load_arguments(self, _):
         c.argument('enable_oidc_issuer', action='store_true', is_preview=True)
         c.argument('enable_azure_keyvault_kms', action='store_true', is_preview=True)
         c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id, is_preview=True)
+        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name',

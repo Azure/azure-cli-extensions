@@ -91,6 +91,7 @@ ManagedClusterStorageProfile = TypeVar('ManagedClusterStorageProfile')
 ManagedClusterStorageProfileDiskCSIDriver = TypeVar('ManagedClusterStorageProfileDiskCSIDriver')
 ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfileFileCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
+ManagedClusterAPIServerAccessProfile = TypeVar('ManagedClusterAPIServerAccessProfile')
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
@@ -163,6 +164,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterStorageProfileSnapshotController = self.__cmd.get_models(
             "ManagedClusterStorageProfileSnapshotController",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterAPIServerAccessProfile = self.__cmd.get_models(
+            "ManagedClusterAPIServerAccessProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -1964,6 +1970,110 @@ class AKSPreviewContext(AKSContext):
             cluster_identity_resource_id = assigned_identity
         return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
 
+    def _get_enable_apiserver_vnet_integration(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_apiserver_vnet_integration.
+
+        This function supports the option of enable_validation. When enable_apiserver_vnet_integration is specified,
+        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
+        For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.enable_vnet_integration is not None
+            ):
+                enable_apiserver_vnet_integration = self.mc.api_server_access_profile.enable_vnet_integration
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if enable_apiserver_vnet_integration:
+                    # remove this validation after we support public cluster
+                    if not self._get_enable_private_cluster(enable_validation=False):
+                        raise RequiredArgumentMissingError(
+                            "--apiserver-vnet-integration is only supported for private cluster right now. "
+                            "Please use it together with --enable-private-cluster"
+                        )
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if enable_apiserver_vnet_integration:
+                    if self._get_apiserver_subnet_id(enable_validation=False) is None:
+                        raise RequiredArgumentMissingError(
+                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                        )
+
+        return enable_apiserver_vnet_integration
+
+    def get_enable_apiserver_vnet_integration(self) -> bool:
+        """Obtain the value of enable_apiserver_vnet_integration.
+
+        This function will verify the parameter by default. When enable_apiserver_vnet_integration is specified,
+        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
+        For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError
+
+        :return: bool
+        """
+        return self._get_enable_apiserver_vnet_integration(enable_validation=True)
+
+    def _get_apiserver_subnet_id(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of apiserver_subnet_id.
+
+        This function supports the option of enable_validation. When apiserver_subnet_id is specified,
+        if enable_apiserver_vnet_integration is not used, raise an RequiredArgumentMissingError;
+        For CREATE: if vnet_subnet_id is not used, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.subnet_id is not None
+            ):
+                apiserver_subnet_id = self.mc.api_server_access_profile.subnet_id
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                vnet_subnet_id = self.get_vnet_subnet_id()
+                if apiserver_subnet_id and vnet_subnet_id is None:
+                    raise RequiredArgumentMissingError(
+                        '"--apiserver-subnet-id" requires "--vnet-subnet-id".')
+
+            enable_apiserver_vnet_integration = self._get_enable_apiserver_vnet_integration(
+                enable_validation=False)
+            if (
+                apiserver_subnet_id and
+                (
+                    enable_apiserver_vnet_integration is None or
+                    enable_apiserver_vnet_integration is False
+                )
+            ):
+                raise RequiredArgumentMissingError(
+                    '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
+
+        return apiserver_subnet_id
+
+    def get_apiserver_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of apiserver_subnet_id.
+
+        This function will verify the parameter by default. When apiserver_subnet_id is specified,
+        if enable_apiserver_vnet_integration is not specified, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        return self._get_apiserver_subnet_id(enable_validation=True)
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -2346,6 +2456,20 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_apiserver_vnet_integration(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up apiserverAccessProfile enableVnetIntegration and subnetId for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if self.context.get_enable_apiserver_vnet_integration():
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+            mc.api_server_access_profile.enable_vnet_integration = True
+        if self.context.get_apiserver_subnet_id():
+            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -2378,6 +2502,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         mc = self.set_up_storage_profile(mc)
 
+        mc = self.set_up_apiserver_vnet_integration(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2752,6 +2877,22 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             mc.identity_profile = identity_profile
         return mc
 
+    def update_apiserver_vnet_integration(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update apiServerAccessProfile vnet integration related property for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_apiserver_vnet_integration():
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+            mc.api_server_access_profile.enable_vnet_integration = True
+        if self.context.get_apiserver_subnet_id():
+            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+
+        return mc
+
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
         """Helper function to patch the ManagedCluster object.
 
@@ -2796,6 +2937,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_azure_keyvault_kms(mc)
         # update identity profile
         mc = self.update_identity_profile(mc)
+        mc = self.update_apiserver_vnet_integration(mc)
 
         mc = self.update_storage_profile(mc)
 
