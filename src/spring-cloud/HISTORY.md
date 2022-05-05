@@ -2,7 +2,7 @@ Release History
 ===============
 3.1.6
 ---
-* Mark command as deprecated implicitly because command group 'spring-cloud' is deprecated and will be removed in a future release. Use 'spring' instead.
+* Command group 'spring-cloud' is deprecated and will be removed in a future release. Use 'spring' instead.
 
 3.1.5
 ---

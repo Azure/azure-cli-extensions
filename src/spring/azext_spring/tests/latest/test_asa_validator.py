@@ -277,7 +277,7 @@ class TestValidateIPRanges(unittest.TestCase):
                        service_runtime_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('--vnet and Azure Spring instance should be in the same location.' in str(context.exception))
+        self.assertTrue('--vnet and Azure Spring Apps instance should be in the same location.' in str(context.exception))
 
 
 def _mock_term_client(accepted, registered):
@@ -317,7 +317,7 @@ class TestSkuValidator(unittest.TestCase):
         ns = Namespace(sku='Enterprise')
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_sku(_get_test_cmd(), ns)
-        self.assertTrue('Terms for Azure Spring Enterprise is not accepted.' in str(context.exception))
+        self.assertTrue('Terms for Azure Spring Apps Enterprise is not accepted.' in str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_registered_client)
     def test_provider_not_registered(self):

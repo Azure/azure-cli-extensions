@@ -315,7 +315,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env='{"BP_JVM_VERSION": "8.*"}')
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', build_env={'BP_JVM_VERSION': '8.*'})
         resource = self.put_build_resource
         self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
 
@@ -615,7 +615,7 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_persistent_storage_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Enterprise tier spring instance does not support --enable-persistent-storage'):
+        with self.assertRaisesRegexp(CLIError, 'Enterprise tier Spring instance does not support --enable-persistent-storage'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
 
     def test_app_with_persistent_storage(self):
