@@ -88,10 +88,12 @@ def load_command_table(self, _):
     )
 
     with self.command_group('spring-cloud', custom_command_type=spring_cloud_routing_util,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
 
     with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
@@ -101,6 +103,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('enable ', 'enable_test_endpoint')
         g.custom_show_command('disable ', 'disable_test_endpoint')
@@ -108,12 +111,14 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_keys')
 
     with self.command_group('spring-cloud config-server', client_factory=cf_config_servers,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
 
     with self.command_group('spring-cloud config-server git', client_factory=cf_config_servers,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
@@ -122,12 +127,14 @@ def load_command_table(self, _):
         g.custom_command('repo list', 'config_repo_list')
 
     with self.command_group('spring-cloud app', custom_command_type=app_command,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
 
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
@@ -149,6 +156,7 @@ def load_command_table(self, _):
         g.custom_command('append-loaded-public-certificate', 'app_append_loaded_public_certificate')
 
     with self.command_group('spring-cloud app identity', custom_command_type=app_managed_identity_command,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('assign', 'app_identity_assign', validator=validate_app_identity_assign_or_warning)
         g.custom_command('remove', 'app_identity_remove', validator=validate_app_identity_remove_or_warning)
@@ -156,15 +164,17 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'app_identity_show')
 
     with self.command_group('spring-cloud app log', client_factory=cf_spring_cloud_20220101preview,
-                            deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True),
+                            deprecate_info=g.deprecate(redirect='az spring app logs', hide=True),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
     with self.command_group('spring-cloud app deployment', custom_command_type=app_command,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
     with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_cloud_deployment_output)
@@ -176,6 +186,7 @@ def load_command_table(self, _):
         g.custom_command('start-jfr', 'deployment_start_jfr')
 
     with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'binding_list')
         g.custom_show_command('show', 'binding_get')
@@ -188,6 +199,7 @@ def load_command_table(self, _):
         g.custom_show_command('remove', 'binding_remove')
 
     with self.command_group('spring-cloud storage', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'storage_list')
         g.custom_show_command('show', 'storage_get')
@@ -197,6 +209,7 @@ def load_command_table(self, _):
         g.custom_command('list-persistent-storage', "storage_list_persistent_storage", table_transformer=transform_app_table_output)
 
     with self.command_group('spring-cloud certificate', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('add', 'certificate_add')
         g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_cloud_certificate_output)
@@ -205,6 +218,7 @@ def load_command_table(self, _):
         g.custom_command('list-reference-app', 'certificate_list_reference_app', table_transformer=transform_app_table_output)
 
     with self.command_group('spring-cloud app custom-domain', client_factory=cf_spring_cloud_20220101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('bind', 'domain_bind')
         g.custom_show_command('show', 'domain_show', table_transformer=transform_spring_cloud_custom_domain_output)
@@ -214,12 +228,14 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud app-insights',
                             client_factory=cf_spring_cloud_20201101preview,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'app_insights_update', supports_no_wait=True)
         g.custom_show_command('show', 'app_insights_show')
 
     with self.command_group('spring-cloud service-registry',
                             custom_command_type=service_registry_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_show_command('show', 'service_registry_show',
@@ -229,6 +245,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud application-configuration-service',
                             custom_command_type=application_configuration_service_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_command('clear', 'application_configuration_service_clear')
@@ -238,6 +255,7 @@ def load_command_table(self, _):
         g.custom_command('unbind', 'application_configuration_service_unbind')
 
     with self.command_group('spring-cloud application-configuration-service git repo',
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             custom_command_type=application_configuration_service_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('add', 'application_configuration_service_git_add')
@@ -247,6 +265,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud gateway',
                             custom_command_type=gateway_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_show_command('show', 'gateway_show', table_transformer=transform_spring_cloud_gateway_output)
@@ -255,6 +274,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud gateway custom-domain',
                             custom_command_type=gateway_custom_domain_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'gateway_custom_domain_show',
                               table_transformer=transform_spring_cloud_custom_domain_output)
@@ -266,6 +286,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud gateway route-config',
                             custom_command_type=gateway_route_config_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'gateway_route_config_show')
         g.custom_command('list', 'gateway_route_config_list')
@@ -275,6 +296,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud api-portal',
                             custom_command_type=api_portal_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception,
                             is_preview=True) as g:
         g.custom_show_command('show', 'api_portal_show', table_transformer=transform_api_portal_output)
@@ -283,6 +305,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud api-portal custom-domain',
                             custom_command_type=api_portal_custom_domain_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'api_portal_custom_domain_show',
                               table_transformer=transform_spring_cloud_custom_domain_output)
@@ -294,6 +317,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud build-service builder',
                             custom_command_type=builder_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception, is_preview=True) as g:
         g.custom_command('create', 'create_or_update_builder', supports_no_wait=True)
         g.custom_command('update', 'create_or_update_builder', supports_no_wait=True)
@@ -302,6 +326,7 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud build-service builder buildpack-binding',
                             custom_command_type=buildpack_binding_cmd_group,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
                             exception_handler=handle_asc_exception, is_preview=True) as g:
         g.custom_command('create', 'create_or_update_buildpack_binding')
         g.custom_command('set', 'create_or_update_buildpack_binding')
@@ -309,8 +334,11 @@ def load_command_table(self, _):
         g.custom_command('list', 'buildpack_binding_list')
         g.custom_command('delete', 'buildpack_binding_delete', confirmation=True)
 
-    with self.command_group('spring-cloud build-service', exception_handler=handle_asc_exception, is_preview=True):
+    with self.command_group('spring-cloud build-service', exception_handler=handle_asc_exception,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring'),
+                            is_preview=True):
         pass
 
-    with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
+    with self.command_group('spring-cloud', exception_handler=handle_asc_exception,
+                            deprecate_info=self.deprecate(target='spring-cloud', redirect='spring', hide=True)):
         pass
