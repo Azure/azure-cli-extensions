@@ -62,19 +62,11 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('force_update_tag', help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
-<<<<<<< HEAD
-        c.argument('publisher', help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], help='Specify the type of the extension; an example '
-                   'is "CustomScriptExtension".')
-        c.argument('type_handler_version', help='Specify the version of the script handler.')
-        c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
-=======
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
         c.argument('type_', options_list=['--type'], help='Specify the type of the extension; an example '
                    'is "CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
         c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicate whether the extension '
->>>>>>> 2a42b49a4236601f63ae2996d56558aa3c5b7188
                    'should be automatically upgraded by the platform if there is a newer version available.')
         c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
