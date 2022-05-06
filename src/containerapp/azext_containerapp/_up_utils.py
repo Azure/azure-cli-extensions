@@ -57,6 +57,8 @@ from .custom import (
     create_or_update_github_action,
 )
 
+from ._github_oauth import load_github_token_from_cache, get_github_access_token
+
 logger = get_logger(__name__)
 
 
@@ -865,3 +867,14 @@ def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
         if env_def:
             if location != env_def["location"]:
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
+
+
+def get_token(cmd, repo, token):
+    if not repo:
+        return None
+    if token:
+        return token
+    token = load_github_token_from_cache(cmd, repo)
+    if not token:
+        token = get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
+    return token

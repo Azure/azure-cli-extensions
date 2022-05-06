@@ -244,7 +244,7 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
 def repo_url_to_name(repo_url):
     repo = None
-    repo = repo_url.split('/')
+    repo = [s for s in repo_url.split('/') if s]
     if len(repo) >= 2:
         repo = '/'.join(repo[-2:])
     return repo
