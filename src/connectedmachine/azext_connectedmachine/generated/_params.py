@@ -63,7 +63,7 @@ def load_arguments(self, _):
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
+        c.argument('type_', options_list=['--type'], help='Specify the type of the extension; an example '
                    'is "CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
         c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
