@@ -11,13 +11,17 @@
 
 def cf_healthcareapis_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_healthcareapis.vendored_sdks.healthcareapis import HealthcareApisManagementClient
+    from ..vendored_sdks.healthcareapis import HealthcareApisManagementClient
     return get_mgmt_service_client(cli_ctx,
                                    HealthcareApisManagementClient)
 
 
 def cf_service(cli_ctx, *_):
     return cf_healthcareapis_cl(cli_ctx).services
+
+
+def cf_operation_result(cli_ctx, *_):
+    return cf_healthcareapis_cl(cli_ctx).operation_results
 
 
 def cf_private_endpoint_connection(cli_ctx, *_):
@@ -60,5 +64,4 @@ def cf_workspace_private_link_resource(cli_ctx, *_):
     return cf_healthcareapis_cl(cli_ctx).workspace_private_link_resources
 
 
-def cf_operation_result(cli_ctx, *_):
-    return cf_healthcareapis_cl(cli_ctx).operation_results
+

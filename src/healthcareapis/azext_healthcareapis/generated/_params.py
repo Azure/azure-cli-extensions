@@ -21,11 +21,12 @@ from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 from azext_healthcareapis.action import (
-    AddServicesAccessPolicies,
+    AddAccessPolicies,
     AddCosmosDbConfiguration,
-    AddServicesAuthenticationConfiguration,
-    AddServicesCorsConfiguration,
+    AddAuthenticationConfiguration,
+    AddCorsConfiguration,
     AddServicesOciArtifacts,
+	AddPrivateEndpointConnections,
     AddPrivateLinkServiceConnectionState,
     AddIngestionEndpointConfiguration,
     AddFhirservicesAccessPolicies,
@@ -49,31 +50,31 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.')
         c.argument('kind', arg_type=get_enum_type(['fhir', 'fhir-Stu3', 'fhir-R4']), help='The kind of the service.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('etag', type=str, help='An etag associated with the resource, used for optimistic concurrency when '
                    'editing it.')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'None']), help='Type of '
-                   'identity being specified, currently SystemAssigned and None are allowed.', arg_group='Identity')
-        c.argument('access_policies', action=AddServicesAccessPolicies, nargs='+', help='The access policies of the '
-                   'service instance.')
-        c.argument('cosmos_db_configuration', action=AddCosmosDbConfiguration, nargs='+', help='The settings for the '
+        c.argument('identity_type', arg_type=get_enum_type(['SystemAssigned', 'None']), help='Type of identity being '
+                   'specified, currently SystemAssigned and None are allowed.')
+        c.argument('access_policies', action=AddAccessPolicies, nargs='*', help='The access policies of the service '
+                   'instance.')
+        c.argument('cosmos_db_configuration', action=AddCosmosDbConfiguration, nargs='*', help='The settings for the '
                    'Cosmos DB database backing the service.')
-        c.argument('authentication_configuration', action=AddServicesAuthenticationConfiguration, nargs='+', help='The '
+        c.argument('authentication_configuration', action=AddAuthenticationConfiguration, nargs='*', help='The '
                    'authentication configuration for the service instance.')
-        c.argument('cors_configuration', action=AddServicesCorsConfiguration, nargs='+', help='The settings for the '
-                   'CORS configuration of the service instance.')
-        c.argument('private_endpoint_connections', type=validate_file_or_dict, help='The list of private endpoint '
-                   'connections that are set up for this resource. Expected value: json-string/json-file/@json-file.')
+        c.argument('cors_configuration', action=AddCorsConfiguration, nargs='*', help='The settings for the CORS '
+                   'configuration of the service instance.')
+        c.argument('private_endpoint_connections', action=AddPrivateEndpointConnections, nargs='*', help='The list of '
+                   'private endpoint connections that are set up for this resource.')
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Control permission '
                    'for data plane traffic coming from public networks while private endpoint is enabled.')
-        c.argument('login_servers', nargs='+', help='The list of the ACR login servers.',
-                   arg_group='Acr Configuration')
-        c.argument('oci_artifacts', action=AddServicesOciArtifacts, nargs='+', help='The list of Open Container '
+        c.argument('login_servers', type=str, help='The list of login servers that shall'
+                   'be added to the service instance.')
+        c.argument('oci_artifacts', action=AddServicesOciArtifacts, nargs='*', help='The list of Open Container '
                    'Initiative (OCI) artifacts.', arg_group='Acr Configuration')
-        c.argument('storage_account_name', type=str, help='The name of the default export storage account.',
-                   arg_group='Export Configuration')
+        c.argument('export_configuration_storage_account_name', type=str, help='The name of the default export storage '
+                   'account.')
 
     with self.argument_context('healthcareapis service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -89,6 +90,11 @@ def load_arguments(self, _):
     with self.argument_context('healthcareapis service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
+
+    with self.argument_context('healthcareapis operation-result show') as c:
+        c.argument('location_name', type=str, help='The location of the operation.', id_part='name')
+        c.argument('operation_result_id', type=str, help='The ID of the operation result to get.',
+                   id_part='child_name_1')
 
     with self.argument_context('healthcareapis private-endpoint-connection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -107,7 +113,7 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection associated with the Azure resource')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
@@ -117,7 +123,7 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection associated with the Azure resource', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
@@ -144,6 +150,27 @@ def load_arguments(self, _):
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
         c.argument('group_name', type=str, help='The name of the private link resource group.',
                    id_part='child_name_1')
+
+    with self.argument_context('healthcareapis acr list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the service instance.')
+
+    with self.argument_context('healthcareapis acr add') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
+        c.argument('login_servers', type=str, help='The list of login servers that shall'
+                   'be added to the service instance.')
+
+    with self.argument_context('healthcareapis acr remove') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
+        c.argument('login_servers', type=str, help='The list of login servers that shall'
+                   'be removed from the service instance.')
+
+    with self.argument_context('healthcareapis acr reset') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
+        c.argument('login_servers', type=str, help='The list of login servers to substitute for the existing one.')
 
     with self.argument_context('healthcareapis workspace list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -273,7 +300,7 @@ def load_arguments(self, _):
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
                    'objects ({}) in requests. Expected value: json-string/json-file/@json-file.',
                    arg_group='Identity')
-        c.argument('ingestion_endpoint_configuration', action=AddIngestionEndpointConfiguration, nargs='+',
+        c.argument('ingestion_endpoint_configuration', action=AddIngestionEndpointConfiguration, nargs='*',
                    help='Source configuration.')
         c.argument('content', type=validate_file_or_dict, help='The mapping. Expected value: '
                    'json-string/json-file/@json-file.', arg_group='Device Mapping')
@@ -398,25 +425,25 @@ def load_arguments(self, _):
                    'objects ({}) in requests. Expected value: json-string/json-file/@json-file.',
                    arg_group='Identity')
         c.argument('kind', arg_type=get_enum_type(['fhir-Stu3', 'fhir-R4']), help='The kind of the service.')
-        c.argument('access_policies', action=AddFhirservicesAccessPolicies, nargs='+', help='Fhir Service access '
+        c.argument('access_policies', action=AddFhirservicesAccessPolicies, nargs='*', help='Fhir Service access '
                    'policies.')
-        c.argument('authentication_configuration', action=AddFhirservicesAuthenticationConfiguration, nargs='+',
+        c.argument('authentication_configuration', action=AddFhirservicesAuthenticationConfiguration, nargs='*',
                    help='Fhir Service authentication configuration.')
-        c.argument('cors_configuration', action=AddFhirservicesCorsConfiguration, nargs='+', help='Fhir Service Cors '
+        c.argument('cors_configuration', action=AddFhirservicesCorsConfiguration, nargs='*', help='Fhir Service Cors '
                    'configuration.')
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Control permission '
                    'for data plane traffic coming from public networks while private endpoint is enabled.')
         c.argument('default', arg_type=get_enum_type(['no-version', 'versioned', 'versioned-update']), help='The '
                    'default value for tracking history across all resources.', arg_group='Resource Version Policy '
                    'Configuration')
-        c.argument('resource_type_overrides', action=AddResourceTypeOverrides, nargs='+', help='A list of FHIR '
+        c.argument('resource_type_overrides', action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
                    'Resources and their version policy overrides. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...',
                    arg_group='Resource Version Policy Configuration')
         c.argument('storage_account_name', type=str, help='The name of the default export storage account.',
                    arg_group='Export Configuration')
-        c.argument('login_servers', nargs='+', help='The list of the Azure container registry login servers.',
+        c.argument('login_servers', nargs='*', help='The list of the Azure container registry login servers.',
                    arg_group='Acr Configuration')
-        c.argument('oci_artifacts', action=AddFhirservicesOciArtifacts, nargs='+', help='The list of Open Container '
+        c.argument('oci_artifacts', action=AddFhirservicesOciArtifacts, nargs='*', help='The list of Open Container '
                    'Initiative (OCI) artifacts.', arg_group='Acr Configuration')
 
     with self.argument_context('healthcareapis workspace fhir-service update') as c:
@@ -463,7 +490,7 @@ def load_arguments(self, _):
         c.argument('workspace_name', type=str, help='The name of workspace resource.')
         c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
@@ -472,7 +499,7 @@ def load_arguments(self, _):
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
         c.ignore('properties')
@@ -499,7 +526,3 @@ def load_arguments(self, _):
         c.argument('group_name', type=str, help='The name of the private link resource group.',
                    id_part='child_name_1')
 
-    with self.argument_context('healthcareapis operation-result show') as c:
-        c.argument('location_name', type=str, help='The location of the operation.', id_part='name')
-        c.argument('operation_result_id', type=str, help='The ID of the operation result to get.',
-                   id_part='child_name_1')

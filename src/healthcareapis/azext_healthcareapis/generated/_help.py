@@ -19,7 +19,7 @@ helps['healthcareapis'] = '''
 
 helps['healthcareapis service'] = """
     type: group
-    short-summary: Manage service with healthcareapis
+    short-summary: healthcareapis service
 """
 
 helps['healthcareapis service list'] = """
@@ -81,6 +81,17 @@ helps['healthcareapis service create'] = """
             methods: The methods to be allowed via CORS.
             max-age: The max age to be allowed via CORS.
             allow-credentials: If credentials are allowed via CORS.
+      - name: --private-endpoint-connections
+        short-summary: "The list of private endpoint connections that are set up for this resource."
+        long-summary: |
+            Usage: --private-endpoint-connections status=XX description=XX actions-required=XX
+
+            status: Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.
+            description: The reason for approval/rejection of the connection.
+            actions-required: A message indicating if changes on the service provider require any updates on the \
+consumer.
+
+            Multiple actions can be specified by using more than one --private-endpoint-connections argument.
       - name: --oci-artifacts
         short-summary: "The list of Open Container Initiative (OCI) artifacts."
         long-summary: |
@@ -94,14 +105,14 @@ helps['healthcareapis service create'] = """
     examples:
       - name: Create or Update a service with all parameters
         text: |-
-               az healthcareapis service create --resource-group "rg1" --resource-name "service1" --type \
+               az healthcareapis service create --resource-group "rg1" --resource-name "service1" --identity-type \
 "SystemAssigned" --kind "fhir-R4" --location "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da4\
 7" --access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --authentication-configuration \
 audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
 508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
 methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --cosmos-db-configuration \
-key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" offer-throughput=1000 --storage-account-name \
-"existingStorageAccount" --private-endpoint-connections "[]" --public-network-access "Disabled"
+key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" offer-throughput=1000 --export-configuration-storage-a\
+ccount-name "existingStorageAccount" --public-network-access "Disabled"
       - name: Create or Update a service with minimum parameters
         text: |-
                az healthcareapis service create --resource-group "rg1" --resource-name "service2" --kind "fhir-R4" \
@@ -142,9 +153,23 @@ helps['healthcareapis service wait'] = """
                az healthcareapis service wait --resource-group "rg1" --resource-name "service1" --deleted
 """
 
+helps['healthcareapis operation-result'] = """
+    type: group
+    short-summary: healthcareapis operation-result
+"""
+
+helps['healthcareapis operation-result show'] = """
+    type: command
+    short-summary: "Get the operation result for a long running operation."
+    examples:
+      - name: Get operation result
+        text: |-
+               az healthcareapis operation-result show --location-name "westus" --operation-result-id "exampleid"
+"""
+
 helps['healthcareapis private-endpoint-connection'] = """
     type: group
-    short-summary: Manage private endpoint connection with healthcareapis
+    short-summary: healthcareapis private-endpoint-connection
 """
 
 helps['healthcareapis private-endpoint-connection list'] = """
@@ -238,7 +263,7 @@ successfully deleted.
 
 helps['healthcareapis private-link-resource'] = """
     type: group
-    short-summary: Manage private link resource with healthcareapis
+    short-summary: healthcareapis private-link-resource
 """
 
 helps['healthcareapis private-link-resource list'] = """
@@ -259,6 +284,55 @@ helps['healthcareapis private-link-resource show'] = """
                az healthcareapis private-link-resource show --group-name "fhir" --resource-group "rgname" \
 --resource-name "service1"
 """
+
+helps['healthcareapis acr'] = """
+    type: group
+    short-summary: healthcareapis acr
+"""
+
+helps['healthcareapis acr list'] = """
+    type: command
+    short-summary: "Lists all container registries associated with the service."
+    examples:
+      - name: Acr_List
+        text: |-
+               az healthcareapis acr list --resource-group "rgname" --resource-name "service1"
+"""
+
+helps['healthcareapis acr add'] = """
+    type: command
+    short-summary: "Add a list of registries to the service, repeated ones will be ignored."
+    examples:
+      - name: Acr_Add
+        text: |-
+               az healthcareapis acr add --login-servers "test1.azurecr.io test2.azurecr.io test3.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr remove'] = """
+    type: command
+    short-summary: "Remove a list of registries from the service, non-existing ones will be ignored."
+    examples:
+      - name: Acr_Remove
+        text: |-
+               az healthcareapis acr remove --login-servers "test1.azurecr.io test2.azurecr.io"  --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr reset'] = """
+    type: command
+    short-summary: "Reset the container registries associated with the service to a new list."
+    examples:
+      - name: Acr_Reset
+        text: |-
+               az healthcareapis acr reset --login-servers "test1.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+      - name: Acr_Reset_To_Empty
+        text: |-
+               az healthcareapis acr reset --resource-group "rgname" \
+--resource-name "service1"
+"""
+
 
 helps['healthcareapis workspace'] = """
     type: group
@@ -501,7 +575,7 @@ deleted.
 
 helps['healthcareapis workspace iot-connector fhir-destination'] = """
     type: group
-    short-summary: Manage fhir destination with healthcareapis
+    short-summary: Manage iot connector fhir destination with healthcareapis
 """
 
 helps['healthcareapis workspace iot-connector fhir-destination list'] = """
@@ -512,11 +586,6 @@ helps['healthcareapis workspace iot-connector fhir-destination list'] = """
         text: |-
                az healthcareapis workspace iot-connector fhir-destination list --iot-connector-name "blue" \
 --resource-group "testRG" --workspace-name "workspace1"
-"""
-
-helps['healthcareapis workspace iot-connector fhir-destination'] = """
-    type: group
-    short-summary: Manage iot connector fhir destination with healthcareapis
 """
 
 helps['healthcareapis workspace iot-connector fhir-destination show'] = """
@@ -821,16 +890,4 @@ helps['healthcareapis workspace private-link-resource show'] = """
 --resource-group "testRG" --workspace-name "workspace1"
 """
 
-helps['healthcareapis operation-result'] = """
-    type: group
-    short-summary: Manage operation result with healthcareapis
-"""
 
-helps['healthcareapis operation-result show'] = """
-    type: command
-    short-summary: "Get the operation result for a long running operation."
-    examples:
-      - name: Get operation result
-        text: |-
-               az healthcareapis operation-result show --location-name "westus" --operation-result-id "exampleid"
-"""

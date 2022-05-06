@@ -34,7 +34,7 @@ def healthcareapis_service_create(client,
                                   location,
                                   tags=None,
                                   etag=None,
-                                  type_=None,
+                                  identity_type=None,
                                   access_policies=None,
                                   cosmos_db_configuration=None,
                                   authentication_configuration=None,
@@ -43,7 +43,7 @@ def healthcareapis_service_create(client,
                                   public_network_access=None,
                                   login_servers=None,
                                   oci_artifacts=None,
-                                  storage_account_name=None,
+                                  export_configuration_storage_account_name=None,
                                   no_wait=False):
     service_description = {}
     service_description['kind'] = kind
@@ -78,8 +78,8 @@ def healthcareapis_service_create(client,
     if len(service_description['properties']['acr_configuration']) == 0:
         del service_description['properties']['acr_configuration']
     service_description['properties']['export_configuration'] = {}
-    if storage_account_name is not None:
-        service_description['properties']['export_configuration']['storage_account_name'] = storage_account_name
+    if export_configuration_storage_account_name is not None:
+        service_description['properties']['export_configuration']['storage_account_name'] = export_configuration_storage_account_name
     if len(service_description['properties']['export_configuration']) == 0:
         del service_description['properties']['export_configuration']
     return sdk_no_wait(no_wait,
@@ -115,6 +115,11 @@ def healthcareapis_service_delete(client,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name)
+def healthcareapis_operation_result_show(client,
+                                         location_name,
+                                         operation_result_id):
+    return client.get(location_name=location_name,
+                      operation_result_id=operation_result_id)
 
 
 def healthcareapis_private_endpoint_connection_list(client,
@@ -729,9 +734,3 @@ def healthcareapis_workspace_private_link_resource_show(client,
                       workspace_name=workspace_name,
                       group_name=group_name)
 
-
-def healthcareapis_operation_result_show(client,
-                                         location_name,
-                                         operation_result_id):
-    return client.get(location_name=location_name,
-                      operation_result_id=operation_result_id)

@@ -9,10 +9,10 @@
 ### <a name="CommandGroups">Command groups in `az healthcareapis` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
+|az healthcareapis service|Services|[commands](#CommandsInServices)|
 |az healthcareapis operation-result|OperationResults|[commands](#CommandsInOperationResults)|
 |az healthcareapis private-endpoint-connection|PrivateEndpointConnections|[commands](#CommandsInPrivateEndpointConnections)|
 |az healthcareapis private-link-resource|PrivateLinkResources|[commands](#CommandsInPrivateLinkResources)|
-|az healthcareapis service|Services|[commands](#CommandsInServices)|
 |az healthcareapis workspace|Workspaces|[commands](#CommandsInWorkspaces)|
 |az healthcareapis workspace dicom-service|DicomServices|[commands](#CommandsInDicomServices)|
 |az healthcareapis workspace fhir-service|FhirServices|[commands](#CommandsInFhirServices)|
@@ -264,14 +264,14 @@ az healthcareapis service show --resource-group "rg1" --resource-name "service1"
 
 ##### <a name="ExamplesServicesCreateOrUpdate#Create">Example</a>
 ```
-az healthcareapis service create --resource-group "rg1" --resource-name "service1" --type "SystemAssigned" --kind \
-"fhir-R4" --location "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" --access-policies \
-object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --authentication-configuration audience="https://azurehealthcareapis.c\
-om" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true \
---cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" methods="OPTIONS" \
-methods="PATCH" methods="POST" methods="PUT" origins="*" --cosmos-db-configuration key-vault-key-uri="https://my-vault.\
-vault.azure.net/keys/my-key" offer-throughput=1000 --storage-account-name "existingStorageAccount" \
---private-endpoint-connections "[]" --public-network-access "Disabled"
+az healthcareapis service create --resource-group "rg1" --resource-name "service1" --identity-type "SystemAssigned" \
+--kind "fhir-R4" --location "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" \
+--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --authentication-configuration \
+audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
+508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
+methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --cosmos-db-configuration \
+key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" offer-throughput=1000 --export-configuration-storage-a\
+ccount-name "existingStorageAccount" --public-network-access "Disabled"
 az healthcareapis service create --resource-group "rg1" --resource-name "service2" --kind "fhir-R4" --location \
 "westus2" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47"
 ```
@@ -284,7 +284,7 @@ az healthcareapis service create --resource-group "rg1" --resource-name "service
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
 |**--etag**|string|An etag associated with the resource, used for optimistic concurrency when editing it.|etag|etag|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--access-policies**|array|The access policies of the service instance.|access_policies|accessPolicies|
 |**--cosmos-db-configuration**|object|The settings for the Cosmos DB database backing the service.|cosmos_db_configuration|cosmosDbConfiguration|
 |**--authentication-configuration**|object|The authentication configuration for the service instance.|authentication_configuration|authenticationConfiguration|
@@ -293,7 +293,7 @@ az healthcareapis service create --resource-group "rg1" --resource-name "service
 |**--public-network-access**|choice|Control permission for data plane traffic coming from public networks while private endpoint is enabled.|public_network_access|publicNetworkAccess|
 |**--login-servers**|array|The list of the ACR login servers.|login_servers|loginServers|
 |**--oci-artifacts**|array|The list of Open Container Initiative (OCI) artifacts.|oci_artifacts|ociArtifacts|
-|**--storage-account-name**|string|The name of the default export storage account.|storage_account_name|storageAccountName|
+|**--export-configuration-storage-account-name**|string|The name of the default export storage account.|storage_account_name|storageAccountName|
 
 #### <a name="ServicesUpdate">Command `az healthcareapis service update`</a>
 
