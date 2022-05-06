@@ -19,7 +19,8 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
-from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS
+from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
+                         LOG_ANALYTICS_RP)
 
 logger = get_logger(__name__)
 
@@ -177,8 +178,9 @@ def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-stat
 
 
 def trigger_workflow(token, repo, name, branch):
-    logger.warning("Triggering Github Action")
-    get_workflow(get_github_repo(token, repo), name).create_dispatch(branch)
+    wf = get_workflow(get_github_repo(token, repo), name)
+    logger.warning(f"Triggering Github Action: {wf.path}")
+    wf.create_dispatch(branch)
 
 
 def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
@@ -254,22 +256,56 @@ def _get_location_from_resource_group(cli_ctx, resource_group_name):
     return group.location
 
 
-def _validate_subscription_registered(cmd, resource_provider, subscription_id=None):
-    providers_client = None
+def _register_resource_provider(cmd, resource_provider):
+    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+
+    logger.warning(f"Registering resource provider {resource_provider} ...")
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
+
+    client = providers_client_factory(cmd.cli_ctx)
+    try:
+        client.register(resource_provider, properties=properties)
+        # wait for registration to finish
+        timeout_secs = 120
+        registration = _is_resource_provider_registered(cmd, resource_provider)
+        start = datetime.utcnow()
+        while not registration:
+            registration = _is_resource_provider_registered(cmd, resource_provider)
+            time.sleep(SHORT_POLLING_INTERVAL_SECS)
+            if (datetime.utcnow() - start).seconds >= timeout_secs:
+                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
+
+    except Exception as e:
+        msg = ("This operation requires requires registering the resource provider {0}. "
+               "We were unable to perform that registration on your behalf: "
+               "Server responded with error message -- {1} . "
+               "Please check with your admin on permissions, "
+               "or try running registration manually with: az provider register --wait --namespace {0}")
+        raise ValidationError(resource_provider, msg.format(e.args)) from e
+
+
+def _is_resource_provider_registered(cmd, resource_provider, subscription_id=None):
+    registered = None
     if not subscription_id:
         subscription_id = get_subscription_id(cmd.cli_ctx)
-
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, subscription_id)
         registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
 
-        if not (registration_state and registration_state.lower() == 'registered'):
-            raise ValidationError('Subscription {} is not registered for the {} resource provider. Please run \"az provider register -n {} --wait\" to register your subscription.'.format(
-                subscription_id, resource_provider, resource_provider))
-    except ValidationError as ex:
-        raise ex
+        registered = (registration_state and registration_state.lower() == 'registered')
     except Exception:  # pylint: disable=broad-except
         pass
+    return registered
+
+
+def _validate_subscription_registered(cmd, resource_provider, subscription_id=None):
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+    registered = _is_resource_provider_registered(cmd, resource_provider, subscription_id)
+    if registered is False:
+        raise ValidationError(f'Subscription {subscription_id} is not registered for the {resource_provider} '
+                              f'resource provider. Please run "az provider register -n {resource_provider} --wait" '
+                              'to register your subscription.')
 
 
 def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
@@ -421,7 +457,7 @@ def _get_default_log_analytics_location(cmd):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-        resource_types = getattr(providers_client.get("Microsoft.OperationalInsights"), 'resource_types', [])
+        resource_types = getattr(providers_client.get(LOG_ANALYTICS_RP), 'resource_types', [])
         res_locations = []
         for res in resource_types:
             if res and getattr(res, 'resource_type', "") == "workspaces":
@@ -514,14 +550,14 @@ def _get_log_analytics_workspace_name(cmd, logs_customer_id, resource_group_name
 def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name):
     if logs_customer_id is None and logs_key is None:
         logger.warning("No Log Analytics workspace provided.")
+        _validate_subscription_registered(cmd, LOG_ANALYTICS_RP)
         try:
-            _validate_subscription_registered(cmd, "Microsoft.OperationalInsights")
             log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
             log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
 
             log_analytics_location = location
             try:
-                _ensure_location_allowed(cmd, log_analytics_location, "Microsoft.OperationalInsights", "workspaces")
+                _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
             except Exception:  # pylint: disable=broad-except
                 log_analytics_location = _get_default_log_analytics_location(cmd)
 
@@ -819,8 +855,9 @@ def _update_traffic_weights(containerapp_def, list_weights):
 
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
-                "revisionName": key_val[0],
-                "weight": int(key_val[1])
+                "revisionName": key_val[0] if key_val[0].lower() != "latest" else None,
+                "weight": int(key_val[1]),
+                "latestRevision": key_val[0].lower() == "latest"
             })
 
 

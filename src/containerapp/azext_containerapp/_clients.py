@@ -14,7 +14,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-API_VERSION = "2021-03-01"
 PREVIEW_API_VERSION = "2022-01-01-preview"
 STABLE_API_VERSION = "2022-03-01"
 POLLING_TIMEOUT = 60  # how many seconds before exiting
@@ -74,7 +73,7 @@ class ContainerAppClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = PREVIEW_API_VERSION
+        api_version = STABLE_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(

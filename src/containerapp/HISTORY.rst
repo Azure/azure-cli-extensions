@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.3
+++++++
+* Improved 'az containerapp up' handling of environment locations
+* Added 'az containerapp env storage' to manage Container App environment file shares
 
 0.3.2
 ++++++

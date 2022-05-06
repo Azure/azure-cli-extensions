@@ -58,7 +58,7 @@ class WebSocketConnection:
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container, startup_command=startup_command)
         self._socket = websocket.WebSocket(enable_multithread=True)
-        logger.warning("Attempting to connect to %s", self._url)
+        logger.info("Attempting to connect to %s", self._url)
         self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])
 
         self.is_connected = True
@@ -160,9 +160,12 @@ def _getch_windows():
 def ping_container_app(app):
     site = safe_get(app, "properties", "configuration", "ingress", "fqdn")
     if site:
-        resp = requests.get(f'https://{site}')
-        if not resp.ok:
-            logger.info(f"Got bad status pinging app: {resp.status_code}")
+        try:
+            resp = requests.get(f'https://{site}', timeout=30)
+            if not resp.ok:
+                logger.info(f"Got bad status pinging app: {resp.status_code}")
+        except requests.exceptions.ReadTimeout:
+            logger.info("Timed out while pinging app external URL")
     else:
         logger.info("Could not fetch site external URL")
 
