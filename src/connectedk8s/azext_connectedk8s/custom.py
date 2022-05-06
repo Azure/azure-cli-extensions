@@ -877,7 +877,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Patching the connected cluster ARM resource
     patch_cc_response = update_connected_cluster_internal(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait, preview_sdk)
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not tags and enable_private_link is None:
+    proxy_params_unset = (https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy)
+    if proxy_params_unset and not auto_upgrade and not tags and enable_private_link is None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
