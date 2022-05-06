@@ -464,6 +464,31 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return message_of_the_day
 
+    def get_enable_custom_ca_trust(self) -> Union[bool, None]:
+        """Obtain the value of enable_custom_ca_trust.
+
+        :return: bool or None
+        """
+        # read the original value passed by the command
+        enable_custom_ca_trust = self.raw_param.get("enable_custom_ca_trust")
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                    agent_pool_profile and
+                    # backward compatibility
+                    hasattr(agent_pool_profile, "enable_custom_ca_trust") and
+                    agent_pool_profile.enable_custom_ca_trust is not None
+            ):
+                enable_custom_ca_trust = agent_pool_profile.enable_custom_ca_trust
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_custom_ca_trust
+
     def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
         """Obtain the value of kubelet_config.
 
@@ -2131,6 +2156,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.message_of_the_day = (
             self.context.get_message_of_the_day()
+        )
+        agent_pool_profile.enable_custom_ca_trust = (
+            self.context.get_enable_custom_ca_trust()
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
