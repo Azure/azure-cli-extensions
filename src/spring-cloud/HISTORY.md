@@ -2,7 +2,7 @@ Release History
 ===============
 3.1.6
 ---
-* Command group 'spring-cloud' is deprecated and will be removed in a future release. Use 'spring' instead.
+* Command group 'spring-cloud' is deprecated and will be removed in Nov. 2022. Use 'spring' instead. To install spring extension, running `az extension add -n spring`.
 
 3.1.5
 ---
