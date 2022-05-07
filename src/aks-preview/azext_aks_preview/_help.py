@@ -356,6 +356,15 @@ helps['aks create'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --disable-disk-driver
+          type: bool
+          short-summary: Disable AzureDisk CSI Driver.
+        - name: --disable-file-driver
+          type: bool
+          short-summary: Disable AzureFile CSI Driver.
+        - name: --disable-snapshot-controller
+          type: bool
+          short-summary: Disable CSI Snapshot Controller.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -648,6 +657,24 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+        - name: --disable-disk-driver
+          type: bool
+          short-summary: Disable AzureDisk CSI Driver.
+        - name: --enable-file-driver
+          type: bool
+          short-summary: Enable AzureFile CSI Driver.
+        - name: --disable-file-driver
+          type: bool
+          short-summary: Disable AzureFile CSI Driver.
+        - name: --enable-snapshot-controller
+          type: bool
+          short-summary: Enable Snapshot Controller.
+        - name: --disable-snapshot-controller
+          type: bool
+          short-summary: Disable CSI Snapshot Controller.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
