@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_using_create', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_account_restore_using_create', location='westus2')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_gremlin_account_restore_using_create(self, resource_group):
         graph = self.create_random_name(prefix='cli', length=15)
@@ -27,7 +27,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'db_name': self.create_random_name(prefix='cli', length=15),
             'graph': graph,
-            'loc': 'eastus2'
+            'loc': 'westus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableGremlin')
@@ -150,7 +150,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert len(restorable_resources[0]['graphNames']) == 1
         assert restorable_resources[0]['graphNames'][0] == graph
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_using_create', location='westus2')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_table_account_restore_using_create(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
@@ -159,7 +159,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': 'eastus2'
+            'loc': 'westus2'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
