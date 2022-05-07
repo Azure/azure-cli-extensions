@@ -187,7 +187,6 @@ def load_arguments(self, _):
         c.argument('service_cidrs')
         c.argument('load_balancer_sku', arg_type=get_enum_type(load_balancer_skus), validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('load_balancer_outbound_ips', validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
@@ -279,10 +278,11 @@ def load_arguments(self, _):
         # extensions
         # managed cluster
         c.argument('node_resource_group')
+        c.argument('http_proxy_config')
         c.argument('ip_families')
         c.argument('pod_cidrs')
         c.argument('service_cidrs')
-        c.argument('http_proxy_config')
+        c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag())
