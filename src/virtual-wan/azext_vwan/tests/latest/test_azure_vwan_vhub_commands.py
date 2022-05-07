@@ -22,7 +22,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.kwargs.update({
             'vwan': 'clitestvwan',
             'vhub': 'clitestvhub',
-            'vhub01': 'clitestvhub01',
             'rg': resource_group
         })
 
