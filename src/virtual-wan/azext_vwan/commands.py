@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from .profiles import CUSTOM_VWAN, CUSTOM_VWAN_2021_03_01
+from .profiles import CUSTOM_VWAN, CUSTOM_VWAN_2021_03_01, CUSTOM_VWAN_2021_08_01
 
 from ._client_factory import (
     cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs,
@@ -24,9 +24,9 @@ ROUTE_TABLE_DEPRECATION_INFO = 'network vhub route-table'
 def load_command_table(self, _):
 
     network_vhub_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualHubsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.v2021_08_01.operations#VirtualHubsOperations.{}',
         client_factory=cf_virtual_hubs,
-        resource_type=CUSTOM_VWAN,
+        resource_type=CUSTOM_VWAN_2021_08_01,
         min_api='2018-08-01'
     )
 

@@ -14,7 +14,8 @@ from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
+from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection, \
+    network_client_factory_2021_08_01
 from ._util import _get_property
 
 logger = get_logger(__name__)
@@ -136,15 +137,16 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 # region VirtualHubs
 def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, no_wait=False, sku=None):
-    client = network_client_factory(cmd.cli_ctx).virtual_hubs
+                       location=None, tags=None, no_wait=False, sku=None, hub_routing_preference=None):
+    client = network_client_factory_2021_08_01(cmd.cli_ctx).virtual_hubs
     VirtualHub, SubResource = cmd.get_models('VirtualHub', 'SubResource')
     hub = VirtualHub(
         tags=tags,
         location=location,
         address_prefix=address_prefix,
         virtual_wan=SubResource(id=virtual_wan),
-        sku=sku
+        sku=sku,
+        hub_routing_preference=hub_routing_preference
     )
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, virtual_hub_name, hub)
@@ -177,13 +179,14 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
     )
 
 
-def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
+def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None, hub_routing_preference=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('address_prefix', address_prefix, False)
         c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
         c.update_param('sku', sku, False)
+        c.update_param('hub_routing_preference', hub_routing_preference, False)
     return instance
 
 

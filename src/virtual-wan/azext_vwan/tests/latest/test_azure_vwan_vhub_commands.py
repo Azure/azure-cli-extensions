@@ -22,13 +22,24 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.kwargs.update({
             'vwan': 'clitestvwan',
             'vhub': 'clitestvhub',
+            'vhub01': 'clitestvhub01',
             'rg': resource_group
         })
 
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard')
 
-        self.cmd('network vhub update -g {rg} -n {vhub} --sku Basic')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard', checks=[
+                self.check('sku', 'Standard')
+            ])
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard --hub-routing-preference ExpressRoute', checks=[
+                self.check('hubRoutingPreference', 'ExpressRoute')
+            ])
+        self.cmd('network vhub update -g {rg} -n {vhub} --hub-routing-preference VpnGateway', checks=[
+            self.check('hubRoutingPreference', 'VpnGateway')
+        ])
+        self.cmd('network vhub update -g {rg} -n {vhub} --sku Basic', checks=[
+                     self.check('sku', 'Basic')
+                 ])
         self.cmd('network vwan update -g {rg} -n {vwan} --type Basic')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route')
