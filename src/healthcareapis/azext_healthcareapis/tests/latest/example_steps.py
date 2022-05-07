@@ -12,6 +12,154 @@
 from .. import try_manual
 
 
+@try_manual
+def step_healthcareapiscreateminimalparameters(test):
+    test.cmd('az healthcareapis service create '
+             '--resource-group "{rg}" '
+             '--resource-name "{minimalParams}" '
+             '--kind "fhir-Stu3" '
+             '--location "{testingLocation}" ',
+             checks=[
+                 test.check("name", "{minimalParams}", case_sensitive=False),
+                 test.check("location", "{testingLocation}", case_sensitive=False),
+                 test.check("kind", "fhir-Stu3", case_sensitive=False),
+                 test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                 test.check("properties.corsConfiguration.allowCredentials", False),
+                 test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                 test.check("properties.provisioningState", "Succeeded"),
+                 test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
+             ])
+
+
+@try_manual
+def step_healthcareapiscreatemaximumparameters(test):
+    testFhir = test.cmd('az healthcareapis service create '
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--identity-type "SystemAssigned" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" '
+                        '--authentication-configuration authority="https://login.microsoftonline.com/6c4a34fb-44bb-4cc7-bf56-9b4e264f1891" audience="https://{maximumParams}.azurehealthcareapis.com" smart-proxy-enabled=false '
+                        '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
+                        '--cosmos-db-configuration offer-throughput=1500 '
+                        '--export-configuration-storage-account-name "{sg}" '
+                        '--public-network-access "Disabled" ',
+                        checks=[
+                            test.check("identity.type", "SystemAssigned", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", 1440),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1500),
+                            test.check("properties.exportConfiguration.storageAccountName", "{sg}",
+                                       case_sensitive=False),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
+                        ]).get_output_in_json()
+
+    corsConfiguration = testFhir['properties']['corsConfiguration']
+    assert len(corsConfiguration['headers']) == 1
+    assert len(corsConfiguration['origins']) == 1
+    assert corsConfiguration['headers'][0] == "*"
+    assert corsConfiguration['origins'][0] == "*"
+    assert len(corsConfiguration['methods']) == 6
+    assert "DELETE" in corsConfiguration['methods']
+    assert "GET" in corsConfiguration['methods']
+    assert "OPTIONS" in corsConfiguration['methods']
+    assert "PATCH" in corsConfiguration['methods']
+    assert "POST" in corsConfiguration['methods']
+    assert "PUT" in corsConfiguration['methods']
+
+
+@try_manual
+def step_healthcareapisupdatemaximumparameters(test):
+    testFhir = test.cmd('az healthcareapis service create '
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--identity-type "None" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" ',
+                        checks=[
+                            test.check("identity.type", "None", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", None),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                            test.check("properties.exportConfiguration.storageAccountName", None),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
+                            test.check("properties.secondaryLocations", None),
+                        ]).get_output_in_json()
+
+    corsConfiguration = testFhir['properties']['corsConfiguration']
+    assert len(corsConfiguration['headers']) == 0
+    assert len(corsConfiguration['origins']) == 0
+    assert len(corsConfiguration['methods']) == 0
+
+    accessPolicies = testFhir['properties']['accessPolicies']
+    assert len(accessPolicies) == 0
+
+    privateEndpointConnections = testFhir['properties']['accessPolicies']
+    assert len(privateEndpointConnections) == 0
+
+    acrConfiguration = testFhir['properties']['acrConfiguration']['loginServers']
+    assert len(acrConfiguration) == 0
+
+    testFhir = test.cmd('az healthcareapis service create '
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--public-network-access "Disabled" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" ',
+                        checks=[
+                            test.check("identity.type", "None", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", None),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                            test.check("properties.exportConfiguration.storageAccountName", None),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
+                            test.check("properties.secondaryLocations", None),
+                        ]).get_output_in_json()
+
+    corsConfiguration = testFhir['properties']['corsConfiguration']
+    assert len(corsConfiguration['headers']) == 0
+    assert len(corsConfiguration['origins']) == 0
+    assert len(corsConfiguration['methods']) == 0
+
+    accessPolicies = testFhir['properties']['accessPolicies']
+    assert len(accessPolicies) == 0
+
+    privateEndpointConnections = testFhir['properties']['accessPolicies']
+    assert len(privateEndpointConnections) == 0
+
+    acrConfiguration = testFhir['properties']['acrConfiguration']['loginServers']
+    assert len(acrConfiguration) == 0
+
+
+@try_manual
+def step_servicedelete(test):
+    test.cmd('az healthcareapis service delete '
+             '--resource-group "{rg}" '
+             '--resource-name "{minimalParams}" '
+             '--yes ',
+             checks=[])
+    test.cmd('az healthcareapis service delete '
+             '--resource-group "{rg}" '
+             '--resource-name "{maximumParams}" '
+             '--yes ',
+             checks=[])
+
+
 # EXAMPLE: /DicomServices/put/Create or update a Dicom Service
 @try_manual
 def step_workspace_dicom_service_create(test, checks=None):
@@ -233,7 +381,7 @@ def step_workspace_iot_connector_fhir_destination_list(test, checks=None):
 
 # EXAMPLE: /IotConnectorFhirDestination/put/Create or update an Iot Connector FHIR destination
 @try_manual
-def step_workspace_iot_connector(test, checks=None):
+def step_workspace_iot_connector_fhir_destination_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace iot-connector fhir-destination create '
@@ -268,7 +416,7 @@ def step_workspace_iot_connector_fhir_destination_show(test, checks=None):
 
 # EXAMPLE: /IotConnectorFhirDestination/delete/Delete an IoT Connector destination
 @try_manual
-def step_workspace_iot_connector2(test, checks=None):
+def step_workspace_iot_connector_fhir_destination_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace iot-connector fhir-destination delete -y '

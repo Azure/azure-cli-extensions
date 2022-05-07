@@ -228,7 +228,7 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
@@ -247,7 +247,7 @@ def load_arguments(self, _):
                    'name of DICOM Service resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
@@ -290,7 +290,7 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
@@ -311,7 +311,7 @@ def load_arguments(self, _):
                    'name of IoT Connector resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
@@ -414,7 +414,7 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
@@ -452,7 +452,7 @@ def load_arguments(self, _):
                    'of FHIR Service resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')

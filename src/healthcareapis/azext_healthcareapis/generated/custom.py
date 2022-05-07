@@ -53,8 +53,8 @@ def healthcareapis_service_create(client,
     if etag is not None:
         service_description['etag'] = etag
     service_description['identity'] = {}
-    if type_ is not None:
-        service_description['identity']['type'] = type_
+    if identity_type is not None:
+        service_description['identity']['type'] = identity_type
     if len(service_description['identity']) == 0:
         del service_description['identity']
     service_description['properties'] = {}
@@ -289,7 +289,7 @@ def healthcareapis_workspace_dicom_service_create(client,
                                                   tags=None,
                                                   etag=None,
                                                   location=None,
-                                                  type_=None,
+                                                  identity_type=None,
                                                   user_assigned_identities=None,
                                                   public_network_access=None,
                                                   no_wait=False):
@@ -301,8 +301,8 @@ def healthcareapis_workspace_dicom_service_create(client,
     if location is not None:
         dicomservice['location'] = location
     dicomservice['identity'] = {}
-    if type_ is not None:
-        dicomservice['identity']['type'] = type_
+    if identity_type is not None:
+        dicomservice['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         dicomservice['identity']['user_assigned_identities'] = user_assigned_identities
     if len(dicomservice['identity']) == 0:
@@ -322,15 +322,15 @@ def healthcareapis_workspace_dicom_service_update(client,
                                                   dicom_service_name,
                                                   workspace_name,
                                                   tags=None,
-                                                  type_=None,
+                                                  identity_type=None,
                                                   user_assigned_identities=None,
                                                   no_wait=False):
     dicomservice_patch_resource = {}
     if tags is not None:
         dicomservice_patch_resource['tags'] = tags
     dicomservice_patch_resource['identity'] = {}
-    if type_ is not None:
-        dicomservice_patch_resource['identity']['type'] = type_
+    if identity_type is not None:
+        dicomservice_patch_resource['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         dicomservice_patch_resource['identity']['user_assigned_identities'] = user_assigned_identities
     if len(dicomservice_patch_resource['identity']) == 0:
@@ -378,7 +378,7 @@ def healthcareapis_workspace_iot_connector_create(client,
                                                   tags=None,
                                                   etag=None,
                                                   location=None,
-                                                  type_=None,
+                                                  identity_type=None,
                                                   user_assigned_identities=None,
                                                   ingestion_endpoint_configuration=None,
                                                   content=None,
@@ -391,8 +391,8 @@ def healthcareapis_workspace_iot_connector_create(client,
     if location is not None:
         iot_connector['location'] = location
     iot_connector['identity'] = {}
-    if type_ is not None:
-        iot_connector['identity']['type'] = type_
+    if identity_type is not None:
+        iot_connector['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         iot_connector['identity']['user_assigned_identities'] = user_assigned_identities
     if len(iot_connector['identity']) == 0:
@@ -417,15 +417,15 @@ def healthcareapis_workspace_iot_connector_update(client,
                                                   iot_connector_name,
                                                   workspace_name,
                                                   tags=None,
-                                                  type_=None,
+                                                  identity_type=None,
                                                   user_assigned_identities=None,
                                                   no_wait=False):
     iot_connector_patch_resource = {}
     if tags is not None:
         iot_connector_patch_resource['tags'] = tags
     iot_connector_patch_resource['identity'] = {}
-    if type_ is not None:
-        iot_connector_patch_resource['identity']['type'] = type_
+    if identity_type is not None:
+        iot_connector_patch_resource['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         iot_connector_patch_resource['identity']['user_assigned_identities'] = user_assigned_identities
     if len(iot_connector_patch_resource['identity']) == 0:
@@ -561,7 +561,7 @@ def healthcareapis_workspace_fhir_service_create(client,
                                                  tags=None,
                                                  etag=None,
                                                  location=None,
-                                                 type_=None,
+                                                 identity_type=None,
                                                  user_assigned_identities=None,
                                                  kind=None,
                                                  access_policies=None,
@@ -582,8 +582,8 @@ def healthcareapis_workspace_fhir_service_create(client,
     if location is not None:
         fhirservice['location'] = location
     fhirservice['identity'] = {}
-    if type_ is not None:
-        fhirservice['identity']['type'] = type_
+    if identity_type is not None:
+        fhirservice['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         fhirservice['identity']['user_assigned_identities'] = user_assigned_identities
     if len(fhirservice['identity']) == 0:
@@ -630,15 +630,15 @@ def healthcareapis_workspace_fhir_service_update(client,
                                                  fhir_service_name,
                                                  workspace_name,
                                                  tags=None,
-                                                 type_=None,
+                                                 identity_type=None,
                                                  user_assigned_identities=None,
                                                  no_wait=False):
     fhirservice_patch_resource = {}
     if tags is not None:
         fhirservice_patch_resource['tags'] = tags
     fhirservice_patch_resource['identity'] = {}
-    if type_ is not None:
-        fhirservice_patch_resource['identity']['type'] = type_
+    if identity_type is not None:
+        fhirservice_patch_resource['identity']['type'] = identity_type
     if user_assigned_identities is not None:
         fhirservice_patch_resource['identity']['user_assigned_identities'] = user_assigned_identities
     if len(fhirservice_patch_resource['identity']) == 0:
