@@ -696,7 +696,7 @@ def add_firewall_policy_intrusion_detection_config(cmd,
         firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
 
     if private_ranges is not None:
-        firewall_policy.intrusion_detection.configuration.private_ranges.append(private_ranges)    
+        firewall_policy.intrusion_detection.configuration.private_ranges.append(private_ranges)
 
     result = sdk_no_wait(False,
                          client.begin_create_or_update,

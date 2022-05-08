@@ -199,7 +199,6 @@ def load_arguments(self, _):
         c.argument('bypass_rule_source_ip_groups', options_list=['--rule-src-ip-groups'], nargs='+', help='Space-separated list of source IpGroups for this rule')
         c.argument('bypass_rule_destination_ip_groups', options_list=['--rule-dest-ip-groups'], nargs='+', help='Space-separated list of destination IpGroups for this rule')
 
-
     with self.argument_context('network firewall policy intrusion-detection', min_api='2021-08-01', arg_group='IDPS Private Ranges') as c:
         c.argument('private_ranges', options_list=['--private-ranges'], nargs='+', help='Space-separated list of IDPS private ranges')
 
