@@ -1694,6 +1694,15 @@ class AKSPreviewContext(AKSContext):
                 "--disable-disk-driver at the same time."
             )
 
+        disk_version = self.raw_param.get("disk_version")
+        if disk_version is not None:
+            if disk_version != "v1" and disk_version != "v2":
+                raise InvalidArgumentValueError(
+                    "CSI Disk supported version is v1 or v2."
+                )
+            else:
+                profile.version = disk_version
+
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False

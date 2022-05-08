@@ -795,7 +795,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
 
-    def test_get_disk_driver_update(self):
+    def test_get_storage_profile_update(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -866,6 +866,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.cmd,
             {
                 "enable_disk_driver": True,
+                "disk_version": "v2",
                 "enable_file_driver": True,
                 "enable_snapshot_controller": True,
             },
@@ -876,6 +877,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models.ManagedClusterStorageProfile(
                 disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
                     enabled = True,
+                    disk_version = "v2",
                 ),
                 file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
                     enabled = True,
@@ -893,8 +895,21 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertEqual(
             ctx_5.get_storage_profile(), storage_profile
         )
+        # invalid version
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disk_version": "v3",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_file_driver and disable_file_driver
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_disk_driver()
 
-    def test_get_disk_driver_create(self):
+    def test_get_storage_profile_create(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,

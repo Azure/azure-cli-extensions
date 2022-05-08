@@ -371,6 +371,9 @@ helps['aks create'] = """
         - name: --disable-snapshot-controller
           type: bool
           short-summary: Disable CSI Snapshot Controller.
+        - name: --disk-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -669,6 +672,9 @@ helps['aks update'] = """
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
+        - name: --disk-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --enable-file-driver
           type: bool
           short-summary: Enable AzureFile CSI Driver.
