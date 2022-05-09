@@ -404,6 +404,8 @@ def _get_dockerfile_content_from_repo(
     repo = repo_url_to_name(repo_url)
     try:
         r = g.get_repo(repo)
+        if not branch:
+            branch = r.default_branch
     except Exception as e:
         raise ValidationError(f"Could not find repo {repo_url}") from e
     try:
