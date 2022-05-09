@@ -310,6 +310,7 @@ def load_arguments(self, _):
     for scope in ['spring app create', 'spring app update']:
         with self.argument_context(scope) as c:
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
+                       options_list=['--enable-persistent-storage', '--enable-ps'],
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
@@ -456,6 +457,7 @@ def load_arguments(self, _):
                        help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.')
             c.argument('strict_host_key_checking',
+                       options_list=['--strict-host-key-checking', '--host-key-check'],
                        help='Strict_host_key_checking of the added config.')
 
     for scope in ['spring config-server git repo add', 'spring config-server git repo update', 'spring config-server git repo remove']:
