@@ -110,7 +110,7 @@ def load_command_table(self, _):
     # endregion
 
     # region VirtualHubs
-    with self.command_group('network vhub', network_vhub_sdk) as g:
+    with self.command_group('network vhub', network_vhub_sdk, client_factory=cf_virtual_hubs) as g:
         g.custom_command('create', 'create_virtual_hub', supports_no_wait=True)
         g.command('delete', 'begin_delete')
         g.show_command('show')

@@ -26,19 +26,21 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard', checks=[
-                self.check('sku', 'Standard')
-            ])
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard --hub-routing-preference ExpressRoute', checks=[
+        self.cmd(
+            'network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.0.0/24 -l SouthCentralUS '
+            '--sku Standard --hub-routing-preference ExpressRoute',
+            checks=[
+                self.check('sku', 'Standard'),
                 self.check('hubRoutingPreference', 'ExpressRoute')
-            ])
-        self.cmd('network vhub update -g {rg} -n {vhub} --hub-routing-preference VpnGateway', checks=[
-            self.check('hubRoutingPreference', 'VpnGateway')
-        ])
-        self.cmd('network vhub update -g {rg} -n {vhub} --sku Basic', checks=[
-                     self.check('sku', 'Basic')
-                 ])
+            ]
+        )
+        self.cmd(
+            'network vhub update -g {rg} -n {vhub} --sku Basic --hub-routing-preference VpnGateway',
+            checks=[
+                self.check('sku', 'Basic'),
+                self.check('hubRoutingPreference', 'VpnGateway')
+            ]
+        )
         self.cmd('network vwan update -g {rg} -n {vwan} --type Basic')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route')
