@@ -288,7 +288,7 @@ def load_arguments(self, _):
         c.argument('host_group_id', validator=validate_host_group_id, is_preview=True)
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         # no validation for aks create because it already only supports Linux.
-        c.argument('message_of_the_day')   
+        c.argument('message_of_the_day')
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         c.argument('enable_namespace_resources', options_list=['--enable-namespace-resources', '--enable-ns-resources'], help='Enables namespace as an ARM resource')

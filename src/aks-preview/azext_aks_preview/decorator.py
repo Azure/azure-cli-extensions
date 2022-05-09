@@ -2212,7 +2212,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 )
 
         return mc
-    
+
     def set_up_enable_namespace_resource(self, mc: ManagedCluster) -> ManagedCluster:
         """Sets the property to enable namespace as an ARM resource
 
@@ -2585,7 +2585,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 )
 
         return mc
-    
+
     def update_enable_namespace_resources(self, mc: ManagedCluster) -> ManagedCluster:
         """Sets the property to enable namespace as an ARM resource
 

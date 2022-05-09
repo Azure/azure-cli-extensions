@@ -963,7 +963,7 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
             raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         if namespace_name is not None:
-            raise InvalidArgumentValueError("--namespace is not valid for admin credentials") 
+            raise InvalidArgumentValueError("--namespace is not valid for admin credentials")
         credentialResults = client.list_cluster_admin_credentials(
             resource_group_name, name, serverType)
     else:
@@ -974,10 +974,10 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
 
                 client = get_mgmt_service_client(cmd.cli_ctx, NamespaceClient)
                 credentialResults = client.list_user_credential(resource_group_name, "Microsoft.ContainerService", "managedClusters", name, namespace_name)
-                
+
             else:
                 credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType, credential_format)
+                    resource_group_name, name, serverType, credential_format)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
                 resource_group_name, name, serverType)
