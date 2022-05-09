@@ -5,8 +5,8 @@ Release History
 
 0.2.12
 ++++++
-*`az network vhub create`:support new parameters `--hub-routing-preference`.
-*`az network vhub update`:support new parameters `--hub-routing-preference`.
+*`az network vhub create`: Add new parameter `--hub-routing-preference`.
+*`az network vhub update`: Add new parameter `--hub-routing-preference`.
 
 0.2.11
 ++++++
