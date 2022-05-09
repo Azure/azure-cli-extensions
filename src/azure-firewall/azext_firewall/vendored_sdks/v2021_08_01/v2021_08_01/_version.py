@@ -6,5 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._network_management_client import NetworkManagementClient
-__all__ = ['NetworkManagementClient']
+VERSION = "1.0.0b1"
