@@ -110,7 +110,6 @@ def _autoadd_providers(workspace, providers_in_region, providers_selected, provi
     found_autoadd_skus = False
     for provider in providers_in_region:
         for sku in provider.properties.skus:
-            # print(f"\tSKU = {sku.name}\t\tautoAdd = {sku.auto_add}")
             if sku.auto_add:
                 found_autoadd_skus = True
                 provider_id = provider.id
@@ -200,13 +199,6 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
-    # >>>>> The following validation was moved to _autoadd_providers 
-    # if provider_sku_list is None:
-    #     raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
-    #                                        "Supply the missing -r parameter. For example:\n"
-    #                                        "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
-    #                                        "To display a list of Provider IDs and their SKUs, use the following command:\n"
-    #                                        "\taz quantum offerings list -l MyLocation -o table")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
