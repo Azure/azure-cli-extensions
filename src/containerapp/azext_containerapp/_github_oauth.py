@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 
 from azure.cli.core.util import open_page_in_browser
+from azure.cli.core.auth.persistence import SecretStore, build_persistence
 from azure.cli.core.azclierror import (ValidationError, CLIInternalError, UnclassifiedUserFault)
 from ._utils import repo_url_to_name
 from knack.log import get_logger
@@ -28,21 +29,19 @@ GITHUB_OAUTH_SCOPES = [
     "repo",
     "workflow"
 ]
-GITHUB_TOKEN_FILE = "github_token_cache.json"
+
+
+def _get_github_token_secret_store(cmd):
+    location = os.path.join(cmd.cli_ctx.config.config_dir, "github_token_cache")
+    file_persistence = build_persistence(location, encrypt=True)
+    return SecretStore(file_persistence)
 
 
 def cache_github_token(cmd, token, repo):
     repo = repo_url_to_name(repo)
-    file = os.path.join(cmd.cli_ctx.config.config_dir, GITHUB_TOKEN_FILE)
-    cache = []
-    if os.path.exists(file):
-        with open(file) as f:
-            try:
-                cache = json.load(f)
-                if not isinstance(cache, list):
-                    cache = []
-            except json.decoder.JSONDecodeError:
-                pass
+    secret_store = _get_github_token_secret_store(cmd)
+    cache = secret_store.load()
+
     for entry in cache:
         if isinstance(entry, dict) and entry.get("value") == token:
             if repo not in entry.get("repos", []):
@@ -53,23 +52,19 @@ def cache_github_token(cmd, token, repo):
         cache_entry = {"last_modified_timestamp": datetime.utcnow().timestamp(), "value": token, "repos": [repo]}
         cache = [cache_entry, *cache]
 
-    with open(file, "w") as f:
-        json.dump(cache, f, indent="\t")
+    secret_store.save(cache)
 
 
 def load_github_token_from_cache(cmd, repo):
     repo = repo_url_to_name(repo)
-    file = os.path.join(cmd.cli_ctx.config.config_dir, GITHUB_TOKEN_FILE)
-    if os.path.exists(file):
-        with open(file) as f:
-            try:
-                cache = json.load(f)
-                if isinstance(cache, list):
-                    for entry in cache:
-                        if isinstance(entry, dict) and repo in entry.get("repos", []):
-                            return entry.get("value")
-            except json.decoder.JSONDecodeError:
-                pass
+    secret_store = _get_github_token_secret_store(cmd)
+    cache = secret_store.load()
+
+    if isinstance(cache, list):
+        for entry in cache:
+            if isinstance(entry, dict) and repo in entry.get("repos", []):
+                return entry.get("value")
+
     return None
 
 
