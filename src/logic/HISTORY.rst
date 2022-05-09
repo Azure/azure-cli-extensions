@@ -5,8 +5,8 @@ Release History
 
 0.1.6
 ++++++
-*Add README.md link in logic help
-*Fix a syntax error in README.md
+* Add README.md link in help
+* Fix a syntax error in README.md
 
 0.1.5
 ++++++
