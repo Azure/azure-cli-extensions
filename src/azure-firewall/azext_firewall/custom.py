@@ -523,7 +523,7 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
             dns_settings = DnsSettings(servers=dns_servers,
                                        enable_proxy=enable_dns_proxy or False)
             firewall_policy.dns_settings = dns_settings
-    if cmd.supported_api_version(min_api='2020-07-01'):
+    if cmd.supported_api_version(min_api='2021-08-01'):
         if sku is not None:
             firewall_policy.sku = FirewallPolicySku(tier=sku)
 
@@ -587,7 +587,7 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_whitelist.ip_addresses = ip_addresses
     if fqdns is not None:
         instance.threat_intel_whitelist.fqdns = fqdns
-    if cmd.supported_api_version(min_api='2020-07-01'):
+    if cmd.supported_api_version(min_api='2021-08-01'):
         if sku is not None:
             instance.sku = FirewallPolicySku(tier=sku)
 
@@ -696,7 +696,8 @@ def add_firewall_policy_intrusion_detection_config(cmd,
         firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
 
     if private_ranges is not None:
-        firewall_policy.intrusion_detection.configuration.private_ranges.append(private_ranges)
+        __private_ranges = [x.strip() for x in private_ranges.split(",")]
+        firewall_policy.intrusion_detection.configuration.private_ranges = __private_ranges
 
     result = sdk_no_wait(False,
                          client.begin_create_or_update,

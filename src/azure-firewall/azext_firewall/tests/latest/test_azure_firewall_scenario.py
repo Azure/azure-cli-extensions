@@ -414,14 +414,14 @@ class AzureFirewallScenario(ScenarioTest):
 
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001 --private-ranges 167.220.208.0/24 167.221.205.102/32',
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001 --private-ranges 167.220.204.0/24 167.221.205.101/32',
                  checks=[
                      self.check('bypassTrafficSettings', []),
                      self.check('length(signatureOverrides)', 2),
                      self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
                      self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
-                     self.check('privateRanges[0]', "167.220.208.0/24"),
-                     self.check('privateRanges[1]', "167.221.205.102/32")
+                     self.check('privateRanges[0]', "167.220.204.0/24"),
+                     self.check('privateRanges[1]', "167.221.205.101/32")
                  ])
 
         self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} '

@@ -24,7 +24,6 @@ from ._validators import (
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
-
     (AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType,
      AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType,
      FirewallPolicyIntrusionDetectionProtocol, AzureFirewallSkuTier) = \
@@ -200,7 +199,7 @@ def load_arguments(self, _):
         c.argument('bypass_rule_destination_ip_groups', options_list=['--rule-dest-ip-groups'], nargs='+', help='Space-separated list of destination IpGroups for this rule')
 
     with self.argument_context('network firewall policy intrusion-detection', min_api='2021-08-01', arg_group='IDPS Private Ranges') as c:
-        c.argument('private_ranges', options_list=['--private-ranges'], nargs='+', help='Space-separated list of IDPS private ranges')
+        c.argument('private_ranges', nargs='+', options_list=["--private-ranges"], help='Space-separated list of IDPS private ranges')
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
