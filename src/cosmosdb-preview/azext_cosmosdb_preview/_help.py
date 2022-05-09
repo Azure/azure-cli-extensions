@@ -539,7 +539,7 @@ short-summary: Retrieves latest restorable timestamp for the given table in give
 
 helps['cosmosdb dts export'] = """
     type: command
-    short-summary: "Creates a data transfer export Job."
+    short-summary: "Creates a Data Transfer Export Job."
     parameters:
       - name: --cassandra-table
         short-summary: "Cassandra table data source"
@@ -564,7 +564,7 @@ helps['cosmosdb dts export'] = """
 
 helps['cosmosdb dts import'] = """
     type: command
-    short-summary: "Creates a data transfer import Job."
+    short-summary: "Creates a Data Transfer Import Job."
     parameters:
       - name: --cassandra-table
         short-summary: "Cassandra table data sink"
@@ -589,7 +589,7 @@ helps['cosmosdb dts import'] = """
 
 helps['cosmosdb dts copy'] = """
     type: command
-    short-summary: "Creates a data transfer copy Job."
+    short-summary: "Creates a Data Transfer Copy Job."
     parameters:
       - name: --source-cassandra-table
         short-summary: "Source cassandra table"
@@ -604,14 +604,12 @@ helps['cosmosdb dts copy'] = """
             keyspace: Keyspace name of CosmosDB Cassandra.
             table: Table name of CosmosDB Cassandra.
       - name: --source-sql-container
-        short-summary: "Blob conatiner data source"
         short-summary: "Source sql container"
         long-summary: |
             Usage: --source-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
       - name: --dest-sql-container
-        short-summary: "Blob conatiner data source"
         short-summary: "Destination sql container"
         long-summary: |
             Usage: --dest-sql-container database=XX container=XX'
@@ -634,7 +632,7 @@ helps['cosmosdb dts'] = """
 
 helps['cosmosdb dts list'] = """
     type: command
-    short-summary: "Get a list of Data Transfer jobs."
+    short-summary: "Get a list of Data Transfer Jobs."
     examples:
       - name: List all jobs
         text: |-
@@ -652,6 +650,7 @@ helps['cosmosdb dts show'] = """
 
 helps['cosmosdb dts pause'] = """
     type: command
+    short-summary: "Pause a Data Transfer Job."
     examples:
       - name: Pause job j1
         text: |-
@@ -660,6 +659,7 @@ helps['cosmosdb dts pause'] = """
 
 helps['cosmosdb dts resume'] = """
     type: command
+    short-summary: "Resumes a Data Transfer Job."
     examples:
       - name: Resume job j1
         text: |-
@@ -668,6 +668,7 @@ helps['cosmosdb dts resume'] = """
 
 helps['cosmosdb dts cancel'] = """
     type: command
+    short-summary: "Cancels a Data Transfer Job."
     examples:
       - name: Cancel job j1
         text: |-
