@@ -9,7 +9,6 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
-from requests import options
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
     file_type,
