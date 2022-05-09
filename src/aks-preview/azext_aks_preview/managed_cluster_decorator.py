@@ -824,7 +824,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: None
         """
-        self.models = AKSPreviewManagedClusterModels(self.cmd, self.resource_type, self.agentpool_decorator_mode)
+        self.models = AKSPreviewManagedClusterModels(self.cmd, self.resource_type)
 
     def init_context(self) -> None:
         """Initialize an AKSPreviewManagedClusterContext object to store the context in the process of assemble the
@@ -837,7 +837,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             AKSManagedClusterParamDict(self.__raw_parameters),
             self.models,
             DecoratorMode.CREATE,
-            self.agentpool_decorator_mode,
         )
 
     def init_agentpool_decorator_context(self) -> None:
@@ -893,7 +892,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_outbound_ip_prefixes(),
                 self.context.get_load_balancer_outbound_ports(),
                 self.context.get_load_balancer_idle_timeout(),
-                models=self.models.lb_models,
+                models=self.models.load_balancer_models,
             )
         return mc
 
@@ -952,6 +951,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         mc.oidc_issuer_profile = self.context.get_oidc_issuer_profile()
 
         return mc
@@ -961,6 +962,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         profile = self.context.get_workload_identity_profile()
         if profile is None:
             if mc.security_profile is not None:
@@ -979,6 +982,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         if self.context.get_enable_azure_keyvault_kms():
             key_id = self.context.get_azure_keyvault_kms_key_id()
             if key_id:
@@ -996,6 +1001,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         # snapshot creation data
         creation_data = None
         snapshot_id = self.context.get_cluster_snapshot_id()

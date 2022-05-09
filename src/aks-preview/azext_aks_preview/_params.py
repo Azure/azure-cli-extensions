@@ -244,6 +244,7 @@ def load_arguments(self, _):
         c.argument('node_vm_size', options_list=[
                    '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
         c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
+        c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
         c.argument('enable_node_public_ip', action='store_true')
@@ -266,7 +267,6 @@ def load_arguments(self, _):
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
-        c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('kubelet_config')
         c.argument('linux_os_config')
         c.argument('disable_disk_driver', arg_type=get_three_state_flag())
@@ -414,10 +414,9 @@ def load_arguments(self, _):
                        '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('os_type')
             c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
-            c.argument('vnet_subnet_id',
-                       validator=validate_vnet_subnet_id)
-            c.argument('pod_subnet_id',
-                       validator=validate_pod_subnet_id)
+            c.argument('snapshot_id', validator=validate_snapshot_id)
+            c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
+            c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
             c.argument('enable_node_public_ip', action='store_true')
             c.argument('node_public_ip_prefix_id')
             c.argument('enable_cluster_autoscaler', options_list=[
@@ -433,9 +432,9 @@ def load_arguments(self, _):
             c.argument('node_taints', validator=validate_taints)
             c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
             c.argument('node_osdisk_size', type=int)
+            c.argument('max_surge', validator=validate_max_surge)
             c.argument('mode', arg_type=get_enum_type(node_mode_types))
             c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
-            c.argument('max_surge', validator=validate_max_surge)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
             c.argument('node_zones', zones_type, options_list=['--node-zones'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.', deprecate_info=c.deprecate(redirect='--zones', hide='2.37.0'))
             c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
@@ -444,7 +443,6 @@ def load_arguments(self, _):
                        '--enable-encryption-at-host'], action='store_true')
             c.argument('enable_ultra_ssd', action='store_true')
             c.argument('enable_fips_image', action='store_true')
-            c.argument('snapshot_id', validator=validate_snapshot_id)
             c.argument('kubelet_config')
             c.argument('linux_os_config')
             c.argument('aks_custom_headers')
@@ -484,9 +482,9 @@ def load_arguments(self, _):
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
         c.argument('node_taints', validator=validate_taints)
+        c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
-        c.argument('max_surge', validator=validate_max_surge)
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=[
