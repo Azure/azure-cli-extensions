@@ -795,6 +795,78 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
 
+    def test_get_disk_driver(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = True,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_storage_profile(), storage_profile
+        )
+
+        # custom disk value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disable_disk_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_disk_driver and disable_disk_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disk_driver()
+
+        # custom file alue
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_file_driver": True,
+                "disable_file_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_file_driver and disable_file_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_file_driver()
+
+        # custom file alue
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_snapshot_controller": True,
+                "disable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_snapshot_controller and disable_snapshot_controller
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_snapshot_controller()
+
     def test_get_enable_pod_security_policy(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -3148,6 +3220,19 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             load_balancer_sku="standard",
         )
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
+
+        storage_profile_1 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+            ),
+            file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                enabled=True,
+            ),
+            snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                enabled=True,
+            ),
+        )
+
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             dns_prefix="testname-testrgname-1234-5",
@@ -3160,6 +3245,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             identity=identity_1,
             disable_local_accounts=False,
             enable_pod_security_policy=False,
+            storage_profile=storage_profile_1,
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
         raw_param_dict.print_usage_statistics()
@@ -4480,12 +4566,18 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
                 object_id="test_object_id",
             )
         }
+        ground_truth_storage_profile_1=self.models.ManagedClusterStorageProfile(
+            disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(),
+            file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(),
+            snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(),
+        )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=[ground_truth_agent_pool_profile_1],
             network_profile=ground_truth_network_profile_1,
             identity=ground_truth_identity_1,
             identity_profile=ground_truth_identity_profile_1,
+            storage_profile=ground_truth_storage_profile_1,
         )
         raw_param_dict.print_usage_statistics()
         self.assertEqual(dec_mc_1, ground_truth_mc_1)

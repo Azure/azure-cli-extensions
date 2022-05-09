@@ -179,6 +179,7 @@ az connectedmachine extension create --name "CustomScriptExtension" --location "
 |**--publisher**|string|The name of the extension handler publisher.|publisher|publisher|
 |**--type**|string|Specifies the type of the extension; an example is "CustomScriptExtension".|type|type|
 |**--type-handler-version**|string|Specifies the version of the script handler.|type_handler_version|typeHandlerVersion|
+|**--enable-auto-upgrade**|boolean|Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.|enable_auto_upgrade|enableAutomaticUpgrade|
 |**--auto-upgrade-minor**|boolean|Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.|auto_upgrade_minor|autoUpgradeMinorVersion|
 |**--settings**|any|Json formatted public settings for the extension.|settings|settings|
 |**--protected-settings**|any|The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at all.|protected_settings|protectedSettings|
@@ -207,7 +208,6 @@ $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --machine-name "myMac
 |**--publisher**|string|The name of the extension handler publisher.|publisher|publisher|
 |**--type**|string|Specifies the type of the extension; an example is "CustomScriptExtension".|type|type|
 |**--type-handler-version**|string|Specifies the version of the script handler.|type_handler_version|typeHandlerVersion|
-|**--enable-auto-upgrade**|boolean|Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.|enable_auto_upgrade|enableAutomaticUpgrade|
 |**--auto-upgrade-minor**|boolean|Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.|auto_upgrade_minor|autoUpgradeMinorVersion|
 |**--settings**|any|Json formatted public settings for the extension.|settings|settings|
 |**--protected-settings**|any|The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at all.|protected_settings|protectedSettings|

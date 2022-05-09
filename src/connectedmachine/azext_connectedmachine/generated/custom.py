@@ -7,7 +7,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
@@ -73,22 +72,36 @@ def connectedmachine_extension_create(client,
                                       status=None,
                                       no_wait=False):
     extension_parameters = {}
-    extension_parameters['tags'] = tags
+    if tags is not None:
+        extension_parameters['tags'] = tags
     extension_parameters['location'] = location
     extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['enable_auto_upgrade'] = enable_auto_upgrade
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
+    if force_update_tag is not None:
+        extension_parameters['properties']['force_update_tag'] = force_update_tag
+    if publisher is not None:
+        extension_parameters['properties']['publisher'] = publisher
+    if type_ is not None:
+        extension_parameters['properties']['type'] = type_
+    if type_handler_version is not None:
+        extension_parameters['properties']['type_handler_version'] = type_handler_version
+    if enable_auto_upgrade is not None:
+        extension_parameters['properties']['enable_automatic_upgrade'] = enable_auto_upgrade
+    if auto_upgrade_minor is not None:
+        extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
+    if settings is not None:
+        extension_parameters['properties']['settings'] = settings
+    if protected_settings is not None:
+        extension_parameters['properties']['protected_settings'] = protected_settings
     extension_parameters['properties']['instance_view'] = {}
     extension_parameters['properties']['instance_view']['name'] = name
-    extension_parameters['properties']['instance_view']['type'] = instance_view_type
-    extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
-    extension_parameters['properties']['instance_view']['status'] = status
+    if instance_view_type is not None:
+        extension_parameters['properties']['instance_view']['type'] = instance_view_type
+    if inst_handler_version is not None:
+        extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
+    if status is not None:
+        extension_parameters['properties']['instance_view']['status'] = status
+    if len(extension_parameters['properties']['instance_view']) == 0:
+        del extension_parameters['properties']['instance_view']
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -106,22 +119,30 @@ def connectedmachine_extension_update(client,
                                       publisher=None,
                                       type_=None,
                                       type_handler_version=None,
-                                      enable_auto_upgrade=None,
                                       auto_upgrade_minor=None,
                                       settings=None,
                                       protected_settings=None,
                                       no_wait=False):
     extension_parameters = {}
-    extension_parameters['tags'] = tags
+    if tags is not None:
+        extension_parameters['tags'] = tags
     extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['enable_auto_upgrade'] = enable_auto_upgrade
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
+    if force_update_tag is not None:
+        extension_parameters['properties']['force_update_tag'] = force_update_tag
+    if publisher is not None:
+        extension_parameters['properties']['publisher'] = publisher
+    if type_ is not None:
+        extension_parameters['properties']['type'] = type_
+    if type_handler_version is not None:
+        extension_parameters['properties']['type_handler_version'] = type_handler_version
+    if auto_upgrade_minor is not None:
+        extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
+    if settings is not None:
+        extension_parameters['properties']['settings'] = settings
+    if protected_settings is not None:
+        extension_parameters['properties']['protected_settings'] = protected_settings
+    if len(extension_parameters['properties']) == 0:
+        del extension_parameters['properties']
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -147,7 +168,8 @@ def connectedmachine_upgrade_extension(client,
                                        machine_name,
                                        extension_targets=None):
     extension_upgrade_parameters = {}
-    extension_upgrade_parameters['extension_targets'] = extension_targets
+    if extension_targets is not None:
+        extension_upgrade_parameters['extension_targets'] = extension_targets
     return client.begin_upgrade_extensions(resource_group_name=resource_group_name,
                                            machine_name=machine_name,
                                            extension_upgrade_parameters=extension_upgrade_parameters)
@@ -173,13 +195,17 @@ def connectedmachine_private_link_scope_create(client,
                                                location,
                                                tags=None,
                                                public_network_access=None):
-    if public_network_access is None:
-        public_network_access = "Disabled"
     parameters = {}
     parameters['location'] = location
-    parameters['tags'] = tags
+    if tags is not None:
+        parameters['tags'] = tags
     parameters['properties'] = {}
-    parameters['properties']['public_network_access'] = "Disabled" if public_network_access is None else public_network_access
+    if public_network_access is not None:
+        parameters['properties']['public_network_access'] = public_network_access
+    else:
+        parameters['properties']['public_network_access'] = "Disabled"
+    if len(parameters['properties']) == 0:
+        del parameters['properties']
     return client.create_or_update(resource_group_name=resource_group_name,
                                    scope_name=scope_name,
                                    parameters=parameters)
@@ -191,14 +217,11 @@ def connectedmachine_private_link_scope_update(instance,
                                                location,
                                                tags=None,
                                                public_network_access=None):
-    if public_network_access is None:
-        public_network_access = "Disabled"
-    if location is not None:
-        instance.location = location
+    instance.location = location
     if tags is not None:
         instance.tags = tags
     if public_network_access is not None:
-        instance.properties.public_network_access = "Disabled" if public_network_access is None else public_network_access
+        instance.properties.public_network_access = public_network_access
     return instance
 
 
@@ -231,7 +254,8 @@ def connectedmachine_private_link_scope_update_tag(client,
                                                    scope_name,
                                                    tags=None):
     private_link_scope_tags = {}
-    private_link_scope_tags['tags'] = tags
+    if tags is not None:
+        private_link_scope_tags['tags'] = tags
     return client.update_tags(resource_group_name=resource_group_name,
                               scope_name=scope_name,
                               private_link_scope_tags=private_link_scope_tags)
@@ -278,9 +302,13 @@ def connectedmachine_private_endpoint_connection_update(client,
                                                         no_wait=False):
     parameters = {}
     parameters['properties'] = {}
-    parameters['properties']['private_link_service_connection_state'] = connection_state
+    if connection_state is not None:
+        parameters['properties']['private_link_service_connection_state'] = connection_state
     parameters['properties']['private_endpoint'] = {}
-    parameters['properties']['private_endpoint']['id'] = id_
+    if id_ is not None:
+        parameters['properties']['private_endpoint']['id'] = id_
+    if len(parameters['properties']['private_endpoint']) == 0:
+        del parameters['properties']['private_endpoint']
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,

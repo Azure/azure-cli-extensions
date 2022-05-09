@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.6
+++++++
+*Add README.md link in logic help
+*Fix a syntax error in README.md
+
 0.1.5
 ++++++
 * Upgrade SDK to fix deserialization errors

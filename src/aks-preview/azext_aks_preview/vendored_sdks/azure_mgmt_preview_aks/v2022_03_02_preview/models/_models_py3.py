@@ -2125,6 +2125,9 @@ class ManagedCluster(TrackedResource):
     :ivar security_profile: Security profile for the managed cluster.
     :vartype security_profile:
      ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterSecurityProfile
+    :ivar storage_profile: Storage profile for the managed cluster.
+    :vartype storage_profile:
+     ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterStorageProfile
     :ivar ingress_profile: Ingress profile for the managed cluster.
     :vartype ingress_profile:
      ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterIngressProfile
@@ -2192,6 +2195,7 @@ class ManagedCluster(TrackedResource):
         'disable_local_accounts': {'key': 'properties.disableLocalAccounts', 'type': 'bool'},
         'http_proxy_config': {'key': 'properties.httpProxyConfig', 'type': 'ManagedClusterHTTPProxyConfig'},
         'security_profile': {'key': 'properties.securityProfile', 'type': 'ManagedClusterSecurityProfile'},
+        'storage_profile': {'key': 'properties.storageProfile', 'type': 'ManagedClusterStorageProfile'},
         'ingress_profile': {'key': 'properties.ingressProfile', 'type': 'ManagedClusterIngressProfile'},
         'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
     }
@@ -2230,6 +2234,7 @@ class ManagedCluster(TrackedResource):
         disable_local_accounts: Optional[bool] = None,
         http_proxy_config: Optional["ManagedClusterHTTPProxyConfig"] = None,
         security_profile: Optional["ManagedClusterSecurityProfile"] = None,
+        storage_profile: Optional["ManagedClusterStorageProfile"] = None,
         ingress_profile: Optional["ManagedClusterIngressProfile"] = None,
         public_network_access: Optional[Union[str, "PublicNetworkAccess"]] = None,
         **kwargs
@@ -2332,6 +2337,9 @@ class ManagedCluster(TrackedResource):
         :keyword security_profile: Security profile for the managed cluster.
         :paramtype security_profile:
          ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterSecurityProfile
+        :keyword storage_profile: Storage profile for the managed cluster.
+        :paramtype storage_profile:
+         ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterStorageProfile
         :keyword ingress_profile: Ingress profile for the managed cluster.
         :paramtype ingress_profile:
          ~azure.mgmt.containerservice.v2022_03_02_preview.models.ManagedClusterIngressProfile
@@ -2377,6 +2385,7 @@ class ManagedCluster(TrackedResource):
         self.disable_local_accounts = disable_local_accounts
         self.http_proxy_config = http_proxy_config
         self.security_profile = security_profile
+        self.storage_profile = storage_profile
         self.ingress_profile = ingress_profile
         self.public_network_access = public_network_access
 
