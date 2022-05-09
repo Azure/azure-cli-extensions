@@ -28,8 +28,10 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
     def _metadata_deprecate_message(self):
-        msg = "This {} has been deprecated and will be removed in future release.".format(self.object_type)
-        msg += " Use '{}' instead.".format(self.redirect)
+        msg = "The {} has been deprecated and will be removed in Nov. 2022.".format(self.object_type)
+        msg += " We recommend that you upgrade to the new '{}' command group".format(self.redirect)
+        msg += " by installing the 'spring' extension: run `az extension add -n spring`."
+        msg += " For more information, please visit: https://aka.ms/azure-spring-cloud-rename."
         return msg
 
     spring_cloud_routing_util = CliCommandType(
