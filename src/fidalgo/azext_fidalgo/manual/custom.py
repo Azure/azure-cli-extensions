@@ -213,72 +213,84 @@ def fidalgo_virtual_machine_show(client,
 
 
 def fidalgo_virtual_machine_create(client,
+                                   dev_center,
+                                   fidalgo_dns_suffix,
                                    project_name,
+                                   user_id,
                                    virtual_machine_name,
                                    pool_name,
-                                   dev_center,
-                                   user_id='me',
-                                   fidalgo_dns_suffix=None):
+                                   no_wait=False):
     body = {}
     body['pool_name'] = pool_name
-    return client.create(project_name=project_name,
-                         user_id=user_id,
-                         virtual_machine_name=virtual_machine_name,
-                         body=body,
-                         dev_center=dev_center,
-                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       dev_center=dev_center,
+                       fidalgo_dns_suffix=fidalgo_dns_suffix,
+                       project_name=project_name,
+                       user_id=user_id,
+                       virtual_machine_name=virtual_machine_name,
+                       body=body)
 
 
 def fidalgo_virtual_machine_delete(client,
-                                   project_name,
-                                   virtual_machine_name,
                                    dev_center,
-                                   user_id='me',
-                                   fidalgo_dns_suffix=None):
-    return client.delete(project_name=project_name,
-                         user_id=user_id,
-                         virtual_machine_name=virtual_machine_name,
-                         dev_center=dev_center,
-                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
+                                   fidalgo_dns_suffix,
+                                   project_name,
+                                   user_id,
+                                   virtual_machine_name,
+                                   no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       dev_center=dev_center,
+                       fidalgo_dns_suffix=fidalgo_dns_suffix,
+                       project_name=project_name,
+                       user_id=user_id,
+                       virtual_machine_name=virtual_machine_name)
 
 
 def fidalgo_virtual_machine_get_remote_connection(client,
-                                                 project_name,
-                                                 virtual_machine_name,
-                                                 dev_center,
-                                                 user_id='me',
-                                                 fidalgo_dns_suffix=None):
-    return client.get_remote_connection(project_name=project_name,
+                                                  dev_center,
+                                                  fidalgo_dns_suffix,
+                                                  project_name,
+                                                  user_id,
+                                                  virtual_machine_name):
+    return client.get_remote_connection(dev_center=dev_center,
+                                        fidalgo_dns_suffix=fidalgo_dns_suffix,
+                                        project_name=project_name,
                                         user_id=user_id,
-                                        virtual_machine_name=virtual_machine_name,
-                                        dev_center=dev_center,
-                                        fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
+                                        virtual_machine_name=virtual_machine_name)
 
 
 def fidalgo_virtual_machine_start(client,
-                                  project_name,
-                                  virtual_machine_name,
                                   dev_center,
-                                  user_id='me',
-                                  fidalgo_dns_suffix=None):
-    return client.start(project_name=project_name,
-                        user_id=user_id,
-                        virtual_machine_name=virtual_machine_name,
-                        dev_center=dev_center,
-                        fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
+                                  fidalgo_dns_suffix,
+                                  project_name,
+                                  user_id,
+                                  virtual_machine_name,
+                                  no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_start,
+                       dev_center=dev_center,
+                       fidalgo_dns_suffix=fidalgo_dns_suffix,
+                       project_name=project_name,
+                       user_id=user_id,
+                       virtual_machine_name=virtual_machine_name)
 
 
 def fidalgo_virtual_machine_stop(client,
-                                 project_name,
-                                 virtual_machine_name,
                                  dev_center,
-                                 user_id='me',
-                                 fidalgo_dns_suffix=None):
-    return client.stop(project_name=project_name,
-                       user_id=user_id,
-                       virtual_machine_name=virtual_machine_name,
+                                 fidalgo_dns_suffix,
+                                 project_name,
+                                 user_id,
+                                 virtual_machine_name,
+                                 no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_stop,
                        dev_center=dev_center,
-                       fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
+                       fidalgo_dns_suffix=fidalgo_dns_suffix,
+                       project_name=project_name,
+                       user_id=user_id,
+                       virtual_machine_name=virtual_machine_name)
 
 def fidalgo_environment_list_dp(client,
                              dev_center,
