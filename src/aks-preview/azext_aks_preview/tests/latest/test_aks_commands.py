@@ -1668,8 +1668,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus', preserve_default_location=True)
     def test_aks_snapshot(self, resource_group, resource_group_location):
+        print(resource_group_location)
         create_version, upgrade_version = self._get_versions(
             resource_group_location)
         aks_name = self.create_random_name('cliakstest', 16)
