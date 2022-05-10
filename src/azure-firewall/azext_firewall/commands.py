@@ -99,11 +99,11 @@ def load_command_table(self, _):
     }
 
     for rule_type, af_rule in af_rules.items():
-        with self.command_group('network firewall {}'.format(af_rule['scope']), network_firewall_sdk) as g:
-            g.custom_command('create', 'create_af_{}'.format(rule_type), validator=af_rule['validator'])
-            g.custom_command('list', build_af_rule_list(rule_type, '{}_collections'.format(rule_type)))
-            g.custom_show_command('show', build_af_rule_show(rule_type, '{}_collections'.format(rule_type)))
-            g.custom_command('delete', build_af_rule_delete(rule_type, '{}_collections'.format(rule_type)))
+        with self.command_group(f'network firewall {af_rule["scope"]}', network_firewall_sdk) as g:
+            g.custom_command('create', f'create_af_{rule_type}', validator=af_rule['validator'])
+            g.custom_command('list', build_af_rule_list(rule_type, f'{rule_type}_collections'))
+            g.custom_show_command('show', build_af_rule_show(rule_type, f'{rule_type}_collections'))
+            g.custom_command('delete', build_af_rule_delete(rule_type, f'{rule_type}_collections'))
 
     af_collections = {
         'network_rule_collections': 'network-rule collection',
@@ -111,7 +111,7 @@ def load_command_table(self, _):
         'application_rule_collections': 'application-rule collection'
     }
     for subresource, scope in af_collections.items():
-        with self.command_group('network firewall {}'.format(scope), network_util) as g:
+        with self.command_group(f'network firewall {scope}', network_util) as g:
             g.command('list', list_network_resource_property('azure_firewalls', subresource))
             g.show_command('show', get_network_resource_property_entry('azure_firewalls', subresource))
             g.command('delete', delete_network_resource_property_entry('azure_firewalls', subresource))

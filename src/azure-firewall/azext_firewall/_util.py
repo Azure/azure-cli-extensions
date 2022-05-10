@@ -15,7 +15,7 @@ from ._client_factory import network_client_factory
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise CLIError("Property '{}' does not exist".format(name))
+        raise CLIError(f"Property '{name}' does not exist")
     return result
 
 
@@ -33,7 +33,7 @@ def list_network_resource_property(resource, prop):
         client = getattr(network_client_factory(cmd.cli_ctx), resource)
         return client.get(resource_group_name, resource_name).__getattribute__(prop)
 
-    func_name = 'list_network_resource_property_{}_{}'.format(resource, prop)
+    func_name = f'list_network_resource_property_{resource}_{prop}'
     setattr(sys.modules[__name__], func_name, list_func)
     return func_name
 
@@ -47,11 +47,10 @@ def get_network_resource_property_entry(resource, prop):
 
         result = next((x for x in items if x.name.lower() == item_name.lower()), None)
         if not result:
-            raise CLIError("Item '{}' does not exist on {} '{}'".format(
-                item_name, resource, resource_name))
+            raise CLIError(f"Item '{item_name}' does not exist on {resource} '{resource_name}'")
         return result
 
-    func_name = 'get_network_resource_property_entry_{}_{}'.format(resource, prop)
+    func_name = f'get_network_resource_property_entry_{resource}_{prop}'
     setattr(sys.modules[__name__], func_name, get_func)
     return func_name
 
@@ -68,10 +67,11 @@ def delete_network_resource_property_entry(resource, prop):
         if no_wait:
             sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, resource_name, item)
         else:
-            result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, resource_name, item).result()
+            result = sdk_no_wait(no_wait, client.begin_create_or_update,
+                                 resource_group_name, resource_name, item).result()
             if next((x for x in getattr(result, prop) if x.name.lower() == item_name.lower()), None):
-                raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
+                raise CLIError(f"Failed to delete '{item_name}' on '{resource_name}'")
 
-    func_name = 'delete_network_resource_property_entry_{}_{}'.format(resource, prop)
+    func_name = f'delete_network_resource_property_entry_{resource}_{prop}'
     setattr(sys.modules[__name__], func_name, delete_func)
     return func_name
