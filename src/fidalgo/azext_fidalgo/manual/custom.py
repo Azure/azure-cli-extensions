@@ -152,6 +152,15 @@ def fidalgo_project_list_dp(client,
                                      top=top,
                                      filter=filter_)
 
+def fidalgo_project_show_dp(client,
+                project_name,
+                dev_center,
+                fidalgo_dns_suffix=None,
+                top=None,
+                filter_=None):
+    return client.get(dev_center=dev_center,
+                                     project_name=project_name,
+                                     fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
 
 def fidalgo_pool_list_dp(client,
                       project_name,

@@ -210,6 +210,7 @@ def load_command_table(self, _):
     #data plane 
     with self.command_group('fidalgo dev project', fidalgo_project_dp, client_factory=cf_project_dp) as g:
         g.custom_command('list', 'fidalgo_project_list_dp')
+        g.custom_command('show', 'fidalgo_project_show_dp')
 
     with self.command_group('fidalgo dev pool', fidalgo_pool_dp, client_factory=cf_pool_dp) as g:
         g.custom_command('list', 'fidalgo_pool_list_dp')
