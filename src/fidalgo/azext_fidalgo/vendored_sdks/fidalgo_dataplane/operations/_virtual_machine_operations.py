@@ -15,6 +15,7 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
+from azure.core.polling.base_polling import LROBasePolling
 
 from .. import models
 
@@ -439,7 +440,7 @@ class VirtualMachineOperations(object):
             'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -577,7 +578,7 @@ class VirtualMachineOperations(object):
             'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -707,7 +708,7 @@ class VirtualMachineOperations(object):
             'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -837,7 +838,7 @@ class VirtualMachineOperations(object):
             'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
