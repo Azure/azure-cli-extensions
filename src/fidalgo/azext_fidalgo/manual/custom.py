@@ -222,12 +222,12 @@ def fidalgo_virtual_machine_show(client,
 
 
 def fidalgo_virtual_machine_create(client,
-                                   dev_center,
-                                   fidalgo_dns_suffix,
                                    project_name,
-                                   user_id,
                                    virtual_machine_name,
                                    pool_name,
+                                   dev_center,
+                                   user_id='me',
+                                   fidalgo_dns_suffix=None,
                                    no_wait=False):
     body = {}
     body['pool_name'] = pool_name
@@ -242,11 +242,11 @@ def fidalgo_virtual_machine_create(client,
 
 
 def fidalgo_virtual_machine_delete(client,
-                                   dev_center,
-                                   fidalgo_dns_suffix,
                                    project_name,
-                                   user_id,
                                    virtual_machine_name,
+                                   dev_center,
+                                   user_id='me',
+                                   fidalgo_dns_suffix=None,
                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
@@ -271,12 +271,12 @@ def fidalgo_virtual_machine_get_remote_connection(client,
 
 
 def fidalgo_virtual_machine_start(client,
-                                  dev_center,
-                                  fidalgo_dns_suffix,
-                                  project_name,
-                                  user_id,
-                                  virtual_machine_name,
-                                  no_wait=False):
+                                   project_name,
+                                   virtual_machine_name,
+                                   dev_center,
+                                   user_id='me',
+                                   fidalgo_dns_suffix=None,
+                                   no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_start,
                        dev_center=dev_center,
@@ -287,12 +287,12 @@ def fidalgo_virtual_machine_start(client,
 
 
 def fidalgo_virtual_machine_stop(client,
-                                 dev_center,
-                                 fidalgo_dns_suffix,
-                                 project_name,
-                                 user_id,
-                                 virtual_machine_name,
-                                 no_wait=False):
+                                   project_name,
+                                   virtual_machine_name,
+                                   dev_center,
+                                   user_id='me',
+                                   fidalgo_dns_suffix=None,
+                                   no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_stop,
                        dev_center=dev_center,
