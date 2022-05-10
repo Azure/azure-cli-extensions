@@ -106,7 +106,7 @@ def _provider_terms_need_acceptance(cmd, provider):
     return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
 
-def _autoadd_providers(workspace, providers_in_region, providers_selected, provider_sku_list_from_cmd):
+def _autoadd_providers(providers_in_region, providers_selected):
     for provider in providers_in_region:
         for sku in provider.properties.skus:
             if sku.auto_add:
@@ -145,7 +145,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
-    _autoadd_providers(workspace, providers_in_region, providers_selected, providers)
+    _autoadd_providers(providers_in_region, providers_selected)
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
