@@ -3,10 +3,19 @@
 Release History
 ===============
 
-0.5.67
-++++++
-* Add support for csi drivers extensibility.
+Guidance
+++++++++
+If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
+To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
+
+Pending
++++++++
+* Update to use 2022-04-02-preview api version.
+
+0.5.67 (NOT RELEASED)
++++++++++++++++++++++
+* Add support for csi drivers extensibility.
 
 0.5.66
 ++++++
@@ -36,6 +45,7 @@ Release History
 0.5.61
 ++++++
 
+* Update to use 2022-03-02-preview api version.
 * Add support for `--format` parameter in `az aks get-credentials` command.  
 
 0.5.60
@@ -70,6 +80,7 @@ for nodepool snapshot, it will be
 0.5.58
 ++++++
 
+* Update to use 2022-02-02-preview api version.
 * Add support for enabling Azure KeyVault KMS with `--enable-azure-keyvault-kms` flag.
 
 0.5.57
@@ -97,6 +108,7 @@ for nodepool snapshot, it will be
 0.5.53
 ++++++
 
+* Update to use 2022-01-02-preview api version.
 * Add support for cluster creating with Capacity Reservation Group.
   * `az aks create --crg-id`
 * Add support for nodepool adding with Capacity Reservation Group.
