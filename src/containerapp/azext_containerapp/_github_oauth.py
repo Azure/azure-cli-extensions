@@ -5,14 +5,14 @@
 # pylint: disable=consider-using-f-string
 
 import os
-import json
 from datetime import datetime
 
+from knack.log import get_logger
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.core.auth.persistence import SecretStore, build_persistence
 from azure.cli.core.azclierror import (ValidationError, CLIInternalError, UnclassifiedUserFault)
+
 from ._utils import repo_url_to_name
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 

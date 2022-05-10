@@ -2014,9 +2014,9 @@ def containerapp_up(cmd,
                     service_principal_tenant_id=None):
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry,
+                            _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token)
-    from ._github_oauth import cache_github_token, load_github_token_from_cache
+    from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
