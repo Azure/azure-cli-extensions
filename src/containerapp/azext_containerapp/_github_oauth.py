@@ -4,8 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=consider-using-f-string
 
+import os
+import json
+from datetime import datetime
+
 from azure.cli.core.util import open_page_in_browser
+from azure.cli.core.auth.persistence import SecretStore, build_persistence
 from azure.cli.core.azclierror import (ValidationError, CLIInternalError, UnclassifiedUserFault)
+from ._utils import repo_url_to_name
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -23,6 +29,43 @@ GITHUB_OAUTH_SCOPES = [
     "repo",
     "workflow"
 ]
+
+
+def _get_github_token_secret_store(cmd):
+    location = os.path.join(cmd.cli_ctx.config.config_dir, "github_token_cache")
+    file_persistence = build_persistence(location, encrypt=True)
+    return SecretStore(file_persistence)
+
+
+def cache_github_token(cmd, token, repo):
+    repo = repo_url_to_name(repo)
+    secret_store = _get_github_token_secret_store(cmd)
+    cache = secret_store.load()
+
+    for entry in cache:
+        if isinstance(entry, dict) and entry.get("value") == token:
+            if repo not in entry.get("repos", []):
+                entry["repos"] = [*entry.get("repos", []), repo]
+                entry["last_modified_timestamp"] = datetime.utcnow().timestamp()
+            break
+    else:
+        cache_entry = {"last_modified_timestamp": datetime.utcnow().timestamp(), "value": token, "repos": [repo]}
+        cache = [cache_entry, *cache]
+
+    secret_store.save(cache)
+
+
+def load_github_token_from_cache(cmd, repo):
+    repo = repo_url_to_name(repo)
+    secret_store = _get_github_token_secret_store(cmd)
+    cache = secret_store.load()
+
+    if isinstance(cache, list):
+        for entry in cache:
+            if isinstance(entry, dict) and repo in entry.get("repos", []):
+                return entry.get("value")
+
+    return None
 
 
 def get_github_access_token(cmd, scope_list=None, token=None):  # pylint: disable=unused-argument
