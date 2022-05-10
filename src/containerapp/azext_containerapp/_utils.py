@@ -173,7 +173,7 @@ def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-stat
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
     for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
+        if wf.path.startswith(f".github/workflows/{name}") and f"Trigger auto deployment for" in wf.name:
             return wf
 
 
