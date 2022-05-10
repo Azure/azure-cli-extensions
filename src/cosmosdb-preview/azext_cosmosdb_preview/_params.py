@@ -226,6 +226,15 @@ def load_arguments(self, _):
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True)
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True)
 
+    # Restorable Database Accounts
+    with self.argument_context('cosmosdb restorable-database-account show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location", required=False)
+        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=False)
+
+    with self.argument_context('cosmosdb restorable-database-account list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location", required=False)
+        c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the Account", required=False, id_part=None)
+
     # Restorable Sql Containers
     with self.argument_context('cosmosdb sql restorable-container') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
