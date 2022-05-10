@@ -107,17 +107,22 @@ def _provider_terms_need_acceptance(cmd, provider):
 
 
 def _autoadd_providers(workspace, providers_in_region, providers_selected, provider_sku_list_from_cmd):
-    found_autoadd_skus = False
     for provider in providers_in_region:
         for sku in provider.properties.skus:
             if sku.auto_add:
-                found_autoadd_skus = True
-                provider_id = provider.id
-                (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider.id)
-                if (offer is None or publisher is None):
-                    raise RequiredArgumentMissingError(f"Error adding 'autoAdd' provider: Published or Offer not found for '{provider.id}'")
-                providers_selected.append({'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher})
-    if provider_sku_list_from_cmd is None and not found_autoadd_skus:
+                # Don't add a duplicate provider/sku if it was not also specified in the command's -r parameter
+                provider_already_added = False
+                for already_selected_provider in providers_selected:
+                    if already_selected_provider['provider_id'] == provider.id and already_selected_provider['sku'] == sku.id:
+                        provider_already_added = True
+                        break
+                if not provider_already_added:
+                    (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider.id)
+                    if (offer is None or publisher is None):
+                        raise RequiredArgumentMissingError(f"Error adding 'autoAdd' provider: Published or Offer not found for '{provider.id}'")
+                    providers_selected.append({'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher})
+    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
+    if providers_selected == []:
         raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
                                            "Supply the missing -r parameter. For example:\n"
                                            "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
@@ -129,7 +134,6 @@ def _add_quantum_providers(cmd, workspace, providers):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
-    _autoadd_providers(workspace, providers_in_region, providers_selected, providers)
     if providers is not None:
         for pair in providers.split(','):
             es = [e.strip() for e in pair.split('/')]
@@ -141,6 +145,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
+    _autoadd_providers(workspace, providers_in_region, providers_selected, providers)
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
