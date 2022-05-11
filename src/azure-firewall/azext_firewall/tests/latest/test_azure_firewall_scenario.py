@@ -708,16 +708,16 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check('name', '{collectiongroup}')
             ])
 
-        # self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} '
-        #          '--rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 15000 '
-        #          '--action Allow --rule-name network-rule --rule-type NetworkRule '
-        #          '--description "test" --destination-fqdns www.bing.com --source-ip-groups {source_ip_group} '
-        #          '--destination-ports 12003 12004 --ip-protocols Any ICMP',
-        #          checks=[
-        #              self.check('length(ruleCollections)', 1),
-        #              self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
-        #              self.check('ruleCollections[0].name', "filter-collection-1")
-        #          ])
+        self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 15000 '
+                 '--action Allow --rule-name network-rule --rule-type NetworkRule '
+                 '--description "test" --destination-fqdns www.bing.com --source-ip-groups {source_ip_group} '
+                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 checks=[
+                     self.check('length(ruleCollections)', 1),
+                     self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[0].name', "filter-collection-1")
+                 ])
 
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
                  '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 '
