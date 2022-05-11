@@ -18,7 +18,7 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id)
 
 from azext_cosmosdb_preview.actions import (
-    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddBlobContainerAction, AddSqlContainerAction)
+    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddSqlContainerAction)
 
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
@@ -289,18 +289,6 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
 
     job_name_type = CLIArgumentType(options_list=['--job-name', '-n'], help='Name of the Data Transfer Job. A random job name will be generated if not passed.')
-    with self.argument_context('cosmosdb dts export') as c:
-        c.argument('job_name', job_name_type)
-        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data source cassandra table', required=True)
-        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data sink blob container', required=True)
-        c.argument('worker_count', type=int, help='Worker count')
-
-    with self.argument_context('cosmosdb dts import') as c:
-        c.argument('job_name', job_name_type)
-        c.argument('cassandra_table', nargs='+', action=AddCassandraTableAction, help='Data sink cassandra table', required=True)
-        c.argument('blob_container', nargs='+', action=AddBlobContainerAction, help='Data source blob container', required=True)
-        c.argument('worker_count', type=int, help='Worker count')
-
     with self.argument_context('cosmosdb dts copy') as c:
         c.argument('job_name', job_name_type)
         c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')

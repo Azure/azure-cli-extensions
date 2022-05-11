@@ -12,7 +12,6 @@ from knack.util import CLIError
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseRestoreResource,
     GremlinDatabaseRestoreResource,
-    AzureBlobDataTransferDataSourceSink,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink
 )
@@ -96,40 +95,6 @@ class CreateTableRestoreResource(argparse._AppendAction):
 
         for item in values:
             namespace.tables_to_restore.append(item)
-
-
-class AddBlobContainerAction(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        if not values:
-            # pylint: disable=line-too-long
-            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
-
-        container_name = None
-        endpoint_url = None
-
-        for (k, v) in (x.split('=', 1) for x in values):
-            kl = k.lower()
-            if kl == 'name':
-                container_name = v
-
-            elif kl == 'url':
-                endpoint_url = v
-
-            else:
-                raise CLIError(
-                    f'Unsupported Key {k} is provided for {option_string} component. All'
-                    ' possible keys are: name, url'
-                )
-
-        if container_name is None:
-            raise CLIError(f'usage error: missing key name in {option_string} component')
-
-        if endpoint_url is None:
-            raise CLIError(f'usage error: missing key url in {option_string} component')
-
-        blob_container = AzureBlobDataTransferDataSourceSink(container_name=container_name, endpoint_url=endpoint_url)
-
-        namespace.blob_container = blob_container
 
 
 class AddCassandraTableAction(argparse._AppendAction):

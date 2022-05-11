@@ -537,56 +537,6 @@ type: command
 short-summary: Retrieves latest restorable timestamp for the given table in given region.
 """
 
-helps['cosmosdb dts export'] = """
-    type: command
-    short-summary: "Creates a Data Transfer Export Job."
-    parameters:
-      - name: --cassandra-table
-        short-summary: "Cassandra table data source"
-        long-summary: |
-            Usage: --cassandra-table keyspace=XX table=XX'
-            keyspace: Cassandra keyspace name.
-            table: Cassandra table name.
-      - name: --blob-container
-        short-summary: "Blob container data sink"
-        long-summary: |
-            Usage: --blob-container name=XX url=XX
-            name: Container name of Azure Blob Storage.
-            url: Endpoint Url of Azure Blob Storage.
-
-    examples:
-      - name: Export to cassandra table to blob container
-        text: |-
-          az cosmosdb dts export --account-name "db1" -g "rg1" --job-name "j1"\
- --cassandra-table keyspace=testkeyspace table=testtable\
- --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/
-"""
-
-helps['cosmosdb dts import'] = """
-    type: command
-    short-summary: "Creates a Data Transfer Import Job."
-    parameters:
-      - name: --cassandra-table
-        short-summary: "Cassandra table data sink"
-        long-summary: |
-            Usage: --cassandra-table keyspace=XX table=XX'
-            keyspace: Keyspace name of CosmosDB Cassandra.
-            table: Table name of CosmosDB Cassandra.
-      - name: --blob-container
-        short-summary: "Blob conatiner data source"
-        long-summary: |
-            Usage: --blob-container name=XX url=XX
-            name: Container name of Azure Blob Storage.
-            url: Endpoint Url of Azure Blob Storage.
-
-    examples:
-      - name: Import cassandra table from blob container
-        text: |-
-          az cosmosdb dts import --account-name "db1" -g "rg1" --job-name "j1"\
- --blob-container name=backup1 url=https://backupstorage.blob.core.windows.net/\
- --cassandra-table keyspace=testkeyspace table=testtable
-"""
-
 helps['cosmosdb dts copy'] = """
     type: command
     short-summary: "Creates a Data Transfer Copy Job."
