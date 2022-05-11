@@ -139,10 +139,10 @@ def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, 
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate
+def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate, EncryptionState
     pc = PrivateCloudUpdate()
-    pc.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
+    pc.encryption = Encryption(status=EncryptionState.ENABLED, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
@@ -151,9 +151,9 @@ def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, priv
     msg = 'This will delete the managed keys encryption. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, Encryption, EncryptionState
     pc = PrivateCloudUpdate()
-    pc.encryption = None
+    pc.encryption = Encryption(status=EncryptionState.DISABLED)
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
