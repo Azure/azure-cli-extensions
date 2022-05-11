@@ -6,12 +6,14 @@
 import base64
 import os
 import tempfile
+from time import sleep
 
 from azure.cli.testsdk import (
     ScenarioTest, live_only)
 from azure.cli.command_modules.acs._format import version_to_tuple
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
+from azure.core.exceptions import HttpResponseError
 
 from .recording_processors import KeyReplacer
 from .custom_preparers import AKSCustomResourceGroupPreparer
@@ -310,7 +312,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('enableNamespaceResources', True)
         ])
 
-    
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_get_credentials_at_namespace_scope(self, resource_group):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-namespace-resources --generate-ssh-keys'
+        self.cmd(create_cmd)
+        print("Cluster created, sleeping for 60 seconds")
+        sleep(60) # Sleep for 60 seconds to allow hydration of namespaces
+        get_credentials_command = 'aks get-credentials --resource-group={resource_group} --name={name} --namespace default'
+        with self.assertRaisesRegexp(HttpResponseError, ".* ListUserCredentials for Namespaces is not supported for non AAD clusters.*"): # ListUserCredential will fail for non-aad clusters. By verifying this error, we can verify that the call has reached the RP.
+            self.cmd(get_credentials_command) 
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ingress_appgw_addon_with_deprecated_subet_prefix(self, resource_group, resource_group_location):
