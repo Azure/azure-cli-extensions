@@ -1,0 +1,157 @@
+interactions:
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003","name":"myworkspace000003","type":"Microsoft.HealthcareApis/workspaces","etag":"\"0801ee8a-0000-0400-0000-627b5b960000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:45:42 GMT
+      etag:
+      - '"0801ee8a-0000-0400-0000-627b5b960000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-request-id:
+      - a76251df376ac445b0bb891c071cd0a0
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003","name":"myworkspace000003","type":"Microsoft.HealthcareApis/workspaces","etag":"\"0801ee8a-0000-0400-0000-627b5b960000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:45:43 GMT
+      etag:
+      - '"0801ee8a-0000-0400-0000-627b5b960000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - f3406da439bb2040a72d76e23d3fde75
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"privateLinkServiceConnectionState": {"status": "Approved",
+      "description": "Auto-Approved"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace private-endpoint-connection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '109'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --private-endpoint-connection-name --private-link-service-connection-state
+        --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/privateEndpointConnections/myconnection000005?api-version=2021-11-01
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"Private Endpoint Connection
+        in request contains null or empty Id."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '109'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 May 2022 06:45:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-request-id:
+      - 489491d0a075a04bb92b98da80e92f54
+    status:
+      code: 400
+      message: Bad Request
+version: 1

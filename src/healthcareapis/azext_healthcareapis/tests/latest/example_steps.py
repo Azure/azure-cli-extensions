@@ -15,6 +15,48 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 @try_manual
+def step_healthcareapis_acr_add(test):
+    test.cmd('az healthcareapis acr add '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" '
+             '--login-servers "test1.azurecr.io" ',
+             checks=[
+                 test.check("properties.acrConfiguration.loginServers[0]", "test1.azurecr.io"),
+             ])
+
+
+@try_manual
+def step_healthcareapis_acr_list(test):
+    acr_list = test.cmd('az healthcareapis acr list '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" ',
+             checks=[]).get_output_in_json()
+    assert len(acr_list['loginServers']) == 1
+
+
+@try_manual
+def step_healthcareapis_acr_remove(test):
+    test.cmd('az healthcareapis acr remove '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" '
+             '--login-servers "test1.azurecr.io" ',
+             checks=[
+                 test.check("properties.acrConfiguration.loginServers", []),
+             ])
+
+
+@try_manual
+def step_healthcareapis_acr_reset(test):
+    test.cmd('az healthcareapis acr reset '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" '
+             '--login-servers "test1.azurecr.io" ',
+             checks=[
+                 test.check("properties.acrConfiguration.loginServers[0]", "test1.azurecr.io"),
+             ])
+
+
+@try_manual
 def step_healthcareapiscreateminimalparameters(test):
     test.cmd('az healthcareapis service create '
              '--resource-group "{rg}" '
@@ -164,83 +206,76 @@ def step_servicedelete(test):
 
 # EXAMPLE: /DicomServices/put/Create or update a Dicom Service
 @try_manual
-def step_workspace_dicom_service_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_dicom_service_create(test):
     test.cmd('az healthcareapis workspace dicom-service create '
              '--name "{myDicomService}" '
              '--location "westus2" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=[])
+             checks=[
+                 test.check("provisioningState", "Succeeded", case_sensitive=False),
+                 test.check("location", "westus2", case_sensitive=False),
+             ])
     test.cmd('az healthcareapis workspace dicom-service wait --created '
              '--name "{myDicomService}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /DicomServices/get/Get a dicomservice
 @try_manual
-def step_workspace_dicom_service_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_dicom_service_show(test):
     test.cmd('az healthcareapis workspace dicom-service show '
              '--name "{myDicomService}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /DicomServices/get/List dicomservices
 @try_manual
-def step_workspace_dicom_service_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace dicom-service list '
-             '--resource-group "{rg}" '
-             '--workspace-name "{myWorkspace}"',
-             checks=checks)
+def step_workspace_dicom_service_list(test):
+    dicom_list = test.cmd('az healthcareapis workspace dicom-service list '
+                          '--resource-group "{rg}" '
+                          '--workspace-name "{myWorkspace}"',
+                          checks=[]).get_output_in_json()
+    assert len(dicom_list) == 1
 
 
 # EXAMPLE: /DicomServices/patch/Update a dicomservice
 @try_manual
-def step_workspace_dicom_service_update(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_dicom_service_update(test):
     test.cmd('az healthcareapis workspace dicom-service update '
              '--name "{myDicomService}" '
              '--tags tagKey="tagValue" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("tags.tagKey", "tagValue", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /DicomServices/delete/Delete a dicomservice
 @try_manual
-def step_workspace_dicom_service_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_dicom_service_delete(test):
     test.cmd('az healthcareapis workspace dicom-service delete -y '
              '--name "{myDicomService}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /FhirServices/put/Create or update a Fhir Service
 @try_manual
-def step_workspace_fhir_service_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_fhir_service_create(test):
     ref = test.cmd('az healthcareapis workspace fhir-service create '
              '--name "{myFhirService2}" '
              '--identity-type "SystemAssigned" '
              '--kind "fhir-R4" '
              '--location "westus2" '
-             # '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
-             # '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
-             # '--login-servers "test1.azurecr.io" '
              '--authentication-configuration audience="https://azurehealthcareapis.com" authority="https://login.micros'
              'oftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true '
              '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" '
@@ -249,69 +284,69 @@ def step_workspace_fhir_service_create(test, checks=None):
              '--tags additionalProp1="string" additionalProp2="string" additionalProp3="string" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=[])
+             checks=[
+                 test.check("identity.type", "SystemAssigned", case_sensitive=False),
+                 test.check("kind", "fhir-R4"),
+                 test.check("location", "westus2", case_sensitive=False),
+                 test.check("authenticationConfiguration.smartProxyEnabled", True),
+                 test.check("corsConfiguration.allowCredentials", False),
+                 test.check("corsConfiguration.maxAge", 1440),
+                 test.check("exportConfiguration.storageAccountName", "{sg}",
+                            case_sensitive=False),
+                 test.check("provisioningState", "Succeeded"),
+                 test.check("publicNetworkAccess", "Enabled", case_sensitive=False),
+             ])
     return ref
-    # TODO
-    # ref2 = test.cmd('az healthcareapis workspace fhir-service wait --created '
-    #          '--name "{myFhirService2}" '
-    #          '--resource-group "{rg}" '
-    #          '--workspace-name "{myWorkspace}"',
-    #          checks=checks)
 
 
 # EXAMPLE: /FhirServices/get/Get a Fhir Service
 @try_manual
-def step_workspace_fhir_service_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_fhir_service_show(test):
     test.cmd('az healthcareapis workspace fhir-service show '
              '--name "{myFhirService2}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /FhirServices/get/List fhirservices
 @try_manual
-def step_workspace_fhir_service_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace fhir-service list '
+def step_workspace_fhir_service_list(test):
+    fhir_list = test.cmd('az healthcareapis workspace fhir-service list '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[]).get_output_in_json()
+    assert len(fhir_list) == 1
 
 
 # EXAMPLE: /FhirServices/patch/Update a Fhir Service
 @try_manual
-def step_workspace_fhir_service_update(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_fhir_service_update(test):
     test.cmd('az healthcareapis workspace fhir-service update '
              '--name "{myFhirService2}" '
              '--tags tagKey="tagValue" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /FhirServices/delete/Delete a Fhir Service
 @try_manual
-def step_workspace_fhir_service_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_fhir_service_delete(test):
     test.cmd('az healthcareapis workspace fhir-service delete -y '
              '--name "{myFhirService2}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /IotConnectors/put/Create an IoT Connector
 @try_manual
-def step_workspace_iot_connector_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_create(test):
     # Message: The deviceMapping property cannot be null or empty. (--content) TODO
     test.cmd('az healthcareapis workspace iot-connector create '
              '--identity-type "SystemAssigned" '
@@ -327,68 +362,58 @@ def step_workspace_iot_connector_create(test, checks=None):
              '--name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=[])
+             checks=[
+                 test.check("identity.type", "SystemAssigned", case_sensitive=False),
+                 test.check("location", "westus2", case_sensitive=False),
+                 test.check("tags.additionalProp1", "string"),
+                 test.check("provisioningState", "Succeeded"),
+             ])
     test.cmd('az healthcareapis workspace iot-connector wait --created '
              '--name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /IotConnectors/get/Get an IoT Connector
 @try_manual
-def step_workspace_iot_connector_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_show(test):
     test.cmd('az healthcareapis workspace iot-connector show '
              '--name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /IotConnectors/get/List iotconnectors
 @try_manual
-def step_workspace_iot_connector_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace iot-connector list '
+def step_workspace_iot_connector_list(test):
+    iot_list = test.cmd('az healthcareapis workspace iot-connector list '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[]).get_output_in_json()
+    len(iot_list) == 1
 
 
 # EXAMPLE: /IotConnectors/patch/Patch an IoT Connector
 @try_manual
-def step_workspace_iot_connector_update(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_update(test):
     test.cmd('az healthcareapis workspace iot-connector update '
              '--name "{myIotConnector}" '
              '--identity-type "SystemAssigned" '
              '--tags additionalProp1="string" additionalProp2="string" additionalProp3="string" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
-
-
-# EXAMPLE: /FhirDestinations/get/List IoT Connectors
-@try_manual
-def step_workspace_iot_connector_fhir_destination_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace iot-connector fhir-destination list '
-             '--iot-connector-name "{myIotConnector}" '
-             '--resource-group "{rg}" '
-             '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /IotConnectorFhirDestination/put/Create or update an Iot Connector FHIR destination
 @try_manual
-def step_workspace_iot_connector_fhir_destination_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_fhir_destination_create(test):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination create '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
@@ -402,361 +427,331 @@ def step_workspace_iot_connector_fhir_destination_create(test, checks=None):
              '--resource-identity-resolution-type "Create" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("location", "westus2", case_sensitive=False),
+                 test.check("provisioningState", "Succeeded"),
+                 test.check("resourceIdentityResolutionType", "Create"),
+             ])
+
+
+# EXAMPLE: /FhirDestinations/get/List IoT Connectors
+@try_manual
+def step_workspace_iot_connector_fhir_destination_list(test):
+    destination_list = test.cmd('az healthcareapis workspace iot-connector fhir-destination list '
+             '--iot-connector-name "{myIotConnector}" '
+             '--resource-group "{rg}" '
+             '--workspace-name "{myWorkspace}"',
+             checks=[]).get_output_in_json()
+    len(destination_list) == 1
 
 
 # EXAMPLE: /IotConnectorFhirDestination/get/Get an IoT Connector destination
 @try_manual
-def step_workspace_iot_connector_fhir_destination_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_fhir_destination_show(test):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination show '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /IotConnectorFhirDestination/delete/Delete an IoT Connector destination
 @try_manual
-def step_workspace_iot_connector_fhir_destination_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_fhir_destination_delete(test):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination delete -y '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /IotConnectors/delete/Delete an IoT Connector
 @try_manual
-def step_workspace_iot_connector_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_iot_connector_delete(test):
     test.cmd('az healthcareapis workspace iot-connector delete -y '
              '--name "{myIotConnector}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /OperationResults/get/Get operation result
 @try_manual
-def step_operation_result_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_operation_result_show(test):
     test.cmd('az healthcareapis operation-result show '
              '--location-name "westus2" '
              '--operation-result-id "{operation_result_id}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateEndpointConnections/put/PrivateEndpointConnection_CreateOrUpdate
 @try_manual
-def step_private_endpoint_connection_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_endpoint_connection_create(test):
     test.cmd('az healthcareapis private-endpoint-connection create '
              '--name "{myPrivateEndpointConnection}" '
              '--private-link-service-connection-state description="Auto-Approved" status="Approved" '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateEndpointConnections/get/PrivateEndpointConnection_GetConnection
 @try_manual
-def step_private_endpoint_connection_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_endpoint_connection_show(test):
     test.cmd('az healthcareapis private-endpoint-connection show '
              '--name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateEndpointConnections/get/PrivateEndpointConnection_List
 @try_manual
-def step_private_endpoint_connection_list(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_endpoint_connection_list(test):
     test.cmd('az healthcareapis private-endpoint-connection list '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateEndpointConnections/delete/PrivateEndpointConnections_Delete
 @try_manual
-def step_private_endpoint_connection_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_endpoint_connection_delete(test):
     test.cmd('az healthcareapis private-endpoint-connection delete -y '
              '--name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateLinkResources/get/PrivateLinkResources_Get
 @try_manual
-def step_private_link_resource_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_link_resource_show(test):
+
     test.cmd('az healthcareapis private-link-resource show '
              '--group-name "fhir" '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /PrivateLinkResources/get/PrivateLinkResources_ListGroupIds
 @try_manual
-def step_private_link_resource_list(test, checks=None):
-    if checks is None:
-        checks = []
+def step_private_link_resource_list(test):
+
     test.cmd('az healthcareapis private-link-resource list '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /Services/put/Create or Update a service with all parameters
 @try_manual
-def step_service_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_service_create(test):
     ref = test.cmd('az healthcareapis service create '
              '--resource-group "{rg}" '
              '--resource-name "{service1}" '
-             # '--identity-type "SystemAssigned" '
-             # '--kind "fhir-R4" '
              '--kind "fhir-Stu3" '
-             '--location "westus2" '
-             # '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
-             # '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
-             # '--authentication-configuration audience="https://azurehealthcareapis.com" authority="https://login.micros'
-             # 'oftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true '
-             # '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" '
-             # 'methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
-             # '--cosmos-db-configuration key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" '
-             # 'offer-throughput=1000 '
-             # '--export-configuration-storage-account-name "{sg}" '
-             # '--private-endpoint-connections "[]" '
-             # '--public-network-access "Disabled"',
-             ,
-             checks=checks)
+             '--location "westus2" ',
+             checks=[
+                 test.check("name", "{service1}", case_sensitive=False),
+                 test.check("location", "westus2", case_sensitive=False),
+                 test.check("kind", "fhir-Stu3", case_sensitive=False),
+             ])
     return ref
 
 
 # EXAMPLE: /Services/put/Create or Update a service with minimum parameters
 @try_manual
-def step_service_create2(test, checks=None):
-    if checks is None:
-        checks = []
+def step_service_create2(test):
     test.cmd('az healthcareapis service create '
              '--resource-group "{rg}" '
              '--resource-name "{service2}" '
              '--kind "fhir-R4" '
              '--location "westus2" '
              '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47"',
-             checks=checks)
+             checks=[
+                 test.check("name", "{service2}", case_sensitive=False),
+                 test.check("location", "westus2", case_sensitive=False),
+                 test.check("kind", "fhir-R4", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /Services/get/Get metadata
 @try_manual
-def step_service_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_service_show(test):
     test.cmd('az healthcareapis service show '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[
+                 test.check("name", "{service1}", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /Services/get/List all services in resource group
 @try_manual
-def step_service_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis service list '
+def step_service_list(test):
+    service_list = test.cmd('az healthcareapis service list '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[]).get_output_in_json()
+    assert len(service_list) == 2
 
 
 # EXAMPLE: /Services/get/List all services in subscription
 @try_manual
-def step_service_list2(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis service list '
+def step_service_list2(test):
+    service_list = test.cmd('az healthcareapis service list '
              '-g ""',
-             checks=checks)
-
+             checks=[]).get_output_in_json()
+    assert len(service_list) >= 2
 
 # EXAMPLE: /Services/patch/Patch service
 @try_manual
-def step_service_update(test, checks=None):
-    if checks is None:
-        checks = []
+def step_service_update(test):
     test.cmd('az healthcareapis service update '
              '--resource-group "{rg}" '
              '--resource-name "{service1}" '
              '--tags tag1="value1" tag2="value2"',
-             checks=checks)
+             checks=[
+                 test.check("tags.tag1", "value1", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /Services/delete/Delete service
 @try_manual
-def step_service_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_service_delete(test):
     test.cmd('az healthcareapis service delete -y '
              '--resource-group "{rg}" '
              '--resource-name "{service1}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /Workspaces/put/Create or update a workspace
 @try_manual
-def step_workspace_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_create(test):
     test.cmd('az healthcareapis workspace create '
              '--resource-group "{rg}" '
              '--location "westus2" '
              '--name "{myWorkspace}"',
-             checks=[])
+             checks=[
+                 test.check("name", "{myWorkspace}", case_sensitive=False),
+                 test.check("location", "westus2", case_sensitive=False),
+             ])
     test.cmd('az healthcareapis workspace wait --created '
              '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /Workspaces/get/Get workspace
 @try_manual
-def step_workspace_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_show(test):
     test.cmd('az healthcareapis workspace show '
              '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
-             checks=checks)
+             checks=[
+                 test.check("name", "{myWorkspace}", case_sensitive=False),
+             ])
 
 
 # EXAMPLE: /Workspaces/get/Get workspaces by resource group
 @try_manual
-def step_workspace_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace list '
+def step_workspace_list(test):
+    workspace_list = test.cmd('az healthcareapis workspace list '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[]).get_output_in_json()
+    len(workspace_list) == 1
 
 
 # EXAMPLE: /Workspaces/get/Get workspaces by subscription
 @try_manual
-def step_workspace_list2(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az healthcareapis workspace list '
+def step_workspace_list2(test):
+    workspace_list = test.cmd('az healthcareapis workspace list '
              '-g ""',
-             checks=checks)
+             checks=[]).get_output_in_json()
+    len(workspace_list) >= 1
 
 
 # EXAMPLE: /Workspaces/patch/Update a workspace
 @try_manual
-def step_workspace_update(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_update(test):
     test.cmd('az healthcareapis workspace update '
              '--resource-group "{rg}" '
              '--name "{myWorkspace}" '
              '--tags tagKey="tagValue"',
-             checks=checks)
+             checks=[
+                 test.check("name", "{myWorkspace}", case_sensitive=False),
+                 test.check("tags.tagKey", "tagValue"),
+             ])
 
 
 # EXAMPLE: /WorkspacePrivateEndpointConnections/put/WorkspacePrivateEndpointConnection_CreateOrUpdate
 @try_manual
-def step_workspace_private_endpoint_connection_create(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_endpoint_connection_create(test):
     test.cmd('az healthcareapis workspace private-endpoint-connection create '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
              '--private-link-service-connection-state description="Auto-Approved" status="Approved" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /WorkspacePrivateEndpointConnections/get/WorkspacePrivateEndpointConnection_GetConnection
 @try_manual
-def step_workspace_private_endpoint_connection_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_endpoint_connection_show(test):
     test.cmd('az healthcareapis workspace private-endpoint-connection show '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /WorkspacePrivateEndpointConnections/get/WorkspacePrivateEndpointConnection_List
 @try_manual
-def step_workspace_private_endpoint_connection_list(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_endpoint_connection_list(test):
     test.cmd('az healthcareapis workspace private-endpoint-connection list '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /WorkspacePrivateEndpointConnections/delete/WorkspacePrivateEndpointConnections_Delete
 @try_manual
-def step_workspace_private_endpoint_connection_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_endpoint_connection_delete(test):
     test.cmd('az healthcareapis workspace private-endpoint-connection delete -y '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /WorkspacePrivateLinkResources/get/WorkspacePrivateLinkResources_Get
 @try_manual
-def step_workspace_private_link_resource_show(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_link_resource_show(test):
     test.cmd('az healthcareapis workspace private-link-resource show '
              '--group-name "healthcareworkspace" '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /WorkspacePrivateLinkResources/get/WorkspacePrivateLinkResources_ListGroupIds
 @try_manual
-def step_workspace_private_link_resource_list(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_private_link_resource_list(test):
     test.cmd('az healthcareapis workspace private-link-resource list '
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /Workspaces/delete/Delete a workspace
 @try_manual
-def step_workspace_delete(test, checks=None):
-    if checks is None:
-        checks = []
+def step_workspace_delete(test):
     test.cmd('az healthcareapis workspace delete -y '
              '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
-             checks=checks)
+             checks=[])

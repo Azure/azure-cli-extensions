@@ -1,0 +1,1520 @@
+interactions:
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003","name":"myworkspace000003","type":"Microsoft.HealthcareApis/workspaces","etag":"\"d70042f1-0000-0400-0000-6279cf7a0000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:35:38 GMT
+      etag:
+      - '"d70042f1-0000-0400-0000-6279cf7a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - fae1c9357318084a8bd9f1daea3badd5
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003","name":"myworkspace000003","type":"Microsoft.HealthcareApis/workspaces","etag":"\"d70042f1-0000-0400-0000-6279cf7a0000\"","location":"westus2","properties":{"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:35:39 GMT
+      etag:
+      - '"d70042f1-0000-0400-0000-6279cf7a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 3e4771294b67d04a9e4e5c7ca191cfb3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d700eff3-0000-0400-0000-6279cf820000\"","location":"westus2","properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '693'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:35:48 GMT
+      etag:
+      - '"d700eff3-0000-0400-0000-6279cf820000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - e1517e936d496b48a66fb2ee846e55fc
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:36:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0c419ad42e3cec4eb15e4fbc7c9d21e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:36:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6f0e82bdc1484546ab2a4c58efb6fe94
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:37:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - efe762fa77bd34499a9872a01387ff57
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:37:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 0df5d66bd008f24897d1aae1a0b2aadc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:38:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 5e045df956319044a5e19a93a4dd8ce5
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:38:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - c9fe8fc6ec091646949cfb536870b1f1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:39:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 97bfef52aeccbb4f9b4eebc8d0f813dd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:39:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - a632c3da0e2ab7418601787534ea52cf
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:40:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 525516a6edf74947b7e4bb7455b42008
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:40:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 677666fdd879de48a38972736a2cb01c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:41:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - c5d80513acea404c90cd7a3f8dcadadc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:41:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e9f3ea411dcd5446a6d5d4b4847ccf53
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:42:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2f1de713e6e87549b1fb1044dbb96adc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:42:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 066e4222613be3458a3298e6fd65ec8f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Running","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 55eb72baa2138e49800bc3427764e43e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jwuu3vyfwf7cjqop1p5fb3a3v","name":"jwuu3vyfwf7cjqop1p5fb3a3v","status":"Succeeded","startTime":"2022-05-10T02:35:46.8365548Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 1812dad48b787e43ace2263d69a0c8e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d800c231-0000-0400-0000-6279d1670000\"","location":"westus2","properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"https://myworkspace000003-mydicom000004.dicom.azurehealthcareapis.com","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '763'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:56 GMT
+      etag:
+      - '"d800c231-0000-0400-0000-6279d1670000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 570b97fddf9a2c4aaf5e8029026d8336
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d800c231-0000-0400-0000-6279d1670000\"","location":"westus2","properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"https://myworkspace000003-mydicom000004.dicom.azurehealthcareapis.com","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '763'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:56 GMT
+      etag:
+      - '"d800c231-0000-0400-0000-6279d1670000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - b9ba174e193e5a438e664d66d7293264
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d800c231-0000-0400-0000-6279d1670000\"","location":"westus2","properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"https://myworkspace000003-mydicom000004.dicom.azurehealthcareapis.com","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '763'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:57 GMT
+      etag:
+      - '"d800c231-0000-0400-0000-6279d1670000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 2e2ef2e6f6e8ad46aeeb11a76eb620d4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices?api-version=2021-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d800c231-0000-0400-0000-6279d1670000\"","location":"westus2","properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"https://myworkspace000003-mydicom000004.dicom.azurehealthcareapis.com","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '775'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:43:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 4dbf44de7aa9e14a9ebb5d9039163149
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tagKey": "tagValue"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '32'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004","name":"myworkspace000003/mydicom000004","type":"Microsoft.HealthcareApis/workspaces/dicomservices","etag":"\"d8003c33-0000-0400-0000-6279d1710000\"","location":"westus2","tags":{"tagKey":"tagValue"},"properties":{"authenticationConfiguration":{"authority":"https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/","audiences":["https://dicom.healthcareapis.azure.com/","https://dicom.healthcareapis.azure.com"]},"serviceUrl":"https://myworkspace000003-mydicom000004.dicom.azurehealthcareapis.com","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:44:03 GMT
+      etag:
+      - '"d8003c33-0000-0400-0000-6279d1710000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-request-id:
+      - a871bba88533cd44a21d56ccc38b2cb8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003/dicomservices/mydicom000004?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 02:44:04 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-request-id:
+      - 80622af5087c77468def41b2bff422db
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg","name":"jtb3ruewl27ca7m39n9kegmhg","status":"Running","startTime":"2022-05-10T02:44:05.3101381Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:44:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 953ccc4954d34847ac89ad10851c51a1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg","name":"jtb3ruewl27ca7m39n9kegmhg","status":"Running","startTime":"2022-05-10T02:44:05.3101381Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:45:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 9a34016eea42b348a679b98c55a199ce
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg","name":"jtb3ruewl27ca7m39n9kegmhg","status":"Running","startTime":"2022-05-10T02:44:05.3101381Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:45:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - e7cb09b10e888c4ca3db3468a14ea923
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace dicom-service delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --workspace-name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/jtb3ruewl27ca7m39n9kegmhg","name":"jtb3ruewl27ca7m39n9kegmhg","status":"Succeeded","startTime":"2022-05-10T02:44:05.3101381Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:46:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 6657a9147102ab4d914fc7898f701c3c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.HealthcareApis/workspaces/myworkspace000003?api-version=2021-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/l6a907rda51eg1xpyjnbv5ykk?api-version=2021-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 May 2022 02:46:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/l6a907rda51eg1xpyjnbv5ykk?api-version=2021-11-01&operationResultResponseType=Location
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-request-id:
+      - e0b5a43920981e43b0b75c52ab81f0c5
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - healthcareapis workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-healthcareapis/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/l6a907rda51eg1xpyjnbv5ykk?api-version=2021-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthcareApis/locations/westus2/operationresults/l6a907rda51eg1xpyjnbv5ykk","name":"l6a907rda51eg1xpyjnbv5ykk","status":"Succeeded","startTime":"2022-05-10T02:46:08.6240782Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 02:46:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-request-id:
+      - 16fbe0fcc3a0ca41bc0a06017468ba84
+    status:
+      code: 200
+      message: OK
+version: 1

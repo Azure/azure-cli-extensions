@@ -70,7 +70,7 @@ def load_arguments(self, _):
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Control permission '
                    'for data plane traffic coming from public networks while private endpoint is enabled.')
         c.argument('login_servers', type=str, help='The list of login servers that shall'
-                   'be added to the service instance.')
+                   'be added to the service instance.', arg_group='Acr Configuration')
         c.argument('oci_artifacts', action=AddServicesOciArtifacts, nargs='*', help='The list of Open Container '
                    'Initiative (OCI) artifacts.', arg_group='Acr Configuration')
         c.argument('export_configuration_storage_account_name', type=str, help='The name of the default export storage '
