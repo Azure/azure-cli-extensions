@@ -438,7 +438,7 @@ az healthcareapis workspace dicom-service create --name "blue" --location "westu
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--etag**|string|An etag associated with the resource, used for optimistic concurrency when editing it.|etag|etag|
 |**--location**|string|The resource location.|location|location|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 |**--public-network-access**|choice|Control permission for data plane traffic coming from public networks while private endpoint is enabled.|public_network_access|publicNetworkAccess|
 
@@ -456,7 +456,7 @@ az healthcareapis workspace dicom-service update --name "blue" --tags tagKey="ta
 |**--dicom-service-name**|string|The name of DICOM Service resource.|dicom_service_name|dicomServiceName|
 |**--workspace-name**|string|The name of workspace resource.|workspace_name|workspaceName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="DicomServicesDelete">Command `az healthcareapis workspace dicom-service delete`</a>
@@ -503,12 +503,12 @@ az healthcareapis workspace fhir-service show --name "fhirservices1" --resource-
 
 ##### <a name="ExamplesFhirServicesCreateOrUpdate#Create">Example</a>
 ```
-az healthcareapis workspace fhir-service create --name "fhirservice1" --type "SystemAssigned" --kind "fhir-R4" \
+az healthcareapis workspace fhir-service create --name "fhirservice1" --identity-type "SystemAssigned" --kind "fhir-R4" \
 --location "westus" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" --access-policies \
 object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --login-servers "test1.azurecr.io" --authentication-configuration \
 audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
 508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
-methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --storage-account-name \
+methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --export-configuration-storage-account-name \
 "existingStorageAccount" --tags additionalProp1="string" additionalProp2="string" additionalProp3="string" \
 --resource-group "testRG" --workspace-name "workspace1"
 ```
@@ -521,7 +521,7 @@ methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" ori
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--etag**|string|An etag associated with the resource, used for optimistic concurrency when editing it.|etag|etag|
 |**--location**|string|The resource location.|location|location|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 |**--kind**|choice|The kind of the service.|kind|kind|
 |**--access-policies**|array|Fhir Service access policies.|access_policies|accessPolicies|
@@ -530,7 +530,7 @@ methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" ori
 |**--public-network-access**|choice|Control permission for data plane traffic coming from public networks while private endpoint is enabled.|public_network_access|publicNetworkAccess|
 |**--default**|choice|The default value for tracking history across all resources.|default|default|
 |**--resource-type-overrides**|dictionary|A list of FHIR Resources and their version policy overrides.|resource_type_overrides|resourceTypeOverrides|
-|**--storage-account-name**|string|The name of the default export storage account.|storage_account_name|storageAccountName|
+|**--export-configuration-storage-account-name**|string|The name of the default export storage account.|storage_account_name|storageAccountName|
 |**--login-servers**|array|The list of the Azure container registry login servers.|login_servers|loginServers|
 |**--oci-artifacts**|array|The list of Open Container Initiative (OCI) artifacts.|oci_artifacts|ociArtifacts|
 
@@ -548,7 +548,7 @@ az healthcareapis workspace fhir-service update --name "fhirservice1" --tags tag
 |**--fhir-service-name**|string|The name of FHIR Service resource.|fhir_service_name|fhirServiceName|
 |**--workspace-name**|string|The name of workspace resource.|workspace_name|workspaceName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="FhirServicesDelete">Command `az healthcareapis workspace fhir-service delete`</a>
@@ -595,7 +595,7 @@ az healthcareapis workspace iot-connector show --name "blue" --resource-group "t
 
 ##### <a name="ExamplesIotConnectorsCreateOrUpdate#Create">Example</a>
 ```
-az healthcareapis workspace iot-connector create --type "SystemAssigned" --location "westus" --content \
+az healthcareapis workspace iot-connector create --identity-type "SystemAssigned" --location "westus" --content \
 "{\\"template\\":[{\\"template\\":{\\"deviceIdExpression\\":\\"$.deviceid\\",\\"timestampExpression\\":\\"$.measurement\
 datetime\\",\\"typeMatchExpression\\":\\"$..[?(@heartrate)]\\",\\"typeName\\":\\"heartrate\\",\\"values\\":[{\\"require\
 d\\":\\"true\\",\\"valueExpression\\":\\"$.heartrate\\",\\"valueName\\":\\"hr\\"}]},\\"templateType\\":\\"JsonPathConte\
@@ -613,7 +613,7 @@ additionalProp1="string" additionalProp2="string" additionalProp3="string" --nam
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--etag**|string|An etag associated with the resource, used for optimistic concurrency when editing it.|etag|etag|
 |**--location**|string|The resource location.|location|location|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 |**--ingestion-endpoint-configuration**|object|Source configuration.|ingestion_endpoint_configuration|ingestionEndpointConfiguration|
 |**--content**|any|The mapping.|content|content|
@@ -622,7 +622,7 @@ additionalProp1="string" additionalProp2="string" additionalProp3="string" --nam
 
 ##### <a name="ExamplesIotConnectorsUpdate">Example</a>
 ```
-az healthcareapis workspace iot-connector update --name "blue" --type "SystemAssigned" --tags additionalProp1="string" \
+az healthcareapis workspace iot-connector update --name "blue" --identity-type "SystemAssigned" --tags additionalProp1="string" \
 additionalProp2="string" additionalProp3="string" --resource-group "testRG" --workspace-name "workspace1"
 ```
 ##### <a name="ParametersIotConnectorsUpdate">Parameters</a> 
@@ -632,7 +632,7 @@ additionalProp2="string" additionalProp3="string" --resource-group "testRG" --wo
 |**--iot-connector-name**|string|The name of IoT Connector resource.|iot_connector_name|iotConnectorName|
 |**--workspace-name**|string|The name of workspace resource.|workspace_name|workspaceName|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
+|**--identity-type**|choice|Type of identity being specified, currently SystemAssigned and None are allowed.|type|type|
 |**--user-assigned-identities**|dictionary|The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="IotConnectorsDelete">Command `az healthcareapis workspace iot-connector delete`</a>

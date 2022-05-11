@@ -520,7 +520,7 @@ fully-qualified-event-hub-namespace=XX
     examples:
       - name: Create an IoT Connector
         text: |-
-               az healthcareapis workspace iot-connector create --type "SystemAssigned" --location "westus" --content \
+               az healthcareapis workspace iot-connector create --identity-type "SystemAssigned" --location "westus" --content \
 "{\\"template\\":[{\\"template\\":{\\"deviceIdExpression\\":\\"$.deviceid\\",\\"timestampExpression\\":\\"$.measurement\
 datetime\\",\\"typeMatchExpression\\":\\"$..[?(@heartrate)]\\",\\"typeName\\":\\"heartrate\\",\\"values\\":[{\\"require\
 d\\":\\"true\\",\\"valueExpression\\":\\"$.heartrate\\",\\"valueName\\":\\"hr\\"}]},\\"templateType\\":\\"JsonPathConte\
@@ -536,7 +536,7 @@ helps['healthcareapis workspace iot-connector update'] = """
     examples:
       - name: Patch an IoT Connector
         text: |-
-               az healthcareapis workspace iot-connector update --name "blue" --type "SystemAssigned" --tags \
+               az healthcareapis workspace iot-connector update --name "blue" --identity-type "SystemAssigned" --tags \
 additionalProp1="string" additionalProp2="string" additionalProp3="string" --resource-group "testRG" --workspace-name \
 "workspace1"
 """
@@ -718,12 +718,12 @@ helps['healthcareapis workspace fhir-service create'] = """
     examples:
       - name: Create or update a Fhir Service
         text: |-
-               az healthcareapis workspace fhir-service create --name "fhirservice1" --type "SystemAssigned" --kind \
+               az healthcareapis workspace fhir-service create --name "fhirservice1" --identity-type "SystemAssigned" --kind \
 "fhir-R4" --location "westus" --access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" --access-policies \
 object-id="5b307da8-43d4-492b-8b66-b0294ade872f" --login-servers "test1.azurecr.io" --authentication-configuration \
 audience="https://azurehealthcareapis.com" authority="https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07\
 508dc" smart-proxy-enabled=true --cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" \
-methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --storage-account-name \
+methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" --export-configuration-storage-account-name \
 "existingStorageAccount" --tags additionalProp1="string" additionalProp2="string" additionalProp3="string" \
 --resource-group "testRG" --workspace-name "workspace1"
 """

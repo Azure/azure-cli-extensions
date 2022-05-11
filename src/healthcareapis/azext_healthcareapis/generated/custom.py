@@ -570,7 +570,7 @@ def healthcareapis_workspace_fhir_service_create(client,
                                                  public_network_access=None,
                                                  default=None,
                                                  resource_type_overrides=None,
-                                                 storage_account_name=None,
+                                                 export_configuration_storage_account_name=None,
                                                  login_servers=None,
                                                  oci_artifacts=None,
                                                  no_wait=False):
@@ -606,8 +606,8 @@ def healthcareapis_workspace_fhir_service_create(client,
     if len(fhirservice['resource_version_policy_configuration']) == 0:
         del fhirservice['resource_version_policy_configuration']
     fhirservice['export_configuration'] = {}
-    if storage_account_name is not None:
-        fhirservice['export_configuration']['storage_account_name'] = storage_account_name
+    if export_configuration_storage_account_name is not None:
+        fhirservice['export_configuration']['storage_account_name'] = export_configuration_storage_account_name
     if len(fhirservice['export_configuration']) == 0:
         del fhirservice['export_configuration']
     fhirservice['acr_configuration'] = {}

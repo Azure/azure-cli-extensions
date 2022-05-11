@@ -10,7 +10,9 @@
 
 
 from .. import try_manual
+from knack.log import get_logger
 
+logger = get_logger(__name__)
 
 @try_manual
 def step_healthcareapiscreateminimalparameters(test):
@@ -167,13 +169,13 @@ def step_workspace_dicom_service_create(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace dicom-service create '
              '--name "{myDicomService}" '
-             '--location "westus" '
-             '--resource-group "{rg_3}" '
+             '--location "westus2" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=[])
     test.cmd('az healthcareapis workspace dicom-service wait --created '
              '--name "{myDicomService}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -185,7 +187,7 @@ def step_workspace_dicom_service_show(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace dicom-service show '
              '--name "{myDicomService}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -196,7 +198,7 @@ def step_workspace_dicom_service_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace dicom-service list '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -209,7 +211,7 @@ def step_workspace_dicom_service_update(test, checks=None):
     test.cmd('az healthcareapis workspace dicom-service update '
              '--name "{myDicomService}" '
              '--tags tagKey="tagValue" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -221,7 +223,7 @@ def step_workspace_dicom_service_delete(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace dicom-service delete -y '
              '--name "{myDicomService}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -231,28 +233,30 @@ def step_workspace_dicom_service_delete(test, checks=None):
 def step_workspace_fhir_service_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthcareapis workspace fhir-service create '
+    ref = test.cmd('az healthcareapis workspace fhir-service create '
              '--name "{myFhirService2}" '
-             '--type "SystemAssigned" '
+             '--identity-type "SystemAssigned" '
              '--kind "fhir-R4" '
-             '--location "westus" '
-             '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
-             '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
-             '--login-servers "test1.azurecr.io" '
+             '--location "westus2" '
+             # '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
+             # '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
+             # '--login-servers "test1.azurecr.io" '
              '--authentication-configuration audience="https://azurehealthcareapis.com" authority="https://login.micros'
              'oftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true '
              '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" '
              'methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
-             '--storage-account-name "{sa}" '
+             '--export-configuration-storage-account-name "{sg}" '
              '--tags additionalProp1="string" additionalProp2="string" additionalProp3="string" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=[])
-    test.cmd('az healthcareapis workspace fhir-service wait --created '
-             '--name "{myFhirService2}" '
-             '--resource-group "{rg_3}" '
-             '--workspace-name "{myWorkspace}"',
-             checks=checks)
+    return ref
+    # TODO
+    # ref2 = test.cmd('az healthcareapis workspace fhir-service wait --created '
+    #          '--name "{myFhirService2}" '
+    #          '--resource-group "{rg}" '
+    #          '--workspace-name "{myWorkspace}"',
+    #          checks=checks)
 
 
 # EXAMPLE: /FhirServices/get/Get a Fhir Service
@@ -261,8 +265,8 @@ def step_workspace_fhir_service_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace fhir-service show '
-             '--name "{myFhirService}" '
-             '--resource-group "{rg_3}" '
+             '--name "{myFhirService2}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -273,7 +277,7 @@ def step_workspace_fhir_service_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace fhir-service list '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -286,7 +290,7 @@ def step_workspace_fhir_service_update(test, checks=None):
     test.cmd('az healthcareapis workspace fhir-service update '
              '--name "{myFhirService2}" '
              '--tags tagKey="tagValue" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -298,7 +302,7 @@ def step_workspace_fhir_service_delete(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace fhir-service delete -y '
              '--name "{myFhirService2}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -308,9 +312,10 @@ def step_workspace_fhir_service_delete(test, checks=None):
 def step_workspace_iot_connector_create(test, checks=None):
     if checks is None:
         checks = []
+    # Message: The deviceMapping property cannot be null or empty. (--content) TODO
     test.cmd('az healthcareapis workspace iot-connector create '
-             '--type "SystemAssigned" '
-             '--location "westus" '
+             '--identity-type "SystemAssigned" '
+             '--location "westus2" '
              '--content "{{\\"template\\":[{{\\"template\\":{{\\"deviceIdExpression\\":\\"$.deviceid\\",\\"timestampExp'
              'ression\\":\\"$.measurementdatetime\\",\\"typeMatchExpression\\":\\"$..[?(@heartrate)]\\",\\"typeName\\":'
              '\\"heartrate\\",\\"values\\":[{{\\"required\\":\\"true\\",\\"valueExpression\\":\\"$.heartrate\\",\\"valu'
@@ -320,12 +325,12 @@ def step_workspace_iot_connector_create(test, checks=None):
              'fully-qualified-event-hub-namespace="myeventhub.servicesbus.windows.net" '
              '--tags additionalProp1="string" additionalProp2="string" additionalProp3="string" '
              '--name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=[])
     test.cmd('az healthcareapis workspace iot-connector wait --created '
              '--name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -337,7 +342,7 @@ def step_workspace_iot_connector_show(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace iot-connector show '
              '--name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -348,7 +353,7 @@ def step_workspace_iot_connector_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace iot-connector list '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -360,9 +365,9 @@ def step_workspace_iot_connector_update(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace iot-connector update '
              '--name "{myIotConnector}" '
-             '--type "SystemAssigned" '
+             '--identity-type "SystemAssigned" '
              '--tags additionalProp1="string" additionalProp2="string" additionalProp3="string" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -374,7 +379,7 @@ def step_workspace_iot_connector_fhir_destination_list(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace iot-connector fhir-destination list '
              '--iot-connector-name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -387,16 +392,15 @@ def step_workspace_iot_connector_fhir_destination_create(test, checks=None):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination create '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
-             '--location "westus" '
+             '--location "westus2" '
              '--content "{{\\"template\\":[{{\\"template\\":{{\\"codes\\":[{{\\"code\\":\\"8867-4\\",\\"display\\":\\"H'
              'eart rate\\",\\"system\\":\\"http://loinc.org\\"}}],\\"periodInterval\\":60,\\"typeName\\":\\"heartrate\\'
              '",\\"value\\":{{\\"defaultPeriod\\":5000,\\"unit\\":\\"count/min\\",\\"valueName\\":\\"hr\\",\\"valueType'
              '\\":\\"SampledData\\"}}}},\\"templateType\\":\\"CodeValueFhir\\"}}],\\"templateType\\":\\"CollectionFhirT'
              'emplate\\"}}" '
-             '--fhir-service-resource-id "subscriptions/11111111-2222-3333-4444-555566667777/resourceGroups/myrg/provid'
-             'ers/Microsoft.HealthcareApis/workspaces/myworkspace/fhirservices/myfhirservice" '
+             '--fhir-service-resource-id "{myFhirResourceID}" '
              '--resource-identity-resolution-type "Create" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -409,7 +413,7 @@ def step_workspace_iot_connector_fhir_destination_show(test, checks=None):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination show '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -422,7 +426,7 @@ def step_workspace_iot_connector_fhir_destination_delete(test, checks=None):
     test.cmd('az healthcareapis workspace iot-connector fhir-destination delete -y '
              '--fhir-destination-name "{myFhirDestination}" '
              '--iot-connector-name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -434,7 +438,7 @@ def step_workspace_iot_connector_delete(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace iot-connector delete -y '
              '--name "{myIotConnector}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -445,8 +449,8 @@ def step_operation_result_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis operation-result show '
-             '--location-name "westus" '
-             '--operation-result-id "exampleid"',
+             '--location-name "westus2" '
+             '--operation-result-id "{operation_result_id}"',
              checks=checks)
 
 
@@ -459,7 +463,7 @@ def step_private_endpoint_connection_create(test, checks=None):
              '--name "{myPrivateEndpointConnection}" '
              '--private-link-service-connection-state description="Auto-Approved" status="Approved" '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -471,7 +475,7 @@ def step_private_endpoint_connection_show(test, checks=None):
     test.cmd('az healthcareapis private-endpoint-connection show '
              '--name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -482,7 +486,7 @@ def step_private_endpoint_connection_list(test, checks=None):
         checks = []
     test.cmd('az healthcareapis private-endpoint-connection list '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -494,7 +498,7 @@ def step_private_endpoint_connection_delete(test, checks=None):
     test.cmd('az healthcareapis private-endpoint-connection delete -y '
              '--name "{myPrivateEndpointConnection}" '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -506,7 +510,7 @@ def step_private_link_resource_show(test, checks=None):
     test.cmd('az healthcareapis private-link-resource show '
              '--group-name "fhir" '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -517,7 +521,7 @@ def step_private_link_resource_list(test, checks=None):
         checks = []
     test.cmd('az healthcareapis private-link-resource list '
              '--resource-group "{rg}" '
-             '--resource-name "service1"',
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -526,24 +530,27 @@ def step_private_link_resource_list(test, checks=None):
 def step_service_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthcareapis service create '
-             '--resource-group "{rg_2}" '
-             '--resource-name "service1" '
-             '--type "SystemAssigned" '
-             '--kind "fhir-R4" '
+    ref = test.cmd('az healthcareapis service create '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" '
+             # '--identity-type "SystemAssigned" '
+             # '--kind "fhir-R4" '
+             '--kind "fhir-Stu3" '
              '--location "westus2" '
-             '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
-             '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
-             '--authentication-configuration audience="https://azurehealthcareapis.com" authority="https://login.micros'
-             'oftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true '
-             '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" '
-             'methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
-             '--cosmos-db-configuration key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" '
-             'offer-throughput=1000 '
-             '--storage-account-name "{sa}" '
-             '--private-endpoint-connections "[]" '
-             '--public-network-access "Disabled"',
+             # '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47" '
+             # '--access-policies object-id="5b307da8-43d4-492b-8b66-b0294ade872f" '
+             # '--authentication-configuration audience="https://azurehealthcareapis.com" authority="https://login.micros'
+             # 'oftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" smart-proxy-enabled=true '
+             # '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" '
+             # 'methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
+             # '--cosmos-db-configuration key-vault-key-uri="https://my-vault.vault.azure.net/keys/my-key" '
+             # 'offer-throughput=1000 '
+             # '--export-configuration-storage-account-name "{sg}" '
+             # '--private-endpoint-connections "[]" '
+             # '--public-network-access "Disabled"',
+             ,
              checks=checks)
+    return ref
 
 
 # EXAMPLE: /Services/put/Create or Update a service with minimum parameters
@@ -552,8 +559,8 @@ def step_service_create2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis service create '
-             '--resource-group "{rg_2}" '
-             '--resource-name "service2" '
+             '--resource-group "{rg}" '
+             '--resource-name "{service2}" '
              '--kind "fhir-R4" '
              '--location "westus2" '
              '--access-policies object-id="c487e7d1-3210-41a3-8ccc-e9372b78da47"',
@@ -566,8 +573,8 @@ def step_service_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis service show '
-             '--resource-group "{rg_2}" '
-             '--resource-name "service1"',
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -597,8 +604,8 @@ def step_service_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis service update '
-             '--resource-group "{rg_2}" '
-             '--resource-name "service1" '
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}" '
              '--tags tag1="value1" tag2="value2"',
              checks=checks)
 
@@ -609,8 +616,8 @@ def step_service_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis service delete -y '
-             '--resource-group "{rg_2}" '
-             '--resource-name "service1"',
+             '--resource-group "{rg}" '
+             '--resource-name "{service1}"',
              checks=checks)
 
 
@@ -620,12 +627,12 @@ def step_workspace_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace create '
-             '--resource-group "{rg_3}" '
-             '--location "westus" '
+             '--resource-group "{rg}" '
+             '--location "westus2" '
              '--name "{myWorkspace}"',
              checks=[])
     test.cmd('az healthcareapis workspace wait --created '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
              checks=checks)
 
@@ -636,7 +643,7 @@ def step_workspace_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace show '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
              checks=checks)
 
@@ -647,7 +654,7 @@ def step_workspace_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace list '
-             '--resource-group "{rg_3}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -667,7 +674,7 @@ def step_workspace_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace update '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--name "{myWorkspace}" '
              '--tags tagKey="tagValue"',
              checks=checks)
@@ -681,7 +688,7 @@ def step_workspace_private_endpoint_connection_create(test, checks=None):
     test.cmd('az healthcareapis workspace private-endpoint-connection create '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
              '--private-link-service-connection-state description="Auto-Approved" status="Approved" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -693,7 +700,7 @@ def step_workspace_private_endpoint_connection_show(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace private-endpoint-connection show '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -704,7 +711,7 @@ def step_workspace_private_endpoint_connection_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace private-endpoint-connection list '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -716,7 +723,7 @@ def step_workspace_private_endpoint_connection_delete(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace private-endpoint-connection delete -y '
              '--private-endpoint-connection-name "{myPrivateEndpointConnection}" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -728,7 +735,7 @@ def step_workspace_private_link_resource_show(test, checks=None):
         checks = []
     test.cmd('az healthcareapis workspace private-link-resource show '
              '--group-name "healthcareworkspace" '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -739,7 +746,7 @@ def step_workspace_private_link_resource_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace private-link-resource list '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=checks)
 
@@ -750,6 +757,6 @@ def step_workspace_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthcareapis workspace delete -y '
-             '--resource-group "{rg_3}" '
+             '--resource-group "{rg}" '
              '--name "{myWorkspace}"',
              checks=checks)

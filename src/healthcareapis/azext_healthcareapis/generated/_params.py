@@ -439,7 +439,7 @@ def load_arguments(self, _):
         c.argument('resource_type_overrides', action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
                    'Resources and their version policy overrides. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...',
                    arg_group='Resource Version Policy Configuration')
-        c.argument('storage_account_name', type=str, help='The name of the default export storage account.',
+        c.argument('export_configuration_storage_account_name', type=str, help='The name of the default export storage account.',
                    arg_group='Export Configuration')
         c.argument('login_servers', nargs='*', help='The list of the Azure container registry login servers.',
                    arg_group='Acr Configuration')
