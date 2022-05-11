@@ -87,6 +87,10 @@ ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
 ManagedClusterSecurityProfileWorkloadIdentity = TypeVar('ManagedClusterSecurityProfileWorkloadIdentity')
+ManagedClusterStorageProfile = TypeVar('ManagedClusterStorageProfile')
+ManagedClusterStorageProfileDiskCSIDriver = TypeVar('ManagedClusterStorageProfileDiskCSIDriver')
+ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfileFileCSIDriver')
+ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
@@ -139,6 +143,26 @@ class AKSPreviewModels(AKSModels):
         )
         self.AzureKeyVaultKms = self.__cmd.get_models(
             "AzureKeyVaultKms",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfile = self.__cmd.get_models(
+            "ManagedClusterStorageProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileDiskCSIDriver = self.__cmd.get_models(
+            "ManagedClusterStorageProfileDiskCSIDriver",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileFileCSIDriver = self.__cmd.get_models(
+            "ManagedClusterStorageProfileFileCSIDriver",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileSnapshotController = self.__cmd.get_models(
+            "ManagedClusterStorageProfileSnapshotController",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -1647,6 +1671,107 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_node_vm_size()
 
+    def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
+        """Obtrain the value of storage_profile.disk_csi_driver
+
+        :return: Optional[ManagedClusterStorageProfileDiskCSIDriver]
+        """
+        enable_disk_driver = self.raw_param.get("enable_disk_driver")
+        disable_disk_driver = self.raw_param.get("disable_disk_driver")
+        profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
+
+        if enable_disk_driver and disable_disk_driver:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-disk-driver and "
+                "--disable-disk-driver at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_disk_driver:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_disk_driver:
+                profile.enabled = True
+            elif disable_disk_driver:
+                profile.enabled = False
+
+        return profile
+
+    def get_file_driver(self) -> Optional[ManagedClusterStorageProfileFileCSIDriver]:
+        """Obtrain the value of storage_profile.file_csi_driver
+
+        :return: Optional[ManagedClusterStorageProfileFileCSIDriver]
+        """
+        enable_file_driver = self.raw_param.get("enable_file_driver")
+        disable_file_driver = self.raw_param.get("disable_file_driver")
+        profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
+
+        if enable_file_driver and disable_file_driver:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-file-driver and "
+                "--disable-file-driver at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_file_driver:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_file_driver:
+                profile.enabled = True
+            elif disable_file_driver:
+                profile.enabled = False
+
+        return profile
+
+    def get_snapshot_controller(self) -> Optional[ManagedClusterStorageProfileSnapshotController]:
+        """Obtrain the value of storage_profile.snapshot_controller
+
+        :return: Optional[ManagedClusterStorageProfileSnapshotController]
+        """
+        enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
+        disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
+        profile = self.models.ManagedClusterStorageProfileSnapshotController()
+
+        if enable_snapshot_controller and disable_snapshot_controller:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-snapshot_controller and "
+                "--disable-snapshot_controller at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_snapshot_controller:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_snapshot_controller:
+                profile.enabled = True
+            elif disable_snapshot_controller:
+                profile.enabled = False
+
+        return profile
+
+    def get_storage_profile(self) -> Optional[ManagedClusterStorageProfile]:
+        """Obtrain the value of storage_profile.
+
+        :return: Optional[ManagedClusterStorageProfile]
+        """
+        profile = self.models.ManagedClusterStorageProfile()
+        if self.mc.storage_profile is not None:
+            profile = self.mc.storage_profile
+        profile.disk_csi_driver = self.get_disk_driver()
+        profile.file_csi_driver = self.get_file_driver()
+        profile.snapshot_controller = self.get_snapshot_controller()
+
+        return profile
+
     def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
         """Obtain the value of oidc_issuer_profile based on the user input.
 
@@ -2169,6 +2294,14 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
+    def set_up_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up storage profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc.storage_profile = self.context.get_storage_profile()
+
+        return mc
+
     def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up OIDC issuer profile for the ManagedCluster object.
 
@@ -2242,6 +2375,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         mc = self.set_up_azure_keyvault_kms(mc)
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
+
+        mc = self.set_up_storage_profile(mc)
+
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2345,61 +2481,69 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         )
 
         if not is_changed and is_default:
-            # Note: Uncomment the followings to automatically generate the error message.
-            # option_names = [
-            #     '"{}"'.format(format_parameter_name_to_option_name(x))
-            #     for x in self.context.raw_param.keys()
-            #     if x not in excluded_keys
-            # ]
-            # error_msg = "Please specify one or more of {}.".format(
-            #     " or ".join(option_names)
-            # )
-            # raise RequiredArgumentMissingError(error_msg)
-            raise RequiredArgumentMissingError(
-                'Please specify "--enable-cluster-autoscaler" or '
-                '"--disable-cluster-autoscaler" or '
-                '"--update-cluster-autoscaler" or '
-                '"--cluster-autoscaler-profile" or '
-                '"--enable-pod-security-policy" or '
-                '"--disable-pod-security-policy" or '
-                '"--api-server-authorized-ip-ranges" or '
-                '"--attach-acr" or '
-                '"--detach-acr" or '
-                '"--uptime-sla" or '
-                '"--no-uptime-sla" or '
-                '"--load-balancer-managed-outbound-ip-count" or '
-                '"--load-balancer-outbound-ips" or '
-                '"--load-balancer-outbound-ip-prefixes" or '
-                '"--nat-gateway-managed-outbound-ip-count" or '
-                '"--nat-gateway-idle-timeout" or '
-                '"--enable-aad" or '
-                '"--aad-tenant-id" or '
-                '"--aad-admin-group-object-ids" or '
-                '"--enable-ahub" or '
-                '"--disable-ahub" or '
-                '"--enable-managed-identity" or '
-                '"--enable-pod-identity" or '
-                '"--disable-pod-identity" or '
-                '"--auto-upgrade-channel" or '
-                '"--enable-secret-rotation" or '
-                '"--disable-secret-rotation" or '
-                '"--rotation-poll-interval" or '
-                '"--tags" or '
-                '"--windows-admin-password" or '
-                '"--enable-azure-rbac" or '
-                '"--disable-azure-rbac" or '
-                '"--enable-local-accounts" or '
-                '"--disable-local-accounts" or '
-                '"--enable-public-fqdn" or '
-                '"--disable-public-fqdn"'
-                '"--enble-windows-gmsa" or '
-                '"--nodepool-labels" or '
-                '"--enable-oidc-issuer" or '
-                '"--http-proxy-config" or '
-                '"--enable-azure-keyvault-kms" or '
-                '"--enable-workload-identity" or '
-                '"--disable-workload-identity".'
-            )
+            reconcilePrompt = 'no argument specified to update would you like to reconcile to current settings?'
+            if not prompt_y_n(reconcilePrompt, default="n"):
+                # Note: Uncomment the followings to automatically generate the error message.
+                # option_names = [
+                #     '"{}"'.format(format_parameter_name_to_option_name(x))
+                #     for x in self.context.raw_param.keys()
+                #     if x not in excluded_keys
+                # ]
+                # error_msg = "Please specify one or more of {}.".format(
+                #     " or ".join(option_names)
+                # )
+                # raise RequiredArgumentMissingError(error_msg)
+                raise RequiredArgumentMissingError(
+                    'Please specify "--enable-cluster-autoscaler" or '
+                    '"--disable-cluster-autoscaler" or '
+                    '"--update-cluster-autoscaler" or '
+                    '"--cluster-autoscaler-profile" or '
+                    '"--enable-pod-security-policy" or '
+                    '"--disable-pod-security-policy" or '
+                    '"--api-server-authorized-ip-ranges" or '
+                    '"--attach-acr" or '
+                    '"--detach-acr" or '
+                    '"--uptime-sla" or '
+                    '"--no-uptime-sla" or '
+                    '"--load-balancer-managed-outbound-ip-count" or '
+                    '"--load-balancer-outbound-ips" or '
+                    '"--load-balancer-outbound-ip-prefixes" or '
+                    '"--nat-gateway-managed-outbound-ip-count" or '
+                    '"--nat-gateway-idle-timeout" or '
+                    '"--enable-aad" or '
+                    '"--aad-tenant-id" or '
+                    '"--aad-admin-group-object-ids" or '
+                    '"--enable-ahub" or '
+                    '"--disable-ahub" or '
+                    '"--enable-managed-identity" or '
+                    '"--enable-pod-identity" or '
+                    '"--disable-pod-identity" or '
+                    '"--auto-upgrade-channel" or '
+                    '"--enable-secret-rotation" or '
+                    '"--disable-secret-rotation" or '
+                    '"--rotation-poll-interval" or '
+                    '"--tags" or '
+                    '"--windows-admin-password" or '
+                    '"--enable-azure-rbac" or '
+                    '"--disable-azure-rbac" or '
+                    '"--enable-local-accounts" or '
+                    '"--disable-local-accounts" or '
+                    '"--enable-public-fqdn" or '
+                    '"--disable-public-fqdn"'
+                    '"--enble-windows-gmsa" or '
+                    '"--nodepool-labels" or '
+                    '"--enable-oidc-issuer" or '
+                    '"--http-proxy-config" or '
+                    '"--enable-disk-driver" or '
+                    '"--disable-disk-driver" or '
+                    '"--enable-file-driver" or '
+                    '"--disable-file-driver" or '
+                    '"--enable-snapshot-controller" or '
+                    '"--disable-snapshot-controller" or '
+                    '"--enable-azure-keyvault-kms" or '
+                    '"--enable-workload-identity" or '
+                    '"--disable-workload-identity".'
+                )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -2574,6 +2718,17 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
+    def update_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update storage profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.storage_profile = self.context.get_storage_profile()
+
+        return mc
+
     def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update identity profile for the ManagedCluster object.
 
@@ -2641,6 +2796,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_azure_keyvault_kms(mc)
         # update identity profile
         mc = self.update_identity_profile(mc)
+
+        mc = self.update_storage_profile(mc)
 
         return mc
 

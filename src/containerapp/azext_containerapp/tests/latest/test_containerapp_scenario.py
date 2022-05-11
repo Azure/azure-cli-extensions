@@ -7,6 +7,7 @@ import os
 import platform
 from unittest import mock
 import time
+import unittest
 from azext_containerapp.custom import containerapp_ssh
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
@@ -18,7 +19,7 @@ from knack.util import CLIError
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-@live_only()
+@live_only()  # Containerapp tests can only be run live due to log analytics name being randomly generated every time
 class ContainerappScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -218,6 +219,30 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.configuration.secrets)', 1),
         ])
 
+        # Update Container App with ACR
+        update_string = 'containerapp update -g {} -n {} --min-replicas 0 --max-replicas 1 --set-env-vars testenv=testing'.format(
+            resource_group, containerapp_name)
+        self.cmd(update_string, checks=[
+            JMESPathCheck('name', containerapp_name),
+            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck('properties.configuration.registries[0].username', registry_username),
+            JMESPathCheck('length(properties.configuration.secrets)', 1),
+            JMESPathCheck('properties.template.scale.minReplicas', '0'),
+            JMESPathCheck('properties.template.scale.maxReplicas', '1'),
+            JMESPathCheck('length(properties.template.containers[0].env)', 1),
+        ])
+
+        # Add secrets to Container App with ACR
+        containerapp_secret = self.cmd('containerapp secret list -g {} -n {}'.format(resource_group, containerapp_name)).get_output_in_json()
+        secret_name = containerapp_secret[0]["name"]
+        secret_string = 'containerapp secret set -g {} -n {} --secrets newsecret=test'.format(resource_group, containerapp_name)
+        self.cmd(secret_string, checks=[
+            JMESPathCheck('length(@)', 2),
+        ])
+
+        with self.assertRaises(CLIError):
+            # Removing ACR password should fail since it is needed for ACR
+            self.cmd('containerapp secret remove -g {} -n {} --secret-names {}'.format(resource_group, containerapp_name, secret_name))
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -286,6 +311,7 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[1].resources.memory', '1.5Gi'),
         ])
 
+    @unittest.skip("API only on stage currently")
     @live_only()  # VCR.py can't seem to handle websockets (only --live works)
     # @ResourceGroupPreparer(location="centraluseuap")
     @mock.patch("azext_containerapp._ssh_utils._resize_terminal")
@@ -358,4 +384,4 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
         self.cmd(f'containerapp create -g {resource_group} -n {containerapp_name} --environment {env_name} --min-replicas 1 --ingress external --target-port 80')
 
-        self.cmd(f'containerapp log tail -n {containerapp_name} -g {resource_group}')
+        self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group}')

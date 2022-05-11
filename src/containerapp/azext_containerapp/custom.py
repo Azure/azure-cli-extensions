@@ -1964,7 +1964,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
            f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
 
-    logger.warning("connecting to : %s", url)
+    logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(), "output": output_format, "tailLines": tail}
     headers = {"Authorization": f"Bearer {token}"}
     resp = requests.get(url, timeout=None, stream=True, params=request_params, headers=headers)
@@ -2015,12 +2015,14 @@ def containerapp_up(cmd,
                     service_principal_tenant_id=None):
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry)
+                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry,
+                            check_env_name_on_rg)
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
-    _validate_up_args(source, image, repo, registry_server)
+    _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
+    check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
     image = _reformat_image(source, repo, image)
     token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)

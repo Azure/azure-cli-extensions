@@ -1714,8 +1714,8 @@ class PatchExtension(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        auto_upgrade_minor_version: Optional[bool] = True,
-        release_train: Optional[str] = "Stable",
+        auto_upgrade_minor_version: Optional[bool] = None,
+        release_train: Optional[str] = None,
         version: Optional[str] = None,
         configuration_settings: Optional[Dict[str, str]] = None,
         configuration_protected_settings: Optional[Dict[str, str]] = None,
