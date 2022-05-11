@@ -749,8 +749,6 @@ def aks_create(cmd,
                node_resource_group=None,
                uptime_sla=False,
                attach_acr=None,
-               enable_apiserver_vnet_integration=False,
-               apiserver_subnet_id=None,
                enable_private_cluster=False,
                private_dns_zone=None,
                enable_managed_identity=True,
@@ -802,6 +800,8 @@ def aks_create(cmd,
                message_of_the_day=None,
                enable_azure_keyvault_kms=False,
                azure_keyvault_kms_key_id=None,
+               enable_apiserver_vnet_integration=False,
+               apiserver_subnet_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

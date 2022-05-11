@@ -3283,7 +3283,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_set_up_apiserver_vnet_integration(self):
+    def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewCreateDecorator(
             self.cmd,
             self.client,
@@ -3293,7 +3293,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         mc_1 = self.models.ManagedCluster(
             location="test_location"
         )
-        dec_mc_1 = dec_1.set_up_apiserver_vnet_integration(mc_1)
+        dec_mc_1 = dec_1.set_up_api_server_access_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location"
         )
@@ -3313,15 +3313,19 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_mc_2 = dec_2.set_up_apiserver_vnet_integration(mc_2)
+        dec_mc_2 = dec_2.set_up_api_server_access_profile(mc_2)
         ground_truth_api_server_access_profile_2 = self.models.ManagedClusterAPIServerAccessProfile(
             enable_vnet_integration=True,
             subnet_id=apiserver_subnet_id,
+            enable_private_cluster=True,
+            authorized_ip_ranges=[],
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
+        print(dec_mc_2.api_server_access_profile)
+        print(ground_truth_api_server_access_profile_2)
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_creationdata_of_cluster_snapshot(self):
@@ -4499,7 +4503,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_update_apiserver_vnet_integration(self):
+    def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewUpdateDecorator(
             self.cmd,
             self.client,
@@ -4510,7 +4514,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
         )
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_apiserver_vnet_integration(mc_1)
+        dec_mc_1 = dec_1.update_api_server_access_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
         )
@@ -4528,7 +4532,7 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_apiserver_vnet_integration(mc_2)
+        dec_mc_2 = dec_2.update_api_server_access_profile(mc_2)
         ground_truth_api_server_access_profile_2 = self.models.ManagedClusterAPIServerAccessProfile(
             enable_vnet_integration=True,
             subnet_id=apiserver_subnet_id,

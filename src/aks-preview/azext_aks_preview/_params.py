@@ -201,8 +201,6 @@ def load_arguments(self, _):
         c.argument('uptime_sla', action='store_true')
         c.argument('fqdn_subdomain')
         c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
-        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('disable_public_fqdn', action='store_true')
@@ -296,6 +294,8 @@ def load_arguments(self, _):
         c.argument('message_of_the_day')
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters

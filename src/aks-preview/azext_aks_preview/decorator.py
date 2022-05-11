@@ -2456,14 +2456,13 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
-    def set_up_apiserver_vnet_integration(self, mc: ManagedCluster) -> ManagedCluster:
+    def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up apiserverAccessProfile enableVnetIntegration and subnetId for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
+        mc = super().set_up_api_server_access_profile(mc)
         if self.context.get_enable_apiserver_vnet_integration():
-            if mc.api_server_access_profile is None:
-                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             mc.api_server_access_profile.enable_vnet_integration = True
         if self.context.get_apiserver_subnet_id():
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
@@ -2502,7 +2501,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         mc = self.set_up_storage_profile(mc)
 
-        mc = self.set_up_apiserver_vnet_integration(mc)
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2877,13 +2875,12 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             mc.identity_profile = identity_profile
         return mc
 
-    def update_apiserver_vnet_integration(self, mc: ManagedCluster) -> ManagedCluster:
+    def update_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update apiServerAccessProfile vnet integration related property for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
-        self._ensure_mc(mc)
-
+        mc = super().update_api_server_access_profile(mc)
         if self.context.get_enable_apiserver_vnet_integration():
             if mc.api_server_access_profile is None:
                 mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
@@ -2937,7 +2934,6 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_azure_keyvault_kms(mc)
         # update identity profile
         mc = self.update_identity_profile(mc)
-        mc = self.update_apiserver_vnet_integration(mc)
 
         mc = self.update_storage_profile(mc)
 
