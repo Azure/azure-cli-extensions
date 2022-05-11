@@ -1,0 +1,76 @@
+# GitHub CI build pipeline
+name: Containerapp Preview Extension CI build
+
+on:
+  push:
+    branches:
+      - containerapp-preview
+    paths:
+      - src/containerapp-preview/**
+  pull_request:
+    branches:
+      - containerapp-preview
+    paths:
+      - src/containerapp-preview/**
+
+jobs:
+  test_and_build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.6"
+          - python-version: "3.7"
+          - python-version: "3.8"
+          - python-version: "3.9"
+          - python-version: "3.10"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create Virtual Environment
+        run: |
+          python -m venv env
+
+      - name: Install requirements
+        run: |
+          source env/bin/activate
+          pip install -U pip
+          pip install -U pylint
+          pip install -U flake8
+          pip install -U autopep8
+          pip install -U azdev
+          pip install -U pycomposefile
+
+      - name: Setup Azure CLI Dev Tooling
+        run: |
+          source env/bin/activate
+          azdev setup --repo '.'
+          azdev extension add containerapp-preview
+
+      - name: Style
+        run: |
+          source env/bin/activate
+          azdev style containerapp-preview
+
+      - name: Lint
+        if: success() || failure()
+        run: |
+          source env/bin/activate
+          azdev linter containerapp-preview
+
+      - name: Functional Tests
+        if: success() || failure()
+        run: |
+          source env/bin/activate
+          azdev test containerapp-preview
+
+      - name: Run package creation
+        run: |
+          source env/bin/activate
+          azdev extension build containerapp-preview
