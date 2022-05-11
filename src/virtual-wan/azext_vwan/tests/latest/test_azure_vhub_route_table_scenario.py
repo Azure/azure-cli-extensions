@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 
 class AzureVWanRouteTableScenario(ScenarioTest):
@@ -50,6 +50,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
 
         self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table_v3', location='eastus')
     def test_azure_vwan_route_table_v3(self, resource_group):
         self.kwargs.update({
@@ -62,6 +63,8 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             'route2': 'myroute2',
             'rg': resource_group
         })
+
+        self.cmd('extension add -n azure-firewall')
 
         # workaround due to service limitation. It should be fixed in the future.
         self.cmd('network vwan create -n {vwan} -g {rg}')
@@ -98,3 +101,5 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
 
         self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
+
+        self.cmd('extension remove -n azure-firewall')
