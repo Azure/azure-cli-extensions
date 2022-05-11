@@ -5,8 +5,9 @@ Release History
 
 0.2.12
 ++++++
-*`az network vhub create`: Add new parameter `--hub-routing-preference`.
-*`az network vhub update`: Add new parameter `--hub-routing-preference`.
+* `az network vhub create`: Add new parameter `--hub-routing-preference`.
+* `az network vhub update`: Add new parameter `--hub-routing-preference`.
+* Bump api version from v2020_05_01 to v2021_08_01.
 
 0.2.11
 ++++++
