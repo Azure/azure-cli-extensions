@@ -751,7 +751,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(ruleCollections[1].rules)', 2)
                  ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -782,7 +782,7 @@ class AzureFirewallScenario(ScenarioTest):
                  '--action DNAT --rule-name nat-rule --description "test" '
                  '--destination-addresses "202.120.36.15" --source-ip-groups {source_ip_group} '
                  '--translated-address 128.1.1.1 --translated-port 1234 '
-                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 '--destination-ports 12000 --ip-protocols TCP UDP',
                  checks=[
                      self.check('length(ruleCollections)', 1),
                      self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
@@ -794,7 +794,7 @@ class AzureFirewallScenario(ScenarioTest):
                  '--rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 13000 '
                  '--action Allow --rule-name network-rule --rule-type NetworkRule '
                  '--description "test" --destination-ip-groups {destination_ip_group} --source-ip-groups {source_ip_group} '
-                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 '--destination-ports 12003 --ip-protocols Any ICMP',
                  checks=[
                      self.check('length(ruleCollections)', 2),
                      self.check('ruleCollections[1].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
@@ -851,7 +851,7 @@ class AzureFirewallScenario(ScenarioTest):
                  '--name nat-rule-2 --rule-type NatRule --description "test" '
                  '--destination-addresses "202.120.36.16" --source-ip-groups {source_ip_group} '
                  '--translated-address 128.1.1.1 --translated-port 1234 '
-                 '--destination-ports 12000 12001 --ip-protocols TCP UDP',
+                 '--destination-ports 12000 --ip-protocols TCP UDP',
                  checks=[
                      self.check('length(ruleCollections[0].rules)', 2)
                  ])
@@ -923,7 +923,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=self.check('sku.tier', 'Premium'))
 
     # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='westus2')
     def test_azure_firewall_policy_update_premiumonlyproperty_issue(self, resource_group):
         self.kwargs.update({
             'policy': 'testpolicy'
