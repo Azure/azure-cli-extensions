@@ -280,6 +280,12 @@ helps['aks create'] = """
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --enable-apiserver-vnet-integration
+          type: bool
+          short-summary: Enable integration of user vnet with control plane apiserver pods.
+        - name: --apiserver-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
@@ -737,6 +743,12 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --enable-apiserver-vnet-integration
+          type: bool
+          short-summary: Enable integration of user vnet with control plane apiserver pods.
+        - name: --apiserver-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster

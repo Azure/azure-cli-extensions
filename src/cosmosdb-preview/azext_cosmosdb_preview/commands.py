@@ -20,7 +20,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_gremlin_graphs,
     cf_restorable_gremlin_resources,
     cf_restorable_tables,
-    cf_restorable_table_resources
+    cf_restorable_table_resources,
+    cf_data_transfer_job
 )
 
 
@@ -161,3 +162,17 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
         g.custom_command('retrieve-latest-backup-time', 'cli_table_retrieve_latest_backup_time', is_preview=True)
+
+    # Data Transfer Service
+    cosmosdb_data_transfer_job = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        client_factory=cf_data_transfer_job
+    )
+
+    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+        g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
+        g.command('list', 'list_by_database_account')
+        g.show_command('show', 'get')
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
+        g.command('cancel', 'cancel')

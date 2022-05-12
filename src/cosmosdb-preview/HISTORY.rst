@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.16.0
+++++++
+* Create and manage data transfer jobs.
+
 0.15.0
 ++++++
 * Add `--enable-materialized-views` parameter for create/update database account.

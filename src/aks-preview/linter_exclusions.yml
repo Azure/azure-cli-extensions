@@ -21,6 +21,9 @@ aks create:
     disable_snapshot_controller:
       rule_exclusions:
         - option_length_too_long
+    enable_apiserver_vnet_integration:
+      rule_exclusions:
+        - option_length_too_long
 aks delete:
   parameters:
     ignore_pod_disruption_budget:
@@ -58,6 +61,9 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_snapshot_controller:
+      rule_exclusions:
+        - option_length_too_long
+    enable_apiserver_vnet_integration:
       rule_exclusions:
         - option_length_too_long
 aks nodepool delete:
