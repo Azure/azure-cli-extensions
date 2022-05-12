@@ -8,6 +8,13 @@ from azure.cli.core.decorators import Completer
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 
+from ._consts import (
+    CONST_OS_SKU_UBUNTU,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_WINDOWS2019,
+    CONST_OS_SKU_WINDOWS2022,
+)
+
 
 @Completer
 def get_k8s_upgrades_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
@@ -66,14 +73,14 @@ def get_vm_sizes(cli_ctx, location):
 def get_cluster_ossku_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return the list of allowed os-sku values when create cluster"""
 
-    return ["Ubuntu", "CBLMariner"]
+    return [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER]
 
 
 @Completer
 def get_nodepool_ossku_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return the list of allowed os-sku values when add nodepool"""
 
-    return ["Ubuntu", "CBLMariner", "Windows2019", "Windows2022"]
+    return [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
 
 
 def _get_location(cli_ctx, namespace):
