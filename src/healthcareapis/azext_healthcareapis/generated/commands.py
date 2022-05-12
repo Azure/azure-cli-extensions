@@ -179,7 +179,7 @@ def load_command_table(self, _):
                          confirmation=True)
         g.custom_wait_command('wait', 'healthcareapis_workspace_iot_connector_show')
 
-    with self.command_group('healthcareapis workspace iot-connector fhir-destination',healthcareapis_fhir_destination,
+    with self.command_group('healthcareapis workspace iot-connector fhir-destination', healthcareapis_fhir_destination,
                             client_factory=cf_fhir_destination,) as g:
         g.custom_command('list', 'healthcareapis_workspace_iot_connector_fhir_destination_list')
 

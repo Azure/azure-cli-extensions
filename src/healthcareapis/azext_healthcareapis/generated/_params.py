@@ -460,7 +460,7 @@ def load_arguments(self, _):
         c.argument('default', arg_type=get_enum_type(['no-version', 'versioned', 'versioned-update']), help='The '
                    'default value for tracking history across all resources.', arg_group='Resource Version Policy '
                    'Configuration')
-        c.argument('resource_type_overrides', options_list=['--resource-type-overrides', '-o'],
+        c.argument('resource_type_overrides', options_list=['--resource-type-overrides', '-to'],
                    action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
                    'Resources and their version policy overrides. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...',
                    arg_group='Resource Version Policy Configuration')
