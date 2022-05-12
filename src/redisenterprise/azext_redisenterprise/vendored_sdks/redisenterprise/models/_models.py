@@ -340,6 +340,9 @@ class Database(Resource):
     :param modules: Optional set of redis modules to enable in this database - modules can only be
      added at creation time.
     :type modules: list[~azure.mgmt.redisenterprise.models.Module]
+    :param geo_replication: Optional set of properties to configure geo replication for this
+     database.
+    :type geo_replication: ~azure.mgmt.redisenterprise.models.DatabasePropertiesGeoReplication
     """
 
     _validation = {
@@ -362,6 +365,7 @@ class Database(Resource):
         'eviction_policy': {'key': 'properties.evictionPolicy', 'type': 'str'},
         'persistence': {'key': 'properties.persistence', 'type': 'Persistence'},
         'modules': {'key': 'properties.modules', 'type': '[Module]'},
+        'geo_replication': {'key': 'properties.geoReplication', 'type': 'DatabasePropertiesGeoReplication'},
     }
 
     def __init__(
@@ -377,6 +381,7 @@ class Database(Resource):
         self.eviction_policy = kwargs.get('eviction_policy', None)
         self.persistence = kwargs.get('persistence', None)
         self.modules = kwargs.get('modules', None)
+        self.geo_replication = kwargs.get('geo_replication', None)
 
 
 class DatabaseList(msrest.serialization.Model):
@@ -406,6 +411,29 @@ class DatabaseList(msrest.serialization.Model):
         super(DatabaseList, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
         self.next_link = None
+
+
+class DatabasePropertiesGeoReplication(msrest.serialization.Model):
+    """Optional set of properties to configure geo replication for this database.
+
+    :param group_nickname: Name for the group of linked database resources.
+    :type group_nickname: str
+    :param linked_databases: List of database resources to link with this database.
+    :type linked_databases: list[~azure.mgmt.redisenterprise.models.LinkedDatabase]
+    """
+
+    _attribute_map = {
+        'group_nickname': {'key': 'groupNickname', 'type': 'str'},
+        'linked_databases': {'key': 'linkedDatabases', 'type': '[LinkedDatabase]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DatabasePropertiesGeoReplication, self).__init__(**kwargs)
+        self.group_nickname = kwargs.get('group_nickname', None)
+        self.linked_databases = kwargs.get('linked_databases', None)
 
 
 class DatabaseUpdate(msrest.serialization.Model):
@@ -439,6 +467,9 @@ class DatabaseUpdate(msrest.serialization.Model):
     :param modules: Optional set of redis modules to enable in this database - modules can only be
      added at creation time.
     :type modules: list[~azure.mgmt.redisenterprise.models.Module]
+    :param geo_replication: Optional set of properties to configure geo replication for this
+     database.
+    :type geo_replication: ~azure.mgmt.redisenterprise.models.DatabasePropertiesGeoReplication
     """
 
     _validation = {
@@ -455,6 +486,7 @@ class DatabaseUpdate(msrest.serialization.Model):
         'eviction_policy': {'key': 'properties.evictionPolicy', 'type': 'str'},
         'persistence': {'key': 'properties.persistence', 'type': 'Persistence'},
         'modules': {'key': 'properties.modules', 'type': '[Module]'},
+        'geo_replication': {'key': 'properties.geoReplication', 'type': 'DatabasePropertiesGeoReplication'},
     }
 
     def __init__(
@@ -470,6 +502,7 @@ class DatabaseUpdate(msrest.serialization.Model):
         self.eviction_policy = kwargs.get('eviction_policy', None)
         self.persistence = kwargs.get('persistence', None)
         self.modules = kwargs.get('modules', None)
+        self.geo_replication = kwargs.get('geo_replication', None)
 
 
 class ErrorAdditionalInfo(msrest.serialization.Model):
@@ -591,21 +624,46 @@ class ExportClusterParameters(msrest.serialization.Model):
         self.sas_uri = kwargs['sas_uri']
 
 
+class ForceUnlinkParameters(msrest.serialization.Model):
+    """Parameters for a Redis Enterprise Active Geo Replication Force Unlink operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param ids: Required. The resource IDs of the database resources to be unlinked.
+    :type ids: list[str]
+    """
+
+    _validation = {
+        'ids': {'required': True},
+    }
+
+    _attribute_map = {
+        'ids': {'key': 'ids', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ForceUnlinkParameters, self).__init__(**kwargs)
+        self.ids = kwargs['ids']
+
+
 class ImportClusterParameters(msrest.serialization.Model):
     """Parameters for a Redis Enterprise import operation.
 
     All required parameters must be populated in order to send to Azure.
 
-    :param sas_uri: Required. SAS URI for the target blob to import from.
-    :type sas_uri: str
+    :param sas_uris: Required. SAS URIs for the target blobs to import from.
+    :type sas_uris: list[str]
     """
 
     _validation = {
-        'sas_uri': {'required': True},
+        'sas_uris': {'required': True},
     }
 
     _attribute_map = {
-        'sas_uri': {'key': 'sasUri', 'type': 'str'},
+        'sas_uris': {'key': 'sasUris', 'type': '[str]'},
     }
 
     def __init__(
@@ -613,7 +671,37 @@ class ImportClusterParameters(msrest.serialization.Model):
         **kwargs
     ):
         super(ImportClusterParameters, self).__init__(**kwargs)
-        self.sas_uri = kwargs['sas_uri']
+        self.sas_uris = kwargs['sas_uris']
+
+
+class LinkedDatabase(msrest.serialization.Model):
+    """Specifies details of a linked database resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param id: Resource ID of a database resource to link with this database.
+    :type id: str
+    :ivar state: State of the link between the database resources. Possible values include:
+     "Linked", "Linking", "Unlinking", "LinkFailed", "UnlinkFailed".
+    :vartype state: str or ~azure.mgmt.redisenterprise.models.LinkState
+    """
+
+    _validation = {
+        'state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'state': {'key': 'state', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LinkedDatabase, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.state = None
 
 
 class Module(msrest.serialization.Model):
@@ -626,7 +714,7 @@ class Module(msrest.serialization.Model):
     :param name: Required. The name of the module, e.g. 'RedisBloom', 'RediSearch',
      'RedisTimeSeries'.
     :type name: str
-    :param args: Configuration options for the module, e.g. 'ERROR_RATE 0.00 INITIAL_SIZE 400'.
+    :param args: Configuration options for the module, e.g. 'ERROR_RATE 0.01 INITIAL_SIZE 400'.
     :type args: str
     :ivar version: The version of the module, e.g. '1.0'.
     :vartype version: str

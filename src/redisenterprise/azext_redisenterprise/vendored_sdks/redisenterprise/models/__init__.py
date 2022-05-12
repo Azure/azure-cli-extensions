@@ -13,12 +13,15 @@ try:
     from ._models_py3 import ClusterUpdate
     from ._models_py3 import Database
     from ._models_py3 import DatabaseList
+    from ._models_py3 import DatabasePropertiesGeoReplication
     from ._models_py3 import DatabaseUpdate
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
     from ._models_py3 import ExportClusterParameters
+    from ._models_py3 import ForceUnlinkParameters
     from ._models_py3 import ImportClusterParameters
+    from ._models_py3 import LinkedDatabase
     from ._models_py3 import Module
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
@@ -43,12 +46,15 @@ except (SyntaxError, ImportError):
     from ._models import ClusterUpdate  # type: ignore
     from ._models import Database  # type: ignore
     from ._models import DatabaseList  # type: ignore
+    from ._models import DatabasePropertiesGeoReplication  # type: ignore
     from ._models import DatabaseUpdate  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import ExportClusterParameters  # type: ignore
+    from ._models import ForceUnlinkParameters  # type: ignore
     from ._models import ImportClusterParameters  # type: ignore
+    from ._models import LinkedDatabase  # type: ignore
     from ._models import Module  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
@@ -73,6 +79,7 @@ from ._redis_enterprise_management_client_enums import (
     AofFrequency,
     ClusteringPolicy,
     EvictionPolicy,
+    LinkState,
     Origin,
     PrivateEndpointConnectionProvisioningState,
     PrivateEndpointServiceConnectionStatus,
@@ -91,12 +98,15 @@ __all__ = [
     'ClusterUpdate',
     'Database',
     'DatabaseList',
+    'DatabasePropertiesGeoReplication',
     'DatabaseUpdate',
     'ErrorAdditionalInfo',
     'ErrorDetail',
     'ErrorResponse',
     'ExportClusterParameters',
+    'ForceUnlinkParameters',
     'ImportClusterParameters',
+    'LinkedDatabase',
     'Module',
     'Operation',
     'OperationDisplay',
@@ -119,6 +129,7 @@ __all__ = [
     'AofFrequency',
     'ClusteringPolicy',
     'EvictionPolicy',
+    'LinkState',
     'Origin',
     'PrivateEndpointConnectionProvisioningState',
     'PrivateEndpointServiceConnectionStatus',

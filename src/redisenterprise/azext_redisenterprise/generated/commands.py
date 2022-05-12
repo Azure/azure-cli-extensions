@@ -9,32 +9,37 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
+from azext_redisenterprise.generated._client_factory import cf_operation_status, cf_redis_enterprise, cf_database
+
+
+redisenterprise_redis_enterprise = CliCommandType(
+    operations_tmpl='azext_redisenterprise.vendored_sdks.redisenterprise.operations._redis_enterprise_operations#RedisEnterpriseOperations.{}',
+    client_factory=cf_redis_enterprise,
+)
+
+
+redisenterprise_database = CliCommandType(
+    operations_tmpl=(
+        'azext_redisenterprise.vendored_sdks.redisenterprise.operations._databases_operations#DatabasesOperations.{}'
+    ),
+    client_factory=cf_database,
+)
+
+
+redisenterprise_operation_status = CliCommandType(
+    operations_tmpl='azext_redisenterprise.vendored_sdks.redisenterprise.operations._operations_status_operations#OperationsStatusOperations.{}',
+    client_factory=cf_operation_status,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_redisenterprise.generated._client_factory import cf_operation_status
-
-    redisenterprise_operation_status = CliCommandType(
-        operations_tmpl='azext_redisenterprise.vendored_sdks.redisenterprise.operations._operations_status_operations#OperationsStatusOperations.{}',
-        client_factory=cf_operation_status,
-    )
     with self.command_group(
-            'redisenterprise operation-status', redisenterprise_operation_status, client_factory=cf_operation_status
-    ) as g:
-        g.custom_show_command('show', 'redisenterprise_operation_status_show')
-
-    from azext_redisenterprise.generated._client_factory import cf_redis_enterprise
-
-    redisenterprise_redis_enterprise = CliCommandType(
-        operations_tmpl='azext_redisenterprise.vendored_sdks.redisenterprise.operations._redis_enterprise_operations#RedisEnterpriseOperations.{}',
-        client_factory=cf_redis_enterprise,
-    )
-    with self.command_group(
-            'redisenterprise', redisenterprise_redis_enterprise, client_factory=cf_redis_enterprise
+        'redisenterprise', redisenterprise_redis_enterprise, client_factory=cf_redis_enterprise
     ) as g:
         g.custom_command('list', 'redisenterprise_list')
         g.custom_show_command('show', 'redisenterprise_show')
@@ -43,12 +48,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'redisenterprise_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'redisenterprise_show')
 
-    from azext_redisenterprise.generated._client_factory import cf_database
-
-    redisenterprise_database = CliCommandType(
-        operations_tmpl='azext_redisenterprise.vendored_sdks.redisenterprise.operations._databases_operations#DatabasesOperations.{}',
-        client_factory=cf_database,
-    )
     with self.command_group('redisenterprise database', redisenterprise_database, client_factory=cf_database) as g:
         g.custom_command('list', 'redisenterprise_database_list')
         g.custom_show_command('show', 'redisenterprise_database_show')
@@ -56,7 +55,13 @@ def load_command_table(self, _):
         g.custom_command('update', 'redisenterprise_database_update', supports_no_wait=True)
         g.custom_command('delete', 'redisenterprise_database_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('export', 'redisenterprise_database_export', supports_no_wait=True)
+        g.custom_command('force-unlink', 'redisenterprise_database_force_unlink', supports_no_wait=True)
         g.custom_command('import', 'redisenterprise_database_import', supports_no_wait=True)
         g.custom_command('list-keys', 'redisenterprise_database_list_keys')
         g.custom_command('regenerate-key', 'redisenterprise_database_regenerate_key', supports_no_wait=True)
         g.custom_wait_command('wait', 'redisenterprise_database_show')
+
+    with self.command_group(
+        'redisenterprise operation-status', redisenterprise_operation_status, client_factory=cf_operation_status
+    ) as g:
+        g.custom_show_command('show', 'redisenterprise_operation_status_show')

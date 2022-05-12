@@ -44,13 +44,17 @@ def redisenterprise_create(client,
                            minimum_tls_version=None,
                            no_wait=False):
     parameters = {}
-    parameters['tags'] = tags
+    if tags is not None:
+        parameters['tags'] = tags
     parameters['location'] = location
     parameters['sku'] = {}
     parameters['sku']['name'] = sku
-    parameters['sku']['capacity'] = capacity
-    parameters['zones'] = zones
-    parameters['minimum_tls_version'] = minimum_tls_version
+    if capacity is not None:
+        parameters['sku']['capacity'] = capacity
+    if zones is not None:
+        parameters['zones'] = zones
+    if minimum_tls_version is not None:
+        parameters['minimum_tls_version'] = minimum_tls_version
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
@@ -61,7 +65,7 @@ def redisenterprise_create(client,
 def redisenterprise_update(client,
                            resource_group_name,
                            cluster_name,
-                           sku=None,
+                           sku,
                            capacity=None,
                            tags=None,
                            minimum_tls_version=None,
@@ -69,9 +73,14 @@ def redisenterprise_update(client,
     parameters = {}
     parameters['sku'] = {}
     parameters['sku']['name'] = sku
-    parameters['sku']['capacity'] = capacity
-    parameters['tags'] = tags
-    parameters['minimum_tls_version'] = minimum_tls_version
+    if capacity is not None:
+        parameters['sku']['capacity'] = capacity
+    if len(parameters['sku']) == 0:
+        del parameters['sku']
+    if tags is not None:
+        parameters['tags'] = tags
+    if minimum_tls_version is not None:
+        parameters['minimum_tls_version'] = minimum_tls_version
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -113,14 +122,29 @@ def redisenterprise_database_create(client,
                                     eviction_policy=None,
                                     persistence=None,
                                     modules=None,
+                                    group_nickname=None,
+                                    linked_databases=None,
                                     no_wait=False):
     parameters = {}
-    parameters['client_protocol'] = client_protocol
-    parameters['port'] = port
-    parameters['clustering_policy'] = clustering_policy
-    parameters['eviction_policy'] = eviction_policy
-    parameters['persistence'] = persistence
-    parameters['modules'] = modules
+    if client_protocol is not None:
+        parameters['client_protocol'] = client_protocol
+    if port is not None:
+        parameters['port'] = port
+    if clustering_policy is not None:
+        parameters['clustering_policy'] = clustering_policy
+    if eviction_policy is not None:
+        parameters['eviction_policy'] = eviction_policy
+    if persistence is not None:
+        parameters['persistence'] = persistence
+    if modules is not None:
+        parameters['modules'] = modules
+    parameters['geo_replication'] = {}
+    if group_nickname is not None:
+        parameters['geo_replication']['group_nickname'] = group_nickname
+    if linked_databases is not None:
+        parameters['geo_replication']['linked_databases'] = linked_databases
+    if len(parameters['geo_replication']) == 0:
+        del parameters['geo_replication']
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
@@ -135,11 +159,23 @@ def redisenterprise_database_update(client,
                                     client_protocol=None,
                                     eviction_policy=None,
                                     persistence=None,
+                                    group_nickname=None,
+                                    linked_databases=None,
                                     no_wait=False):
     parameters = {}
-    parameters['client_protocol'] = client_protocol
-    parameters['eviction_policy'] = eviction_policy
-    parameters['persistence'] = persistence
+    if client_protocol is not None:
+        parameters['client_protocol'] = client_protocol
+    if eviction_policy is not None:
+        parameters['eviction_policy'] = eviction_policy
+    if persistence is not None:
+        parameters['persistence'] = persistence
+    parameters['geo_replication'] = {}
+    if group_nickname is not None:
+        parameters['geo_replication']['group_nickname'] = group_nickname
+    if linked_databases is not None:
+        parameters['geo_replication']['linked_databases'] = linked_databases
+    if len(parameters['geo_replication']) == 0:
+        del parameters['geo_replication']
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -174,13 +210,28 @@ def redisenterprise_database_export(client,
                        parameters=parameters)
 
 
+def redisenterprise_database_force_unlink(client,
+                                          resource_group_name,
+                                          cluster_name,
+                                          ids,
+                                          no_wait=False):
+    parameters = {}
+    parameters['ids'] = ids
+    return sdk_no_wait(no_wait,
+                       client.begin_force_unlink,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       database_name="default",
+                       parameters=parameters)
+
+
 def redisenterprise_database_import(client,
                                     resource_group_name,
                                     cluster_name,
-                                    sas_uri,
+                                    sas_uris,
                                     no_wait=False):
     parameters = {}
-    parameters['sas_uri'] = sas_uri
+    parameters['sas_uris'] = sas_uris
     return sdk_no_wait(no_wait,
                        client.begin_import_method,
                        resource_group_name=resource_group_name,
