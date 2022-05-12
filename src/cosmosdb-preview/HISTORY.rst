@@ -4,7 +4,7 @@ Release History
 ===============
 0.16.0
 ++++++
-* Create and manage data transfer export, import and copy jobs.
+* Create and manage data transfer jobs.
 
 0.15.0
 ++++++
