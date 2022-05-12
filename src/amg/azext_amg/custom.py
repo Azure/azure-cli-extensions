@@ -43,7 +43,7 @@ def create_grafana(cmd, resource_group_name, grafana_name,
     }
 
     poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
-    _ = LongRunningOperation(cmd.cli_ctx)(poller)
+    LongRunningOperation(cmd.cli_ctx)(poller)
 
     if skip_role_assignments:
         return poller
@@ -140,7 +140,7 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
 
     # delete first
     poller = client.grafana.begin_delete(resource_group_name, grafana_name)
-    _ = LongRunningOperation(cmd.cli_ctx)(poller)
+    LongRunningOperation(cmd.cli_ctx)(poller)
 
     # delete role assignment
     logger.warning("Grafana instance of '%s' was delete. Now removing role assignments for associated with its "
