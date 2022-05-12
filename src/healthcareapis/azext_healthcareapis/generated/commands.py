@@ -107,7 +107,6 @@ healthcareapis_workspace_private_link_resource = CliCommandType(
 
 def load_command_table(self, _):
 
-
     with self.command_group('healthcareapis service', healthcareapis_service, client_factory=cf_service) as g:
         g.custom_command('list', 'healthcareapis_service_list')
         g.custom_show_command('show', 'healthcareapis_service_show')
@@ -116,6 +115,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'healthcareapis_service_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'healthcareapis_service_show')
 
+    # save these commands for no breaking change
     with self.command_group('healthcareapis acr', healthcareapis_service, client_factory=cf_service) as g:
         g.custom_command('list', 'healthcareapis_acr_list')
         g.custom_command('add', 'healthcareapis_acr_add', supports_no_wait=False)

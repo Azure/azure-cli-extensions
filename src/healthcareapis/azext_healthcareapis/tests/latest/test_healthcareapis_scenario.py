@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import unittest
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import StorageAccountPreparer
@@ -142,6 +143,7 @@ class HealthcareApisScenarioTest(ScenarioTest):
         step_service_update(self)
         step_service_delete(self)
 
+    @unittest.skip('need create pending private endpoint through portal')
     @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
     @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
                             resource_group_parameter_name='rg', parameter_name='sg')
@@ -159,12 +161,12 @@ class HealthcareApisScenarioTest(ScenarioTest):
             'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
         })
         self.kwargs['operation_result_id'] = step_service_create(self).get_output_in_json()['id']
-        # step_operation_result_show(self)
-        # step_private_endpoint_connection_create(self)
-        # step_private_endpoint_connection_show(self)
-        # step_private_endpoint_connection_list(self)
-        # step_private_endpoint_connection_delete(self)
-        # step_private_link_resource_show(self)
+        # first have to create the private endpoint in pending state through portal.
+        step_private_endpoint_connection_create(self)
+        step_private_endpoint_connection_show(self)
+        step_private_endpoint_connection_list(self)
+        step_private_endpoint_connection_delete(self)
+        step_private_link_resource_show(self)
         step_private_link_resource_list(self)
         step_service_delete(self)
 
@@ -272,6 +274,7 @@ class HealthcareApisScenarioTest(ScenarioTest):
         step_workspace_fhir_service_delete(self)
         step_workspace_delete(self)
 
+    @unittest.skip('need create pending private endpoint through portal')
     @ResourceGroupPreparer(name_prefix='clitesthealthcareapis_rgname'[:7], key='rg', parameter_name='rg')
     @StorageAccountPreparer(name_prefix='clitesthealthcareapis_existingStorageAccount'[:7], key='sg',
                             resource_group_parameter_name='rg', parameter_name='sg')
@@ -290,10 +293,11 @@ class HealthcareApisScenarioTest(ScenarioTest):
             'myFhirService2': self.create_random_name(prefix='myfhirservice2', length=18),
         })
         step_workspace_create(self)
+        # first have to create the private endpoint in pending state through portal.
         step_workspace_private_endpoint_connection_create(self)
-        # step_workspace_private_endpoint_connection_show(self)
-        # step_workspace_private_endpoint_connection_list(self, checks=url[])
-        # step_workspace_private_endpoint_connection_delete(self)
-        # step_workspace_private_link_resource_show(self)
+        step_workspace_private_endpoint_connection_show(self)
+        step_workspace_private_endpoint_connection_list(self)
+        step_workspace_private_endpoint_connection_delete(self)
+        step_workspace_private_link_resource_show(self)
         step_workspace_private_link_resource_list(self)
         step_workspace_delete(self)

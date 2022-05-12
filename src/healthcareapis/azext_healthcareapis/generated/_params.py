@@ -26,7 +26,7 @@ from azext_healthcareapis.action import (
     AddAuthenticationConfiguration,
     AddCorsConfiguration,
     AddServicesOciArtifacts,
-	AddPrivateEndpointConnections,
+    AddPrivateEndpointConnections,
     AddPrivateLinkServiceConnectionState,
     AddIngestionEndpointConfiguration,
     AddFhirservicesAccessPolicies,
@@ -61,7 +61,8 @@ def load_arguments(self, _):
                    'instance.')
         c.argument('cosmos_db_configuration', action=AddCosmosDbConfiguration, nargs='*', help='The settings for the '
                    'Cosmos DB database backing the service.')
-        c.argument('authentication_configuration', action=AddAuthenticationConfiguration, nargs='*', help='The '
+        c.argument('authentication_configuration', options_list=['--authentication-configuration', '-c'],
+                   action=AddAuthenticationConfiguration, nargs='*', help='The '
                    'authentication configuration for the service instance.')
         c.argument('cors_configuration', action=AddCorsConfiguration, nargs='*', help='The settings for the CORS '
                    'configuration of the service instance.')
@@ -73,7 +74,9 @@ def load_arguments(self, _):
                    'be added to the service instance.', arg_group='Acr Configuration')
         c.argument('oci_artifacts', action=AddServicesOciArtifacts, nargs='*', help='The list of Open Container '
                    'Initiative (OCI) artifacts.', arg_group='Acr Configuration')
-        c.argument('export_configuration_storage_account_name', type=str, help='The name of the default export storage '
+        c.argument('export_configuration_storage_account_name',
+                   options_list=['--export-configuration-storage-account-name', '-sa'],
+                   type=str, help='The name of the default export storage '
                    'account.')
 
     with self.argument_context('healthcareapis service update') as c:
@@ -103,43 +106,51 @@ def load_arguments(self, _):
     with self.argument_context('healthcareapis private-endpoint-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection associated with the Azure resource', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection associated with the Azure resource',
+                   id_part='child_name_1')
 
     with self.argument_context('healthcareapis private-endpoint-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection associated with the Azure resource')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection associated with the Azure resource')
+        c.argument('private_link_service_connection_state',
+                   options_list=['--private-link-service-connection-state', '-s'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
     with self.argument_context('healthcareapis private-endpoint-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection associated with the Azure resource', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection associated with the Azure resource',
+                   id_part='child_name_1')
+        c.argument('private_link_service_connection_state',
+                   options_list=['--private-link-service-connection-state', '-s'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
     with self.argument_context('healthcareapis private-endpoint-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection associated with the Azure resource', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection associated with the Azure resource',
+                   id_part='child_name_1')
 
     with self.argument_context('healthcareapis private-endpoint-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection associated with the Azure resource', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'], type=str,
+                   help='The name of the private endpoint connection associated with the Azure resource',
+                   id_part='child_name_1')
 
     with self.argument_context('healthcareapis private-link-resource list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -228,11 +239,12 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
@@ -247,11 +259,12 @@ def load_arguments(self, _):
                    'name of DICOM Service resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
@@ -290,18 +303,20 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
                    'objects ({}) in requests. Expected value: json-string/json-file/@json-file.',
                    arg_group='Identity')
-        c.argument('ingestion_endpoint_configuration', action=AddIngestionEndpointConfiguration, nargs='*',
-                   help='Source configuration.')
+        c.argument('ingestion_endpoint_configuration',
+                   options_list=['--ingestion-endpoint-configuration', '-c'],
+                   action=AddIngestionEndpointConfiguration, nargs='*', help='Source configuration.')
         c.argument('content', type=validate_file_or_dict, help='The mapping. Expected value: '
                    'json-string/json-file/@json-file.', arg_group='Device Mapping')
 
@@ -311,11 +326,12 @@ def load_arguments(self, _):
                    'name of IoT Connector resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
@@ -355,10 +371,13 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('resource_identity_resolution_type', arg_type=get_enum_type(['Create', 'Lookup']), help='Determines '
-                   'how resource identity is resolved on the destination.')
-        c.argument('fhir_service_resource_id', type=str, help='Fully qualified resource id of the FHIR service to '
-                   'connect to.')
+        c.argument('resource_identity_resolution_type',
+                   options_list=['--resource-identity-resolution-type', '-t'],
+                   arg_type=get_enum_type(['Create', 'Lookup']),
+                   help='Determines how resource identity is resolved on the destination.')
+        c.argument('fhir_service_resource_id',
+                   options_list=['--fhir-service-resource-id', '-r'],
+                   type=str, help='Fully qualified resource id of the FHIR service to connect to.')
         c.argument('content', type=validate_file_or_dict, help='The mapping. Expected value: '
                    'json-string/json-file/@json-file.', arg_group='Fhir Mapping')
 
@@ -372,10 +391,13 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('resource_identity_resolution_type', arg_type=get_enum_type(['Create', 'Lookup']), help='Determines '
-                   'how resource identity is resolved on the destination.')
-        c.argument('fhir_service_resource_id', type=str, help='Fully qualified resource id of the FHIR service to '
-                   'connect to.')
+        c.argument('resource_identity_resolution_type',
+                   options_list=['--resource-identity-resolution-type', '-t'],
+                   arg_type=get_enum_type(['Create', 'Lookup']),
+                   help='Determines how resource identity is resolved on the destination.')
+        c.argument('fhir_service_resource_id',
+                   options_list=['--fhir-service-resource-id', '-r'],
+                   type=str, help='Fully qualified resource id of the FHIR service to connect to.')
         c.argument('content', type=validate_file_or_dict, help='The mapping. Expected value: '
                    'json-string/json-file/@json-file.', arg_group='Fhir Mapping')
         c.ignore('iot_fhir_destination')
@@ -414,11 +436,12 @@ def load_arguments(self, _):
                    'editing it.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
@@ -427,7 +450,8 @@ def load_arguments(self, _):
         c.argument('kind', arg_type=get_enum_type(['fhir-Stu3', 'fhir-R4']), help='The kind of the service.')
         c.argument('access_policies', action=AddFhirservicesAccessPolicies, nargs='*', help='Fhir Service access '
                    'policies.')
-        c.argument('authentication_configuration', action=AddFhirservicesAuthenticationConfiguration, nargs='*',
+        c.argument('authentication_configuration', options_list=['--authentication-configuration', '-c'],
+                   action=AddFhirservicesAuthenticationConfiguration, nargs='*',
                    help='Fhir Service authentication configuration.')
         c.argument('cors_configuration', action=AddFhirservicesCorsConfiguration, nargs='*', help='Fhir Service Cors '
                    'configuration.')
@@ -436,10 +460,13 @@ def load_arguments(self, _):
         c.argument('default', arg_type=get_enum_type(['no-version', 'versioned', 'versioned-update']), help='The '
                    'default value for tracking history across all resources.', arg_group='Resource Version Policy '
                    'Configuration')
-        c.argument('resource_type_overrides', action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
+        c.argument('resource_type_overrides', options_list=['--resource-type-overrides', '-o'],
+                   action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
                    'Resources and their version policy overrides. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...',
                    arg_group='Resource Version Policy Configuration')
-        c.argument('export_configuration_storage_account_name', type=str, help='The name of the default export storage account.',
+        c.argument('export_configuration_storage_account_name',
+                   options_list=['--export-configuration-storage-account-name', '-sa'],
+                   type=str, help='The name of the default export storage account.',
                    arg_group='Export Configuration')
         c.argument('login_servers', nargs='*', help='The list of the Azure container registry login servers.',
                    arg_group='Acr Configuration')
@@ -452,11 +479,12 @@ def load_arguments(self, _):
                    'of FHIR Service resource.', id_part='child_name_1')
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
+        c.argument('identity_type',
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned']),
                    help='Type of identity being specified, currently SystemAssigned and None are allowed.',
                    arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The set of user assigned identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '-i'],
+                   type=validate_file_or_dict, help='The set of user assigned identities '
                    'associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids '
                    'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
                    'ft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty '
@@ -482,24 +510,34 @@ def load_arguments(self, _):
     with self.argument_context('healthcareapis workspace private-endpoint-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
-        c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource', id_part='child_name_1')
 
     with self.argument_context('healthcareapis workspace private-endpoint-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of workspace resource.')
-        c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
+        c.argument('private_link_service_connection_state',
+                   options_list=['--private-link-service-connection-state', '-s'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
 
     with self.argument_context('healthcareapis workspace private-endpoint-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
-        c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='*',
+        c.argument('private_link_service_connection_state',
+                   options_list=['--private-link-service-connection-state', '-s'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
         c.ignore('properties')
@@ -507,13 +545,17 @@ def load_arguments(self, _):
     with self.argument_context('healthcareapis workspace private-endpoint-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
-        c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource', id_part='child_name_1')
 
     with self.argument_context('healthcareapis workspace private-endpoint-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
-        c.argument('private_endpoint_connection_name', type=str, help='The name of the private endpoint connection '
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'],
+                   type=str, help='The name of the private endpoint connection '
                    'associated with the Azure resource', id_part='child_name_1')
 
     with self.argument_context('healthcareapis workspace private-link-resource list') as c:
@@ -525,4 +567,3 @@ def load_arguments(self, _):
         c.argument('workspace_name', type=str, help='The name of workspace resource.', id_part='name')
         c.argument('group_name', type=str, help='The name of the private link resource group.',
                    id_part='child_name_1')
-

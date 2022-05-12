@@ -183,6 +183,8 @@ def healthcareapis_service_delete(client,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name)
+
+
 def healthcareapis_operation_result_show(client,
                                          location_name,
                                          operation_result_id):
@@ -801,4 +803,3 @@ def healthcareapis_workspace_private_link_resource_show(client,
     return client.get(resource_group_name=resource_group_name,
                       workspace_name=workspace_name,
                       group_name=group_name)
-

@@ -889,5 +889,3 @@ helps['healthcareapis workspace private-link-resource show'] = """
                az healthcareapis workspace private-link-resource show --group-name "healthcareworkspace" \
 --resource-group "testRG" --workspace-name "workspace1"
 """
-
-

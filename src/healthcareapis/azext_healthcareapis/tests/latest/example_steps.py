@@ -207,7 +207,7 @@ def step_servicedelete(test):
 # EXAMPLE: /DicomServices/put/Create or update a Dicom Service
 @try_manual
 def step_workspace_dicom_service_create(test):
-    test.cmd('az healthcareapis workspace dicom-service create '
+    ref = test.cmd('az healthcareapis workspace dicom-service create '
              '--name "{myDicomService}" '
              '--location "westus2" '
              '--resource-group "{rg}" '
@@ -221,6 +221,7 @@ def step_workspace_dicom_service_create(test):
              '--resource-group "{rg}" '
              '--workspace-name "{myWorkspace}"',
              checks=[])
+    return ref
 
 
 # EXAMPLE: /DicomServices/get/Get a dicomservice
@@ -485,7 +486,9 @@ def step_operation_result_show(test):
     test.cmd('az healthcareapis operation-result show '
              '--location-name "westus2" '
              '--operation-result-id "{operation_result_id}"',
-             checks=[])
+             checks=[
+                 test.check("provisioningState", "Succeeded"),
+             ])
 
 
 # EXAMPLE: /PrivateEndpointConnections/put/PrivateEndpointConnection_CreateOrUpdate

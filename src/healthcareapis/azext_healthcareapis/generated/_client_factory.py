@@ -62,6 +62,3 @@ def cf_workspace_private_endpoint_connection(cli_ctx, *_):
 
 def cf_workspace_private_link_resource(cli_ctx, *_):
     return cf_healthcareapis_cl(cli_ctx).workspace_private_link_resources
-
-
-
