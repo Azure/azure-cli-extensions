@@ -25,7 +25,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -45,7 +45,8 @@ from ._models import (
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel)
+    ManagedServiceIdentity as ManagedServiceIdentityModel,
+    AzureFileProperties as AzureFilePropertiesModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
@@ -2311,4 +2312,65 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
             return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
         return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
     except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.show(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_storage(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.list(cmd, resource_group_name, name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if len(azure_file_share_name) < 3:
+        raise ValidationError("File share name must be longer than 2 characters.")
+
+    if len(azure_file_account_name) < 3:
+        raise ValidationError("Account name must be longer than 2 characters.")
+
+    r = None
+
+    try:
+        r = StorageClient.show(cmd, resource_group_name, name, storage_name)
+    except:
+        pass
+
+    if r:
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+
+    storage_def = AzureFilePropertiesModel
+    storage_def["accountKey"] = azure_file_account_key
+    storage_def["accountName"] = azure_file_account_name
+    storage_def["shareName"] = azure_file_share_name
+    storage_def["accessMode"] = access_mode
+    storage_envelope = {}
+    storage_envelope["properties"] = {}
+    storage_envelope["properties"]["azureFile"] = storage_def
+
+    try:
+        return StorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
+    except CLIError as e:
         handle_raw_exception(e)
