@@ -18,6 +18,8 @@ class OfferType(str, Enum):
     ms_azr_0148_p = "MS-AZR-0148P"
     ms_azr_usgov_0017p = "MS-AZR-USGOV-0017P"
     ms_azr_usgov_0003p = "MS-AZR-USGOV-0003P"
+    ms_azr_usgov_0015p = "MS-AZR-USGOV-0015P"
+    ms_azr_usgov_0148p = "MS-AZR-USGOV-0148P"
 
 
 class SubscriptionState(str, Enum):
