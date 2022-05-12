@@ -11,11 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Update to use 2022-04-02-preview api version.
 
-0.5.67 (NOT RELEASED)
+
+0.5.67
 +++++++++++++++++++++
 * Add support for csi drivers extensibility.
+* Update to use 2022-04-02-preview api version.
+* Add support for apiserver vnet integration.
 
 0.5.66
 ++++++
