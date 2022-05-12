@@ -62,8 +62,8 @@ def load_arguments(self, _):
         c.argument('cosmos_db_configuration', action=AddCosmosDbConfiguration, nargs='*', help='The settings for the '
                    'Cosmos DB database backing the service.')
         c.argument('authentication_configuration', options_list=['--authentication-configuration', '-c'],
-                   action=AddAuthenticationConfiguration, nargs='*', help='The '
-                   'authentication configuration for the service instance.')
+                   action=AddAuthenticationConfiguration, nargs='*',
+                   help='The authentication configuration for the service instance.')
         c.argument('cors_configuration', action=AddCorsConfiguration, nargs='*', help='The settings for the CORS '
                    'configuration of the service instance.')
         c.argument('private_endpoint_connections', action=AddPrivateEndpointConnections, nargs='*', help='The list of '
@@ -72,10 +72,11 @@ def load_arguments(self, _):
                    'for data plane traffic coming from public networks while private endpoint is enabled.')
         c.argument('login_servers', type=str, help='The list of login servers that shall'
                    'be added to the service instance.', arg_group='Acr Configuration')
-        c.argument('oci_artifacts', action=AddServicesOciArtifacts, nargs='*', help='The list of Open Container '
-                   'Initiative (OCI) artifacts.', arg_group='Acr Configuration')
+        c.argument('oci_artifacts',
+                   action=AddServicesOciArtifacts, nargs='*',
+                   help='The list of Open Container Initiative (OCI) artifacts.', arg_group='Acr Configuration')
         c.argument('export_configuration_storage_account_name',
-                   options_list=['--export-configuration-storage-account-name', '-sa'],
+                   options_list=['--export-configuration-storage-account-name', '-s'],
                    type=str, help='The name of the default export storage '
                    'account.')
 
@@ -460,12 +461,12 @@ def load_arguments(self, _):
         c.argument('default', arg_type=get_enum_type(['no-version', 'versioned', 'versioned-update']), help='The '
                    'default value for tracking history across all resources.', arg_group='Resource Version Policy '
                    'Configuration')
-        c.argument('resource_type_overrides', options_list=['--resource-type-overrides', '-to'],
+        c.argument('resource_type_overrides', options_list=['--resource-type-overrides', '-r'],
                    action=AddResourceTypeOverrides, nargs='*', help='A list of FHIR '
                    'Resources and their version policy overrides. Expect value: KEY1=VALUE1 KEY2=VALUE2 ...',
                    arg_group='Resource Version Policy Configuration')
         c.argument('export_configuration_storage_account_name',
-                   options_list=['--export-configuration-storage-account-name', '-sa'],
+                   options_list=['--export-configuration-storage-account-name', '-s'],
                    type=str, help='The name of the default export storage account.',
                    arg_group='Export Configuration')
         c.argument('login_servers', nargs='*', help='The list of the Azure container registry login servers.',

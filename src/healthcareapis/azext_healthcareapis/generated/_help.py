@@ -63,7 +63,7 @@ helps['healthcareapis service create'] = """
 
             offer-throughput: The provisioned throughput for the backing database.
             key-vault-key-uri: The URI of the customer-managed key for the backing database.
-      - name: --authentication-configuration
+      - name: --authentication-configuration -c
         short-summary: "The authentication configuration for the service instance."
         long-summary: |
             Usage: --authentication-configuration authority=XX audience=XX smart-proxy-enabled=XX
@@ -195,7 +195,7 @@ helps['healthcareapis private-endpoint-connection create'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the service."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --private-link-service-connection-state -s
         short-summary: "A collection of information about the state of the connection between service consumer and \
 provider."
         long-summary: |
@@ -217,7 +217,7 @@ helps['healthcareapis private-endpoint-connection update'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the service."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --private-link-service-connection-state -s
         short-summary: "A collection of information about the state of the connection between service consumer and \
 provider."
         long-summary: |
@@ -508,7 +508,7 @@ helps['healthcareapis workspace iot-connector create'] = """
     type: command
     short-summary: "Create an IoT Connector resource with the specified parameters."
     parameters:
-      - name: --ingestion-endpoint-configuration
+      - name: --ingestion-endpoint-configuration -c
         short-summary: "Source configuration."
         long-summary: |
             Usage: --ingestion-endpoint-configuration event-hub-name=XX consumer-group=XX \
@@ -687,7 +687,7 @@ helps['healthcareapis workspace fhir-service create'] = """
             object-id: Required. An Azure AD object ID (User or Apps) that is allowed access to the FHIR service.
 
             Multiple actions can be specified by using more than one --access-policies argument.
-      - name: --authentication-configuration
+      - name: --authentication-configuration -c
         short-summary: "Fhir Service authentication configuration."
         long-summary: |
             Usage: --authentication-configuration authority=XX audience=XX smart-proxy-enabled=XX
@@ -799,7 +799,7 @@ helps['healthcareapis workspace private-endpoint-connection create'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the workspace."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --private-link-service-connection-state -s
         short-summary: "A collection of information about the state of the connection between service consumer and \
 provider."
         long-summary: |
@@ -821,7 +821,7 @@ helps['healthcareapis workspace private-endpoint-connection update'] = """
     type: command
     short-summary: "Update the state of the specified private endpoint connection associated with the workspace."
     parameters:
-      - name: --private-link-service-connection-state
+      - name: --private-link-service-connection-state -s
         short-summary: "A collection of information about the state of the connection between service consumer and \
 provider."
         long-summary: |
