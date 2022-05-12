@@ -45,6 +45,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                          resource_group_name,
                                                          logs_workspace_name=logs_workspace_name,
                                                          tags=tags)
+
     os.environ["AZURE_CONTAINERAPPS_ENV_DEFAULT_DOMAIN"] = managed_environment["properties"]["defaultDomain"]
     os.environ["AZURE_CONTAINERAPPS_ENV_STATIC_IP"] = managed_environment["properties"]["staticIp"]
 
@@ -160,12 +161,18 @@ def resolve_secret_from_service(service, secrets_map):
         secret_config = secrets_map[secret.source]
         if secret_config is not None and secret_config.file is not None:
             value = secret_config.file.readFile()
-            secret_name = secret.source.replace('_', '-')
+            if secret.target is None:
+                secret_name = secret.source.replace('_', '-')
+            else:
+                secret_name = secret.target.replace('_', '-')
             secret_array.append(f"{secret_name}={value}")
             secret_env_ref.append(f"{secret_name}=secretref:{secret_name}")
 
     if len(secret_array) == 0:
         return (None, None)
+
+    logger.warning("Note: Secrets will be mapped as secure environment variables in Azure Container Apps.")
+
     return (secret_array, secret_env_ref)
 
 
