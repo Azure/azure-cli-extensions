@@ -230,7 +230,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
     # Validate managed environment
     if not containerapp_def["properties"].get('managedEnvironmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     env_id = containerapp_def["properties"]['managedEnvironmentId']
     env_name = None

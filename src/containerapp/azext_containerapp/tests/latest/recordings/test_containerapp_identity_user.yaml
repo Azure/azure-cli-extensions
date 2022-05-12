@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T22:34:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-10T19:01:58Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:34:54 GMT
+      - Tue, 10 May 2022 19:02:02 GMT
       expires:
       - '-1'
       pragma:
@@ -60,26 +60,28 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006?api-version=2021-12-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006?api-version=2021-06-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"04ba862d-c306-47d6-8e0f-ea734d301b92\",\r\n    \"provisioningState\": \"Creating\",\r\n
+        \"d7b2801b-6582-4ec3-a4c2-adf914912a9f\",\r\n    \"provisioningState\": \"Creating\",\r\n
         \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
-        \"Thu, 05 May 2022 22:35:00 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \"Tue, 10 May 2022 19:02:08 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
         \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
         \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
         \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Fri, 06 May 2022 10:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \"Wed, 11 May 2022 18:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
         \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Thu, 05 May 2022 22:35:00 GMT\",\r\n
-        \   \"modifiedDate\": \"Thu, 05 May 2022 22:35:00 GMT\"\r\n  },\r\n  \"id\":
+        \"Enabled\",\r\n    \"createdDate\": \"Tue, 10 May 2022 19:02:08 GMT\",\r\n
+        \   \"modifiedDate\": \"Tue, 10 May 2022 19:02:08 GMT\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.operationalinsights/workspaces/containerapp-env000006\",\r\n
         \ \"name\": \"containerapp-env000006\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
         \ \"location\": \"westeurope\"\r\n}"
     headers:
+      access-control-allow-origin:
+      - '*'
       cache-control:
       - no-cache
       content-length:
@@ -87,11 +89,12 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 05 May 2022 22:35:02 GMT
+      - Tue, 10 May 2022 19:02:08 GMT
       pragma:
       - no-cache
+      request-context:
+      - appId=cid-v1:c7ec48f5-2684-46e8-accb-45e7dbec242b
       server:
-      - Microsoft-IIS/10.0
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
@@ -119,26 +122,28 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006?api-version=2021-12-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006?api-version=2021-06-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"04ba862d-c306-47d6-8e0f-ea734d301b92\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \"d7b2801b-6582-4ec3-a4c2-adf914912a9f\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
         \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"lastSkuUpdate\":
-        \"Thu, 05 May 2022 22:35:00 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
+        \"Tue, 10 May 2022 19:02:08 GMT\"\r\n    },\r\n    \"retentionInDays\": 30,\r\n
         \   \"features\": {\r\n      \"legacy\": 0,\r\n      \"searchVersion\": 1,\r\n
         \     \"enableLogAccessUsingOnlyResourcePermissions\": true\r\n    },\r\n
         \   \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n      \"quotaNextResetTime\":
-        \"Fri, 06 May 2022 10:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
+        \"Wed, 11 May 2022 18:00:00 GMT\",\r\n      \"dataIngestionStatus\": \"RespectQuota\"\r\n
         \   },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n    \"publicNetworkAccessForQuery\":
-        \"Enabled\",\r\n    \"createdDate\": \"Thu, 05 May 2022 22:35:00 GMT\",\r\n
-        \   \"modifiedDate\": \"Thu, 05 May 2022 22:35:01 GMT\"\r\n  },\r\n  \"id\":
+        \"Enabled\",\r\n    \"createdDate\": \"Tue, 10 May 2022 19:02:08 GMT\",\r\n
+        \   \"modifiedDate\": \"Tue, 10 May 2022 19:02:09 GMT\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/microsoft.operationalinsights/workspaces/containerapp-env000006\",\r\n
         \ \"name\": \"containerapp-env000006\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
         \ \"location\": \"westeurope\"\r\n}"
     headers:
+      access-control-allow-origin:
+      - '*'
       cache-control:
       - no-cache
       content-length:
@@ -146,18 +151,19 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 05 May 2022 22:35:32 GMT
+      - Tue, 10 May 2022 19:02:38 GMT
       pragma:
       - no-cache
+      request-context:
+      - appId=cid-v1:c7ec48f5-2684-46e8-accb-45e7dbec242b
       server:
-      - Microsoft-IIS/10.0
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-powered-by:
@@ -182,14 +188,16 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-mgmt-loganalytics/12.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: "{\r\n  \"primarySharedKey\": \"J7owdpidSyJkSQ+SRuOS2DjA3yBFlb43243g99IJxz93o9GrQ21jYQSlHWpIb44fRxm7WNl8nquHQDwdVgQmpQ==\",\r\n
-        \ \"secondarySharedKey\": \"2jfIED76uBEq+qnDYIda9Lk7pXahaaugnxV11pQvT6Sv/3x9Dg9DkMBfOoWXD+BCgOkVkoxzlxTQp6vpmnh3Ag==\"\r\n}"
+      string: "{\r\n  \"primarySharedKey\": \"ilvZMGw946uwaySsXS6xXOUsBY4MDzeUdS3eLFLX4eYRxUsV09k0X9glhyhZtCSA7YBACXRX9PeSCencOnn54A==\",\r\n
+        \ \"secondarySharedKey\": \"51MQvlKprJjZaUokfdyMmXbXdZal/b+VHIYiDx32uNzLJgWB31LfkT19362FrXjOwirOck4OtD4HmfNt+rebhA==\"\r\n}"
     headers:
+      access-control-allow-origin:
+      - '*'
       cache-control:
       - no-cache
       cachecontrol:
@@ -199,13 +207,14 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:34 GMT
+      - Tue, 10 May 2022 19:02:40 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      request-context:
+      - appId=cid-v1:c7ec48f5-2684-46e8-accb-45e7dbec242b
       server:
-      - Microsoft-IIS/10.0
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
@@ -239,12 +248,12 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T22:34:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-10T19:01:58Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -253,7 +262,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:34 GMT
+      - Tue, 10 May 2022 19:02:40 GMT
       expires:
       - '-1'
       pragma:
@@ -281,7 +290,7 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -315,7 +324,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:35 GMT
+      - Tue, 10 May 2022 19:02:41 GMT
       expires:
       - '-1'
       pragma:
@@ -343,7 +352,7 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -377,7 +386,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:35 GMT
+      - Tue, 10 May 2022 19:02:41 GMT
       expires:
       - '-1'
       pragma:
@@ -395,7 +404,7 @@ interactions:
     body: '{"location": "westeurope", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "internalLoadBalancerEnabled": false, "appLogsConfiguration":
       {"destination": "log-analytics", "logAnalyticsConfiguration": {"customerId":
-      "04ba862d-c306-47d6-8e0f-ea734d301b92", "sharedKey": "J7owdpidSyJkSQ+SRuOS2DjA3yBFlb43243g99IJxz93o9GrQ21jYQSlHWpIb44fRxm7WNl8nquHQDwdVgQmpQ=="}}}}'
+      "d7b2801b-6582-4ec3-a4c2-adf914912a9f", "sharedKey": "ilvZMGw946uwaySsXS6xXOUsBY4MDzeUdS3eLFLX4eYRxUsV09k0X9glhyhZtCSA7YBACXRX9PeSCencOnn54A=="}}}}'
     headers:
       Accept:
       - '*/*'
@@ -412,25 +421,25 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153Z","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153Z"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236Z","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236Z"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/managedEnvironmentOperationStatuses/78f42095-c76f-48eb-8b8e-b687f892c942?api-version=2022-01-01-preview&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/managedEnvironmentOperationStatuses/8d7d1e30-5ba9-4d79-a543-fe35e7b58b17?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '779'
+      - '790'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:41 GMT
+      - Tue, 10 May 2022 19:02:48 GMT
       expires:
       - '-1'
       pragma:
@@ -443,8 +452,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
       x-powered-by:
       - ASP.NET
     status:
@@ -464,23 +473,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:43 GMT
+      - Tue, 10 May 2022 19:02:49 GMT
       expires:
       - '-1'
       pragma:
@@ -514,23 +523,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:47 GMT
+      - Tue, 10 May 2022 19:02:53 GMT
       expires:
       - '-1'
       pragma:
@@ -564,23 +573,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:51 GMT
+      - Tue, 10 May 2022 19:02:56 GMT
       expires:
       - '-1'
       pragma:
@@ -614,23 +623,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:55 GMT
+      - Tue, 10 May 2022 19:03:02 GMT
       expires:
       - '-1'
       pragma:
@@ -664,23 +673,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:35:59 GMT
+      - Tue, 10 May 2022 19:03:06 GMT
       expires:
       - '-1'
       pragma:
@@ -714,23 +723,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:04 GMT
+      - Tue, 10 May 2022 19:03:10 GMT
       expires:
       - '-1'
       pragma:
@@ -764,23 +773,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:07 GMT
+      - Tue, 10 May 2022 19:03:15 GMT
       expires:
       - '-1'
       pragma:
@@ -814,23 +823,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:11 GMT
+      - Tue, 10 May 2022 19:03:19 GMT
       expires:
       - '-1'
       pragma:
@@ -864,23 +873,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:16 GMT
+      - Tue, 10 May 2022 19:03:22 GMT
       expires:
       - '-1'
       pragma:
@@ -914,23 +923,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Waiting","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Waiting","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:20 GMT
+      - Tue, 10 May 2022 19:03:26 GMT
       expires:
       - '-1'
       pragma:
@@ -964,23 +973,23 @@ interactions:
       ParameterSetName:
       - -g -n --logs-workspace-id --logs-workspace-key
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Succeeded","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Succeeded","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '779'
+      - '790'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:24 GMT
+      - Tue, 10 May 2022 19:03:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1014,7 +1023,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -1048,7 +1057,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:23 GMT
+      - Tue, 10 May 2022 19:03:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1076,23 +1085,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Succeeded","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Succeeded","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '779'
+      - '790'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:27 GMT
+      - Tue, 10 May 2022 19:03:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1126,7 +1135,7 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -1160,7 +1169,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:28 GMT
+      - Tue, 10 May 2022 19:03:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1188,23 +1197,23 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:35:39.6549153","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:35:39.6549153"},"properties":{"provisioningState":"Succeeded","defaultDomain":"ashystone-4d0b3e54.westeurope.azurecontainerapps.io","staticIp":"20.123.250.92","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"04ba862d-c306-47d6-8e0f-ea734d301b92"}}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","name":"containerapp-env000002","type":"Microsoft.App/managedEnvironments","location":"westeurope","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:02:46.4678236","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:02:46.4678236"},"properties":{"provisioningState":"Succeeded","defaultDomain":"icywater-b7b62abd.westeurope.azurecontainerapps.io","staticIp":"20.76.146.184","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"d7b2801b-6582-4ec3-a4c2-adf914912a9f"}},"zoneRedundant":false}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '779'
+      - '790'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:29 GMT
+      - Tue, 10 May 2022 19:03:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1238,7 +1247,7 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -1272,7 +1281,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:29 GMT
+      - Tue, 10 May 2022 19:03:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1310,26 +1319,26 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031Z","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:36:34.1860031Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739Z","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:03:39.69739Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/f523cadd-4557-4b46-9cb7-e1482e0317b7?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/1f72d3ba-da5e-43c2-a52d-75c63583a995?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1194'
+      - '1174'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:37 GMT
+      - Tue, 10 May 2022 19:03:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1342,8 +1351,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -1363,24 +1372,24 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:36:34.1860031"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:03:39.69739"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1219'
+      - '1199'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:39 GMT
+      - Tue, 10 May 2022 19:03:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1414,75 +1423,24 @@ interactions:
       ParameterSetName:
       - -g -n --environment
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:36:34.1860031"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:03:39.69739"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1219'
+      - '1198'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:43 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - containerapp create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment
-      User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:36:34.1860031"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
-    headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '1218'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 05 May 2022 22:36:47 GMT
+      - Tue, 10 May 2022 19:03:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1516,12 +1474,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T22:34:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-10T19:01:58Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1530,7 +1488,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:47 GMT
+      - Tue, 10 May 2022 19:03:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1558,25 +1516,28 @@ interactions:
       Content-Length:
       - '26'
       Content-Type:
-      - application/json
+      - application/json; charset=utf-8
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-msi/6.0.0 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-msi/0.2.0 Azure-SDK-For-Python AZURECLI/2.33.0
+      accept-language:
+      - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004?api-version=2018-11-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004?api-version=2015-08-31-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004","name":"containerapp-user1000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westeurope","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004","name":"containerapp-user1000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westeurope","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31","clientSecretUrl":"https://control-westeurope.identity.azure.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004/credentials?tid=72f988bf-86f1-41af-91ab-2d7cd011db47&oid=be5cae9f-3bbe-49c2-a3a6-8d855a429e92&aid=02b79083-38fd-46a9-90ba-68b60c951c31"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '470'
+      - '838'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:53 GMT
+      - Tue, 10 May 2022 19:03:57 GMT
       expires:
       - '-1'
       location:
@@ -1606,12 +1567,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-05T22:34:43Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2022-05-10T19:01:58Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1620,7 +1581,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:54 GMT
+      - Tue, 10 May 2022 19:03:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1648,25 +1609,28 @@ interactions:
       Content-Length:
       - '26'
       Content-Type:
-      - application/json
+      - application/json; charset=utf-8
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-msi/6.0.0 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-msi/0.2.0 Azure-SDK-For-Python AZURECLI/2.33.0
+      accept-language:
+      - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005?api-version=2018-11-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005?api-version=2015-08-31-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005","name":"containerapp-user2000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westeurope","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005","name":"containerapp-user2000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westeurope","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6","clientSecretUrl":"https://control-westeurope.identity.azure.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005/credentials?tid=72f988bf-86f1-41af-91ab-2d7cd011db47&oid=e9ffd347-9d0d-4cd0-9151-647ea67abf6a&aid=b8312aa3-b62a-46da-9062-2284a0f193f6"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '470'
+      - '838'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:59 GMT
+      - Tue, 10 May 2022 19:04:03 GMT
       expires:
       - '-1'
       location:
@@ -1696,7 +1660,7 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -1730,7 +1694,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:36:59 GMT
+      - Tue, 10 May 2022 19:04:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1758,24 +1722,24 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:36:34.1860031"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:03:39.69739"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1218'
+      - '1198'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:01 GMT
+      - Tue, 10 May 2022 19:04:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1798,17 +1762,17 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003",
       "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
-      "West Europe", "systemData": {"createdBy": "silasstrawn@microsoft.com", "createdByType":
-      "User", "createdAt": "2022-05-05T22:36:34.1860031", "lastModifiedBy": "silasstrawn@microsoft.com",
-      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T22:36:34.1860031"},
+      "West Europe", "systemData": {"createdBy": "calcha@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-10T19:03:39.69739", "lastModifiedBy": "calcha@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-10T19:03:39.69739"},
       "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
-      "outboundIpAddresses": ["20.103.127.154", "20.103.127.162", "20.103.127.156"],
-      "latestRevisionName": "containerapp000003--fstrfl5", "latestRevisionFqdn": "",
-      "customDomainVerificationId": "333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7",
-      "configuration": {"activeRevisionsMode": "Single", "secrets": []}, "template":
-      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}],
-      "scale": {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned"}}'
+      "outboundIpAddresses": ["20.126.179.29", "20.31.96.45", "20.31.96.255"], "latestRevisionName":
+      "containerapp000003--4owhc0y", "latestRevisionFqdn": "", "customDomainVerificationId":
+      "A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8", "configuration":
+      {"activeRevisionsMode": "Single", "secrets": []}, "template": {"containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale":
+      {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned"}}'
     headers:
       Accept:
       - '*/*'
@@ -1819,32 +1783,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1298'
+      - '1278'
       Content-Type:
       - application/json
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:03.5271542Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:08.378955Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/3ec1f69e-303d-4250-a7a8-1f55e698c057?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/9ffd7948-2dfc-4eaa-bb98-69bf6728afb6?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1333'
+      - '1314'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:08 GMT
+      - Tue, 10 May 2022 19:04:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1857,8 +1821,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -1878,24 +1842,24 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:03.5271542"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:08.378955"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1332'
+      - '1313'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:10 GMT
+      - Tue, 10 May 2022 19:04:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1929,24 +1893,75 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:03.5271542"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:08.378955"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1331'
+      - '1313'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:14 GMT
+      - Tue, 10 May 2022 19:04:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned -g -n
+      User-Agent:
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:08.378955"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 19:04:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1980,7 +1995,7 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -2014,7 +2029,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:15 GMT
+      - Tue, 10 May 2022 19:04:21 GMT
       expires:
       - '-1'
       pragma:
@@ -2042,24 +2057,24 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:03.5271542"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:08.378955"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1331'
+      - '1312'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:17 GMT
+      - Tue, 10 May 2022 19:04:24 GMT
       expires:
       - '-1'
       pragma:
@@ -2082,18 +2097,18 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003",
       "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
-      "West Europe", "systemData": {"createdBy": "silasstrawn@microsoft.com", "createdByType":
-      "User", "createdAt": "2022-05-05T22:36:34.1860031", "lastModifiedBy": "silasstrawn@microsoft.com",
-      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T22:37:03.5271542"},
+      "West Europe", "systemData": {"createdBy": "calcha@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-10T19:03:39.69739", "lastModifiedBy": "calcha@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-10T19:04:08.378955"},
       "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
-      "outboundIpAddresses": ["20.103.127.154", "20.103.127.162", "20.103.127.156"],
-      "latestRevisionName": "containerapp000003--fstrfl5", "latestRevisionFqdn": "",
-      "customDomainVerificationId": "333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7",
-      "configuration": {"activeRevisionsMode": "Single", "secrets": []}, "template":
-      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}],
-      "scale": {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned,UserAssigned",
-      "principalId": "a36a7800-bf09-475a-8f4b-659e040501c5", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "outboundIpAddresses": ["20.126.179.29", "20.31.96.45", "20.31.96.255"], "latestRevisionName":
+      "containerapp000003--4owhc0y", "latestRevisionFqdn": "", "customDomainVerificationId":
+      "A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8", "configuration":
+      {"activeRevisionsMode": "Single", "secrets": []}, "template": {"containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale":
+      {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned,UserAssigned", "principalId":
+      "58b2a14d-0e24-4423-969d-02ea40e76433", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
       "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":
       {}, "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":
       {}}}}'
@@ -2107,33 +2122,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1796'
+      - '1777'
       Content-Type:
       - application/json
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:18.3821467Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:25.2733789Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/d7f18d3e-41a5-4e64-9115-c9d32b4c9261?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/13e8848a-9d93-438f-81a5-821abddf0c15?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1924'
+      - '1906'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:22 GMT
+      - Tue, 10 May 2022 19:04:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2146,8 +2161,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -2167,25 +2182,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:18.3821467"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:25.2733789"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1923'
+      - '1905'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:25 GMT
+      - Tue, 10 May 2022 19:04:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2219,25 +2234,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:18.3821467"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:25.2733789"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1922'
+      - '1904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:28 GMT
+      - Tue, 10 May 2022 19:04:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2271,7 +2286,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -2305,7 +2320,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:28 GMT
+      - Tue, 10 May 2022 19:04:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2333,25 +2348,25 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:18.3821467"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:25.2733789"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1922'
+      - '1904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:30 GMT
+      - Tue, 10 May 2022 19:04:37 GMT
       expires:
       - '-1'
       pragma:
@@ -2385,7 +2400,7 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -2419,7 +2434,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:31 GMT
+      - Tue, 10 May 2022 19:04:36 GMT
       expires:
       - '-1'
       pragma:
@@ -2447,25 +2462,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:18.3821467"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"651ac6c2-e7ad-4df9-ac1d-022007acff7d","clientId":"372e4abb-9247-4a81-bc25-c659d3ebfc01"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:25.2733789"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user1000004":{"principalId":"be5cae9f-3bbe-49c2-a3a6-8d855a429e92","clientId":"02b79083-38fd-46a9-90ba-68b60c951c31"},"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1922'
+      - '1904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:32 GMT
+      - Tue, 10 May 2022 19:04:38 GMT
       expires:
       - '-1'
       pragma:
@@ -2488,20 +2503,20 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003",
       "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
-      "West Europe", "systemData": {"createdBy": "silasstrawn@microsoft.com", "createdByType":
-      "User", "createdAt": "2022-05-05T22:36:34.1860031", "lastModifiedBy": "silasstrawn@microsoft.com",
-      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T22:37:18.3821467"},
+      "West Europe", "systemData": {"createdBy": "calcha@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-10T19:03:39.69739", "lastModifiedBy": "calcha@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-10T19:04:25.2733789"},
       "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
-      "outboundIpAddresses": ["20.103.127.154", "20.103.127.162", "20.103.127.156"],
-      "latestRevisionName": "containerapp000003--fstrfl5", "latestRevisionFqdn": "",
-      "customDomainVerificationId": "333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7",
-      "configuration": {"activeRevisionsMode": "Single", "secrets": []}, "template":
-      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}],
-      "scale": {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned, UserAssigned",
-      "principalId": "a36a7800-bf09-475a-8f4b-659e040501c5", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "outboundIpAddresses": ["20.126.179.29", "20.31.96.45", "20.31.96.255"], "latestRevisionName":
+      "containerapp000003--4owhc0y", "latestRevisionFqdn": "", "customDomainVerificationId":
+      "A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8", "configuration":
+      {"activeRevisionsMode": "Single", "secrets": []}, "template": {"containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale":
+      {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned, UserAssigned",
+      "principalId": "58b2a14d-0e24-4423-969d-02ea40e76433", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
       "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":
-      {"principalId": "d3d917a4-fd34-4fb7-b22a-c254b342b29a", "clientId": "4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+      {"principalId": "e9ffd347-9d0d-4cd0-9151-647ea67abf6a", "clientId": "b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       Accept:
       - '*/*'
@@ -2512,33 +2527,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1727'
+      - '1709'
       Content-Type:
       - application/json
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:34.2818179Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:41.2187342Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/b41a3001-64c0-4892-aa4f-f9cd7a9d8717?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/1c3182f9-efc6-42c9-babb-198175fa7e76?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1649'
+      - '1631'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:39 GMT
+      - Tue, 10 May 2022 19:04:46 GMT
       expires:
       - '-1'
       pragma:
@@ -2551,8 +2566,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -2572,25 +2587,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:34.2818179"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:41.2187342"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1648'
+      - '1630'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:40 GMT
+      - Tue, 10 May 2022 19:04:47 GMT
       expires:
       - '-1'
       pragma:
@@ -2624,25 +2639,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:34.2818179"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:41.2187342"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1647'
+      - '1629'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:44 GMT
+      - Tue, 10 May 2022 19:04:52 GMT
       expires:
       - '-1'
       pragma:
@@ -2676,7 +2691,7 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -2710,7 +2725,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:45 GMT
+      - Tue, 10 May 2022 19:04:52 GMT
       expires:
       - '-1'
       pragma:
@@ -2738,25 +2753,25 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:34.2818179"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
-        UserAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"d3d917a4-fd34-4fb7-b22a-c254b342b29a","clientId":"4ea435a2-d50f-44f1-b9ac-ebdfb9f11a46"}}}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:41.2187342"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned,
+        UserAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/containerapp-user2000005":{"principalId":"e9ffd347-9d0d-4cd0-9151-647ea67abf6a","clientId":"b8312aa3-b62a-46da-9062-2284a0f193f6"}}}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1647'
+      - '1629'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:46 GMT
+      - Tue, 10 May 2022 19:04:54 GMT
       expires:
       - '-1'
       pragma:
@@ -2779,18 +2794,18 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003",
       "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
-      "West Europe", "systemData": {"createdBy": "silasstrawn@microsoft.com", "createdByType":
-      "User", "createdAt": "2022-05-05T22:36:34.1860031", "lastModifiedBy": "silasstrawn@microsoft.com",
-      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T22:37:34.2818179"},
+      "West Europe", "systemData": {"createdBy": "calcha@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-10T19:03:39.69739", "lastModifiedBy": "calcha@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-10T19:04:41.2187342"},
       "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
-      "outboundIpAddresses": ["20.103.127.154", "20.103.127.162", "20.103.127.156"],
-      "latestRevisionName": "containerapp000003--fstrfl5", "latestRevisionFqdn": "",
-      "customDomainVerificationId": "333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7",
-      "configuration": {"activeRevisionsMode": "Single", "secrets": []}, "template":
-      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}],
-      "scale": {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned", "principalId":
-      "a36a7800-bf09-475a-8f4b-659e040501c5", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+      "outboundIpAddresses": ["20.126.179.29", "20.31.96.45", "20.31.96.255"], "latestRevisionName":
+      "containerapp000003--4owhc0y", "latestRevisionFqdn": "", "customDomainVerificationId":
+      "A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8", "configuration":
+      {"activeRevisionsMode": "Single", "secrets": []}, "template": {"containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale":
+      {"maxReplicas": 10}}}, "identity": {"type": "SystemAssigned", "principalId":
+      "58b2a14d-0e24-4423-969d-02ea40e76433", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
       "userAssignedIdentities": null}}'
     headers:
       Accept:
@@ -2802,32 +2817,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1437'
+      - '1419'
       Content-Type:
       - application/json
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:56.0144382Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/5e64e4ed-445c-4a2d-bfbf-a1395ef122a3?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/11faa7e9-dac3-44cb-aa5f-d9d82c11203d?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1333'
+      - '1315'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:52 GMT
+      - Tue, 10 May 2022 19:05:00 GMT
       expires:
       - '-1'
       pragma:
@@ -2840,8 +2855,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -2861,24 +2876,24 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:56.0144382"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1332'
+      - '1314'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:53 GMT
+      - Tue, 10 May 2022 19:05:02 GMT
       expires:
       - '-1'
       pragma:
@@ -2912,75 +2927,24 @@ interactions:
       ParameterSetName:
       - --user-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:56.0144382"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1332'
+      - '1313'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:37:58 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - containerapp identity remove
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --user-assigned -g -n
-      User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
-    headers:
-      api-supported-versions:
-      - 2022-01-01-preview, 2022-03-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '1331'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 05 May 2022 22:38:02 GMT
+      - Tue, 10 May 2022 19:05:07 GMT
       expires:
       - '-1'
       pragma:
@@ -3014,7 +2978,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -3048,7 +3012,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:02 GMT
+      - Tue, 10 May 2022 19:05:08 GMT
       expires:
       - '-1'
       pragma:
@@ -3076,24 +3040,24 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:56.0144382"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1331'
+      - '1313'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:04 GMT
+      - Tue, 10 May 2022 19:05:09 GMT
       expires:
       - '-1'
       pragma:
@@ -3127,7 +3091,7 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -3161,7 +3125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:05 GMT
+      - Tue, 10 May 2022 19:05:09 GMT
       expires:
       - '-1'
       pragma:
@@ -3189,24 +3153,24 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:37:48.2853676"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"a36a7800-bf09-475a-8f4b-659e040501c5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:04:56.0144382"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"SystemAssigned","principalId":"58b2a14d-0e24-4423-969d-02ea40e76433","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1331'
+      - '1313'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:06 GMT
+      - Tue, 10 May 2022 19:05:11 GMT
       expires:
       - '-1'
       pragma:
@@ -3229,18 +3193,18 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003",
       "name": "containerapp000003", "type": "Microsoft.App/containerApps", "location":
-      "West Europe", "systemData": {"createdBy": "silasstrawn@microsoft.com", "createdByType":
-      "User", "createdAt": "2022-05-05T22:36:34.1860031", "lastModifiedBy": "silasstrawn@microsoft.com",
-      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-05T22:37:48.2853676"},
+      "West Europe", "systemData": {"createdBy": "calcha@microsoft.com", "createdByType":
+      "User", "createdAt": "2022-05-10T19:03:39.69739", "lastModifiedBy": "calcha@microsoft.com",
+      "lastModifiedByType": "User", "lastModifiedAt": "2022-05-10T19:04:56.0144382"},
       "properties": {"provisioningState": "Succeeded", "managedEnvironmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002",
-      "outboundIpAddresses": ["20.103.127.154", "20.103.127.162", "20.103.127.156"],
-      "latestRevisionName": "containerapp000003--fstrfl5", "latestRevisionFqdn": "",
-      "customDomainVerificationId": "333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7",
-      "configuration": {"activeRevisionsMode": "Single", "secrets": []}, "template":
-      {"containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-      "name": "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}],
-      "scale": {"maxReplicas": 10}}}, "identity": {"type": "None", "principalId":
-      "a36a7800-bf09-475a-8f4b-659e040501c5", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
+      "outboundIpAddresses": ["20.126.179.29", "20.31.96.45", "20.31.96.255"], "latestRevisionName":
+      "containerapp000003--4owhc0y", "latestRevisionFqdn": "", "customDomainVerificationId":
+      "A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8", "configuration":
+      {"activeRevisionsMode": "Single", "secrets": []}, "template": {"containers":
+      [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest", "name":
+      "containerapp000003", "resources": {"cpu": 0.5, "memory": "1Gi"}}], "scale":
+      {"maxReplicas": 10}}}, "identity": {"type": "None", "principalId": "58b2a14d-0e24-4423-969d-02ea40e76433",
+      "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"}}'
     headers:
       Accept:
       - '*/*'
@@ -3251,32 +3215,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1395'
+      - '1377'
       Content-Type:
       - application/json
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:38:09.2239219Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:05:13.1905509Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/16bd189d-8b37-4595-baa7-d369173968f2?api-version=2022-03-01&azureAsyncOperation=true
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/westeurope/containerappOperationStatuses/acf78f2f-833e-46e6-9e76-61912b7a8c0a?api-version=2022-03-01&azureAsyncOperation=true
       cache-control:
       - no-cache
       content-length:
-      - '1220'
+      - '1202'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:14 GMT
+      - Tue, 10 May 2022 19:05:18 GMT
       expires:
       - '-1'
       pragma:
@@ -3289,8 +3253,8 @@ interactions:
       - nosniff
       x-ms-async-operation-timeout:
       - PT15M
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
       x-powered-by:
       - ASP.NET
     status:
@@ -3310,24 +3274,24 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:38:09.2239219"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:05:13.1905509"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1219'
+      - '1201'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:15 GMT
+      - Tue, 10 May 2022 19:05:19 GMT
       expires:
       - '-1'
       pragma:
@@ -3361,24 +3325,75 @@ interactions:
       ParameterSetName:
       - --system-assigned -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:38:09.2239219"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:05:13.1905509"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1218'
+      - '1201'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:19 GMT
+      - Tue, 10 May 2022 19:05:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned -g -n
+      User-Agent:
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:05:13.1905509"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1200'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 May 2022 19:05:27 GMT
       expires:
       - '-1'
       pragma:
@@ -3412,7 +3427,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.6 (macOS-10.16-x86_64-i386-64bit)
+      - AZURECLI/2.33.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.6.7 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
   response:
@@ -3446,7 +3461,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:19 GMT
+      - Tue, 10 May 2022 19:05:27 GMT
       expires:
       - '-1'
       pragma:
@@ -3474,24 +3489,24 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (macOS-10.16-x86_64-i386-64bit) AZURECLI/2.36.0
+      - python/3.6.7 (Windows-10-10.0.22000-SP0) AZURECLI/2.33.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003?api-version=2022-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000003","name":"containerapp000003","type":"Microsoft.App/containerApps","location":"West
-        Europe","systemData":{"createdBy":"silasstrawn@microsoft.com","createdByType":"User","createdAt":"2022-05-05T22:36:34.1860031","lastModifiedBy":"silasstrawn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-05T22:38:09.2239219"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.103.127.154","20.103.127.162","20.103.127.156"],"latestRevisionName":"containerapp000003--fstrfl5","latestRevisionFqdn":"","customDomainVerificationId":"333646C25EDA7C903C86F0F0D0193C412978B2E48FA0B4F1461D339FBBAE3EB7","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
+        Europe","systemData":{"createdBy":"calcha@microsoft.com","createdByType":"User","createdAt":"2022-05-10T19:03:39.69739","lastModifiedBy":"calcha@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-05-10T19:05:13.1905509"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/containerapp-env000002","outboundIpAddresses":["20.126.179.29","20.31.96.45","20.31.96.255"],"latestRevisionName":"containerapp000003--4owhc0y","latestRevisionFqdn":"","customDomainVerificationId":"A5B12E93C19D795D34DF79C449C2C3BAF58329ACBE54CAAF49EDCD93822ACCE8","configuration":{"activeRevisionsMode":"Single"},"template":{"containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"containerapp000003","resources":{"cpu":0.5,"memory":"1Gi"}}],"scale":{"maxReplicas":10}}},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1218'
+      - '1200'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 May 2022 22:38:21 GMT
+      - Tue, 10 May 2022 19:05:28 GMT
       expires:
       - '-1'
       pragma:
