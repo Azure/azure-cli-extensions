@@ -28,7 +28,8 @@ def create_grafana(cmd, resource_group_name, grafana_name,
                    location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
                    tags=None, zone_redundancy=None):
     from azure.cli.core.commands.arm import resolve_role_id
-    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+    client = cf_amg(cmd.cli_ctx)
     resource = {
         "sku": {
             "name": "standard"
@@ -37,13 +38,12 @@ def create_grafana(cmd, resource_group_name, grafana_name,
         "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
         "tags": tags
     }
-
     resource["properties"] = {
         "zoneRedundancy": zone_redundancy
     }
 
-    poller = client.resources.begin_create_or_update(resource_group_name, "Microsoft.Dashboard", "",
-                                                     "grafana", grafana_name, "2021-09-01-preview", resource)
+    poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
+    _ = LongRunningOperation(cmd.cli_ctx)(poller)
 
     if skip_role_assignments:
         return poller
