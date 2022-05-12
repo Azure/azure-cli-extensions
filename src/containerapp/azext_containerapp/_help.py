@@ -263,6 +263,32 @@ helps['containerapp revision copy'] = """
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
 """
 
+helps['containerapp revision label'] = """
+    type: group
+    short-summary: Manage revision labels assigned to traffic weights.
+"""
+
+helps['containerapp revision label add'] = """
+    type: command
+    short-summary: Set a revision label to a revision with an associated traffic weight.
+    examples:
+    - name: Add a label to the latest revision.
+      text: |
+          az containerapp revision label add -n MyContainerapp -g MyResourceGroup --label myLabel --revision latest
+    - name: Add a label to a previous revision.
+      text: |
+          az containerapp revision label add -g MyResourceGroup --label myLabel --revision revisionName
+"""
+
+helps['containerapp revision label remove'] = """
+    type: command
+    short-summary: Remove a revision label from a revision with an associated traffic weight.
+    examples:
+    - name: Remove a label.
+      text: |
+          az containerapp revision label remove -n MyContainerapp -g MyResourceGroup --label myLabel
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group
@@ -459,12 +485,18 @@ helps['containerapp ingress traffic set'] = """
     type: command
     short-summary: Configure traffic-splitting for a container app.
     examples:
-    - name: Route 100%% of a container app's traffic to its latest revision.
+    - name: Route 100% of a container app's traffic to its latest revision.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=100
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=100
     - name: Split a container app's traffic between two revisions.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=80 MyRevisionName=20
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 MyRevisionName=20
+    - name: Split a container app's traffic between two labels.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --label-weight myLabel=80 myLabel2=20
+    - name: Split a container app's traffic between a label and a revision.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 --label-weight myLabel=20
 """
 
 helps['containerapp ingress traffic show'] = """

@@ -830,42 +830,125 @@ def update_nested_dictionary(orig_dict, new_dict):
     return orig_dict
 
 
-def _is_valid_weight(weight):
+def _validate_weight(weight):
     try:
         n = int(weight)
         if 0 <= n <= 100:
             return True
-        return False
-    except ValueError:
-        return False
+        raise ValidationError('Traffic weights must be integers between 0 and 100')
+    except ValueError as ex:
+        raise ValidationError('Traffic weights must be integers between 0 and 100') from ex
 
 
-def _update_traffic_weights(containerapp_def, list_weights):
-    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
+def _update_revision_weights(containerapp_def, list_weights):
+    old_weight_sum = 0
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not list_weights:
+        return 0
 
     for new_weight in list_weights:
         key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        revision = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
         is_existing = False
 
-        if len(key_val) != 2:
-            raise ValidationError('Traffic weights must be in format \"<revision>=weight <revision2>=<weigh2> ...\"')
-
-        if not _is_valid_weight(key_val[1]):
-            raise ValidationError('Traffic weights must be integers between 0 and 100')
-
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+                if revision.lower() == "latest":
+                    old_weight_sum += existing_weight["weight"]
+                    existing_weight["weight"] = weight
+                    is_existing = True
+                    break
+            elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() == revision.lower():
+                old_weight_sum += existing_weight["weight"]
+                existing_weight["weight"] = weight
+                is_existing = True
+                break
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
-                "revisionName": key_val[0] if key_val[0].lower() != "latest" else None,
-                "weight": int(key_val[1]),
-                "latestRevision": key_val[0].lower() == "latest"
+                "revisionName": revision if revision.lower() != "latest" else None,
+                "weight": int(weight),
+                "latestRevision": revision.lower() == "latest"
             })
+    return old_weight_sum
+
+
+def _append_label_weights(containerapp_def, label_weights, revision_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not label_weights:
+        return
+
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]  # this is to check if we already have that revision weight passed
+    for new_weight in label_weights:
+        key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        label = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
+        is_existing = False
+
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "label" in existing_weight and existing_weight["label"].lower() == label.lower():
+                if "revisionName" in existing_weight and existing_weight["revisionName"] and existing_weight["revisionName"].lower() in revision_weight_names:
+                    logger.warning("Already passed value for revision {}, will not overwrite with {}.".format(existing_weight["revisionName"], new_weight))  # pylint: disable=logging-format-interpolation
+                    is_existing = True
+                    break
+                revision_weights.append("{}={}".format(existing_weight["revisionName"] if "revisionName" in existing_weight and existing_weight["revisionName"] else "latest", weight))
+                is_existing = True
+                break
+
+        if not is_existing:
+            raise ValidationError(f"No label {label} assigned to any traffic weight.")
+
+
+def _update_weights(containerapp_def, revision_weights, old_weight_sum):
+
+    new_weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights])
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]
+    divisor = sum([int(w["weight"]) for w in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]]) - new_weight_sum
+    round_up = True
+    # if there is no change to be made, don't even try (also can't divide by zero)
+    if divisor == 0:
+        return
+
+    scale_factor = (old_weight_sum - new_weight_sum) / divisor + 1
+
+    for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+        if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+            if "latest" not in revision_weight_names:
+                existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+        elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() not in revision_weight_names:
+            existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+
+
+# required because what if .5, .5? We need sum to be 100, so can't round up or down both times
+def _round(number, round_up):
+    import math
+    number = round(number, 2)  # required because we are dealing with floats
+    if round_up:
+        return math.ceil(number), not round_up
+    return math.floor(number), not round_up
+
+
+def _validate_traffic_sum(revision_weights):
+    weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights if len(w.split('=', 1)) == 2 and _validate_weight(w.split('=', 1)[1])])
+    if weight_sum > 100:
+        raise ValidationError("Traffic sums may not exceed 100.")
 
 
 def _get_app_from_revision(revision):
     if not revision:
         raise ValidationError('Invalid revision. Revision must not be empty')
-
+    if revision.lower() == "latest":
+        raise ValidationError('Please provide a name for your containerapp. Cannot lookup name of containerapp without a full revision name.')
     revision = revision.split('--')
     revision.pop()
     revision = "--".join(revision)

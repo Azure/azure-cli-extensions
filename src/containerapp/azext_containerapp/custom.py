@@ -50,11 +50,11 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
+                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_revision_weights, _append_label_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name)
+                     validate_container_app_name, _update_weights)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -1344,6 +1344,98 @@ def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
         handle_raw_exception(e)
 
 
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if not name:
+        name = _get_app_from_revision(revision)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to set labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
+
+    label_added = False
+    for weight in traffic_weight:
+        if "latestRevision" in weight:
+            if revision.lower() == "latest" and weight["latestRevision"]:
+                label_added = True
+                weight["label"] = label
+                break
+        else:
+            if revision.lower() == weight["revisionName"].lower():
+                label_added = True
+                weight["label"] = label
+                break
+
+    if not label_added:
+        raise ValidationError("Please specify a revision name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to set labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
+
+    label_removed = False
+    for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            label_removed = True
+            weight["label"] = None
+            break
+    if not label_removed:
+        raise ValidationError("Please specify a label name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
 def show_ingress(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
@@ -1427,8 +1519,10 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait=False):
+def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revision_weights=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
+    if not label_weights and not revision_weights:
+        raise ValidationError("Must specify either --label-weight or --revision-weight.")
 
     containerapp_def = None
     try:
@@ -1437,22 +1531,38 @@ def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait
         pass
 
     if not containerapp_def:
-        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
     try:
         containerapp_def["properties"]["configuration"]["ingress"]
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
     except Exception as e:
         raise ValidationError("Ingress must be enabled to set ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
 
-    if traffic_weights is not None:
-        _update_traffic_weights(containerapp_def, traffic_weights)
+    if not revision_weights:
+        revision_weights = []
 
-    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+    # convert label weights to appropriate revision name
+    _append_label_weights(containerapp_def, label_weights, revision_weights)
+
+    # validate sum is less than 100
+    _validate_traffic_sum(revision_weights)
+
+    # update revision weights to containerapp, get the old weight sum
+    old_weight_sum = _update_revision_weights(containerapp_def, revision_weights)
+
+    _update_weights(containerapp_def, revision_weights, old_weight_sum)
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
 
     try:
-        r = ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        return r["properties"]["configuration"]["ingress"]["traffic"]
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)
 
