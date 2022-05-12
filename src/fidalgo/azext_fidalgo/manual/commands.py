@@ -210,6 +210,7 @@ def load_command_table(self, _):
     #data plane 
     with self.command_group('fidalgo dev project', fidalgo_project_dp, client_factory=cf_project_dp) as g:
         g.custom_command('list', 'fidalgo_project_list_dp')
+        g.custom_command('show', 'fidalgo_project_show_dp')
 
     with self.command_group('fidalgo dev pool', fidalgo_pool_dp, client_factory=cf_pool_dp) as g:
         g.custom_command('list', 'fidalgo_pool_list_dp')
@@ -218,11 +219,11 @@ def load_command_table(self, _):
     with self.command_group('fidalgo dev virtual-machine', fidalgo_virtual_machine, client_factory=cf_virtual_machine_dp) as g:
         g.custom_command('list', 'fidalgo_virtual_machine_list')
         g.custom_show_command('show', 'fidalgo_virtual_machine_show')
-        g.custom_command('create', 'fidalgo_virtual_machine_create')
-        g.custom_command('delete', 'fidalgo_virtual_machine_delete', confirmation=True)
+        g.custom_command('create', 'fidalgo_virtual_machine_create', supports_no_wait=True)
+        g.custom_command('delete', 'fidalgo_virtual_machine_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('get-remote-connection', 'fidalgo_virtual_machine_get_remote_connection')
-        g.custom_command('start', 'fidalgo_virtual_machine_start')
-        g.custom_command('stop', 'fidalgo_virtual_machine_stop')
+        g.custom_command('start', 'fidalgo_virtual_machine_start', supports_no_wait=True)
+        g.custom_command('stop', 'fidalgo_virtual_machine_stop', supports_no_wait=True)
 
     # with self.command_group('fidalgo dev catalog-item', fidalgo_catalog_item_dp, client_factory=cf_catalog_item_dp) as g:
     #     g.custom_command('list', 'fidalgo_catalog_item_list_dp')

@@ -1,4 +1,3 @@
-# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,348 +6,47 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
-
-from msrest import Serializer
+import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.pipeline.transport import HttpResponse
-from azure.core.rest import HttpRequest
-from azure.core.tracing.decorator import distributed_trace
+from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.core.polling.base_polling import LROBasePolling
 
-from .. import models as _models
-from .._vendor import _convert_request, _format_url_section
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-_SERIALIZER = Serializer()
-# fmt: off
-
-def build_list_request(
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-    filter = kwargs.pop('filter', None)  # type: Optional[str]
-    top = kwargs.pop('top', None)  # type: Optional[int]
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/virtualmachines")
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if filter is not None:
-        _query_parameters['$filter'] = _SERIALIZER.query("filter", filter, 'str')
-    if top is not None:
-        _query_parameters['$top'] = _SERIALIZER.query("top", top, 'int')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_list_by_project_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-    filter = kwargs.pop('filter', None)  # type: Optional[str]
-    top = kwargs.pop('top', None)  # type: Optional[int]
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-    if filter is not None:
-        _query_parameters['$filter'] = _SERIALIZER.query("filter", filter, 'str')
-    if top is not None:
-        _query_parameters['$top'] = _SERIALIZER.query("top", top, 'int')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_get_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_create_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if content_type is not None:
-        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="PUT",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_delete_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="DELETE",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_start_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/start")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_stop_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/stop")
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-
-def build_get_remote_connection_request(
-    project_name,  # type: str
-    user_id,  # type: str
-    virtual_machine_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/getRemoteConnection")  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "projectName": _SERIALIZER.url("project_name", project_name, 'str'),
-        "userId": _SERIALIZER.url("user_id", user_id, 'str'),
-        "virtualMachineName": _SERIALIZER.url("virtual_machine_name", virtual_machine_name, 'str'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
-# fmt: on
 class VirtualMachineOperations(object):
+    """VirtualMachineOperations operations.
+
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
+
+    :ivar models: Alias to model classes used in this operation group.
+    :type models: ~fidalgo.models
+    :param client: Client for service requests.
+    :param config: Configuration of service client.
+    :param serializer: An object model serializer.
+    :param deserializer: An object model deserializer.
     """
-    .. warning::
-        **DO NOT** instantiate this class directly.
 
-        Instead, you should access the following operations through
-        :class:`~azure.fidalgo.FidalgoDataplaneClient`'s
-        :attr:`virtual_machine` attribute.
-    """
+    models = models
 
-    models = _models
+    def __init__(self, client, config, serializer, deserializer):
+        self._client = client
+        self._serialize = serializer
+        self._deserialize = deserializer
+        self._config = config
 
-    def __init__(self, *args, **kwargs):
-        args = list(args)
-        self._client = args.pop(0) if args else kwargs.pop("client")
-        self._config = args.pop(0) if args else kwargs.pop("config")
-        self._serialize = args.pop(0) if args else kwargs.pop("serializer")
-        self._deserialize = args.pop(0) if args else kwargs.pop("deserializer")
-
-
-    @distributed_trace
     def list(
         self,
         dev_center,  # type: str
@@ -357,72 +55,65 @@ class VirtualMachineOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.VirtualMachineListResult"]
+        # type: (...) -> Iterable["models.VirtualMachineListResult"]
         """Lists Virtual Machines that the caller has access to in the DevCenter.
 
         :param dev_center: The DevCenter to operate on.
         :type dev_center: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation. Default value is None.
+        :param filter: An OData $filter clause to apply to the operation.
         :type filter: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
-         Default value is None.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either VirtualMachineListResult or the result of
-         cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.VirtualMachineListResult]
+        :return: An iterator like instance of either VirtualMachineListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~fidalgo.models.VirtualMachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
+
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
-                
-                request = build_list_request(
-                    api_version=api_version,
-                    filter=filter,
-                    top=top,
-                    template_url=self.list.metadata['url'],
-                )
-                request = _convert_request(request)
+                # Construct URL
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+                    'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
                 }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                
-                request = build_list_request(
-                    api_version=api_version,
-                    filter=filter,
-                    top=top,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+                    'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
                 }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
-
-                path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-                }
-                request.method = "GET"
+                url = self._client.format_url(url, **path_format_arguments)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("VirtualMachineListResult", pipeline_response)
+            deserialized = self._deserialize('VirtualMachineListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -431,27 +122,20 @@ class VirtualMachineOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
-
 
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': "/virtualmachines"}  # type: ignore
+    list.metadata = {'url': '/virtualmachines'}  # type: ignore
 
-    @distributed_trace
     def list_by_project(
         self,
         dev_center,  # type: str
@@ -462,7 +146,7 @@ class VirtualMachineOperations(object):
         top=None,  # type: Optional[int]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.VirtualMachineListResult"]
+        # type: (...) -> Iterable["models.VirtualMachineListResult"]
         """Lists Virtual Machines in the project for a particular user.
 
         :param dev_center: The DevCenter to operate on.
@@ -472,71 +156,64 @@ class VirtualMachineOperations(object):
         :param user_id: The id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
-        :param filter: An OData $filter clause to apply to the operation. Default value is None.
+        :param filter: An OData $filter clause to apply to the operation.
         :type filter: str
         :param top: The maximum number of resources to return from the operation. Example: '$top=10'.
-         Default value is None.
         :type top: int
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either VirtualMachineListResult or the result of
-         cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.fidalgo.models.VirtualMachineListResult]
+        :return: An iterator like instance of either VirtualMachineListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~fidalgo.models.VirtualMachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
+
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
-                
-                request = build_list_by_project_request(
-                    project_name=project_name,
-                    user_id=user_id,
-                    api_version=api_version,
-                    filter=filter,
-                    top=top,
-                    template_url=self.list_by_project.metadata['url'],
-                )
-                request = _convert_request(request)
+                # Construct URL
+                url = self.list_by_project.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+                    'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'userId': self._serialize.url("user_id", user_id, 'str'),
                 }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                if filter is not None:
+                    query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
+                if top is not None:
+                    query_parameters['$top'] = self._serialize.query("top", top, 'int')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
-                
-                request = build_list_by_project_request(
-                    project_name=project_name,
-                    user_id=user_id,
-                    api_version=api_version,
-                    filter=filter,
-                    top=top,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
                 path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+                    'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("project_name", project_name, 'str'),
+                    'userId': self._serialize.url("user_id", user_id, 'str'),
                 }
-                request.url = self._client.format_url(request.url, **path_format_arguments)
-
-                path_format_arguments = {
-                    "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-                    "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-                }
-                request.method = "GET"
+                url = self._client.format_url(url, **path_format_arguments)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("VirtualMachineListResult", pipeline_response)
+            deserialized = self._deserialize('VirtualMachineListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -545,27 +222,20 @@ class VirtualMachineOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
             return pipeline_response
-
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_project.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines"}  # type: ignore
+    list_by_project.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines'}  # type: ignore
 
-    @distributed_trace
     def get(
         self,
         dev_center,  # type: str
@@ -575,7 +245,7 @@ class VirtualMachineOperations(object):
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.VirtualMachine"
+        # type: (...) -> "models.VirtualMachine"
         """Gets a virtual machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -587,48 +257,47 @@ class VirtualMachineOperations(object):
         :type user_id: str
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.VirtualMachine
+        :rtype: ~fidalgo.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
 
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        
-        request = build_get_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            template_url=self.get.metadata['url'],
-        )
-        request = _convert_request(request)
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
+        url = self._client.format_url(url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
@@ -636,22 +305,78 @@ class VirtualMachineOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
+    get.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}'}  # type: ignore
 
-    get.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}"}  # type: ignore
-
-
-    @distributed_trace
-    def create(
+    def _create_initial(
         self,
         dev_center,  # type: str
         project_name,  # type: str
         user_id,  # type: str
         virtual_machine_name,  # type: str
-        body,  # type: "_models.VirtualMachine"
+        body,  # type: "models.VirtualMachine"
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.VirtualMachine"
+        # type: (...) -> "models.VirtualMachine"
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._create_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(body, 'VirtualMachine')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('VirtualMachine', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    _create_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}'}  # type: ignore
+
+    def begin_create(
+        self,
+        dev_center,  # type: str
+        project_name,  # type: str
+        user_id,  # type: str
+        virtual_machine_name,  # type: str
+        body,  # type: "models.VirtualMachine"
+        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["models.VirtualMachine"]
         """Creates or updates a virtual machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -664,66 +389,71 @@ class VirtualMachineOperations(object):
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
         :param body: Represents a environment.
-        :type body: ~azure.fidalgo.models.VirtualMachine
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :type body: ~fidalgo.models.VirtualMachine
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.VirtualMachine
-        :raises: ~azure.core.exceptions.HttpResponseError
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for LROBasePolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~fidalgo.models.VirtualMachine]
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-
-        _json = self._serialize.body(body, 'VirtualMachine')
-
-        request = build_create_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            template_url=self.create.metadata['url'],
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
-        request = _convert_request(request)
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_initial(
+                dev_center=dev_center,
+                project_name=project_name,
+                user_id=user_id,
+                virtual_machine_name=virtual_machine_name,
+                body=body,
+                fidalgo_dns_suffix=fidalgo_dns_suffix,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('VirtualMachine', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
         path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}'}  # type: ignore
 
-        if response.status_code not in [201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
-
-        deserialized = self._deserialize('VirtualMachine', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    create.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}"}  # type: ignore
-
-
-    @distributed_trace
-    def delete(
+    def _delete_initial(
         self,
         dev_center,  # type: str
         project_name,  # type: str
@@ -732,7 +462,62 @@ class VirtualMachineOperations(object):
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Optional["_models.VirtualMachine"]
+        # type: (...) -> Optional["models.VirtualMachine"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.VirtualMachine"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._delete_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.delete(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = None
+        if response.status_code == 202:
+            deserialized = self._deserialize('VirtualMachine', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    _delete_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}'}  # type: ignore
+
+    def begin_delete(
+        self,
+        dev_center,  # type: str
+        project_name,  # type: str
+        user_id,  # type: str
+        virtual_machine_name,  # type: str
+        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["models.VirtualMachine"]
         """Deletes a virtual machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -744,63 +529,69 @@ class VirtualMachineOperations(object):
         :type user_id: str
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.VirtualMachine or None
-        :raises: ~azure.core.exceptions.HttpResponseError
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for LROBasePolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~fidalgo.models.VirtualMachine]
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.VirtualMachine"]]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        
-        request = build_delete_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            template_url=self.delete.metadata['url'],
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
-        request = _convert_request(request)
-        path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
-        }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                dev_center=dev_center,
+                project_name=project_name,
+                user_id=user_id,
+                virtual_machine_name=virtual_machine_name,
+                fidalgo_dns_suffix=fidalgo_dns_suffix,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
 
-        if response.status_code not in [202, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
-
-        deserialized = None
-        if response.status_code == 202:
+        def get_long_running_output(pipeline_response):
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
-        if cls:
-            return cls(pipeline_response, deserialized, {})
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
 
-        return deserialized
+        path_format_arguments = {
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
+        }
 
-    delete.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}"}  # type: ignore
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_delete.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}'}  # type: ignore
 
-
-    @distributed_trace
-    def start(  # pylint: disable=inconsistent-return-statements
+    def _start_initial(
         self,
         dev_center,  # type: str
         project_name,  # type: str
@@ -810,6 +601,56 @@ class VirtualMachineOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._start_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        if cls:
+            return cls(pipeline_response, None, {})
+
+    _start_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/start'}  # type: ignore
+
+    def begin_start(
+        self,
+        dev_center,  # type: str
+        project_name,  # type: str
+        user_id,  # type: str
+        virtual_machine_name,  # type: str
+        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller[None]
         """Starts a Virtual Machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -821,57 +662,66 @@ class VirtualMachineOperations(object):
         :type user_id: str
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
-        :raises: ~azure.core.exceptions.HttpResponseError
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for LROBasePolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        
-        request = build_start_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            template_url=self.start.metadata['url'],
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
-        request = _convert_request(request)
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._start_initial(
+                dev_center=dev_center,
+                project_name=project_name,
+                user_id=user_id,
+                virtual_machine_name=virtual_machine_name,
+                fidalgo_dns_suffix=fidalgo_dns_suffix,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
         path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_start.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/start'}  # type: ignore
 
-        if response.status_code not in [202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
-
-        if cls:
-            return cls(pipeline_response, None, {})
-
-    start.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/start"}  # type: ignore
-
-
-    @distributed_trace
-    def stop(  # pylint: disable=inconsistent-return-statements
+    def _stop_initial(
         self,
         dev_center,  # type: str
         project_name,  # type: str
@@ -881,6 +731,56 @@ class VirtualMachineOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._stop_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        if cls:
+            return cls(pipeline_response, None, {})
+
+    _stop_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/stop'}  # type: ignore
+
+    def begin_stop(
+        self,
+        dev_center,  # type: str
+        project_name,  # type: str
+        user_id,  # type: str
+        virtual_machine_name,  # type: str
+        fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller[None]
         """Stops a Virtual Machine.
 
         :param dev_center: The DevCenter to operate on.
@@ -892,56 +792,65 @@ class VirtualMachineOperations(object):
         :type user_id: str
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
-        :raises: ~azure.core.exceptions.HttpResponseError
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for LROBasePolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
         """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        
-        request = build_stop_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            template_url=self.stop.metadata['url'],
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
         )
-        request = _convert_request(request)
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._stop_initial(
+                dev_center=dev_center,
+                project_name=project_name,
+                user_id=user_id,
+                virtual_machine_name=virtual_machine_name,
+                fidalgo_dns_suffix=fidalgo_dns_suffix,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            if cls:
+                return cls(pipeline_response, None, {})
+
         path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
+        if polling is True: polling_method = LROBasePolling(lro_delay, lro_options={'final-state-via': 'original-uri'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_stop.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/stop'}  # type: ignore
 
-        if response.status_code not in [202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
-
-        if cls:
-            return cls(pipeline_response, None, {})
-
-    stop.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/stop"}  # type: ignore
-
-
-    @distributed_trace
     def get_remote_connection(
         self,
         dev_center,  # type: str
@@ -951,7 +860,7 @@ class VirtualMachineOperations(object):
         fidalgo_dns_suffix="devcenters.fidalgo.azure.com",  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.RemoteConnection"
+        # type: (...) -> "models.RemoteConnection"
         """Gets RDP Connection info.
 
         :param dev_center: The DevCenter to operate on.
@@ -963,48 +872,47 @@ class VirtualMachineOperations(object):
         :type user_id: str
         :param virtual_machine_name: The name of a virtual machine.
         :type virtual_machine_name: str
-        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests. Default
-         value is "devcenters.fidalgo.azure.com".
+        :param fidalgo_dns_suffix: The DNS suffix used as the base for all fidalgo requests.
         :type fidalgo_dns_suffix: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: RemoteConnection, or the result of cls(response)
-        :rtype: ~azure.fidalgo.models.RemoteConnection
+        :rtype: ~fidalgo.models.RemoteConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteConnection"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteConnection"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-09-01-privatepreview"
+        accept = "application/json"
 
-        api_version = kwargs.pop('api_version', "2021-09-01-privatepreview")  # type: str
-
-        
-        request = build_get_remote_connection_request(
-            project_name=project_name,
-            user_id=user_id,
-            virtual_machine_name=virtual_machine_name,
-            api_version=api_version,
-            template_url=self.get_remote_connection.metadata['url'],
-        )
-        request = _convert_request(request)
+        # Construct URL
+        url = self.get_remote_connection.metadata['url']  # type: ignore
         path_format_arguments = {
-            "devCenter": self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
-            "fidalgoDnsSuffix": self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'devCenter': self._serialize.url("dev_center", dev_center, 'str', skip_quote=True),
+            'fidalgoDnsSuffix': self._serialize.url("fidalgo_dns_suffix", fidalgo_dns_suffix, 'str', skip_quote=True),
+            'projectName': self._serialize.url("project_name", project_name, 'str'),
+            'userId': self._serialize.url("user_id", user_id, 'str'),
+            'virtualMachineName': self._serialize.url("virtual_machine_name", virtual_machine_name, 'str'),
         }
-        request.url = self._client.format_url(request.url, **path_format_arguments)
+        url = self._client.format_url(url, **path_format_arguments)
 
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.CloudError, pipeline_response)
-            raise HttpResponseError(response=response, model=error)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('RemoteConnection', pipeline_response)
 
@@ -1012,6 +920,4 @@ class VirtualMachineOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-
-    get_remote_connection.metadata = {'url': "/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/getRemoteConnection"}  # type: ignore
-
+    get_remote_connection.metadata = {'url': '/projects/{projectName}/users/{userId}/virtualmachines/{virtualMachineName}/getRemoteConnection'}  # type: ignore
