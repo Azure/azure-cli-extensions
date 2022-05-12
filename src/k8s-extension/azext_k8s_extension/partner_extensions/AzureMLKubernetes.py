@@ -83,7 +83,7 @@ class AzureMLKubernetes(DefaultExtension):
 
         self.inferenceRouterServiceType = 'inferenceRouterServiceType'
         self.internalLoadBalancerProvider = 'internalLoadBalancerProvider'
-        self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
+        self.inferenceRouterHA = 'inferenceRouterHA'
 
         # constants for existing AKS to AMLARC migration
         self.IS_AKS_MIGRATION = 'isAKSMigration'
@@ -322,14 +322,13 @@ class AzureMLKubernetes(DefaultExtension):
 
     def __normalize_config(self, configuration_settings, configuration_protected_settings):
         # inference
-        isTestCluster = _get_value_from_config_protected_config(
-            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
-        if isTestCluster is not None:
-            isTestCluster = str(isTestCluster).lower() == 'false'
-            if isTestCluster:
-                configuration_settings['clusterPurpose'] = 'DevTest'
-            else:
-                configuration_settings['clusterPurpose'] = 'FastProd'
+        inferenceRouterHA = _get_value_from_config_protected_config(
+            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
+        isTestCluster = True if inferenceRouterHA is not None and str(inferenceRouterHA).lower() == 'false' else False
+        if isTestCluster:
+            configuration_settings['clusterPurpose'] = 'DevTest'
+        else:
+            configuration_settings['clusterPurpose'] = 'FastProd'
 
         inferenceRouterServiceType = _get_value_from_config_protected_config(
             self.inferenceRouterServiceType, configuration_settings, configuration_protected_settings)
@@ -386,9 +385,9 @@ class AzureMLKubernetes(DefaultExtension):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings, release_namespace):
-        isTestCluster = _get_value_from_config_protected_config(
-            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
-        isTestCluster = str(isTestCluster).lower() == 'false'
+        inferenceRouterHA = _get_value_from_config_protected_config(
+            self.inferenceRouterHA, configuration_settings, configuration_protected_settings)
+        isTestCluster = True if inferenceRouterHA is not None and str(inferenceRouterHA).lower() == 'false' else False
         if isTestCluster:
             configuration_settings['clusterPurpose'] = 'DevTest'
         else:
