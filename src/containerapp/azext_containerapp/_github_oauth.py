@@ -5,6 +5,7 @@
 # pylint: disable=consider-using-f-string
 
 import os
+import sys
 from datetime import datetime
 
 from knack.log import get_logger
@@ -33,7 +34,9 @@ GITHUB_OAUTH_SCOPES = [
 
 def _get_github_token_secret_store(cmd):
     location = os.path.join(cmd.cli_ctx.config.config_dir, "github_token_cache")
-    file_persistence = build_persistence(location, encrypt=True)
+    # TODO use core CLI util to take care of this once it's merged and released
+    encrypt = sys.platform.startswith('win32')  # encryption not supported on non-windows platforms
+    file_persistence = build_persistence(location, encrypt)
     return SecretStore(file_persistence)
 
 
