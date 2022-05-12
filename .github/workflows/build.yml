@@ -109,6 +109,10 @@ jobs:
     needs: build
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/containerapp-preview' }}
     runs-on: ubuntu-latest
+    env:
+      RESOURCE_GROUP: containerapp-preview-ci
+      ENVIRONMENT_NAME: containerapppreviewci
+      TAG: main
     steps:
       - name: Checkout examples repo
         uses: actions/checkout@v3
@@ -122,32 +126,43 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - run: |
+      - name: Add extension
+        run: |
           az extension add --source ./*.whl --yes
-      - run: |
+      - name: Extension Help
+        run: |
           az containerapp compose --help
           az containerapp compose create --help
-      - run: |
+      - name: Create resource group
+        run: |
+          az group create --name $RESOURCE_GROUP --location eastus
+
+      - name: Simple Example
+        run: |
           cd examples/simple
 
-          compose_hash=$(md5sum docker-compose.yml)
-          resource_group_name="simple-${compose_hash:27:4}"
-          environment_name="simple-${compose_hash:0:4}"
+          URL=$(az containerapp compose create \
+            --environment $ENVIRONMENT_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --query '[].properties.configuration.ingress.fqdn' \
+            --only-show-errors \
+            -o tsv)
 
-          az group create --name $resource_group_name --location eastus
-          az containerapp compose create --environment $environment_name  --resource-group $resource_group_name 
-          URL=$(az containerapp show --resource-group $resource_group_name --name helloworld --query 'configuration.ingress.fqdn' -o tsv)
           curl https://$URL
-          az group delete --name $resource_group_name --yes
-      - run: |
+
+      - name: GRPC Example
+        run: |
           cd examples/grpc
 
-          compose_hash=$(md5sum docker-compose.yml)
-          resource_group_name="grpc-${compose_hash:27:4}"
-          environment_name="grpc-${compose_hash:0:4}"
-
-          az group create --name $resource_group_name --location eastus
-          az containerapp compose create --environment $environment_name  --resource-group $resource_group_name 
-          URL=$(az containerapp show --resource-group $resource_group_name --name frontend --query 'configuration.ingress.fqdn' -o tsv)
+          URL=$(az containerapp compose create \
+          --environment $ENVIRONMENT_NAME \
+          --resource-group $RESOURCE_GROUP \
+          --transport backend=http2 \
+          --query '[?name==`frontend`].properties.configuration.ingress.fqdn' \
+          --only-show-errors \
+          -o tsv)
           curl https://$URL/hello
-          az group delete --name $resource_group_name --yes
+
+      - name: Cleanup Resource Group
+        run: |
+          az group delete --name $RESOURCE_GROUP --yes
