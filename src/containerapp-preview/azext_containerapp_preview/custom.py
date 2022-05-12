@@ -67,6 +67,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             resolve_cpu_configuration_from_service(service),
             resolve_memory_configuration_from_service(service)
         )
+        replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)
         secret_vars, secret_env_ref = resolve_secret_from_service(service, parsed_compose_file.secrets)
         if environment is not None and secret_env_ref is not None:
@@ -93,6 +94,8 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 memory=memory,
                                 env_vars=environment,
                                 secrets=secret_vars,
+                                min_replicas=replicas,
+                                max_replicas=replicas,
                                 ))
 
     return containerapps_from_compose
@@ -174,6 +177,20 @@ def resolve_secret_from_service(service, secrets_map):
     logger.warning("Note: Secrets will be mapped as secure environment variables in Azure Container Apps.")
 
     return (secret_array, secret_env_ref)
+
+
+def resolve_replicas_from_service(service):
+    replicas = None
+
+    if service.scale:
+        replicas = service.scale
+    if service_deploy_exists(service):
+        if service.deploy.replicas is not None:
+            replicas = service.deploy.replicas
+        if service.deploy.mode == "global":
+            replicas = 1
+
+    return replicas
 
 
 def valid_resource_settings():
