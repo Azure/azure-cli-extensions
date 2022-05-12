@@ -14,7 +14,7 @@ Pending
 
 0.5.68
 ++++++
-* * Add option `Windows2019`, `Windows2022` to `--os-sku` for `az aks nodepool add`.
+* Add option `Windows2019`, `Windows2022` to `--os-sku` for `az aks nodepool add`.
 
 0.5.67
 +++++++++++++++++++++
