@@ -313,16 +313,19 @@ class ContainerappDaprTests(ScenarioTest):
         ])
 
 
-@live_only()
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_storage(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         storage_name = self.create_random_name(prefix='storage', length=24)
         shares_name = self.create_random_name(prefix='share', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
 
-        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, env_name))
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {}'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
