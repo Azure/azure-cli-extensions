@@ -7,6 +7,7 @@ on:
       - containerapp-preview
     paths:
       - src/containerapp-preview/**
+      - .github/workflows/build.yml
   pull_request:
     branches:
       - containerapp-preview
@@ -14,7 +15,7 @@ on:
       - src/containerapp-preview/**
 
 jobs:
-  test_and_build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -58,11 +59,11 @@ jobs:
           source env/bin/activate
           azdev style containerapp-preview
 
-      - name: Lint
-        if: success() || failure()
-        run: |
-          source env/bin/activate
-          azdev linter containerapp-preview
+      # - name: Lint
+      #   if: success() || failure()
+      #   run: |
+      #     source env/bin/activate
+      #     azdev linter containerapp-preview
 
       - name: Functional Tests
         if: success() || failure()
@@ -70,7 +71,83 @@ jobs:
           source env/bin/activate
           azdev test containerapp-preview
 
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/containerapp-preview' }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Create Virtual Environment
+        run: |
+          python -m venv env
+
+      - name: Install requirements
+        run: |
+          source env/bin/activate
+          pip install -U pip
+          pip install -U azdev
+
       - name: Run package creation
         run: |
           source env/bin/activate
+          azdev setup --repo '.'
           azdev extension build containerapp-preview
+
+      - name: Upload extension
+        uses: actions/upload-artifact@v3
+        with:
+          name: containerapp-preview-extension
+          path: dist/containerapp_preview-?.?.?-py2.py3-none-any.whl
+
+  integration_tests:
+    needs: build
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/containerapp-preview' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout examples repo
+        uses: actions/checkout@v3
+        with:
+          repository: smurawski/docker-compose-examples
+          path: examples
+      - uses: actions/download-artifact@v3
+        with:
+          name: containerapp-preview-extension
+          path: .
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - run: |
+          az extension add --source ./*.whl --yes
+      - run: |
+          az containerapp compose --help
+          az containerapp compose create --help
+      - run: |
+          cd examples/simple
+
+          compose_hash=$(md5sum docker-compose.yml)
+          resource_group_name="simple-${compose_hash:27:4}"
+          environment_name="simple-${compose_hash:0:4}"
+
+          az group create --name $resource_group_name --location eastus
+          az containerapp compose create --environment $environment_name  --resource-group $resource_group_name 
+          URL=$(az containerapp show --resource-group $resource_group_name --name helloworld --query 'configuration.ingress.fqdn' -o tsv)
+          curl https://$URL
+          az group delete --name $resource_group_name --yes
+      - run: |
+          cd examples/grpc
+
+          compose_hash=$(md5sum docker-compose.yml)
+          resource_group_name="grpc-${compose_hash:27:4}"
+          environment_name="grpc-${compose_hash:0:4}"
+
+          az group create --name $resource_group_name --location eastus
+          az containerapp compose create --environment $environment_name  --resource-group $resource_group_name 
+          URL=$(az containerapp show --resource-group $resource_group_name --name frontend --query 'configuration.ingress.fqdn' -o tsv)
+          curl https://$URL/hello
+          az group delete --name $resource_group_name --yes
