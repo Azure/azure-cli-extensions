@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=logging-fstring-interpolation
 
 import os
 import sys
@@ -50,8 +51,6 @@ SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 class WebSocketConnection:
     def __init__(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
-        from websocket._exceptions import WebSocketBadStatusException
-
         token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
         self._token = token_response["properties"]["token"]
         self._logstream_endpoint = token_response["properties"]["logStreamEndpoint"]

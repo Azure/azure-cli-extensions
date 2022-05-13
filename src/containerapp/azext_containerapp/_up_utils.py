@@ -57,6 +57,8 @@ from .custom import (
     create_or_update_github_action,
 )
 
+from ._github_oauth import load_github_token_from_cache, get_github_access_token
+
 logger = get_logger(__name__)
 
 
@@ -404,6 +406,8 @@ def _get_dockerfile_content_from_repo(
     repo = repo_url_to_name(repo_url)
     try:
         r = g.get_repo(repo)
+        if not branch:
+            branch = r.default_branch
     except Exception as e:
         raise ValidationError(f"Could not find repo {repo_url}") from e
     try:
@@ -805,7 +809,7 @@ def validate_environment_location(cmd, location):
     from ._constants import MAX_ENV_PER_LOCATION
     env_list = list_managed_environments(cmd)
 
-    locations = [l["location"] for l in env_list]
+    locations = [loc["location"] for loc in env_list]
     locations = list(set(locations))  # remove duplicates
 
     location_count = {}
@@ -818,15 +822,15 @@ def validate_environment_location(cmd, location):
             disallowed_locations.append(value)
 
     res_locations = list_environment_locations(cmd)
-    res_locations = [l for l in res_locations if l not in disallowed_locations]
+    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
             _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
-        except Exception:  # pylint: disable=broad-except
-            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs))
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
 
     if len(res_locations) > 0:
         if not location:
@@ -860,8 +864,19 @@ def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
         env_def = None
         try:
             env_def = ManagedEnvironmentClient.show(cmd, resource_group_name, parse_resource_id(managed_env)["name"])
-        except:
+        except:  # pylint: disable=bare-except
             pass
         if env_def:
             if location != env_def["location"]:
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
+
+
+def get_token(cmd, repo, token):
+    if not repo:
+        return None
+    if token:
+        return token
+    token = load_github_token_from_cache(cmd, repo)
+    if not token:
+        token = get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
+    return token

@@ -135,7 +135,7 @@ def load_arguments(self, _):
         c.argument('docker_bridge_cidr', options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
-        c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId and appSubnetResourceId if enabling this property')
+        c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -147,6 +147,14 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env show') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
 
+    with self.argument_context('containerapp env storage') as c:
+        c.argument('name', id_part=None)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"], help="Name of the AzureFile storage account.")
+
     with self.argument_context('containerapp identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
@@ -157,7 +165,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp github-action add') as c:
         c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Defaults to "main" if not specified.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
         c.argument('registry_url', help='The container registry server, e.g. myregistry.azurecr.io')
         c.argument('registry_username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
@@ -179,6 +187,11 @@ def load_arguments(self, _):
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
 
+    with self.argument_context('containerapp revision label') as c:
+        c.argument('name', id_part=None)
+        c.argument('revision', help='Name of the revision.')
+        c.argument('label', help='Name of the label.')
+
     with self.argument_context('containerapp ingress') as c:
         c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
@@ -186,7 +199,8 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
 
     with self.argument_context('containerapp ingress traffic') as c:
-        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
 
     with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format (where 'key' cannot be longer than 20 characters).")
@@ -235,8 +249,8 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
-        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If missing (and using --repo), a browser page will be opened to authenticate with Github.')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Defaults to "main"')
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
         c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
