@@ -199,7 +199,7 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
 
     with self.argument_context('containerapp ingress traffic') as c:
-        c.argument('revision_weights', nargs='+', options_list=['--revision-weight', '--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
 
     with self.argument_context('containerapp secret') as c:
