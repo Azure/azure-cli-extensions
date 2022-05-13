@@ -13,9 +13,10 @@ from knack.prompting import prompt
 from knack.prompting import prompt_choice_list
 from pycomposefile import ComposeFile
 
-from .vendored_sdks.azext_containerapp.custom import (
-    create_containerapp, create_managed_environment)
-from .vendored_sdks.azext_containerapp._clients import ManagedEnvironmentClient
+from ._monkey_patch import (
+    create_containerapp_from_service,
+    create_containerapps_compose_environment)
+from ._monkey_patch import ManagedEnvironmentClient
 
 
 logger = get_logger(__name__)
@@ -40,11 +41,11 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                                             resource_group_name=resource_group_name,
                                                             name=managed_env)
     except:  # pylint: disable=W0702
-        managed_environment = create_managed_environment(cmd,
-                                                         managed_env,
-                                                         resource_group_name,
-                                                         logs_workspace_name=logs_workspace_name,
-                                                         tags=tags)
+        managed_environment = create_containerapps_compose_environment(cmd,
+                                                                       managed_env,
+                                                                       resource_group_name,
+                                                                       logs_workspace_name=logs_workspace_name,
+                                                                       tags=tags)
 
     os.environ["AZURE_CONTAINERAPPS_ENV_DEFAULT_DOMAIN"] = managed_environment["properties"]["defaultDomain"]
     os.environ["AZURE_CONTAINERAPPS_ENV_STATIC_IP"] = managed_environment["properties"]["staticIp"]
@@ -76,28 +77,27 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             environment = secret_env_ref
 
         containerapps_from_compose.append(
-            create_containerapp(cmd,
-                                service_name,
-                                resource_group_name,
-                                image=service.image,
-                                container_name=service.container_name,
-                                managed_env=managed_environment["id"],
-                                ingress=ingress_type,
-                                target_port=target_port,
-                                registry_server=registry,
-                                registry_user=registry_username,
-                                registry_pass=registry_password,
-                                transport=transport_setting,
-                                startup_command=startup_command,
-                                args=startup_args,
-                                cpu=cpu,
-                                memory=memory,
-                                env_vars=environment,
-                                secrets=secret_vars,
-                                min_replicas=replicas,
-                                max_replicas=replicas,
-                                ))
-
+            create_containerapp_from_service(cmd,
+                                             service_name,
+                                             resource_group_name,
+                                             image=service.image,
+                                             container_name=service.container_name,
+                                             managed_env=managed_environment["id"],
+                                             ingress=ingress_type,
+                                             target_port=target_port,
+                                             registry_server=registry,
+                                             registry_user=registry_username,
+                                             registry_pass=registry_password,
+                                             transport=transport_setting,
+                                             startup_command=startup_command,
+                                             args=startup_args,
+                                             cpu=cpu,
+                                             memory=memory,
+                                             env_vars=environment,
+                                             secrets=secret_vars,
+                                             min_replicas=replicas,
+                                             max_replicas=replicas,)
+        )
     return containerapps_from_compose
 
 
