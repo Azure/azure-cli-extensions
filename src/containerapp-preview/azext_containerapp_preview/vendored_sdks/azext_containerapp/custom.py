@@ -25,7 +25,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -45,16 +45,17 @@ from ._models import (
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel)
+    ManagedServiceIdentity as ManagedServiceIdentityModel,
+    AzureFileProperties as AzureFilePropertiesModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
                      _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
-                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_traffic_weights,
+                     _add_or_update_env_vars, _add_or_update_tags, update_nested_dictionary, _update_revision_weights, _append_label_weights,
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name)
+                     validate_container_app_name, _update_weights)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -230,7 +231,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
     # Validate managed environment
     if not containerapp_def["properties"].get('managedEnvironmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     env_id = containerapp_def["properties"]['managedEnvironmentId']
     env_name = None
@@ -744,7 +745,6 @@ def create_managed_environment(cmd,
                                resource_group_name,
                                logs_customer_id=None,
                                logs_key=None,
-                               logs_workspace_name=None,
                                location=None,
                                instrumentation_key=None,
                                infrastructure_subnet_resource_id=None,
@@ -762,7 +762,7 @@ def create_managed_environment(cmd,
     _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
 
     if logs_customer_id is None or logs_key is None:
-        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, logs_workspace_name, location, resource_group_name)
+        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
 
     log_analytics_config_def = LogAnalyticsConfigurationModel
     log_analytics_config_def["customerId"] = logs_customer_id
@@ -1044,6 +1044,8 @@ def _validate_github(repo, branch, token):
         github_repo = None
         try:
             github_repo = g.get_repo(repo)
+            if not branch:
+                branch = github_repo.default_branch
             if not github_repo.permissions.push or not github_repo.permissions.maintain:
                 raise ValidationError("The token does not have appropriate access rights to repository {}.".format(repo))
             try:
@@ -1063,6 +1065,7 @@ def _validate_github(repo, branch, token):
             if e.data and e.data['message']:
                 error_msg += " Error: {}".format(e.data['message'])
             raise CLIInternalError(error_msg) from e
+    return branch
 
 
 def create_or_update_github_action(cmd,
@@ -1072,7 +1075,7 @@ def create_or_update_github_action(cmd,
                                    registry_url=None,
                                    registry_username=None,
                                    registry_password=None,
-                                   branch="main",
+                                   branch=None,
                                    token=None,
                                    login_with_github=False,
                                    image=None,
@@ -1092,7 +1095,7 @@ def create_or_update_github_action(cmd,
     repo = repo_url_to_name(repo_url)
     repo_url = f"https://github.com/{repo}"  # allow specifying repo as <user>/<repo> without the full github url
 
-    _validate_github(repo, branch, token)
+    branch = _validate_github(repo, branch, token)
 
     source_control_info = None
 
@@ -1105,11 +1108,7 @@ def create_or_update_github_action(cmd,
         source_control_info = SourceControlModel
 
     source_control_info["properties"]["repoUrl"] = repo_url
-
-    if branch:
-        source_control_info["properties"]["branch"] = branch
-    if not source_control_info["properties"]["branch"]:
-        source_control_info["properties"]["branch"] = "main"
+    source_control_info["properties"]["branch"] = branch
 
     azure_credentials = None
 
@@ -1346,6 +1345,98 @@ def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
         handle_raw_exception(e)
 
 
+def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if not name:
+        name = _get_app_from_revision(revision)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to set labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
+
+    label_added = False
+    for weight in traffic_weight:
+        if "latestRevision" in weight:
+            if revision.lower() == "latest" and weight["latestRevision"]:
+                label_added = True
+                weight["label"] = label
+                break
+        else:
+            if revision.lower() == weight["revisionName"].lower():
+                label_added = True
+                weight["label"] = label
+                break
+
+    if not label_added:
+        raise ValidationError("Please specify a revision name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if "ingress" not in containerapp_def['properties']['configuration'] and "traffic" not in containerapp_def['properties']['configuration']['ingress']:
+        raise ValidationError("Ingress and traffic weights are required to set labels.")
+
+    traffic_weight = containerapp_def['properties']['configuration']['ingress']['traffic']
+
+    label_removed = False
+    for weight in traffic_weight:
+        if "label" in weight and weight["label"].lower() == label.lower():
+            label_removed = True
+            weight["label"] = None
+            break
+    if not label_removed:
+        raise ValidationError("Please specify a label name with an associated traffic weight.")
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = traffic_weight
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
 def show_ingress(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
@@ -1429,8 +1520,10 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait=False):
+def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revision_weights=None, no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
+    if not label_weights and not revision_weights:
+        raise ValidationError("Must specify either --label-weight or --revision-weight.")
 
     containerapp_def = None
     try:
@@ -1439,22 +1532,38 @@ def set_ingress_traffic(cmd, name, resource_group_name, traffic_weights, no_wait
         pass
 
     if not containerapp_def:
-        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
     try:
         containerapp_def["properties"]["configuration"]["ingress"]
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
     except Exception as e:
         raise ValidationError("Ingress must be enabled to set ingress traffic. Try running `az containerapp ingress -h` for more info.") from e
 
-    if traffic_weights is not None:
-        _update_traffic_weights(containerapp_def, traffic_weights)
+    if not revision_weights:
+        revision_weights = []
 
-    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+    # convert label weights to appropriate revision name
+    _append_label_weights(containerapp_def, label_weights, revision_weights)
+
+    # validate sum is less than 100
+    _validate_traffic_sum(revision_weights)
+
+    # update revision weights to containerapp, get the old weight sum
+    old_weight_sum = _update_revision_weights(containerapp_def, revision_weights)
+
+    _update_weights(containerapp_def, revision_weights, old_weight_sum)
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress']['traffic'] = containerapp_def["properties"]["configuration"]["ingress"]["traffic"]
 
     try:
-        r = ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        return r["properties"]["configuration"]["ingress"]["traffic"]
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']['traffic']
     except Exception as e:
         handle_raw_exception(e)
 
@@ -1965,7 +2074,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
     url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
            f"/revisions/{revision}/replicas/{replica}/containers/{container}/logstream")
 
-    logger.warning("connecting to : %s", url)
+    logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(), "output": output_format, "tailLines": tail}
     headers = {"Authorization": f"Bearer {token}"}
     resp = requests.get(url, timeout=None, stream=True, params=request_params, headers=headers)
@@ -2008,7 +2117,7 @@ def containerapp_up(cmd,
                     logs_key=None,
                     repo=None,
                     token=None,
-                    branch="main",
+                    branch=None,
                     browse=False,
                     context_path=None,
                     service_principal_client_id=None,
@@ -2016,15 +2125,18 @@ def containerapp_up(cmd,
                     service_principal_tenant_id=None):
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output, AzureContainerRegistry)
+                            _get_registry_details, _create_github_action, _set_up_defaults, up_output,
+                            check_env_name_on_rg, get_token)
+    from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
-    _validate_up_args(source, image, repo, registry_server)
+    _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
+    check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
     image = _reformat_image(source, repo, image)
-    token = None if not repo else get_github_access_token(cmd, ["admin:repo_hook", "repo", "workflow"], token)
+    token = get_token(cmd, repo, token)
 
     if image and HELLOWORLD in image.lower():
         ingress = "external" if not ingress else ingress
@@ -2064,6 +2176,7 @@ def containerapp_up(cmd,
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path)
+        cache_github_token(cmd, token, repo)
 
     if browse:
         open_containerapp_in_browser(cmd, app.name, app.resource_group.name)
@@ -2199,4 +2312,65 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
             return ContainerAppClient.update(cmd, resource_group_name, name, containerapp_def)
         return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
     except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.show(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_storage(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.list(cmd, resource_group_name, name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if len(azure_file_share_name) < 3:
+        raise ValidationError("File share name must be longer than 2 characters.")
+
+    if len(azure_file_account_name) < 3:
+        raise ValidationError("Account name must be longer than 2 characters.")
+
+    r = None
+
+    try:
+        r = StorageClient.show(cmd, resource_group_name, name, storage_name)
+    except:
+        pass
+
+    if r:
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+
+    storage_def = AzureFilePropertiesModel
+    storage_def["accountKey"] = azure_file_account_key
+    storage_def["accountName"] = azure_file_account_name
+    storage_def["shareName"] = azure_file_share_name
+    storage_def["accessMode"] = access_mode
+    storage_envelope = {}
+    storage_envelope["properties"] = {}
+    storage_envelope["properties"]["azureFile"] = storage_def
+
+    try:
+        return StorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope, no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    try:
+        return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
+    except CLIError as e:
         handle_raw_exception(e)
