@@ -59,11 +59,11 @@ jobs:
           source env/bin/activate
           azdev style containerapp-preview
 
-      # - name: Lint
-      #   if: success() || failure()
-      #   run: |
-      #     source env/bin/activate
-      #     azdev linter containerapp-preview
+      - name: Lint
+        if: success() || failure()
+        run: |
+          source env/bin/activate
+          azdev linter containerapp-preview
 
       - name: Functional Tests
         if: success() || failure()
@@ -128,6 +128,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Add extension
         run: |
+          az extension add --name containerapp --upgrade --yes
           az extension add --source ./*.whl --yes
       - name: Extension Help
         run: |
