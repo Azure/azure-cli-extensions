@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long, too-many-statements, bare-except
 # from azure.cli.core.commands import CliCommandType
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from ._client_factory import ex_handler_factory
+from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
 
 
@@ -27,7 +27,7 @@ def transform_containerapp_list_output(apps):
 
 
 def transform_revision_output(rev):
-    props = ['name', 'active', 'createdTime', 'trafficWeight']
+    props = ['name', 'active', 'createdTime', 'trafficWeight', 'healthState', 'provisioningState', 'replicas']
     result = {k: rev['properties'][k] for k in rev['properties'] if k in props}
 
     if 'name' in rev:
@@ -73,6 +73,12 @@ def load_command_table(self, _):
         g.custom_command('set', 'create_or_update_dapr_component')
         g.custom_command('remove', 'remove_dapr_component')
 
+    with self.command_group('containerapp env storage') as g:
+        g.custom_show_command('show', 'show_storage')
+        g.custom_command('list', 'list_storage')
+        g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -91,6 +97,10 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_revision', table_transformer=transform_revision_output, exception_handler=ex_handler_factory())
         g.custom_command('copy', 'copy_revision', exception_handler=ex_handler_factory())
         g.custom_command('set-mode', 'set_revision_mode', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp revision label') as g:
+        g.custom_command('add', 'add_revision_label')
+        g.custom_command('remove', 'remove_revision_label')
 
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
