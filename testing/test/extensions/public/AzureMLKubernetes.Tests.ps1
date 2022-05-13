@@ -5,6 +5,8 @@ Describe 'AzureML Kubernetes Testing' {
         $extensionAgentNamespace = "azureml"
         $relayResourceIDKey = "relayserver.hybridConnectionResourceID"
         $serviceBusResourceIDKey = "servicebus.resourceID"
+        $mockUpdateKey = "mockTest"
+        $mockProtectedUpdateKey = "mockProtectedTest"
 
         . $PSScriptRoot/../../helper/Constants.ps1
         . $PSScriptRoot/../../helper/Helper.ps1
@@ -13,7 +15,7 @@ Describe 'AzureML Kubernetes Testing' {
     It 'Creates the extension and checks that it onboards correctly with inference and SSL enabled' {
         $sslKeyPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_key.pem"
         $sslCertPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_cert.pem"
-        az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train staging --config enableInference=true identity.proxy.remoteEnabled=True identity.proxy.remoteHost=https://master.experiments.azureml-test.net inferenceRouterServiceType=nodePort sslCname=test.domain --config-protected sslKeyPemFile=$sslKeyPemFile sslCertPemFile=$sslCertPemFile --no-wait
+        az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train stable --config enableInference=true identity.proxy.remoteEnabled=True identity.proxy.remoteHost=https://master.experiments.azureml-test.net inferenceRouterServiceType=nodePort sslCname=test.domain --config-protected sslKeyPemFile=$sslKeyPemFile sslCertPemFile=$sslCertPemFile --no-wait
         $? | Should -BeTrue        
 
         $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
@@ -55,14 +57,57 @@ Describe 'AzureML Kubernetes Testing' {
         $extensionExists | Should -Not -BeNullOrEmpty
     }
 
+    It "Wait for the extension to be ready" {
+        # Loop and retry until the extension installed
+        $n = 0
+        do 
+        {
+
+            $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+            $? | Should -BeTrue
+
+            $provisioningState = ($output | ConvertFrom-Json).provisioningState
+            Write-Host "Provisioning state: $provisioningState"
+            if ($provisioningState -eq "Succeeded") {
+                break
+            }
+            Start-Sleep -Seconds 20
+            $n += 1
+        } while ($n -le $MAX_RETRY_ATTEMPTS)
+        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
+    }
+
+    It "Perform Update extension" {
+        az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --config "$($mockUpdateKey)=true" --config-protected "$($mockProtectedUpdateKey)=true" --no-wait
+        $? | Should -BeTrue        
+
+        # Loop and retry until the extension updated
+        $n = 0
+        do 
+        {
+
+            $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+            $? | Should -BeTrue
+
+            $provisioningState = ($output | ConvertFrom-Json).provisioningState
+            Write-Host "Provisioning state: $provisioningState"
+            if ($provisioningState -eq "Succeeded") {
+                break
+            }
+            Start-Sleep -Seconds 20
+            $n += 1
+        } while ($n -le $MAX_RETRY_ATTEMPTS)
+        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
+
+        $mockedUpdateData = Get-ExtensionConfigurationSettings $extensionName $mockUpdateKey
+        $mockedUpdateData | Should -Not -BeNullOrEmpty
+    }
+
     It "Deletes the extension from the cluster with inference enabled" {
         # cleanup the relay and servicebus
         $relayResourceID = Get-ExtensionConfigurationSettings $extensionName $relayResourceIDKey
-        $serviceBusResourceID = Get-ExtensionConfigurationSettings $extensionName $serviceBusResourceIDKey
         $relayNamespaceName = $relayResourceID.split("/")[8]
-        $serviceBusNamespaceName = $serviceBusResourceID.split("/")[8]
         az relay namespace delete --resource-group $ENVCONFIG.resourceGroup --name $relayNamespaceName
-        az servicebus namespace delete --resource-group $ENVCONFIG.resourceGroup --name $serviceBusNamespaceName
 
         $output = az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --force
         $? | Should -BeTrue

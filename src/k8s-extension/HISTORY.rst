@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.2
+++++++++++++++++++
+* microsoft.azureml.kubernetes: disable service bus by default, do not create relay for managed clusters.
+
 1.2.1
 ++++++++++++++++++
 * Provide no default values for Patch of Extension
