@@ -24,8 +24,6 @@ from knack.arguments import CLIArgumentType
 from ._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
-    get_cluster_ossku_completion_list,
-    get_nodepool_ossku_completion_list,
     get_vm_size_completion_list,
 )
 from ._consts import (
@@ -246,7 +244,7 @@ def load_arguments(self, _):
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('node_vm_size', options_list=[
                    '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-        c.argument('os_sku', completer=get_cluster_ossku_completion_list)
+        c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
         c.argument('enable_node_public_ip', action='store_true')
@@ -413,8 +411,7 @@ def load_arguments(self, _):
             c.argument('node_vm_size', options_list=[
                        '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('os_type')
-            c.argument('os_sku', options_list=[
-                       '--os-sku'], completer=get_nodepool_ossku_completion_list)
+            c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
             c.argument('vnet_subnet_id',
                        validator=validate_vnet_subnet_id)
             c.argument('pod_subnet_id',
