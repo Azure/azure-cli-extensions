@@ -7,6 +7,7 @@
 
 import os.path
 import json
+import sys
 import time
 
 from azure.cli.command_modules.storage.operations.account import list_storage_accounts
@@ -22,7 +23,7 @@ from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
-from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
+from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
@@ -106,7 +107,14 @@ def _provider_terms_need_acceptance(cmd, provider):
     return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
 
-def _autoadd_providers(providers_in_region, providers_selected):
+C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
+                               "Microsoft can share your account details with the quantum provider for their transactional purposes.\n\n" \
+                               "https://privacy.microsoft.com/en-us/privacystatement\n" \
+                               "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/\n\n" \
+                               "Continue? (Y/N) "
+
+def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location):
+    already_accepted_terms = False
     for provider in providers_in_region:
         for sku in provider.properties.skus:
             if sku.auto_add:
@@ -119,8 +127,22 @@ def _autoadd_providers(providers_in_region, providers_selected):
                 if not provider_already_added:
                     (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider.id)
                     if (offer is None or publisher is None):
-                        raise RequiredArgumentMissingError(f"Error adding 'autoAdd' provider: Published or Offer not found for '{provider.id}'")
-                    providers_selected.append({'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher})
+                        raise RequiredArgumentMissingError(f"Error adding 'autoAdd' provider: Publisher or Offer not found for '{provider.id}'")
+
+                    provider_selected = {'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher}
+                    if cmd is not None and not already_accepted_terms and _provider_terms_need_acceptance(cmd, provider_selected):
+
+                        auto_accept = False  # <<<<< TODO: Implement an --auto-accept command parameter. Set this flag to True if --auto-accept is specified.
+
+                        if not auto_accept:
+                            print(C4A_TERMS_ACCEPTANCE_MESSAGE, end='')
+                            if input().lower() != 'y':
+                                sys.exit('Terms not accepted. No workspace created.')
+
+                        accept_terms(cmd, provider.id, sku.id, workspace_location)
+                        already_accepted_terms = True
+                    providers_selected.append(provider_selected)
+
     # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
     if providers_selected == []:
         raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
@@ -145,7 +167,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
-    _autoadd_providers(providers_in_region, providers_selected)
+    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location)
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
