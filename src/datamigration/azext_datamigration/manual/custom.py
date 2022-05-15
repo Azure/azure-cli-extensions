@@ -12,6 +12,7 @@
 # pylint: disable=line-too-long
 
 import os
+import signal
 import subprocess
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
@@ -62,7 +63,8 @@ def datamigration_performance_data_collection(connection_string=None,
                                               perf_query_interval=30,
                                               static_query_interval=3600,
                                               number_of_iteration=20,
-                                              config_file_path=None):
+                                              config_file_path=None,
+                                              time=None):
 
     try:
 
@@ -83,11 +85,31 @@ def datamigration_performance_data_collection(connection_string=None,
             for param in parameterList:
                 if parameterList[param] is not None:
                     cmd += f' {param} "{parameterList[param]}"'
-            subprocess.call(cmd, shell=False)
+
+            if time is None:
+                subprocess.call(cmd, shell=False)
+            else:
+                sp = subprocess.Popen(cmd, shell=False)
+                try:
+                    outs, errs = sp.communicate(timeout=time)
+                except subprocess.TimeoutExpired:
+                    sp.send_signal(signal.SIGTERM)
+                    outs, errs = sp.communicate()
+
         elif config_file_path is not None:
             helper.validate_config_file_path(config_file_path, "perfdatacollection")
             cmd = f'{exePath} --configFile "{config_file_path}"'
-            subprocess.call(cmd, shell=False)
+
+            if time is None:
+                subprocess.call(cmd, shell=False)
+            else:
+                sp = subprocess.Popen(cmd, shell=False)
+                try:
+                    outs, errs = sp.communicate(timeout=time)
+                except subprocess.TimeoutExpired:
+                    sp.send_signal(signal.SIGTERM)
+                    outs, errs = sp.communicate()
+
         else:
             raise RequiredArgumentMissingError('No valid parameter set used. Please provide any one of the these prameters: sql_connection_string, config_file_path')
 
@@ -162,7 +184,8 @@ def datamigration_get_sku_recommendation(output_folder=None,
 # Register Sql Migration Service on IR command Implementation.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_register_ir(auth_key,
-                              ir_path=None):
+                              ir_path=None,
+                              installed_ir_path=None):
 
     helper.validate_os_env()
 
@@ -172,4 +195,4 @@ def datamigration_register_ir(auth_key,
     if ir_path is not None:
         helper.install_gateway(ir_path)
 
-    helper.register_ir(auth_key)
+    helper.register_ir(auth_key, installed_ir_path)

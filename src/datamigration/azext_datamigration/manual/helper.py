@@ -41,7 +41,7 @@ def validate_config_file_path(path, action):
     if not os.path.exists(path):
         raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
 
-    # JSON file
+    # JSON file read
     with open(path, "r", encoding=None) as f:
         configJson = json.loads(f.read())
     try:
@@ -206,10 +206,13 @@ def install_gateway(path):
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to register Sql Migration Service on IR
 # -----------------------------------------------------------------------------------------------------------------
-def register_ir(key):
+def register_ir(key, installed_ir_path=None):
     print(f"Start to register IR with key: {key}")
 
-    cmdFilePath = get_cmd_file_path()
+    if installed_ir_path is None:
+        cmdFilePath = get_cmd_file_path()
+    else:
+        cmdFilePath = get_cmd_file_path_from_input(installed_ir_path)
 
     directoryPath = os.path.dirname(cmdFilePath)
     parentDirPath = os.path.dirname(directoryPath)
@@ -244,7 +247,7 @@ def get_cmd_file_path():
             diaCmdPath = get_cmd_file_path_static()
             return diaCmdPath
         except FileNotFoundError as e:
-            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command") from e
+            raise FileOperationError("Failed: No installed IR found or installed IR is not present in Program Files. Please install Integration Runtime in default location and re-run this command  or use --installed-ir-path parameter to provide the installed IR location") from e
         except IndexError as e:
             raise FileOperationError("IR is not properly installed. Please re-install it and re-run this command") from e
 
@@ -269,6 +272,23 @@ def get_cmd_file_path_static():
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(versionFolder, "Shared", "diacmd.exe")
+
+    if not os.path.exists(diaCmdPath):
+        raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")
+
+    return diaCmdPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to get DiaCmdPath using the installed IR path user has given
+# -----------------------------------------------------------------------------------------------------------------
+def get_cmd_file_path_from_input(installed_ir_path):
+
+    if not os.path.exists(installed_ir_path):
+        raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+
+    # Create diaCmd default path and check if it is valid or not.
+    diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")
 
     if not os.path.exists(diaCmdPath):
         raise FileNotFoundError(f"The system cannot find the path specified: {diaCmdPath}")

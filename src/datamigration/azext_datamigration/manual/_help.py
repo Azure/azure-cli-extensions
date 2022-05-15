@@ -34,6 +34,9 @@ helps['datamigration performance-data-collection'] = """
       - name: Collect performance data of a given SQL Server using assessment config file.
         text: |-
                az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
+      - name: Collect performance data of a given SQL Server by specifying a time limit. If the time limit specified is before the complition of a iteration cycle, the process will end without saving the last cycle performance data.
+        text: |-
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60 --time 60
 """
 
 helps['datamigration get-sku-recommendation'] = """
@@ -58,6 +61,9 @@ helps['datamigration register-integration-runtime'] = """
       - name: Install Integration Runtime and register a Sql Migration Service on it.
         text: |-
                az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --ir-path "C:\\Users\\user\\Downloads\\IntegrationRuntime.msi"
+      - name: Read the Integration Runtime from given installation location.
+        text: |-
+               az datamigration register-integration-runtime --auth-key "IR@00000-0000000-000000-aaaaa-bbbb-cccc" --installed-ir-path "D:\\My Softwares\\Microsoft Integration Runtime\\5.0"
 """
 
 helps['datamigration sql-managed-instance create'] = """
