@@ -23,9 +23,14 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP)
 
 logger = get_logger(__name__)
+
+
+def register_provider_if_needed(cmd, rp_name):
+    if not _is_resource_provider_registered(cmd, rp_name):
+        _register_resource_provider(cmd, rp_name)
 
 
 def validate_container_app_name(name):
@@ -507,7 +512,7 @@ def _get_default_containerapps_location(cmd, location=None):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-        resource_types = getattr(providers_client.get("Microsoft.App"), 'resource_types', [])
+        resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
         res_locations = []
         for res in resource_types:
             if res and getattr(res, 'resource_type', "") == "workspaces":
