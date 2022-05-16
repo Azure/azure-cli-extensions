@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class AzureVWanRouteTableScenario(ScenarioTest):
@@ -50,7 +51,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
 
         self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
 
-    @live_only()
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table_v3', location='eastus')
     def test_azure_vwan_route_table_v3(self, resource_group):
         self.kwargs.update({

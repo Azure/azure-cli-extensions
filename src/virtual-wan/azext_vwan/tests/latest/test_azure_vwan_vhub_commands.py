@@ -5,10 +5,8 @@
 
 import os
 import time
-from unittest.case import skip
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
-from azure.cli.testsdk.checkers import StringContainCheck
 from azure.core.exceptions import HttpResponseError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
