@@ -12,8 +12,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.71
+++++++
+
+* Fix: Updated validators for options --min-count and --max-count to support specifying values greater than 100. Related commands are
+  * `az aks create`
+  * `az aks update`
+  * `az aks nodepool add`
+  * `az aks nodepool update`
+
 0.5.70
 ++++++
+
 * Fix: Don't update storageProfile if not set .
 
 0.5.69
