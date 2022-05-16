@@ -645,7 +645,7 @@ helps['containerapp github-action'] = """
 
 helps['containerapp github-action add'] = """
     type: command
-    short-summary: Add a Github Actions workflow to a repository to deploy a container app.
+    short-summary: Add a GitHub Actions workflow to a repository to deploy a container app.
     examples:
     - name: Add GitHub Actions, using Azure Container Registry and personal access token.
       text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main
