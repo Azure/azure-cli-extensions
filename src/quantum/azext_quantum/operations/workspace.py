@@ -113,7 +113,7 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
                                "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/\n\n" \
                                "Continue? (Y/N) "
 
-def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location):
+def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, auto_accept):
     already_accepted_terms = False
     for provider in providers_in_region:
         for sku in provider.properties.skus:
@@ -131,14 +131,10 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
 
                     provider_selected = {'provider_id': provider.id, 'sku': sku.id, 'offer_id': offer, 'publisher_id': publisher}
                     if cmd is not None and not already_accepted_terms and _provider_terms_need_acceptance(cmd, provider_selected):
-
-                        auto_accept = False  # <<<<< TODO: Implement an --auto-accept command parameter. Set this flag to True if --auto-accept is specified.
-
                         if not auto_accept:
                             print(C4A_TERMS_ACCEPTANCE_MESSAGE, end='')
                             if input().lower() != 'y':
                                 sys.exit('Terms not accepted. No workspace created.')
-
                         accept_terms(cmd, provider.id, sku.id, workspace_location)
                         already_accepted_terms = True
                     providers_selected.append(provider_selected)
@@ -152,7 +148,7 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
                                            "\taz quantum offerings list -l MyLocation -o table")
 
 
-def _add_quantum_providers(cmd, workspace, providers):
+def _add_quantum_providers(cmd, workspace, providers, auto_accept):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
@@ -167,7 +163,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
-    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location)
+    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
@@ -215,7 +211,7 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None):
+def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -246,7 +242,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
     validated_providers = []
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
