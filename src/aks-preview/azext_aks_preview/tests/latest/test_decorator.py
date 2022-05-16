@@ -795,7 +795,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
 
-    def test_get_disk_driver(self):
+    def test_get_disk_driver_update(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -856,6 +856,72 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_snapshot_controller and disable_snapshot_controller
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_snapshot_controller()
+
+    def test_get_disk_driver_create(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = None,
+                file_csi_driver = None,
+                snapshot_controller = None,
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_storage_profile(), storage_profile
+        )
+
+        # custom disk value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "disable_disk_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive enable_disk_driver and disable_disk_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disk_driver()
+
+        # custom file alue
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_file_driver": True,
+                "disable_file_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive enable_file_driver and disable_file_driver
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_file_driver()
+
+        # custom file alue
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_snapshot_controller": True,
+                "disable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
         )
         # fail on mutually exclusive enable_snapshot_controller and disable_snapshot_controller
         with self.assertRaises(MutuallyExclusiveArgumentError):
