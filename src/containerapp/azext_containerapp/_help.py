@@ -263,6 +263,32 @@ helps['containerapp revision copy'] = """
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
 """
 
+helps['containerapp revision label'] = """
+    type: group
+    short-summary: Manage revision labels assigned to traffic weights.
+"""
+
+helps['containerapp revision label add'] = """
+    type: command
+    short-summary: Set a revision label to a revision with an associated traffic weight.
+    examples:
+    - name: Add a label to the latest revision.
+      text: |
+          az containerapp revision label add -n MyContainerapp -g MyResourceGroup --label myLabel --revision latest
+    - name: Add a label to a previous revision.
+      text: |
+          az containerapp revision label add -g MyResourceGroup --label myLabel --revision revisionName
+"""
+
+helps['containerapp revision label remove'] = """
+    type: command
+    short-summary: Remove a revision label from a revision with an associated traffic weight.
+    examples:
+    - name: Remove a label.
+      text: |
+          az containerapp revision label remove -n MyContainerapp -g MyResourceGroup --label myLabel
+"""
+
 # Environment Commands
 helps['containerapp env'] = """
     type: group
@@ -355,6 +381,48 @@ helps['containerapp env dapr-component remove'] = """
       text: |
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
+
+helps['containerapp env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps environment.
+"""
+
+helps['containerapp env storage list'] = """
+    type: command
+    short-summary: List the storages for an environment.
+    examples:
+    - name: List the storages for an environment.
+      text: |
+          az containerapp env storage list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp env storage show -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+helps['containerapp env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+"""
+
+helps['containerapp env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from an environment.
+    examples:
+    - name: Remove a storage from a Container Apps environment.
+      text: |
+          az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
 
 # Identity Commands
 helps['containerapp identity'] = """
@@ -459,12 +527,18 @@ helps['containerapp ingress traffic set'] = """
     type: command
     short-summary: Configure traffic-splitting for a container app.
     examples:
-    - name: Route 100%% of a container app's traffic to its latest revision.
+    - name: Route 100% of a container app's traffic to its latest revision.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=100
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=100
     - name: Split a container app's traffic between two revisions.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=80 MyRevisionName=20
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 MyRevisionName=20
+    - name: Split a container app's traffic between two labels.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --label-weight myLabel=80 myLabel2=20
+    - name: Split a container app's traffic between a label and a revision.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 --label-weight myLabel=20
 """
 
 helps['containerapp ingress traffic show'] = """

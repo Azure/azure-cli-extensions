@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.69
+++++++
+* Fix: Raise error when user provides invalid value for `--os-sku`.
+
+0.5.68
+++++++
+* Add option `Windows2019`, `Windows2022` to `--os-sku` for `az aks nodepool add`.
 
 0.5.67
 +++++++++++++++++++++
