@@ -10,11 +10,13 @@ from knack.help_files import helps  # pylint: disable=unused-import
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
+long-summary: See https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cli-samples for Cassandra API samples.
 """
 
 helps['managed-cassandra cluster'] = """
 type: group
 short-summary: Azure Managed Cassandra Cluster.
+long-summary: See https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cli-samples for Cassandra API samples.
 """
 
 helps['managed-cassandra cluster create'] = """
