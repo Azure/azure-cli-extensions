@@ -165,8 +165,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp github-action add') as c:
         c.argument('repo_url', help='The GitHub repository to which the workflow file will be added. In the format: https://github.com/<owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
-        c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Assumed to be the GitHub repo\'s default branch if not specified.')
+        c.argument('login_with_github', help='Interactively log in with GitHub to retrieve the Personal Access Token')
         c.argument('registry_url', help='The container registry server, e.g. myregistry.azurecr.io')
         c.argument('registry_username', help='The username of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
         c.argument('registry_password', help='The password of the registry. If using Azure Container Registry, we will try to infer the credentials if not supplied')
@@ -174,11 +174,11 @@ def load_arguments(self, _):
         c.argument('service_principal_client_id', help='The service principal client ID. ')
         c.argument('service_principal_client_secret', help='The service principal client secret.')
         c.argument('service_principal_tenant_id', help='The service principal tenant ID.')
-        c.argument('image', options_list=['--image', '-i'], help="Container image name that the Github Action should use. Defaults to the Container App name.")
+        c.argument('image', options_list=['--image', '-i'], help="Container image name that the GitHub Action should use. Defaults to the Container App name.")
 
     with self.argument_context('containerapp github-action delete') as c:
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
-        c.argument('login_with_github', help='Interactively log in with Github to retrieve the Personal Access Token')
+        c.argument('login_with_github', help='Interactively log in with GitHub to retrieve the Personal Access Token')
 
     with self.argument_context('containerapp revision') as c:
         c.argument('revision_name', options_list=['--revision'], help='Name of the revision.')
@@ -248,10 +248,10 @@ def load_arguments(self, _):
         c.ignore('no_wait')
 
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
-        c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
+        c.argument('repo', help='Create an app via GitHub Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
-        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the GitHub repo. Assumed to be the GitHub repo\'s default branch if not specified.')
         c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
-        c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
-        c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
-        c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
+        c.argument('service_principal_client_id', help='The service principal client ID. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
+        c.argument('service_principal_client_secret', help='The service principal client secret. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
+        c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
