@@ -813,6 +813,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
+        if not enable_disk_driver and not disable_disk_driver:
+            return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
         if enable_disk_driver and disable_disk_driver:
@@ -842,6 +844,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_file_driver = self.raw_param.get("enable_file_driver")
         disable_file_driver = self.raw_param.get("disable_file_driver")
+        if not enable_file_driver and not disable_file_driver:
+            return None
         profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
 
         if enable_file_driver and disable_file_driver:
@@ -871,6 +875,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
         disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
+        if not enable_snapshot_controller and not disable_snapshot_controller:
+            return None
         profile = self.models.ManagedClusterStorageProfileSnapshotController()
 
         if enable_snapshot_controller and disable_snapshot_controller:

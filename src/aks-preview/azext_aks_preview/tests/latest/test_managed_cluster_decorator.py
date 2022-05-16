@@ -1237,30 +1237,64 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ctx_1.get_snapshot_controller()
 
     def test_get_storage_profile(self):
-        # default
+        # create
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({}),
+            AKSManagedClusterParamDict({
+                "disable_disk_driver": True,
+            }),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        storage_profile = self.models.ManagedClusterStorageProfile(
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        ctx_1.attach_mc(mc_1)
+        ground_truth_storage_profile_1 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=False,
+            ),
+            file_csi_driver=None,
+            snapshot_controller=None,
+        )
+        self.assertEqual(ctx_1.get_storage_profile(), ground_truth_storage_profile_1)
+
+        # update
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_file_driver": True,
+                "disable_snapshot_controller": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile_2 = self.models.ManagedClusterStorageProfile(
             disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
                 enabled=True,
             ),
             file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(
-                enabled=True,
+                enabled=False,
             ),
             snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(
                 enabled=True,
             ),
         )
-        mc = self.models.ManagedCluster(
+        mc_2 = self.models.ManagedCluster(
             location="test_location",
-            storage_profile=storage_profile,
+            storage_profile=storage_profile_2,
         )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_storage_profile(), storage_profile)
+        ctx_2.attach_mc(mc_2)
+        ground_truth_storage_profile_2 = self.models.ManagedClusterStorageProfile(
+            disk_csi_driver=None,
+            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(
+                enabled=True,
+            ),
+            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(
+                enabled=False,
+            ),
+        )
+        self.assertEqual(ctx_2.get_storage_profile(), ground_truth_storage_profile_2)
 
     def test_get_user_assignd_identity_from_mc(self):
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -1870,15 +1904,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
         storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-            ),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(
-                enabled=True,
-            ),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(
-                enabled=True,
-            ),
+            disk_csi_driver=None,
+            file_csi_driver=None,
+            snapshot_controller=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
@@ -2889,9 +2917,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         }
         ground_truth_storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(),
-            file_csi_driver=self.models.ManagedClusterStorageProfileFileCSIDriver(),
-            snapshot_controller=self.models.ManagedClusterStorageProfileSnapshotController(),
+            disk_csi_driver=None,
+            file_csi_driver=None,
+            snapshot_controller=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
