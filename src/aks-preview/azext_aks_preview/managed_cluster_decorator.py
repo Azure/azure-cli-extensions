@@ -141,21 +141,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "when using Kubenet network plugin"
                 )
 
-    def get_node_resource_group(self) -> Union[str, None]:
-        """Obtain the value of node_resource_group.
-
-        :return: string or None
-        """
-        # read the original value passed by the command
-        node_resource_group = self.raw_param.get("node_resource_group")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.node_resource_group is not None:
-            node_resource_group = self.mc.node_resource_group
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return node_resource_group
-
     def get_http_proxy_config(self) -> Union[Dict, ManagedClusterHTTPProxyConfig, None]:
         """Obtain the value of http_proxy_config.
 
@@ -1064,16 +1049,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return mc
 
-    def set_up_node_resource_group(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up node resource group for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        mc.node_resource_group = self.context.get_node_resource_group()
-        return mc
-
     def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up http proxy config for the ManagedCluster object.
 
@@ -1201,8 +1176,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # construct the default AgentPool profile
         mc = self.construct_mc_profile_default(bypass_restore_defaults=True)
 
-        # set up node resource group
-        mc = self.set_up_node_resource_group(mc)
         # set up http proxy config
         mc = self.set_up_http_proxy_config(mc)
         # set up pod security policy

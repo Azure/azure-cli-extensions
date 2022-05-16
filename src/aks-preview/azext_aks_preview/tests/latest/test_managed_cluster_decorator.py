@@ -95,22 +95,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_1._AKSPreviewManagedClusterContext__validate_pod_identity_with_kubenet(mc_1, True, False)
 
-    def test_get_node_resource_group(self):
-        # default
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"node_resource_group": None}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_node_resource_group(), None)
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            node_resource_group="test_node_resource_group",
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_node_resource_group(), "test_node_resource_group")
-
     def test_get_http_proxy_config(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -1560,25 +1544,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1.load_balancer_profile = load_balancer_profile_1
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_1)
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-    def test_set_up_node_resource_group(self):
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"node_resource_group": "test_node_resource_group"},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        # fail on passing the wrong mc object
-        with self.assertRaises(CLIInternalError):
-            dec_1.set_up_node_resource_group(None)
-        dec_mc_1 = dec_1.set_up_node_resource_group(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            node_resource_group="test_node_resource_group",
-        )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_set_up_http_proxy_config(self):
