@@ -93,14 +93,14 @@ Pending
 ++++++
 
 * Add support for managed cluster snapshot commands and modify current nodepool snapshot commands.
-* It is breaking change for nodepool snapshot commands, `az aks nodepool snapshot` will be the command
-to managed nodepool snapshot. `az aks snapshot` is used for managed cluster snapshot.
-for managed cluster snapshot, it will be
+* Breaking Change: `az aks nodepool snapshot` will be the command to manage nodepool snapshot. `az aks snapshot` is used for managed cluster snapshot instead.
+
+More specifically, for managed cluster snapshot, it will be
   * `az aks snapshot create`
   * `az aks snapshot delete`
   * `az aks snapshot list`
   * `az aks snapshot show`
-for nodepool snapshot, it will be
+For nodepool snapshot, it will be
   * `az aks nodepool snapshot create`
   * `az aks nodepool snapshot delete`
   * `az aks nodepool snapshot list`
