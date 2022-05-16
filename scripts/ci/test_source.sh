@@ -4,8 +4,10 @@ set -ex
 # Install CLI & CLI testsdk
 echo "Installing azure-cli-testsdk, azure-cli-core, azure-cli from source code"
 git clone https://github.com/Azure/azure-cli --depth 1
-find azure-cli/src/ -name setup.py -type f | xargs -I {} dirname {} | xargs pip install --no-deps
-pip install -r azure-cli/src/azure-cli/requirements.py3.$(uname).txt
+pip install -e azure-cli/src/azure-cli-testsdk
+pip install -e azure-cli/src/azure-cli-core
+pip install -e azure-cli/src/azure-cli
+pip install azure-core==1.21.1
 echo "Installed."
 
 pip list -v
