@@ -14,6 +14,9 @@ from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
                                        ResourceNotFoundError, ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.appservice.utils import _normalize_location
+from azure.cli.command_modules.network._client_factory import network_client_factory
+
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
@@ -29,6 +32,14 @@ def validate_container_app_name(name):
     if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
         raise ValidationError(f"Container App names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
                               f"Please shorten {name}")
+
+
+def get_vnet_location(cmd, subnet_resource_id):
+    parsed_rid = parse_resource_id(subnet_resource_id)
+    vnet_client = network_client_factory(cmd.cli_ctx)
+    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
+                                                virtual_network_name=parsed_rid.get("name")).location
+    return _normalize_location(cmd, location)
 
 
 # original implementation at azure.cli.command_modules.role.custom.create_service_principal_for_rbac

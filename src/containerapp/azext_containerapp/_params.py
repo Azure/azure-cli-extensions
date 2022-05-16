@@ -130,12 +130,14 @@ def load_arguments(self, _):
         c.argument('instrumentation_key', options_list=['--dapr-instrumentation-key'], help='Application Insights instrumentation key used by Dapr to export Service to Service communication telemetry')
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
-        c.argument('infrastructure_subnet_resource_id', options_list=['--infrastructure-subnet-resource-id'], help='Resource ID of a subnet for infrastructure components and user app containers.')
+        c.argument('infrastructure_subnet_resource_id', options_list=['--infrastructure-subnet-resource-id', '-s'], help='Resource ID of a subnet for infrastructure components and user app containers.')
         c.argument('app_subnet_resource_id', options_list=['--app-subnet-resource-id'], help='Resource ID of a subnet that Container App containers are injected into. This subnet must be in the same VNET as the subnet defined in infrastructureSubnetResourceId.')
         c.argument('docker_bridge_cidr', options_list=['--docker-bridge-cidr'], help='CIDR notation IP range assigned to the Docker bridge. It must not overlap with any Subnet IP ranges or the IP range defined in Platform Reserved CIDR, if defined')
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
         c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
+    with self.argument_context('containerapp env create') as c:
+        c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
