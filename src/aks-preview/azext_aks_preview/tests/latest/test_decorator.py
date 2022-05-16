@@ -861,6 +861,39 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_snapshot_controller()
 
+        # default with csi driver enabled flag
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "enable_file_driver": True,
+                "enable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = True,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile,
+        )
+        ctx_5.attach_mc(mc)
+        self.assertEqual(
+            ctx_5.get_storage_profile(), storage_profile
+        )
+
     def test_get_disk_driver_create(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -926,6 +959,39 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # fail on mutually exclusive enable_snapshot_controller and disable_snapshot_controller
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_snapshot_controller()
+
+        # default with csi driver enabled flag
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_disk_driver": True,
+                "enable_file_driver": True,
+                "enable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        storage_profile = (
+            self.models.ManagedClusterStorageProfile(
+                disk_csi_driver = self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                    enabled = True,
+                ),
+                file_csi_driver = self.models.ManagedClusterStorageProfileFileCSIDriver(
+                    enabled = True,
+                ),
+                snapshot_controller = self.models.ManagedClusterStorageProfileSnapshotController(
+                    enabled = True,
+                ),
+            )
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            storage_profile=storage_profile,
+        )
+        ctx_5.attach_mc(mc)
+        self.assertEqual(
+            ctx_5.get_storage_profile(), storage_profile
+        )
 
     def test_get_enable_pod_security_policy(self):
         # default
