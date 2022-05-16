@@ -22,6 +22,9 @@ helps['datamigration get-assessment'] = """
       - name: Run SQL Assessment on given SQL Server using assessment config file.
         text: |-
                az datamigration get-assessment --config-file-path "C:\\Users\\user\\document\\config.json"
+      - name: Run SQL Assessment on multiple SQL Servers in one call using connection string.
+        text: |-
+               az datamigration get-assessment --connection-string "Data Source=LabServer1.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" "Data Source=LabServer2.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\AssessmentOutput" --overwrite
 """
 
 helps['datamigration performance-data-collection'] = """
@@ -31,6 +34,9 @@ helps['datamigration performance-data-collection'] = """
       - name: Collect performance data of a given SQL Server using connection string.
         text: |-
                az datamigration performance-data-collection --connection-string "Data Source=LabServer.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60
+      - name: Collect performance data of multiple SQL Servers in one call using connection string.
+        text: |-
+               az datamigration performance-data-collection --connection-string "Data Source=LabServer1.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" "Data Source=LabServer2.database.net;Initial Catalog=master;Integrated Security=False;User Id=User;Password=password" --output-folder "C:\\PerfCollectionOutput" --number-of-iteration 5 --perf-query-interval 10 --static-query-interval 60
       - name: Collect performance data of a given SQL Server using assessment config file.
         text: |-
                az datamigration performance-data-collection --config-file-path "C:\\Users\\user\\document\\config.json"
@@ -45,7 +51,7 @@ helps['datamigration get-sku-recommendation'] = """
     examples:
       - name: Get SKU recommendation for given SQL Server using command line.
         text: |-
-               az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+               az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks1 AdventureWorks2 --display-result --overwrite
       - name: Get SKU recommendation for given SQL Server using assessment config file.
         text: |-
                az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
