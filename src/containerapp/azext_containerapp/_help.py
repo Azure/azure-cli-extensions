@@ -112,9 +112,9 @@ helps['containerapp browse'] = """
 
 helps['containerapp up'] = """
     type: command
-    short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, Github Actions, etc.)
+    short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, GitHub Actions, etc.)
     examples:
-    - name: Create a container app from a dockerfile in a Github repo (setting up github actions)
+    - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
       text: |
           az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
     - name: Create a container app from a dockerfile in a local directory
