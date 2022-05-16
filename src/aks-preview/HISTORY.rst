@@ -100,6 +100,7 @@ More specifically, for managed cluster snapshot, it will be
   * `az aks snapshot delete`
   * `az aks snapshot list`
   * `az aks snapshot show`
+
 For nodepool snapshot, it will be
   * `az aks nodepool snapshot create`
   * `az aks nodepool snapshot delete`
