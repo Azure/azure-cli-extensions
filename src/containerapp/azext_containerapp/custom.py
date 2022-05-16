@@ -309,7 +309,7 @@ def create_containerapp(cmd,
                         system_assigned=False,
                         disable_warnings=False,
                         user_assigned=None):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
 
     if yaml:
@@ -773,7 +773,7 @@ def create_managed_environment(cmd,
 
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
     if logs_customer_id is None or logs_key is None:
