@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
+from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -55,7 +56,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights)
+                     validate_container_app_name, _update_weights, get_vnet_location)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -754,7 +755,21 @@ def create_managed_environment(cmd,
                                internal_only=False,
                                tags=None,
                                disable_warnings=False,
+                               zone_redundant=False,
                                no_wait=False):
+    if zone_redundant:
+        if not infrastructure_subnet_resource_id:
+            raise RequiredArgumentMissingError("Cannot use --zone-redundant/-z without "
+                                               "--infrastructure-subnet-resource-id/-s")
+        if not is_valid_resource_id(infrastructure_subnet_resource_id):
+            raise ValidationError("--infrastructure-subnet-resource-id must be a valid resource id")
+        vnet_location = get_vnet_location(cmd, infrastructure_subnet_resource_id)
+        if location:
+            if _normalize_location(cmd, location) != vnet_location:
+                raise ValidationError(f"Location '{location}' does not match the subnet's location: '{vnet_location}'. "
+                                       "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
+        else:
+            location = vnet_location
 
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
@@ -777,6 +792,7 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["internalLoadBalancerEnabled"] = False
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
+    managed_env_def["properties"]["zoneRedundant"] = zone_redundant
 
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
