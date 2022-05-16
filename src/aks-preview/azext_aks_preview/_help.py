@@ -258,10 +258,10 @@ helps['aks create'] = """
           long-summary: If specified, please make sure the kubernetes version is larger than 1.10.6.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -549,10 +549,10 @@ helps['aks update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -1061,10 +1061,10 @@ helps['aks nodepool add'] = """
           short-summary: Enable cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --scale-down-mode
           type: string
           short-summary: "Describes how VMs are added to or removed from nodepools."
@@ -1191,10 +1191,10 @@ helps['aks nodepool update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --scale-down-mode
           type: string
           short-summary: "Describes how VMs are added to or removed from nodepools."
