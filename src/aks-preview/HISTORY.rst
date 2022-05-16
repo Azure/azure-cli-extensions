@@ -16,15 +16,15 @@ Pending
 ++++++
 
 * Fix: Updated validators for options --min-count and --max-count to support specifying values greater than 100. Related commands are
-  * `az aks create`
-  * `az aks update`
-  * `az aks nodepool add`
-  * `az aks nodepool update`
+    * `az aks create`
+    * `az aks update`
+    * `az aks nodepool add`
+    * `az aks nodepool update`
 
 0.5.70
 ++++++
 
-* Fix: Don't update storageProfile if not set .
+* Fix: Don't update storageProfile if not set.
 
 0.5.69
 ++++++
@@ -58,13 +58,13 @@ Pending
 ++++++
 
 * Add support for updating kubelet identity. Command is
-  * `az aks update --assign-kubelet-identity <kubelelt-identity-resource-id>`
+    * `az aks update --assign-kubelet-identity <kubelelt-identity-resource-id>`
 
 0.5.63
 ++++++
 
 * Add support to create cluster with managed cluster snapshot. Command is
-  * `az aks create --cluster-snapshot-id <snapshot-id>`
+    * `az aks create --cluster-snapshot-id <snapshot-id>`
 
 0.5.62
 ++++++
@@ -81,13 +81,13 @@ Pending
 ++++++
 
 * BugFix: Keep aad profile in PUT request of ManagedCluster. Modified commands are
-  * `az aks scale`
-  * `az aks upgrade`
-  * `az aks enable-addons`
-  * `az aks disable-addons`
-  * `az aks addon enable`
-  * `az aks addon disable`
-  * `az aks addon update`
+    * `az aks scale`
+    * `az aks upgrade`
+    * `az aks enable-addons`
+    * `az aks disable-addons`
+    * `az aks addon enable`
+    * `az aks addon disable`
+    * `az aks addon update`
 
 0.5.59
 ++++++
@@ -95,17 +95,19 @@ Pending
 * Add support for managed cluster snapshot commands and modify current nodepool snapshot commands.
 * Breaking Change: `az aks nodepool snapshot` will be the command to manage nodepool snapshot. `az aks snapshot` is used for managed cluster snapshot instead.
 
-More specifically, for managed cluster snapshot, it will be
-  * `az aks snapshot create`
-  * `az aks snapshot delete`
-  * `az aks snapshot list`
-  * `az aks snapshot show`
+  More specifically, for managed cluster snapshot, it will be
 
-For nodepool snapshot, it will be
-  * `az aks nodepool snapshot create`
-  * `az aks nodepool snapshot delete`
-  * `az aks nodepool snapshot list`
-  * `az aks nodepool snapshot show`
+    * `az aks snapshot create`
+    * `az aks snapshot delete`
+    * `az aks snapshot list`
+    * `az aks snapshot show`
+
+  For nodepool snapshot, it will be
+
+    * `az aks nodepool snapshot create`
+    * `az aks nodepool snapshot delete`
+    * `az aks nodepool snapshot list`
+    * `az aks nodepool snapshot show`
 
 0.5.58
 ++++++
@@ -116,7 +118,7 @@ For nodepool snapshot, it will be
 0.5.57
 ++++++
 
-* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
+* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`.
 
 0.5.56
 ++++++
@@ -131,9 +133,9 @@ For nodepool snapshot, it will be
 0.5.54
 ++++++
 
-* Add --host-group-id to `az aks create` and `az aks nodepool add` commands to support Azure Dedicated Host Group, which requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview"
-  * `az aks create --host-group-id`
-  * `az aks nodepool add --host-group-id`
+* Add --host-group-id to `az aks create` and `az aks nodepool add` commands to support Azure Dedicated Host Group, which requires registering the feature flag "Microsoft.ContainerService/DedicatedHostGroupPreview".
+    * `az aks create --host-group-id`
+    * `az aks nodepool add --host-group-id`
 
 0.5.53
 ++++++
@@ -141,14 +143,14 @@ For nodepool snapshot, it will be
 * Update the minimum required cli core version to `2.32.0`.
 * Update to use 2022-01-02-preview api version.
 * Add support for cluster creating with Capacity Reservation Group.
-  * `az aks create --crg-id`
+    * `az aks create --crg-id`
 * Add support for nodepool adding with Capacity Reservation Group.
-  * `az aks nodepool add --crg-id`
+    * `az aks nodepool add --crg-id`
 
 0.5.52
 ++++++
 
-* Add yaml template files to package data to fix issue [#148](https://github.com/Azure/aks-periscope/issues/148).
+* Add yaml template files to package data to fix issue `\#148 <https://github.com/Azure/aks-periscope/issues/148>`_.
 * Add support for using empty string to remove existing nodepool label by `az aks update --nodepool-labels` or `az aks nodepool update --labels`.
 * Add support for using empty string to remove existing node taints by `az nodepool update --node-taints`.
 * Correct the option for time control in `maintenanceconfiguration` series commands to `hourSlot`.
@@ -157,7 +159,7 @@ For nodepool snapshot, it will be
 0.5.51
 ++++++
 
-* Add currentKubernetesVersion column for az aks show --output table.
+* Add currentKubernetesVersion column for `az aks show --output table`.
 
 0.5.50
 ++++++
@@ -173,18 +175,18 @@ For nodepool snapshot, it will be
 0.5.48
 ++++++
 
-* Fix aks update issue with load balancer profile defaults being set when CLI arguments only include outbound IPs or outbound prefixes
+* Fix: `aks update` issue with load balancer profile defaults being set when CLI arguments only include outbound IPs or outbound prefixes.
 
 0.5.47
 ++++++
 
-* Add support for IPv4/IPv6 dual-stack networking AKS clusters
-* `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
+* Add support for IPv4/IPv6 dual-stack networking AKS clusters. Commands is
+    * `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`.
 
 0.5.46
 ++++++
 
-* Update to use 2021-10-01 api-version
+* Update to use 2021-10-01 api-version.
 
 0.5.45
 ++++++
@@ -197,10 +199,10 @@ For nodepool snapshot, it will be
 
 * In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
 
-0.5.43
-++++++
+0.5.43 (NOT RELEASED)
++++++++++++++++++++++
 
-* Enable the new implementation in command `aks create`, and change the dependent cli version to at least 2.30.0
+* Enable the new implementation in command `aks create`.
 
 0.5.42
 ++++++
@@ -214,181 +216,179 @@ For nodepool snapshot, it will be
 * Fix default value behavior for pod identity exception pod labels.
 
 0.5.40
-+++++
+++++++
 
 * Update the minimum required cli core version to `2.23.0`.
-* Add support for new snapshot commands
-  * `az aks snapshot create`
-  * `az aks snapshot delete`
-  * `az aks snapshot list`
-  * `az aks snapshot show`
-* Add --snapshot-id to creating/upgrading commands
-  * `az aks create --snapshot-id`
-  * `az aks nodepool add --snapshot-id`
-  * `az aks nodepool upgrade --snapshot-id`
+* Add support for new snapshot commands.
+    * `az aks snapshot create`
+    * `az aks snapshot delete`
+    * `az aks snapshot list`
+    * `az aks snapshot show`
+* Add --snapshot-id to creating/upgrading commands.
+    * `az aks create --snapshot-id`
+    * `az aks nodepool add --snapshot-id`
+    * `az aks nodepool upgrade --snapshot-id`
 
 0.5.39
-+++++
+++++++
 
-* Add commands for agentpool start stop feature
+* Add commands for agentpool start stop feature.
 
 0.5.38
-+++++
+++++++
 
 * Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon.
 
 0.5.37
-+++++
+++++++
 
-* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`.
 
 0.5.36
-+++++
+++++++
 
-* Update to use 2021-09-01 api-version
+* Update to use 2021-09-01 api-version.
 
 0.5.35
-+++++
+++++++
 
-* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
-and `az aks nodepool add`.
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create` and `az aks nodepool add`.
 
 0.5.34
-+++++
+++++++
 
-* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
-and `az aks nodepool add`
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create` and `az aks nodepool add`.
 
 0.5.33
-+++++
+++++++
 
 * Add support for new addon commands
-  * `az aks addon list`
-  * `az aks addon list-available`
-  * `az aks addon show`
-  * `az aks addon enable`
-  * `az aks addon disable`
-  * `az aks addon update`
+    * `az aks addon list`
+    * `az aks addon list-available`
+    * `az aks addon show`
+    * `az aks addon enable`
+    * `az aks addon disable`
+    * `az aks addon update`
 * Refactored code to bring addon specific functionality into a separate file.
 
 0.5.32
-+++++
+++++++
 
-* Update to use 2021-08-01 api-version
+* Update to use 2021-08-01 api-version.
 
 0.5.31
-+++++
+++++++
 
-* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'
+* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'.
 
 0.5.30
-+++++
+++++++
 
 * Add preview support for setting scaleDownMode field on nodepools. Requires registering the feature flag "Microsoft.ContainerService/AKS-ScaleDownModePreview" for setting the value to "Deallocate".
 
 0.5.29
-+++++
+++++++
 
-* Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified)
-* Add podMaxPids argument for kubelet-config
+* Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified).
+* Add podMaxPids argument for kubelet-config.
 
 0.5.28
-+++++
+++++++
 
-* Update to adopt 2021-07-01 api-version
+* Update to adopt 2021-07-01 api-version.
 
 0.5.27
-+++++
+++++++
 
 * GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
 
 0.5.26
-+++++
+++++++
 
-* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config.
 
 0.5.25
-+++++
+++++++
 
-* Add support for http proxy
+* Add support for http proxy.
 
 0.5.24
-+++++
+++++++
 
-* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade".
 
 0.5.23
-+++++
+++++++
 
-* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work.
 
 0.5.22
-+++++
+++++++
 
-* Fix issue in dcr template
+* Fix issue in dcr template.
 
 0.5.21
-+++++
+++++++
 
 * Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
 
 0.5.20
-+++++
+++++++
 
 * Support enabling monitoring on AKS clusters with msi auth
 * Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
 
 0.5.19
-+++++
+++++++
 
 * Remove azure-defender from list of available addons to install via `az aks enable-addons` command
 
 0.5.18
-+++++
+++++++
 
 * Fix issue with node config not consuming logging settings
 
 0.5.17
-+++++
+++++++
 
 * Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
 
 0.5.16
-+++++
+++++++
 
 * Vendor SDK using latest swagger with optional query parameter added
 * Support private cluster public fqdn feature
 
 0.5.15
-+++++
+++++++
 
-* Update to use 2021-05-01 api-version
+* Update to use 2021-05-01 api-version.
 
 0.5.14
-+++++
+++++++
 
 * Add os-sku argument for cluster and nodepool creation
 
 0.5.13
-+++++
+++++++
 
 * Add compatible logic for the track 2 migration of resource dependence
 
 0.5.12
-+++++
+++++++
 
 * Add --enable-azure-rbac and --disable-azure-rbac in aks update
 * Support disabling local accounts
 * Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
 
 0.5.11
-+++++
+++++++
 
 * Add get OS options support
 * Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
 
 0.5.10
-+++++
+++++++
 
 * Add `--binding-selector` to AAD pod identity add sub command
 * Support using custom kubelet identity
@@ -450,64 +450,64 @@ and `az aks nodepool add`
 * Breaking Change: remove argument '--diable-sgx-quotehelper'.
 
 0.4.73
-+++++
+++++++
 
 * Update to use 2020-12-01 api-version
 * Add argument '--enable-encryption-at-host'
 
 0.4.72
-++++++
++++++++
 
 * Add --no-uptime-sla
 * Create MSI clusters by default.
 
 0.4.71
-++++++
++++++++
 
 * Add support using custom private dns zone resource id for parameter '--private-dns-zone'
 
 0.4.70
-++++++
++++++++
 
 * Revert to use CLIError to be compatible with azure cli versions < 2.15.0
 
 0.4.69
-+++++
++++++++
 
 * Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
 
 0.4.68
-+++++
++++++++
 
 * Add support for AAD Pod Identity resources configuration in Azure CLI.
 
 0.4.67
-+++++
+++++++
 
 * Add support for node configuration when creating cluster or agent pool.
 * Support private DNS zone for AKS private cluster.
 
 0.4.66
-+++++
+++++++
 
 * Add support for GitOps as an AKS addon
 * Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
 
 0.4.65
-+++++
+++++++
 
 * Honor addon names defined in Azure CLI
 * Add LicenseType support for Windows
 * Remove patterns for adminUsername and adminPassword in WindowsProfile
 
 0.4.64
-+++++
+++++++
 
 * Add support for Open Service Mesh as an AKS addon
 * Add support to get available upgrade versions for an agent pool in AKS
 
 0.4.63
-+++++
+++++++
 
 * Enable the September (2020-09-01) for use with the AKS commands
 * Support Start/Stop cluster feature in preview
@@ -517,64 +517,64 @@ and `az aks nodepool add`
 * Remove PREVIEW from azure policy addon
 
 0.4.62
-+++++
+++++++
 
 * Add support for enable/disable confcom (sgx) addon.
 
 0.4.61
-+++++
+++++++
 
 * Fix AGIC typo and remove preview label from VN #2141
 * Set network profile when using basic load balancer. #2137
 * Fix bug that compare float number with 0 #2213
 
 0.4.60
-+++++
+++++++
 
 * Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
 
 0.4.59
-+++++
+++++++
 
 * Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
 
 0.4.58
-+++++
+++++++
 
 * Added clearer error message for invalid addon names
 
 0.4.57
-+++++
+++++++
 
 * Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.
 
 0.4.56
-+++++
+++++++
 
 * Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
 
 0.4.55
-+++++
+++++++
 
 * Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization
 
 0.4.54
-+++++
+++++++
 
 * Support "--enable-aad" for "az aks update" to update an existing AAD-Integrated cluster to the new AKS-managed AAD experience
 
 0.4.53
-+++++
+++++++
 
 * Add --ppg for "az aks create" and "az aks nodepool add"
 
 0.4.52
-+++++
+++++++
 
 * Add --uptime-sla for az aks update
 
 0.4.51
-+++++
+++++++
 
 * Remove --appgw-shared flag from AGIC addon
 * Handle role assignments for AGIC addon post-cluster creation
@@ -582,87 +582,87 @@ and `az aks nodepool add`
 * Revert default VM SKU to Standard_DS2_v2
 
 0.4.50
-+++++
+++++++
 
 * Add "--max-surge" for az aks nodepool add/update/upgrade
 
 0.4.49
-+++++
+++++++
 
 * Fix break in get-versions since container service needs to stay on old api.
 
 0.4.48
-+++++
+++++++
 
 * Fix issues of storage account name for az aks kollect
 
 0.4.47
-+++++
+++++++
 
 * Add "--node-image-only" for "az aks nodepool upgrade" and "az aks upgrade"".
 
 0.4.46
-+++++
+++++++
 
 * Fix issues for az aks kollect on private clusters
 
 0.4.45
-+++++
+++++++
 
 * Add "--aks-custom-headers" for "az aks nodepool add" and "az aks update"
 
 0.4.44
-+++++
+++++++
 
 * Fix issues with monitoring addon enabling with CLI versions 2.4.0+
 
 0.4.43
-+++++
+++++++
 
 * Add support for VMSS node public IP.
 
 0.4.38
-+++++
+++++++
 
 * Add support for AAD V2.
 
 0.4.37
-+++++
+++++++
 
 * Added slb outbound ip fix
 
 0.4.36
-+++++
+++++++
 
 * Added --uptime-sla for paid service
 
 0.4.35
-+++++
+++++++
 
 * Added support for creation time node labels
 
 0.4.34
-+++++
+++++++
 
 * Remove preview flag for private cluster feature.
 
 0.4.33
-+++++
+++++++
 
 * Adding az aks get-credentials --context argument
 
 0.4.32
-+++++
+++++++
 
 * Adding support for user assigned msi for monitoring addon.
 
 0.4.31
-+++++
+++++++
 
 * Fixed a regular agent pool creation bug.
 
 0.4.30
-+++++
+++++++
 
 * Remove "Low" option from --priority
 * Add "Spot" option to --priority
@@ -670,89 +670,89 @@ and `az aks nodepool add`
 * Add "--cluster-autoscaler-profile" for configuring autoscaler settings
 
 0.4.29
-+++++
+++++++
 
 * Add option '--nodepool-tags for create cluster'
 * Add option '--tags' for add or update node pool
 
 0.4.28
-+++++
+++++++
 
 * Add option '--outbound-type' for create
 * Add options '--load-balancer-outbound-ports' and '--load-balancer-idle-timeout' for create and update
 
 0.4.27
-+++++
+++++++
 
 * Fixed aks cluster creation error
 
 0.4.26
-+++++
+++++++
 
 * Update to use 2020-01-01 api-version
 * Support cluster creation with server side encryption using customer managed key
 
 0.4.25
-+++++
+++++++
 
 * List credentials for different users via parameter `--user`
 
 0.4.24
-+++++
+++++++
 
 * added custom header support
 
 0.4.23
-+++++
+++++++
 
 * Enable GA support of apiserver authorized IP ranges via parameter `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
 
 0.4.21
-+++++
+++++++
 
 * Support cluster certificate rotation operation using `az aks rotate-certs`
 * Add support for `az aks kanalyze`
 
 0.4.20
-+++++
+++++++
 
 * Add commands '--zones' and '-z' for availability zones in aks
 
 0.4.19
-+++++
+++++++
 
 * Refactor and remove a custom way of getting subscriptions
 
 0.4.18
-+++++
+++++++
 
 * Update to use 2019-10-01 api-version
 
 0.4.17
-+++++
+++++++
 
 * Add support for public IP per node during node pool creation
 * Add support for taints during node pool creation
 * Add support for low priority node pool
 
 0.4.16
-+++++
+++++++
 
 * Add support for `az aks kollect`
 * Add support for `az aks upgrade --control-plane-only`
 
 0.4.15
-+++++
+++++++
 
 * Set default cluster creation to SLB and VMSS
 
 0.4.14
-+++++
+++++++
 
 * Add support for using managed identity to manage cluster resource group
 
 0.4.13
-++++++
++++++++
 
 * Rename a few options for ACR integration, which includes
   * Rename `--attach-acr <acr-name-or-resource-id>` in `az aks create` command, which allows for attach the ACR to AKS cluster.
@@ -760,21 +760,21 @@ and `az aks nodepool add`
 * Add "--enable-private-cluster" flag for enabling private cluster on creation.
 
 0.4.12
-+++++
+++++++
 
 * Bring back "enable-vmss" flag  for backward compatibility
 * Revert "Set default availability type to VMSS" for backward compatibility
 * Revert "Set default load balancer SKU to Standard" for backward compatibility
 
 0.4.11
-+++++
+++++++
 
 * Add support for load-balancer-profile
 * Set default availability type to VMSS
 * Set default load balancer SKU to Standard
 
 0.4.10
-+++++
+++++++
 
 * Add support for `az aks update --disable-acr --acr <name-or-id>`
 
