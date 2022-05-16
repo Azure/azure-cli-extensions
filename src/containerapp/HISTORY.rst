@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.5
+++++++
+* Add parameter --zone-redundant to 'az containerapp env create'
+
 0.3.4
 ++++++
 * BREAKING CHANGE: 'az containerapp up' and 'az containerapp github-action add' now use the github repo's default branch instead of "main"

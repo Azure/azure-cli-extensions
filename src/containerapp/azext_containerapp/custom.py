@@ -767,7 +767,7 @@ def create_managed_environment(cmd,
         if location:
             if _normalize_location(cmd, location) != vnet_location:
                 raise ValidationError(f"Location '{location}' does not match the subnet's location: '{vnet_location}'. "
-                                       "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
+                                      "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
         else:
             location = vnet_location
 
