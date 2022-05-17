@@ -45,6 +45,7 @@ def load_arguments(self, _):
     sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
     auto_accept_type = CLIArgumentType(help='If specified, provider terms are accepted without an interactive Y/N prompt.')
+    autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -98,3 +99,6 @@ def load_arguments(self, _):
     with self.argument_context('quantum offerings') as c:
         c.argument('provider_id', provider_id_type)
         c.argument('sku', sku_type)
+
+    with self.argument_context('quantum offerings list') as c:
+        c.argument('autoadd_only', autoadd_only_type)
