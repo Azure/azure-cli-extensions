@@ -12,26 +12,46 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.71
+++++++
+
+* Fix: Updated validators for options --min-count and --max-count to support specifying values greater than 100. Related commands are
+  * `az aks create`
+  * `az aks update`
+  * `az aks nodepool add`
+  * `az aks nodepool update`
+
+0.5.70
+++++++
+
+* Fix: Don't update storageProfile if not set .
+
 0.5.69
 ++++++
+
 * Fix: Raise error when user provides invalid value for `--os-sku`.
 
 0.5.68
 ++++++
+
 * Add option `Windows2019`, `Windows2022` to `--os-sku` for `az aks nodepool add`.
 
 0.5.67
 +++++++++++++++++++++
-* Add support for csi drivers extensibility.
+
+* Update the minimum required cli core version to `2.35.0`.
 * Update to use 2022-04-02-preview api version.
+* Add support for csi drivers extensibility.
 * Add support for apiserver vnet integration.
 
 0.5.66
 ++++++
+
 * Prompt when no arguments are given to update and nodepool update to see if the customer wants to try goal seek to current settings.
 
 0.5.65
 ++++++
+
 * Add `--ignore-pod-disruption-budget` flag for `az aks nodepool delete` for ignoring PodDisruptionBudget.
 
 0.5.64
@@ -117,6 +137,7 @@ for nodepool snapshot, it will be
 0.5.53
 ++++++
 
+* Update the minimum required cli core version to `2.32.0`.
 * Update to use 2022-01-02-preview api version.
 * Add support for cluster creating with Capacity Reservation Group.
   * `az aks create --crg-id`
@@ -145,6 +166,7 @@ for nodepool snapshot, it will be
 0.5.49
 ++++++
 
+* Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 
 0.5.48
@@ -166,6 +188,7 @@ for nodepool snapshot, it will be
 0.5.45
 ++++++
 
+* Update the minimum required cli core version to `2.30.0`.
 * Remove the snapshot name trimming in `az aks snapshot create` command.
 
 0.5.44
@@ -181,6 +204,7 @@ for nodepool snapshot, it will be
 0.5.42
 ++++++
 
+* Update the minimum required cli core version to `2.27.0`.
 * Fix default value behavior for pod identity exception pod labels in upgrade/scale calls.
 
 0.5.41
@@ -191,6 +215,7 @@ for nodepool snapshot, it will be
 0.5.40
 +++++
 
+* Update the minimum required cli core version to `2.23.0`.
 * Add support for new snapshot commands
   * `az aks snapshot create`
   * `az aks snapshot delete`
