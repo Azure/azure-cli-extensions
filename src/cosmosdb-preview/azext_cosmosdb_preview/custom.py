@@ -51,9 +51,7 @@ from azure.cli.command_modules.cosmosdb.custom import _convert_to_utc_timestamp
 
 from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_sql_resources,
-    cf_restorable_mongodb_resources,
-    cf_sql_resources,
-    cf_mongo_db_resources
+    cf_restorable_mongodb_resources
 )
 
 
@@ -1163,7 +1161,8 @@ def cli_begin_list_sql_container_partition_merge(client,
         client.get_sql_container(resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name), format(database_name))
+            raise CLIError("(NotFound) Container with name '{container_name}' in database '{database_name}' could not be found.")
+        raise CLIError("{}".format(str(ex)))
 
     mergeParameters = MergeParameters(is_dry_run=is_dry_run)
 
@@ -1187,7 +1186,8 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
         client.get_mongo_db_collection(resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) collection with name '{}' in mongodb '{} could not be found.".format(container_name), format(database_name))
+            raise CLIError("(NotFound) collection with name '{container_name}' in mongodb '{database_name}' could not be found.")
+        raise CLIError("{}".format(str(ex)))
 
     mergeParameters = MergeParameters(is_dry_run=is_dry_run)
 
