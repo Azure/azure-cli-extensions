@@ -89,7 +89,8 @@ interactions:
     body: '{"location": "eastus2", "kind": "GlobalDocumentDB", "properties": {"locations":
       [{"locationName": "eastus2", "failoverPriority": 0, "isZoneRedundant": false}],
       "databaseAccountOfferType": "Standard", "apiProperties": {}, "createMode": "Default",
-      "backupPolicy": {"type": "Continuous"}}}'
+      "backupPolicy": {"type": "Continuous", "continuousModeProperties": {"tier":
+      "Continuous30Days"}}}}'
     headers:
       Accept:
       - application/json
@@ -100,7 +101,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '286'
+      - '344'
       Content-Type:
       - application/json
       ParameterSetName:

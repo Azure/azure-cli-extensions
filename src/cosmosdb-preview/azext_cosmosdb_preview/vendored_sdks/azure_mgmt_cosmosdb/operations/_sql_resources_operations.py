@@ -675,6 +675,54 @@ def build_list_sql_container_partition_merge_request_initial(
     )
 
 
+def build_list_sql_container_partition_merge_request_initial(
+    subscription_id: str,
+    resource_group_name: str,
+    account_name: str,
+    database_name: str,
+    container_name: str,
+    *,
+    json: JSONType = None,
+    content: Any = None,
+    **kwargs: Any
+) -> HttpRequest:
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    api_version = "2022-02-15-preview"
+    accept = "application/json"
+    # Construct URL
+    url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/{accountName}/sqlDatabases/{databaseName}/containers/{containerName}/partitionMerge')
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str', min_length=1),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "accountName": _SERIALIZER.url("account_name", account_name, 'str', max_length=50, min_length=3, pattern=r'^[a-z0-9]+(-[a-z0-9]+)*'),
+        "databaseName": _SERIALIZER.url("database_name", database_name, 'str'),
+        "containerName": _SERIALIZER.url("container_name", container_name, 'str'),
+    }
+
+    url = _format_url_section(url, **path_format_arguments)
+
+    # Construct parameters
+    query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="POST",
+        url=url,
+        params=query_parameters,
+        headers=header_parameters,
+        json=json,
+        content=content,
+        **kwargs
+    )
+
+
 def build_get_sql_container_throughput_request(
     subscription_id: str,
     resource_group_name: str,

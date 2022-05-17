@@ -4576,12 +4576,15 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/92646953-5a40-432d-95ad-8d1a0d184c39?api-version=2022-02-15-preview
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Failed","error":{"code":"InternalServerError","message":"The
+        resource failed to be created because of an internal configuration error:
+        BadRequest. Please file a support ticket.\r\nActivityId: 1a6ca65a-cb42-11ec-ae0e-8045dd1923fe,
+        Microsoft.Azure.Documents.Common/2.14.0, Microsoft.Azure.Documents.Common/2.14.0"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '324'
       content-type:
       - application/json
       date:

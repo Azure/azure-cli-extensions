@@ -45,7 +45,8 @@ interactions:
     body: '{"location": "eastus2", "kind": "GlobalDocumentDB", "properties": {"locations":
       [{"locationName": "eastus2", "failoverPriority": 0, "isZoneRedundant": false}],
       "databaseAccountOfferType": "Standard", "capabilities": [{"name": "EnableTable"}],
-      "apiProperties": {}, "createMode": "Default", "backupPolicy": {"type": "Continuous"}}}'
+      "apiProperties": {}, "createMode": "Default", "backupPolicy": {"type": "Continuous",
+      "continuousModeProperties": {"tier": "Continuous30Days"}}}}'
     headers:
       Accept:
       - application/json
@@ -56,7 +57,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '329'
+      - '387'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -678,7 +679,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -801,7 +802,7 @@ interactions:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '577'
+      - '623'
       content-type:
       - application/json
       date:
