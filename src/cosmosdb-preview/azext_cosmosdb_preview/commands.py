@@ -11,6 +11,7 @@ from azext_cosmosdb_preview._client_factory import (
     cf_cassandra_data_center,
     cf_service,
     cf_mongo_db_resources,
+    cf_sql_resources,
     cf_db_accounts,
     cf_gremlin_resources,
     cf_table_resources,
@@ -186,3 +187,20 @@ def load_command_table(self, _):
         g.command('pause', 'pause')
         g.command('resume', 'resume')
         g.command('cancel', 'cancel')
+
+    # Merge partitions for Sql containers
+    cosmosdb_sql_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SqlResourcesOperations.{}',
+        client_factory=cf_sql_resources)
+
+    with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('merge', 'cli_begin_list_sql_container_partition_merge', is_preview=True)
+
+
+    # Merge partitions for mongodb collections
+    cosmosdb_mongo_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
+        client_factory=cf_mongo_db_resources)
+
+    with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('merge', 'cli_begin_list_mongo_db_collection_partition_merge', is_preview=True)
