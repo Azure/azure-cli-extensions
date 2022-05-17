@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001","name":"test_azure_firewall_policy_update_premiumonlyproperty_issue000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-11-23T02:41:30Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001","name":"test_azure_firewall_policy_update_premiumonlyproperty_issue000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2022-05-11T19:56:39Z","AdminEmail":"cnfwoncall@microsoft.com","AlertDaysBeforeDeletion":"5","Created":"2022-05-11T19:56:40.6761478Z","CreationDate":"2022-05-11T19:56:40.6761080Z","DaysUntilDeletion":"20"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '591'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:37 GMT
+      - Wed, 11 May 2022 19:56:42 GMT
       expires:
       - '-1'
       pragma:
@@ -42,8 +42,8 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "properties": {"threatIntelMode": "Alert",
-      "sku": {"tier": "Standard"}}}'
+    body: '{"location": "westus2", "properties": {"threatIntelMode": "Alert", "sku":
+      {"tier": "Standard"}}}'
     headers:
       Accept:
       - application/json
@@ -54,15 +54,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '100'
+      - '96'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -70,18 +70,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"893e35d2-353f-4c96-9abf-28802b77c020\",\r\n  \"location\": \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9c5620e0-cbc2-42de-b097-3ac246c64960?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/a7423a1d-0ab6-42aa-b8b0-e3e7ca343fbf?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
-      - '593'
+      - '579'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:44 GMT
+      - Wed, 11 May 2022 19:56:52 GMT
       expires:
       - '-1'
       pragma:
@@ -111,9 +111,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/9c5620e0-cbc2-42de-b097-3ac246c64960?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/a7423a1d-0ab6-42aa-b8b0-e3e7ca343fbf?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -125,7 +125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:54 GMT
+      - Wed, 11 May 2022 19:57:02 GMT
       expires:
       - '-1'
       pragma:
@@ -157,9 +157,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -167,18 +167,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"893e35d2-353f-4c96-9abf-28802b77c020\",\r\n  \"location\": \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '594'
+      - '580'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:55 GMT
+      - Wed, 11 May 2022 19:57:02 GMT
       etag:
-      - '"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8"'
+      - '"893e35d2-353f-4c96-9abf-28802b77c020"'
       expires:
       - '-1'
       pragma:
@@ -210,9 +210,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -220,18 +220,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"893e35d2-353f-4c96-9abf-28802b77c020\",\r\n  \"location\": \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '594'
+      - '580'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:58 GMT
+      - Wed, 11 May 2022 19:57:04 GMT
       etag:
-      - '"7b0e1fe4-19fb-406c-93d7-5be4d7d89aa8"'
+      - '"893e35d2-353f-4c96-9abf-28802b77c020"'
       expires:
       - '-1'
       pragma:
@@ -251,8 +251,8 @@ interactions:
       message: OK
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy",
-      "location": "eastus2euap", "properties": {"threatIntelMode": "Deny", "sku":
-      {"tier": "Standard"}}}'
+      "location": "westus2", "properties": {"threatIntelMode": "Deny", "sku": {"tier":
+      "Standard"}}}'
     headers:
       Accept:
       - application/json
@@ -263,15 +263,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '307'
+      - '293'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -279,18 +279,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"6778a7ed-84da-45b8-ab7c-cb84b2ec965d\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"8657516d-504b-4c47-b520-785100275f18\",\r\n  \"location\": \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/2a527da0-a0af-4ab4-b2f9-a8eefc67e901?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/a77e5328-e674-44d9-95e9-bf06de32bf4a?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
-      - '592'
+      - '578'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:41:59 GMT
+      - Wed, 11 May 2022 19:57:05 GMT
       expires:
       - '-1'
       pragma:
@@ -306,7 +306,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -324,9 +324,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/nfvOperations/2a527da0-a0af-4ab4-b2f9-a8eefc67e901?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/a77e5328-e674-44d9-95e9-bf06de32bf4a?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -338,7 +338,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:42:10 GMT
+      - Wed, 11 May 2022 19:57:15 GMT
       expires:
       - '-1'
       pragma:
@@ -370,9 +370,9 @@ interactions:
       ParameterSetName:
       - -g -n --threat-intel-mode
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.10.4 (Windows-10-10.0.22000-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
@@ -380,18 +380,18 @@ interactions:
         \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_update_premiumonlyproperty_issue000001/providers/Microsoft.Network/firewallPolicies/testpolicy\",\r\n
         \ \"name\": \"testpolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"6778a7ed-84da-45b8-ab7c-cb84b2ec965d\",\r\n  \"location\": \"eastus2euap\"\r\n}"
+        \ \"etag\": \"8657516d-504b-4c47-b520-785100275f18\",\r\n  \"location\": \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '593'
+      - '579'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 23 Nov 2021 02:42:10 GMT
+      - Wed, 11 May 2022 19:57:17 GMT
       etag:
-      - '"6778a7ed-84da-45b8-ab7c-cb84b2ec965d"'
+      - '"8657516d-504b-4c47-b520-785100275f18"'
       expires:
       - '-1'
       pragma:
