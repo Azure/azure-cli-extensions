@@ -19,7 +19,8 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_
 
 from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
-from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS
+from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
+                         LOG_ANALYTICS_RP)
 
 logger = get_logger(__name__)
 
@@ -172,15 +173,17 @@ def get_workflow(github_repo, name):  # pylint: disable=inconsistent-return-stat
     workflows = list(github_repo.get_workflows())
     workflows.sort(key=lambda r: r.created_at, reverse=True)  # sort by latest first
     for wf in workflows:
-        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for containerapp" in wf.name:
+        if wf.path.startswith(f".github/workflows/{name}") and "Trigger auto deployment for" in wf.name:
             return wf
 
 
 def trigger_workflow(token, repo, name, branch):
-    logger.warning("Triggering Github Action")
-    get_workflow(get_github_repo(token, repo), name).create_dispatch(branch)
+    wf = get_workflow(get_github_repo(token, repo), name)
+    logger.warning(f"Triggering Github Action: {wf.path}")
+    wf.create_dispatch(branch)
 
 
+# pylint:disable=unused-argument
 def await_github_action(cmd, token, repo, branch, name, resource_group_name, timeout_secs=1200):
     from .custom import show_github_action
     from ._clients import PollingAnimation
@@ -242,7 +245,7 @@ def await_github_action(cmd, token, repo, branch, name, resource_group_name, tim
 
 def repo_url_to_name(repo_url):
     repo = None
-    repo = repo_url.split('/')
+    repo = [s for s in repo_url.split('/') if s]
     if len(repo) >= 2:
         repo = '/'.join(repo[-2:])
     return repo
@@ -254,22 +257,56 @@ def _get_location_from_resource_group(cli_ctx, resource_group_name):
     return group.location
 
 
-def _validate_subscription_registered(cmd, resource_provider, subscription_id=None):
-    providers_client = None
+def _register_resource_provider(cmd, resource_provider):
+    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+
+    logger.warning(f"Registering resource provider {resource_provider} ...")
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
+
+    client = providers_client_factory(cmd.cli_ctx)
+    try:
+        client.register(resource_provider, properties=properties)
+        # wait for registration to finish
+        timeout_secs = 120
+        registration = _is_resource_provider_registered(cmd, resource_provider)
+        start = datetime.utcnow()
+        while not registration:
+            registration = _is_resource_provider_registered(cmd, resource_provider)
+            time.sleep(SHORT_POLLING_INTERVAL_SECS)
+            if (datetime.utcnow() - start).seconds >= timeout_secs:
+                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
+
+    except Exception as e:
+        msg = ("This operation requires requires registering the resource provider {0}. "
+               "We were unable to perform that registration on your behalf: "
+               "Server responded with error message -- {1} . "
+               "Please check with your admin on permissions, "
+               "or try running registration manually with: az provider register --wait --namespace {0}")
+        raise ValidationError(resource_provider, msg.format(e.args)) from e
+
+
+def _is_resource_provider_registered(cmd, resource_provider, subscription_id=None):
+    registered = None
     if not subscription_id:
         subscription_id = get_subscription_id(cmd.cli_ctx)
-
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, subscription_id)
         registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
 
-        if not (registration_state and registration_state.lower() == 'registered'):
-            raise ValidationError('Subscription {} is not registered for the {} resource provider. Please run \"az provider register -n {} --wait\" to register your subscription.'.format(
-                subscription_id, resource_provider, resource_provider))
-    except ValidationError as ex:
-        raise ex
+        registered = (registration_state and registration_state.lower() == 'registered')
     except Exception:  # pylint: disable=broad-except
         pass
+    return registered
+
+
+def _validate_subscription_registered(cmd, resource_provider, subscription_id=None):
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+    registered = _is_resource_provider_registered(cmd, resource_provider, subscription_id)
+    if registered is False:
+        raise ValidationError(f'Subscription {subscription_id} is not registered for the {resource_provider} '
+                              f'resource provider. Please run "az provider register -n {resource_provider} --wait" '
+                              'to register your subscription.')
 
 
 def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
@@ -421,7 +458,7 @@ def _get_default_log_analytics_location(cmd):
     providers_client = None
     try:
         providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
-        resource_types = getattr(providers_client.get("Microsoft.OperationalInsights"), 'resource_types', [])
+        resource_types = getattr(providers_client.get(LOG_ANALYTICS_RP), 'resource_types', [])
         res_locations = []
         for res in resource_types:
             if res and getattr(res, 'resource_type', "") == "workspaces":
@@ -514,14 +551,14 @@ def _get_log_analytics_workspace_name(cmd, logs_customer_id, resource_group_name
 def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name):
     if logs_customer_id is None and logs_key is None:
         logger.warning("No Log Analytics workspace provided.")
+        _validate_subscription_registered(cmd, LOG_ANALYTICS_RP)
         try:
-            _validate_subscription_registered(cmd, "Microsoft.OperationalInsights")
             log_analytics_client = log_analytics_client_factory(cmd.cli_ctx)
             log_analytics_shared_key_client = log_analytics_shared_key_client_factory(cmd.cli_ctx)
 
             log_analytics_location = location
             try:
-                _ensure_location_allowed(cmd, log_analytics_location, "Microsoft.OperationalInsights", "workspaces")
+                _ensure_location_allowed(cmd, log_analytics_location, LOG_ANALYTICS_RP, "workspaces")
             except Exception:  # pylint: disable=broad-except
                 log_analytics_location = _get_default_log_analytics_location(cmd)
 
@@ -793,41 +830,125 @@ def update_nested_dictionary(orig_dict, new_dict):
     return orig_dict
 
 
-def _is_valid_weight(weight):
+def _validate_weight(weight):
     try:
         n = int(weight)
         if 0 <= n <= 100:
             return True
-        return False
-    except ValueError:
-        return False
+        raise ValidationError('Traffic weights must be integers between 0 and 100')
+    except ValueError as ex:
+        raise ValidationError('Traffic weights must be integers between 0 and 100') from ex
 
 
-def _update_traffic_weights(containerapp_def, list_weights):
-    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"] or list_weights and len(list_weights):
+def _update_revision_weights(containerapp_def, list_weights):
+    old_weight_sum = 0
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
         containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not list_weights:
+        return 0
 
     for new_weight in list_weights:
         key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        revision = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
         is_existing = False
 
-        if len(key_val) != 2:
-            raise ValidationError('Traffic weights must be in format \"<revision>=weight <revision2>=<weigh2> ...\"')
-
-        if not _is_valid_weight(key_val[1]):
-            raise ValidationError('Traffic weights must be integers between 0 and 100')
-
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+                if revision.lower() == "latest":
+                    old_weight_sum += existing_weight["weight"]
+                    existing_weight["weight"] = weight
+                    is_existing = True
+                    break
+            elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() == revision.lower():
+                old_weight_sum += existing_weight["weight"]
+                existing_weight["weight"] = weight
+                is_existing = True
+                break
         if not is_existing:
             containerapp_def["properties"]["configuration"]["ingress"]["traffic"].append({
-                "revisionName": key_val[0],
-                "weight": int(key_val[1])
+                "revisionName": revision if revision.lower() != "latest" else None,
+                "weight": int(weight),
+                "latestRevision": revision.lower() == "latest"
             })
+    return old_weight_sum
+
+
+def _append_label_weights(containerapp_def, label_weights, revision_weights):
+    if "traffic" not in containerapp_def["properties"]["configuration"]["ingress"]:
+        containerapp_def["properties"]["configuration"]["ingress"]["traffic"] = []
+
+    if not label_weights:
+        return
+
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]  # this is to check if we already have that revision weight passed
+    for new_weight in label_weights:
+        key_val = new_weight.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError('Traffic weights must be in format \"<revision>=<weight> <revision2>=<weight2> ...\"')
+        label = key_val[0]
+        weight = key_val[1]
+        _validate_weight(weight)
+        is_existing = False
+
+        for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+            if "label" in existing_weight and existing_weight["label"].lower() == label.lower():
+                if "revisionName" in existing_weight and existing_weight["revisionName"] and existing_weight["revisionName"].lower() in revision_weight_names:
+                    logger.warning("Already passed value for revision {}, will not overwrite with {}.".format(existing_weight["revisionName"], new_weight))  # pylint: disable=logging-format-interpolation
+                    is_existing = True
+                    break
+                revision_weights.append("{}={}".format(existing_weight["revisionName"] if "revisionName" in existing_weight and existing_weight["revisionName"] else "latest", weight))
+                is_existing = True
+                break
+
+        if not is_existing:
+            raise ValidationError(f"No label {label} assigned to any traffic weight.")
+
+
+def _update_weights(containerapp_def, revision_weights, old_weight_sum):
+
+    new_weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights])
+    revision_weight_names = [w.split('=', 1)[0].lower() for w in revision_weights]
+    divisor = sum([int(w["weight"]) for w in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]]) - new_weight_sum
+    round_up = True
+    # if there is no change to be made, don't even try (also can't divide by zero)
+    if divisor == 0:
+        return
+
+    scale_factor = (old_weight_sum - new_weight_sum) / divisor + 1
+
+    for existing_weight in containerapp_def["properties"]["configuration"]["ingress"]["traffic"]:
+        if "latestRevision" in existing_weight and existing_weight["latestRevision"]:
+            if "latest" not in revision_weight_names:
+                existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+        elif "revisionName" in existing_weight and existing_weight["revisionName"].lower() not in revision_weight_names:
+            existing_weight["weight"], round_up = _round(scale_factor * existing_weight["weight"], round_up)
+
+
+# required because what if .5, .5? We need sum to be 100, so can't round up or down both times
+def _round(number, round_up):
+    import math
+    number = round(number, 2)  # required because we are dealing with floats
+    if round_up:
+        return math.ceil(number), not round_up
+    return math.floor(number), not round_up
+
+
+def _validate_traffic_sum(revision_weights):
+    weight_sum = sum([int(w.split('=', 1)[1]) for w in revision_weights if len(w.split('=', 1)) == 2 and _validate_weight(w.split('=', 1)[1])])
+    if weight_sum > 100:
+        raise ValidationError("Traffic sums may not exceed 100.")
 
 
 def _get_app_from_revision(revision):
     if not revision:
         raise ValidationError('Invalid revision. Revision must not be empty')
-
+    if revision.lower() == "latest":
+        raise ValidationError('Please provide a name for your containerapp. Cannot lookup name of containerapp without a full revision name.')
     revision = revision.split('--')
     revision.pop()
     revision = "--".join(revision)

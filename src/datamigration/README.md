@@ -26,7 +26,7 @@ az datamigration performance-data-collection --connection-string "Data Source=La
 
 ##### Get-sku-recommendation #####
 ```
-az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks, AdventureWorks2 --display-result --overwrite
+az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutput" --database-allow-list AdventureWorks AdventureWorks2 --display-result --overwrite
 ```
 
 #### datamigration sql-managed-instance ####

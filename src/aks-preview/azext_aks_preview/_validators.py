@@ -93,13 +93,13 @@ def validate_linux_host_name(namespace):
 
 
 def validate_nodes_count(namespace):
-    """Validate that min_count and max_count is set to 1-100"""
+    """Validate that min_count and max_count is set to 0-1000"""
     if namespace.min_count is not None:
-        if namespace.min_count < 1 or namespace.min_count > 100:
-            raise CLIError('--min-count must be in the range [1,100]')
+        if namespace.min_count < 0 or namespace.min_count > 1000:
+            raise CLIError('--min-count must be in the range [0,1000]')
     if namespace.max_count is not None:
-        if namespace.max_count < 1 or namespace.max_count > 100:
-            raise CLIError('--max-count must be in the range [1,100]')
+        if namespace.max_count < 0 or namespace.max_count > 1000:
+            raise CLIError('--max-count must be in the range [0,1000]')
 
 
 def validate_ip_ranges(namespace):
@@ -263,6 +263,10 @@ def validate_vnet_subnet_id(namespace):
 
 def validate_pod_subnet_id(namespace):
     _validate_subnet_id(namespace.pod_subnet_id, "--pod-subnet-id")
+
+
+def validate_apiserver_subnet_id(namespace):
+    _validate_subnet_id(namespace.apiserver_subnet_id, "--apiserver-subnet-id")
 
 
 def _validate_subnet_id(subnet_id, name):

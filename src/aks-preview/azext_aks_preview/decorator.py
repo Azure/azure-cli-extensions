@@ -87,6 +87,11 @@ ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 ManagedClusterOIDCIssuerProfile = TypeVar('ManagedClusterOIDCIssuerProfile')
 ManagedClusterSecurityProfileWorkloadIdentity = TypeVar('ManagedClusterSecurityProfileWorkloadIdentity')
+ManagedClusterStorageProfile = TypeVar('ManagedClusterStorageProfile')
+ManagedClusterStorageProfileDiskCSIDriver = TypeVar('ManagedClusterStorageProfileDiskCSIDriver')
+ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfileFileCSIDriver')
+ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
+ManagedClusterAPIServerAccessProfile = TypeVar('ManagedClusterAPIServerAccessProfile')
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
@@ -139,6 +144,31 @@ class AKSPreviewModels(AKSModels):
         )
         self.AzureKeyVaultKms = self.__cmd.get_models(
             "AzureKeyVaultKms",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfile = self.__cmd.get_models(
+            "ManagedClusterStorageProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileDiskCSIDriver = self.__cmd.get_models(
+            "ManagedClusterStorageProfileDiskCSIDriver",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileFileCSIDriver = self.__cmd.get_models(
+            "ManagedClusterStorageProfileFileCSIDriver",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterStorageProfileSnapshotController = self.__cmd.get_models(
+            "ManagedClusterStorageProfileSnapshotController",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterAPIServerAccessProfile = self.__cmd.get_models(
+            "ManagedClusterAPIServerAccessProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -1647,6 +1677,114 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_node_vm_size()
 
+    def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
+        """Obtrain the value of storage_profile.disk_csi_driver
+
+        :return: Optional[ManagedClusterStorageProfileDiskCSIDriver]
+        """
+        enable_disk_driver = self.raw_param.get("enable_disk_driver")
+        disable_disk_driver = self.raw_param.get("disable_disk_driver")
+        if not enable_disk_driver and not disable_disk_driver:
+            return None
+        profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
+
+        if enable_disk_driver and disable_disk_driver:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-disk-driver and "
+                "--disable-disk-driver at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_disk_driver:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_disk_driver:
+                profile.enabled = True
+            elif disable_disk_driver:
+                profile.enabled = False
+
+        return profile
+
+    def get_file_driver(self) -> Optional[ManagedClusterStorageProfileFileCSIDriver]:
+        """Obtrain the value of storage_profile.file_csi_driver
+
+        :return: Optional[ManagedClusterStorageProfileFileCSIDriver]
+        """
+        enable_file_driver = self.raw_param.get("enable_file_driver")
+        disable_file_driver = self.raw_param.get("disable_file_driver")
+        if not enable_file_driver and not disable_file_driver:
+            return None
+        profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
+
+        if enable_file_driver and disable_file_driver:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-file-driver and "
+                "--disable-file-driver at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_file_driver:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_file_driver:
+                profile.enabled = True
+            elif disable_file_driver:
+                profile.enabled = False
+
+        return profile
+
+    def get_snapshot_controller(self) -> Optional[ManagedClusterStorageProfileSnapshotController]:
+        """Obtrain the value of storage_profile.snapshot_controller
+
+        :return: Optional[ManagedClusterStorageProfileSnapshotController]
+        """
+        enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
+        disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
+        if not enable_snapshot_controller and not disable_snapshot_controller:
+            return None
+
+        profile = self.models.ManagedClusterStorageProfileSnapshotController()
+
+        if enable_snapshot_controller and disable_snapshot_controller:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-snapshot_controller and "
+                "--disable-snapshot_controller at the same time."
+            )
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if disable_snapshot_controller:
+                profile.enabled = False
+            else:
+                profile.enabled = True
+
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            if enable_snapshot_controller:
+                profile.enabled = True
+            elif disable_snapshot_controller:
+                profile.enabled = False
+
+        return profile
+
+    def get_storage_profile(self) -> Optional[ManagedClusterStorageProfile]:
+        """Obtrain the value of storage_profile.
+
+        :return: Optional[ManagedClusterStorageProfile]
+        """
+        profile = self.models.ManagedClusterStorageProfile()
+        if self.mc.storage_profile is not None:
+            profile = self.mc.storage_profile
+        profile.disk_csi_driver = self.get_disk_driver()
+        profile.file_csi_driver = self.get_file_driver()
+        profile.snapshot_controller = self.get_snapshot_controller()
+
+        return profile
+
     def get_oidc_issuer_profile(self) -> ManagedClusterOIDCIssuerProfile:
         """Obtain the value of oidc_issuer_profile based on the user input.
 
@@ -1838,6 +1976,110 @@ class AKSPreviewContext(AKSContext):
         else:
             cluster_identity_resource_id = assigned_identity
         return self.get_identity_by_msi_client(cluster_identity_resource_id).principal_id
+
+    def _get_enable_apiserver_vnet_integration(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_apiserver_vnet_integration.
+
+        This function supports the option of enable_validation. When enable_apiserver_vnet_integration is specified,
+        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
+        For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_apiserver_vnet_integration = self.raw_param.get("enable_apiserver_vnet_integration")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.enable_vnet_integration is not None
+            ):
+                enable_apiserver_vnet_integration = self.mc.api_server_access_profile.enable_vnet_integration
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                if enable_apiserver_vnet_integration:
+                    # remove this validation after we support public cluster
+                    if not self._get_enable_private_cluster(enable_validation=False):
+                        raise RequiredArgumentMissingError(
+                            "--apiserver-vnet-integration is only supported for private cluster right now. "
+                            "Please use it together with --enable-private-cluster"
+                        )
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if enable_apiserver_vnet_integration:
+                    if self._get_apiserver_subnet_id(enable_validation=False) is None:
+                        raise RequiredArgumentMissingError(
+                            "--apiserver-subnet-id is required for update with --apiserver-vnet-integration."
+                        )
+
+        return enable_apiserver_vnet_integration
+
+    def get_enable_apiserver_vnet_integration(self) -> bool:
+        """Obtain the value of enable_apiserver_vnet_integration.
+
+        This function will verify the parameter by default. When enable_apiserver_vnet_integration is specified,
+        For CREATE: if enable-private-cluster is not used, raise an RequiredArgumentMissingError;
+        For UPDATE: if apiserver-subnet-id is not used, raise an RequiredArgumentMissingError
+
+        :return: bool
+        """
+        return self._get_enable_apiserver_vnet_integration(enable_validation=True)
+
+    def _get_apiserver_subnet_id(self, enable_validation: bool = False) -> Union[str, None]:
+        """Internal function to obtain the value of apiserver_subnet_id.
+
+        This function supports the option of enable_validation. When apiserver_subnet_id is specified,
+        if enable_apiserver_vnet_integration is not used, raise an RequiredArgumentMissingError;
+        For CREATE: if vnet_subnet_id is not used, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.api_server_access_profile and
+                self.mc.api_server_access_profile.subnet_id is not None
+            ):
+                apiserver_subnet_id = self.mc.api_server_access_profile.subnet_id
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                vnet_subnet_id = self.get_vnet_subnet_id()
+                if apiserver_subnet_id and vnet_subnet_id is None:
+                    raise RequiredArgumentMissingError(
+                        '"--apiserver-subnet-id" requires "--vnet-subnet-id".')
+
+            enable_apiserver_vnet_integration = self._get_enable_apiserver_vnet_integration(
+                enable_validation=False)
+            if (
+                apiserver_subnet_id and
+                (
+                    enable_apiserver_vnet_integration is None or
+                    enable_apiserver_vnet_integration is False
+                )
+            ):
+                raise RequiredArgumentMissingError(
+                    '"--apiserver-subnet-id" requires "--enable-apiserver-vnet-integration".')
+
+        return apiserver_subnet_id
+
+    def get_apiserver_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of apiserver_subnet_id.
+
+        This function will verify the parameter by default. When apiserver_subnet_id is specified,
+        if enable_apiserver_vnet_integration is not specified, raise an RequiredArgumentMissingError;
+
+        :return: bool
+        """
+        return self._get_apiserver_subnet_id(enable_validation=True)
 
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
@@ -2169,6 +2411,14 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
+    def set_up_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up storage profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        mc.storage_profile = self.context.get_storage_profile()
+
+        return mc
+
     def set_up_oidc_issuer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up OIDC issuer profile for the ManagedCluster object.
 
@@ -2213,6 +2463,19 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up apiserverAccessProfile enableVnetIntegration and subnetId for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_api_server_access_profile(mc)
+        if self.context.get_enable_apiserver_vnet_integration():
+            mc.api_server_access_profile.enable_vnet_integration = True
+        if self.context.get_apiserver_subnet_id():
+            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+
+        return mc
+
     def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -2242,6 +2505,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         mc = self.set_up_azure_keyvault_kms(mc)
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
+
+        mc = self.set_up_storage_profile(mc)
+
         return mc
 
     def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2398,6 +2664,12 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                     '"--nodepool-labels" or '
                     '"--enable-oidc-issuer" or '
                     '"--http-proxy-config" or '
+                    '"--enable-disk-driver" or '
+                    '"--disable-disk-driver" or '
+                    '"--enable-file-driver" or '
+                    '"--disable-file-driver" or '
+                    '"--enable-snapshot-controller" or '
+                    '"--disable-snapshot-controller" or '
                     '"--enable-azure-keyvault-kms" or '
                     '"--enable-workload-identity" or '
                     '"--disable-workload-identity".'
@@ -2576,6 +2848,17 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         return mc
 
+    def update_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update storage profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc.storage_profile = self.context.get_storage_profile()
+
+        return mc
+
     def update_identity_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update identity profile for the ManagedCluster object.
 
@@ -2597,6 +2880,21 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 cluster_identity_object_id,
                 assign_kubelet_identity)
             mc.identity_profile = identity_profile
+        return mc
+
+    def update_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update apiServerAccessProfile vnet integration related property for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().update_api_server_access_profile(mc)
+        if self.context.get_enable_apiserver_vnet_integration():
+            if mc.api_server_access_profile is None:
+                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+            mc.api_server_access_profile.enable_vnet_integration = True
+        if self.context.get_apiserver_subnet_id():
+            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+
         return mc
 
     def patch_mc(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2643,6 +2941,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         mc = self.update_azure_keyvault_kms(mc)
         # update identity profile
         mc = self.update_identity_profile(mc)
+
+        mc = self.update_storage_profile(mc)
 
         return mc
 

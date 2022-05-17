@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "0.5.66"
+VERSION = "0.5.71"
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -24,9 +24,9 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-with open1("README.md", "r", encoding="utf-8") as f:
+with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
-with open1("HISTORY.md", "r", encoding="utf-8") as f:
+with open1("HISTORY.rst", "r", encoding="utf-8") as f:
     HISTORY = f.read()
 
 setup(

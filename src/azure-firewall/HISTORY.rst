@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.14.0
+++++++
+* `az network firewall policy intrusion-detection add`: add new parameter --private-ranges
 
 0.13.0
 ++++++

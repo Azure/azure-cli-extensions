@@ -131,7 +131,7 @@ from .addonconfiguration import (
 from .maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
-from .vendored_sdks.azure_mgmt_preview_aks.v2022_03_02_preview.models import (
+from .vendored_sdks.azure_mgmt_preview_aks.v2022_04_02_preview.models import (
     AgentPool,
     AgentPoolUpgradeSettings,
     ContainerServiceStorageProfileTypes,
@@ -780,6 +780,9 @@ def aks_create(cmd,
                enable_ultra_ssd=False,
                edge_zone=None,
                enable_secret_rotation=False,
+               disable_disk_driver=None,
+               disable_file_driver=None,
+               disable_snapshot_controller=None,
                rotation_poll_interval=None,
                disable_local_accounts=False,
                no_wait=False,
@@ -797,6 +800,8 @@ def aks_create(cmd,
                message_of_the_day=None,
                enable_azure_keyvault_kms=False,
                azure_keyvault_kms_key_id=None,
+               enable_apiserver_vnet_integration=False,
+               apiserver_subnet_id=None,
                yes=False):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -865,6 +870,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                rotation_poll_interval=None,
+               enable_disk_driver=None,
+               disable_disk_driver=None,
+               enable_file_driver=None,
+               disable_file_driver=None,
+               enable_snapshot_controller=None,
+               disable_snapshot_controller=None,
                disable_local_accounts=False,
                enable_local_accounts=False,
                enable_public_fqdn=False,
@@ -881,7 +892,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_oidc_issuer=False,
                http_proxy_config=None,
                enable_azure_keyvault_kms=False,
-               azure_keyvault_kms_key_id=None):
+               azure_keyvault_kms_key_id=None,
+               enable_apiserver_vnet_integration=False,
+               apiserver_subnet_id=None):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 

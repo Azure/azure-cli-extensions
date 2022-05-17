@@ -3,6 +3,16 @@
 Release History
 ===============
 
+0.3.4
+++++++
+* BREAKING CHANGE: 'az containerapp up' and 'az containerapp github-action add' now use the github repo's default branch instead of "main"
+* 'az containerapp up' now caches Github credentials so the user won't be prompted to sign in if using the same repo
+* Fixed bug with 'az containerapp up --repo' where it hangs after creating github action
+* Added 'az containerapp env storage' to manage Container App environment file shares
+
+0.3.3
+++++++
+* Improved 'az containerapp up' handling of environment locations
 
 0.3.2
 ++++++

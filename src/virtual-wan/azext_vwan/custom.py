@@ -15,6 +15,7 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 
 from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
+
 from ._util import _get_property
 
 logger = get_logger(__name__)
@@ -135,16 +136,16 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 
 # region VirtualHubs
-def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, no_wait=False, sku=None):
-    client = network_client_factory(cmd.cli_ctx).virtual_hubs
-    VirtualHub, SubResource = cmd.get_models('VirtualHub', 'SubResource')
+def create_virtual_hub(cmd, client, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
+                       location=None, tags=None, no_wait=False, sku=None, hub_routing_preference=None):
+    (VirtualHub, SubResource) = cmd.get_models('VirtualHub', 'SubResource')
     hub = VirtualHub(
         tags=tags,
         location=location,
         address_prefix=address_prefix,
         virtual_wan=SubResource(id=virtual_wan),
-        sku=sku
+        sku=sku,
+        hub_routing_preference=hub_routing_preference
     )
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, virtual_hub_name, hub)
@@ -177,13 +178,14 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
     )
 
 
-def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
+def update_virtual_hub(cmd, instance, address_prefix=None, virtual_wan=None, tags=None, sku=None, hub_routing_preference=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('address_prefix', address_prefix, False)
         c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
         c.update_param('sku', sku, False)
+        c.update_param('hub_routing_preference', hub_routing_preference, False)
     return instance
 
 
@@ -263,7 +265,7 @@ def _bgp_connections_client(cli_ctx):
 def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_name, connection_name,
                                   virtual_hub_connection=None, peer_asn=None, peer_ip=None, no_wait=False):
 
-    from .vendored_sdks.v2021_03_01.models import BgpConnection, SubResource
+    (BgpConnection, SubResource) = cmd.get_models('BgpConnection', 'SubResource')
     connection = BgpConnection(
         name=connection_name,
         peer_asn=peer_asn,
@@ -276,12 +278,12 @@ def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_
 
 def update_hub_vnet_bgpconnection(cmd, instance, resource_group_name, virtual_hub_name, connection_name,
                                   virtual_hub_connection=None, peer_asn=None, peer_ip=None):
+    SubResource = cmd.get_models('SubResource')
     if peer_asn is not None:
         instance.peer_asn = peer_asn
     if peer_ip is not None:
         instance.peer_ip = peer_ip
     if virtual_hub_connection is not None:
-        from .vendored_sdks.v2021_03_01.models import SubResource
         instance.hub_virtual_network_connection = SubResource(id=virtual_hub_connection)
     return instance
 

@@ -18,7 +18,7 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id)
 
 from azext_cosmosdb_preview.actions import (
-    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource)
+    CreateGremlinDatabaseRestoreResource, CreateTableRestoreResource, AddCassandraTableAction, AddSqlContainerAction)
 
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
@@ -284,3 +284,23 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
         c.argument('location', options_list=['--location', '-l'], help="Location of the account", required=True)
+
+    with self.argument_context('cosmosdb dts') as c:
+        c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
+
+    job_name_type = CLIArgumentType(options_list=['--job-name', '-n'], help='Name of the Data Transfer Job. A random job name will be generated if not passed.')
+    with self.argument_context('cosmosdb dts copy') as c:
+        c.argument('job_name', job_name_type)
+        c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
+        c.argument('source_sql_container', nargs='+', action=AddSqlContainerAction, help='Source sql container')
+        c.argument('dest_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Destination cassandra table')
+        c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
+        c.argument('worker_count', type=int, help='Worker count')
+
+    for scope in [
+            'cosmosdb dts show',
+            'cosmosdb dts pause',
+            'cosmosdb dts resume',
+            'cosmosdb dts cancel']:
+        with self.argument_context(scope) as c:
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.')

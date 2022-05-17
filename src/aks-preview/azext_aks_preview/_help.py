@@ -258,10 +258,10 @@ helps['aks create'] = """
           long-summary: If specified, please make sure the kubernetes version is larger than 1.10.6.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100].
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
@@ -280,6 +280,12 @@ helps['aks create'] = """
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --enable-apiserver-vnet-integration
+          type: bool
+          short-summary: Enable integration of user vnet with control plane apiserver pods.
+        - name: --apiserver-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
         - name: --enable-private-cluster
           type: string
           short-summary: Enable private cluster.
@@ -356,6 +362,15 @@ helps['aks create'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --disable-disk-driver
+          type: bool
+          short-summary: Disable AzureDisk CSI Driver.
+        - name: --disable-file-driver
+          type: bool
+          short-summary: Disable AzureFile CSI Driver.
+        - name: --disable-snapshot-controller
+          type: bool
+          short-summary: Disable CSI Snapshot Controller.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -534,10 +549,10 @@ helps['aks update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
@@ -648,6 +663,24 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+        - name: --disable-disk-driver
+          type: bool
+          short-summary: Disable AzureDisk CSI Driver.
+        - name: --enable-file-driver
+          type: bool
+          short-summary: Enable AzureFile CSI Driver.
+        - name: --disable-file-driver
+          type: bool
+          short-summary: Disable AzureFile CSI Driver.
+        - name: --enable-snapshot-controller
+          type: bool
+          short-summary: Enable Snapshot Controller.
+        - name: --disable-snapshot-controller
+          type: bool
+          short-summary: Disable CSI Snapshot Controller.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
@@ -710,6 +743,12 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+        - name: --enable-apiserver-vnet-integration
+          type: bool
+          short-summary: Enable integration of user vnet with control plane apiserver pods.
+        - name: --apiserver-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to assign control plane apiserver pods(requires --enable-apiserver-vnet-integration)
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1013,7 +1052,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019 or Windows2022 when os-type is Windows, the current default is Windows2019 if not set, and the default will be changed to Windows2022 after Windows2019 is deprecated.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -1022,10 +1061,10 @@ helps['aks nodepool add'] = """
           short-summary: Enable cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --scale-down-mode
           type: string
           short-summary: "Describes how VMs are added to or removed from nodepools."
@@ -1152,10 +1191,10 @@ helps['aks nodepool update'] = """
           short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
         - name: --scale-down-mode
           type: string
           short-summary: "Describes how VMs are added to or removed from nodepools."
