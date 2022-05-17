@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.70
+++++++
+* Add command `aks trustedaccess role list`.
+
 0.5.69
 ++++++
 * Fix: Raise error when user provides invalid value for `--os-sku`.

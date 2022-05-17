@@ -10,6 +10,7 @@ from ._client_factory import cf_maintenance_configurations
 from ._client_factory import cf_agent_pools
 from ._client_factory import cf_nodepool_snapshots
 from ._client_factory import cf_mc_snapshots
+from ._client_factory import cf_trustedaccess
 from ._format import aks_show_table_format
 from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format, aks_addon_show_table_format
 from ._format import aks_agentpool_show_table_format
@@ -54,7 +55,14 @@ def load_command_table(self, _):
     mc_snapshot_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations._managed_clusters_snapshots_operations#ManagedClusterSnapshotsOperations.{}',
-        client_factory=cf_mc_snapshots)
+        client_factory=cf_mc_snapshots
+    )
+
+    trustedaccess_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._trusted_access_roles_operations#TrustedAccessRolesOperations.{}',
+        client_factory=cf_trustedaccess
+    )
 
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
@@ -162,3 +170,7 @@ def load_command_table(self, _):
                          supports_no_wait=True)
         g.custom_command('delete', 'aks_snapshot_delete',
                          supports_no_wait=True)
+
+    # AKS trusted access roles commands
+    with self.command_group('aks trustedaccess role', trustedaccess_sdk, client_factory=cf_trustedaccess) as g:
+        g.custom_command('list', 'aks_trustedaccess_roles_list')

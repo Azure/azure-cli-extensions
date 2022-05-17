@@ -1704,3 +1704,8 @@ helps['aks nodepool snapshot delete'] = """
     type: command
     short-summary: Delete a nodepool snapshot.
 """
+
+helps['aks trustedaccess role list'] = """
+    type: command
+    short-summary: List trusted access roles.
+"""
