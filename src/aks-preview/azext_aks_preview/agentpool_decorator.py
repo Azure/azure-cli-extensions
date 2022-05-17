@@ -253,7 +253,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_motd(agentpool)
         # set up gpu profiles
         agentpool = self.set_up_gpu_propertes(agentpool)
-        # restore defaults
+
+        # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
 
