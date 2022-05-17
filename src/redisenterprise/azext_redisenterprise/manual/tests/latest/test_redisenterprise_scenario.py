@@ -25,7 +25,7 @@ from .. import (
 # Testcase: scenario1
 def call_scenario1(test, rg):
     from ....tests.latest import test_redisenterprise_scenario as g
-    g.setup_scenario1(test, rg)
+    g.setup_scenario1(test)
     step_create(test, rg, checks=[
         test.check("name", "default"),
         test.check("resourceGroup", "{rg}"),
@@ -61,8 +61,8 @@ def call_scenario1(test, rg):
         test.check("databases[0].resourceState", "Running"),
         test.check("databases[0].type", "Microsoft.Cache/redisEnterprise/databases")
     ])
-    g.step_list(test, rg, checks=[])
-    g.step_list2(test, rg, checks=[
+    g.step_list(test, checks=[])
+    g.step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
     step_database_show(test, rg, checks=[
@@ -82,7 +82,7 @@ def call_scenario1(test, rg):
     step_database_list_keys(test, rg, checks=[])
     step_database_regenerate_key(test, rg, checks=[])
     step_delete(test, rg, checks=[])
-    g.cleanup_scenario1(test, rg)
+    g.cleanup_scenario1(test)
 
 
 # Test class for scenario1
@@ -106,7 +106,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
 # Testcase: scenario2
 def call_scenario2(test, rg):
     from ....tests.latest import test_redisenterprise_scenario as g
-    g.setup_scenario2(test, rg)
+    g.setup_scenario2(test)
     step_create(test, rg, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
@@ -134,8 +134,8 @@ def call_scenario2(test, rg):
         test.check("type", "Microsoft.Cache/redisEnterprise"),
         test.check("length(databases)", 0),
     ])
-    g.step_list(test, rg, checks=[])
-    g.step_list2(test, rg, checks=[
+    g.step_list(test, checks=[])
+    g.step_list2(test, checks=[
         test.check("length(@)", 1)
     ])
     step_database_create(test, rg, checks=[
@@ -167,7 +167,7 @@ def call_scenario2(test, rg):
     step_database_regenerate_key(test, rg, checks=[])
     step_database_delete(test, rg, checks=[])
     step_delete(test, rg, checks=[])
-    g.cleanup_scenario2(test, rg)
+    g.cleanup_scenario2(test)
 
 
 # Test class for scenario2
