@@ -4113,11 +4113,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.snapshotController.enabled', False),
         ])
 
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        self.cmd(update_cmd
+        , checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver.enabled', False),
+            self.check('storageProfile.fileCsiDriver.enabled', False),
+            self.check('storageProfile.snapshotController.enabled', False),
+        ])
+
         enable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
                         --enable-disk-driver \
                         --enable-file-driver \
                         --enable-snapshot-controller'
         self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
+        ])
+
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        self.cmd(update_cmd
+        , checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
             self.check('storageProfile.fileCsiDriver.enabled', True),
@@ -4155,9 +4175,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('storageProfile.diskCsiDriver.enabled', True),
-            self.check('storageProfile.fileCsiDriver.enabled', True),
-            self.check('storageProfile.snapshotController.enabled', True),
+            self.check('storageProfile.diskCsiDriver.enabled', None),
+            self.check('storageProfile.fileCsiDriver.enabled', None),
+            self.check('storageProfile.snapshotController.enabled', None),
+        ])
+
+        # check standard reconcile scenario
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver', None),
+            self.check('storageProfile.fileCsiDriver', None),
+            self.check('storageProfile.snapshotController', None),
         ])
 
         # delete
