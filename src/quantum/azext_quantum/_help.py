@@ -121,6 +121,9 @@ helps['quantum offerings list'] = """
       - name: List offerings available in an Azure location.
         text: |-
             az quantum offerings list -l MyLocation -o table
+      - name: List only the offerings flagged "autoAdd" in an Azure location.
+        text: |-
+            az quantum offerings list -l MyLocation --autoadd-only -o table
 """
 
 helps['quantum offerings show-terms'] = """
