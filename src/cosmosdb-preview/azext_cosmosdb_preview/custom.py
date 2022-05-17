@@ -1150,55 +1150,51 @@ def cosmosdb_data_transfer_copy_job(client,
                          account_name=account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
-                    
+
 
 def cli_begin_list_sql_container_partition_merge(client,
-                                          resource_group_name,
-                                          account_name,
-                                          database_name,
-                                          container_name,
-                                          is_dry_run=True):    
-    
+                                                 resource_group_name,
+                                                 account_name,
+                                                 database_name,
+                                                 container_name,
+                                                 is_dry_run=True):
+
     try:
         client.get_sql_container(resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name), format(database_name))
-    
-    mergeParameters = MergeParameters(
-    is_dry_run = is_dry_run
-    )
+
+    mergeParameters = MergeParameters(is_dry_run=is_dry_run)
 
     async_partition_merge_result = client.begin_list_sql_container_partition_merge(resource_group_name=resource_group_name,
-                                                                                    account_name=account_name,
-                                                                                    database_name=database_name,
-                                                                                    container_name=container_name,
-                                                                                    merge_parameters=mergeParameters)
-                                                                                  
+                                                                                   account_name=account_name,
+                                                                                   database_name=database_name,
+                                                                                   container_name=container_name,
+                                                                                   merge_parameters=mergeParameters)
+
     return async_partition_merge_result.result()
 
 
 def cli_begin_list_mongo_db_collection_partition_merge(client,
-                                          resource_group_name,
-                                          account_name,
-                                          database_name,
-                                          container_name,
-                                          is_dry_run=True):    
-    
+                                                       resource_group_name,
+                                                       account_name,
+                                                       database_name,
+                                                       container_name,
+                                                       is_dry_run=True):
+
     try:
         client.get_mongo_db_collection(resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
             raise CLIError("(NotFound) collection with name '{}' in mongodb '{} could not be found.".format(container_name), format(database_name))
-    
-    mergeParameters = MergeParameters(
-    is_dry_run = is_dry_run
-    )
+
+    mergeParameters = MergeParameters(is_dry_run=is_dry_run)
 
     async_partition_merge_result = client.begin_list_mongo_db_collection_partition_merge(resource_group_name=resource_group_name,
-                                                                                    account_name=account_name,
-                                                                                    database_name=database_name,
-                                                                                    collection_name=container_name,
-                                                                                    merge_parameters=mergeParameters)
-                                                                                  
+                                                                                         account_name=account_name,
+                                                                                         database_name=database_name,
+                                                                                         collection_name=container_name,
+                                                                                         merge_parameters=mergeParameters)
+
     return async_partition_merge_result.result()

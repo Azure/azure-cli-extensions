@@ -196,7 +196,6 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('merge', 'cli_begin_list_sql_container_partition_merge', is_preview=True)
 
-
     # Merge partitions for mongodb collections
     cosmosdb_mongo_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
