@@ -17,6 +17,8 @@ CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.az
 def get_container_service_client(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW)
 
+def cf_trustedaccess(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).trusted_access_roles
 
 def cf_container_services(cli_ctx, *_):
     return get_container_service_client(cli_ctx).container_services

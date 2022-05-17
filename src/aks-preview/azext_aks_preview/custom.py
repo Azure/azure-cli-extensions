@@ -3175,3 +3175,6 @@ def aks_nodepool_snapshot_list(cmd, client, resource_group_name=None):  # pylint
         return client.list()
 
     return client.list_by_resource_group(resource_group_name)
+
+def aks_trustedaccess_roles_list(cmd, client, location):  # pylint: disable=unused-argument
+    return client.list(location)
