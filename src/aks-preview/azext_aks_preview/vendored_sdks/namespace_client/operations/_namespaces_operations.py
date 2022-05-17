@@ -14,7 +14,6 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.utils import case_insensitive_dict
 
 from .. import models as _models
 from .._vendor import _convert_request, _format_url_section
@@ -39,8 +38,8 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+    _headers = kwargs.pop("headers", {}) or {}
+    _params = kwargs.pop("params", {}) or {}
 
     api_version = kwargs.pop('api_version', _params.pop('api-version', "2021-12-01-preview"))  # type: str
     accept = _headers.pop('Accept', "application/json")
@@ -82,8 +81,8 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+    _headers = kwargs.pop("headers", {}) or {}
+    _params = kwargs.pop("params", {}) or {}
 
     api_version = kwargs.pop('api_version', _params.pop('api-version', "2021-12-01-preview"))  # type: str
     accept = _headers.pop('Accept', "application/json")
@@ -171,7 +170,7 @@ class NamespacesOperations(object):
         error_map.update(kwargs.pop('error_map', {}) or {})
 
         _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
         api_version = kwargs.pop('api_version', _params.pop('api-version', "2021-12-01-preview"))  # type: str
         cls = kwargs.pop('cls', None)  # type: ClsType[_models.Namespace]
@@ -242,7 +241,7 @@ class NamespacesOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
         api_version = kwargs.pop('api_version', _params.pop('api-version', "2021-12-01-preview"))  # type: str
         cls = kwargs.pop('cls', None)  # type: ClsType[_models.NamespaceList]

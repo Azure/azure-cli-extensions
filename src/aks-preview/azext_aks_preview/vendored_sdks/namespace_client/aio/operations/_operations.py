@@ -12,7 +12,6 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.utils import case_insensitive_dict
 
 from ... import models as _models
 from ..._vendor import _convert_request
@@ -55,7 +54,7 @@ class Operations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        _params = kwargs.pop("params", {}) or {}
 
         api_version = kwargs.pop('api_version', _params.pop('api-version', "2021-12-01-preview"))  # type: str
         cls = kwargs.pop('cls', None)  # type: ClsType[_models.ResourceProviderOperationList]
