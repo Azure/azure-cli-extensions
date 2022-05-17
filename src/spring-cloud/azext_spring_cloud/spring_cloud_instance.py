@@ -63,11 +63,11 @@ class DefaultSpringCloud:
         )
 
         if enable_log_stream_public_endpoint is not None:
-            updated_resource_properties.VnetAddons = models_20220501preview.VnetAddons(
-                logStreamPublicEndpoint=enable_log_stream_public_endpoint
+            updated_resource_properties.vnet_addons = models_20220501preview.ServiceVNetAddons(
+                log_stream_public_endpoint=enable_log_stream_public_endpoint
             )
         else:
-            updated_resource_properties.VnetAddons = None
+            updated_resource_properties.vnet_addons = None
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(

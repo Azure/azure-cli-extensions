@@ -7,7 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring_cloud_20220301preview,
+from ._client_factory import (cf_spring_cloud_20220501preview,
+                              cf_spring_cloud_20220301preview,
                               cf_spring_cloud_20220101preview,
                               cf_spring_cloud_20201101preview,
                               cf_config_servers)
@@ -29,12 +30,12 @@ from ._app_managed_identity_validator import (validate_app_identity_remove_or_wa
 def load_command_table(self, _):
     spring_cloud_routing_util = CliCommandType(
         operations_tmpl='azext_spring_cloud.spring_cloud_instance#{}',
-        client_factory=cf_spring_cloud_20220101preview
+        client_factory=cf_spring_cloud_20220501preview
     )
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring_cloud.app#{}',
-        client_factory=cf_spring_cloud_20220301preview
+        client_factory=cf_spring_cloud_20220501preview
     )
 
     app_managed_identity_command = CliCommandType(
@@ -91,7 +92,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
 
-    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud', client_factory=cf_spring_cloud_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
@@ -127,7 +128,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'app_update', supports_no_wait=True)
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220101preview,
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
@@ -140,7 +141,7 @@ def load_command_table(self, _):
                          table_transformer=transform_app_table_output)
         g.custom_show_command(
             'show', 'app_get', table_transformer=transform_app_table_output,
-            client_factory=cf_spring_cloud_20220301preview)
+            client_factory=cf_spring_cloud_20220501preview)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
