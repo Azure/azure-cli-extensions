@@ -58,7 +58,7 @@ def list_offerings(cmd, location=None, autoadd_only=False):
     client = cf_offerings(cmd.cli_ctx)
     offerings = client.list(location_name=location)
     if autoadd_only:
-        autoadd_offerings = [] 
+        autoadd_offerings = []
         for offering in offerings:
             for sku in offering.properties.skus:
                 if sku.auto_add:

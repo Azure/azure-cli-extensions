@@ -37,6 +37,12 @@ POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 MAX_POLLS_CREATE_WORKSPACE = 300
 
+C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
+                               "Microsoft can share your account details with the quantum provider for their transactional purposes.\n\n" \
+                               "https://privacy.microsoft.com/en-us/privacystatement\n" \
+                               "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/\n\n" \
+                               "Continue? (Y/N) "
+
 
 class WorkspaceInfo:
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -106,12 +112,6 @@ def _provider_terms_need_acceptance(cmd, provider):
 
     return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
-
-C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
-                               "Microsoft can share your account details with the quantum provider for their transactional purposes.\n\n" \
-                               "https://privacy.microsoft.com/en-us/privacystatement\n" \
-                               "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/\n\n" \
-                               "Continue? (Y/N) "
 
 def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, auto_accept):
     already_accepted_terms = False
