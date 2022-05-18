@@ -14,10 +14,10 @@ if 'containerapp' not in helps.keys():
 
 helps['containerapp compose'] = """
     type: group
-    short-summary: Commands to manage Containerappss.
+    short-summary: Commands to create Azure Container Apps from Compose specifications.
 """
 
 helps['containerapp compose create'] = """
     type: command
-    short-summary: Create a Containerapps.
+    short-summary: Create one or more Container Apps in a new or existing Container App Environment from a Compose specification.
 """
