@@ -324,7 +324,7 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb sql container merge') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB database name')
-        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')        
+        c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB collection')
 
     # mongodb collection partition merge
     with self.argument_context('cosmosdb mongodb collection merge') as c:
