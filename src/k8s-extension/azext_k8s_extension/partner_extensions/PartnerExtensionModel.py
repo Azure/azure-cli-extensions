@@ -43,6 +43,7 @@ class PartnerExtensionModel(ABC):
         version: str,
         configuration_settings: dict,
         configuration_protected_settings: dict,
+        original_extension: Extension,
         yes: bool,
     ) -> PatchExtension:
         pass
