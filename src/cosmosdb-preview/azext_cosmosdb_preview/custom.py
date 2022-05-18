@@ -1154,8 +1154,7 @@ def cli_begin_list_sql_container_partition_merge(client,
                                                  resource_group_name,
                                                  account_name,
                                                  database_name,
-                                                 container_name,
-                                                 is_simulation=True):
+                                                 container_name):
 
     try:
         client.get_sql_container(resource_group_name, account_name, database_name, container_name)
@@ -1164,7 +1163,7 @@ def cli_begin_list_sql_container_partition_merge(client,
             raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
         raise CLIError("{}".format(str(ex)))
 
-    mergeParameters = MergeParameters(is_dry_run=is_simulation)
+    mergeParameters = MergeParameters(is_dry_run=False)
 
     async_partition_merge_result = client.begin_list_sql_container_partition_merge(resource_group_name=resource_group_name,
                                                                                    account_name=account_name,
@@ -1179,8 +1178,7 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
                                                        resource_group_name,
                                                        account_name,
                                                        database_name,
-                                                       container_name,
-                                                       is_simulation=True):
+                                                       container_name):
 
     try:
         client.get_mongo_db_collection(resource_group_name, account_name, database_name, container_name)
@@ -1189,7 +1187,7 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
             raise CLIError("(NotFound) collection with name '{}' in mongodb '{}' could not be found.".format(container_name, database_name))
         raise CLIError("{}".format(str(ex)))
 
-    mergeParameters = MergeParameters(is_dry_run=is_simulation)
+    mergeParameters = MergeParameters(is_dry_run=False)
 
     async_partition_merge_result = client.begin_list_mongo_db_collection_partition_merge(resource_group_name=resource_group_name,
                                                                                          account_name=account_name,

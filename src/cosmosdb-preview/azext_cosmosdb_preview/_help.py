@@ -631,7 +631,7 @@ helps['cosmosdb sql container merge'] = """
     examples:
       - name: merge partitions of container my-container
         text: |-
-               az cosmosdb sql container merge -g my-resource-group -a my-account -d my-db --name my-container --is-simulation True
+               az cosmosdb sql container merge -g my-resource-group -a my-account -d my-db --name my-container
 """
 
 helps['cosmosdb mongodb collection merge'] = """
@@ -640,5 +640,5 @@ helps['cosmosdb mongodb collection merge'] = """
     examples:
       - name: merge partitions of collection my-mongodb-collection
         text: |-
-               az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection --is-simulation True
+               az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection
 """
