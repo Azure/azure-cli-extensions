@@ -1705,6 +1705,16 @@ helps['aks nodepool snapshot delete'] = """
     short-summary: Delete a nodepool snapshot.
 """
 
+helps['aks trustedaccess'] = """
+    type: group
+    short-summary: Commands to manage trusted access security features.
+"""
+
+helps['aks trustedaccess role'] = """
+    type: group
+    short-summary: Commands to manage trusted access roles.
+"""
+
 helps['aks trustedaccess role list'] = """
     type: command
     short-summary: List trusted access roles.
