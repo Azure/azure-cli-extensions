@@ -141,6 +141,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "when using Kubenet network plugin"
                 )
 
+    def get_addon_consts(self) -> Dict[str, str]:
+        """Helper function to obtain the constants used by addons.
+
+        Note: Inherited and extended in aks-preview to replace and add a few values.
+
+        Note: This is not a parameter of aks commands.
+
+        :return: dict
+        """
+        from azext_aks_preview._consts import ADDONS, CONST_GITOPS_ADDON_NAME
+
+        addon_consts = super().get_addon_consts()
+        addon_consts["ADDONS"] = ADDONS
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
+        return addon_consts
+
     def get_http_proxy_config(self) -> Union[Dict, ManagedClusterHTTPProxyConfig, None]:
         """Obtain the value of http_proxy_config.
 
@@ -1167,6 +1183,36 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_apiserver_subnet_id():
             mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
 
+        return mc
+
+    def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build gitops addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        gitops_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+        )
+        return gitops_addon_profile
+
+    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up addon profiles for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set some extra addons.
+
+        :return: the ManagedCluster object
+        """
+        addon_consts = self.context.get_addon_consts()
+        CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
+
+        mc = super().set_up_addon_profiles(mc)
+        addon_profiles = mc.addon_profiles
+        addons = self.context.get_enable_addons()
+        if "gitops" in addons:
+            addon_profiles[
+                CONST_GITOPS_ADDON_NAME
+            ] = self.build_gitops_addon_profile()
+        mc.addon_profiles = addon_profiles
         return mc
 
     def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:

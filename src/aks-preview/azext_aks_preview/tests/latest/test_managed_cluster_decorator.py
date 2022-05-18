@@ -10,11 +10,33 @@ from unittest.mock import Mock, patch
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_POLICY_ADDON_NAME,
+    CONST_CONFCOM_ADDON_NAME,
     CONST_DEFAULT_NODE_OS_TYPE,
     CONST_DEFAULT_NODE_VM_SIZE,
+    CONST_GITOPS_ADDON_NAME,
+    CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_INGRESS_APPGW_SUBNET_ID,
+    CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+    CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_SYSTEM,
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_VIRTUAL_NODE_ADDON_NAME,
+    CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
@@ -110,6 +132,42 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on enable_pod_identity_with_kubenet not specified
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_1._AKSPreviewManagedClusterContext__validate_pod_identity_with_kubenet(mc_1, True, False)
+
+    def test_get_addon_consts(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        addon_consts = ctx_1.get_addon_consts()
+        ground_truth_addon_consts = {
+            "ADDONS": ADDONS,
+            "CONST_ACC_SGX_QUOTE_HELPER_ENABLED": CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+            "CONST_AZURE_POLICY_ADDON_NAME": CONST_AZURE_POLICY_ADDON_NAME,
+            "CONST_CONFCOM_ADDON_NAME": CONST_CONFCOM_ADDON_NAME,
+            "CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME": CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
+            "CONST_INGRESS_APPGW_ADDON_NAME": CONST_INGRESS_APPGW_ADDON_NAME,
+            "CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID": CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
+            "CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME": CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME,
+            "CONST_INGRESS_APPGW_SUBNET_CIDR": CONST_INGRESS_APPGW_SUBNET_CIDR,
+            "CONST_INGRESS_APPGW_SUBNET_ID": CONST_INGRESS_APPGW_SUBNET_ID,
+            "CONST_INGRESS_APPGW_WATCH_NAMESPACE": CONST_INGRESS_APPGW_WATCH_NAMESPACE,
+            "CONST_KUBE_DASHBOARD_ADDON_NAME": CONST_KUBE_DASHBOARD_ADDON_NAME,
+            "CONST_MONITORING_ADDON_NAME": CONST_MONITORING_ADDON_NAME,
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID": CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+            "CONST_MONITORING_USING_AAD_MSI_AUTH": CONST_MONITORING_USING_AAD_MSI_AUTH,
+            "CONST_OPEN_SERVICE_MESH_ADDON_NAME": CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+            "CONST_VIRTUAL_NODE_ADDON_NAME": CONST_VIRTUAL_NODE_ADDON_NAME,
+            "CONST_VIRTUAL_NODE_SUBNET_NAME": CONST_VIRTUAL_NODE_SUBNET_NAME,
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME": CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            "CONST_SECRET_ROTATION_ENABLED": CONST_SECRET_ROTATION_ENABLED,
+            "CONST_ROTATION_POLL_INTERVAL": CONST_ROTATION_POLL_INTERVAL,
+            # new addon consts in aks-preview
+            "CONST_GITOPS_ADDON_NAME": CONST_GITOPS_ADDON_NAME,
+        }
+        self.assertEqual(addon_consts, ground_truth_addon_consts)
 
     def test_get_http_proxy_config(self):
         # default
@@ -1757,6 +1815,128 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             api_server_access_profile=ground_truth_api_server_access_profile_2,
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_build_gitops_addon_profile(self):
+        # default
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        gitops_addon_profile = dec_1.build_gitops_addon_profile()
+        ground_truth_gitops_addon_profile = (
+            self.models.ManagedClusterAddonProfile(
+                enabled=True,
+            )
+        )
+        self.assertEqual(
+            gitops_addon_profile, ground_truth_gitops_addon_profile
+        )
+
+    def test_set_up_addon_profiles(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": None,
+                "workspace_resource_id": None,
+                "aci_subnet_name": None,
+                "appgw_name": None,
+                "appgw_subnet_cidr": None,
+                "appgw_id": None,
+                "appgw_subnet_id": None,
+                "appgw_watch_namespace": None,
+                "enable_sgxquotehelper": False,
+                "enable_secret_rotation": False,
+                "rotation_poll_interval": None,
+                "appgw_subnet_prefix": None,
+                "enable_msi_auth_for_monitoring": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_addon_profiles(None)
+        dec_mc_1 = dec_1.set_up_addon_profiles(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", addon_profiles={}
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        self.assertEqual(dec_1.context.get_intermediate("monitoring"), None)
+        self.assertEqual(
+            dec_1.context.get_intermediate("enable_virtual_node"), None
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("ingress_appgw_addon_enabled"), None
+        )
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_addons": "monitoring,ingress-appgw,gitops",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "appgw_name": "test_appgw_name",
+                "appgw_subnet_cidr": "test_appgw_subnet_prefix",
+                "appgw_id": "test_appgw_id",
+                "appgw_subnet_id": "test_appgw_subnet_id",
+                "appgw_watch_namespace": "test_appgw_watch_namespace",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_2.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        with patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            dec_mc_2 = dec_2.set_up_addon_profiles(mc_2)
+
+        addon_profiles_2 = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "True",
+                },
+            ),
+            CONST_INGRESS_APPGW_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME: "test_appgw_name",
+                    CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID: "test_appgw_id",
+                    CONST_INGRESS_APPGW_SUBNET_ID: "test_appgw_subnet_id",
+                    CONST_INGRESS_APPGW_SUBNET_CIDR: "test_appgw_subnet_prefix",
+                    CONST_INGRESS_APPGW_WATCH_NAMESPACE: "test_appgw_watch_namespace",
+                },
+            ),
+            CONST_GITOPS_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+            ),
+        }
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", addon_profiles=addon_profiles_2
+        )
+        print(dec_mc_2.addon_profiles)
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(dec_2.context.get_intermediate("monitoring_addon_enabled"), True)
+        self.assertEqual(dec_2.context.get_intermediate("virtual_node_addon_enabled"), None)
+        self.assertEqual(dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), True)
 
     def test_set_up_http_proxy_config(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
