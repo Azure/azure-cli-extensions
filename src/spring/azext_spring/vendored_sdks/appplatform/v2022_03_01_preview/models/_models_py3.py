@@ -310,8 +310,8 @@ class ApiPortalProperties(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        public: Optional[bool] = False,
-        https_only: Optional[bool] = False,
+        public: Optional[bool] = None,
+        https_only: Optional[bool] = None,
         gateway_ids: Optional[List[str]] = None,
         source_urls: Optional[List[str]] = None,
         sso_properties: Optional["SsoProperties"] = None,
@@ -756,8 +756,8 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server. Possible values include: "AzureFileVolume".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.Type
+     disk.Constant filled by server.
+    :vartype type: str
     :ivar mount_path: Required. The mount path of the persistent disk.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
@@ -811,8 +811,8 @@ class AzureFileVolume(CustomPersistentDiskProperties):
     All required parameters must be populated in order to send to Azure.
 
     :ivar type: Required. The type of the underlying resource to mount as a persistent
-     disk.Constant filled by server. Possible values include: "AzureFileVolume".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.Type
+     disk.Constant filled by server.
+    :vartype type: str
     :ivar mount_path: Required. The mount path of the persistent disk.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
@@ -4323,8 +4323,8 @@ class GatewayProperties(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        public: Optional[bool] = False,
-        https_only: Optional[bool] = False,
+        public: Optional[bool] = None,
+        https_only: Optional[bool] = None,
         sso_properties: Optional["SsoProperties"] = None,
         api_metadata_properties: Optional["GatewayApiMetadataProperties"] = None,
         cors_properties: Optional["GatewayCorsProperties"] = None,
@@ -6870,9 +6870,8 @@ class StorageProperties(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar storage_type: Required. The type of the storage.Constant filled by server. Possible
-     values include: "StorageAccount".
-    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.StorageType
+    :ivar storage_type: Required. The type of the storage.Constant filled by server.
+    :vartype storage_type: str
     """
 
     _validation = {
@@ -6902,9 +6901,8 @@ class StorageAccount(StorageProperties):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar storage_type: Required. The type of the storage.Constant filled by server. Possible
-     values include: "StorageAccount".
-    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_03_01_preview.models.StorageType
+    :ivar storage_type: Required. The type of the storage.Constant filled by server.
+    :vartype storage_type: str
     :ivar account_name: Required. The account name of the Azure Storage Account.
     :vartype account_name: str
     :ivar account_key: Required. The account key of the Azure Storage Account.
