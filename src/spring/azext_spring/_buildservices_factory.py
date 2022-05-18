@@ -63,15 +63,13 @@ class BuildService:
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         build_resource_requests = models.BuildResourceRequests(
             cpu=build_cpu,
-            memory=build_memory
-        )
+            memory=build_memory)
         properties = models.BuildProperties(
             builder='{}/buildservices/default/builders/{}'.format(service_resource_id, builder),
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
             env=build_env if build_env else None,
-            resource_requests=build_resource_requests
-            )
+            resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
