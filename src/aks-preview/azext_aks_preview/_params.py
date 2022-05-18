@@ -664,9 +664,6 @@ def load_arguments(self, _):
             c.argument('yes', options_list=[
                        '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
-    with self.argument_context('aks trustedaccess role') as c:
-        c.argument('list', required=True, action='store_true', options_list=['--list', '-l'],
-        help='List the trusted access roles of the subscription')
 
 def _get_default_install_location(exe_name):
     system = platform.system()
