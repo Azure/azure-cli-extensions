@@ -624,3 +624,21 @@ helps['cosmosdb dts cancel'] = """
         text: |-
                az cosmosdb dts cancel --account-name "ddb1" --job-name "j1" -g "rg1"
 """
+
+helps['cosmosdb sql container merge'] = """
+    type: command
+    short-summary: "Merges the partitions of a sql container."
+    examples:
+      - name: merge partitions of container my-container
+        text: |-
+               az cosmosdb sql container merge -g my-resource-group -a my-account -d my-db --name my-container
+"""
+
+helps['cosmosdb mongodb collection merge'] = """
+    type: command
+    short-summary: "Merges the partitions of a mongodb collection."
+    examples:
+      - name: merge partitions of collection my-mongodb-collection
+        text: |-
+               az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection
+"""
