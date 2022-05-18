@@ -257,3 +257,24 @@ def load_arguments(self, _):
         c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
+
+    with self.argument_context('containerapp auth microsoft update') as c:
+        c.argument('client_id', options_list=['--client-id'],
+                   help='The Client ID of this relying party application, known as the client_id.')
+        c.argument('client_secret', options_list=['--client-secret'],
+                   help='AAD application secret')
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting'],
+                   help='The app setting name that contains the client secret of the relying party application.')
+        c.argument('issuer', options_list=['--issuer'],
+                   help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
+        c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences', '--allowed-audiences'],
+                   help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
+        c.argument('client_secret_certificate_thumbprint', options_list=['--thumbprint', '--client-secret-certificate-thumbprint'],
+                   help='Alternative to AAD Client Secret, thumbprint of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_san', options_list=['--san', '--client-secret-certificate-san'],
+                   help='Alternative to AAD Client Secret and thumbprint, subject alternative name of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_issuer', options_list=['--certificate-issuer', '--client-secret-certificate-issuer'],
+                   help='Alternative to AAD Client Secret and thumbprint, issuer of a certificate used for signing purposes')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('tenant_id', options_list=['--tenant-id'],
+                   help='The tenant id of the application.')

@@ -16,7 +16,8 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     CLIError,
     CLIInternalError,
-    InvalidArgumentValueError)
+    InvalidArgumentValueError,
+    ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
@@ -1851,13 +1852,13 @@ def set_secrets(cmd, name, resource_group_name, secrets,
                 no_wait=False):
     _validate_subscription_registered(cmd, "Microsoft.App")
 
-    for s in secrets:
-        if s:
-            parsed = s.split("=")
-            if parsed:
-                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH:
-                    raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
-                                          f"Please shorten {parsed[0]}")
+    # for s in secrets:
+    #     if s:
+    #         parsed = s.split("=")
+    #         if parsed:
+    #             if len(parsed[0]) > MAXIMUM_SECRET_LENGTH:
+    #                 raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
+    #                                       f"Please shorten {parsed[0]}")
 
     # if not yaml and not secrets:
     #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
@@ -2390,3 +2391,236 @@ def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
         return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def update_auth_settings(cmd, resource_group_name, name, auth_name, enabled=None, action=None,  # pylint: disable=unused-argument
+                         client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
+                         token_refresh_extension_hours=None,  # pylint: disable=unused-argument
+                         allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
+                         client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
+                         allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
+                         facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
+                         twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
+                         google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
+                         google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
+                         microsoft_account_client_secret=None,  # pylint: disable=unused-argument
+                         microsoft_account_oauth_scopes=None, slot=None):  # pylint: disable=unused-argument
+    # auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+
+    import inspect
+    frame = inspect.currentframe()
+    bool_flags = ['enabled', 'token_store_enabled']
+    # note: getargvalues is used already in azure.cli.core.commands.
+    # and no simple functional replacement for this deprecating method for 3.5
+    args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
+
+    for arg in args[2:]:
+        if values.get(arg, None):
+            setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
+
+    # return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
+
+
+def create_apple_config(cmd, enabled, client_id, client_secret_name, scopes):
+    from azure.mgmt.appcontainers.models import Apple, AppleRegistration, LoginScopes
+    apple_config = Apple(enabled=enabled, registration=AppleRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
+    return apple_config
+
+
+def create_facebook_config(cmd, enabled, app_id, app_secret_name, graph_api_version, scopes):
+    from azure.mgmt.appcontainers.models import Facebook, AppRegistration, LoginScopes
+    facebook_config = Facebook(enabled=enabled, registration=AppRegistration(app_id=app_id, app_secret_setting_name=app_secret_name), graph_api_version=graph_api_version, login=LoginScopes(scopes=scopes))
+    return facebook_config
+
+
+def create_twitter_config(cmd, enabled, consumer_key, consumer_secret_name):
+    from azure.mgmt.appcontainers.models import Twitter, TwitterRegistration
+    twitter_config = Twitter(enabled=enabled, registration=TwitterRegistration(consumer_key=consumer_key, consumer_secret_setting_name=consumer_secret_name))
+    return twitter_config
+
+
+def create_google_config(cmd, enabled, client_id, client_secret_name, scopes, allowed_audiences):
+    from azure.mgmt.appcontainers.models import Google, ClientRegistration, LoginScopes, AllowedAudiencesValidation
+    google_config = Google(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes), validation=AllowedAudiencesValidation(allowed_audiences=allowed_audiences))
+    return google_config
+
+
+def create_github_config(cmd, enabled, client_id, client_secret_name, scopes):
+    from azure.mgmt.appcontainers.models import GitHub, ClientRegistration, LoginScopes
+    github_config = GitHub(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
+    return github_config
+
+
+def create_azure_static_webapps_config(cmd, enabled, client_id):
+    from azure.mgmt.appcontainers.models import AzureStaticWebApps, AzureStaticWebAppsRegistration
+    aswa_config = AzureStaticWebApps(enabled=enabled, registration=AzureStaticWebAppsRegistration(client_id=client_id))
+    return aswa_config
+
+
+def create_open_id_connect_provider_config(enabled, client_id, method, client_secret_name, authorization_endpoint, token_endpoint, issuer, certification_uri, well_known_open_id_configuration, name_claim_type, scopes):
+    from azure.mgmt.appcontainers.models import CustomOpenIdConnectProvider, OpenIdConnectRegistration, OpenIdConnectClientCredential, OpenIdConnectConfig, OpenIdConnectLogin
+    coicp_config = CustomOpenIdConnectProvider(enabled=enabled, registration=OpenIdConnectRegistration(client_id=client_id, client_credential=OpenIdConnectClientCredential(method=method, client_secret_setting_name=client_secret_name),open_id_connect_configuration=OpenIdConnectConfig(authorization_endpoint=authorization_endpoint, token_endpoint=token_endpoint, issuer=issuer, certification_uri=certification_uri, well_known_open_id_configuration=well_known_open_id_configuration)), login=OpenIdConnectLogin(name_claim_type=name_claim_type, scopes=scopes))
+    return coicp_config
+
+
+def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disable=unused-argument
+                        client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                        issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_san=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_issuer=None,  # pylint: disable=unused-argument
+                        yes=False, tenant_id=None):    # pylint: disable=unused-argument
+    MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
+    from knack.prompting import prompt_y_n
+    from azure.mgmt.appcontainers.models import AuthConfig
+
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_thumbprint is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret is not None and client_secret_certificate_thumbprint is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --thumbprint cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --client-secret-setting-name and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if client_secret_certificate_thumbprint is not None and client_secret_certificate_san is not None:
+        raise ArgumentUsageError('Usage Error: --thumbprint and --san cannot both be '
+                                 'configured to non empty strings')
+
+    if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None) or
+            (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
+        raise ArgumentUsageError('Usage Error: --san and --certificate-issuer must both be '
+                                 'configured to non empty strings')
+
+    if issuer is not None and (tenant_id is not None):
+        raise ArgumentUsageError('Usage Error: --issuer and --tenant-id cannot be configured '
+                                 'to non empty strings at the same time.')
+
+    is_new_aad_app = False
+    existing_auth = {}
+
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth["properties"] = {}
+        existing_auth["properties"]["platform"] = {}
+        existing_auth["properties"]["platform"]["enabled"] = True
+        existing_auth["properties"]["globalValidation"] = {}
+        existing_auth["properties"]["login"] = {}
+
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "azureActiveDirectory" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["azureActiveDirectory"] = {}
+        is_new_aad_app = True
+
+    if is_new_aad_app and issuer is None and tenant_id is None:
+        raise CLIError('Usage Error: Either --issuer or --tenant-id must be specified when configuring the '
+                       'Microsoft auth registration.')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
+
+    openid_issuer = issuer
+    if openid_issuer is None:
+        # cmd.cli_ctx.cloud resolves to whichever cloud the customer is currently logged into
+        authority = cmd.cli_ctx.cloud.endpoints.active_directory
+
+        if tenant_id is not None:
+            openid_issuer = authority + "/" + tenant_id + "/v2.0"
+
+    # existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "azureActiveDirectory" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["azureActiveDirectory"] = {}
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or openid_issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
+        if "registration" not in existing_auth["identityProviders"]["azureActiveDirectory"]:
+            existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]
+    if allowed_token_audiences is not None:
+        if "validation" not in existing_auth["identityProviders"]["azureActiveDirectory"]:
+            existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = {}
+        validation = existing_auth["identityProviders"]["azureActiveDirectory"]["validation"]
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = MICROSOFT_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{MICROSOFT_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+    if client_secret_setting_name is not None or client_secret is not None:
+        if "clientSecretCertificateThumbprint" in registration and registration["clientSecretCertificateThumbprint"] is not None:
+            registration["clientSecretCertificateThumbprint"] = None
+        if "clientSecretCertificateSubjectAlternativeName" in registration and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
+            registration["clientSecretCertificateSubjectAlternativeName"] = None
+        if "clientSecretCertificateIssuer" in registration and registration["clientSecretCertificateIssuer"] is not None:
+            registration["clientSecretCertificateIssuer"] = None
+    if client_secret_certificate_thumbprint is not None:
+        registration["clientSecretCertificateThumbprint"] = client_secret_certificate_thumbprint
+        if "clientSecretSettingName" in registration and registration["clientSecretSettingName"] is not None:
+            registration["clientSecretSettingName"] = None
+        if "clientSecretCertificateSubjectAlternativeName" in registration and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
+            registration["clientSecretCertificateSubjectAlternativeName"] = None
+        if "clientSecretCertificateIssuer" in registration and registration["clientSecretCertificateIssuer"] is not None:
+            registration["clientSecretCertificateIssuer"] = None
+    if client_secret_certificate_san is not None:
+        registration["clientSecretCertificateSubjectAlternativeName"] = client_secret_certificate_san
+    if client_secret_certificate_issuer is not None:
+        registration["clientSecretCertificateIssuer"] = client_secret_certificate_issuer
+    if client_secret_certificate_san is not None and client_secret_certificate_issuer is not None:
+        if "clientSecretSettingName" in registration and registration["clientSecretSettingName"] is not None:
+            registration["clientSecretSettingName"] = None
+        if "clientSecretCertificateThumbprint" in registration and registration["clientSecretCertificateThumbprint"] is not None:
+            registration["clientSecretCertificateThumbprint"] = None
+    if openid_issuer is not None:
+        registration["openIdIssuer"] = openid_issuer
+    if allowed_token_audiences is not None:
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = validation
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
+        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings
+
+
+def get_aad_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "azureActiveDirectory" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["azureActiveDirectory"]

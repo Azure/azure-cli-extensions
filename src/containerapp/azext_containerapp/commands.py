@@ -8,7 +8,7 @@
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
-
+from azure.cli.core.commands import CliCommandType
 
 def transform_containerapp_output(app):
     props = ['name', 'location', 'resourceGroup', 'provisioningState']
@@ -42,8 +42,14 @@ def transform_revision_output(rev):
 def transform_revision_list_output(revs):
     return [transform_revision_output(r) for r in revs]
 
+def auth_config_client_factory(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import CustomResourceType
+    MGMT_APPCONTAINERS = CustomResourceType(import_prefix='azure.mgmt.appcontainers', client_name='ContainerAppsAPIClient')
+    return get_mgmt_service_client(cli_ctx, MGMT_APPCONTAINERS, api_version='2022-03-01').container_apps_auth_configs
 
 def load_command_table(self, _):
+
     with self.command_group('containerapp', is_preview=True) as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
@@ -126,3 +132,12 @@ def load_command_table(self, _):
     with self.command_group('containerapp dapr') as g:
         g.custom_command('enable', 'enable_dapr', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
+
+    # with self.command_group('containerapp auth', client_factory=auth_config_client_factory) as g:
+    #     g.custom_command('show', 'create_azure_static_webapps_config', exception_handler=ex_handler_factory())
+    #     g.custom_command('list', 'create_azure_static_webapps_config', exception_handler=ex_handler_factory())
+        # g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth microsoft', client_factory=auth_config_client_factory) as g:
+        g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
+        g.custom_command('show', 'get_aad_settings', exception_handler=ex_handler_factory())
