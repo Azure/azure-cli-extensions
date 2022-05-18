@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.2
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Disable service bus by default, do not create relay for managed clusters.
+* microsoft.azureml.kubernetes: Rename inferenceLoadBalancerHA to inferenceRouterHA and unify related logic.
+
 1.2.1
 ++++++++++++++++++
 * Provide no default values for Patch of Extension
