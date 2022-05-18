@@ -2395,76 +2395,6 @@ def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-# def update_auth_settings(cmd, resource_group_name, name, auth_name, enabled=None, action=None,  # pylint: disable=unused-argument
-#                          client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
-#                          token_refresh_extension_hours=None,  # pylint: disable=unused-argument
-#                          allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
-#                          client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
-#                          allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
-#                          facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
-#                          twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
-#                          google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
-#                          google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
-#                          microsoft_account_client_secret=None,  # pylint: disable=unused-argument
-#                          microsoft_account_oauth_scopes=None, slot=None):  # pylint: disable=unused-argument
-#     # auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
-
-#     import inspect
-#     frame = inspect.currentframe()
-#     bool_flags = ['enabled', 'token_store_enabled']
-#     # note: getargvalues is used already in azure.cli.core.commands.
-#     # and no simple functional replacement for this deprecating method for 3.5
-#     args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
-
-#     for arg in args[2:]:
-#         if values.get(arg, None):
-#             setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
-
-#     # return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
-
-
-# def create_apple_config(cmd, enabled, client_id, client_secret_name, scopes):
-#     from azure.mgmt.appcontainers.models import Apple, AppleRegistration, LoginScopes
-#     apple_config = Apple(enabled=enabled, registration=AppleRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
-#     return apple_config
-
-
-# def create_facebook_config(cmd, enabled, app_id, app_secret_name, graph_api_version, scopes):
-#     from azure.mgmt.appcontainers.models import Facebook, AppRegistration, LoginScopes
-#     facebook_config = Facebook(enabled=enabled, registration=AppRegistration(app_id=app_id, app_secret_setting_name=app_secret_name), graph_api_version=graph_api_version, login=LoginScopes(scopes=scopes))
-#     return facebook_config
-
-
-# def create_twitter_config(cmd, enabled, consumer_key, consumer_secret_name):
-#     from azure.mgmt.appcontainers.models import Twitter, TwitterRegistration
-#     twitter_config = Twitter(enabled=enabled, registration=TwitterRegistration(consumer_key=consumer_key, consumer_secret_setting_name=consumer_secret_name))
-#     return twitter_config
-
-
-# def create_google_config(cmd, enabled, client_id, client_secret_name, scopes, allowed_audiences):
-#     from azure.mgmt.appcontainers.models import Google, ClientRegistration, LoginScopes, AllowedAudiencesValidation
-#     google_config = Google(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes), validation=AllowedAudiencesValidation(allowed_audiences=allowed_audiences))
-#     return google_config
-
-
-# def create_github_config(cmd, enabled, client_id, client_secret_name, scopes):
-#     from azure.mgmt.appcontainers.models import GitHub, ClientRegistration, LoginScopes
-#     github_config = GitHub(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
-#     return github_config
-
-
-# def create_azure_static_webapps_config(cmd, enabled, client_id):
-#     from azure.mgmt.appcontainers.models import AzureStaticWebApps, AzureStaticWebAppsRegistration
-#     aswa_config = AzureStaticWebApps(enabled=enabled, registration=AzureStaticWebAppsRegistration(client_id=client_id))
-#     return aswa_config
-
-
-# def create_open_id_connect_provider_config(enabled, client_id, method, client_secret_name, authorization_endpoint, token_endpoint, issuer, certification_uri, well_known_open_id_configuration, name_claim_type, scopes):
-#     from azure.mgmt.appcontainers.models import CustomOpenIdConnectProvider, OpenIdConnectRegistration, OpenIdConnectClientCredential, OpenIdConnectConfig, OpenIdConnectLogin
-#     coicp_config = CustomOpenIdConnectProvider(enabled=enabled, registration=OpenIdConnectRegistration(client_id=client_id, client_credential=OpenIdConnectClientCredential(method=method, client_secret_setting_name=client_secret_name),open_id_connect_configuration=OpenIdConnectConfig(authorization_endpoint=authorization_endpoint, token_endpoint=token_endpoint, issuer=issuer, certification_uri=certification_uri, well_known_open_id_configuration=well_known_open_id_configuration)), login=OpenIdConnectLogin(name_claim_type=name_claim_type, scopes=scopes))
-#     return coicp_config
-
-
 def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
@@ -2616,7 +2546,11 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
 
 
 def get_aad_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         return {}
     if "azureActiveDirectory" not in auth_settings["identityProviders"]:
@@ -2625,7 +2559,11 @@ def get_aad_settings(cmd, client, resource_group_name, name):
 
 
 def get_facebook_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings():
         return {}
     if "facebook" not in auth_settings["identityProviders"]:
@@ -2636,6 +2574,11 @@ def get_facebook_settings(cmd, client, resource_group_name, name):
 def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
                              app_id=None, app_secret_setting_name=None,  # pylint: disable=unused-argument
                              graph_api_version=None, scopes=None, app_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if app_secret is not None and app_secret_setting_name is not None:
         raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
                        'to non empty strings')
@@ -2688,7 +2631,11 @@ def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: 
 
 
 def get_github_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         return {}
     if "gitHub" not in auth_settings["identityProviders"]:
@@ -2699,6 +2646,11 @@ def get_github_settings(cmd, client, resource_group_name, name):
 def update_github_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                            scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
                        'both be configured to non empty strings')
@@ -2746,13 +2698,14 @@ def update_github_settings(cmd, client, resource_group_name, name,  # pylint: di
 
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["gitHub"]
-# endregion
-
-# region webapp auth google
 
 
 def get_google_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         return {}
     if "google" not in auth_settings["identityProviders"]:
@@ -2763,6 +2716,11 @@ def get_google_settings(cmd, client, resource_group_name, name):
 def update_google_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                            scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
                        'both be configured to non empty strings')
@@ -2817,13 +2775,14 @@ def update_google_settings(cmd, client, resource_group_name, name,  # pylint: di
 
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["google"]
-# endregion
-
-# region webapp auth twitter
 
 
 def get_twitter_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         return {}
     if "twitter" not in auth_settings["identityProviders"]:
@@ -2834,6 +2793,11 @@ def get_twitter_settings(cmd, client, resource_group_name, name):
 def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
                             consumer_key=None, consumer_secret_setting_name=None,   # pylint: disable=unused-argument
                             consumer_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if consumer_secret is not None and consumer_secret_setting_name is not None:
         raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
                        'both be configured to non empty strings')
@@ -2875,13 +2839,14 @@ def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: d
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["twitter"]
-# endregion
-
-# region webapp auth apple
 
 
 def get_apple_settings(cmd, client, resource_group_name, name):
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         return {}
     if "apple" not in auth_settings["identityProviders"]:
@@ -2892,6 +2857,11 @@ def get_apple_settings(cmd, client, resource_group_name, name):
 def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                           scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name '
                        'cannot both be configured to non empty strings')
@@ -2939,12 +2909,14 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
 
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["apple"]
-# endregion
 
-# region webapp auth openid-connect
 
 def get_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
@@ -2961,6 +2933,11 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
                                          client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                                          openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
                                          client_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
@@ -3018,6 +2995,11 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
                                             client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                                             openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
                                             client_secret=None, yes=False):    # pylint: disable=unused-argument
+    try:
+        show_ingress(cmd, name, resource_group_name)
+    except:
+        raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
+
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
@@ -3097,7 +3079,6 @@ def remove_openid_connect_provider_settings(cmd, client, resource_group_name, na
     auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
     client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
     return {}
-# endregion
 
 
 def get_oidc_client_setting_app_setting_name(provider_name):
