@@ -22,6 +22,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
@@ -61,7 +62,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
-from ._constants import MAXIMUM_SECRET_LENGTH
+from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
+                        GOOGLE_SECRET_SETTING_NAME, MSA_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -2367,7 +2369,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
         pass
 
     if r:
-        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+        logger.warning("Only AzureFile account can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
 
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = azure_file_account_key
@@ -2393,74 +2395,74 @@ def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def update_auth_settings(cmd, resource_group_name, name, auth_name, enabled=None, action=None,  # pylint: disable=unused-argument
-                         client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
-                         token_refresh_extension_hours=None,  # pylint: disable=unused-argument
-                         allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
-                         client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
-                         allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
-                         facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
-                         twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
-                         google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
-                         google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
-                         microsoft_account_client_secret=None,  # pylint: disable=unused-argument
-                         microsoft_account_oauth_scopes=None, slot=None):  # pylint: disable=unused-argument
-    # auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+# def update_auth_settings(cmd, resource_group_name, name, auth_name, enabled=None, action=None,  # pylint: disable=unused-argument
+#                          client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
+#                          token_refresh_extension_hours=None,  # pylint: disable=unused-argument
+#                          allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
+#                          client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
+#                          allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
+#                          facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
+#                          twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
+#                          google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
+#                          google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
+#                          microsoft_account_client_secret=None,  # pylint: disable=unused-argument
+#                          microsoft_account_oauth_scopes=None, slot=None):  # pylint: disable=unused-argument
+#     # auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
 
-    import inspect
-    frame = inspect.currentframe()
-    bool_flags = ['enabled', 'token_store_enabled']
-    # note: getargvalues is used already in azure.cli.core.commands.
-    # and no simple functional replacement for this deprecating method for 3.5
-    args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
+#     import inspect
+#     frame = inspect.currentframe()
+#     bool_flags = ['enabled', 'token_store_enabled']
+#     # note: getargvalues is used already in azure.cli.core.commands.
+#     # and no simple functional replacement for this deprecating method for 3.5
+#     args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
 
-    for arg in args[2:]:
-        if values.get(arg, None):
-            setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
+#     for arg in args[2:]:
+#         if values.get(arg, None):
+#             setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
 
-    # return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
-
-
-def create_apple_config(cmd, enabled, client_id, client_secret_name, scopes):
-    from azure.mgmt.appcontainers.models import Apple, AppleRegistration, LoginScopes
-    apple_config = Apple(enabled=enabled, registration=AppleRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
-    return apple_config
+#     # return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
 
 
-def create_facebook_config(cmd, enabled, app_id, app_secret_name, graph_api_version, scopes):
-    from azure.mgmt.appcontainers.models import Facebook, AppRegistration, LoginScopes
-    facebook_config = Facebook(enabled=enabled, registration=AppRegistration(app_id=app_id, app_secret_setting_name=app_secret_name), graph_api_version=graph_api_version, login=LoginScopes(scopes=scopes))
-    return facebook_config
+# def create_apple_config(cmd, enabled, client_id, client_secret_name, scopes):
+#     from azure.mgmt.appcontainers.models import Apple, AppleRegistration, LoginScopes
+#     apple_config = Apple(enabled=enabled, registration=AppleRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
+#     return apple_config
 
 
-def create_twitter_config(cmd, enabled, consumer_key, consumer_secret_name):
-    from azure.mgmt.appcontainers.models import Twitter, TwitterRegistration
-    twitter_config = Twitter(enabled=enabled, registration=TwitterRegistration(consumer_key=consumer_key, consumer_secret_setting_name=consumer_secret_name))
-    return twitter_config
+# def create_facebook_config(cmd, enabled, app_id, app_secret_name, graph_api_version, scopes):
+#     from azure.mgmt.appcontainers.models import Facebook, AppRegistration, LoginScopes
+#     facebook_config = Facebook(enabled=enabled, registration=AppRegistration(app_id=app_id, app_secret_setting_name=app_secret_name), graph_api_version=graph_api_version, login=LoginScopes(scopes=scopes))
+#     return facebook_config
 
 
-def create_google_config(cmd, enabled, client_id, client_secret_name, scopes, allowed_audiences):
-    from azure.mgmt.appcontainers.models import Google, ClientRegistration, LoginScopes, AllowedAudiencesValidation
-    google_config = Google(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes), validation=AllowedAudiencesValidation(allowed_audiences=allowed_audiences))
-    return google_config
+# def create_twitter_config(cmd, enabled, consumer_key, consumer_secret_name):
+#     from azure.mgmt.appcontainers.models import Twitter, TwitterRegistration
+#     twitter_config = Twitter(enabled=enabled, registration=TwitterRegistration(consumer_key=consumer_key, consumer_secret_setting_name=consumer_secret_name))
+#     return twitter_config
 
 
-def create_github_config(cmd, enabled, client_id, client_secret_name, scopes):
-    from azure.mgmt.appcontainers.models import GitHub, ClientRegistration, LoginScopes
-    github_config = GitHub(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
-    return github_config
+# def create_google_config(cmd, enabled, client_id, client_secret_name, scopes, allowed_audiences):
+#     from azure.mgmt.appcontainers.models import Google, ClientRegistration, LoginScopes, AllowedAudiencesValidation
+#     google_config = Google(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes), validation=AllowedAudiencesValidation(allowed_audiences=allowed_audiences))
+#     return google_config
 
 
-def create_azure_static_webapps_config(cmd, enabled, client_id):
-    from azure.mgmt.appcontainers.models import AzureStaticWebApps, AzureStaticWebAppsRegistration
-    aswa_config = AzureStaticWebApps(enabled=enabled, registration=AzureStaticWebAppsRegistration(client_id=client_id))
-    return aswa_config
+# def create_github_config(cmd, enabled, client_id, client_secret_name, scopes):
+#     from azure.mgmt.appcontainers.models import GitHub, ClientRegistration, LoginScopes
+#     github_config = GitHub(enabled=enabled, registration=ClientRegistration(client_id=client_id, client_secret_setting_name=client_secret_name), login=LoginScopes(scopes=scopes))
+#     return github_config
 
 
-def create_open_id_connect_provider_config(enabled, client_id, method, client_secret_name, authorization_endpoint, token_endpoint, issuer, certification_uri, well_known_open_id_configuration, name_claim_type, scopes):
-    from azure.mgmt.appcontainers.models import CustomOpenIdConnectProvider, OpenIdConnectRegistration, OpenIdConnectClientCredential, OpenIdConnectConfig, OpenIdConnectLogin
-    coicp_config = CustomOpenIdConnectProvider(enabled=enabled, registration=OpenIdConnectRegistration(client_id=client_id, client_credential=OpenIdConnectClientCredential(method=method, client_secret_setting_name=client_secret_name),open_id_connect_configuration=OpenIdConnectConfig(authorization_endpoint=authorization_endpoint, token_endpoint=token_endpoint, issuer=issuer, certification_uri=certification_uri, well_known_open_id_configuration=well_known_open_id_configuration)), login=OpenIdConnectLogin(name_claim_type=name_claim_type, scopes=scopes))
-    return coicp_config
+# def create_azure_static_webapps_config(cmd, enabled, client_id):
+#     from azure.mgmt.appcontainers.models import AzureStaticWebApps, AzureStaticWebAppsRegistration
+#     aswa_config = AzureStaticWebApps(enabled=enabled, registration=AzureStaticWebAppsRegistration(client_id=client_id))
+#     return aswa_config
+
+
+# def create_open_id_connect_provider_config(enabled, client_id, method, client_secret_name, authorization_endpoint, token_endpoint, issuer, certification_uri, well_known_open_id_configuration, name_claim_type, scopes):
+#     from azure.mgmt.appcontainers.models import CustomOpenIdConnectProvider, OpenIdConnectRegistration, OpenIdConnectClientCredential, OpenIdConnectConfig, OpenIdConnectLogin
+#     coicp_config = CustomOpenIdConnectProvider(enabled=enabled, registration=OpenIdConnectRegistration(client_id=client_id, client_credential=OpenIdConnectClientCredential(method=method, client_secret_setting_name=client_secret_name),open_id_connect_configuration=OpenIdConnectConfig(authorization_endpoint=authorization_endpoint, token_endpoint=token_endpoint, issuer=issuer, certification_uri=certification_uri, well_known_open_id_configuration=well_known_open_id_configuration)), login=OpenIdConnectLogin(name_claim_type=name_claim_type, scopes=scopes))
+#     return coicp_config
 
 
 def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disable=unused-argument
@@ -2470,9 +2472,6 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
                         client_secret_certificate_san=None,  # pylint: disable=unused-argument
                         client_secret_certificate_issuer=None,  # pylint: disable=unused-argument
                         yes=False, tenant_id=None):    # pylint: disable=unused-argument
-    MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
-    from knack.prompting import prompt_y_n
-    from azure.mgmt.appcontainers.models import AuthConfig
 
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -2514,15 +2513,14 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
 
     is_new_aad_app = False
     existing_auth = {}
-
     try:
         existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
     except:
-        existing_auth["properties"] = {}
-        existing_auth["properties"]["platform"] = {}
-        existing_auth["properties"]["platform"]["enabled"] = True
-        existing_auth["properties"]["globalValidation"] = {}
-        existing_auth["properties"]["login"] = {}
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
 
     registration = {}
     validation = {}
@@ -2614,7 +2612,8 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
 
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
-    return updated_auth_settings
+
+    return updated_auth_settings["properties"]["identityProviders"]["azureActiveDirectory"]
 
 
 def get_aad_settings(cmd, client, resource_group_name, name):
@@ -2624,3 +2623,481 @@ def get_aad_settings(cmd, client, resource_group_name, name):
     if "azureActiveDirectory" not in auth_settings["identityProviders"]:
         return {}
     return auth_settings["identityProviders"]["azureActiveDirectory"]
+
+
+def get_facebook_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings():
+        return {}
+    if "facebook" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["facebook"]
+
+
+def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
+                             app_id=None, app_secret_setting_name=None,  # pylint: disable=unused-argument
+                             graph_api_version=None, scopes=None, app_secret=None, yes=False):    # pylint: disable=unused-argument
+    if app_secret is not None and app_secret_setting_name is not None:
+        raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
+                       'to non empty strings')
+
+    if app_secret is not None and not yes:
+        msg = 'Configuring --app-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --app-secret cannot be used without agreeing to add app '
+                           'settings to the web app.')
+
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "facebook" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["facebook"] = {}
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["facebook"]:
+            existing_auth["identityProviders"]["facebook"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["facebook"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["facebook"]:
+            existing_auth["identityProviders"]["facebook"]["login"] = {}
+
+    if app_id is not None:
+        registration["appId"] = app_id
+    if app_secret_setting_name is not None:
+        registration["appSecretSettingName"] = app_secret_setting_name
+    if app_secret is not None:
+        registration["appSecretSettingName"] = FACEBOOK_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{FACEBOOK_SECRET_SETTING_NAME}={app_secret}"], no_wait=True)
+    if graph_api_version is not None:
+        existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
+    if scopes is not None:
+        existing_auth["identityProviders"]["facebook"]["login"]["scopes"] = scopes.split(",")
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
+        existing_auth["identityProviders"]["facebook"]["registration"] = registration
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings["identityProviders"]["facebook"]
+
+
+def get_github_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "gitHub" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["gitHub"]
+
+
+def update_github_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
+                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                           scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                       'both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
+                           'app settings to the web app.')
+
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "gitHub" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["gitHub"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["gitHub"]:
+            existing_auth["identityProviders"]["gitHub"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["gitHub"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["gitHub"]:
+            existing_auth["identityProviders"]["gitHub"]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = GITHUB_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GITHUB_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["gitHub"]["registration"] = registration
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings["identityProviders"]["gitHub"]
+# endregion
+
+# region webapp auth google
+
+
+def get_google_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "google" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["google"]
+
+
+def update_google_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
+                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                       'both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
+                           'app settings to the web app.')
+
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "google" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["google"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["google"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["login"] = {}
+    if allowed_token_audiences is not None:
+        if "validation" not in existing_auth["identityProviders"]["google"]:
+            existing_auth["identityProviders"]["google"]["validation"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = GOOGLE_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GOOGLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
+    if allowed_token_audiences is not None:
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["google"]["validation"] = validation
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["google"]["registration"] = registration
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings["identityProviders"]["google"]
+# endregion
+
+# region webapp auth twitter
+
+
+def get_twitter_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "twitter" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["twitter"]
+
+
+def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
+                            consumer_key=None, consumer_secret_setting_name=None,   # pylint: disable=unused-argument
+                            consumer_secret=None, yes=False):    # pylint: disable=unused-argument
+    if consumer_secret is not None and consumer_secret_setting_name is not None:
+        raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
+                       'both be configured to non empty strings')
+
+    if consumer_secret is not None and not yes:
+        msg = 'Configuring --consumer-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --consumer-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "twitter" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["twitter"] = {}
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["twitter"]:
+            existing_auth["identityProviders"]["twitter"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["twitter"]["registration"]
+
+    if consumer_key is not None:
+        registration["consumerKey"] = consumer_key
+    if consumer_secret_setting_name is not None:
+        registration["consumerSecretSettingName"] = consumer_secret_setting_name
+    if consumer_secret is not None:
+        registration["consumerSecretSettingName"] = TWITTER_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True)
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
+        existing_auth["identityProviders"]["twitter"]["registration"] = registration
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings["identityProviders"]["twitter"]
+# endregion
+
+# region webapp auth apple
+
+
+def get_apple_settings(cmd, client, resource_group_name, name):
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        return {}
+    if "apple" not in auth_settings["identityProviders"]:
+        return {}
+    return auth_settings["identityProviders"]["apple"]
+
+
+def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
+                          client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                          scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name '
+                       'cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth = {}
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
+
+    registration = {}
+    if "identityProviders" not in existing_auth:
+        existing_auth["identityProviders"] = {}
+    if "apple" not in existing_auth["identityProviders"]:
+        existing_auth["identityProviders"]["apple"] = {}
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        if "registration" not in existing_auth["identityProviders"]["apple"]:
+            existing_auth["identityProviders"]["apple"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["apple"]["registration"]
+    if scopes is not None:
+        if "login" not in existing_auth["identityProviders"]["apple"]:
+            existing_auth["identityProviders"]["apple"]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        registration["clientSecretSettingName"] = APPLE_SECRET_SETTING_NAME
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{APPLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+    if scopes is not None:
+        existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["apple"]["registration"] = registration
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return updated_auth_settings["identityProviders"]["apple"]
+# endregion
+
+# region webapp auth openid-connect
+
+def get_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    if "identityProviders" not in auth_settings:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+
+def add_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,  # pylint: disable=unused-argument
+                                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                         openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
+                                         client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        auth_settings = {}
+        auth_settings["platform"] = {}
+        auth_settings["platform"]["enabled"] = True
+        auth_settings["globalValidation"] = {}
+        auth_settings["login"] = {}
+    if "identityProviders" not in auth_settings:
+        auth_settings["identityProviders"] = {}
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
+    if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has already been '
+                       'configured: ' + provider_name + '. Please use az webapp auth oidc update to '
+                       'update the provider.')
+
+    final_client_secret_setting_name = client_secret_setting_name
+    if client_secret is not None:
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True)
+
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
+        "registration": {
+            "clientId": client_id,
+            "clientCredential": {
+                "clientSecretSettingName": final_client_secret_setting_name
+            },
+            "openIdConnectConfiguration": {
+                "wellKnownOpenIdConfiguration": openid_configuration
+            }
+        }
+    }
+    login = {}
+    if scopes is not None:
+        login["scopes"] = scopes.split(',')
+    else:
+        login["scopes"] = ["openid"]
+
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
+    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+
+def update_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,  # pylint: disable=unused-argument
+                                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                            openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
+                                            client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+
+    custom_open_id_connect_providers = auth_settings["identityProviders"]["customOpenIdConnectProviders"]
+    registration = {}
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        if "registration" not in custom_open_id_connect_providers[provider_name]:
+            custom_open_id_connect_providers[provider_name]["registration"] = {}
+        registration = custom_open_id_connect_providers[provider_name]["registration"]
+
+    if client_secret_setting_name is not None or client_secret is not None:
+        if "clientCredential" not in custom_open_id_connect_providers[provider_name]["registration"]:
+            custom_open_id_connect_providers[provider_name]["registration"]["clientCredential"] = {}
+
+    if openid_configuration is not None:
+        if "openIdConnectConfiguration" not in custom_open_id_connect_providers[provider_name]["registration"]:
+            custom_open_id_connect_providers[provider_name]["registration"]["openIdConnectConfiguration"] = {}
+
+    if scopes is not None:
+        if "login" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]:
+            custom_open_id_connect_providers[provider_name]["login"] = {}
+
+    if client_id is not None:
+        registration["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        registration["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
+        registration["clientSecretSettingName"] = final_client_secret_setting_name
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True)
+    if openid_configuration is not None:
+        registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
+    if scopes is not None:
+        custom_open_id_connect_providers[provider_name]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        custom_open_id_connect_providers[provider_name]["registration"] = registration
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
+
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=updated_auth_settings).serialize()
+    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+
+def remove_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
+    client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
+    return {}
+# endregion
+
+
+def get_oidc_client_setting_app_setting_name(provider_name):
+    provider_name_prefix = provider_name.upper()
+
+    # an appsetting name can be up to 64 characters, and the suffix _PROVIDER_AUTHENTICATION_SECRET is 31 characters so limitting this to 32
+    if len(provider_name_prefix) > 32:
+        provider_name_prefix = provider_name_prefix[0:31]
+    return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
