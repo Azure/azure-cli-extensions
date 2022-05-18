@@ -9,17 +9,98 @@ import yaml
 
 from knack.log import get_logger
 from knack.util import CLIError
-from knack.prompting import prompt
-from knack.prompting import prompt_choice_list
+from knack.prompting import prompt, prompt_choice_list
 from pycomposefile import ComposeFile
 
 from ._monkey_patch import (
     create_containerapp_from_service,
-    create_containerapps_compose_environment)
-from ._monkey_patch import ManagedEnvironmentClient
+    create_containerapps_compose_environment,
+    ManagedEnvironmentClient)
 
 
 logger = get_logger(__name__)
+
+
+def resolve_configuration_element_list(compose_service, unsupported_configuration):
+    config_list = []
+    for configuration_element in unsupported_configuration:
+        try:
+            attribute = getattr(compose_service, configuration_element)
+        except AttributeError:
+            logger.critical("Failed to resolve %s", configuration_element)
+        if attribute is not None:
+            config_list.append(f"{compose_service.compose_path}/{configuration_element}")
+    return config_list
+
+
+def warn_about_unsupported_build_configuration(compose_service):
+    if compose_service.build is not None:
+        message = f"Build configuration for {compose_service.build.compose_path} is not currently supported."
+        message += " Work is planned to add that capability."
+        message += " See https://aka.ms/containerapp/compose/build_support for more information or to add feedback."
+        logger.warning(message)
+
+
+def warn_about_unsupported_runtime_host_configuration(compose_service):
+    unsupported_configuration = ["blkio_config", "cpu_count", "cpu_percent", "cpu_shares", "cpu_period",
+                                 "cpu_quota", "cpu_rt_runtime", "cpu_rt_period", "cpuset", "cap_add",
+                                 "cap_drop", "cgroup_parent", "configs", "credential_spec",
+                                 "device_cgroup_rules", "devices", "dns", "dns_opt", "dns_search",
+                                 "domainname", "external_links", "extra_hosts", "group_add", "healthcheck",
+                                 "hostname", "init", "ipc", "isolation", "links", "logging", "mem_limit",
+                                 "mem_swappiness", "memswap_limit", "oom_kill_disable", "oom_score_adj",
+                                 "pid", "pids_limit", "privileged", "profiles", "pull_policy", "read_only",
+                                 "restart", "runtime", "security_opt", "shm_size", "stdin_open",
+                                 "stop_grace_period", "stop_signal", "storage_opt", "sysctls", "tmpfs",
+                                 "tty", "ulimits", "user", "working_dir"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These container and host configuration elements from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported configuration,"
+    message += " please see https://aka.ms/containerapp/compose/configuration"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_volumes(compose_service):
+    unsupported_configuration = ["volumes", "volumes_from"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These volume mount elements from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported storage configuration,"
+    message += " please see https://aka.ms/containerapp/compose/volumes"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_network(compose_service):
+    unsupported_configuration = ["networks", "network_mode", "mac_address"]
+    config_list = resolve_configuration_element_list(compose_service, unsupported_configuration)
+    message = "These network configuration settings from the docker-compose file are not supported"
+    message += " in Azure Container Apps. For more information about supported networking configuration,"
+    message += " please see https://aka.ms/containerapp/compose/networking"
+    if len(config_list) >= 1:
+        logger.warning(message)
+        for item in config_list:
+            logger.warning("     %s", item)
+
+
+def warn_about_unsupported_elements(compose_service):
+    warn_about_unsupported_build_configuration(compose_service)
+    warn_about_unsupported_runtime_host_configuration(compose_service)
+    warn_about_unsupported_volumes(compose_service)
+    warn_about_unsupported_network(compose_service)
+
+
+def check_supported_platform(platform):
+    if platform is not None:
+        platform = platform.split('/')
+        if len(platform) >= 2:
+            return platform[0] == 'linux' and platform[1] == 'amd64'
+        return platform[0] == 'linux'
+    return True
 
 
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
@@ -58,6 +139,11 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     # pylint: disable=C0201,C0206
     for service_name in parsed_compose_file.ordered_services.keys():
         service = parsed_compose_file.services[service_name]
+        if not check_supported_platform(service.platform):
+            message = "Unsupported platform found. "
+            message += "Azure Container Apps only supports linux/amd64 container images."
+            raise CLIError(message)
+        warn_about_unsupported_elements(service)
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
         ingress_type, target_port = resolve_ingress_and_target_port(service)
