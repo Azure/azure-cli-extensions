@@ -939,8 +939,8 @@ class AzureFirewallScenario(ScenarioTest):
             'policy': 'testpolicy'
         })
 
-        self.cmd('network firewall policy create -g {rg} -n {policy} --sql True',
-                 checks=self.check('sql.allowSqlRedirect', 'True'))
+        self.cmd('network firewall policy create -g {rg} -n {policy} --sql true',
+                 checks=self.check('sql.allowSqlRedirect', True))
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
-                 checks=self.check('sql.allowSqlRedirect', 'False'))
+                 checks=self.check('sql.allowSqlRedirect', False))
