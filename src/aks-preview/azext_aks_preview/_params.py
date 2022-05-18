@@ -582,7 +582,7 @@ def load_arguments(self, _):
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
         c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(credential_formats))
-        c.argument('namespace_name', options_list=['--namespace'], help='If specified, the credentials are returned at the namespace scope, assuming the user has access on the ARM resource for that namespace.')
+        c.argument('namespace_name', options_list=['--namespace'], help='If specified, the credentials are returned at the namespace scope, assuming the user has access to the ARM resource for that namespace.')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', help='The cluster name.')
