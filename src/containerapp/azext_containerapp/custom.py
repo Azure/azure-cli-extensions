@@ -2611,9 +2611,8 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
             client_secret_certificate_issuer is not None):
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
-
-    return updated_auth_settings["properties"]["identityProviders"]["azureActiveDirectory"]
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
 
 
 def get_aad_settings(cmd, client, resource_group_name, name):
@@ -2642,10 +2641,10 @@ def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: 
                        'to non empty strings')
 
     if app_secret is not None and not yes:
-        msg = 'Configuring --app-secret will add app settings to the web app. Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --app-secret cannot be used without agreeing to add app '
-                           'settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     existing_auth = {}
     try:
@@ -2684,7 +2683,7 @@ def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: 
     if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
         existing_auth["identityProviders"]["facebook"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["facebook"]
 
 
@@ -2705,10 +2704,10 @@ def update_github_settings(cmd, client, resource_group_name, name,  # pylint: di
                        'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
-                           'app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     existing_auth = {}
     try:
@@ -2745,7 +2744,7 @@ def update_github_settings(cmd, client, resource_group_name, name,  # pylint: di
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["gitHub"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["gitHub"]
 # endregion
 
@@ -2769,10 +2768,10 @@ def update_google_settings(cmd, client, resource_group_name, name,  # pylint: di
                        'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
-                           'app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     existing_auth = {}
     try:
@@ -2816,7 +2815,7 @@ def update_google_settings(cmd, client, resource_group_name, name,  # pylint: di
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["google"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["google"]
 # endregion
 
@@ -2840,10 +2839,10 @@ def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: d
                        'both be configured to non empty strings')
 
     if consumer_secret is not None and not yes:
-        msg = 'Configuring --consumer-secret will add app settings to the web app. Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --consumer-secret cannot be used without agreeing '
-                           'to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     existing_auth = {}
     try:
@@ -2874,7 +2873,7 @@ def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: d
         set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["twitter"]
 # endregion
 
@@ -2898,11 +2897,10 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
                        'cannot both be configured to non empty strings')
 
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. ' \
-            'Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
-                           'to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     existing_auth = {}
     try:
@@ -2939,7 +2937,7 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["apple"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["apple"]
 # endregion
 
@@ -2964,11 +2962,10 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
                                          openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
                                          client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. ' \
-            'Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
-                           'to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
     auth_settings = {}
     try:
@@ -2979,6 +2976,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
         auth_settings["platform"]["enabled"] = True
         auth_settings["globalValidation"] = {}
         auth_settings["login"] = {}
+
     if "identityProviders" not in auth_settings:
         auth_settings["identityProviders"] = {}
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
@@ -3012,7 +3010,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
 
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
@@ -3021,13 +3019,21 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
                                             openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
                                             client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. ' \
-            'Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
-                           'to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+                           'to the containerapp.')
 
-    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        auth_settings = {}
+        auth_settings["platform"] = {}
+        auth_settings["platform"]["enabled"] = True
+        auth_settings["globalValidation"] = {}
+        auth_settings["login"] = {}
+
     if "identityProviders" not in auth_settings:
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
@@ -3073,12 +3079,12 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
         custom_open_id_connect_providers[provider_name]["registration"] = registration
     auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=updated_auth_settings).serialize()
+    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=updated_auth_settings).serialize()["properties"]
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
 def remove_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
-    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
     if "identityProviders" not in auth_settings:
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
@@ -3101,3 +3107,10 @@ def get_oidc_client_setting_app_setting_name(provider_name):
     if len(provider_name_prefix) > 32:
         provider_name_prefix = provider_name_prefix[0:31]
     return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+
+
+def delete_auth_config(client, name, resource_group_name):
+    return client.delete(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")
+
+def show_auth_config(client, name, resource_group_name):
+    return client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")

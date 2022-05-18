@@ -133,11 +133,39 @@ def load_command_table(self, _):
         g.custom_command('enable', 'enable_dapr', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
 
-    # with self.command_group('containerapp auth', client_factory=auth_config_client_factory) as g:
-    #     g.custom_command('show', 'create_azure_static_webapps_config', exception_handler=ex_handler_factory())
+    with self.command_group('containerapp auth', client_factory=auth_config_client_factory) as g:
+        g.custom_command('delete', 'delete_auth_config', exception_handler=ex_handler_factory())
+        g.custom_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
+
     #     g.custom_command('list', 'create_azure_static_webapps_config', exception_handler=ex_handler_factory())
         # g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth microsoft', client_factory=auth_config_client_factory) as g:
+        g.custom_command('show', 'get_aad_settings')
         g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
-        g.custom_command('show', 'get_aad_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth facebook', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_facebook_settings')
+        g.custom_command('update', 'update_facebook_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth github', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_github_settings')
+        g.custom_command('update', 'update_github_settings')
+
+    with self.command_group('containerapp auth google', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_google_settings')
+        g.custom_command('update', 'update_google_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth twitter', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_twitter_settings')
+        g.custom_command('update', 'update_twitter_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth apple', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_apple_settings')
+        g.custom_command('update', 'update_apple_settings', exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp auth openid-connect', client_factory=auth_config_client_factory) as g:
+        g.custom_show_command('show', 'get_openid_connect_provider_settings')
+        g.custom_command('add', 'add_openid_connect_provider_settings', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_openid_connect_provider_settings', exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_openid_connect_provider_settings')
