@@ -58,7 +58,7 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed, 
+                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, _update_weights, get_vnet_location, load_cert_file,
                      check_cert_name_availability, validate_hostname, patch_new_custom_domain, get_custom_domains)
 
@@ -2337,7 +2337,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     def location_match(c):
         return c["location"] == location or not location
@@ -2367,7 +2367,7 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
 
 
 def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
 
@@ -2406,7 +2406,7 @@ def upload_certificate(cmd, name, resource_group_name, certificate_file, certifi
 
 
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
@@ -2420,7 +2420,7 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
 
 
 def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, hostname, certificate_password=None, certificate_name=None, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
     if not passed:
@@ -2444,7 +2444,7 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
 
 
 def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not thumbprint and not certificate:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
@@ -2482,14 +2482,14 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
 
 
 def list_hostname(cmd, resource_group_name, name, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
     return custom_domains
 
 
 def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
     new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
