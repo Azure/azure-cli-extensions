@@ -54,6 +54,8 @@ from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_mongodb_resources
 )
 
+from datetime import datetime
+
 
 logger = get_logger(__name__)
 
@@ -1123,17 +1125,23 @@ def cosmosdb_data_transfer_copy_job(client,
 
     job_create_properties = {}
 
+    new_job_name = "copy_"
+
     if source_cassandra_table is not None:
         job_create_properties['source'] = source_cassandra_table
+        new_job_name = new_job_name + source_cassandra_table.keyspace_name + "." + source_cassandra_table.table_name + "_"
 
     if source_sql_container is not None:
         job_create_properties['source'] = source_sql_container
+        new_job_name = new_job_name + source_sql_container.database_name + "." + source_sql_container.container_name + "_"
 
     if dest_cassandra_table is not None:
         job_create_properties['destination'] = dest_cassandra_table
+        new_job_name = new_job_name + dest_cassandra_table.keyspace_name + "." + dest_cassandra_table.table_name + "_"
 
     if dest_sql_container is not None:
         job_create_properties['destination'] = dest_sql_container
+        new_job_name = new_job_name + dest_sql_container.database_name + "." + dest_sql_container.container_name + "_"
 
     if worker_count > 0:
         job_create_properties['worker_count'] = worker_count
@@ -1142,7 +1150,7 @@ def cosmosdb_data_transfer_copy_job(client,
     job_create_parameters['properties'] = job_create_properties
 
     if job_name is None:
-        job_name = _gen_guid()
+        job_name = new_job_name + datetime.now().strftime("%d%m%YT%H%M%S")
 
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
