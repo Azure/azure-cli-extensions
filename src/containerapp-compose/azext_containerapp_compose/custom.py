@@ -3,18 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import errno
 import os
-import yaml
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
-from knack.util import CLIError
 from knack.prompting import prompt, prompt_choice_list
 from pycomposefile import ComposeFile
 
 from ._monkey_patch import (
     create_containerapp_from_service,
     create_containerapps_compose_environment,
+    load_yaml_file,
     ManagedEnvironmentClient)
 
 
@@ -142,7 +141,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         if not check_supported_platform(service.platform):
             message = "Unsupported platform found. "
             message += "Azure Container Apps only supports linux/amd64 container images."
-            raise CLIError(message)
+            raise InvalidArgumentValueError(message)
         warn_about_unsupported_elements(service)
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps instance for {service_name} under {resource_group_name} in {location}.")
@@ -388,15 +387,3 @@ def resolve_service_startup_command(service):
         startup_command_array = None
         startup_args_array = None
     return (startup_command_array, startup_args_array)
-
-
-def load_yaml_file(file_name):
-    try:
-        with open(file_name) as stream:  # pylint: disable=W1514
-            return yaml.safe_load(stream)
-    except (IOError, OSError) as ex:
-        if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError(f"{file_name} does not exist")  # pylint: disable=W0707
-        raise
-    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError(f"Error parsing {file_name} ({str(ex)})")  # pylint: disable=W0707

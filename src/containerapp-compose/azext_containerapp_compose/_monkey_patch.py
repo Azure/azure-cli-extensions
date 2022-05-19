@@ -96,3 +96,7 @@ def create_containerapps_compose_environment(cmd,
 
 def create_containerapp_from_service(*args, **kwargs):
     return custom.create_containerapp(*args, **kwargs)
+
+
+def load_yaml_file(filename):
+    return custom.load_yaml_file(filename)
