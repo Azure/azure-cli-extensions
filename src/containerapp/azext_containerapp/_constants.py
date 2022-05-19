@@ -12,3 +12,5 @@ LONG_POLLING_INTERVAL_SECS = 10
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 
 MAX_ENV_PER_LOCATION = 2
+
+CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE = "Microsoft.App/managedEnvironments/certificates"

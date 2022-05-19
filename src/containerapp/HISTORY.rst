@@ -6,6 +6,9 @@ Release History
 0.3.5
 ++++++
 * Add parameter --zone-redundant to 'az containerapp env create'
+* Added 'az containerapp env certificate' to manage certificates in a container app environment
+* Added 'az containerapp hostname' to manage hostnames in a container app
+* Added 'az containerapp ssl upload' to upload a certificate, add a hostname and the binding to a container app
 
 0.3.4
 ++++++
