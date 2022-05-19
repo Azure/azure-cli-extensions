@@ -123,6 +123,16 @@ def load_arguments(self, _):
                    action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
+        c.argument('private_link_service_connection_state_status',
+                   arg_type=get_enum_type(['Pending', 'Approved', 'Rejected']),
+                   help='Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
+        c.argument('private_link_service_connection_state_description', type=str,
+                   help='The reason for approval/rejection of the connection.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
+        c.argument('private_link_service_connection_state_actions_required', type=str, help='A message indicating if '
+                   'changes on the service provider require any updates on the consumer.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
 
     with self.argument_context('healthcareapis private-endpoint-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -136,6 +146,16 @@ def load_arguments(self, _):
                    action=AddPrivateLinkServiceConnectionState, nargs='*',
                    help='A collection of information about the state of the connection between service consumer and '
                    'provider.')
+        c.argument('private_link_service_connection_state_status',
+                   arg_type=get_enum_type(['Pending', 'Approved', 'Rejected']),
+                   help='Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
+        c.argument('private_link_service_connection_state_description', type=str,
+                   help='The reason for approval/rejection of the connection.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
+        c.argument('private_link_service_connection_state_actions_required', type=str, help='A message indicating if '
+                   'changes on the service provider require any updates on the consumer.',
+                   deprecate_info=c.deprecate(redirect='--private-link-service-connection-state'))
 
     with self.argument_context('healthcareapis private-endpoint-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

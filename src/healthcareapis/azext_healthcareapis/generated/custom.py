@@ -11,6 +11,7 @@
 # pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
+from ..vendored_sdks.healthcareapis import models
 
 
 def healthcareapis_acr_list(client,
@@ -213,10 +214,26 @@ def healthcareapis_private_endpoint_connection_create(client,
                                                       resource_name,
                                                       private_endpoint_connection_name,
                                                       private_link_service_connection_state=None,
+                                                      private_link_service_connection_state_status=None,
+                                                      private_link_service_connection_state_description=None,
+                                                      private_link_service_connection_state_actions_required=None,
                                                       no_wait=False):
     properties = {}
     if private_link_service_connection_state is not None:
         properties['private_link_service_connection_state'] = private_link_service_connection_state
+    elif private_link_service_connection_state_status or \
+            private_link_service_connection_state_description or \
+            private_link_service_connection_state_actions_required:
+        properties['private_link_service_connection_state'] = {}
+        if private_link_service_connection_state_status:
+            properties['private_link_service_connection_state']['status'] = private_link_service_connection_state_status
+        if private_link_service_connection_state_description:
+            properties['private_link_service_connection_state'][
+                'description'] = private_link_service_connection_state_description
+        if private_link_service_connection_state_actions_required:
+            properties['private_link_service_connection_state'][
+                'description'] = private_link_service_connection_state_actions_required
+
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -230,10 +247,25 @@ def healthcareapis_private_endpoint_connection_update(client,
                                                       resource_name,
                                                       private_endpoint_connection_name,
                                                       private_link_service_connection_state=None,
+                                                      private_link_service_connection_state_status=None,
+                                                      private_link_service_connection_state_description=None,
+                                                      private_link_service_connection_state_actions_required=None,
                                                       no_wait=False):
     properties = {}
     if private_link_service_connection_state is not None:
         properties['private_link_service_connection_state'] = private_link_service_connection_state
+    elif private_link_service_connection_state_status or \
+            private_link_service_connection_state_description or \
+            private_link_service_connection_state_actions_required:
+        properties['private_link_service_connection_state'] = {}
+        if private_link_service_connection_state_status:
+            properties['private_link_service_connection_state']['status'] = private_link_service_connection_state_status
+        if private_link_service_connection_state_description:
+            properties['private_link_service_connection_state'][
+                'description'] = private_link_service_connection_state_description
+        if private_link_service_connection_state_actions_required:
+            properties['private_link_service_connection_state'][
+                'description'] = private_link_service_connection_state_actions_required
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,

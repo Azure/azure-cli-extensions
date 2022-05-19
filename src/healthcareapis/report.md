@@ -174,6 +174,9 @@ description="Auto-Approved" status="Approved" --resource-group "rgname" --resour
 |**--resource-name**|string|The name of the service instance.|resource_name|resourceName|
 |**--private-endpoint-connection-name**|string|The name of the private endpoint connection associated with the Azure resource|private_endpoint_connection_name|privateEndpointConnectionName|
 |**--private-link-service-connection-state**|object|A collection of information about the state of the connection between service consumer and provider.|private_link_service_connection_state|privateLinkServiceConnectionState|
+|**--private-link-service-connection-state-status**|choice|Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.|status|status|
+|**--private-link-service-connection-state-description**|string|The reason for approval/rejection of the connection.|description|description|
+|**--private-link-service-connection-state-actions-required**|string|A message indicating if changes on the service provider require any updates on the consumer.|actions_required|actionsRequired|
 
 #### <a name="PrivateEndpointConnectionsCreateOrUpdate#Update">Command `az healthcareapis private-endpoint-connection update`</a>
 
@@ -185,6 +188,9 @@ description="Auto-Approved" status="Approved" --resource-group "rgname" --resour
 |**--resource-name**|string|The name of the service instance.|resource_name|resourceName|
 |**--private-endpoint-connection-name**|string|The name of the private endpoint connection associated with the Azure resource|private_endpoint_connection_name|privateEndpointConnectionName|
 |**--private-link-service-connection-state**|object|A collection of information about the state of the connection between service consumer and provider.|private_link_service_connection_state|privateLinkServiceConnectionState|
+|**--private-link-service-connection-state-status**|choice|Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.|status|status|
+|**--private-link-service-connection-state-description**|string|The reason for approval/rejection of the connection.|description|description|
+|**--private-link-service-connection-state-actions-required**|string|A message indicating if changes on the service provider require any updates on the consumer.|actions_required|actionsRequired|
 
 #### <a name="PrivateEndpointConnectionsDelete">Command `az healthcareapis private-endpoint-connection delete`</a>
 
