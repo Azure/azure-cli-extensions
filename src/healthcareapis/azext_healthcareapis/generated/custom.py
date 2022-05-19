@@ -232,7 +232,7 @@ def healthcareapis_private_endpoint_connection_create(client,
                 'description'] = private_link_service_connection_state_description
         if private_link_service_connection_state_actions_required:
             properties['private_link_service_connection_state'][
-                'description'] = private_link_service_connection_state_actions_required
+                'actions_required'] = private_link_service_connection_state_actions_required
 
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
@@ -265,7 +265,7 @@ def healthcareapis_private_endpoint_connection_update(client,
                 'description'] = private_link_service_connection_state_description
         if private_link_service_connection_state_actions_required:
             properties['private_link_service_connection_state'][
-                'description'] = private_link_service_connection_state_actions_required
+                'actions_required'] = private_link_service_connection_state_actions_required
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
