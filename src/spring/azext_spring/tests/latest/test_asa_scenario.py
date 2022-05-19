@@ -109,9 +109,9 @@ class StartStopAscTest(ScenarioTest):
 
     def test_stop_and_start_service(self):
         self.kwargs.update({
-            'serviceName': 'cli-unittest',
-            'resource_group': 'cli',
-            'location': 'eastus'
+            'serviceName': 'cli-unittest-start-stop',
+            'resource_group': 'cli-group',
+            'location': 'eastus2euap'
         })
 
         self.cmd('group create -n {resource_group} -l {location}')
