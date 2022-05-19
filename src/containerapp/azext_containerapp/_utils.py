@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, ArgumentUsageError)
+                                       ResourceNotFoundError, ArgumentUsageError, FileOperationError, CLIError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from azure.cli.command_modules.network._client_factory import network_client_factory
@@ -20,10 +20,11 @@ from azure.cli.command_modules.network._client_factory import network_client_fac
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
 
 logger = get_logger(__name__)
 
@@ -1016,6 +1017,15 @@ def get_randomized_name(prefix, name=None, initial="rg"):
     return default
 
 
+def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
+    from random import randint
+    cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
+    for c in cert_name:
+        if not (c.isalnum() or c == '-' or c == '.'):
+            cert_name.replace(c, '-')
+    return cert_name.lower()
+
+
 def _set_webapp_up_default_args(cmd, resource_group_name, location, name, registry_server):
     from azure.cli.core.util import ConfiguredDefaultSetter
     with ConfiguredDefaultSetter(cmd.cli_ctx.config, True):
@@ -1181,3 +1191,93 @@ def create_new_acr(cmd, registry_name, resource_group_name, location=None, sku="
     lro_poller = client.begin_create(resource_group_name, registry_name, registry)
     acr = LongRunningOperation(cmd.cli_ctx)(lro_poller)
     return acr
+
+
+# only accept .pfx or .pem file
+def load_cert_file(file_path, cert_password=None):
+    from base64 import b64encode
+    from OpenSSL import crypto
+    import os
+
+    cert_data = None
+    thumbprint = None
+    blob = None
+    try:
+        with open(file_path, "rb") as f:
+            if os.path.splitext(file_path)[1] in ['.pem']:
+                cert_data = f.read()
+                x509 = crypto.load_certificate(crypto.FILETYPE_PEM, cert_data)
+                digest_algorithm = 'sha256'
+                thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
+                blob = b64encode(cert_data).decode("utf-8")
+            elif os.path.splitext(file_path)[1] in ['.pfx']:
+                cert_data = f.read()
+                try:
+                    p12 = crypto.load_pkcs12(cert_data, cert_password)
+                except Exception as e:
+                    raise FileOperationError('Failed to load the certificate file. This may be due to an incorrect or missing password. Please double check and try again.\nError: {}'.format(e)) from e
+                x509 = p12.get_certificate()
+                digest_algorithm = 'sha256'
+                thumbprint = x509.digest(digest_algorithm).decode("utf-8").replace(':', '')
+                pem_data = crypto.dump_certificate(crypto.FILETYPE_PEM, x509)
+                blob = b64encode(pem_data).decode("utf-8")
+            else:
+                raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
+    except Exception as e:
+        raise CLIInternalError(e)
+    return blob, thumbprint
+
+
+def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    name_availability_request = {}
+    name_availability_request["name"] = cert_name
+    name_availability_request["type"] = CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
+    try:
+        r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return r["nameAvailable"]
+
+
+def validate_hostname(cmd, resource_group_name, name, hostname):
+    passed = False
+    message = None
+    try:
+        r = ContainerAppClient.validate_domain(cmd, resource_group_name, name, hostname)
+        passed = r["customDomainVerificationTest"] == "Passed" and not r["hasConflictOnManagedEnvironment"]
+        if "customDomainVerificationFailureInfo" in r:
+            message = r["customDomainVerificationFailureInfo"]["message"]
+        elif r["hasConflictOnManagedEnvironment"] and ("conflictingContainerAppResourceId" in r):
+            message = "Custom Domain {} Conflicts on the same environment with {}.".format(hostname, r["conflictingContainerAppResourceId"])
+    except CLIError as e:
+        handle_raw_exception(e)
+    return passed, message
+
+
+def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
+    envelope = ContainerAppCustomDomainEnvelopeModel
+    envelope["properties"]["configuration"]["ingress"]["customDomains"] = new_custom_domains
+    try:
+        r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
+    except CLIError as e:
+        handle_raw_exception(e)
+    if "customDomains" in r["properties"]["configuration"]["ingress"]:
+        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
+    else:
+        return []
+
+
+def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
+    try:
+        app = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if location and (app["location"] != location):
+            raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
+        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+            raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
+        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
+            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
+        else:
+            custom_domains = []
+    except CLIError as e:
+        handle_raw_exception(e)
+    return custom_domains

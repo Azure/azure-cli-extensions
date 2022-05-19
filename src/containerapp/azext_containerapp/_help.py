@@ -423,6 +423,56 @@ helps['containerapp env storage remove'] = """
           az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
 """
 
+# Certificates Commands
+helps['containerapp env certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates for the Container Apps environment.
+"""
+
+helps['containerapp env certificate list'] = """
+    type: command
+    short-summary: List certificates for an environment.
+    examples:
+    - name: List certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
+    - name: List certificates by certificate id.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: List certificates by certificate name.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: List certificates by certificate thumbprint.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+"""
+
+helps['containerapp env certificate upload'] = """
+    type: command
+    short-summary: Add or update a certificate.
+    examples:
+    - name: Add or update a certificate.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath
+    - name: Add or update a certificate with a user-provided certificate name.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath --certificate-name MyCertificateName
+"""
+
+helps['containerapp env certificate delete'] = """
+    type: command
+    short-summary: Delete a certificate from the Container Apps environment.
+    examples:
+    - name: Delete a certificate from the Container Apps environment by certificate name
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateName
+    - name: Delete a certificate from the Container Apps environment by certificate id
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
+    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
+      text: |
+          az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+"""
 
 # Identity Commands
 helps['containerapp identity'] = """
@@ -713,4 +763,47 @@ helps['containerapp dapr disable'] = """
     - name: Disable Dapr for a container app.
       text: |
           az containerapp dapr disable -n MyContainerapp -g MyResourceGroup
+"""
+
+# custom domain Commands
+helps['containerapp ssl'] = """
+    type: group
+    short-summary: Upload certificate to a managed environment, add hostname to an app in that environment, and bind the certificate to the hostname
+"""
+
+helps['containerapp ssl upload'] = """
+    type: command
+    short-summary: Upload certificate to a managed environment, add hostname to an app in that environment, and bind the certificate to the hostname
+"""
+
+helps['containerapp hostname'] = """
+    type: group
+    short-summary: Commands to manage hostnames of a container app.
+"""
+
+helps['containerapp hostname bind'] = """
+    type: command
+    short-summary: Add or update the hostname and binding with an existing certificate.
+    examples:
+    - name: Add or update hostname and binding.
+      text: |
+          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
+"""
+
+helps['containerapp hostname delete'] = """
+    type: command
+    short-summary: Delete hostnames from a container app.
+    examples:
+    - name: Delete secrets from a container app.
+      text: |
+          az containerapp hostname delete -n MyContainerapp -g MyResourceGroup --hostname MyHostname
+"""
+
+helps['containerapp hostname list'] = """
+    type: command
+    short-summary: List the hostnames of a container app.
+    examples:
+    - name: List the hostnames of a container app.
+      text: |
+          az containerapp hostname list -n MyContainerapp -g MyResourceGroup
 """

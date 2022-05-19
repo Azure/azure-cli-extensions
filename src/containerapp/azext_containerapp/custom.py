@@ -47,6 +47,8 @@ from ._models import (
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
     ManagedServiceIdentity as ManagedServiceIdentityModel,
+    ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
+    ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel)
 from ._utils import (_validate_subscription_registered, _get_location_from_resource_group, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -56,7 +58,9 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed)
+                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed, 
+                     generate_randomized_cert_name, _get_name, _update_weights, get_vnet_location, load_cert_file,
+                     check_cert_name_availability, validate_hostname, patch_new_custom_domain, get_custom_domains)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -2330,6 +2334,171 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         return ContainerAppClient.create_or_update(cmd, resource_group_name, name, containerapp_def)
     except Exception as e:
         handle_raw_exception(e)
+
+
+def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    def location_match(c):
+        return c["location"] == location or not location
+
+    def thumbprint_match(c):
+        return c["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+    def both_match(c):
+        return location_match(c) and thumbprint_match(c)
+
+    if certificate:
+        if is_valid_resource_id(certificate):
+            certificate_name = parse_resource_id(certificate)["resource_name"]
+        else:
+            certificate_name = certificate
+        try:
+            r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            return [r] if both_match(r) else []
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        try:
+            r = ManagedEnvironmentClient.list_certificates(cmd, resource_group_name, name)
+            return list(filter(both_match, r))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    blob, thumbprint = load_cert_file(certificate_file, certificate_password)
+
+    cert_name = None
+    if certificate_name:
+        if not check_cert_name_availability(cmd, resource_group_name, name, certificate_name):
+            from knack.prompting import prompt_y_n
+            msg = 'A certificate with the name {} already exists in {}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
+            overwrite = prompt_y_n(msg.format(certificate_name, name))
+            if overwrite:
+                cert_name = certificate_name
+        else:
+            cert_name = certificate_name
+
+    while not cert_name:
+        random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
+        if check_cert_name_availability(cmd, resource_group_name, name, random_name):
+            cert_name = random_name
+
+    certificate = ContainerAppCertificateEnvelopeModel
+    certificate["properties"]["password"] = certificate_password
+    certificate["properties"]["value"] = blob
+    certificate["location"] = location
+    if not certificate["location"]:
+        try:
+            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate["location"] = managed_env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+
+    try:
+        r = ManagedEnvironmentClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if not certificate and not thumbprint:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+    for cert in certs:
+        try:
+            ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, hostname, certificate_password=None, certificate_name=None, location=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
+    if not passed:
+        raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+
+    if is_valid_resource_id(environment):
+        cert = upload_certificate(cmd, _get_name(environment), parse_resource_id(environment)["resource_group"], certificate_file, certificate_name, certificate_password, location)
+    else:
+        cert = upload_certificate(cmd, _get_name(environment), resource_group_name, certificate_file, certificate_name, certificate_password, location)
+    cert_id = cert["id"]
+
+    new_domain = ContainerAppCustomDomainModel
+    new_domain["name"] = hostname
+    new_domain["certificateId"] = cert_id
+    new_custom_domains.append(new_domain)
+
+    return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+
+
+def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    if not thumbprint and not certificate:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    if not environment and not certificate:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --environment')
+    if certificate and not is_valid_resource_id(certificate) and not environment:
+        raise RequiredArgumentMissingError('Please specify the parameter: --environment')
+
+    passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
+    if not passed:
+        raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
+
+    env_name = None
+    cert_name = None
+    cert_id = None
+    if certificate:
+        if is_valid_resource_id(certificate):
+            cert_id = certificate
+        else:
+            cert_name = certificate
+    if environment:
+        env_name = _get_name(environment)
+    if not cert_id:
+        certs = list_certificates(cmd, env_name, resource_group_name, location, cert_name, thumbprint)
+        cert_id = certs[0]["id"]
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    new_domain = ContainerAppCustomDomainModel
+    new_domain["name"] = hostname
+    new_domain["certificateId"] = cert_id
+    new_custom_domains.append(new_domain)
+
+    return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+
+
+def list_hostname(cmd, resource_group_name, name, location=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
+    return custom_domains
+
+
+def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
+    _validate_subscription_registered(cmd, "Microsoft.App")
+
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
+    new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
+    if len(new_custom_domains) == len(custom_domains):
+        raise ResourceNotFoundError("The hostname '{}' in Container app '{}' was not found.".format(hostname, name))
+
+    r = patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+    logger.warning('Successfully deleted custom domain: {}'.format(hostname))
+    return r
 
 
 def show_storage(cmd, name, storage_name, resource_group_name):
