@@ -3540,6 +3540,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             mode="System",
             enable_auto_scaling=False,
             enable_fips=False,
+            enable_custom_ca_trust=False,
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[
