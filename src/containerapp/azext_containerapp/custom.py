@@ -58,12 +58,13 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, generate_randomized_cert_name, _get_name, _update_weights, get_vnet_location, load_cert_file,
+                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
+                     generate_randomized_cert_name, _get_name, _update_weights, get_vnet_location, load_cert_file,
                      check_cert_name_availability, validate_hostname, patch_new_custom_domain, get_custom_domains)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
-from ._constants import (MAXIMUM_SECRET_LENGTH)
+from ._constants import MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP
 
 logger = get_logger(__name__)
 
@@ -312,7 +313,7 @@ def create_containerapp(cmd,
                         system_assigned=False,
                         disable_warnings=False,
                         user_assigned=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
 
     if yaml:
@@ -344,7 +345,7 @@ def create_containerapp(cmd,
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
 
     location = managed_env_info["location"]
-    _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
     external_ingress = None
     if ingress is not None:
@@ -495,7 +496,7 @@ def update_containerapp_logic(cmd,
                               tags=None,
                               no_wait=False,
                               from_revision=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if yaml:
         if image or min_replicas or max_replicas or\
@@ -688,7 +689,7 @@ def update_containerapp(cmd,
                         args=None,
                         tags=None,
                         no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd,
                                      name,
@@ -712,7 +713,7 @@ def update_containerapp(cmd,
 
 
 def show_containerapp(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -721,7 +722,7 @@ def show_containerapp(cmd, name, resource_group_name):
 
 
 def list_containerapp(cmd, resource_group_name=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         containerapps = []
@@ -736,7 +737,7 @@ def list_containerapp(cmd, resource_group_name=None):
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
@@ -776,8 +777,8 @@ def create_managed_environment(cmd,
 
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
-    _validate_subscription_registered(cmd, "Microsoft.App")
-    _ensure_location_allowed(cmd, location, "Microsoft.App", "managedEnvironments")
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
 
     if logs_customer_id is None or logs_key is None:
         logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
@@ -845,7 +846,7 @@ def update_managed_environment(cmd,
 
 
 def show_managed_environment(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -854,7 +855,7 @@ def show_managed_environment(cmd, name, resource_group_name):
 
 
 def list_managed_environments(cmd, resource_group_name=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         managed_envs = []
@@ -869,7 +870,7 @@ def list_managed_environments(cmd, resource_group_name=None):
 
 
 def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
@@ -878,7 +879,7 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
 
 
 def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     assign_system_identity = system_assigned
     if not user_assigned:
@@ -958,7 +959,7 @@ def assign_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
 
 
 def remove_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     remove_system_identity = system_assigned
     remove_user_identities = user_assigned
@@ -1039,7 +1040,7 @@ def remove_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
 
 
 def show_managed_identity(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1310,7 +1311,7 @@ def copy_revision(cmd,
                   args=None,
                   tags=None,
                   no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not name and not from_revision:
         raise RequiredArgumentMissingError('Usage error: --name is required if not using --from-revision.')
@@ -1341,7 +1342,7 @@ def copy_revision(cmd,
 
 
 def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1365,7 +1366,7 @@ def set_revision_mode(cmd, resource_group_name, name, mode, no_wait=False):
 
 
 def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not name:
         name = _get_app_from_revision(revision)
@@ -1416,7 +1417,7 @@ def add_revision_label(cmd, resource_group_name, revision, label, name=None, no_
 
 
 def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1457,7 +1458,7 @@ def remove_revision_label(cmd, resource_group_name, name, label, no_wait=False):
 
 
 def show_ingress(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1475,7 +1476,7 @@ def show_ingress(cmd, name, resource_group_name):
 
 
 def enable_ingress(cmd, name, resource_group_name, type, target_port, transport="auto", allow_insecure=False, disable_warnings=False, no_wait=False):  # pylint: disable=redefined-builtin
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1515,7 +1516,7 @@ def enable_ingress(cmd, name, resource_group_name, type, target_port, transport=
 
 
 def disable_ingress(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1540,7 +1541,7 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
 
 
 def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revision_weights=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     if not label_weights and not revision_weights:
         raise ValidationError("Must specify either --label-weight or --revision-weight.")
 
@@ -1588,7 +1589,7 @@ def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revi
 
 
 def show_ingress_traffic(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1606,7 +1607,7 @@ def show_ingress_traffic(cmd, name, resource_group_name):
 
 
 def show_registry(cmd, name, resource_group_name, server):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1631,7 +1632,7 @@ def show_registry(cmd, name, resource_group_name, server):
 
 
 def list_registry(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1649,7 +1650,7 @@ def list_registry(cmd, name, resource_group_name):
 
 
 def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1723,7 +1724,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
 
 def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1771,7 +1772,7 @@ def remove_registry(cmd, name, resource_group_name, server, no_wait=False):
 
 
 def list_secrets(cmd, name, resource_group_name, show_values=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1795,7 +1796,7 @@ def list_secrets(cmd, name, resource_group_name, show_values=False):
 
 
 def show_secret(cmd, name, resource_group_name, secret_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1814,7 +1815,7 @@ def show_secret(cmd, name, resource_group_name, secret_name):
 
 
 def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1852,7 +1853,7 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
 def set_secrets(cmd, name, resource_group_name, secrets,
                 # yaml=None,
                 no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     for s in secrets:
         if s:
@@ -1899,7 +1900,7 @@ def set_secrets(cmd, name, resource_group_name, secrets,
 
 
 def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=None, dapr_app_protocol=None, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1938,7 +1939,7 @@ def enable_dapr(cmd, name, resource_group_name, dapr_app_id=None, dapr_app_port=
 
 
 def disable_dapr(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     containerapp_def = None
     try:
@@ -1968,19 +1969,19 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 
 
 def list_dapr_components(cmd, resource_group_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return DaprComponentClient.list(cmd, resource_group_name, environment_name)
 
 
 def show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
 def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_containerapp = load_yaml_file(yaml)
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
@@ -2016,7 +2017,7 @@ def create_or_update_dapr_component(cmd, resource_group_name, environment_name, 
 
 
 def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         DaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
@@ -2150,6 +2151,7 @@ def containerapp_up(cmd,
     HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)
     validate_container_app_name(name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
@@ -2335,7 +2337,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     def location_match(c):
         return c["location"] == location or not location
@@ -2365,7 +2367,7 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
 
 
 def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     blob, thumbprint = load_cert_file(certificate_file, certificate_password)
 
@@ -2404,7 +2406,7 @@ def upload_certificate(cmd, name, resource_group_name, certificate_file, certifi
 
 
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
@@ -2418,7 +2420,7 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
 
 
 def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, hostname, certificate_password=None, certificate_name=None, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
     if not passed:
@@ -2442,7 +2444,7 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
 
 
 def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not thumbprint and not certificate:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
@@ -2480,14 +2482,14 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
 
 
 def list_hostname(cmd, resource_group_name, name, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
     return custom_domains
 
 
 def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location)
     new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
@@ -2500,7 +2502,7 @@ def delete_hostname(cmd, resource_group_name, name, hostname, location=None):
 
 
 def show_storage(cmd, name, storage_name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.show(cmd, resource_group_name, name, storage_name)
@@ -2509,7 +2511,7 @@ def show_storage(cmd, name, storage_name, resource_group_name):
 
 
 def list_storage(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.list(cmd, resource_group_name, name)
@@ -2518,7 +2520,7 @@ def list_storage(cmd, name, resource_group_name):
 
 
 def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name, azure_file_share_name, azure_file_account_key, access_mode, no_wait=False):  # pylint: disable=redefined-builtin
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if len(azure_file_share_name) < 3:
         raise ValidationError("File share name must be longer than 2 characters.")
@@ -2552,7 +2554,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
 
 
 def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, "Microsoft.App")
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
         return StorageClient.delete(cmd, resource_group_name, name, storage_name, no_wait)
