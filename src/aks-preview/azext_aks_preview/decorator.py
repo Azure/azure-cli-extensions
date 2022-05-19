@@ -620,6 +620,13 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return nat_gateway_managed_outbound_ip_count
 
+    def get_network_plugin_mode(self) -> Union[str, None]:
+        """Get the value of network_plugin_mode
+
+        :return: str or None
+        """
+        return self.raw_param.get('network_plugin_mode')
+
     def get_nat_gateway_idle_timeout(self) -> Union[int, None]:
         """Obtain the value of nat_gateway_idle_timeout.
 
@@ -2252,6 +2259,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             self.context.get_nat_gateway_idle_timeout(),
             models=self.models.nat_gateway_models,
         )
+
+        network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
 
         load_balancer_sku = self.context.get_load_balancer_sku()
         if load_balancer_sku != "basic":

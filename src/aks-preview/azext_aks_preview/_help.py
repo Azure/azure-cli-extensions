@@ -200,6 +200,13 @@ helps['aks create'] = """
           type: string
           short-summary: The Kubernetes network plugin to use.
           long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Specify "overlay" to use an overlay network built on Azure networking.
+              Differs from Kubenet overlay as it does not require route tables.
+              Must be used with --network-plugin=azure.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.

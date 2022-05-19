@@ -39,6 +39,7 @@ from ._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_NONE,
+    CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
@@ -131,6 +132,7 @@ gpu_instance_profiles = [
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
+network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
@@ -196,6 +198,7 @@ def load_arguments(self, _):
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
+        c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+')

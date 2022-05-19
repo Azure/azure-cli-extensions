@@ -299,6 +299,32 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_service_cidrs(), None)
 
+    def test_get_network_plugin_mode(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"network_plugin_mode": "overlay"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_network_plugin_mode(), "overlay")
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"network_plugin_mode": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_network_plugin_mode(), None)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"network_plugin_mode": ""},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_network_plugin_mode(), "")
+    
     def test_get_ip_families(self):
         # default
         ctx_1 = AKSPreviewContext(
