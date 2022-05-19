@@ -2461,13 +2461,13 @@ def update_aad_settings(cmd, client, resource_group_name, name, # pylint: disabl
         is_new_aad_app = True
 
     if is_new_aad_app and issuer is None and tenant_id is None:
-        raise CLIError('Usage Error: Either --issuer or --tenant-id must be specified when configuring the '
+        raise ArgumentUsageError('Usage Error: Either --issuer or --tenant-id must be specified when configuring the '
                        'Microsoft auth registration.')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     openid_issuer = issuer
@@ -2580,13 +2580,13 @@ def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: 
         raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
 
     if app_secret is not None and app_secret_setting_name is not None:
-        raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
+        raise ArgumentUsageError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
                        'to non empty strings')
 
     if app_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     existing_auth = {}
@@ -2652,13 +2652,13 @@ def update_github_settings(cmd, client, resource_group_name, name,  # pylint: di
         raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
 
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot '
                        'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     existing_auth = {}
@@ -2722,13 +2722,13 @@ def update_google_settings(cmd, client, resource_group_name, name,  # pylint: di
         raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
 
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name cannot '
                        'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     existing_auth = {}
@@ -2799,13 +2799,13 @@ def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: d
         raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
 
     if consumer_secret is not None and consumer_secret_setting_name is not None:
-        raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
+        raise ArgumentUsageError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
                        'both be configured to non empty strings')
 
     if consumer_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     existing_auth = {}
@@ -2863,13 +2863,13 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
         raise ValidationError("Authentication requires ingress to be enabled for your containerapp.")
 
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name '
+        raise ArgumentUsageError('Usage Error: --client-secret and --client-secret-setting-name '
                        'cannot both be configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     existing_auth = {}
@@ -2918,13 +2918,13 @@ def get_openid_connect_provider_settings(cmd, client, resource_group_name, name,
     except:
         pass
     if "identityProviders" not in auth_settings:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
@@ -2933,6 +2933,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
                                          client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                                          openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
                                          client_secret=None, yes=False):    # pylint: disable=unused-argument
+    from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
     except:
@@ -2941,7 +2942,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     auth_settings = {}
@@ -2959,7 +2960,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
         auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
     if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has already been '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider has already been '
                        'configured: ' + provider_name + '. Please use `az containerapp auth oidc update` to '
                        'update the provider.')
 
@@ -2995,6 +2996,7 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
                                             client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                                             openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
                                             client_secret=None, yes=False):    # pylint: disable=unused-argument
+    from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
     except:
@@ -3003,7 +3005,7 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add a secret to the containerapp. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add secret '
+            raise ArgumentUsageError('Usage Error: --client-secret cannot be used without agreeing to add secret '
                            'to the containerapp.')
 
     auth_settings = {}
@@ -3017,13 +3019,13 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
         auth_settings["login"] = {}
 
     if "identityProviders" not in auth_settings:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
 
     custom_open_id_connect_providers = auth_settings["identityProviders"]["customOpenIdConnectProviders"]
@@ -3072,26 +3074,17 @@ def remove_openid_connect_provider_settings(cmd, client, resource_group_name, na
     except:
         pass
     if "identityProviders" not in auth_settings:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
-        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+        raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
     client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
     return {}
-
-
-def get_oidc_client_setting_app_setting_name(provider_name):
-    provider_name_prefix = provider_name.upper()
-
-    # an appsetting name can be up to 64 characters, and the suffix _PROVIDER_AUTHENTICATION_SECRET is 31 characters so limitting this to 32
-    if len(provider_name_prefix) > 32:
-        provider_name_prefix = provider_name_prefix[0:31]
-    return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
 
 
 def update_auth_config(cmd, client, resource_group_name, name, set_string=None, enabled=None,  # pylint: disable=unused-argument
@@ -3099,6 +3092,7 @@ def update_auth_config(cmd, client, resource_group_name, name, set_string=None, 
                        redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
                        proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
                        proxy_custom_proto_header=None, excluded_paths=None, slot=None):  # pylint: disable=unused-argument
+    from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
     existing_auth = {}
     try:
         existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
@@ -3161,63 +3155,4 @@ def show_auth_config(cmd, client, resource_group_name, name):  # pylint: disable
         auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
     except:
         pass
-    return auth_settings
-
-
-def set_field_in_auth_settings(auth_settings, set_string):
-    if set_string is not None:
-        split1 = set_string.split("=")
-        fieldName = split1[0]
-        fieldValue = split1[1]
-        split2 = fieldName.split(".")
-        auth_settings = set_field_in_auth_settings_recursive(split2, fieldValue, auth_settings)
-    return auth_settings
-
-
-def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
-    if len(field_name_split) == 1:
-        if not field_value.startswith('[') or not field_value.endswith(']'):
-            auth_settings[field_name_split[0]] = field_value
-        else:
-            field_value_list_string = field_value[1:-1]
-            auth_settings[field_name_split[0]] = field_value_list_string.split(",")
-        return auth_settings
-
-    remaining_field_names = field_name_split[1:]
-    if field_name_split[0] not in auth_settings:
-        auth_settings[field_name_split[0]] = {}
-    auth_settings[field_name_split[0]] = set_field_in_auth_settings_recursive(remaining_field_names,
-                                                                              field_value,
-                                                                              auth_settings[field_name_split[0]])
-    return auth_settings
-
-
-def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_convention,
-                                          proxy_custom_host_header, proxy_custom_proto_header):
-    if require_https is not None:
-        if "httpSettings" not in auth_settings:
-            auth_settings["httpSettings"] = {}
-        auth_settings["httpSettings"]["requireHttps"] = require_https
-
-    if proxy_convention is not None:
-        if "httpSettings" not in auth_settings:
-            auth_settings["httpSettings"] = {}
-        if "forwardProxy" not in auth_settings["httpSettings"]:
-            auth_settings["httpSettings"]["forwardProxy"] = {}
-        auth_settings["httpSettings"]["forwardProxy"]["convention"] = proxy_convention
-
-    if proxy_custom_host_header is not None:
-        if "httpSettings" not in auth_settings:
-            auth_settings["httpSettings"] = {}
-        if "forwardProxy" not in auth_settings["httpSettings"]:
-            auth_settings["httpSettings"]["forwardProxy"] = {}
-        auth_settings["httpSettings"]["forwardProxy"]["customHostHeaderName"] = proxy_custom_host_header
-
-    if proxy_custom_proto_header is not None:
-        if "httpSettings" not in auth_settings:
-            auth_settings["httpSettings"] = {}
-        if "forwardProxy" not in auth_settings["httpSettings"]:
-            auth_settings["httpSettings"]["forwardProxy"] = {}
-        auth_settings["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
-
     return auth_settings

@@ -137,9 +137,6 @@ def load_command_table(self, _):
         g.custom_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
 
-    #     g.custom_command('list', 'create_azure_static_webapps_config', exception_handler=ex_handler_factory())
-        # g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
-
     with self.command_group('containerapp auth microsoft', client_factory=auth_config_client_factory) as g:
         g.custom_command('show', 'get_aad_settings')
         g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
