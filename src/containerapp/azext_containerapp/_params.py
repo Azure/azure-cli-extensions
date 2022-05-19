@@ -224,6 +224,7 @@ def load_arguments(self, _):
         c.argument('secret_name', help="The name of the secret to show.")
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
         c.argument('show_values', help='Show the secret values.')
+        c.ignore('disable_max_length')
 
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
@@ -274,6 +275,7 @@ def load_arguments(self, _):
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
     with self.argument_context('containerapp auth') as c:
+        # subgroup update
         c.argument('client_id', options_list=['--client-id'], help='The Client ID of the app used for login.')
         c.argument('client_secret', options_list=['--client-secret'], help='The client secret.')
         c.argument('client_secret_setting_name', options_list=['--client-secret-name'], help='The app setting name that contains the client secret of the relying party application.')
@@ -293,6 +295,7 @@ def load_arguments(self, _):
         c.argument('consumer_secret', options_list=['--consumer-secret'], help='The consumer secret.')
         c.argument('provider_name', options_list=['--provider-name'], required=True, help='The name of the custom OpenID Connect provider.')
         c.argument('openid_configuration', options_list=['--openid-configuration'], help='The endpoint that contains all the configuration endpoints for the provider.')
+        # auth update
         c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization V2 feature.')
         c.argument('config_file_path', options_list=['--config-file-path'], help='The path of the config file containing auth settings if they come from a file.')
         c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
@@ -304,6 +307,7 @@ def load_arguments(self, _):
         c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header', '--custom-proto-header'], help='The name of the header containing the scheme of the request.')
         c.argument('excluded_paths', options_list=['--excluded-paths'], help='The list of paths that should be excluded from authentication rules.')
         c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True), help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
+
     with self.argument_context('containerapp ssl upload') as c:
         c.argument('hostname', help='The custom domain name.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')

@@ -1855,16 +1855,17 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
 
 def set_secrets(cmd, name, resource_group_name, secrets,
                 # yaml=None,
+                disable_max_length=False,
                 no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    # for s in secrets:
-    #     if s:
-    #         parsed = s.split("=")
-    #         if parsed:
-    #             if len(parsed[0]) > MAXIMUM_SECRET_LENGTH:
-    #                 raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
-    #                                       f"Please shorten {parsed[0]}")
+    for s in secrets:
+        if s:
+            parsed = s.split("=")
+            if parsed:
+                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH and not disable_max_length:
+                    raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
+                                          f"Please shorten {parsed[0]}")
 
     # if not yaml and not secrets:
     #     raise RequiredArgumentMissingError('Usage error: --secrets is required if not using --yaml')
@@ -2565,13 +2566,14 @@ def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
-def update_aad_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                        client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
-                        client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
-                        client_secret_certificate_san=None,  # pylint: disable=unused-argument
-                        client_secret_certificate_issuer=None,  # pylint: disable=unused-argument
-                        yes=False, tenant_id=None):    # pylint: disable=unused-argument
+# TODO: Refactor provider code to make it cleaner
+def update_aad_settings(cmd, client, resource_group_name, name,
+                        client_id=None, client_secret_setting_name=None,
+                        issuer=None, allowed_token_audiences=None, client_secret=None,
+                        client_secret_certificate_thumbprint=None,
+                        client_secret_certificate_san=None,
+                        client_secret_certificate_issuer=None,
+                        yes=False, tenant_id=None):  
 
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -2648,7 +2650,6 @@ def update_aad_settings(cmd, client, resource_group_name, name,  # pylint: disab
         if tenant_id is not None:
             openid_issuer = authority + "/" + tenant_id + "/v2.0"
 
-    # existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
     registration = {}
     validation = {}
     if "identityProviders" not in existing_auth:
@@ -2674,30 +2675,24 @@ def update_aad_settings(cmd, client, resource_group_name, name,  # pylint: disab
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
         registration["clientSecretSettingName"] = MICROSOFT_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{MICROSOFT_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{MICROSOFT_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
     if client_secret_setting_name is not None or client_secret is not None:
-        if "clientSecretCertificateThumbprint" in registration and registration["clientSecretCertificateThumbprint"] is not None:
-            registration["clientSecretCertificateThumbprint"] = None
-        if "clientSecretCertificateSubjectAlternativeName" in registration and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
-            registration["clientSecretCertificateSubjectAlternativeName"] = None
-        if "clientSecretCertificateIssuer" in registration and registration["clientSecretCertificateIssuer"] is not None:
-            registration["clientSecretCertificateIssuer"] = None
+        fields = ["clientSecretCertificateThumbprint", "clientSecretCertificateSubjectAlternativeName", "clientSecretCertificateIssuer"]
+        for field in [f for f in fields if registration.get(f)]:
+            registration[field] = None
     if client_secret_certificate_thumbprint is not None:
         registration["clientSecretCertificateThumbprint"] = client_secret_certificate_thumbprint
-        if "clientSecretSettingName" in registration and registration["clientSecretSettingName"] is not None:
-            registration["clientSecretSettingName"] = None
-        if "clientSecretCertificateSubjectAlternativeName" in registration and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
-            registration["clientSecretCertificateSubjectAlternativeName"] = None
-        if "clientSecretCertificateIssuer" in registration and registration["clientSecretCertificateIssuer"] is not None:
-            registration["clientSecretCertificateIssuer"] = None
+        fields = ["clientSecretSettingName", "clientSecretCertificateSubjectAlternativeName", "clientSecretCertificateIssuer"]
+        for field in [f for f in fields if registration.get(f)]:
+            registration[field] = None
     if client_secret_certificate_san is not None:
         registration["clientSecretCertificateSubjectAlternativeName"] = client_secret_certificate_san
     if client_secret_certificate_issuer is not None:
         registration["clientSecretCertificateIssuer"] = client_secret_certificate_issuer
     if client_secret_certificate_san is not None and client_secret_certificate_issuer is not None:
-        if "clientSecretSettingName" in registration and registration["clientSecretSettingName"] is not None:
+        if "clientSecretSettingName" in registration:
             registration["clientSecretSettingName"] = None
-        if "clientSecretCertificateThumbprint" in registration and registration["clientSecretCertificateThumbprint"] is not None:
+        if "clientSecretCertificateThumbprint" in registration:
             registration["clientSecretCertificateThumbprint"] = None
     if openid_issuer is not None:
         registration["openIdIssuer"] = openid_issuer
@@ -2741,9 +2736,9 @@ def get_facebook_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["facebook"]
 
 
-def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                             app_id=None, app_secret_setting_name=None,  # pylint: disable=unused-argument
-                             graph_api_version=None, scopes=None, app_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_facebook_settings(cmd, client, resource_group_name, name,
+                             app_id=None, app_secret_setting_name=None,
+                             graph_api_version=None, scopes=None, app_secret=None, yes=False):  
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2788,7 +2783,7 @@ def update_facebook_settings(cmd, client, resource_group_name, name,  # pylint: 
         registration["appSecretSettingName"] = app_secret_setting_name
     if app_secret is not None:
         registration["appSecretSettingName"] = FACEBOOK_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{FACEBOOK_SECRET_SETTING_NAME}={app_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{FACEBOOK_SECRET_SETTING_NAME}={app_secret}"], no_wait=True, disable_max_length=True)
     if graph_api_version is not None:
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
     if scopes is not None:
@@ -2813,9 +2808,9 @@ def get_github_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["gitHub"]
 
 
-def update_github_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                           scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_github_settings(cmd, client, resource_group_name, name,
+                           client_id=None, client_secret_setting_name=None,
+                           scopes=None, client_secret=None, yes=False):  
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2860,7 +2855,7 @@ def update_github_settings(cmd, client, resource_group_name, name,  # pylint: di
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
         registration["clientSecretSettingName"] = GITHUB_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{GITHUB_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GITHUB_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
@@ -2883,9 +2878,9 @@ def get_google_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["google"]
 
 
-def update_google_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_google_settings(cmd, client, resource_group_name, name,
+                           client_id=None, client_secret_setting_name=None,
+                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):  
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2934,7 +2929,7 @@ def update_google_settings(cmd, client, resource_group_name, name,  # pylint: di
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
         registration["clientSecretSettingName"] = GOOGLE_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{GOOGLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{GOOGLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
     if scopes is not None:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
     if allowed_token_audiences is not None:
@@ -2960,9 +2955,9 @@ def get_twitter_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["twitter"]
 
 
-def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                            consumer_key=None, consumer_secret_setting_name=None,   # pylint: disable=unused-argument
-                            consumer_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_twitter_settings(cmd, client, resource_group_name, name,
+                            consumer_key=None, consumer_secret_setting_name=None, 
+                            consumer_secret=None, yes=False):  
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -3004,7 +2999,7 @@ def update_twitter_settings(cmd, client, resource_group_name, name,  # pylint: d
         registration["consumerSecretSettingName"] = consumer_secret_setting_name
     if consumer_secret is not None:
         registration["consumerSecretSettingName"] = TWITTER_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True, disable_max_length=True)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
     updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
@@ -3024,9 +3019,9 @@ def get_apple_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["apple"]
 
 
-def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: disable=unused-argument
-                          client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                          scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_apple_settings(cmd, client, resource_group_name, name,
+                          client_id=None, client_secret_setting_name=None,
+                          scopes=None, client_secret=None, yes=False):  
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -3071,7 +3066,7 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
         registration["clientSecretSettingName"] = APPLE_SECRET_SETTING_NAME
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{APPLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{APPLE_SECRET_SETTING_NAME}={client_secret}"], no_wait=True, disable_max_length=True)
     if scopes is not None:
         existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
@@ -3081,7 +3076,7 @@ def update_apple_settings(cmd, client, resource_group_name, name,  # pylint: dis
     return updated_auth_settings["identityProviders"]["apple"]
 
 
-def get_openid_connect_provider_settings(client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
+def get_openid_connect_provider_settings(client, resource_group_name, name, provider_name):
     auth_settings = {}
     try:
         auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
@@ -3099,10 +3094,10 @@ def get_openid_connect_provider_settings(client, resource_group_name, name, prov
     return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def add_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,  # pylint: disable=unused-argument
-                                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                         openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
-                                         client_secret=None, yes=False):    # pylint: disable=unused-argument
+def add_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
+                                         client_id=None, client_secret_setting_name=None,
+                                         openid_configuration=None, scopes=None,      
+                                         client_secret=None, yes=False):  
     from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -3137,7 +3132,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
     final_client_secret_setting_name = client_secret_setting_name
     if client_secret is not None:
         final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True, disable_max_length=True)
 
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
         "registration": {
@@ -3162,10 +3157,10 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def update_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,  # pylint: disable=unused-argument
-                                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                            openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
-                                            client_secret=None, yes=False):    # pylint: disable=unused-argument
+def update_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
+                                            client_id=None, client_secret_setting_name=None,
+                                            openid_configuration=None, scopes=None,
+                                            client_secret=None, yes=False):  
     from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -3224,7 +3219,7 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
     if client_secret is not None:
         final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
         registration["clientSecretSettingName"] = final_client_secret_setting_name
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True)
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{final_client_secret_setting_name}={client_secret}"], no_wait=True, disable_max_length=True)
     if openid_configuration is not None:
         registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
     if scopes is not None:
@@ -3237,7 +3232,7 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def remove_openid_connect_provider_settings(client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
+def remove_openid_connect_provider_settings(client, resource_group_name, name, provider_name):
     auth_settings = {}
     try:
         auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
@@ -3257,11 +3252,11 @@ def remove_openid_connect_provider_settings(client, resource_group_name, name, p
     return {}
 
 
-def update_auth_config(client, resource_group_name, name, set_string=None, enabled=None,  # pylint: disable=unused-argument
-                       runtime_version=None, config_file_path=None, unauthenticated_client_action=None,  # pylint: disable=unused-argument
-                       redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
-                       proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
-                       proxy_custom_proto_header=None, excluded_paths=None, slot=None):  # pylint: disable=unused-argument
+def update_auth_config(client, resource_group_name, name, set_string=None, enabled=None,
+                       runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
+                       redirect_provider=None, enable_token_store=None, require_https=None,
+                       proxy_convention=None, proxy_custom_host_header=None,
+                       proxy_custom_proto_header=None, excluded_paths=None, slot=None):
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
     existing_auth = {}
     try:
@@ -3319,7 +3314,7 @@ def update_auth_config(client, resource_group_name, name, set_string=None, enabl
     return client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
 
 
-def show_auth_config(client, resource_group_name, name):  # pylint: disable=unused-argument
+def show_auth_config(client, resource_group_name, name):
     auth_settings = {}
     try:
         auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
