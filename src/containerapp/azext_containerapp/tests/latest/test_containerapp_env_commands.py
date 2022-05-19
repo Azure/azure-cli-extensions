@@ -76,7 +76,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         """
 
         daprloaded = yaml.safe_load(dapr_yaml)
-        
+
         with open(dapr_file, 'w') as outfile:
             yaml.dump(daprloaded, outfile, default_flow_style=False)
 
@@ -112,6 +112,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_certificate_e2e(self, resource_group):
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
@@ -146,7 +147,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert = self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" --password {}'.format(resource_group, env_name, pfx_file, pfx_password), checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
         ]).get_output_in_json()
-        
+
         cert_name = cert["name"]
         cert_id = cert["id"]
         cert_thumbprint = cert["properties"]["thumbprint"]
@@ -157,7 +158,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('[0].name', cert_name),
             JMESPathCheck('[0].id', cert_id),
         ])
-        
+
         # test pem file without password
         pem_file = os.path.join(TEST_DIR, 'cert.pem')
         cert_2 = self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, pem_file), checks=[
@@ -166,41 +167,41 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert_name_2 = cert_2["name"]
         cert_id_2 = cert_2["id"]
         cert_thumbprint_2 = cert_2["properties"]["thumbprint"]
-        
+
         self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 2),
         ])
-        
+
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_name), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', cert_name),
             JMESPathCheck('[0].id', cert_id),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
-        
+
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_id), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', cert_name),
             JMESPathCheck('[0].id', cert_id),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
-        
+
         self.cmd('containerapp env certificate list -n {} -g {} --thumbprint {}'.format(env_name, resource_group, cert_thumbprint), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', cert_name),
             JMESPathCheck('[0].id', cert_id),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
-        
+
         self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} --yes'.format(env_name, resource_group, cert_thumbprint))
-        
+
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_id_2), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', cert_name_2),
             JMESPathCheck('[0].id', cert_id_2),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint_2),
         ])
-        
+
         self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, cert_name_2))
 
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
