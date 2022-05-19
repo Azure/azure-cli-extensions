@@ -35,7 +35,7 @@ def load_command_table(self, _):
 
     app_command = CliCommandType(
         operations_tmpl='azext_spring.app#{}',
-        client_factory=cf_spring_20220501preview
+        client_factory=cf_spring_20220301preview
     )
 
     app_managed_identity_command = CliCommandType(
@@ -126,7 +126,6 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)
-        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
 
     with self.command_group('spring app', client_factory=cf_spring_20220101preview,
                             exception_handler=handle_asc_exception) as g:
@@ -160,12 +159,16 @@ def load_command_table(self, _):
                             deprecate_info=g.deprecate(redirect='az spring app logs', hide=True),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
+        
+    with self.command_group('spring app', custom_command_type=app_command, client_factory=cf_spring_20220501preview,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
 
-    with self.command_group('spring app deployment', custom_command_type=app_command,
+    with self.command_group('spring app deployment', custom_command_type=app_command, client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
-    with self.command_group('spring app deployment', client_factory=cf_spring_20220501preview,
+    with self.command_group('spring app deployment', client_factory=cf_spring_20220101preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_deployment_output)
