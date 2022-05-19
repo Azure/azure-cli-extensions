@@ -2960,7 +2960,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
         auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
     if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"]:
         raise CLIError('Usage Error: The following custom OpenID Connect provider has already been '
-                       'configured: ' + provider_name + '. Please use az webapp auth oidc update to '
+                       'configured: ' + provider_name + '. Please use `az containerapp auth oidc update` to '
                        'update the provider.')
 
     final_client_secret_setting_name = client_secret_setting_name
@@ -3066,7 +3066,11 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
 
 
 def remove_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name):  # pylint: disable=unused-argument
-    auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
     if "identityProviders" not in auth_settings:
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
@@ -3090,8 +3094,130 @@ def get_oidc_client_setting_app_setting_name(provider_name):
     return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
 
 
-def delete_auth_config(client, name, resource_group_name):
-    return client.delete(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")
+def update_auth_config(cmd, client, resource_group_name, name, set_string=None, enabled=None,  # pylint: disable=unused-argument
+                       runtime_version=None, config_file_path=None, unauthenticated_client_action=None,  # pylint: disable=unused-argument
+                       redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
+                       proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
+                       proxy_custom_proto_header=None, excluded_paths=None, slot=None):  # pylint: disable=unused-argument
+    existing_auth = {}
+    try:
+        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = True
+        existing_auth["globalValidation"] = {}
+        existing_auth["login"] = {}
 
-def show_auth_config(client, name, resource_group_name):
-    return client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")
+    existing_auth = set_field_in_auth_settings(existing_auth, set_string)
+
+    if enabled is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["enabled"] = enabled
+
+    if runtime_version is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["runtimeVersion"] = runtime_version
+
+    if config_file_path is not None:
+        if "platform" not in existing_auth:
+            existing_auth["platform"] = {}
+        existing_auth["platform"]["configFilePath"] = config_file_path
+
+    if unauthenticated_client_action is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        existing_auth["globalValidation"]["unauthenticatedClientAction"] = unauthenticated_client_action
+
+    if redirect_provider is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
+
+    if enable_token_store is not None:
+        if "login" not in existing_auth:
+            existing_auth["login"] = {}
+        if "tokenStore" not in existing_auth["login"]:
+            existing_auth["login"]["tokenStore"] = {}
+        existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
+
+    if excluded_paths is not None:
+        if "globalValidation" not in existing_auth:
+            existing_auth["globalValidation"] = {}
+        excluded_paths_list_string = excluded_paths[1:-1]
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+
+    existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
+                                                          proxy_convention, proxy_custom_host_header,
+                                                          proxy_custom_proto_header)
+
+    return client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+
+
+def show_auth_config(cmd, client, resource_group_name, name):  # pylint: disable=unused-argument
+    auth_settings = {}
+    try:
+        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+    except:
+        pass
+    return auth_settings
+
+
+def set_field_in_auth_settings(auth_settings, set_string):
+    if set_string is not None:
+        split1 = set_string.split("=")
+        fieldName = split1[0]
+        fieldValue = split1[1]
+        split2 = fieldName.split(".")
+        auth_settings = set_field_in_auth_settings_recursive(split2, fieldValue, auth_settings)
+    return auth_settings
+
+
+def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
+    if len(field_name_split) == 1:
+        if not field_value.startswith('[') or not field_value.endswith(']'):
+            auth_settings[field_name_split[0]] = field_value
+        else:
+            field_value_list_string = field_value[1:-1]
+            auth_settings[field_name_split[0]] = field_value_list_string.split(",")
+        return auth_settings
+
+    remaining_field_names = field_name_split[1:]
+    if field_name_split[0] not in auth_settings:
+        auth_settings[field_name_split[0]] = {}
+    auth_settings[field_name_split[0]] = set_field_in_auth_settings_recursive(remaining_field_names,
+                                                                              field_value,
+                                                                              auth_settings[field_name_split[0]])
+    return auth_settings
+
+
+def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_convention,
+                                          proxy_custom_host_header, proxy_custom_proto_header):
+    if require_https is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        auth_settings["httpSettings"]["requireHttps"] = require_https
+
+    if proxy_convention is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["convention"] = proxy_convention
+
+    if proxy_custom_host_header is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customHostHeaderName"] = proxy_custom_host_header
+
+    if proxy_custom_proto_header is not None:
+        if "httpSettings" not in auth_settings:
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"]:
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
+
+    return auth_settings
