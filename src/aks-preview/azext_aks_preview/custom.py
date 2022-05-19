@@ -836,6 +836,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
+               enable_custom_ca_trust=False,
+               disable_custom_ca_trust=False,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_managed_outbound_ipv6_count=None,
@@ -1848,7 +1850,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          labels=None,
                          node_taints=None,
                          no_wait=False,
-                         enable_custom_ca_trust=False):
+                         enable_custom_ca_trust=False,
+                         disable_custom_ca_trust=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
@@ -1930,6 +1933,13 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
 
     if enable_custom_ca_trust is not None:
         instance.enable_custom_ca_trust = enable_custom_ca_trust
+
+    if disable_custom_ca_trust:
+        if not instance.enable_custom_ca_trust:
+            logger.warning(
+                'Custom CA Trust is already disabled for this node pool.')
+            return None
+        instance.enable_custom_ca_trust = False
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
