@@ -90,8 +90,7 @@ helps['connectedmachine extension create'] = """
       - name: Create or Update a Machine Extension
         text: |-
                az connectedmachine extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
-"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
-\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --machine-name \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings '{\"commandToExecute\":\"hostname\"}' --type-handler-version "1.10" --machine-name \
 "myMachine" --resource-group "myResourceGroup"
 """
 
@@ -102,8 +101,7 @@ helps['connectedmachine extension update'] = """
       - name: Create or Update a Machine Extension
         text: |-
                az connectedmachine extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
---publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
-Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --machine-name "myMachine" --resource-group \
+--publisher "Microsoft.Compute" --settings '{\"commandToExecute\":\"hostname\"}' --type-handler-version "1.10" --machine-name "myMachine" --resource-group \
 "myResourceGroup"
 """
 
@@ -141,8 +139,8 @@ helps['connectedmachine upgrade-extension'] = """
     examples:
       - name: Upgrade Machine Extensions
         text: |-
-               az connectedmachine upgrade-extension --extension-targets "{\\"Microsoft.Azure.Monitoring\\":{\\"targetV\
-ersion\\":\\"2.0\\"},\\"Microsoft.Compute.CustomScriptExtension\\":{\\"targetVersion\\":\\"1.10\\"}}" --machine-name \
+               az connectedmachine upgrade-extension --extension-targets '{\"Microsoft.Azure.Monitoring\":{\"targetV\
+ersion\":\"2.0\"},\"Microsoft.Compute.CustomScriptExtension\":{\"targetVersion\":\"1.10\"}}' --machine-name \
 "myMachine" --resource-group "myResourceGroup"
 """
 

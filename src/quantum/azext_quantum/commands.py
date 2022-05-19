@@ -62,8 +62,8 @@ def transform_jobs(results):
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
-            ('Provider Id', offering['id']),
-            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']])),
+            ('Provider ID', offering['id']),
+            ('SKU', ', '.join([s['id'] for s in offering['properties']['skus']])),
             ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
             ('Offer ID', offering['properties']['managedApplication']['offerId'])
         ])

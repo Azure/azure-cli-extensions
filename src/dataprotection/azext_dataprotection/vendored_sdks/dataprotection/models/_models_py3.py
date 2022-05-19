@@ -91,10 +91,10 @@ class AdHocBackupRuleOptions(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param rule_name: Required. Specify backup policy rule name.
+    :param rule_name: Required.
     :type rule_name: str
     :param trigger_option: Required. Adhoc backup trigger option.
-    :type trigger_option: ~data_protection_client.models.AdhocBackupTriggerOption
+    :type trigger_option: ~azure.mgmt.dataprotection.models.AdhocBackupTriggerOption
     """
 
     _validation = {
@@ -122,7 +122,7 @@ class AdHocBackupRuleOptions(msrest.serialization.Model):
 class AdhocBackupTriggerOption(msrest.serialization.Model):
     """Adhoc backup trigger option.
 
-    :param retention_tag_override: Specify retention override tag.
+    :param retention_tag_override:
     :type retention_tag_override: str
     """
 
@@ -144,7 +144,7 @@ class AdhocBasedTaggingCriteria(msrest.serialization.Model):
     """Adhoc backup tagging criteria.
 
     :param tag_info: Retention tag information.
-    :type tag_info: ~data_protection_client.models.RetentionTag
+    :type tag_info: ~azure.mgmt.dataprotection.models.RetentionTag
     """
 
     _attribute_map = {
@@ -203,7 +203,7 @@ class AdhocBasedTriggerContext(TriggerContext):
      filled by server.
     :type object_type: str
     :param tagging_criteria: Required. Tagging Criteria containing retention tag for adhoc backup.
-    :type tagging_criteria: ~data_protection_client.models.AdhocBasedTaggingCriteria
+    :type tagging_criteria: ~azure.mgmt.dataprotection.models.AdhocBasedTaggingCriteria
     """
 
     _validation = {
@@ -303,7 +303,7 @@ class AzureBackupDiscreteRecoveryPoint(AzureBackupRecoveryPoint):
     :type friendly_name: str
     :param recovery_point_data_stores_details:
     :type recovery_point_data_stores_details:
-     list[~data_protection_client.models.RecoveryPointDataStoreDetails]
+     list[~azure.mgmt.dataprotection.models.RecoveryPointDataStoreDetails]
     :param recovery_point_time: Required.
     :type recovery_point_time: ~datetime.datetime
     :param policy_name:
@@ -372,7 +372,8 @@ class AzureBackupFindRestorableTimeRangesRequest(msrest.serialization.Model):
 
     :param source_data_store_type: Required. Gets or sets the type of the source data store.
      Possible values include: "OperationalStore", "VaultStore", "ArchiveStore".
-    :type source_data_store_type: str or ~data_protection_client.models.RestoreSourceDataStoreType
+    :type source_data_store_type: str or
+     ~azure.mgmt.dataprotection.models.RestoreSourceDataStoreType
     :param start_time: Start time for the List Restore Ranges request. ISO 8601 format.
     :type start_time: str
     :param end_time: End time for the List Restore Ranges request. ISO 8601 format.
@@ -474,7 +475,7 @@ class AzureBackupFindRestorableTimeRangesRequestResource(DppWorkerRequest):
     :param http_method:
     :type http_method: str
     :param content: AzureBackupFindRestorableTimeRangesRequestResource content.
-    :type content: ~data_protection_client.models.AzureBackupFindRestorableTimeRangesRequest
+    :type content: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesRequest
     """
 
     _attribute_map = {
@@ -509,7 +510,7 @@ class AzureBackupFindRestorableTimeRangesResponse(msrest.serialization.Model):
     """List Restore Ranges Response.
 
     :param restorable_time_ranges: Returns the Restore Ranges available on the Backup Instance.
-    :type restorable_time_ranges: list[~data_protection_client.models.RestorableTimeRange]
+    :type restorable_time_ranges: list[~azure.mgmt.dataprotection.models.RestorableTimeRange]
     :param object_type:
     :type object_type: str
     """
@@ -544,7 +545,7 @@ class DppResource(msrest.serialization.Model):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     """
 
     _validation = {
@@ -585,9 +586,9 @@ class AzureBackupFindRestorableTimeRangesResponseResource(DppResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: AzureBackupFindRestorableTimeRangesResponseResource properties.
-    :type properties: ~data_protection_client.models.AzureBackupFindRestorableTimeRangesResponse
+    :type properties: ~azure.mgmt.dataprotection.models.AzureBackupFindRestorableTimeRangesResponse
     """
 
     _validation = {
@@ -643,9 +644,9 @@ class AzureBackupJob(msrest.serialization.Model):
     :ivar end_time: EndTime of the job(in UTC).
     :vartype end_time: ~datetime.datetime
     :ivar error_details: A List, detailing the errors related to the job.
-    :vartype error_details: list[~data_protection_client.models.UserFacingError]
+    :vartype error_details: list[~azure.mgmt.dataprotection.models.UserFacingError]
     :ivar extended_info: Extended Information about the job.
-    :vartype extended_info: ~data_protection_client.models.JobExtendedInfo
+    :vartype extended_info: ~azure.mgmt.dataprotection.models.JobExtendedInfo
     :param is_user_triggered: Required. Indicated that whether the job is adhoc(true) or
      scheduled(false).
     :type is_user_triggered: bool
@@ -823,9 +824,9 @@ class AzureBackupJobResource(DppResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: AzureBackupJobResource properties.
-    :type properties: ~data_protection_client.models.AzureBackupJob
+    :type properties: ~azure.mgmt.dataprotection.models.AzureBackupJob
     """
 
     _validation = {
@@ -882,7 +883,7 @@ class AzureBackupJobResourceList(DppResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.AzureBackupJobResource]
+    :type value: list[~azure.mgmt.dataprotection.models.AzureBackupJobResource]
     """
 
     _attribute_map = {
@@ -978,10 +979,13 @@ class AzureBackupRestoreRequest(msrest.serialization.Model):
     :param object_type: Required. Constant filled by server.
     :type object_type: str
     :param restore_target_info: Required. Gets or sets the restore target information.
-    :type restore_target_info: ~data_protection_client.models.RestoreTargetInfoBase
+    :type restore_target_info: ~azure.mgmt.dataprotection.models.RestoreTargetInfoBase
     :param source_data_store_type: Required. Gets or sets the type of the source data store.
      Possible values include: "ArchiveStore", "SnapshotStore", "VaultStore".
-    :type source_data_store_type: str or ~data_protection_client.models.SourceDataStoreType
+    :type source_data_store_type: str or ~azure.mgmt.dataprotection.models.SourceDataStoreType
+    :param source_resource_id: Fully qualified Azure Resource Manager ID of the datasource which is
+     being recovered.
+    :type source_resource_id: str
     """
 
     _validation = {
@@ -994,6 +998,7 @@ class AzureBackupRestoreRequest(msrest.serialization.Model):
         'object_type': {'key': 'objectType', 'type': 'str'},
         'restore_target_info': {'key': 'restoreTargetInfo', 'type': 'RestoreTargetInfoBase'},
         'source_data_store_type': {'key': 'sourceDataStoreType', 'type': 'str'},
+        'source_resource_id': {'key': 'sourceResourceId', 'type': 'str'},
     }
 
     _subtype_map = {
@@ -1005,12 +1010,14 @@ class AzureBackupRestoreRequest(msrest.serialization.Model):
         *,
         restore_target_info: "RestoreTargetInfoBase",
         source_data_store_type: Union[str, "SourceDataStoreType"],
+        source_resource_id: Optional[str] = None,
         **kwargs
     ):
         super(AzureBackupRestoreRequest, self).__init__(**kwargs)
         self.object_type = None  # type: Optional[str]
         self.restore_target_info = restore_target_info
         self.source_data_store_type = source_data_store_type
+        self.source_resource_id = source_resource_id
 
 
 class AzureBackupRecoveryPointBasedRestoreRequest(AzureBackupRestoreRequest):
@@ -1024,10 +1031,13 @@ class AzureBackupRecoveryPointBasedRestoreRequest(AzureBackupRestoreRequest):
     :param object_type: Required. Constant filled by server.
     :type object_type: str
     :param restore_target_info: Required. Gets or sets the restore target information.
-    :type restore_target_info: ~data_protection_client.models.RestoreTargetInfoBase
+    :type restore_target_info: ~azure.mgmt.dataprotection.models.RestoreTargetInfoBase
     :param source_data_store_type: Required. Gets or sets the type of the source data store.
      Possible values include: "ArchiveStore", "SnapshotStore", "VaultStore".
-    :type source_data_store_type: str or ~data_protection_client.models.SourceDataStoreType
+    :type source_data_store_type: str or ~azure.mgmt.dataprotection.models.SourceDataStoreType
+    :param source_resource_id: Fully qualified Azure Resource Manager ID of the datasource which is
+     being recovered.
+    :type source_resource_id: str
     :param recovery_point_id: Required.
     :type recovery_point_id: str
     """
@@ -1043,6 +1053,7 @@ class AzureBackupRecoveryPointBasedRestoreRequest(AzureBackupRestoreRequest):
         'object_type': {'key': 'objectType', 'type': 'str'},
         'restore_target_info': {'key': 'restoreTargetInfo', 'type': 'RestoreTargetInfoBase'},
         'source_data_store_type': {'key': 'sourceDataStoreType', 'type': 'str'},
+        'source_resource_id': {'key': 'sourceResourceId', 'type': 'str'},
         'recovery_point_id': {'key': 'recoveryPointId', 'type': 'str'},
     }
 
@@ -1056,9 +1067,10 @@ class AzureBackupRecoveryPointBasedRestoreRequest(AzureBackupRestoreRequest):
         restore_target_info: "RestoreTargetInfoBase",
         source_data_store_type: Union[str, "SourceDataStoreType"],
         recovery_point_id: str,
+        source_resource_id: Optional[str] = None,
         **kwargs
     ):
-        super(AzureBackupRecoveryPointBasedRestoreRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, **kwargs)
+        super(AzureBackupRecoveryPointBasedRestoreRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, source_resource_id=source_resource_id, **kwargs)
         self.object_type = 'AzureBackupRecoveryPointBasedRestoreRequest'  # type: str
         self.recovery_point_id = recovery_point_id
 
@@ -1076,9 +1088,9 @@ class AzureBackupRecoveryPointResource(DppResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: AzureBackupRecoveryPointResource properties.
-    :type properties: ~data_protection_client.models.AzureBackupRecoveryPoint
+    :type properties: ~azure.mgmt.dataprotection.models.AzureBackupRecoveryPoint
     """
 
     _validation = {
@@ -1113,7 +1125,7 @@ class AzureBackupRecoveryPointResourceList(DppResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.AzureBackupRecoveryPointResource]
+    :type value: list[~azure.mgmt.dataprotection.models.AzureBackupRecoveryPointResource]
     """
 
     _attribute_map = {
@@ -1140,10 +1152,13 @@ class AzureBackupRecoveryTimeBasedRestoreRequest(AzureBackupRestoreRequest):
     :param object_type: Required. Constant filled by server.
     :type object_type: str
     :param restore_target_info: Required. Gets or sets the restore target information.
-    :type restore_target_info: ~data_protection_client.models.RestoreTargetInfoBase
+    :type restore_target_info: ~azure.mgmt.dataprotection.models.RestoreTargetInfoBase
     :param source_data_store_type: Required. Gets or sets the type of the source data store.
      Possible values include: "ArchiveStore", "SnapshotStore", "VaultStore".
-    :type source_data_store_type: str or ~data_protection_client.models.SourceDataStoreType
+    :type source_data_store_type: str or ~azure.mgmt.dataprotection.models.SourceDataStoreType
+    :param source_resource_id: Fully qualified Azure Resource Manager ID of the datasource which is
+     being recovered.
+    :type source_resource_id: str
     :param recovery_point_time: Required. The recovery time in ISO 8601 format example -
      2020-08-14T17:30:00.0000000Z.
     :type recovery_point_time: str
@@ -1160,6 +1175,7 @@ class AzureBackupRecoveryTimeBasedRestoreRequest(AzureBackupRestoreRequest):
         'object_type': {'key': 'objectType', 'type': 'str'},
         'restore_target_info': {'key': 'restoreTargetInfo', 'type': 'RestoreTargetInfoBase'},
         'source_data_store_type': {'key': 'sourceDataStoreType', 'type': 'str'},
+        'source_resource_id': {'key': 'sourceResourceId', 'type': 'str'},
         'recovery_point_time': {'key': 'recoveryPointTime', 'type': 'str'},
     }
 
@@ -1169,9 +1185,10 @@ class AzureBackupRecoveryTimeBasedRestoreRequest(AzureBackupRestoreRequest):
         restore_target_info: "RestoreTargetInfoBase",
         source_data_store_type: Union[str, "SourceDataStoreType"],
         recovery_point_time: str,
+        source_resource_id: Optional[str] = None,
         **kwargs
     ):
-        super(AzureBackupRecoveryTimeBasedRestoreRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, **kwargs)
+        super(AzureBackupRecoveryTimeBasedRestoreRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, source_resource_id=source_resource_id, **kwargs)
         self.object_type = 'AzureBackupRecoveryTimeBasedRestoreRequest'  # type: str
         self.recovery_point_time = recovery_point_time
 
@@ -1185,7 +1202,7 @@ class AzureBackupRehydrationRequest(msrest.serialization.Model):
     :type recovery_point_id: str
     :param rehydration_priority: Priority to be used for rehydration. Values High or Standard.
      Possible values include: "Invalid", "High", "Standard".
-    :type rehydration_priority: str or ~data_protection_client.models.RehydrationPriority
+    :type rehydration_priority: str or ~azure.mgmt.dataprotection.models.RehydrationPriority
     :param rehydration_retention_duration: Required. Retention duration in ISO 8601 format i.e P10D
      .
     :type rehydration_retention_duration: str
@@ -1224,15 +1241,18 @@ class AzureBackupRestoreWithRehydrationRequest(AzureBackupRecoveryPointBasedRest
     :param object_type: Required. Constant filled by server.
     :type object_type: str
     :param restore_target_info: Required. Gets or sets the restore target information.
-    :type restore_target_info: ~data_protection_client.models.RestoreTargetInfoBase
+    :type restore_target_info: ~azure.mgmt.dataprotection.models.RestoreTargetInfoBase
     :param source_data_store_type: Required. Gets or sets the type of the source data store.
      Possible values include: "ArchiveStore", "SnapshotStore", "VaultStore".
-    :type source_data_store_type: str or ~data_protection_client.models.SourceDataStoreType
+    :type source_data_store_type: str or ~azure.mgmt.dataprotection.models.SourceDataStoreType
+    :param source_resource_id: Fully qualified Azure Resource Manager ID of the datasource which is
+     being recovered.
+    :type source_resource_id: str
     :param recovery_point_id: Required.
     :type recovery_point_id: str
     :param rehydration_priority: Required. Priority to be used for rehydration. Values High or
      Standard. Possible values include: "Invalid", "High", "Standard".
-    :type rehydration_priority: str or ~data_protection_client.models.RehydrationPriority
+    :type rehydration_priority: str or ~azure.mgmt.dataprotection.models.RehydrationPriority
     :param rehydration_retention_duration: Required. Retention duration in ISO 8601 format i.e P10D
      .
     :type rehydration_retention_duration: str
@@ -1251,6 +1271,7 @@ class AzureBackupRestoreWithRehydrationRequest(AzureBackupRecoveryPointBasedRest
         'object_type': {'key': 'objectType', 'type': 'str'},
         'restore_target_info': {'key': 'restoreTargetInfo', 'type': 'RestoreTargetInfoBase'},
         'source_data_store_type': {'key': 'sourceDataStoreType', 'type': 'str'},
+        'source_resource_id': {'key': 'sourceResourceId', 'type': 'str'},
         'recovery_point_id': {'key': 'recoveryPointId', 'type': 'str'},
         'rehydration_priority': {'key': 'rehydrationPriority', 'type': 'str'},
         'rehydration_retention_duration': {'key': 'rehydrationRetentionDuration', 'type': 'str'},
@@ -1264,9 +1285,10 @@ class AzureBackupRestoreWithRehydrationRequest(AzureBackupRecoveryPointBasedRest
         recovery_point_id: str,
         rehydration_priority: Union[str, "RehydrationPriority"],
         rehydration_retention_duration: str,
+        source_resource_id: Optional[str] = None,
         **kwargs
     ):
-        super(AzureBackupRestoreWithRehydrationRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, recovery_point_id=recovery_point_id, **kwargs)
+        super(AzureBackupRestoreWithRehydrationRequest, self).__init__(restore_target_info=restore_target_info, source_data_store_type=source_data_store_type, source_resource_id=source_resource_id, recovery_point_id=recovery_point_id, **kwargs)
         self.object_type = 'AzureBackupRestoreWithRehydrationRequest'  # type: str
         self.rehydration_priority = rehydration_priority
         self.rehydration_retention_duration = rehydration_retention_duration
@@ -1321,11 +1343,11 @@ class AzureBackupRule(BasePolicyRule):
     :param object_type: Required. Constant filled by server.
     :type object_type: str
     :param backup_parameters: BackupParameters base.
-    :type backup_parameters: ~data_protection_client.models.BackupParameters
+    :type backup_parameters: ~azure.mgmt.dataprotection.models.BackupParameters
     :param data_store: Required. DataStoreInfo base.
-    :type data_store: ~data_protection_client.models.DataStoreInfoBase
+    :type data_store: ~azure.mgmt.dataprotection.models.DataStoreInfoBase
     :param trigger: Required. Trigger context.
-    :type trigger: ~data_protection_client.models.TriggerContext
+    :type trigger: ~azure.mgmt.dataprotection.models.TriggerContext
     """
 
     _validation = {
@@ -1372,7 +1394,7 @@ class DataStoreParameters(msrest.serialization.Model):
     :type object_type: str
     :param data_store_type: Required. type of datastore; Operational/Vault/Archive. Possible values
      include: "OperationalStore", "VaultStore", "ArchiveStore".
-    :type data_store_type: str or ~data_protection_client.models.DataStoreTypes
+    :type data_store_type: str or ~azure.mgmt.dataprotection.models.DataStoreTypes
     """
 
     _validation = {
@@ -1410,7 +1432,7 @@ class AzureOperationalStoreParameters(DataStoreParameters):
     :type object_type: str
     :param data_store_type: Required. type of datastore; Operational/Vault/Archive. Possible values
      include: "OperationalStore", "VaultStore", "ArchiveStore".
-    :type data_store_type: str or ~data_protection_client.models.DataStoreTypes
+    :type data_store_type: str or ~azure.mgmt.dataprotection.models.DataStoreTypes
     :param resource_group_id: Gets or sets the Snapshot Resource Group Uri.
     :type resource_group_id: str
     """
@@ -1450,7 +1472,7 @@ class AzureRetentionRule(BasePolicyRule):
     :param is_default:
     :type is_default: bool
     :param lifecycles: Required.
-    :type lifecycles: list[~data_protection_client.models.SourceLifeCycle]
+    :type lifecycles: list[~azure.mgmt.dataprotection.models.SourceLifeCycle]
     """
 
     _validation = {
@@ -1523,27 +1545,32 @@ class BackupInstance(msrest.serialization.Model):
     :param friendly_name: Gets or sets the Backup Instance friendly name.
     :type friendly_name: str
     :param data_source_info: Required. Gets or sets the data source information.
-    :type data_source_info: ~data_protection_client.models.Datasource
+    :type data_source_info: ~azure.mgmt.dataprotection.models.Datasource
     :param data_source_set_info: Gets or sets the data source set information.
-    :type data_source_set_info: ~data_protection_client.models.DatasourceSet
+    :type data_source_set_info: ~azure.mgmt.dataprotection.models.DatasourceSet
     :param policy_info: Required. Gets or sets the policy information.
-    :type policy_info: ~data_protection_client.models.PolicyInfo
+    :type policy_info: ~azure.mgmt.dataprotection.models.PolicyInfo
     :ivar protection_status: Specifies the protection status of the resource.
-    :vartype protection_status: ~data_protection_client.models.ProtectionStatusDetails
+    :vartype protection_status: ~azure.mgmt.dataprotection.models.ProtectionStatusDetails
     :ivar current_protection_state: Specifies the current protection state of the resource.
      Possible values include: "Invalid", "NotProtected", "ConfiguringProtection",
      "ProtectionConfigured", "BackupSchedulesSuspended", "RetentionSchedulesSuspended",
      "ProtectionStopped", "ProtectionError", "ConfiguringProtectionFailed", "SoftDeleting",
      "SoftDeleted", "UpdatingProtection".
-    :vartype current_protection_state: str or ~data_protection_client.models.CurrentProtectionState
+    :vartype current_protection_state: str or
+     ~azure.mgmt.dataprotection.models.CurrentProtectionState
     :ivar protection_error_details: Specifies the protection error of the resource.
-    :vartype protection_error_details: ~data_protection_client.models.UserFacingError
+    :vartype protection_error_details: ~azure.mgmt.dataprotection.models.UserFacingError
     :ivar provisioning_state: Specifies the provisioning state of the resource i.e.
      provisioning/updating/Succeeded/Failed.
     :vartype provisioning_state: str
     :param datasource_auth_credentials: Credentials to use to authenticate with data source
      provider.
-    :type datasource_auth_credentials: ~data_protection_client.models.AuthCredentials
+    :type datasource_auth_credentials: ~azure.mgmt.dataprotection.models.AuthCredentials
+    :param validation_type: Specifies the type of validation. In case of DeepValidation, all
+     validations from /validateForBackup API will run again. Possible values include:
+     "ShallowValidation", "DeepValidation".
+    :type validation_type: str or ~azure.mgmt.dataprotection.models.ValidationType
     :param object_type: Required.
     :type object_type: str
     """
@@ -1568,6 +1595,7 @@ class BackupInstance(msrest.serialization.Model):
         'protection_error_details': {'key': 'protectionErrorDetails', 'type': 'UserFacingError'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'datasource_auth_credentials': {'key': 'datasourceAuthCredentials', 'type': 'AuthCredentials'},
+        'validation_type': {'key': 'validationType', 'type': 'str'},
         'object_type': {'key': 'objectType', 'type': 'str'},
     }
 
@@ -1580,6 +1608,7 @@ class BackupInstance(msrest.serialization.Model):
         friendly_name: Optional[str] = None,
         data_source_set_info: Optional["DatasourceSet"] = None,
         datasource_auth_credentials: Optional["AuthCredentials"] = None,
+        validation_type: Optional[Union[str, "ValidationType"]] = None,
         **kwargs
     ):
         super(BackupInstance, self).__init__(**kwargs)
@@ -1592,6 +1621,7 @@ class BackupInstance(msrest.serialization.Model):
         self.protection_error_details = None
         self.provisioning_state = None
         self.datasource_auth_credentials = datasource_auth_credentials
+        self.validation_type = validation_type
         self.object_type = object_type
 
 
@@ -1608,9 +1638,9 @@ class BackupInstanceResource(DppResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: BackupInstanceResource properties.
-    :type properties: ~data_protection_client.models.BackupInstance
+    :type properties: ~azure.mgmt.dataprotection.models.BackupInstance
     """
 
     _validation = {
@@ -1645,7 +1675,7 @@ class BackupInstanceResourceList(DppResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.BackupInstanceResource]
+    :type value: list[~azure.mgmt.dataprotection.models.BackupInstanceResource]
     """
 
     _attribute_map = {
@@ -1714,7 +1744,7 @@ class BackupPolicy(BaseBackupPolicy):
     :type object_type: str
     :param policy_rules: Required. Policy rule dictionary that contains rules for each backuptype
      i.e Full/Incremental/Logs etc.
-    :type policy_rules: list[~data_protection_client.models.BasePolicyRule]
+    :type policy_rules: list[~azure.mgmt.dataprotection.models.BasePolicyRule]
     """
 
     _validation = {
@@ -1782,15 +1812,15 @@ class BackupVault(msrest.serialization.Model):
 
     :ivar provisioning_state: Provisioning state of the BackupVault resource. Possible values
      include: "Failed", "Provisioning", "Succeeded", "Unknown", "Updating".
-    :vartype provisioning_state: str or ~data_protection_client.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.dataprotection.models.ProvisioningState
     :ivar resource_move_state: Resource move state for backup vault. Possible values include:
      "Unknown", "InProgress", "PrepareFailed", "CommitFailed", "Failed", "PrepareTimedout",
      "CommitTimedout", "CriticalFailure", "PartialSuccess", "MoveSucceeded".
-    :vartype resource_move_state: str or ~data_protection_client.models.ResourceMoveState
+    :vartype resource_move_state: str or ~azure.mgmt.dataprotection.models.ResourceMoveState
     :ivar resource_move_details: Resource move details for backup vault.
-    :vartype resource_move_details: ~data_protection_client.models.ResourceMoveDetails
+    :vartype resource_move_details: ~azure.mgmt.dataprotection.models.ResourceMoveDetails
     :param storage_settings: Required. Storage Settings.
-    :type storage_settings: list[~data_protection_client.models.StorageSetting]
+    :type storage_settings: list[~azure.mgmt.dataprotection.models.StorageSetting]
     """
 
     _validation = {
@@ -1830,7 +1860,7 @@ class DppTrackedResource(msrest.serialization.Model):
     :ivar id: Resource Id represents the complete path to the resource.
     :vartype id: str
     :param identity: Input Managed Identity Details.
-    :type identity: ~data_protection_client.models.DppIdentityDetails
+    :type identity: ~azure.mgmt.dataprotection.models.DppIdentityDetails
     :param location: Resource location.
     :type location: str
     :ivar name: Resource name associated with the resource.
@@ -1841,7 +1871,7 @@ class DppTrackedResource(msrest.serialization.Model):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     """
 
     _validation = {
@@ -1894,7 +1924,7 @@ class BackupVaultResource(DppTrackedResource):
     :ivar id: Resource Id represents the complete path to the resource.
     :vartype id: str
     :param identity: Input Managed Identity Details.
-    :type identity: ~data_protection_client.models.DppIdentityDetails
+    :type identity: ~azure.mgmt.dataprotection.models.DppIdentityDetails
     :param location: Resource location.
     :type location: str
     :ivar name: Resource name associated with the resource.
@@ -1905,9 +1935,9 @@ class BackupVaultResource(DppTrackedResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: Required. BackupVaultResource properties.
-    :type properties: ~data_protection_client.models.BackupVault
+    :type properties: ~azure.mgmt.dataprotection.models.BackupVault
     """
 
     _validation = {
@@ -1951,7 +1981,7 @@ class BackupVaultResourceList(DppResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.BackupVaultResource]
+    :type value: list[~azure.mgmt.dataprotection.models.BackupVaultResource]
     """
 
     _attribute_map = {
@@ -1983,9 +2013,9 @@ class BaseBackupPolicyResource(DppResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: BaseBackupPolicyResource properties.
-    :type properties: ~data_protection_client.models.BaseBackupPolicy
+    :type properties: ~azure.mgmt.dataprotection.models.BaseBackupPolicy
     """
 
     _validation = {
@@ -2020,7 +2050,7 @@ class BaseBackupPolicyResourceList(DppResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.BaseBackupPolicyResource]
+    :type value: list[~azure.mgmt.dataprotection.models.BaseBackupPolicyResource]
     """
 
     _attribute_map = {
@@ -2168,7 +2198,7 @@ class ClientDiscoveryForProperties(msrest.serialization.Model):
 
     :param service_specification: Operation properties.
     :type service_specification:
-     ~data_protection_client.models.ClientDiscoveryForServiceSpecification
+     ~azure.mgmt.dataprotection.models.ClientDiscoveryForServiceSpecification
     """
 
     _attribute_map = {
@@ -2190,7 +2220,7 @@ class ClientDiscoveryForServiceSpecification(msrest.serialization.Model):
 
     :param log_specifications: List of log specifications of this operation.
     :type log_specifications:
-     list[~data_protection_client.models.ClientDiscoveryForLogSpecification]
+     list[~azure.mgmt.dataprotection.models.ClientDiscoveryForLogSpecification]
     """
 
     _attribute_map = {
@@ -2213,7 +2243,7 @@ class ClientDiscoveryResponse(msrest.serialization.Model):
     :param next_link: Link to the next chunk of Response.
     :type next_link: str
     :param value: List of available operations.
-    :type value: list[~data_protection_client.models.ClientDiscoveryValueForSingleApi]
+    :type value: list[~azure.mgmt.dataprotection.models.ClientDiscoveryValueForSingleApi]
     """
 
     _attribute_map = {
@@ -2237,7 +2267,7 @@ class ClientDiscoveryValueForSingleApi(msrest.serialization.Model):
     """Available operation details.
 
     :param display: Contains the localized display information for this particular operation.
-    :type display: ~data_protection_client.models.ClientDiscoveryDisplay
+    :type display: ~azure.mgmt.dataprotection.models.ClientDiscoveryDisplay
     :param name: Name of the Operation.
     :type name: str
     :param is_data_action: Indicates whether the operation is a data action.
@@ -2246,7 +2276,7 @@ class ClientDiscoveryValueForSingleApi(msrest.serialization.Model):
      the RBAC UX and the audit logs UX.
     :type origin: str
     :param properties: Properties for the given operation.
-    :type properties: ~data_protection_client.models.ClientDiscoveryForProperties
+    :type properties: ~azure.mgmt.dataprotection.models.ClientDiscoveryForProperties
     """
 
     _attribute_map = {
@@ -2489,7 +2519,7 @@ class DataStoreInfoBase(msrest.serialization.Model):
 
     :param data_store_type: Required. type of datastore; Operational/Vault/Archive. Possible values
      include: "OperationalStore", "VaultStore", "ArchiveStore".
-    :type data_store_type: str or ~data_protection_client.models.DataStoreTypes
+    :type data_store_type: str or ~azure.mgmt.dataprotection.models.DataStoreTypes
     :param object_type: Required. Type of Datasource object, used to initialize the right inherited
      type.
     :type object_type: str
@@ -2583,7 +2613,7 @@ class DppBaseResourceList(msrest.serialization.Model):
     """Base for all lists of V2 resources.
 
     :param value: List of Dpp resources.
-    :type value: list[~data_protection_client.models.DppBaseResource]
+    :type value: list[~azure.mgmt.dataprotection.models.DppBaseResource]
     :param next_link: The uri to fetch the next page of resources. Call ListNext() fetches next
      page of resources.
     :type next_link: str
@@ -2672,11 +2702,11 @@ class Error(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~data_protection_client.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.dataprotection.models.ErrorAdditionalInfo]
     :ivar code: The error code.
     :vartype code: str
     :ivar details: The error details.
-    :vartype details: list[~data_protection_client.models.Error]
+    :vartype details: list[~azure.mgmt.dataprotection.models.Error]
     :ivar message: The error message.
     :vartype message: str
     :ivar target: The error target.
@@ -2824,7 +2854,7 @@ class FeatureValidationRequest(FeatureValidationRequestBase):
     :type object_type: str
     :param feature_type: backup support feature type. Possible values include: "Invalid",
      "DataSourceType".
-    :type feature_type: str or ~data_protection_client.models.FeatureType
+    :type feature_type: str or ~azure.mgmt.dataprotection.models.FeatureType
     :param feature_name: backup support feature name.
     :type feature_name: str
     """
@@ -2895,9 +2925,9 @@ class FeatureValidationResponse(FeatureValidationResponseBase):
     :type object_type: str
     :param feature_type: backup support feature type. Possible values include: "Invalid",
      "DataSourceType".
-    :type feature_type: str or ~data_protection_client.models.FeatureType
+    :type feature_type: str or ~azure.mgmt.dataprotection.models.FeatureType
     :param features: Response features.
-    :type features: list[~data_protection_client.models.SupportedFeature]
+    :type features: list[~azure.mgmt.dataprotection.models.SupportedFeature]
     """
 
     _validation = {
@@ -2958,7 +2988,7 @@ class InnerError(msrest.serialization.Model):
     :param code: Unique code for this error.
     :type code: str
     :param embedded_inner_error: Child Inner Error, to allow Nesting.
-    :type embedded_inner_error: ~data_protection_client.models.InnerError
+    :type embedded_inner_error: ~azure.mgmt.dataprotection.models.InnerError
     """
 
     _attribute_map = {
@@ -2985,7 +3015,7 @@ class ItemLevelRestoreCriteria(msrest.serialization.Model):
     """Class to contain criteria for item level restore.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: RangeBasedItemLevelRestoreCriteria.
+    sub-classes are: KubernetesPvRestoreCriteria, KubernetesStorageClassRestoreCriteria, RangeBasedItemLevelRestoreCriteria.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -3003,7 +3033,7 @@ class ItemLevelRestoreCriteria(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'object_type': {'RangeBasedItemLevelRestoreCriteria': 'RangeBasedItemLevelRestoreCriteria'}
+        'object_type': {'KubernetesPVRestoreCriteria': 'KubernetesPvRestoreCriteria', 'KubernetesStorageClassRestoreCriteria': 'KubernetesStorageClassRestoreCriteria', 'RangeBasedItemLevelRestoreCriteria': 'RangeBasedItemLevelRestoreCriteria'}
     }
 
     def __init__(
@@ -3026,7 +3056,7 @@ class RestoreTargetInfoBase(msrest.serialization.Model):
      type.Constant filled by server.
     :type object_type: str
     :param recovery_option: Required. Recovery Option. Possible values include: "FailIfExists".
-    :type recovery_option: str or ~data_protection_client.models.RecoveryOption
+    :type recovery_option: str or ~azure.mgmt.dataprotection.models.RecoveryOption
     :param restore_location: Target Restore region.
     :type restore_location: str
     """
@@ -3068,18 +3098,18 @@ class ItemLevelRestoreTargetInfo(RestoreTargetInfoBase):
      type.Constant filled by server.
     :type object_type: str
     :param recovery_option: Required. Recovery Option. Possible values include: "FailIfExists".
-    :type recovery_option: str or ~data_protection_client.models.RecoveryOption
+    :type recovery_option: str or ~azure.mgmt.dataprotection.models.RecoveryOption
     :param restore_location: Target Restore region.
     :type restore_location: str
     :param restore_criteria: Required. Restore Criteria.
-    :type restore_criteria: list[~data_protection_client.models.ItemLevelRestoreCriteria]
+    :type restore_criteria: list[~azure.mgmt.dataprotection.models.ItemLevelRestoreCriteria]
     :param datasource_info: Required. Information of target DS.
-    :type datasource_info: ~data_protection_client.models.Datasource
+    :type datasource_info: ~azure.mgmt.dataprotection.models.Datasource
     :param datasource_set_info: Information of target DS Set.
-    :type datasource_set_info: ~data_protection_client.models.DatasourceSet
+    :type datasource_set_info: ~azure.mgmt.dataprotection.models.DatasourceSet
     :param datasource_auth_credentials: Credentials to use to authenticate with data source
      provider.
-    :type datasource_auth_credentials: ~data_protection_client.models.AuthCredentials
+    :type datasource_auth_credentials: ~azure.mgmt.dataprotection.models.AuthCredentials
     """
 
     _validation = {
@@ -3132,11 +3162,11 @@ class JobExtendedInfo(msrest.serialization.Model):
     :ivar recovery_destination: Destination where restore is done.
     :vartype recovery_destination: str
     :ivar source_recover_point: Details of the Source Recovery Point.
-    :vartype source_recover_point: ~data_protection_client.models.RestoreJobRecoveryPointDetails
+    :vartype source_recover_point: ~azure.mgmt.dataprotection.models.RestoreJobRecoveryPointDetails
     :ivar sub_tasks: List of Sub Tasks of the job.
-    :vartype sub_tasks: list[~data_protection_client.models.JobSubTask]
+    :vartype sub_tasks: list[~azure.mgmt.dataprotection.models.JobSubTask]
     :ivar target_recover_point: Details of the Target Recovery Point.
-    :vartype target_recover_point: ~data_protection_client.models.RestoreJobRecoveryPointDetails
+    :vartype target_recover_point: ~azure.mgmt.dataprotection.models.RestoreJobRecoveryPointDetails
     """
 
     _validation = {
@@ -3225,6 +3255,80 @@ class JobSubTask(msrest.serialization.Model):
         self.task_status = task_status
 
 
+class KubernetesPvRestoreCriteria(ItemLevelRestoreCriteria):
+    """Item Level kubernetes persistent volume target info for restore operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param object_type: Required. Type of the specific object - used for deserializing.Constant
+     filled by server.
+    :type object_type: str
+    :param name: Selected persistent volume claim name.
+    :type name: str
+    :param storage_class_name: Selected storage class name for restore operation.
+    :type storage_class_name: str
+    """
+
+    _validation = {
+        'object_type': {'required': True},
+    }
+
+    _attribute_map = {
+        'object_type': {'key': 'objectType', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'storage_class_name': {'key': 'storageClassName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        storage_class_name: Optional[str] = None,
+        **kwargs
+    ):
+        super(KubernetesPvRestoreCriteria, self).__init__(**kwargs)
+        self.object_type = 'KubernetesPVRestoreCriteria'  # type: str
+        self.name = name
+        self.storage_class_name = storage_class_name
+
+
+class KubernetesStorageClassRestoreCriteria(ItemLevelRestoreCriteria):
+    """Item Level kubernetes storage class target info for restore operation.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param object_type: Required. Type of the specific object - used for deserializing.Constant
+     filled by server.
+    :type object_type: str
+    :param selected_storage_class_name: Selected storage class name.
+    :type selected_storage_class_name: str
+    :param provisioner: Provisioner of the storage class.
+    :type provisioner: str
+    """
+
+    _validation = {
+        'object_type': {'required': True},
+    }
+
+    _attribute_map = {
+        'object_type': {'key': 'objectType', 'type': 'str'},
+        'selected_storage_class_name': {'key': 'selectedStorageClassName', 'type': 'str'},
+        'provisioner': {'key': 'provisioner', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        selected_storage_class_name: Optional[str] = None,
+        provisioner: Optional[str] = None,
+        **kwargs
+    ):
+        super(KubernetesStorageClassRestoreCriteria, self).__init__(**kwargs)
+        self.object_type = 'KubernetesStorageClassRestoreCriteria'  # type: str
+        self.selected_storage_class_name = selected_storage_class_name
+        self.provisioner = provisioner
+
+
 class OperationExtendedInfo(msrest.serialization.Model):
     """Operation Extended Info.
 
@@ -3299,14 +3403,14 @@ class OperationResource(msrest.serialization.Model):
      format, used by the RPC and will go into the v2.2 Azure REST API guidelines.
      The full set of optional properties (e.g. inner errors / details) can be found in the "Error
      Response" section.
-    :type error: ~data_protection_client.models.Error
+    :type error: ~azure.mgmt.dataprotection.models.Error
     :param id: It should match what is used to GET the operation result.
     :type id: str
     :param name: It must match the last segment of the "id" field, and will typically be a GUID /
      system generated value.
     :type name: str
     :param properties: End time of the operation.
-    :type properties: ~data_protection_client.models.OperationExtendedInfo
+    :type properties: ~azure.mgmt.dataprotection.models.OperationExtendedInfo
     :param start_time: Start time of the operation.
     :type start_time: ~datetime.datetime
     :param status:
@@ -3349,7 +3453,7 @@ class PatchResourceRequestInput(msrest.serialization.Model):
     """Patch Request content for Microsoft.DataProtection resources.
 
     :param identity: Input Managed Identity Details.
-    :type identity: ~data_protection_client.models.DppIdentityDetails
+    :type identity: ~azure.mgmt.dataprotection.models.DppIdentityDetails
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     """
@@ -3383,7 +3487,7 @@ class PolicyInfo(msrest.serialization.Model):
     :ivar policy_version:
     :vartype policy_version: str
     :param policy_parameters: Policy parameters for the backup instance.
-    :type policy_parameters: ~data_protection_client.models.PolicyParameters
+    :type policy_parameters: ~azure.mgmt.dataprotection.models.PolicyParameters
     """
 
     _validation = {
@@ -3414,7 +3518,7 @@ class PolicyParameters(msrest.serialization.Model):
     """Parameters in Policy.
 
     :param data_store_parameters_list: Gets or sets the DataStore Parameters.
-    :type data_store_parameters_list: list[~data_protection_client.models.DataStoreParameters]
+    :type data_store_parameters_list: list[~azure.mgmt.dataprotection.models.DataStoreParameters]
     """
 
     _attribute_map = {
@@ -3435,11 +3539,11 @@ class ProtectionStatusDetails(msrest.serialization.Model):
     """Protection status details.
 
     :param error_details: Specifies the protection status error of the resource.
-    :type error_details: ~data_protection_client.models.UserFacingError
+    :type error_details: ~azure.mgmt.dataprotection.models.UserFacingError
     :param status: Specifies the protection status of the resource. Possible values include:
      "ConfiguringProtection", "ConfiguringProtectionFailed", "ProtectionConfigured",
      "ProtectionStopped", "SoftDeleted", "SoftDeleting".
-    :type status: str or ~data_protection_client.models.Status
+    :type status: str or ~azure.mgmt.dataprotection.models.Status
     """
 
     _attribute_map = {
@@ -3519,7 +3623,7 @@ class RecoveryPointDataStoreDetails(msrest.serialization.Model):
     :vartype rehydration_expiry_time: ~datetime.datetime
     :ivar rehydration_status:  Possible values include: "CREATE_IN_PROGRESS", "COMPLETED",
      "DELETE_IN_PROGRESS", "DELETED", "FAILED".
-    :vartype rehydration_status: str or ~data_protection_client.models.RehydrationStatus
+    :vartype rehydration_status: str or ~azure.mgmt.dataprotection.models.RehydrationStatus
     """
 
     _validation = {
@@ -3616,12 +3720,13 @@ class ResourceGuard(msrest.serialization.Model):
 
     :ivar provisioning_state: Provisioning state of the BackupVault resource. Possible values
      include: "Failed", "Provisioning", "Succeeded", "Unknown", "Updating".
-    :vartype provisioning_state: str or ~data_protection_client.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.dataprotection.models.ProvisioningState
     :ivar allow_auto_approvals: This flag indicates whether auto approval is allowed or not.
     :vartype allow_auto_approvals: bool
     :ivar resource_guard_operations: {readonly} List of operation details those are protected by
      the ResourceGuard resource.
-    :vartype resource_guard_operations: list[~data_protection_client.models.ResourceGuardOperation]
+    :vartype resource_guard_operations:
+     list[~azure.mgmt.dataprotection.models.ResourceGuardOperation]
     :ivar vault_critical_operation_exclusion_list: List of critical operations which are not
      protected by this resourceGuard.
     :vartype vault_critical_operation_exclusion_list: list[str]
@@ -3697,7 +3802,7 @@ class ResourceGuardResource(DppTrackedResource):
     :ivar id: Resource Id represents the complete path to the resource.
     :vartype id: str
     :param identity: Input Managed Identity Details.
-    :type identity: ~data_protection_client.models.DppIdentityDetails
+    :type identity: ~azure.mgmt.dataprotection.models.DppIdentityDetails
     :param location: Resource location.
     :type location: str
     :ivar name: Resource name associated with the resource.
@@ -3708,9 +3813,9 @@ class ResourceGuardResource(DppTrackedResource):
      Namespace/ResourceType/ResourceType/...
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~data_protection_client.models.SystemData
+    :vartype system_data: ~azure.mgmt.dataprotection.models.SystemData
     :param properties: ResourceGuardResource properties.
-    :type properties: ~data_protection_client.models.ResourceGuard
+    :type properties: ~azure.mgmt.dataprotection.models.ResourceGuard
     """
 
     _validation = {
@@ -3753,7 +3858,7 @@ class ResourceGuardResourceList(DppTrackedResourceList):
      page of resources.
     :type next_link: str
     :param value: List of resources.
-    :type value: list[~data_protection_client.models.ResourceGuardResource]
+    :type value: list[~azure.mgmt.dataprotection.models.ResourceGuardResource]
     """
 
     _attribute_map = {
@@ -3863,12 +3968,12 @@ class RestoreFilesTargetInfo(RestoreTargetInfoBase):
      type.Constant filled by server.
     :type object_type: str
     :param recovery_option: Required. Recovery Option. Possible values include: "FailIfExists".
-    :type recovery_option: str or ~data_protection_client.models.RecoveryOption
+    :type recovery_option: str or ~azure.mgmt.dataprotection.models.RecoveryOption
     :param restore_location: Target Restore region.
     :type restore_location: str
     :param target_details: Required. Destination of RestoreAsFiles operation, when destination is
      not a datasource.
-    :type target_details: ~data_protection_client.models.TargetDetails
+    :type target_details: ~azure.mgmt.dataprotection.models.TargetDetails
     """
 
     _validation = {
@@ -3932,16 +4037,16 @@ class RestoreTargetInfo(RestoreTargetInfoBase):
      type.Constant filled by server.
     :type object_type: str
     :param recovery_option: Required. Recovery Option. Possible values include: "FailIfExists".
-    :type recovery_option: str or ~data_protection_client.models.RecoveryOption
+    :type recovery_option: str or ~azure.mgmt.dataprotection.models.RecoveryOption
     :param restore_location: Target Restore region.
     :type restore_location: str
     :param datasource_info: Required. Information of target DS.
-    :type datasource_info: ~data_protection_client.models.Datasource
+    :type datasource_info: ~azure.mgmt.dataprotection.models.Datasource
     :param datasource_set_info: Information of target DS Set.
-    :type datasource_set_info: ~data_protection_client.models.DatasourceSet
+    :type datasource_set_info: ~azure.mgmt.dataprotection.models.DatasourceSet
     :param datasource_auth_credentials: Credentials to use to authenticate with data source
      provider.
-    :type datasource_auth_credentials: ~data_protection_client.models.AuthCredentials
+    :type datasource_auth_credentials: ~azure.mgmt.dataprotection.models.AuthCredentials
     """
 
     _validation = {
@@ -4026,17 +4131,17 @@ class ScheduleBasedBackupCriteria(BackupCriteria):
     :param absolute_criteria: it contains absolute values like "AllBackup" / "FirstOfDay" /
      "FirstOfWeek" / "FirstOfMonth"
      and should be part of AbsoluteMarker enum.
-    :type absolute_criteria: list[str or ~data_protection_client.models.AbsoluteMarker]
+    :type absolute_criteria: list[str or ~azure.mgmt.dataprotection.models.AbsoluteMarker]
     :param days_of_month: This is day of the month from 1 to 28 other wise last of month.
-    :type days_of_month: list[~data_protection_client.models.Day]
+    :type days_of_month: list[~azure.mgmt.dataprotection.models.Day]
     :param days_of_the_week: It should be Sunday/Monday/T..../Saturday.
-    :type days_of_the_week: list[str or ~data_protection_client.models.DayOfWeek]
+    :type days_of_the_week: list[str or ~azure.mgmt.dataprotection.models.DayOfWeek]
     :param months_of_year: It should be January/February/....../December.
-    :type months_of_year: list[str or ~data_protection_client.models.Month]
+    :type months_of_year: list[str or ~azure.mgmt.dataprotection.models.Month]
     :param schedule_times: List of schedule times for backup.
     :type schedule_times: list[~datetime.datetime]
     :param weeks_of_the_month: It should be First/Second/Third/Fourth/Last.
-    :type weeks_of_the_month: list[str or ~data_protection_client.models.WeekNumber]
+    :type weeks_of_the_month: list[str or ~azure.mgmt.dataprotection.models.WeekNumber]
     """
 
     _validation = {
@@ -4083,9 +4188,9 @@ class ScheduleBasedTriggerContext(TriggerContext):
      filled by server.
     :type object_type: str
     :param schedule: Required. Schedule for this backup.
-    :type schedule: ~data_protection_client.models.BackupSchedule
+    :type schedule: ~azure.mgmt.dataprotection.models.BackupSchedule
     :param tagging_criteria: Required. List of tags that can be applicable for given schedule.
-    :type tagging_criteria: list[~data_protection_client.models.TaggingCriteria]
+    :type tagging_criteria: list[~azure.mgmt.dataprotection.models.TaggingCriteria]
     """
 
     _validation = {
@@ -4122,7 +4227,7 @@ class SecretStoreBasedAuthCredentials(AuthCredentials):
      filled by server.
     :type object_type: str
     :param secret_store_resource: Secret store resource.
-    :type secret_store_resource: ~data_protection_client.models.SecretStoreResource
+    :type secret_store_resource: ~azure.mgmt.dataprotection.models.SecretStoreResource
     """
 
     _validation = {
@@ -4154,7 +4259,9 @@ class SecretStoreResource(msrest.serialization.Model):
     :type uri: str
     :param secret_store_type: Required. Gets or sets the type of secret store. Possible values
      include: "Invalid", "AzureKeyVault".
-    :type secret_store_type: str or ~data_protection_client.models.SecretStoreType
+    :type secret_store_type: str or ~azure.mgmt.dataprotection.models.SecretStoreType
+    :param value: Gets or sets value stored in secret store resource.
+    :type value: str
     """
 
     _validation = {
@@ -4164,6 +4271,7 @@ class SecretStoreResource(msrest.serialization.Model):
     _attribute_map = {
         'uri': {'key': 'uri', 'type': 'str'},
         'secret_store_type': {'key': 'secretStoreType', 'type': 'str'},
+        'value': {'key': 'value', 'type': 'str'},
     }
 
     def __init__(
@@ -4171,11 +4279,13 @@ class SecretStoreResource(msrest.serialization.Model):
         *,
         secret_store_type: Union[str, "SecretStoreType"],
         uri: Optional[str] = None,
+        value: Optional[str] = None,
         **kwargs
     ):
         super(SecretStoreResource, self).__init__(**kwargs)
         self.uri = uri
         self.secret_store_type = secret_store_type
+        self.value = value
 
 
 class SourceLifeCycle(msrest.serialization.Model):
@@ -4184,11 +4294,12 @@ class SourceLifeCycle(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param delete_after: Required. Delete Option.
-    :type delete_after: ~data_protection_client.models.DeleteOption
+    :type delete_after: ~azure.mgmt.dataprotection.models.DeleteOption
     :param source_data_store: Required. DataStoreInfo base.
-    :type source_data_store: ~data_protection_client.models.DataStoreInfoBase
+    :type source_data_store: ~azure.mgmt.dataprotection.models.DataStoreInfoBase
     :param target_data_store_copy_settings:
-    :type target_data_store_copy_settings: list[~data_protection_client.models.TargetCopySetting]
+    :type target_data_store_copy_settings:
+     list[~azure.mgmt.dataprotection.models.TargetCopySetting]
     """
 
     _validation = {
@@ -4221,10 +4332,10 @@ class StorageSetting(msrest.serialization.Model):
 
     :param datastore_type: Gets or sets the type of the datastore. Possible values include:
      "ArchiveStore", "SnapshotStore", "VaultStore".
-    :type datastore_type: str or ~data_protection_client.models.StorageSettingStoreTypes
+    :type datastore_type: str or ~azure.mgmt.dataprotection.models.StorageSettingStoreTypes
     :param type: Gets or sets the type. Possible values include: "GeoRedundant",
      "LocallyRedundant".
-    :type type: str or ~data_protection_client.models.StorageSettingTypes
+    :type type: str or ~azure.mgmt.dataprotection.models.StorageSettingTypes
     """
 
     _attribute_map = {
@@ -4251,7 +4362,7 @@ class SupportedFeature(msrest.serialization.Model):
     :type feature_name: str
     :param support_status: feature support status. Possible values include: "Invalid",
      "NotSupported", "AlphaPreview", "PrivatePreview", "PublicPreview", "GenerallyAvailable".
-    :type support_status: str or ~data_protection_client.models.FeatureSupportStatus
+    :type support_status: str or ~azure.mgmt.dataprotection.models.FeatureSupportStatus
     :param exposure_controlled_features: support feature type.
     :type exposure_controlled_features: list[str]
     """
@@ -4276,6 +4387,28 @@ class SupportedFeature(msrest.serialization.Model):
         self.exposure_controlled_features = exposure_controlled_features
 
 
+class SyncBackupInstanceRequest(msrest.serialization.Model):
+    """Sync BackupInstance Request.
+
+    :param sync_type: Field indicating sync type e.g. to sync only in case of failure or in all
+     cases. Possible values include: "Default", "ForceResync".
+    :type sync_type: str or ~azure.mgmt.dataprotection.models.SyncType
+    """
+
+    _attribute_map = {
+        'sync_type': {'key': 'syncType', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        sync_type: Optional[Union[str, "SyncType"]] = None,
+        **kwargs
+    ):
+        super(SyncBackupInstanceRequest, self).__init__(**kwargs)
+        self.sync_type = sync_type
+
+
 class SystemData(msrest.serialization.Model):
     """Metadata pertaining to creation and last modification of the resource.
 
@@ -4283,14 +4416,14 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~data_protection_client.models.CreatedByType
+    :type created_by_type: str or ~azure.mgmt.dataprotection.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~data_protection_client.models.CreatedByType
+    :type last_modified_by_type: str or ~azure.mgmt.dataprotection.models.CreatedByType
     :param last_modified_at: The type of identity that last modified the resource.
     :type last_modified_at: ~datetime.datetime
     """
@@ -4330,13 +4463,13 @@ class TaggingCriteria(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param criteria: Criteria which decides whether the tag can be applied to a triggered backup.
-    :type criteria: list[~data_protection_client.models.BackupCriteria]
+    :type criteria: list[~azure.mgmt.dataprotection.models.BackupCriteria]
     :param is_default: Required. Specifies if tag is default.
     :type is_default: bool
     :param tagging_priority: Required. Retention Tag priority.
     :type tagging_priority: long
     :param tag_info: Required. Retention tag information.
-    :type tag_info: ~data_protection_client.models.RetentionTag
+    :type tag_info: ~azure.mgmt.dataprotection.models.RetentionTag
     """
 
     _validation = {
@@ -4374,9 +4507,9 @@ class TargetCopySetting(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param copy_after: Required. It can be CustomCopyOption or ImmediateCopyOption.
-    :type copy_after: ~data_protection_client.models.CopyOption
+    :type copy_after: ~azure.mgmt.dataprotection.models.CopyOption
     :param data_store: Required. Info of target datastore.
-    :type data_store: ~data_protection_client.models.DataStoreInfoBase
+    :type data_store: ~azure.mgmt.dataprotection.models.DataStoreInfoBase
     """
 
     _validation = {
@@ -4416,7 +4549,7 @@ class TargetDetails(msrest.serialization.Model):
      {Microsoft.Internal.AzureBackup.DataProtection.Common.Interface.RestoreTargetLocationType}.
      Possible values include: "Invalid", "AzureBlobs", "AzureFiles".
     :type restore_target_location_type: str or
-     ~data_protection_client.models.RestoreTargetLocationType
+     ~azure.mgmt.dataprotection.models.RestoreTargetLocationType
     :param url: Required. Url denoting the restore destination. It can point to container / file
      share etc.
     :type url: str
@@ -4455,7 +4588,7 @@ class TriggerBackupRequest(msrest.serialization.Model):
 
     :param backup_rule_options: Required. Name for the Rule of the Policy which needs to be applied
      for this backup.
-    :type backup_rule_options: ~data_protection_client.models.AdHocBackupRuleOptions
+    :type backup_rule_options: ~azure.mgmt.dataprotection.models.AdHocBackupRuleOptions
     """
 
     _validation = {
@@ -4482,9 +4615,9 @@ class UserFacingError(msrest.serialization.Model):
     :param code: Unique code for this error.
     :type code: str
     :param details: Additional related Errors.
-    :type details: list[~data_protection_client.models.UserFacingError]
+    :type details: list[~azure.mgmt.dataprotection.models.UserFacingError]
     :param inner_error: Inner Error.
-    :type inner_error: ~data_protection_client.models.InnerError
+    :type inner_error: ~azure.mgmt.dataprotection.models.InnerError
     :param is_retryable: Whether the operation will be retryable or not.
     :type is_retryable: bool
     :param is_user_error: Whether the operation is due to a user error or service error.
@@ -4543,7 +4676,7 @@ class ValidateForBackupRequest(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param backup_instance: Required. Backup Instance.
-    :type backup_instance: ~data_protection_client.models.BackupInstance
+    :type backup_instance: ~azure.mgmt.dataprotection.models.BackupInstance
     """
 
     _validation = {
@@ -4570,7 +4703,7 @@ class ValidateRestoreRequestObject(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param restore_request_object: Required. Gets or sets the restore request object.
-    :type restore_request_object: ~data_protection_client.models.AzureBackupRestoreRequest
+    :type restore_request_object: ~azure.mgmt.dataprotection.models.AzureBackupRestoreRequest
     """
 
     _validation = {

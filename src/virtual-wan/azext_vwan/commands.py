@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from .profiles import CUSTOM_VWAN, CUSTOM_VWAN_2021_03_01
+from .profiles import CUSTOM_VWAN
 
 from ._client_factory import (
     cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs,
@@ -24,72 +24,72 @@ ROUTE_TABLE_DEPRECATION_INFO = 'network vhub route-table'
 def load_command_table(self, _):
 
     network_vhub_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualHubsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VirtualHubsOperations.{}',
         client_factory=cf_virtual_hubs,
         resource_type=CUSTOM_VWAN,
         min_api='2018-08-01'
     )
 
     network_vhub_connection_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#HubVirtualNetworkConnectionsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#HubVirtualNetworkConnectionsOperations.{}',
         client_factory=cf_virtual_hub_connection,
         resource_type=CUSTOM_VWAN,
         min_api='2020-05-01'
     )
 
     network_vhub_bgpconnection_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2021_03_01.v2021_03_01.operations#VirtualHubBgpConnectionOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VirtualHubBgpConnectionOperations.{}',
         client_factory=cf_virtual_hub_bgpconnection,
-        resource_type=CUSTOM_VWAN_2021_03_01
+        resource_type=CUSTOM_VWAN
     )
 
     network_vhub_route_table_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualHubRouteTableV2SOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VirtualHubRouteTableV2SOperations.{}',
         client_factory=cf_virtual_hub_route_table_v2s,
         resource_type=CUSTOM_VWAN,
         min_api='2019-09-01'
     )
 
     network_vwan_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualWansOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VirtualWansOperations.{}',
         client_factory=cf_virtual_wans,
         resource_type=CUSTOM_VWAN,
         min_api='2018-08-01'
     )
 
     network_vpn_gateway_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnGatewaysOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VpnGatewaysOperations.{}',
         client_factory=cf_vpn_gateways,
         min_api='2018-08-01'
     )
 
     network_vpn_gateway_connection_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnConnectionsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VpnConnectionsOperations.{}',
         client_factory=cf_vpn_gateway_connection,
         min_api='2020-05-01'
     )
 
     network_vpn_site_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnSitesOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VpnSitesOperations.{}',
         client_factory=cf_vpn_sites,
         min_api='2018-08-01'
     )
 
     network_vpn_site_config_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnSitesConfigurationOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VpnSitesConfigurationOperations.{}',
         client_factory=cf_vpn_site_configs,
         min_api='2018-08-01'
     )
 
     network_vpn_server_config_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VpnServerConfigurationsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#VpnServerConfigurationsOperations.{}',
         client_factory=cf_vpn_server_config,
         resource_type=CUSTOM_VWAN,
         min_api='2020-03-01'
     )
 
     network_p2s_vpn_gateway_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#P2SVpnGatewaysOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_08_01.operations#P2SVpnGatewaysOperations.{}',
         client_factory=cf_p2s_vpn_gateways,
         resource_type=CUSTOM_VWAN,
         min_api='2020-03-01'
@@ -110,7 +110,7 @@ def load_command_table(self, _):
     # endregion
 
     # region VirtualHubs
-    with self.command_group('network vhub', network_vhub_sdk) as g:
+    with self.command_group('network vhub', network_vhub_sdk, client_factory=cf_virtual_hubs) as g:
         g.custom_command('create', 'create_virtual_hub', supports_no_wait=True)
         g.command('delete', 'begin_delete')
         g.show_command('show')

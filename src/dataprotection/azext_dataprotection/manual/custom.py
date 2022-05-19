@@ -14,10 +14,9 @@ import re
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-from azure.mgmt.resourcegraph.models import \
+from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
-import azext_dataprotection.manual.helpers as helper
-import azext_dataprotection.manual.backupcenter_helper as backupcenter_helper
+from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 
 logger = get_logger(__name__)
 
@@ -37,7 +36,7 @@ def dataprotection_backup_instance_create(client, vault_name, resource_group_nam
     validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
 
     sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-                resource_group_name=resource_group_name, parameters=validate_for_backup_request)
+                resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        vault_name=vault_name,

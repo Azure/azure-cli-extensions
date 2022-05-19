@@ -8,13 +8,16 @@
 import datetime
 import json
 
+from ..utils import get_cluster_rp_api_version
+
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import AzCLIError, CLIError, InvalidArgumentValueError, ClientRequestError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, send_raw_request
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
 
 from ..vendored_sdks.models import Extension
 from ..vendored_sdks.models import ScopeCluster
@@ -33,7 +36,6 @@ class ContainerInsights(DefaultExtension):
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file):
-
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
            Must create and return a valid 'Extension' object.
 
@@ -69,6 +71,48 @@ class ContainerInsights(DefaultExtension):
             configuration_protected_settings=configuration_protected_settings
         )
         return extension, name, create_identity
+
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+        # Delete DCR-A if it exists incase of MSI Auth
+        useAADAuth = False
+        isDCRAExists = False
+        cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
+        try:
+            extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        except Exception:
+            pass  # its OK to ignore the exception since MSI auth in preview
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        # handle cluster type here
+        cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
+        if (extension is not None) and (extension.configuration_settings is not None):
+            configSettings = extension.configuration_settings
+            if 'omsagent.useAADAuth' in configSettings:
+                useAADAuthSetting = configSettings['omsagent.useAADAuth']
+                if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                    useAADAuth = True
+        if useAADAuth:
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "GET", association_url,)
+                    isDCRAExists = True
+                    break
+                except HttpResponseError as ex:
+                    # Customize the error message for resources not found
+                    if ex.response.status_code == 404:
+                        isDCRAExists = False
+                except Exception:
+                    pass  # its OK to ignore the exception since MSI auth in preview
+
+        if isDCRAExists:
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
+                    break
+                except Exception:
+                    pass  # its OK to ignore the exception since MSI auth in preview
 
 
 # Custom Validation Logic for Container Insights
@@ -159,7 +203,8 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "westeurope": "westeurope",
         "westindia": "centralindia",
         "westus": "westus",
-        "westus2": "westus2"
+        "westus2": "westus2",
+        "eastus2euap": "eastus2euap"
     }
 
     # mapping for azure china cloud
@@ -271,6 +316,28 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     return ws_resource_id
 
 
+def _is_container_insights_solution_exists(cmd, workspace_resource_id):
+    # extract subscription ID and resource group from workspace_resource_id URL
+    is_exists = False
+    _MAX_RETRY_TIMES = 3
+    parsed = parse_resource_id(workspace_resource_id)
+    subscription_id, resource_group, workspace_name = parsed["subscription"], parsed["resource_group"], parsed["name"]
+    solution_resource_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationsManagement/solutions/ContainerInsights({2})".format(subscription_id, resource_group, workspace_name)
+    resources = cf_resources(cmd.cli_ctx, subscription_id)
+    for retry_count in range(0, _MAX_RETRY_TIMES):
+        try:
+            resources.get_by_id(solution_resource_id, '2015-11-01-preview')
+            is_exists = True
+            break
+        except HttpResponseError as ex:
+            if ex.status_code == 404:
+                is_exists = False
+                break
+            if retry_count >= (_MAX_RETRY_TIMES - 1):
+                raise ex
+    return is_exists
+
+
 def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -376,6 +443,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
+    useAADAuth = False
 
     if configuration_settings is not None:
         if 'loganalyticsworkspaceresourceid' in configuration_settings:
@@ -384,6 +452,12 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
 
         if 'logAnalyticsWorkspaceResourceID' in configuration_settings:
             workspace_resource_id = configuration_settings['logAnalyticsWorkspaceResourceID']
+
+        if 'omsagent.useAADAuth' in configuration_settings:
+            useAADAuthSetting = configuration_settings['omsagent.useAADAuth']
+            logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
+            if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
+                useAADAuth = True
 
     workspace_resource_id = workspace_resource_id.strip()
 
@@ -409,7 +483,12 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
             raise InvalidArgumentValueError('{} is not a valid Azure resource ID.'.format(workspace_resource_id))
 
     if is_ci_extension_type:
-        _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
+        if not _is_container_insights_solution_exists(cmd, workspace_resource_id):
+            logger.info("creating containerinsights solution resource since it doesnt exist")
+            _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
+        if useAADAuth:
+            logger.info("creating data collection rule and association")
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id)
 
     # extract subscription ID and resource group from workspace_resource_id URL
     parsed = parse_resource_id(workspace_resource_id)
@@ -440,3 +519,188 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_n
         configuration_settings['omsagent.domain'] = 'opinsights.azure.eaglex.ic.gov'
     elif cloud_name.lower() == 'ussec':
         configuration_settings['omsagent.domain'] = 'opinsights.azure.microsoft.scloud'
+
+
+def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
+    tags = {}
+    _MAX_RETRY_TIMES = 3
+    for retry_count in range(0, _MAX_RETRY_TIMES):
+        try:
+            resp = send_raw_request(
+                cmd.cli_ctx, "GET", dcr_url
+            )
+            json_response = json.loads(resp.text)
+            if ("tags" in json_response) and (json_response["tags"] is not None):
+                tags = json_response["tags"]
+            break
+        except CLIError as e:
+            if "ResourceNotFound" in str(e):
+                break
+            if retry_count >= (_MAX_RETRY_TIMES - 1):
+                raise e
+    return tags
+
+
+def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_name, workspace_resource_id):
+    from azure.core.exceptions import HttpResponseError
+
+    cluster_region = ''
+    resources = cf_resources(cmd.cli_ctx, subscription_id)
+    cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Kubernetes' \
+        '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
+    try:
+        resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
+        cluster_region = resource.location.lower()
+    except HttpResponseError as ex:
+        raise ex
+
+    # extract subscription ID and resource group from workspace_resource_id URL
+    parsed = parse_resource_id(workspace_resource_id)
+    workspace_subscription_id, workspace_resource_group = parsed["subscription"], parsed["resource_group"]
+    workspace_region = ''
+    resources = cf_resources(cmd.cli_ctx, workspace_subscription_id)
+    try:
+        resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
+        workspace_region = resource.location
+    except HttpResponseError as ex:
+        raise ex
+
+    dataCollectionRuleName = f"MSCI-{cluster_name}-{cluster_region}"
+    dcr_resource_id = f"/subscriptions/{workspace_subscription_id}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+
+    # first get the association between region display names and region IDs (because for some reason
+    # the "which RPs are available in which regions" check returns region display names)
+    region_names_to_id = {}
+    # retry the request up to two times
+    for _ in range(3):
+        try:
+            location_list_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"/subscriptions/{subscription_id}/locations?api-version=2019-11-01"
+            r = send_raw_request(cmd.cli_ctx, "GET", location_list_url)
+            # this is required to fool the static analyzer. The else statement will only run if an exception
+            # is thrown, but flake8 will complain that e is undefined if we don't also define it here.
+            error = None
+            break
+        except AzCLIError as e:
+            error = e
+        else:
+            # This will run if the above for loop was not broken out of. This means all three requests failed
+            raise error
+    json_response = json.loads(r.text)
+    for region_data in json_response["value"]:
+        region_names_to_id[region_data["displayName"]] = region_data["name"]
+
+    # check if region supports DCR and DCR-A
+    for _ in range(3):
+        try:
+            feature_check_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
+            r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
+            error = None
+            break
+        except AzCLIError as e:
+            error = e
+        else:
+            raise error
+
+    json_response = json.loads(r.text)
+    for resource in json_response["resourceTypes"]:
+        if (resource["resourceType"].lower() == "datacollectionrules"):
+            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr supported regions
+            if (workspace_region not in region_ids):
+                raise ClientRequestError(f"Data Collection Rules are not supported for LA workspace region {workspace_region}")
+        if (resource["resourceType"].lower() == "datacollectionruleassociations"):
+            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr-a supported regions
+            if (cluster_region not in region_ids):
+                raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
+
+    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2019-11-01-preview"
+    # get existing tags on the container insights extension DCR if the customer added any
+    existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
+
+    # create the DCR
+    dcr_creation_body = json.dumps(
+        {
+            "location": workspace_region,
+            "tags": existing_tags,
+            "properties": {
+                "dataSources": {
+                    "extensions": [
+                        {
+                            "name": "ContainerInsightsExtension",
+                            "streams": [
+                                "Microsoft-Perf",
+                                "Microsoft-ContainerInventory",
+                                "Microsoft-ContainerLog",
+                                "Microsoft-ContainerLogV2",
+                                "Microsoft-ContainerNodeInventory",
+                                "Microsoft-KubeEvents",
+                                "Microsoft-KubeMonAgentEvents",
+                                "Microsoft-KubeNodeInventory",
+                                "Microsoft-KubePodInventory",
+                                "Microsoft-KubePVInventory",
+                                "Microsoft-KubeServices",
+                                "Microsoft-InsightsMetrics",
+                            ],
+                            "extensionName": "ContainerInsights",
+                        }
+                    ]
+                },
+                "dataFlows": [
+                    {
+                        "streams": [
+                            "Microsoft-Perf",
+                            "Microsoft-ContainerInventory",
+                            "Microsoft-ContainerLog",
+                            "Microsoft-ContainerLogV2",
+                            "Microsoft-ContainerNodeInventory",
+                            "Microsoft-KubeEvents",
+                            "Microsoft-KubeMonAgentEvents",
+                            "Microsoft-KubeNodeInventory",
+                            "Microsoft-KubePodInventory",
+                            "Microsoft-KubePVInventory",
+                            "Microsoft-KubeServices",
+                            "Microsoft-InsightsMetrics",
+                        ],
+                        "destinations": ["la-workspace"],
+                    }
+                ],
+                "destinations": {
+                    "logAnalytics": [
+                        {
+                            "workspaceResourceId": workspace_resource_id,
+                            "name": "la-workspace",
+                        }
+                    ]
+                },
+            },
+        }
+    )
+
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
+            error = None
+            break
+        except AzCLIError as e:
+            error = e
+        else:
+            raise error
+
+    association_body = json.dumps(
+        {
+            "location": cluster_region,
+            "properties": {
+                "dataCollectionRuleId": dcr_resource_id,
+                "description": "routes monitoring data to a Log Analytics workspace",
+            },
+        }
+    )
+    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2019-11-01-preview"
+    for _ in range(3):
+        try:
+            send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)
+            error = None
+            break
+        except AzCLIError as e:
+            error = e
+        else:
+            raise error

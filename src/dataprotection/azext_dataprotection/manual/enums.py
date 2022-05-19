@@ -66,5 +66,5 @@ def get_secret_store_type_values():
 
 
 def get_datasource_types():
-    import azext_dataprotection.manual.helpers as helpers
+    from azext_dataprotection.manual import helpers
     return helpers.get_supported_datasource_types()
