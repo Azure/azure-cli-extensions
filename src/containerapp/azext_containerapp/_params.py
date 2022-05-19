@@ -13,6 +13,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
+from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION
 
 
 def load_arguments(self, _):
@@ -223,6 +224,7 @@ def load_arguments(self, _):
         c.argument('secret_name', help="The name of the secret to show.")
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
         c.argument('show_values', help='Show the secret values.')
+        c.ignore('disable_max_length')
 
     with self.argument_context('containerapp env dapr-component') as c:
         c.argument('dapr_app_id', help="The Dapr app ID.")
@@ -271,6 +273,42 @@ def load_arguments(self, _):
         c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
+
+    with self.argument_context('containerapp auth') as c:
+        # subgroup update
+        c.argument('client_id', options_list=['--client-id'], help='The Client ID of the app used for login.')
+        c.argument('client_secret', options_list=['--client-secret'], help='The client secret.')
+        c.argument('client_secret_setting_name', options_list=['--client-secret-name'], help='The app secret name that contains the client secret of the relying party application.')
+        c.argument('issuer', options_list=['--issuer'], help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
+        c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences', '--allowed-audiences'], help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
+        c.argument('client_secret_certificate_thumbprint', options_list=['--thumbprint', '--client-secret-certificate-thumbprint'], help='Alternative to AAD Client Secret, thumbprint of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_san', options_list=['--san', '--client-secret-certificate-san'], help='Alternative to AAD Client Secret and thumbprint, subject alternative name of a certificate used for signing purposes')
+        c.argument('client_secret_certificate_issuer', options_list=['--certificate-issuer', '--client-secret-certificate-issuer'], help='Alternative to AAD Client Secret and thumbprint, issuer of a certificate used for signing purposes')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('tenant_id', options_list=['--tenant-id'], help='The tenant id of the application.')
+        c.argument('app_id', options_list=['--app-id'], help='The App ID of the app used for login.')
+        c.argument('app_secret', options_list=['--app-secret'], help='The app secret.')
+        c.argument('app_secret_setting_name', options_list=['--app-secret-name', '--secret-name'], help='The app secret name that contains the app secret.')
+        c.argument('graph_api_version', options_list=['--graph-api-version'], help='The version of the Facebook api to be used while logging in.')
+        c.argument('scopes', options_list=['--scopes'], help='A list of the scopes that should be requested while authenticating.')
+        c.argument('consumer_key', options_list=['--consumer-key'], help='The OAuth 1.0a consumer key of the Twitter application used for sign-in.')
+        c.argument('consumer_secret', options_list=['--consumer-secret'], help='The consumer secret.')
+        c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-name', '--secret-name'], help='The consumer secret name that contains the app secret.')
+        c.argument('provider_name', options_list=['--provider-name'], required=True, help='The name of the custom OpenID Connect provider.')
+        c.argument('openid_configuration', options_list=['--openid-configuration'], help='The endpoint that contains all the configuration endpoints for the provider.')
+        # auth update
+        c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization feature.')
+        c.argument('config_file_path', options_list=['--config-file-path'], help='The path of the config file containing auth settings if they come from a file.')
+        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
+        c.argument('redirect_provider', options_list=['--redirect-provider'], help='The default authentication provider to use when multiple providers are configured.')
+        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(return_label=True), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
+        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(return_label=True), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
+        c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
+        c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')
+        c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header', '--custom-proto-header'], help='The name of the header containing the scheme of the request.')
+        c.argument('excluded_paths', options_list=['--excluded-paths'], help='The list of paths that should be excluded from authentication rules.')
+        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True), help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
+        c.argument('runtime_version', options_list=['--runtime-version'], help='The RuntimeVersion of the Authentication / Authorization feature in use for the current app.')
 
     with self.argument_context('containerapp ssl upload') as c:
         c.argument('hostname', help='The custom domain name.')
