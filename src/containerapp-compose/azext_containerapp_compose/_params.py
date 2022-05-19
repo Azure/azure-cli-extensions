@@ -18,8 +18,8 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp compose create') as c:
         c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
-        c.argument('registry_server', options_list=['--registry-server'], help='Path to a container registry')
+        c.argument('registry_server', help='Path to a container registry')
         c.argument('registry_user', options_list=['--registry-username'], help="Supplied container registry's username")
         c.argument('registry_pass', options_list=['--registry-password'], help="Supplied container registry's password")
         c.argument('logs_workspace_name', options_list=['--logs-workspace', '-w'], help=SUPPRESS)
-        c.argument('transport', options_list=['--transport'], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
+        c.argument('transport', action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
