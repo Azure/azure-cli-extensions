@@ -9,7 +9,6 @@ Release History
 * Added 'az containerapp env certificate' to manage certificates in a container app environment
 * Added 'az containerapp hostname' to manage hostnames in a container app
 * Added 'az containerapp ssl upload' to upload a certificate, add a hostname and the binding to a container app
-* Added 'az containerapp auth' to manage AuthConfigs for a containerapp
 
 0.3.4
 ++++++

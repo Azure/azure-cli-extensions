@@ -8,7 +8,6 @@
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
-from ._clients import STABLE_API_VERSION
 
 
 def transform_containerapp_output(app):
@@ -44,16 +43,8 @@ def transform_revision_list_output(revs):
     return [transform_revision_output(r) for r in revs]
 
 
-def auth_config_client_factory(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.core.profiles import CustomResourceType
-    MGMT_APPCONTAINERS = CustomResourceType(import_prefix='azure.mgmt.appcontainers', client_name='ContainerAppsAPIClient')
-    return get_mgmt_service_client(cli_ctx, MGMT_APPCONTAINERS, api_version=STABLE_API_VERSION).container_apps_auth_configs
-
-
 def load_command_table(self, _):
-
-    with self.command_group('containerapp') as g:
+    with self.command_group('containerapp', is_preview=True) as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output)
@@ -63,11 +54,11 @@ def load_command_table(self, _):
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
 
-    with self.command_group('containerapp replica') as g:
+    with self.command_group('containerapp replica', is_preview=True) as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
         g.custom_command('list', 'list_replicas')
 
-    with self.command_group('containerapp logs') as g:
+    with self.command_group('containerapp logs', is_preview=True) as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
 
     with self.command_group('containerapp env') as g:
@@ -87,7 +78,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env storage', is_preview=True) as g:
+    with self.command_group('containerapp env storage') as g:
         g.custom_show_command('show', 'show_storage')
         g.custom_command('list', 'list_storage')
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -140,40 +131,6 @@ def load_command_table(self, _):
     with self.command_group('containerapp dapr') as g:
         g.custom_command('enable', 'enable_dapr', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
-        g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth microsoft', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_aad_settings')
-        g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth facebook', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_facebook_settings')
-        g.custom_command('update', 'update_facebook_settings', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth github', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_github_settings')
-        g.custom_command('update', 'update_github_settings')
-
-    with self.command_group('containerapp auth google', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_google_settings')
-        g.custom_command('update', 'update_google_settings', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth twitter', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_twitter_settings')
-        g.custom_command('update', 'update_twitter_settings', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth apple', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_apple_settings')
-        g.custom_command('update', 'update_apple_settings', exception_handler=ex_handler_factory())
-
-    with self.command_group('containerapp auth openid-connect', client_factory=auth_config_client_factory) as g:
-        g.custom_show_command('show', 'get_openid_connect_provider_settings')
-        g.custom_command('add', 'add_openid_connect_provider_settings', exception_handler=ex_handler_factory())
-        g.custom_command('update', 'update_openid_connect_provider_settings', exception_handler=ex_handler_factory())
-        g.custom_command('remove', 'remove_openid_connect_provider_settings')
 
     with self.command_group('containerapp ssl') as g:
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
