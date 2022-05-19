@@ -63,11 +63,11 @@ def load_command_table(self, _):
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
 
-    with self.command_group('containerapp replica', is_preview=True) as g:
+    with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
         g.custom_command('list', 'list_replicas')
 
-    with self.command_group('containerapp logs', is_preview=True) as g:
+    with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
 
     with self.command_group('containerapp env') as g:
@@ -87,7 +87,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env storage') as g:
+    with self.command_group('containerapp env storage', is_preview=True) as g:
         g.custom_show_command('show', 'show_storage')
         g.custom_command('list', 'list_storage')
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -142,11 +142,11 @@ def load_command_table(self, _):
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth', client_factory=auth_config_client_factory) as g:
-        g.custom_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth microsoft', client_factory=auth_config_client_factory) as g:
-        g.custom_command('show', 'get_aad_settings')
+        g.custom_show_command('show', 'get_aad_settings')
         g.custom_command('update', 'update_aad_settings', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth facebook', client_factory=auth_config_client_factory) as g:

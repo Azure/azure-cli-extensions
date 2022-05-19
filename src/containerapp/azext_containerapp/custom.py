@@ -2378,7 +2378,6 @@ def upload_certificate(cmd, name, resource_group_name, certificate_file, certifi
     cert_name = None
     if certificate_name:
         if not check_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-            from knack.prompting import prompt_y_n
             msg = 'A certificate with the name {} already exists in {}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
             overwrite = prompt_y_n(msg.format(certificate_name, name))
             if overwrite:
@@ -2573,7 +2572,7 @@ def update_aad_settings(cmd, client, resource_group_name, name,
                         client_secret_certificate_thumbprint=None,
                         client_secret_certificate_san=None,
                         client_secret_certificate_issuer=None,
-                        yes=False, tenant_id=None):  
+                        yes=False, tenant_id=None):
 
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -2738,7 +2737,7 @@ def get_facebook_settings(client, resource_group_name, name):
 
 def update_facebook_settings(cmd, client, resource_group_name, name,
                              app_id=None, app_secret_setting_name=None,
-                             graph_api_version=None, scopes=None, app_secret=None, yes=False):  
+                             graph_api_version=None, scopes=None, app_secret=None, yes=False):
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2810,7 +2809,7 @@ def get_github_settings(client, resource_group_name, name):
 
 def update_github_settings(cmd, client, resource_group_name, name,
                            client_id=None, client_secret_setting_name=None,
-                           scopes=None, client_secret=None, yes=False):  
+                           scopes=None, client_secret=None, yes=False):
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2880,7 +2879,7 @@ def get_google_settings(client, resource_group_name, name):
 
 def update_google_settings(cmd, client, resource_group_name, name,
                            client_id=None, client_secret_setting_name=None,
-                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):  
+                           scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -2956,8 +2955,8 @@ def get_twitter_settings(client, resource_group_name, name):
 
 
 def update_twitter_settings(cmd, client, resource_group_name, name,
-                            consumer_key=None, consumer_secret_setting_name=None, 
-                            consumer_secret=None, yes=False):  
+                            consumer_key=None, consumer_secret_setting_name=None,
+                            consumer_secret=None, yes=False):
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -3021,7 +3020,7 @@ def get_apple_settings(client, resource_group_name, name):
 
 def update_apple_settings(cmd, client, resource_group_name, name,
                           client_id=None, client_secret_setting_name=None,
-                          scopes=None, client_secret=None, yes=False):  
+                          scopes=None, client_secret=None, yes=False):
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -3096,8 +3095,8 @@ def get_openid_connect_provider_settings(client, resource_group_name, name, prov
 
 def add_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
                                          client_id=None, client_secret_setting_name=None,
-                                         openid_configuration=None, scopes=None,      
-                                         client_secret=None, yes=False):  
+                                         openid_configuration=None, scopes=None,
+                                         client_secret=None, yes=False):
     from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -3160,7 +3159,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
 def update_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
                                             client_id=None, client_secret_setting_name=None,
                                             openid_configuration=None, scopes=None,
-                                            client_secret=None, yes=False):  
+                                            client_secret=None, yes=False):
     from ._utils import get_oidc_client_setting_app_setting_name
     try:
         show_ingress(cmd, name, resource_group_name)
@@ -3256,7 +3255,7 @@ def update_auth_config(client, resource_group_name, name, set_string=None, enabl
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, enable_token_store=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
-                       proxy_custom_proto_header=None, excluded_paths=None, slot=None):
+                       proxy_custom_proto_header=None, excluded_paths=None):
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
     existing_auth = {}
     try:

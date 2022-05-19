@@ -981,7 +981,7 @@ examples:
     text: |
         az containerapp auth openid-connect add -g myResourceGroup --name MyContainerapp \\
           --provider-name myOpenIdConnectProvider --client-id my-client-id \\
-          --client-secret-setting-name MY_SECRET_APP_SETTING \\
+          --client-secret-name MY_SECRET_APP_SETTING \\
           --openid-configuration https://myopenidprovider.net/.well-known/openid-configuration
 """
 
@@ -993,7 +993,7 @@ examples:
     text: |
         az containerapp auth openid-connect update -g myResourceGroup --name MyContainerapp \\
           --provider-name myOpenIdConnectProvider --client-id my-client-id \\
-          --client-secret-setting-name MY_SECRET_APP_SETTING
+          --client-secret-name MY_SECRET_APP_SETTING
 """
 
 helps['containerapp auth openid-connect remove'] = """

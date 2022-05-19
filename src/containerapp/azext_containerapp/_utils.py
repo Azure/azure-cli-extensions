@@ -1253,12 +1253,8 @@ def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_co
 
 
 def get_oidc_client_setting_app_setting_name(provider_name):
-    provider_name_prefix = provider_name.upper()
-
-    # an appsetting name can be up to 64 characters, and the suffix _PROVIDER_AUTHENTICATION_SECRET is 31 characters so limitting this to 32
-    if len(provider_name_prefix) > 32:
-        provider_name_prefix = provider_name_prefix[0:31]
-    return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+    provider_name_prefix = provider_name.lower()
+    return provider_name_prefix + "-provider-authentication-secret"
 
 
 # only accept .pfx or .pem file
@@ -1292,7 +1288,7 @@ def load_cert_file(file_path, cert_password=None):
             else:
                 raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
     except Exception as e:
-        raise CLIInternalError(e)
+        raise CLIInternalError(e) from e
     return blob, thumbprint
 
 
