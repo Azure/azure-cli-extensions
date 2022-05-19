@@ -415,6 +415,22 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+    @classmethod
+    def validate_domain(cls, cmd, resource_group_name, name, hostname):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/listCustomHostNameAnalysis?api-version={}&customHostname={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            STABLE_API_VERSION,
+            hostname)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
 
 class ManagedEnvironmentClient():
     @classmethod
@@ -583,6 +599,94 @@ class ManagedEnvironmentClient():
                 env_list.append(formatted)
 
         return env_list
+
+    @classmethod
+    def show_certificate(cls, cmd, resource_group_name, name, certificate_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        return r.json()
+
+    @classmethod
+    def list_certificates(cls, cmd, resource_group_name, name, formatter=lambda x: x):
+        certs_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
+        j = r.json()
+        for cert in j["value"]:
+            formatted = formatter(cert)
+            certs_list.append(formatted)
+        return certs_list
+
+    @classmethod
+    def create_or_update_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate))
+        return r.json()
+
+    @classmethod
+    def delete_certificate(cls, cmd, resource_group_name, name, certificate_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/certificates/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            certificate_name,
+            api_version)
+
+        return send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
+
+    @classmethod
+    def check_name_availability(cls, cmd, resource_group_name, name, name_availability_request):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = STABLE_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/checkNameAvailability?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
+        return r.json()
 
 
 class GitHubActionClient():

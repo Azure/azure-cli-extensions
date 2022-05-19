@@ -181,6 +181,14 @@ ContainerApp = {
     "tags": None
 }
 
+ContainerAppCertificateEnvelope = {
+    "location": None,
+    "properties": {
+        "password": None,
+        "value": None
+    }
+}
+
 DaprComponent = {
     "properties": {
         "componentType": None,  # String
@@ -230,6 +238,22 @@ AzureCredentials = {
     "clientSecret": None,  # str
     "tenantId": None,  # str
     "subscriptionId": None  # str
+}
+
+ContainerAppCustomDomainEnvelope = {
+    "properties": {
+        "configuration": {
+            "ingress": {
+                "customDomains": None
+            }
+        }
+    }
+}
+
+ContainerAppCustomDomain = {
+    "name": None,
+    "bindingType": "SniEnabled",
+    "certificateId": None
 }
 
 AzureFileProperties = {
