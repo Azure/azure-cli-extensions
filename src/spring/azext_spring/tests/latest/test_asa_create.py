@@ -201,3 +201,20 @@ class TestSpringCloudCreateEnerpriseWithApplicationInsights(BasicTest):
             self.buildpack_binding_resource.properties.launch_properties.properties['connection-string'])
         self.assertEqual(53,
             self.buildpack_binding_resource.properties.launch_properties.properties['sampling-percentage'])
+
+
+class TestSpringAppCreateWithIngressConfig(BasicTest):
+    def test_asa_create_basic_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Basic'), ingress_read_timeout=500, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(500, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+    def test_asa_create_standard_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), ingress_read_timeout=300, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(300, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
+
+    def test_asa_create_enterprise_with_ingress_config(self):
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), ingress_read_timeout=100, disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual(100, resource.properties.network_profile.ingress_config.read_timeout_in_seconds)
