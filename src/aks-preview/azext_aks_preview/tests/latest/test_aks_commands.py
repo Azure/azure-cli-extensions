@@ -302,7 +302,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
         })
         
-        create_cmd = 'aks create --resource-group={resource_group} --name={name}'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
