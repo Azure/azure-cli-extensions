@@ -39,7 +39,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'azure-cli-core',
-    'azure-mgmt-appcontainers'
+    'azure-mgmt-appcontainers==1.0.0'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

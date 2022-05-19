@@ -8,7 +8,7 @@
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
-from azure.cli.core.commands import CliCommandType
+
 
 def transform_containerapp_output(app):
     props = ['name', 'location', 'resourceGroup', 'provisioningState']
@@ -42,11 +42,13 @@ def transform_revision_output(rev):
 def transform_revision_list_output(revs):
     return [transform_revision_output(r) for r in revs]
 
+
 def auth_config_client_factory(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.profiles import CustomResourceType
     MGMT_APPCONTAINERS = CustomResourceType(import_prefix='azure.mgmt.appcontainers', client_name='ContainerAppsAPIClient')
     return get_mgmt_service_client(cli_ctx, MGMT_APPCONTAINERS, api_version='2022-03-01').container_apps_auth_configs
+
 
 def load_command_table(self, _):
 

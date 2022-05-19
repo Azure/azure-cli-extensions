@@ -15,6 +15,7 @@ from ._validators import (validate_memory, validate_cpu, validate_managed_env_na
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION
 
+
 def load_arguments(self, _):
 
     name_type = CLIArgumentType(options_list=['--name', '-n'])
