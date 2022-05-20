@@ -203,9 +203,9 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('[0].id', cert_id),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
-        
+
         self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} -l {} --yes'.format(env_name, resource_group, cert_thumbprint, cert_location))
-        
+
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_id_2), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', cert_name_2),

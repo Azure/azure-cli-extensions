@@ -359,7 +359,7 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('[0].bindingType', "SniEnabled"),
             JMESPathCheck('[0].certificateId', cert_id),
         ]).get_output_in_json()
-        
+
         self.cmd('containerapp hostname list -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', hostname_2),
