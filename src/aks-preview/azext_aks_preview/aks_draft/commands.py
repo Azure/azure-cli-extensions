@@ -186,7 +186,7 @@ def _binary_pre_check() -> Optional[str]:
 
 # Returns the latest version str of Draft on Github
 def _get_latest_version() -> str:
-    response = requests.get('https://api.github.com/repos/Azure/aks-app/releases/latest')
+    response = requests.get('https://api.github.com/repos/Azure/draft/releases/latest')
     response_json = json.loads(response.text)
     return response_json.get('tag_name')
 
@@ -260,7 +260,7 @@ def _download_binary() -> Optional[str]:
     if not filename:
         return None
 
-    url = f'https://github.com/Azure/aks-app/releases/latest/download/{filename}'
+    url = f'https://github.com/Azure/draft/releases/latest/download/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
     dir_name = '.aksdraft'

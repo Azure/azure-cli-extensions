@@ -1705,6 +1705,11 @@ helps['aks nodepool snapshot delete'] = """
     short-summary: Delete a nodepool snapshot.
 """
 
+helps['aks draft'] = """
+    type: group
+    short-summary: Commands to build deployment files in a project directory and deploy to an AKS cluster.
+"""
+
 helps['aks draft create'] = """
     type: command
     short-summary: Generate a Dockerfile and the minimum required Kubernetes deployment files (helm, kustomize, manifests) for your project directory.
