@@ -586,6 +586,7 @@ def validate_azure_keyvault_kms_key_id(namespace):
         if len(segments) != 4 or segments[1] != "keys":
             raise InvalidArgumentValueError(err_msg)
 
+
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust is not None and namespace.enable_custom_ca_trust:
