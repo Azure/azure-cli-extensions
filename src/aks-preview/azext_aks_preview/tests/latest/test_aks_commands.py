@@ -3819,3 +3819,75 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(cmd, checks=[
             self.is_empty(),
         ])
+
+    def test_aks_draft_with_helm(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/helm.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # test `create`
+            create_cmd = f'aks draft create --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/charts') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/charts/production.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-helm.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
+
+    def test_aks_draft_with_kustomize(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/kustomize.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # test `create`
+            create_cmd = f'aks draft create --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/base') and os.path.isdir(f'{tmp_dir}/overlays/production') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/overlays/production/deployment.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-kustomize.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
+
+
+    def test_aks_draft_with_manifest(self):
+        import tempfile, os
+
+        script_dir = os.path.dirname(__file__)
+        create_config = 'aks_draft_config/manifest.yaml'
+        abs_file_path = os.path.join(script_dir, create_config)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            
+            create_cmd = f'aks draft create --create-config={abs_file_path} --destination={tmp_dir}'
+            self.cmd(create_cmd)
+            assert os.path.isdir(f'{tmp_dir}/manifests') and os.path.isfile(f'{tmp_dir}/Dockerfile')
+
+            # test `generate-workflow`
+            generate_workflow_cmd = f'aks draft generate-workflow --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            self.cmd(generate_workflow_cmd)
+            assert os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service.yml')
+
+            # test `update`
+            update_cmd = f'aks draft update --destination={tmp_dir} --host=testHost --certificate=testKV'
+            self.cmd(update_cmd)
+            assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')
+
+

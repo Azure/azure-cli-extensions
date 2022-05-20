@@ -1635,7 +1635,7 @@ helps['aks draft create'] = """
     parameters:
         - name: --destination
           type: string
-          short-summary: Specify the path to the project directory.
+          short-summary: Specify the path to the project directory (default is .).
         - name: --app-name
           type: string
           short-summary: Specify the name of the helm release.
@@ -1646,9 +1646,113 @@ helps['aks draft create'] = """
           type: string
           short-summary: Specify the path to the configuration file.
         - name: --dockerfile-only
-          type: string
+          type: bool
           short-summary: Only generate Dockerfile for the Kubernetes deployment.
         - name: --deployment-only
-          type: string
+          type: bool
           short-summary: Only generate deployment files (helm, kustomize, manifests) for the Kubernetes deployment.
+"""
+
+helps['aks draft setup-gh'] = """
+    type: command
+    short-summary: Set up Github OIDC for your application
+    parameters:
+        - name: --app
+          type: string
+          short-summary: Specify the name of the application.
+        - name: --subscription-id
+          type: string
+          short-summary: Specify the Azure subscription ID.
+        - name: --resource-group
+          type: string
+          short-summary: Specify the name of the Azure resource group.
+        - name: --provider
+          type: string
+          short-summary: Specify the cloud provider (default is azure).
+        - name: --gh-repo
+          type: string
+          short-summary: Specify the url to the github repository.
+"""
+
+helps['aks draft generate-workflow'] = """
+    type: command
+    short-summary: Deploy your application on AKS.
+    long-summary: Before running this command, Make sure you have set up Github OIDC for your application. 
+                  You also need to create a resource group, a container registry and a Kubernetes cluster on Azure and
+                  link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
+    parameters:
+        - name: --resource-group
+          type: string
+          short-summary: Specify the name of the Azure resource group.
+        - name: --destination
+          type: string
+          short-summary: Specify the path to the project directory (default is .).
+        - name: --cluster-name
+          type: string
+          short-summary: Specify the AKS cluster name.
+        - name: --registry-name
+          type: string
+          short-summary: Specify the path to the project directory.
+        - name: --container-name
+          type: string
+          short-summary: Specify the name of the container image.
+        - name: --branch
+          type: string
+          short-summary: Specify the Github branch to automatically deploy from.
+"""
+
+helps['aks draft up'] = """
+    type: command
+    short-summary: Set up Github OIDC and deploy your application on AKS.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+                  Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
+                  link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
+    parameters:
+        - name: --app
+          type: string
+          short-summary: Specify the name of the application.
+        - name: --subscription-id
+          type: string
+          short-summary: Specify the Azure subscription ID.
+        - name: --resource-group
+          type: string
+          short-summary: Specify the name of the Azure resource group.
+        - name: --provider
+          type: string
+          short-summary: Specify the cloud provider (default is azure).
+        - name: --gh-repo
+          type: string
+          short-summary: Specify the url to the github repository.
+        - name: --cluster-name
+          type: string
+          short-summary: Specify the AKS cluster name.
+        - name: --registry-name
+          type: string
+          short-summary: Specify the path to the project directory.
+        - name: --container-name
+          type: string
+          short-summary: Specify the name of the container image.
+        - name: --destination
+          type: string
+          short-summary: Specify the path to the project directory (default is .).
+        - name: --branch
+          type: string
+          short-summary: Specify the Github branch to automatically deploy from.
+"""
+
+helps['aks draft update'] = """
+    type: command
+    short-summary: Update your application to be internet accessible.
+    long-summary: This command automatically updates your yaml files as necessary so that your
+                  application will be able to receive external requests.
+    parameters:
+        - name: --host
+          type: string
+          short-summary: Specify the host of the ingress resource.
+        - name: --certificate
+          type: string
+          short-summary: Specify the URI of the Keyvault certificate to present.
+        - name: --destination
+          type: string
+          short-summary: Specify the path to the project directory (default is .).
 """

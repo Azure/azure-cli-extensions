@@ -35,11 +35,97 @@ def aks_draft_cmd_create(destination: str,
         raise ValueError('`az aks draft create` was NOT executed successfully')
 
 
-def _pre_run(**kwargs) -> Tuple[str, List[str]]:
+# `az aks draft setup-gh` function
+def aks_draft_cmd_setup_gh(app: str,
+                           subscription_id: str,
+                           resource_group: str,
+                           provider: str,
+                           gh_repo: str) -> None:
+    file_path, arguments = _pre_run(app=app,
+                                    subscription_id=subscription_id,
+                                    resource_group=resource_group,
+                                    provider=provider,
+                                    gh_repo=gh_repo)
+    run_successful = _run(file_path, 'setup-gh', arguments)
+    if run_successful:
+        _run_finish()
+    else:
+        raise ValueError('`az aks draft setup-gh` was NOT executed successfully')
+
+
+# `az aks draft generate-workflow` function
+def aks_draft_cmd_generate_workflow(cluster_name: str,
+                                    registry_name: str,
+                                    container_name: str,
+                                    resource_group: str,
+                                    destination: str,
+                                    branch: str) -> None:
+    file_path, arguments = _pre_run(cluster_name=cluster_name,
+                                    registry_name=registry_name,
+                                    container_name=container_name,
+                                    resource_group=resource_group,
+                                    destination=destination,
+                                    branch=branch)
+    run_successful = _run(file_path, 'generate-workflow', arguments)
+    if run_successful:
+        _run_finish()
+    else:
+        raise ValueError('`az aks draft generate-workflow` was NOT executed successfully')
+
+
+# `az aks draft up` function
+def aks_draft_cmd_up(app: str,
+                     subscription_id: str,
+                     resource_group: str,
+                     provider: str,
+                     gh_repo: str,
+                     cluster_name: str,
+                     registry_name: str,
+                     container_name: str,
+                     destination: str,
+                     branch: str) -> None:
     file_path = _binary_pre_check()
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
+    setup_gh_args = _build_args(app=app,
+                                subscription_id=subscription_id,
+                                resource_group=resource_group,
+                                provider=provider,
+                                gh_repo=gh_repo)
+
+    run_successful = _run(file_path, 'setup-gh', setup_gh_args)
+    if not run_successful:
+        raise ValueError('`az aks draft setup-gh` was NOT executed successfully')
+
+    generate_workflow_args = _build_args(cluster_name=cluster_name,
+                                         registry_name=registry_name,
+                                         container_name=container_name,
+                                         resource_group=resource_group,
+                                         destination=destination,
+                                         branch=branch)
+    run_successful = _run(file_path, 'generate-workflow', generate_workflow_args)
+    if run_successful:
+        _run_finish()
+    else:
+        raise ValueError('`az aks draft generate-workflow` was NOT executed successfully')
+
+
+# `az aks draft update` function
+def aks_draft_cmd_update(host: str, certificate: str, destination: str) -> None:
+    file_path, arguments = _pre_run(host=host, certificate=certificate, destination=destination)
+    run_successful = _run(file_path, 'update', arguments)
+    if run_successful:
+        _run_finish()
+    else:
+        raise ValueError('`az aks draft update` was NOT executed successfully')
+
+
+# Returns binary file path and arguments 
+def _pre_run(**kwargs) -> Tuple[str, List[str]]:
+    file_path = _binary_pre_check()
+    if not file_path:
+        raise ValueError('Binary check was NOT executed successfully')
     arguments = _build_args(kwargs)
     return file_path, arguments
 
@@ -63,10 +149,11 @@ def _run_finish():
     logging.info('Finished running Draft command')
 
 
-# Returns a list of arguments following the format `--arg=value`
-def _build_args(kwargs: Dict[str, str]) -> List[str]:
+def _build_args(args_dict: Dict[str, str]=None, **kwargs) -> List[str]: 
+    if not args_dict:
+        args_dict = kwargs
     args_list = []
-    for key, val in kwargs.items():
+    for key, val in args_dict.items():
         arg = key.replace('_', '-')
         if val:
             args_list.append(f'--{arg}={val}')
