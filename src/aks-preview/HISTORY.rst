@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.72
+++++++
+
+* Add support for web application routing.
+
 0.5.71
 ++++++
 
