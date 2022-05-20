@@ -1456,7 +1456,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--nodepool-name {node_pool_name} -c 1 ' \
                      '--ssh-key-value={ssh_key_value} ' \
                      '--disable-custom-ca-trust'
-        self.cmd(create_cmd, checks=[
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].enableCustomCATrust', 'False')
         ])
