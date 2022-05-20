@@ -86,6 +86,7 @@ CONST_NETWORK_PLUGIN_NONE = "none"
 # consts for addons
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
+CONST_WEB_APPLICATION_ROUTING_ADDON_NAME = "webApplicationRouting"
 
 # monitoring
 CONST_MONITORING_ADDON_NAME = "omsagent"
@@ -136,7 +137,8 @@ ADDONS = {
     "confcom": CONST_CONFCOM_ADDON_NAME,
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     'azure-keyvault-secrets-provider': CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-    'gitops': CONST_GITOPS_ADDON_NAME
+    'gitops': CONST_GITOPS_ADDON_NAME,
+    'web_application_routing': CONST_WEB_APPLICATION_ROUTING_ADDON_NAME
 }
 
 ADDONS_DESCRIPTIONS = {

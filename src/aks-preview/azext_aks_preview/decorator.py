@@ -95,7 +95,8 @@ ManagedClusterAPIServerAccessProfile = TypeVar('ManagedClusterAPIServerAccessPro
 Snapshot = TypeVar("Snapshot")
 ManagedClusterSnapshot = TypeVar("ManagedClusterSnapshot")
 AzureKeyVaultKms = TypeVar('AzureKeyVaultKms')
-
+ManagedClusterIngressProfile = TypeVar('ManagedClusterIngressProfile')
+ManagedClusterIngressProfileWebAppRouting = TypeVar('ManagedClusterIngressProfileWebAppRouting')
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
 class AKSPreviewModels(AKSModels):
@@ -139,6 +140,16 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterSecurityProfile = self.__cmd.get_models(
             "ManagedClusterSecurityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfileWebAppRouting = self.__cmd.get_models(
+            "ManagedClusterIngressProfileWebAppRouting",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterIngressProfile = self.__cmd.get_models(
+            "ManagedClusterIngressProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -896,7 +907,8 @@ class AKSPreviewContext(AKSContext):
         """
         from azext_aks_preview._consts import (
             ADDONS, CONST_GITOPS_ADDON_NAME,
-            CONST_MONITORING_USING_AAD_MSI_AUTH)
+            CONST_MONITORING_USING_AAD_MSI_AUTH,
+            CONST_WEB_APPLICATION_ROUTING_ADDON_NAME)
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
@@ -904,6 +916,7 @@ class AKSPreviewContext(AKSContext):
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
         ] = CONST_MONITORING_USING_AAD_MSI_AUTH
+        addon_consts["CONST_WEB_APPLICATION_ROUTING_ADDON_NAME"] = CONST_WEB_APPLICATION_ROUTING_ADDON_NAME
         return addon_consts
 
     def get_appgw_subnet_prefix(self) -> Union[str, None]:
@@ -1853,6 +1866,26 @@ class AKSPreviewContext(AKSContext):
 
         return profile
 
+    def get_web_app_routing_profile(self) -> Optional[ManagedClusterIngressProfileWebAppRouting]:
+        """Obtrain the value of ingress_profile.web_app_routing.
+
+        :return: Optional[ManagedClusterIngressProfileWebAppRouting]
+        """
+        dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
+
+        profile = self.models.ManagedClusterIngressProfileWebAppRouting()
+        profile.enabled = True
+        if self.decorator_mode == DecoratorMode.CREATE:
+            profile.enabled = True
+        elif self.decorator_mode == DecoratorMode.UPDATE:
+            if self.mc.ingress_profile is not None and self.mc.ingress_profile.web_app_routing is not None:
+                profile = self.mc.ingress_profile.web_app_routing
+        
+        if dns_zone_resource_id is not None:
+            profile.dns_zone_resource_id = dns_zone_resource_id
+
+        return profile
+
     def get_crg_id(self) -> str:
         """Obtain the values of crg_id.
 
@@ -2446,6 +2479,23 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         return mc
 
+    def set_up_web_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up web app routing for the IngressProfile of the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        profile = self.context.get_web_app_routing_profile()
+        if profile is None:
+            if mc.ingress_profile is not None:
+                mc.ingress_profile.web_app_routing = None
+            return mc
+
+        if mc.ingress_profile is None:
+            mc.ingress_profile = self.models.ManagedClusterIngressProfile()
+        mc.ingress_profile.web_app_routing = profile
+
+        return mc
+
     def set_up_azure_keyvault_kms(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile azureKeyVaultKms for the ManagedCluster object.
 
@@ -2507,6 +2557,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
 
         mc = self.set_up_storage_profile(mc)
+        mc = self.set_up_web_app_routing_profile(mc)
 
         return mc
 
