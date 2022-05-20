@@ -159,7 +159,7 @@ def load_command_table(self, _):
                             deprecate_info=g.deprecate(redirect='az spring app logs', hide=True),
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
-        
+
     with self.command_group('spring app', custom_command_type=app_command, client_factory=cf_spring_20220501preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
