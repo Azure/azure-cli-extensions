@@ -86,6 +86,98 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp exec'] = """
+    type: command
+    short-summary: Open an SSH-like interactive shell within a container app replica
+    examples:
+    - name: exec into a container app
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup
+    - name: exec into a particular container app replica and revision
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
+    - name: open a bash shell in a containerapp
+      text: |
+          az containerapp exec -n MyContainerapp -g MyResourceGroup --command bash
+"""
+
+helps['containerapp browse'] = """
+    type: command
+    short-summary: Open a containerapp in the browser, if possible
+    examples:
+    - name: open a containerapp in the browser
+      text: |
+          az containerapp browse -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp up'] = """
+    type: command
+    short-summary: Create or update a container app as well as any associated resources (ACR, resource group, container apps environment, GitHub Actions, etc.)
+    examples:
+    - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
+      text: |
+          az containerapp up -n MyContainerapp --repo https://github.com/myAccount/myRepo
+    - name: Create a container app from a dockerfile in a local directory
+      text: |
+          az containerapp up -n MyContainerapp --source .
+    - name: Create a container app from an image in a registry
+      text: |
+          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag
+    - name: Create a container app from an image in a registry with ingress enabled and a specified environment
+      text: |
+          az containerapp up -n MyContainerapp --image myregistry.azurecr.io/myImage:myTag --ingress external --target-port 80 --environment MyEnv
+"""
+
+helps['containerapp logs'] = """
+    type: group
+    short-summary: Show container app logs
+"""
+
+helps['containerapp logs show'] = """
+    type: command
+    short-summary: Show past logs and/or print logs in real time (with the --follow parameter). Note that the logs are only taken from one revision, replica, and container.
+    examples:
+    - name: Fetch the past 20 lines of logs from an app and return
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup
+    - name: Fetch 30 lines of past logs logs from an app and print logs as they come in
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --follow --tail 30
+    - name: Fetch logs for a particular revision, replica, and container
+      text: |
+          az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
+"""
+
+# Replica Commands
+helps['containerapp replica'] = """
+    type: group
+    short-summary: Manage container app replicas
+"""
+
+helps['containerapp replica list'] = """
+    type: command
+    short-summary: List a container app revision's replica
+    examples:
+    - name: List a container app's replicas in the latest revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup
+    - name: List a container app's replicas in a particular revision
+      text: |
+          az containerapp replica list -n MyContainerapp -g MyResourceGroup --revision MyRevision
+"""
+
+helps['containerapp replica show'] = """
+    type: command
+    short-summary: Show a container app replica
+    examples:
+    - name: Show a replica from the latest revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica
+    - name: Show a replica from the a particular revision
+      text: |
+          az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
+"""
+
 # Revision Commands
 helps['containerapp revision'] = """
     type: group
@@ -169,6 +261,32 @@ helps['containerapp revision copy'] = """
     - name: Create a revision based on a previous revision.
       text: |
           az containerapp revision copy -n MyContainerapp -g MyResourceGroup --cpu 0.75 --memory 1.5Gi
+"""
+
+helps['containerapp revision label'] = """
+    type: group
+    short-summary: Manage revision labels assigned to traffic weights.
+"""
+
+helps['containerapp revision label add'] = """
+    type: command
+    short-summary: Set a revision label to a revision with an associated traffic weight.
+    examples:
+    - name: Add a label to the latest revision.
+      text: |
+          az containerapp revision label add -n MyContainerapp -g MyResourceGroup --label myLabel --revision latest
+    - name: Add a label to a previous revision.
+      text: |
+          az containerapp revision label add -g MyResourceGroup --label myLabel --revision revisionName
+"""
+
+helps['containerapp revision label remove'] = """
+    type: command
+    short-summary: Remove a revision label from a revision with an associated traffic weight.
+    examples:
+    - name: Remove a label.
+      text: |
+          az containerapp revision label remove -n MyContainerapp -g MyResourceGroup --label myLabel
 """
 
 # Environment Commands
@@ -263,6 +381,48 @@ helps['containerapp env dapr-component remove'] = """
       text: |
           az containerapp env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyEnvironment
 """
+
+helps['containerapp env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps environment.
+"""
+
+helps['containerapp env storage list'] = """
+    type: command
+    short-summary: List the storages for an environment.
+    examples:
+    - name: List the storages for an environment.
+      text: |
+          az containerapp env storage list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp env storage show -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
+helps['containerapp env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+"""
+
+helps['containerapp env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from an environment.
+    examples:
+    - name: Remove a storage from a Container Apps environment.
+      text: |
+          az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
+"""
+
 
 # Identity Commands
 helps['containerapp identity'] = """
@@ -367,12 +527,18 @@ helps['containerapp ingress traffic set'] = """
     type: command
     short-summary: Configure traffic-splitting for a container app.
     examples:
-    - name: Route 100%% of a container app's traffic to its latest revision.
+    - name: Route 100% of a container app's traffic to its latest revision.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=100
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=100
     - name: Split a container app's traffic between two revisions.
       text: |
-          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --traffic-weight latest=80 MyRevisionName=20
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 MyRevisionName=20
+    - name: Split a container app's traffic between two labels.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --label-weight myLabel=80 myLabel2=20
+    - name: Split a container app's traffic between a label and a revision.
+      text: |
+          az containerapp ingress traffic set -n MyContainerapp -g MyResourceGroup --revision-weight latest=80 --label-weight myLabel=20
 """
 
 helps['containerapp ingress traffic show'] = """
@@ -479,7 +645,7 @@ helps['containerapp github-action'] = """
 
 helps['containerapp github-action add'] = """
     type: command
-    short-summary: Add a Github Actions workflow to a repository to deploy a container app.
+    short-summary: Add a GitHub Actions workflow to a repository to deploy a container app.
     examples:
     - name: Add GitHub Actions, using Azure Container Registry and personal access token.
       text: az containerapp github-action add -g MyResourceGroup -n MyContainerapp --repo-url https://github.com/userid/repo --branch main

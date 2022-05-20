@@ -78,7 +78,7 @@ def load_arguments(self, _):
                         'allowing them to be recovered within retention time.')
         c.argument('publisher_uri', help='Community gallery publisher uri.')
         c.argument('publisher_contact', options_list=['--publisher-email'], help='Community gallery publisher contact email.')
-        c.argument('eula', help='Community gallery publisher eula.')
+        c.argument('eula', help='community gallery license agreement and privacy statement.')
         c.argument('public_name_prefix', help='Community gallery public name prefix.')
 
     with self.argument_context('sig share enable-community') as c:

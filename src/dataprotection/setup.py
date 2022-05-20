@@ -30,7 +30,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ["azure-mgmt-resourcegraph"]
+DEPENDENCIES = []
 
 try:
     from azext_dataprotection.manual.dependency import DEPENDENCIES

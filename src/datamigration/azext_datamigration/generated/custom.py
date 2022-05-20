@@ -12,6 +12,87 @@
 from azure.cli.core.util import sdk_no_wait
 
 
+def datamigration_sql_db_show(client,
+                              resource_group_name,
+                              sqldb_instance_name,
+                              target_db_name,
+                              migration_operation_id=None,
+                              expand=None):
+    return client.get(resource_group_name=resource_group_name,
+                      sql_db_instance_name=sqldb_instance_name,
+                      target_db_name=target_db_name,
+                      migration_operation_id=migration_operation_id,
+                      expand=expand)
+
+
+def datamigration_sql_db_create(client,
+                                resource_group_name,
+                                sqldb_instance_name,
+                                target_db_name,
+                                scope=None,
+                                source_sql_connection=None,
+                                source_database_name=None,
+                                migration_service=None,
+                                target_db_collation=None,
+                                target_sql_connection=None,
+                                table_list=None,
+                                no_wait=False):
+    parameters = {}
+    parameters['properties'] = {}
+    if scope is not None:
+        parameters['properties']['scope'] = scope
+    if source_sql_connection is not None:
+        parameters['properties']['source_sql_connection'] = source_sql_connection
+    if source_database_name is not None:
+        parameters['properties']['source_database_name'] = source_database_name
+    if migration_service is not None:
+        parameters['properties']['migration_service'] = migration_service
+    if target_db_collation is not None:
+        parameters['properties']['target_database_collation'] = target_db_collation
+    if target_sql_connection is not None:
+        parameters['properties']['target_sql_connection'] = target_sql_connection
+    if table_list is not None:
+        parameters['properties']['table_list'] = table_list
+    if len(parameters['properties']) == 0:
+        del parameters['properties']
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       sql_db_instance_name=sqldb_instance_name,
+                       target_db_name=target_db_name,
+                       parameters=parameters)
+
+
+def datamigration_sql_db_delete(client,
+                                resource_group_name,
+                                sqldb_instance_name,
+                                target_db_name,
+                                force=None,
+                                no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       sql_db_instance_name=sqldb_instance_name,
+                       target_db_name=target_db_name,
+                       force=force)
+
+
+def datamigration_sql_db_cancel(client,
+                                resource_group_name,
+                                sqldb_instance_name,
+                                target_db_name,
+                                migration_operation_id,
+                                no_wait=False):
+    parameters = {}
+    parameters['migration_operation_id'] = migration_operation_id
+    return sdk_no_wait(no_wait,
+                       client.begin_cancel,
+                       resource_group_name=resource_group_name,
+                       sql_db_instance_name=sqldb_instance_name,
+                       target_db_name=target_db_name,
+                       parameters=parameters)
+
+
 def datamigration_sql_managed_instance_show(client,
                                             resource_group_name,
                                             managed_instance_name,
@@ -33,9 +114,7 @@ def datamigration_sql_managed_instance_create(client,
                                               source_sql_connection=None,
                                               source_database_name=None,
                                               migration_service=None,
-                                              migration_operation_id=None,
                                               target_db_collation=None,
-                                              provisioning_error=None,
                                               offline_configuration=None,
                                               source_location=None,
                                               target_location=None,
@@ -50,12 +129,8 @@ def datamigration_sql_managed_instance_create(client,
         parameters['properties']['source_database_name'] = source_database_name
     if migration_service is not None:
         parameters['properties']['migration_service'] = migration_service
-    if migration_operation_id is not None:
-        parameters['properties']['migration_operation_id'] = migration_operation_id
     if target_db_collation is not None:
         parameters['properties']['target_database_collation'] = target_db_collation
-    if provisioning_error is not None:
-        parameters['properties']['provisioning_error'] = provisioning_error
     if offline_configuration is not None:
         parameters['properties']['offline_configuration'] = offline_configuration
     parameters['properties']['backup_configuration'] = {}
@@ -77,11 +152,10 @@ def datamigration_sql_managed_instance_cancel(client,
                                               resource_group_name,
                                               managed_instance_name,
                                               target_db_name,
-                                              migration_operation_id=None,
+                                              migration_operation_id,
                                               no_wait=False):
     parameters = {}
-    if migration_operation_id is not None:
-        parameters['migration_operation_id'] = migration_operation_id
+    parameters['migration_operation_id'] = migration_operation_id
     return sdk_no_wait(no_wait,
                        client.begin_cancel,
                        resource_group_name=resource_group_name,
@@ -94,11 +168,10 @@ def datamigration_sql_managed_instance_cutover(client,
                                                resource_group_name,
                                                managed_instance_name,
                                                target_db_name,
-                                               migration_operation_id=None,
+                                               migration_operation_id,
                                                no_wait=False):
     parameters = {}
-    if migration_operation_id is not None:
-        parameters['migration_operation_id'] = migration_operation_id
+    parameters['migration_operation_id'] = migration_operation_id
     return sdk_no_wait(no_wait,
                        client.begin_cutover,
                        resource_group_name=resource_group_name,
@@ -128,9 +201,7 @@ def datamigration_sql_vm_create(client,
                                 source_sql_connection=None,
                                 source_database_name=None,
                                 migration_service=None,
-                                migration_operation_id=None,
                                 target_db_collation=None,
-                                provisioning_error=None,
                                 offline_configuration=None,
                                 source_location=None,
                                 target_location=None,
@@ -145,12 +216,8 @@ def datamigration_sql_vm_create(client,
         parameters['properties']['source_database_name'] = source_database_name
     if migration_service is not None:
         parameters['properties']['migration_service'] = migration_service
-    if migration_operation_id is not None:
-        parameters['properties']['migration_operation_id'] = migration_operation_id
     if target_db_collation is not None:
         parameters['properties']['target_database_collation'] = target_db_collation
-    if provisioning_error is not None:
-        parameters['properties']['provisioning_error'] = provisioning_error
     if offline_configuration is not None:
         parameters['properties']['offline_configuration'] = offline_configuration
     parameters['properties']['backup_configuration'] = {}
@@ -172,11 +239,10 @@ def datamigration_sql_vm_cancel(client,
                                 resource_group_name,
                                 sql_vm_name,
                                 target_db_name,
-                                migration_operation_id=None,
+                                migration_operation_id,
                                 no_wait=False):
     parameters = {}
-    if migration_operation_id is not None:
-        parameters['migration_operation_id'] = migration_operation_id
+    parameters['migration_operation_id'] = migration_operation_id
     return sdk_no_wait(no_wait,
                        client.begin_cancel,
                        resource_group_name=resource_group_name,
@@ -189,11 +255,10 @@ def datamigration_sql_vm_cutover(client,
                                  resource_group_name,
                                  sql_vm_name,
                                  target_db_name,
-                                 migration_operation_id=None,
+                                 migration_operation_id,
                                  no_wait=False):
     parameters = {}
-    if migration_operation_id is not None:
-        parameters['migration_operation_id'] = migration_operation_id
+    parameters['migration_operation_id'] = migration_operation_id
     return sdk_no_wait(no_wait,
                        client.begin_cutover,
                        resource_group_name=resource_group_name,

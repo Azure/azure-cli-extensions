@@ -41,6 +41,8 @@ name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
 env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
+build_env_type = CLIArgumentType(
+    validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
 sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise']), help='Name of SKU. Enterprise is still in Preview.')
@@ -307,7 +309,8 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app create', 'spring-cloud app update']:
         with self.argument_context(scope) as c:
-            c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
+            c.argument('enable_persistent_storage',
+                       arg_type=get_three_state_flag(),
                        help='If true, mount a 50G (Standard Pricing tier) or 1G (Basic Pricing tier) disk with default path.')
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
@@ -365,7 +368,7 @@ def load_arguments(self, _):
             c.argument(
                 'container_args', help='The arguments of the container image.', nargs='*', arg_group='Custom Container')
             c.argument(
-                'build_env', help='The key-value pairs of env used in build phase.', validator=validate_build_env)
+                'build_env', build_env_type)
 
     with self.argument_context('spring-cloud app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
