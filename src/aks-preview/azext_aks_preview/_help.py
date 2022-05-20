@@ -757,7 +757,7 @@ helps['aks update'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
-        - name: --disable-custom-ca-trust --dcat
+        - name: --dcat --disable-custom-ca-trust
           type: bool
           short-summary: Disable Custom CA Trust on agent node pool.
     examples:
@@ -1227,7 +1227,7 @@ helps['aks nodepool update'] = """
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
-        - name: --disable-custom-ca-trust --dcat
+        - name: --dcat --disable-custom-ca-trust
           type: bool
           short-summary: Disable Custom CA Trust on agent node pool.
     examples:
