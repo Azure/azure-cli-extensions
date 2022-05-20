@@ -133,7 +133,7 @@ def load_command_table(self, _):
         g.custom_command('disable', 'disable_dapr', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth') as g:
-        g.custom_show_command('show', 'show_auth_config', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_auth_config')
         g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth microsoft') as g:
@@ -146,7 +146,7 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp auth github') as g:
         g.custom_show_command('show', 'get_github_settings')
-        g.custom_command('update', 'update_github_settings')
+        g.custom_command('update', 'update_github_settings', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp auth google') as g:
         g.custom_show_command('show', 'get_google_settings')

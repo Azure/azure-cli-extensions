@@ -2705,8 +2705,11 @@ def update_aad_settings(cmd, resource_group_name, name,
             client_secret_certificate_issuer is not None):
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_aad_settings(cmd, resource_group_name, name):
@@ -2790,8 +2793,11 @@ def update_facebook_settings(cmd, resource_group_name, name,
     if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
         existing_auth["identityProviders"]["facebook"]["registration"] = registration
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["facebook"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["facebook"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_github_settings(cmd, resource_group_name, name):
@@ -2860,8 +2866,11 @@ def update_github_settings(cmd, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["gitHub"]["registration"] = registration
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["gitHub"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["gitHub"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_google_settings(cmd, resource_group_name, name):
@@ -2937,8 +2946,11 @@ def update_google_settings(cmd, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["google"]["registration"] = registration
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["google"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["google"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_twitter_settings(cmd, resource_group_name, name):
@@ -3001,8 +3013,11 @@ def update_twitter_settings(cmd, resource_group_name, name,
         set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True, disable_max_length=True)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["twitter"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["twitter"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_apple_settings(cmd, resource_group_name, name):
@@ -3071,8 +3086,11 @@ def update_apple_settings(cmd, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["apple"]["registration"] = registration
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
-    return updated_auth_settings["identityProviders"]["apple"]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
+        return updated_auth_settings["identityProviders"]["apple"]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
@@ -3152,8 +3170,11 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
 
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
-    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
+        return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name,
@@ -3227,8 +3248,11 @@ def update_openid_connect_provider_settings(cmd, resource_group_name, name, prov
         custom_open_id_connect_providers[provider_name]["registration"] = registration
     auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
 
-    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
-    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    try:
+        updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
+        return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def remove_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
@@ -3247,8 +3271,11 @@ def remove_openid_connect_provider_settings(cmd, resource_group_name, name, prov
         raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                                  'has not been configured: ' + provider_name)
     auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
-    AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)
-    return {}
+    try:
+        AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)
+        return {}
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
@@ -3309,8 +3336,10 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
                                                           proxy_custom_proto_header)
-
-    return AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)
+    try:
+        return AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def show_auth_config(cmd, resource_group_name, name):
