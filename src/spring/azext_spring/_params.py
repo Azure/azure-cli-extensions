@@ -373,9 +373,9 @@ def load_arguments(self, _):
             c.argument(
                 'build_env', build_env_type)
             c.argument(
-                'build_cpu', arg_type=build_cpu_type)
+                'build_cpu', arg_type=build_cpu_type, default="1")
             c.argument(
-                'build_memory', arg_type=build_memory_type)
+                'build_memory', arg_type=build_memory_type, default="2Gi")
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
