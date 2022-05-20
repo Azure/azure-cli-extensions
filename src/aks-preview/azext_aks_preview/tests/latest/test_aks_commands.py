@@ -4063,6 +4063,30 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('storageProfile.snapshotController.enabled', False),
         ])
 
+        create_cmd_default_disk_driver = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
+                        --disable-file-driver \
+                        --disable-snapshot-controller'
+        self.cmd(create_cmd_default_disk_driver, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.diskCsiDriver.version', "v1"),
+            self.check('storageProfile.fileCsiDriver.enabled', False),
+            self.check('storageProfile.snapshotController.enabled', False),
+        ])
+
+
+        create_cmd_disk_driver_version = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
+                        --azuredisk-csi-version=v2 \
+                        --disable-file-driver \
+                        --disable-snapshot-controller'
+        self.cmd(create_cmd_disk_driver_version, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.diskCsiDriver.version', "v2"),
+            self.check('storageProfile.fileCsiDriver.enabled', False),
+            self.check('storageProfile.snapshotController.enabled', False),
+        ])
+
         # check standard reconcile scenario
         update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
         self.cmd(update_cmd
@@ -4080,6 +4104,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(enable_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.diskCSIDriver.version', "v1"),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
+        ])
+
+        enable_cmd_disk_driver_version = 'aks update --resource-group={resource_group} --name={name} -o json \
+                        --enable-disk-driver \
+                        --azuredisk-csi-version "v2" \
+                        --enable-file-driver \
+                        --enable-snapshot-controller'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.diskCsiDriver.version', "v2"),
             self.check('storageProfile.fileCsiDriver.enabled', True),
             self.check('storageProfile.snapshotController.enabled', True),
         ])
