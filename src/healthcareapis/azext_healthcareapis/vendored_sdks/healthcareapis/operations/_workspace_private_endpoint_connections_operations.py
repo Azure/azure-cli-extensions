@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class PrivateEndpointConnectionsOperations(object):
-    """PrivateEndpointConnectionsOperations operations.
+class WorkspacePrivateEndpointConnectionsOperations(object):
+    """WorkspacePrivateEndpointConnectionsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,19 +47,19 @@ class PrivateEndpointConnectionsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_service(
+    def list_by_workspace(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.PrivateEndpointConnectionListResultDescription"]
-        """Lists all private endpoint connections for a service.
+        """Lists all private endpoint connections for a workspace.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateEndpointConnectionListResultDescription or the result of cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.healthcareapis.models.PrivateEndpointConnectionListResultDescription]
@@ -80,11 +80,11 @@ class PrivateEndpointConnectionsOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_service.metadata['url']  # type: ignore
+                url = self.list_by_workspace.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+                    'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -121,22 +121,22 @@ class PrivateEndpointConnectionsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_service.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections'}  # type: ignore
+    list_by_workspace.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         private_endpoint_connection_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.PrivateEndpointConnectionDescription"
-        """Gets the specified private endpoint connection associated with the service.
+        """Gets the specified private endpoint connection associated with the workspace.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource.
         :type private_endpoint_connection_name: str
@@ -158,7 +158,7 @@ class PrivateEndpointConnectionsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
             'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -186,14 +186,14 @@ class PrivateEndpointConnectionsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
 
     def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         private_endpoint_connection_name,  # type: str
-        properties,  # type: "models.PrivateEndpointConnection"
+        properties,  # type: "models.PrivateEndpointConnectionDescription"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.PrivateEndpointConnectionDescription"
@@ -211,7 +211,7 @@ class PrivateEndpointConnectionsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
             'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -226,7 +226,7 @@ class PrivateEndpointConnectionsOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(properties, 'PrivateEndpointConnection')
+        body_content = self._serialize.body(properties, 'PrivateEndpointConnectionDescription')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -243,28 +243,28 @@ class PrivateEndpointConnectionsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         private_endpoint_connection_name,  # type: str
-        properties,  # type: "models.PrivateEndpointConnection"
+        properties,  # type: "models.PrivateEndpointConnectionDescription"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.PrivateEndpointConnectionDescription"]
-        """Update the state of the specified private endpoint connection associated with the service.
+        """Update the state of the specified private endpoint connection associated with the workspace.
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource.
         :type private_endpoint_connection_name: str
         :param properties: The private endpoint connection properties.
-        :type properties: ~azure.mgmt.healthcareapis.models.PrivateEndpointConnection
+        :type properties: ~azure.mgmt.healthcareapis.models.PrivateEndpointConnectionDescription
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -285,7 +285,7 @@ class PrivateEndpointConnectionsOperations(object):
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
-                resource_name=resource_name,
+                workspace_name=workspace_name,
                 private_endpoint_connection_name=private_endpoint_connection_name,
                 properties=properties,
                 cls=lambda x,y,z: x,
@@ -305,7 +305,7 @@ class PrivateEndpointConnectionsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
             'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
         }
 
@@ -321,12 +321,12 @@ class PrivateEndpointConnectionsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         private_endpoint_connection_name,  # type: str
         **kwargs  # type: Any
     ):
@@ -344,7 +344,7 @@ class PrivateEndpointConnectionsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
             'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -369,12 +369,12 @@ class PrivateEndpointConnectionsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
-        resource_name,  # type: str
+        workspace_name,  # type: str
         private_endpoint_connection_name,  # type: str
         **kwargs  # type: Any
     ):
@@ -383,8 +383,8 @@ class PrivateEndpointConnectionsOperations(object):
 
         :param resource_group_name: The name of the resource group that contains the service instance.
         :type resource_group_name: str
-        :param resource_name: The name of the service instance.
-        :type resource_name: str
+        :param workspace_name: The name of workspace resource.
+        :type workspace_name: str
         :param private_endpoint_connection_name: The name of the private endpoint connection associated
          with the Azure resource.
         :type private_endpoint_connection_name: str
@@ -408,7 +408,7 @@ class PrivateEndpointConnectionsOperations(object):
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
-                resource_name=resource_name,
+                workspace_name=workspace_name,
                 private_endpoint_connection_name=private_endpoint_connection_name,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -424,7 +424,7 @@ class PrivateEndpointConnectionsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=24, min_length=3),
+            'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=24, min_length=3),
             'privateEndpointConnectionName': self._serialize.url("private_endpoint_connection_name", private_endpoint_connection_name, 'str'),
         }
 
@@ -440,4 +440,4 @@ class PrivateEndpointConnectionsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/services/{resourceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthcareApis/workspaces/{workspaceName}/privateEndpointConnections/{privateEndpointConnectionName}'}  # type: ignore
