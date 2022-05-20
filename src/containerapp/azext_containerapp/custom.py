@@ -2728,7 +2728,7 @@ def get_facebook_settings(cmd, resource_group_name, name):
         auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
-    if "identityProviders" not in auth_settings():
+    if "identityProviders" not in auth_settings:
         return {}
     if "facebook" not in auth_settings["identityProviders"]:
         return {}
