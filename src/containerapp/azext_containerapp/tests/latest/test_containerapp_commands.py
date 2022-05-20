@@ -289,17 +289,48 @@ class ContainerappIngressTests(ScenarioTest):
 
         pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
         pfx_password = 'test12'
-        hostname = "devtest.{}".format(app["properties"]["configuration"]["ingress"]["fqdn"])
+        verification_id = app["properties"]["customDomainVerificationId"]
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
 
-        from knack.util import CLIError
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp ssl upload -n {} -g {} --environment {} --hostname {} --certificate-file "{}" --password {}'.format(ca_name, resource_group, env_name, hostname, pfx_file, pfx_password), checks=[
-                JMESPathCheck('[0].name', hostname),
-            ])
+        # create an App service domain and update its txt record
+        zone_name = "{}.com".format(env_name)
+        subdomain = "devtest"
+        txt = "asuid.{}".format(subdomain)
+        hostname = "{}.{}".format(subdomain, zone_name)
+        self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt, verification_id)).get_output_in_json()
+
+        self.cmd('containerapp ssl upload -n {} -g {} --environment {} --hostname {} --certificate-file "{}" --password {}'.format(ca_name, resource_group, env_name, hostname, pfx_file, pfx_password), checks=[
+            JMESPathCheck('[0].name', hostname),
+        ])
+
+        cert_id = self.cmd('containerapp hostname list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', hostname),
+            JMESPathCheck('[0].bindingType', "SniEnabled"),
+        ]).get_output_in_json()[0]["certificateId"]
+
+        self.cmd('containerapp hostname delete -g {} -n {} --hostname {} --yes'.format(resource_group, ca_name, hostname), checks=[
+            JMESPathCheck('length(@)', 0),
+        ]).get_output_in_json()
+
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --certificate {}'.format(resource_group, ca_name, hostname, cert_id), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', hostname),
+            JMESPathCheck('[0].bindingType', "SniEnabled"),
+            JMESPathCheck('[0].certificateId', cert_id),
+        ]).get_output_in_json()
 
         self.cmd('containerapp hostname list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(@)', 0),
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', hostname),
+            JMESPathCheck('[0].bindingType', "SniEnabled"),
+            JMESPathCheck('[0].certificateId', cert_id),
         ])
+
+        self.cmd('containerapp hostname delete -g {} -n {} --hostname {} --yes'.format(resource_group, ca_name, hostname), checks=[
+            JMESPathCheck('length(@)', 0),
+        ]).get_output_in_json()
 
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)

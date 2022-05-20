@@ -1224,7 +1224,7 @@ def load_cert_file(file_path, cert_password=None):
             else:
                 raise FileOperationError('Not a valid file type. Only .PFX and .PEM files are supported.')
     except Exception as e:
-        raise CLIInternalError(e)
+        raise CLIInternalError(e) from e
     return blob, thumbprint
 
 
