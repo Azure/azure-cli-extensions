@@ -1429,7 +1429,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
-    def test_custom_ca_trust_flow(self, resource_group):
+    def test_custom_ca_trust_flow(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
         node_pool_name_second = self.create_random_name('c', 6)
