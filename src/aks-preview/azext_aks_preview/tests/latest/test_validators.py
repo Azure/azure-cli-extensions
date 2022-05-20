@@ -107,8 +107,9 @@ class MessageOfTheDayNamespace:
 
 
 class EnableCustomCATrustNamespace:
-    def __init__(self, os_type):
+    def __init__(self, os_type, enable_custom_ca_trust):
         self.os_type = os_type
+        self.enable_custom_ca_trust = enable_custom_ca_trust
 
 
 class TestMaxSurge(unittest.TestCase):
@@ -174,16 +175,16 @@ class TestMessageOfTheday(unittest.TestCase):
 
 class TestEnableCustomCATrust(unittest.TestCase):
     def test_pass_if_os_type_linux(self):
-        validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Linux"))
+        validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Linux", True))
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Windows"))
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Windows", True))
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid"))
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
