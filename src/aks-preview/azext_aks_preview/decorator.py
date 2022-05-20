@@ -1698,8 +1698,8 @@ class AKSPreviewContext(AKSContext):
 
         if not enable_disk_driver and azuredisk_csi_version:
             raise ArgumentUsageError(
-                "Cannot specify --azure-csi-version without "
-                "--enable-disk-driver at the same time.")
+                "The parameter --enable-disk-driver is required when"
+                "--azuredisk-csi-version is specified.")
 
         # Setting default driver as v1 if not mentioned
         if enable_disk_driver and not azuredisk_csi_version:
