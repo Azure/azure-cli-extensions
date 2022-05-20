@@ -215,6 +215,6 @@ class CustomImageTest(ScenarioTest):
         ])
 
         self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green'
-                 + ' --container-image {containerImage}', checks=[
+                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
         ])
