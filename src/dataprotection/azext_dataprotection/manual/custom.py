@@ -631,11 +631,6 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
 
     return restore_request
 
-def hello_world(name=""):
-    if name != "":
-        return "Hello World, I am {}".format(name)
-    else:
-        return "Hello World"
 
 def dataprotection_vault_list_scope_permissions(cmd, client, vault_name, resource_group_name, scope=''):
     if scope == '':
