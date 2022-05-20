@@ -1270,8 +1270,10 @@ def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
 def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
     try:
         app = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-        if location and (app["location"] != location):
-            raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
+        if location:
+            _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
+            if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
+                raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
         if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
         if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
