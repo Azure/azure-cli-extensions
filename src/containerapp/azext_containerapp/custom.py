@@ -28,7 +28,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -2566,7 +2566,7 @@ def remove_storage(cmd, storage_name, name, resource_group_name, no_wait=False):
 
 
 # TODO: Refactor provider code to make it cleaner
-def update_aad_settings(cmd, client, resource_group_name, name,
+def update_aad_settings(cmd, resource_group_name, name,
                         client_id=None, client_secret_setting_name=None,
                         issuer=None, allowed_token_audiences=None, client_secret=None,
                         client_secret_certificate_thumbprint=None,
@@ -2615,7 +2615,7 @@ def update_aad_settings(cmd, client, resource_group_name, name,
     is_new_aad_app = False
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -2705,14 +2705,14 @@ def update_aad_settings(cmd, client, resource_group_name, name,
             client_secret_certificate_issuer is not None):
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
 
 
-def get_aad_settings(client, resource_group_name, name):
+def get_aad_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -2722,10 +2722,10 @@ def get_aad_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["azureActiveDirectory"]
 
 
-def get_facebook_settings(client, resource_group_name, name):
+def get_facebook_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings():
@@ -2735,7 +2735,7 @@ def get_facebook_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["facebook"]
 
 
-def update_facebook_settings(cmd, client, resource_group_name, name,
+def update_facebook_settings(cmd, resource_group_name, name,
                              app_id=None, app_secret_setting_name=None,
                              graph_api_version=None, scopes=None, app_secret=None, yes=False):
     try:
@@ -2755,7 +2755,7 @@ def update_facebook_settings(cmd, client, resource_group_name, name,
 
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -2790,14 +2790,14 @@ def update_facebook_settings(cmd, client, resource_group_name, name,
     if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
         existing_auth["identityProviders"]["facebook"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["facebook"]
 
 
-def get_github_settings(client, resource_group_name, name):
+def get_github_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -2807,7 +2807,7 @@ def get_github_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["gitHub"]
 
 
-def update_github_settings(cmd, client, resource_group_name, name,
+def update_github_settings(cmd, resource_group_name, name,
                            client_id=None, client_secret_setting_name=None,
                            scopes=None, client_secret=None, yes=False):
     try:
@@ -2827,7 +2827,7 @@ def update_github_settings(cmd, client, resource_group_name, name,
 
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -2860,14 +2860,14 @@ def update_github_settings(cmd, client, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["gitHub"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["gitHub"]
 
 
-def get_google_settings(client, resource_group_name, name):
+def get_google_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -2877,7 +2877,7 @@ def get_google_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["google"]
 
 
-def update_google_settings(cmd, client, resource_group_name, name,
+def update_google_settings(cmd, resource_group_name, name,
                            client_id=None, client_secret_setting_name=None,
                            scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):
     try:
@@ -2897,7 +2897,7 @@ def update_google_settings(cmd, client, resource_group_name, name,
 
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -2937,14 +2937,14 @@ def update_google_settings(cmd, client, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["google"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["google"]
 
 
-def get_twitter_settings(client, resource_group_name, name):
+def get_twitter_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -2954,7 +2954,7 @@ def get_twitter_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["twitter"]
 
 
-def update_twitter_settings(cmd, client, resource_group_name, name,
+def update_twitter_settings(cmd, resource_group_name, name,
                             consumer_key=None, consumer_secret_setting_name=None,
                             consumer_secret=None, yes=False):
     try:
@@ -2974,7 +2974,7 @@ def update_twitter_settings(cmd, client, resource_group_name, name,
 
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -3001,14 +3001,14 @@ def update_twitter_settings(cmd, client, resource_group_name, name,
         set_secrets(cmd, name, resource_group_name, secrets=[f"{TWITTER_SECRET_SETTING_NAME}={consumer_secret}"], no_wait=True, disable_max_length=True)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["twitter"]
 
 
-def get_apple_settings(client, resource_group_name, name):
+def get_apple_settings(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -3018,7 +3018,7 @@ def get_apple_settings(client, resource_group_name, name):
     return auth_settings["identityProviders"]["apple"]
 
 
-def update_apple_settings(cmd, client, resource_group_name, name,
+def update_apple_settings(cmd, resource_group_name, name,
                           client_id=None, client_secret_setting_name=None,
                           scopes=None, client_secret=None, yes=False):
     try:
@@ -3038,7 +3038,7 @@ def update_apple_settings(cmd, client, resource_group_name, name,
 
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth = {}
         existing_auth["platform"] = {}
@@ -3071,14 +3071,14 @@ def update_apple_settings(cmd, client, resource_group_name, name,
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         existing_auth["identityProviders"]["apple"]["registration"] = registration
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)["properties"]
     return updated_auth_settings["identityProviders"]["apple"]
 
 
-def get_openid_connect_provider_settings(client, resource_group_name, name, provider_name):
+def get_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -3093,7 +3093,7 @@ def get_openid_connect_provider_settings(client, resource_group_name, name, prov
     return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def add_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
+def add_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name,
                                          client_id=None, client_secret_setting_name=None,
                                          openid_configuration=None, scopes=None,
                                          client_secret=None, yes=False):
@@ -3111,7 +3111,7 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
 
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         auth_settings = {}
         auth_settings["platform"] = {}
@@ -3152,11 +3152,11 @@ def add_openid_connect_provider_settings(cmd, client, resource_group_name, name,
 
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def update_openid_connect_provider_settings(cmd, client, resource_group_name, name, provider_name,
+def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name,
                                             client_id=None, client_secret_setting_name=None,
                                             openid_configuration=None, scopes=None,
                                             client_secret=None, yes=False):
@@ -3174,7 +3174,7 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
 
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         auth_settings = {}
         auth_settings["platform"] = {}
@@ -3227,14 +3227,14 @@ def update_openid_connect_provider_settings(cmd, client, resource_group_name, na
         custom_open_id_connect_providers[provider_name]["registration"] = registration
     auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
 
-    updated_auth_settings = client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()["properties"]
+    updated_auth_settings = AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)["properties"]
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def remove_openid_connect_provider_settings(client, resource_group_name, name, provider_name):
+def remove_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     if "identityProviders" not in auth_settings:
@@ -3247,11 +3247,11 @@ def remove_openid_connect_provider_settings(client, resource_group_name, name, p
         raise ArgumentUsageError('Usage Error: The following custom OpenID Connect provider '
                                  'has not been configured: ' + provider_name)
     auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
-    client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings).serialize()
+    AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=auth_settings)
     return {}
 
 
-def update_auth_config(client, resource_group_name, name, set_string=None, enabled=None,
+def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, enable_token_store=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
@@ -3259,7 +3259,7 @@ def update_auth_config(client, resource_group_name, name, set_string=None, enabl
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
     existing_auth = {}
     try:
-        existing_auth = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         existing_auth["platform"] = {}
         existing_auth["platform"]["enabled"] = True
@@ -3310,13 +3310,13 @@ def update_auth_config(client, resource_group_name, name, set_string=None, enabl
                                                           proxy_convention, proxy_custom_host_header,
                                                           proxy_custom_proto_header)
 
-    return client.create_or_update(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth).serialize()
+    return AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)
 
 
-def show_auth_config(client, resource_group_name, name):
+def show_auth_config(cmd, resource_group_name, name):
     auth_settings = {}
     try:
-        auth_settings = client.get(resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current").serialize()["properties"]
+        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
     except:
         pass
     return auth_settings
