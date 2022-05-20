@@ -40,6 +40,27 @@ def validate_container_app_name(name):
                               f"Please shorten {name}")
 
 
+def poll(timeout_secs, interval_secs, operation_name="operation", poll_until=None, *args, **kwargs):
+    start = datetime.utcnow()
+    while (datetime.utcnow() - start).seconds < timeout_secs:
+        stop = poll_until(*args, **kwargs)
+        if stop:
+            return
+        time.sleep(interval_secs)
+    raise CLIInternalError(f"Timed out while waiting for {operation_name} to complete")
+
+
+def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
+    try:
+        return operation(*args, **kwargs)
+    except Exception as e:
+        retry_limit -= 1
+        if retry_limit <= 0:
+            raise CLIInternalError(err_txt) from e
+        time.sleep(5)
+        logger.info(f"Encountered error: {e}. Retrying...")
+
+
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
     vnet_client = network_client_factory(cmd.cli_ctx)
@@ -51,17 +72,19 @@ def get_vnet_location(cmd, subnet_resource_id):
 def create_service_principal_for_github_action(cmd, scopes=None, role="contributor"):
     from azure.cli.command_modules.role.custom import (create_application, create_service_principal,
                                                        create_role_assignment, show_service_principal)
-    from azure.cli.command_modules.role._graph_client import GraphClient
+    from azure.cli.command_modules.role.msgrpah._graph_client import GraphClient
+
+    SP_CREATION_ERR_TXT = "Failed to create service principal."
+    RETRY_LIMIT = 36
 
     client = GraphClient(cmd.cli_ctx)
     now = datetime.utcnow()
     app_display_name = 'azure-cli-' + now.strftime('%Y-%m-%d-%H-%M-%S')
-    app = create_application(cmd, client, display_name=app_display_name)
-    sp = create_service_principal(cmd, identifier=app["appId"])
+    app = retry_until_success(create_application, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, client, display_name=app_display_name)
+    sp = retry_until_success(create_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, identifier=app["appId"])
     for scope in scopes:
-        create_role_assignment(cmd, role=role, assignee=sp["id"], scope=scope)
-
-    service_principal = show_service_principal(client, sp["id"])
+        retry_until_success(create_role_assignment, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, role=role, assignee=sp["id"], scope=scope)
+    service_principal = retry_until_success(show_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, sp["id"])
 
     body = {
         "passwordCredential": {
@@ -71,7 +94,7 @@ def create_service_principal_for_github_action(cmd, scopes=None, role="contribut
         }
     }
 
-    add_password_result = client.service_principal_password_add(service_principal["id"], body)
+    add_password_result = retry_until_success(client.service_principal_add_password, SP_CREATION_ERR_TXT, RETRY_LIMIT, service_principal["id"], body)
 
     return {
         'appId': service_principal['appId'],
