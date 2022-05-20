@@ -10,6 +10,7 @@ from msrestazure.azure_exceptions import CloudError
 
 from knack.log import get_logger
 
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
@@ -24,10 +25,11 @@ grafana_endpoints = {}
 
 
 def create_grafana(cmd, resource_group_name, grafana_name,
-                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False, tags=None):
+                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
+                   tags=None, zone_redundancy=None):
     from azure.cli.core.commands.arm import resolve_role_id
-    from azure.cli.core.commands import LongRunningOperation
-    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+    client = cf_amg(cmd.cli_ctx)
     resource = {
         "sku": {
             "name": "standard"
@@ -36,8 +38,12 @@ def create_grafana(cmd, resource_group_name, grafana_name,
         "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
         "tags": tags
     }
-    poller = client.resources.begin_create_or_update(resource_group_name, "Microsoft.Dashboard", "",
-                                                     "grafana", grafana_name, "2021-09-01-preview", resource)
+    resource["properties"] = {
+        "zoneRedundancy": zone_redundancy
+    }
+
+    poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
+    LongRunningOperation(cmd.cli_ctx)(poller)
 
     if skip_role_assignments:
         return poller
@@ -108,6 +114,14 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
             raise
 
 
+def _delete_role_assignment(cli_ctx, principal_id):
+    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION).role_assignments
+    f = f"principalId eq '{principal_id}'"
+    assignments = list(assignments_client.list(filter=f))
+    for a in assignments or []:
+        assignments_client.delete_by_id(a.id)
+
+
 def list_grafana(cmd, resource_group_name=None):
     client = cf_amg(cmd.cli_ctx)
     if resource_group_name:
@@ -121,9 +135,17 @@ def show_grafana(cmd, grafana_name, resource_group_name=None):
 
 
 def delete_grafana(cmd, grafana_name, resource_group_name=None):
-    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-    return client.resources.begin_delete(resource_group_name, "Microsoft.Dashboard",
-                                         "", "grafana", grafana_name, "2021-09-01-preview")
+    client = cf_amg(cmd.cli_ctx)
+    grafana = client.grafana.get(resource_group_name, grafana_name)
+
+    # delete first
+    poller = client.grafana.begin_delete(resource_group_name, grafana_name)
+    LongRunningOperation(cmd.cli_ctx)(poller)
+
+    # delete role assignment
+    logger.warning("Grafana instance of '%s' was delete. Now removing role assignments for associated with its "
+                   "managed identity", grafana_name)
+    _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
 
 def show_dashboard(cmd, grafana_name, uid, resource_group_name=None):

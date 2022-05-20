@@ -87,6 +87,9 @@ def load_command_table(self, _):
         g.custom_command('delete', 'dataprotection_backup_instance_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('adhoc-backup', 'dataprotection_backup_instance_adhoc_backup', supports_no_wait=True)
         g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
+        g.custom_command('resume-protection', 'dataprotection_backup_instance_resume_protection', supports_no_wait=True)
+        g.custom_command('stop-protection', 'dataprotection_backup_instance_stop_protection', supports_no_wait=True)
+        g.custom_command('suspend-backup', 'dataprotection_backup_instance_suspend_backup', supports_no_wait=True)
         g.custom_command(
             'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
         )

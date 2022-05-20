@@ -8,10 +8,10 @@
 def load_arguments(self, _):
 
     from knack.arguments import CLIArgumentType
-    from azure.cli.core.commands.parameters import tags_type, get_three_state_flag
+    from azure.cli.core.commands.parameters import tags_type, get_three_state_flag, get_enum_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
     from ._validators import process_missing_resource_group_parameter
-
+    from azext_amg.vendored_sdks.models import ZoneRedundancy
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
                                         help="Name of the Azure Managed Dashboard for Grafana.",
                                         id_part="name")
@@ -26,6 +26,7 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana create") as c:
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
+        c.argument("zone_redundancy", arg_type=get_enum_type(ZoneRedundancy), help="Indicates whether or not zone redundancy should be enabled. Default: Disabled")
         c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
         c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
 

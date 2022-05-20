@@ -31,7 +31,8 @@ class AddSku(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -58,7 +59,8 @@ class AddSku(argparse.Action):
 class AddTrustedExternalTenants(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddTrustedExternalTenants, self).__call__(parser, namespace, action, option_string)
+        super(AddTrustedExternalTenants, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -67,7 +69,8 @@ class AddTrustedExternalTenants(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -97,7 +100,8 @@ class AddOptimizedAutoscale(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -136,7 +140,8 @@ class AddVirtualNetworkConfiguration(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -154,7 +159,8 @@ class AddVirtualNetworkConfiguration(argparse.Action):
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter virtual-network-configuration. All possible keys are:'
-                    ' subnet-id, engine-public-ip-id, data-management-public-ip-id'.format(k)
+                    ' subnet-id, engine-public-ip-id, data-management-public-ip-id'.format(
+                        k)
                 )
 
         return d
@@ -172,7 +178,8 @@ class AddKeyVaultProperties(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -193,7 +200,8 @@ class AddKeyVaultProperties(argparse.Action):
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter key-vault-properties. All possible keys are:'
-                    ' key-name, key-version, key-vault-uri, user-identity'.format(k)
+                    ' key-name, key-version, key-vault-uri, user-identity'.format(
+                        k)
                 )
 
         return d
@@ -202,7 +210,8 @@ class AddKeyVaultProperties(argparse.Action):
 class AddAcceptedAudiences(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddAcceptedAudiences, self).__call__(parser, namespace, action, option_string)
+        super(AddAcceptedAudiences, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -211,7 +220,8 @@ class AddAcceptedAudiences(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -232,7 +242,8 @@ class AddAcceptedAudiences(argparse._AppendAction):
 class AddClustersValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddClustersValue, self).__call__(parser, namespace, action, option_string)
+        super(AddClustersValue, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -241,7 +252,8 @@ class AddClustersValue(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -271,7 +283,8 @@ class AddReadWriteDatabase(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -309,7 +322,8 @@ class AddReadOnlyFollowingDatabase(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -335,7 +349,8 @@ class AddReadOnlyFollowingDatabase(argparse.Action):
 class AddDatabasesValue(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDatabasesValue, self).__call__(parser, namespace, action, option_string)
+        super(AddDatabasesValue, self).__call__(
+            parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):
         try:
@@ -344,7 +359,8 @@ class AddDatabasesValue(argparse._AppendAction):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -389,7 +405,8 @@ class AddTableLevelSharingProperties(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -437,7 +454,8 @@ class AddPrivateLinkServiceConnectionState(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise CLIError(
+                'usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()

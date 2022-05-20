@@ -24,7 +24,6 @@ from ._validators import (
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
-
     (AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType,
      AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType,
      FirewallPolicyIntrusionDetectionProtocol, AzureFirewallSkuTier) = \
@@ -84,7 +83,7 @@ def load_arguments(self, _):
         c.argument('fqdns', nargs='+', validator=process_threat_intel_allowlist_fqdns, help='Space-separated list of FQDNs.')
 
     for scope in ['network-rule', 'nat-rule']:
-        with self.argument_context('network firewall {}'.format(scope)) as c:
+        with self.argument_context(f'network firewall {scope}') as c:
             c.argument('protocols', arg_type=get_enum_type(AzureFirewallNetworkRuleProtocol), nargs='+', help='Space-separated list of protocols.')
 
     with self.argument_context('network firewall application-rule') as c:
@@ -98,30 +97,30 @@ def load_arguments(self, _):
         {'name': 'application-rule', 'display': 'application rule', 'ref': 'application_rule_collections'},
     ]
     for item in af_sub_subresources:
-        with self.argument_context('network firewall {}'.format(item['name'])) as c:
-            c.argument('item_name', options_list=['--name', '-n'], help='The name of the {}'.format(item['display']), completer=get_af_subresource_completion_list(item['ref']), id_part='child_name_2')
+        with self.argument_context(f'network firewall {item["name"]}') as c:
+            c.argument('item_name', options_list=['--name', '-n'], help=f'The name of the {item["display"]}', completer=get_af_subresource_completion_list(item['ref']), id_part='child_name_2')
             c.argument('collection_name', collection_name_type)
             c.argument('firewall_name', firewall_name_type)
             c.argument('azure_firewall_name', firewall_name_type)
 
-        with self.argument_context('network firewall {} list'.format(item['name'])) as c:
-            c.argument('item_name', options_list=['--name', '-n'], help='The name of the {}'.format(item['display']), completer=get_af_subresource_completion_list(item['ref']), id_part='child_name_2')
+        with self.argument_context(f'network firewall {item["name"]} list') as c:
+            c.argument('item_name', options_list=['--name', '-n'], help=f'The name of the {item["display"]}', completer=get_af_subresource_completion_list(item['ref']), id_part='child_name_2')
             c.argument('firewall_name', firewall_name_type, id_part=None)
 
-        with self.argument_context('network firewall {} create'.format(item['name']), arg_group='Collection') as c:
+        with self.argument_context(f'network firewall {item["name"]} create', arg_group='Collection') as c:
             c.argument('collection_name', collection_name_type, help='Name of the collection to create the rule in. Will create the collection if it does not exist.')
             c.argument('priority', help='Priority of the rule collection from 100 (high) to 65000 (low). Supply only if you want to create the collection.', type=int)
 
-        with self.argument_context('network firewall {} collection'.format(item['name'])) as c:
+        with self.argument_context(f'network firewall {item["name"]} collection') as c:
             c.argument('item_name', collection_name_type)
             c.argument('resource_name', firewall_name_type)
 
-        with self.argument_context('network firewall {} collection list'.format(item['name'])) as c:
+        with self.argument_context(f'network firewall {item["name"]} collection list') as c:
             c.argument('item_name', collection_name_type)
             c.argument('resource_name', firewall_name_type, id_part=None)
 
     for scope in ['network-rule', 'application-rule']:
-        with self.argument_context('network firewall {}'.format(scope), arg_group='Collection') as c:
+        with self.argument_context(f'network firewall {scope}', arg_group='Collection') as c:
             c.argument('action', arg_type=get_enum_type(AzureFirewallRCActionType), help='The action to apply for the rule collection. Supply only if you want to create the collection.')
 
     with self.argument_context('network firewall nat-rule', arg_group='Collection') as c:
@@ -164,6 +163,7 @@ def load_arguments(self, _):
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
         c.argument('sku', arg_type=get_enum_type(FirewallPolicySkuTier), help='SKU of Firewall policy', is_preview=True)
         c.argument('user_assigned_identity', options_list='--identity', help="Name or ID of the ManagedIdentity Resource")
+        c.argument('sql', arg_type=get_three_state_flag(), help='A flag to indicate if SQL Redirect traffic filtering is enabled.', is_preview=True)
 
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
@@ -198,6 +198,9 @@ def load_arguments(self, _):
         c.argument('bypass_rule_destination_ports', options_list=['--rule-dest-ports'], nargs='+', help='Space-separated list of destination ports or ranges')
         c.argument('bypass_rule_source_ip_groups', options_list=['--rule-src-ip-groups'], nargs='+', help='Space-separated list of source IpGroups for this rule')
         c.argument('bypass_rule_destination_ip_groups', options_list=['--rule-dest-ip-groups'], nargs='+', help='Space-separated list of destination IpGroups for this rule')
+
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2021-08-01', arg_group='IDPS Private Ranges') as c:
+        c.argument('private_ranges', nargs='+', options_list=["--private-ranges"], help='Space-separated list of IDPS private ranges')
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')

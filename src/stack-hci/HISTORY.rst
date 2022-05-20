@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Support arc setting management
+* Support extension management
+
+0.1.4
+++++++
+* Add missing help message for `az stack-hci`
+
 0.1.3
 ++++++
 * Fix the issue that listing clusters under subscription doesn't work

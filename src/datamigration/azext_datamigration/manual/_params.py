@@ -11,6 +11,14 @@
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
+from azure.cli.core.commands.parameters import (
+    resource_group_name_type,
+)
+from azext_datamigration.action import (
+    AddSourceSqlConnection,
+    AddTargetSqlConnection
+)
+
 
 def load_arguments(self, _):
 
@@ -27,6 +35,7 @@ def load_arguments(self, _):
         c.argument('static_query_interval', type=int, help='Interval at which to query and persist static configuration data, in seconds.')
         c.argument('number_of_iteration', type=int, help='Number of iterations of performance data collection to perform before persisting to file. For example, with default values, performance data will be persisted every 30 seconds * 20 iterations = 10 minutes. Minimum: 2.')
         c.argument('config_file_path', type=str, help='Path of the ConfigFile')
+        c.argument('time', type=int, help='Time after which the command execution automatically stops, in seconds. If this parameter is not specified manual intervention will be required to stop the command execution.')
 
     with self.argument_context('datamigration get-sku-recommendation') as c:
         c.argument('output_folder', type=str, help='Output folder where performance data of the SQL Server is stored. The value here must be the same as the one used in PerfDataCollection')
@@ -46,3 +55,19 @@ def load_arguments(self, _):
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
         c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
+        c.argument('installed_ir_path', type=str, help='Version folder path in the Integration Runtime installed location. This can be provided when IR is installed but the command is failing to read it. Format: "<Parent-folder-path>\\Microsoft Integration Runtime\\<Version>"')
+
+    with self.argument_context('datamigration sql-db create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('sqldb_instance_name', type=str, help='Name of the target SQL Database Server.')
+        c.argument('target_db_name', type=str, help='The name of the target database.')
+        c.argument('scope', type=str, help='Resource Id of the target resource (SQL VM, SQL Managed Instance or SQL '
+                   'DB)')
+        c.argument('source_sql_connection', action=AddSourceSqlConnection, nargs='+', help='Source SQL Server '
+                   'connection details.')
+        c.argument('source_database_name', type=str, help='Name of the source database.')
+        c.argument('migration_service', type=str, help='Resource Id of the Migration Service.')
+        c.argument('target_db_collation', type=str, help='Database collation to be used for the target database.')
+        c.argument('target_sql_connection', action=AddTargetSqlConnection, nargs='+', help='Target SQL DB connection '
+                   'details.')
+        c.argument('table_list', nargs='+', help='List of tables to copy.')

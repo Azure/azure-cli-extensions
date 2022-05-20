@@ -14,9 +14,16 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_datamigration.generated._client_factory import (
+    cf_database_migration_sqldb,
     cf_database_migration_sqlmi,
     cf_database_migration_sqlvm,
     cf_sqlmigration_service,
+)
+
+
+datamigration_database_migration_sqldb = CliCommandType(
+    operations_tmpl='azext_datamigration.vendored_sdks.datamigration.operations._database_migrations_sql_db_operations#DatabaseMigrationsSqlDbOperations.{}',
+    client_factory=cf_database_migration_sqldb,
 )
 
 
@@ -39,6 +46,15 @@ datamigration_database_migration_sqlvm = CliCommandType(
 
 
 def load_command_table(self, _):
+
+    with self.command_group(
+        'datamigration sql-db', datamigration_database_migration_sqldb, client_factory=cf_database_migration_sqldb
+    ) as g:
+        g.custom_show_command('show', 'datamigration_sql_db_show')
+        g.custom_command('create', 'datamigration_sql_db_create', supports_no_wait=True)
+        g.custom_command('delete', 'datamigration_sql_db_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('cancel', 'datamigration_sql_db_cancel', supports_no_wait=True)
+        g.custom_wait_command('wait', 'datamigration_sql_db_show')
 
     with self.command_group(
         'datamigration sql-managed-instance',
