@@ -2539,7 +2539,7 @@ def create_or_update_storage(cmd, storage_name, resource_group_name, name, azure
         pass
 
     if r:
-        logger.warning("Only AzureFile account can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
 
     storage_def = AzureFilePropertiesModel
     storage_def["accountKey"] = azure_file_account_key

@@ -1253,8 +1253,8 @@ def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_co
 
 
 def get_oidc_client_setting_app_setting_name(provider_name):
-    provider_name_prefix = provider_name.lower()
-    return provider_name_prefix + "-provider-authentication-secret"
+    provider_name_prefix = provider_name.lower()[:10]  # secret names can't be too long
+    return provider_name_prefix + "-authentication-secret"
 
 
 # only accept .pfx or .pem file
