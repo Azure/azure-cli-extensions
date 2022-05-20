@@ -365,6 +365,9 @@ helps['aks create'] = """
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
+        -name: azuredisk-csi-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
@@ -666,6 +669,9 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        -name: azuredisk-csi-version
+          type: string
+          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.

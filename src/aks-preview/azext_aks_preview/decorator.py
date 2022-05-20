@@ -24,6 +24,7 @@ from azure.cli.command_modules.acs.decorator import (
 )
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
+    ArgumentUsageError,
     AzCLIError,
     CLIInternalError,
     InvalidArgumentValueError,
@@ -1684,7 +1685,8 @@ class AKSPreviewContext(AKSContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        if not enable_disk_driver and not disable_disk_driver:
+        azuredisk_csi_version = self.raw_param.get("azuredisk-csi-version")
+        if not enable_disk_driver and not disable_disk_driver and not azuredisk_csi_version:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
 
@@ -1694,15 +1696,30 @@ class AKSPreviewContext(AKSContext):
                 "--disable-disk-driver at the same time."
             )
 
+        if not enable_disk_driver and azuredisk_csi_version:
+            raise ArgumentUsageError(
+                "Cannot specify --azure-csi-version without "
+                "--enable-disk-driver at the same time.")
+
+        # Setting default driver as v1 if not mentioned
+        if enable_disk_driver and not azuredisk_csi_version:
+            azuredisk_csi_version = "v1"
+
+        if not (azuredisk_csi_version == "v1" or azuredisk_csi_version == "v2"):
+            raise InvalidArgumentValueError(
+                "Valid values for --azuredisk-csi-version are v1 and v2")
+
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
+                profile.version = azuredisk_csi_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
+                profile.version = azuredisk_csi_version
             elif disable_disk_driver:
                 profile.enabled = False
 
