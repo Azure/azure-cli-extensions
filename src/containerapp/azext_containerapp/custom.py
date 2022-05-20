@@ -59,8 +59,8 @@ from ._utils import (_validate_subscription_registered, _get_location_from_resou
                      _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                      validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
-                     generate_randomized_cert_name, _get_name, _update_weights, get_vnet_location, load_cert_file,
-                     check_cert_name_availability, validate_hostname, patch_new_custom_domain, get_custom_domains)
+                     generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
+                     validate_hostname, patch_new_custom_domain, get_custom_domains)
 
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
