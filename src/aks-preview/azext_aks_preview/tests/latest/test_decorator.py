@@ -605,7 +605,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.assertEqual(ctx_1.get_disable_custom_ca_trust(), None)
         agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
             name="test_nodepool_name",
-            disable_custom_ca_trust=True,
+            enable_custom_ca_trust=True,
         )
         mc = self.models.ManagedCluster(
             location="test_location", agent_pool_profiles=[agent_pool_profile]
