@@ -592,4 +592,4 @@ def validate_enable_custom_ca_trust(namespace):
     if namespace.enable_custom_ca_trust is not None and namespace.enable_custom_ca_trust:
         if namespace.os_type is not None and namespace.os_type != "Linux":
             raise ArgumentUsageError(
-                '--enable_custom_ca_trust can only be set for linux nodepools')
+                '--enable_custom_ca_trust can only be set for Linux nodepools')
