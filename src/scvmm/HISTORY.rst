@@ -26,3 +26,8 @@ Release History
 * Force and retain flags in VM delete
 * Generated SDK now requires updated version of azure-cli
 * Long running PATCH operations
+
+0.1.5
++++
+* Requesting VMMServer credentials from the user until they are empty.
+* Removing default value for port. Asking for the input. If input is empty, setting port to 8100.
