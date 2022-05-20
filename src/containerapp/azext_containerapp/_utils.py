@@ -40,16 +40,6 @@ def validate_container_app_name(name):
                               f"Please shorten {name}")
 
 
-def poll(timeout_secs, interval_secs, operation_name="operation", poll_until=None, *args, **kwargs):
-    start = datetime.utcnow()
-    while (datetime.utcnow() - start).seconds < timeout_secs:
-        stop = poll_until(*args, **kwargs)
-        if stop:
-            return
-        time.sleep(interval_secs)
-    raise CLIInternalError(f"Timed out while waiting for {operation_name} to complete")
-
-
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
     try:
         return operation(*args, **kwargs)
