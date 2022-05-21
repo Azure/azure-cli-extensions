@@ -98,8 +98,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
     def _adls_deprecate_message(self):
-        msg = "This {} has been deprecated and will be removed in future release.".format(self.object_type)
-        msg += " Use '{}' instead.".format(self.redirect)
+        msg = "This {} has been partially deprecated.".format(self.object_type)
+        msg += " The general storage account can continuously use this command,"
+        msg += " ADLS Gen2 account please use '{}' instead.".format(self.redirect)
         msg += " For more information go to"
         msg += " https://github.com/Azure/azure-cli/blob/dev/src/azure-cli/azure/cli/command_modules/storage/docs/ADLS%20Gen2.md"
         return msg
