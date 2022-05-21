@@ -75,6 +75,7 @@ def load_arguments(self, _):
         c.argument('app_network_resource_group', arg_group='VNet Injection', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   options_list=['--enable_log_stream_public_endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.',
                    default=False)
         c.argument('enable_java_agent',
@@ -189,6 +190,7 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   options_list=['--enable_log_stream_public_endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.',
                    default=False)
 
