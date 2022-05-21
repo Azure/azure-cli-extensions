@@ -87,7 +87,7 @@ def _update_application_insights_asc_create(cmd,
 
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
-                  nable_log_stream_public_endpoint=None, ingress_read_timeout=None, no_wait=False):
+                  enable_log_stream_public_endpoint=None, ingress_read_timeout=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -111,7 +111,7 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     if enable_log_stream_public_endpoint is not None:
         updated_resource_properties.vnet_addons = models_20220501preview.ServiceVNetAddons(
             log_stream_public_endpoint=enable_log_stream_public_endpoint
-            )
+        )
         update_log_stream_public_endpoint = True
     else:
         updated_resource_properties.vnet_addons = None

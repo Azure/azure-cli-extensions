@@ -128,6 +128,7 @@ class DefaultApp:
         else:
             return None
 
+
 class BasicTierApp(DefaultApp):
     def _get_persistent_disk_size(self, enable_persistent_storage, **_):
         return 1 if enable_persistent_storage else 0
