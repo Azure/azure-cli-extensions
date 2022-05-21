@@ -86,7 +86,8 @@ def _update_application_insights_asc_create(cmd,
 
 
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                  disable_app_insights=None, sku=None, tags=None, build_pool_size=None, enable_log_stream_public_endpoint=None, no_wait=False):
+                  disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
+                  nable_log_stream_public_endpoint=None, ingress_read_timeout=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -121,17 +122,26 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     _update_default_build_agent_pool(
         cmd, client, resource_group, name, build_pool_size)
 
+    _update_ingress_config(updated_resource_properties, ingress_read_timeout)
+
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_log_stream_public_endpoint is False:
+    if update_service_tags is False and update_service_sku is False and update_log_stream_public_endpoint is False and (ingress_read_timeout is None):
         return resource
 
     updated_resource.properties = updated_resource_properties
     return sdk_no_wait(no_wait, client.services.begin_update,
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
+
+
+def _update_ingress_config(updated_resource_properties, ingress_read_timeout=None):
+    if ingress_read_timeout:
+        ingress_configuration = models_20220501preview.IngressConfig(read_timeout_in_seconds=ingress_read_timeout)
+        updated_resource_properties.network_profile = models_20220501preview.NetworkProfile(
+            ingress_config=ingress_configuration)
 
 
 def _update_application_insights_asc_update(cmd, resource_group, name, location,
