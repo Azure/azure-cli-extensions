@@ -4185,17 +4185,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             # test `create`
-            create_cmd = f'aks draft create --silent --download-binary --create-config={abs_file_path} --destination={tmp_dir}'
+            create_cmd = f'aks draft create --download-binary=true --create-config={abs_file_path} --destination={tmp_dir}'
             self.cmd(create_cmd)
             assert os.path.isdir(f'{tmp_dir}/charts') and os.path.isfile(f'{tmp_dir}/Dockerfile')
 
             # test `generate-workflow`
-            generate_workflow_cmd = f'aks draft generate-workflow --silent --download-binary --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            generate_workflow_cmd = f'aks draft generate-workflow --download-binary=true --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
             self.cmd(generate_workflow_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-helm.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --silent --download-binary --destination={tmp_dir} --host=testHost --certificate=testKV'
+            update_cmd = f'aks draft update --download-binary=true --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/charts/production.yaml')
 
@@ -4209,17 +4209,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             # test `create`
-            create_cmd = f'aks draft create --silent --download-binary --create-config={abs_file_path} --destination={tmp_dir}'
+            create_cmd = f'aks draft create --download-binary=true --create-config={abs_file_path} --destination={tmp_dir}'
             self.cmd(create_cmd)
             assert os.path.isdir(f'{tmp_dir}/base') and os.path.isdir(f'{tmp_dir}/overlays/production') and os.path.isfile(f'{tmp_dir}/Dockerfile')
 
             # test `generate-workflow`
-            generate_workflow_cmd = f'aks draft generate-workflow --silent --download-binary --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            generate_workflow_cmd = f'aks draft generate-workflow --download-binary=true --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
             self.cmd(generate_workflow_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/deployment.yaml') and os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service-kustomize.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --silent --download-binary --destination={tmp_dir} --host=testHost --certificate=testKV'
+            update_cmd = f'aks draft update --download-binary=true --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/overlays/production/service.yaml')
 
@@ -4233,16 +4233,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             
-            create_cmd = f'aks draft create --silent --download-binary --create-config={abs_file_path} --destination={tmp_dir}'
+            create_cmd = f'aks draft create --download-binary=true --create-config={abs_file_path} --destination={tmp_dir}'
             self.cmd(create_cmd)
             assert os.path.isdir(f'{tmp_dir}/manifests') and os.path.isfile(f'{tmp_dir}/Dockerfile')
 
             # test `generate-workflow`
-            generate_workflow_cmd = f'aks draft generate-workflow --silent --download-binary --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
+            generate_workflow_cmd = f'aks draft generate-workflow --download-binary=true --branch=main --destination={tmp_dir} --cluster-name=someAksCluster --registry-name=someRegistry --resource-group=someResourceGroup --container-name=someContainer'
             self.cmd(generate_workflow_cmd)
             assert os.path.isfile(f'{tmp_dir}/.github/workflows/azure-kubernetes-service.yml')
 
             # test `update`
-            update_cmd = f'aks draft update --silent --download-binary --destination={tmp_dir} --host=testHost --certificate=testKV'
+            update_cmd = f'aks draft update --download-binary=true --destination={tmp_dir} --host=testHost --certificate=testKV'
             self.cmd(update_cmd)
             assert os.path.isfile(f'{tmp_dir}/manifests/service.yaml')
