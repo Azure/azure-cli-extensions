@@ -290,11 +290,9 @@ class ContainerappIngressTests(ScenarioTest):
         ])
         
         # list hostnames with a wrong location
-        from knack.util import CLIError
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp hostname list -g {} -n {} -l "{}"'.format(resource_group, ca_name, "eastus2"), checks={
-                JMESPathCheck('@', 'Container app {} is not in location {}.'.format(ca_name, "eastus2")),
-            })
+        self.cmd('containerapp hostname list -g {} -n {} -l "{}"'.format(resource_group, ca_name, "eastus2"), checks={
+            JMESPathCheck('length(@)', 0),
+        }, expect_failure=True)
 
         # create an App service domain and update its txt records
         contacts = os.path.join(TEST_DIR, 'domain-contact.json')
@@ -331,10 +329,7 @@ class ContainerappIngressTests(ScenarioTest):
         ]).get_output_in_json()[0]["properties"]["thumbprint"]
 
         # add binding by cert thumbprint
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --thumbprint {}'.format(resource_group, ca_name, hostname_2, cert_thumbprint), checks=[
-                JMESPathCheck('@', "Please specify at least one of parameters: --certificate and --environment"),
-            ])
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --thumbprint {}'.format(resource_group, ca_name, hostname_2, cert_thumbprint), expect_failure=True)
 
         self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --thumbprint {} -e {}'.format(resource_group, ca_name, hostname_2, cert_thumbprint, env_name), checks=[
             JMESPathCheck('length(@)', 2),
@@ -349,10 +344,7 @@ class ContainerappIngressTests(ScenarioTest):
         ])
 
         # delete hostname with a wrong location
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp hostname delete -g {} -n {} --hostname {} -l "{}" --yes'.format(resource_group, ca_name, hostname_1, "eastus2"), checks={
-                JMESPathCheck('@', 'Container app {} is not in location {}.'.format(ca_name, "eastus2")),
-            })
+        self.cmd('containerapp hostname delete -g {} -n {} --hostname {} -l "{}" --yes'.format(resource_group, ca_name, hostname_1, "eastus2"), expect_failure=True)
 
         self.cmd('containerapp hostname delete -g {} -n {} --hostname {} -l "{}" --yes'.format(resource_group, ca_name, hostname_1, app["location"]), checks=[
             JMESPathCheck('length(@)', 1),
@@ -386,10 +378,8 @@ class ContainerappIngressTests(ScenarioTest):
 
         # add binding by cert name, with and without environment
         cert_name = parse_resource_id(cert_id)["resource_name"]
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --certificate {}'.format(resource_group, ca_name, hostname_1, cert_name), checks=[
-                JMESPathCheck('length(@)', 1),
-            ]).get_output_in_json()
+
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --certificate {}'.format(resource_group, ca_name, hostname_1, cert_name), expect_failure=True)
 
         self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --certificate {} -e {}'.format(resource_group, ca_name, hostname_1, cert_name, env_name), checks=[
             JMESPathCheck('length(@)', 1),

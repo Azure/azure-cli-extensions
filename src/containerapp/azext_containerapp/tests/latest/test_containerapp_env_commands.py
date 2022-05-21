@@ -135,11 +135,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         # test that non pfx or pem files are not supported
         txt_file = os.path.join(TEST_DIR, 'cert.txt')
-        from knack.util import CLIError
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), checks=[
-                JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
-            ])
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
 
         # test pfx file with password
         pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
@@ -174,10 +170,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert_thumbprint_2 = cert_2["properties"]["thumbprint"]
         
         # list certs with a wrong location
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pem_file, "eastus2"), checks=[
-                JMESPathCheck('@', "Environment {} was not found.".format(env_name)),
-            ])
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pem_file, "eastus2"), expect_failure=True)
 
         self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 2),
