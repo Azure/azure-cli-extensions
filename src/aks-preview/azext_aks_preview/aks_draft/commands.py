@@ -21,8 +21,10 @@ def aks_draft_cmd_create(destination: str,
                          language: str,
                          create_config: str,
                          dockerfile_only: str,
-                         deployment_only: str) -> None:
-    file_path, arguments = _pre_run(destination=destination,
+                         deployment_only: str,
+                         download_binary: bool) -> None:
+    file_path, arguments = _pre_run(download_binary,
+                                    destination=destination,
                                     app_name=app_name,
                                     language=language,
                                     create_config=create_config,
@@ -40,8 +42,10 @@ def aks_draft_cmd_setup_gh(app: str,
                            subscription_id: str,
                            resource_group: str,
                            provider: str,
-                           gh_repo: str) -> None:
-    file_path, arguments = _pre_run(app=app,
+                           gh_repo: str,
+                           download_binary: bool) -> None:
+    file_path, arguments = _pre_run(download_binary,
+                                    app=app,
                                     subscription_id=subscription_id,
                                     resource_group=resource_group,
                                     provider=provider,
@@ -59,8 +63,10 @@ def aks_draft_cmd_generate_workflow(cluster_name: str,
                                     container_name: str,
                                     resource_group: str,
                                     destination: str,
-                                    branch: str) -> None:
-    file_path, arguments = _pre_run(cluster_name=cluster_name,
+                                    branch: str,
+                                    download_binary: bool) -> None:
+    file_path, arguments = _pre_run(download_binary,
+                                    cluster_name=cluster_name,
                                     registry_name=registry_name,
                                     container_name=container_name,
                                     resource_group=resource_group,
@@ -83,8 +89,9 @@ def aks_draft_cmd_up(app: str,
                      registry_name: str,
                      container_name: str,
                      destination: str,
-                     branch: str) -> None:
-    file_path = _binary_pre_check()
+                     branch: str,
+                     download_binary: bool) -> None:
+    file_path = _binary_pre_check(download_binary)
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
@@ -112,8 +119,8 @@ def aks_draft_cmd_up(app: str,
 
 
 # `az aks draft update` function
-def aks_draft_cmd_update(host: str, certificate: str, destination: str) -> None:
-    file_path, arguments = _pre_run(host=host, certificate=certificate, destination=destination)
+def aks_draft_cmd_update(host: str, certificate: str, destination: str, download_binary: bool) -> None:
+    file_path, arguments = _pre_run(download_binary, host=host, certificate=certificate, destination=destination)
     run_successful = _run(file_path, 'update', arguments)
     if run_successful:
         _run_finish()
@@ -122,8 +129,8 @@ def aks_draft_cmd_update(host: str, certificate: str, destination: str) -> None:
 
 
 # Returns binary file path and arguments
-def _pre_run(**kwargs) -> Tuple[str, List[str]]:
-    file_path = _binary_pre_check()
+def _pre_run(download_binary: bool, **kwargs) -> Tuple[str, List[str]]:
+    file_path = _binary_pre_check(download_binary)
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
     arguments = _build_args(kwargs)
@@ -161,9 +168,12 @@ def _build_args(args_dict: Dict[str, str] = None, **kwargs) -> List[str]:
 
 
 # Returns the path to Draft binary. None if missing the required binary
-def _binary_pre_check() -> Optional[str]:
+def _binary_pre_check(download_binary: bool) -> Optional[str]:
     logging.info('The Draft binary check is in progress...')
     draft_binary_path = _get_existing_path()
+
+    if download_binary:
+        return _download_binary()
 
     if draft_binary_path:  # found binary
         if _is_latest_version(draft_binary_path):  # no need to update

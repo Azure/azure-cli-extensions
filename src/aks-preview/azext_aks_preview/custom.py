@@ -2873,15 +2873,17 @@ def aks_draft_create(destination='.',
                      language=None,
                      create_config=None,
                      dockerfile_only=None,
-                     deployment_only=None):
-    aks_draft_cmd_create(destination, app_name, language, create_config, dockerfile_only, deployment_only)
+                     deployment_only=None,
+                     download_binary=None):
+    aks_draft_cmd_create(destination, app_name, language, create_config, dockerfile_only, deployment_only, download_binary)
 
 
 def aks_draft_setup_gh(app=None,
                        subscription_id=None,
                        resource_group=None,
                        provider="azure",
-                       gh_repo=None):
+                       gh_repo=None,
+                       download_binary=None):
     aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo)
 
 
@@ -2890,9 +2892,10 @@ def aks_draft_generate_workflow(cluster_name=None,
                                 container_name=None,
                                 resource_group=None,
                                 destination=None,
-                                branch=None):
+                                branch=None,
+                                download_binary=None):
     aks_draft_cmd_generate_workflow(cluster_name, registry_name, container_name,
-                                    resource_group, destination, branch)
+                                    resource_group, destination, branch, download_binary)
 
 
 def aks_draft_up(app=None,
@@ -2904,9 +2907,10 @@ def aks_draft_up(app=None,
                  registry_name=None,
                  container_name=None,
                  destination=None,
-                 branch=None):
+                 branch=None,
+                 download_binary=None):
     aks_draft_cmd_up(app, subscription_id, resource_group, provider, gh_repo,
-                     cluster_name, registry_name, container_name, destination, branch)
+                     cluster_name, registry_name, container_name, destination, branch, download_binary)
 
 
 def aks_draft_update(host=None, certificate=None, destination=None):
