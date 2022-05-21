@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2022_05_01_preview import models
 from knack.log import get_logger
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool
@@ -53,6 +53,7 @@ class DefaultSpringCloud:
                        reserved_cidr_range=None,
                        service_runtime_network_resource_group=None,
                        app_network_resource_group=None,
+                       enable_log_stream_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
@@ -60,6 +61,13 @@ class DefaultSpringCloud:
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
         )
+
+        if enable_log_stream_public_endpoint is not None:
+            properties.vnet_addons = models.ServiceVNetAddons(
+                log_stream_public_endpoint=enable_log_stream_public_endpoint
+            )
+        else:
+            properties.vnet_addons = None
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(
@@ -127,6 +135,7 @@ def spring_create(cmd, client, resource_group, name,
                   gateway_instance_count=None,
                   enable_api_portal=False,
                   api_portal_instance_count=None,
+                  enable_log_stream_public_endpoint=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -154,6 +163,7 @@ def spring_create(cmd, client, resource_group, name,
         'gateway_instance_count': gateway_instance_count,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
+        'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
         'no_wait': no_wait
     }
 
