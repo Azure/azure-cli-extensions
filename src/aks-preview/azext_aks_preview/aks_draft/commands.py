@@ -121,7 +121,7 @@ def aks_draft_cmd_update(host: str, certificate: str, destination: str) -> None:
         raise ValueError('`az aks draft update` was NOT executed successfully')
 
 
-# Returns binary file path and arguments 
+# Returns binary file path and arguments
 def _pre_run(**kwargs) -> Tuple[str, List[str]]:
     file_path = _binary_pre_check()
     if not file_path:
@@ -149,7 +149,7 @@ def _run_finish():
     logging.info('Finished running Draft command')
 
 
-def _build_args(args_dict: Dict[str, str]=None, **kwargs) -> List[str]: 
+def _build_args(args_dict: Dict[str, str] = None, **kwargs) -> List[str]:
     if not args_dict:
         args_dict = kwargs
     args_list = []

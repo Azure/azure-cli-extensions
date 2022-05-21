@@ -2905,7 +2905,7 @@ def aks_draft_up(app=None,
                  container_name=None,
                  destination=None,
                  branch=None):
-    aks_draft_cmd_up(app, subscription_id, resource_group, provider,  gh_repo,
+    aks_draft_cmd_up(app, subscription_id, resource_group, provider, gh_repo,
                      cluster_name, registry_name, container_name, destination, branch)
 
 
