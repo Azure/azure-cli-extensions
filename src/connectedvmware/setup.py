@@ -19,7 +19,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -49,8 +49,7 @@ setup(
     description='Microsoft Azure Command-Line Tools Connectedvmware Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
+    author_email='arcprivatecloudsfte@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/connectedvmware',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
