@@ -301,13 +301,13 @@ def load_arguments(self, _):
         c.argument('config_file_path', options_list=['--config-file-path'], help='The path of the config file containing auth settings if they come from a file.')
         c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
         c.argument('redirect_provider', options_list=['--redirect-provider'], help='The default authentication provider to use when multiple providers are configured.')
-        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(return_label=True), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
-        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(return_label=True), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
+        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
+        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
         c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')
         c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header', '--custom-proto-header'], help='The name of the header containing the scheme of the request.')
         c.argument('excluded_paths', options_list=['--excluded-paths'], help='The list of paths that should be excluded from authentication rules.')
-        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True), help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
+        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(), help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
         c.argument('runtime_version', options_list=['--runtime-version'], help='The RuntimeVersion of the Authentication / Authorization feature in use for the current app.')
 
     with self.argument_context('containerapp ssl upload') as c:
