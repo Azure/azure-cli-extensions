@@ -40,6 +40,17 @@ def validate_container_app_name(name):
                               f"Please shorten {name}")
 
 
+def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
+    try:
+        return operation(*args, **kwargs)
+    except Exception as e:
+        retry_limit -= 1
+        if retry_limit <= 0:
+            raise CLIInternalError(err_txt) from e
+        time.sleep(5)
+        logger.info(f"Encountered error: {e}. Retrying...")
+
+
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
     vnet_client = network_client_factory(cmd.cli_ctx)
@@ -48,126 +59,38 @@ def get_vnet_location(cmd, subnet_resource_id):
     return _normalize_location(cmd, location)
 
 
-# original implementation at azure.cli.command_modules.role.custom.create_service_principal_for_rbac
-# reimplemented to remove incorrect warning statements
-def create_service_principal_for_rbac(  # pylint:disable=too-many-statements,too-many-locals, too-many-branches, unused-argument, inconsistent-return-statements
-        cmd, name=None, years=None, create_cert=False, cert=None, scopes=None, role=None,
-        show_auth_for_sdk=None, skip_assignment=False, keyvault=None):
-    from azure.cli.command_modules.role.custom import (_graph_client_factory, TZ_UTC, _process_service_principal_creds,
-                                                       _validate_app_dates, create_application,
-                                                       _create_service_principal, _create_role_assignment,
-                                                       _error_caused_by_role_assignment_exists)
+def create_service_principal_for_github_action(cmd, scopes=None, role="contributor"):
+    from azure.cli.command_modules.role.custom import (create_application, create_service_principal,
+                                                       create_role_assignment, show_service_principal)
+    from azure.cli.command_modules.role.msgrpah._graph_client import GraphClient
 
-    if role and not scopes or not role and scopes:
-        raise ArgumentUsageError("Usage error: To create role assignments, specify both --role and --scopes.")
+    SP_CREATION_ERR_TXT = "Failed to create service principal."
+    RETRY_LIMIT = 36
 
-    graph_client = _graph_client_factory(cmd.cli_ctx)
+    client = GraphClient(cmd.cli_ctx)
+    now = datetime.utcnow()
+    app_display_name = 'azure-cli-' + now.strftime('%Y-%m-%d-%H-%M-%S')
+    app = retry_until_success(create_application, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, client, display_name=app_display_name)
+    sp = retry_until_success(create_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, identifier=app["appId"])
+    for scope in scopes:
+        retry_until_success(create_role_assignment, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, role=role, assignee=sp["id"], scope=scope)
+    service_principal = retry_until_success(show_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, sp["id"])
 
-    years = years or 1
-    _RETRY_TIMES = 36
-    existing_sps = None
-
-    if not name:
-        # No name is provided, create a new one
-        app_display_name = 'azure-cli-' + datetime.utcnow().strftime('%Y-%m-%d-%H-%M-%S')
-    else:
-        app_display_name = name
-        # patch existing app with the same displayName to make the command idempotent
-        query_exp = "displayName eq '{}'".format(name)
-        existing_sps = list(graph_client.service_principals.list(filter=query_exp))
-
-    app_start_date = datetime.now(TZ_UTC)
-    app_end_date = app_start_date + relativedelta(years=years or 1)
-
-    password, public_cert_string, cert_file, cert_start_date, cert_end_date = \
-        _process_service_principal_creds(cmd.cli_ctx, years, app_start_date, app_end_date, cert, create_cert,
-                                         None, keyvault)
-
-    app_start_date, app_end_date, cert_start_date, cert_end_date = \
-        _validate_app_dates(app_start_date, app_end_date, cert_start_date, cert_end_date)
-
-    aad_application = create_application(cmd,
-                                         display_name=app_display_name,
-                                         available_to_other_tenants=False,
-                                         password=password,
-                                         key_value=public_cert_string,
-                                         start_date=app_start_date,
-                                         end_date=app_end_date,
-                                         credential_description='rbac')
-    # pylint: disable=no-member
-    app_id = aad_application.app_id
-
-    # retry till server replication is done
-    aad_sp = existing_sps[0] if existing_sps else None
-    if not aad_sp:
-        for retry_time in range(0, _RETRY_TIMES):
-            try:
-                aad_sp = _create_service_principal(cmd.cli_ctx, app_id, resolve_app=False)
-                break
-            except Exception as ex:  # pylint: disable=broad-except
-                err_msg = str(ex)
-                if retry_time < _RETRY_TIMES and (
-                        ' does not reference ' in err_msg or
-                        ' does not exist ' in err_msg or
-                        'service principal being created must in the local tenant' in err_msg):
-                    logger.warning("Creating service principal failed with error '%s'. Retrying: %s/%s",
-                                   err_msg, retry_time + 1, _RETRY_TIMES)
-                    time.sleep(5)
-                else:
-                    logger.warning(
-                        "Creating service principal failed for '%s'. Trace followed:\n%s",
-                        app_id, ex.response.headers
-                        if hasattr(ex, 'response') else ex)  # pylint: disable=no-member
-                    raise
-    sp_oid = aad_sp.object_id
-
-    if role:
-        for scope in scopes:
-            # logger.warning("Creating '%s' role assignment under scope '%s'", role, scope)
-            # retry till server replication is done
-            for retry_time in range(0, _RETRY_TIMES):
-                try:
-                    _create_role_assignment(cmd.cli_ctx, role, sp_oid, None, scope, resolve_assignee=False,
-                                            assignee_principal_type='ServicePrincipal')
-                    break
-                except Exception as ex:
-                    if retry_time < _RETRY_TIMES and ' does not exist in the directory ' in str(ex):
-                        time.sleep(5)
-                        logger.warning('  Retrying role assignment creation: %s/%s', retry_time + 1,
-                                       _RETRY_TIMES)
-                        continue
-                    if _error_caused_by_role_assignment_exists(ex):
-                        logger.warning('  Role assignment already exists.\n')
-                        break
-
-                    # dump out history for diagnoses
-                    logger.warning('  Role assignment creation failed.\n')
-                    if getattr(ex, 'response', None) is not None:
-                        logger.warning('  role assignment response headers: %s\n',
-                                       ex.response.headers)  # pylint: disable=no-member
-                    raise
-
-    if show_auth_for_sdk:
-        from azure.cli.core._profile import Profile
-        profile = Profile(cli_ctx=cmd.cli_ctx)
-        result = profile.get_sp_auth_info(scopes[0].split('/')[2] if scopes else None,
-                                          app_id, password, cert_file)
-        # sdk-auth file should be in json format all the time, hence the print
-        print(json.dumps(result, indent=2))
-        return
-
-    result = {
-        'appId': app_id,
-        'password': password,
-        'displayName': app_display_name,
-        'tenant': graph_client.config.tenant_id
+    body = {
+        "passwordCredential": {
+            "displayName": None,
+            "startDateTime": now.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "endDateTime": (now + relativedelta(years=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        }
     }
-    if cert_file:
-        logger.warning(
-            "Please copy %s to a safe place. When you run 'az login', provide the file path in the --password argument",
-            cert_file)
-        result['fileWithCertAndPrivateKey'] = cert_file
-    return result
+
+    add_password_result = retry_until_success(client.service_principal_add_password, SP_CREATION_ERR_TXT, RETRY_LIMIT, service_principal["id"], body)
+
+    return {
+        'appId': service_principal['appId'],
+        'password': add_password_result['secretText'],
+        'tenant': client.tenant
+    }
 
 
 def is_int(s):

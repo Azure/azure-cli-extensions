@@ -38,7 +38,7 @@ from ._utils import (
     _get_default_containerapps_location,
     safe_get,
     is_int,
-    create_service_principal_for_rbac,
+    create_service_principal_for_github_action,
     repo_url_to_name,
     get_container_app_if_exists,
     trigger_workflow,
@@ -350,9 +350,9 @@ def _create_service_principal(cmd, resource_group_name, env_resource_group_name)
         scopes.append(
             f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{env_resource_group_name}"
         )
-    sp = create_service_principal_for_rbac(cmd, scopes=scopes, role="contributor")
+    sp = create_service_principal_for_github_action(cmd, scopes=scopes, role="contributor")
 
-    logger.warning(f"Created service principal: {sp['displayName']} with ID {sp['appId']}")
+    logger.warning(f"Created service principal with ID {sp['appId']}")
 
     return sp["appId"], sp["password"], sp["tenant"]
 
