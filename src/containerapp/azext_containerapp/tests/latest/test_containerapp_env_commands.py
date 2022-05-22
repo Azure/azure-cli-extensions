@@ -135,11 +135,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
         # test that non pfx or pem files are not supported
         txt_file = os.path.join(TEST_DIR, 'cert.txt')
-        from knack.util import CLIError
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), checks=[
-            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
-        ])
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
 
         # test pfx file with password
         pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
@@ -151,12 +147,17 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert_name = cert["name"]
         cert_id = cert["id"]
         cert_thumbprint = cert["properties"]["thumbprint"]
+        cert_location = cert["location"]
 
-        self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
+        self.cmd('containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, cert_location), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
             JMESPathCheck('[0].name', cert_name),
             JMESPathCheck('[0].id', cert_id),
+        ])
+
+        self.cmd('containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, "eastus2"), checks=[
+            JMESPathCheck('length(@)', 0),
         ])
 
         # test pem file without password
@@ -167,6 +168,9 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         cert_name_2 = cert_2["name"]
         cert_id_2 = cert_2["id"]
         cert_thumbprint_2 = cert_2["properties"]["thumbprint"]
+        
+        # list certs with a wrong location
+        self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}" -l "{}"'.format(resource_group, env_name, pem_file, "eastus2"), expect_failure=True)
 
         self.cmd('containerapp env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 2),
@@ -193,7 +197,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
 
-        self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} --yes'.format(env_name, resource_group, cert_thumbprint))
+        self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} -l {} --yes'.format(env_name, resource_group, cert_thumbprint, cert_location))
 
         self.cmd('containerapp env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group, cert_id_2), checks=[
             JMESPathCheck('length(@)', 1),
