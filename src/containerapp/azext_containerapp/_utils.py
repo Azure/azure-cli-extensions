@@ -41,14 +41,15 @@ def validate_container_app_name(name):
 
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
-    try:
-        return operation(*args, **kwargs)
-    except Exception as e:
-        retry_limit -= 1
-        if retry_limit <= 0:
-            raise CLIInternalError(err_txt) from e
-        time.sleep(5)
-        logger.info(f"Encountered error: {e}. Retrying...")
+    while True:
+        try:
+            return operation(*args, **kwargs)
+        except Exception as e:
+            retry_limit -= 1
+            if retry_limit <= 0:
+                raise CLIInternalError(err_txt) from e
+            time.sleep(5)
+            logger.info(f"Encountered error: {e}. Retrying...")
 
 
 def get_vnet_location(cmd, subnet_resource_id):
@@ -59,22 +60,61 @@ def get_vnet_location(cmd, subnet_resource_id):
     return _normalize_location(cmd, location)
 
 
+def _create_application(client, display_name):
+    from azure.cli.command_modules.role.custom import GraphError
+    body = {"displayName": display_name, "keyCredentials": []}
+
+    try:
+        result = client.application_create(body)
+    except GraphError as ex:
+        if 'insufficient privileges' in str(ex).lower():
+            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
+            raise ValidationError("Directory permission is needed for the current user to register the application. "
+                                  "For how to configure, please refer '{}'. Original error: {}".format(link, ex))
+        raise
+    return result
+
+
+def _create_service_principal(client, app_id):
+    return client.service_principal_create({"appId": app_id, "accountEnabled": True})
+
+
+def _create_role_assignment(cli_ctx, role, assignee, scope=None):
+    import uuid
+    from azure.cli.core.profiles import ResourceType, get_sdk, supported_api_version
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+    auth_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION)
+    assignments_client = auth_client.role_assignments
+    definitions_client = auth_client.role_definitions
+
+    assignment_name = uuid.uuid4()
+    role_defs = list(definitions_client.list(scope, "roleName eq '{}'".format(role)))
+    role_id = role_defs[0].id
+
+    api_version = supported_api_version(cli_ctx, resource_type=ResourceType.MGMT_AUTHORIZATION, max_api='2015-07-01')
+    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
+                                             'RoleAssignmentProperties' if api_version else 'RoleAssignmentCreateParameters',
+                                             mod='models', operation_group='role_assignments')
+    parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=assignee)
+    parameters.principal_type = "ServicePrincipal"
+    return assignments_client.create(scope, assignment_name, parameters)
+
+
 def create_service_principal_for_github_action(cmd, scopes=None, role="contributor"):
-    from azure.cli.command_modules.role.custom import (create_application, create_service_principal,
-                                                       create_role_assignment, show_service_principal)
-    from azure.cli.command_modules.role.msgrpah._graph_client import GraphClient
+    from azure.cli.command_modules.role import graph_client_factory
 
     SP_CREATION_ERR_TXT = "Failed to create service principal."
     RETRY_LIMIT = 36
 
-    client = GraphClient(cmd.cli_ctx)
+    client = graph_client_factory(cmd.cli_ctx)
     now = datetime.utcnow()
     app_display_name = 'azure-cli-' + now.strftime('%Y-%m-%d-%H-%M-%S')
-    app = retry_until_success(create_application, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, client, display_name=app_display_name)
-    sp = retry_until_success(create_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, identifier=app["appId"])
+    app = retry_until_success(_create_application, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, display_name=app_display_name)
+    sp = retry_until_success(_create_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, app_id=app["appId"])
     for scope in scopes:
-        retry_until_success(create_role_assignment, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd, role=role, assignee=sp["id"], scope=scope)
-    service_principal = retry_until_success(show_service_principal, SP_CREATION_ERR_TXT, RETRY_LIMIT, client, sp["id"])
+        retry_until_success(_create_role_assignment, SP_CREATION_ERR_TXT, RETRY_LIMIT, cmd.cli_ctx, role=role, assignee=sp["id"], scope=scope)
+    service_principal = retry_until_success(client.service_principal_get, SP_CREATION_ERR_TXT, RETRY_LIMIT, sp["id"])
 
     body = {
         "passwordCredential": {
@@ -83,7 +123,6 @@ def create_service_principal_for_github_action(cmd, scopes=None, role="contribut
             "endDateTime": (now + relativedelta(years=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
     }
-
     add_password_result = retry_until_success(client.service_principal_add_password, SP_CREATION_ERR_TXT, RETRY_LIMIT, service_principal["id"], body)
 
     return {
