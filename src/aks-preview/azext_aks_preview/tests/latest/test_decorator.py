@@ -817,7 +817,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
 
-    def test_get_disk_driver_update(self):
+    def test_get_storage_profile_update(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
@@ -846,6 +846,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             {
                 "enable_disk_driver": True,
                 "disable_disk_driver": True,
+                "yes": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -971,6 +972,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 "disk_driver_version": "v2",
                 "disable_file_driver": True,
                 "disable_snapshot_controller": True,
+                "yes": True,
             },
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
@@ -1011,7 +1013,53 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError):
             ctx_10.get_disk_driver()
 
-    def test_get_disk_driver_create(self):
+        # fail on prompt_y_n not specified when disabling disk driver
+        ctx_11 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_disk_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_11.get_disk_driver()
+
+        # fail on prompt_y_n not specified when disabling file driver
+        ctx_12 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_file_driver": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_12.get_file_driver()
+
+        # fail on prompt_y_n not specified when disabling snapshot controller
+        ctx_13 = AKSPreviewContext(
+            self.cmd,
+            {
+                "disable_snapshot_controller": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx_13.get_snapshot_controller()
+
+
+    def test_get_storage_profile_create(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,

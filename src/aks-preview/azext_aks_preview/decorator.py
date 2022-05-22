@@ -1717,13 +1717,14 @@ class AKSPreviewContext(AKSContext):
         return self._get_node_vm_size()
 
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
-        """Obtrain the value of storage_profile.disk_csi_driver
+        """Obtain the value of storage_profile.disk_csi_driver
 
         :return: Optional[ManagedClusterStorageProfileDiskCSIDriver]
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
         disk_driver_version = self.raw_param.get("disk_driver_version")
+
         if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()
@@ -1759,17 +1760,21 @@ class AKSPreviewContext(AKSContext):
                 if disk_driver_version:
                     profile.version = disk_driver_version
             elif disable_disk_driver:
+                msg = "Please make sure there are no existing PVs and PVCs that are used by AzureDisk CSI driver before disabling."
+                if not self.get_yes() and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
                 profile.enabled = False
 
         return profile
 
     def get_file_driver(self) -> Optional[ManagedClusterStorageProfileFileCSIDriver]:
-        """Obtrain the value of storage_profile.file_csi_driver
+        """Obtain the value of storage_profile.file_csi_driver
 
         :return: Optional[ManagedClusterStorageProfileFileCSIDriver]
         """
         enable_file_driver = self.raw_param.get("enable_file_driver")
         disable_file_driver = self.raw_param.get("disable_file_driver")
+
         if not enable_file_driver and not disable_file_driver:
             return None
         profile = self.models.ManagedClusterStorageProfileFileCSIDriver()
@@ -1790,17 +1795,21 @@ class AKSPreviewContext(AKSContext):
             if enable_file_driver:
                 profile.enabled = True
             elif disable_file_driver:
+                msg = "Please make sure there are no existing PVs and PVCs that are used by AzureFile CSI driver before disabling."
+                if not self.get_yes() and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
                 profile.enabled = False
 
         return profile
 
     def get_snapshot_controller(self) -> Optional[ManagedClusterStorageProfileSnapshotController]:
-        """Obtrain the value of storage_profile.snapshot_controller
+        """Obtain the value of storage_profile.snapshot_controller
 
         :return: Optional[ManagedClusterStorageProfileSnapshotController]
         """
         enable_snapshot_controller = self.raw_param.get("enable_snapshot_controller")
         disable_snapshot_controller = self.raw_param.get("disable_snapshot_controller")
+
         if not enable_snapshot_controller and not disable_snapshot_controller:
             return None
 
@@ -1822,12 +1831,16 @@ class AKSPreviewContext(AKSContext):
             if enable_snapshot_controller:
                 profile.enabled = True
             elif disable_snapshot_controller:
+                msg = "Please make sure there are no existing VolumeSnapshots, VolumeSnapshotClasses and VolumeSnapshotContents " \
+                      "that are used by the snapshot controller before disabling."
+                if not self.get_yes() and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
                 profile.enabled = False
 
         return profile
 
     def get_storage_profile(self) -> Optional[ManagedClusterStorageProfile]:
-        """Obtrain the value of storage_profile.
+        """Obtain the value of storage_profile.
 
         :return: Optional[ManagedClusterStorageProfile]
         """
