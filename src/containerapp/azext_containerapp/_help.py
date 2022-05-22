@@ -807,3 +807,224 @@ helps['containerapp hostname list'] = """
       text: |
           az containerapp hostname list -n MyContainerapp -g MyResourceGroup
 """
+
+# Auth commands
+helps['containerapp auth'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization.
+"""
+
+helps['containerapp auth show'] = """
+type: command
+short-summary: Show the authentication settings for the containerapp.
+examples:
+  - name: Show the authentication settings for the containerapp.
+    text: az containerapp auth show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth update'] = """
+type: command
+short-summary: Update the authentication settings for the containerapp.
+examples:
+  - name: Update the client ID of the AAD provider already configured.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --set identityProviders.azureActiveDirectory.registration.clientId=my-client-id
+  - name: Configure the app with file based authentication by setting the config file path.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --config-file-path D:\\home\\site\\wwwroot\\auth.json
+  - name: Configure the app to allow unauthenticated requests to hit the app.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --unauthenticated-client-action AllowAnonymous
+  - name: Configure the app to redirect unauthenticated requests to the Facebook provider.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --redirect-provider Facebook
+  - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO.
+    text: |
+        az containerapp auth update -g myResourceGroup --name MyContainerapp --proxy-convention Standard
+"""
+
+helps['containerapp auth apple'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Apple identity provider.
+"""
+
+helps['containerapp auth apple show'] = """
+type: command
+short-summary: Show the authentication settings for the Apple identity provider.
+examples:
+  - name: Show the authentication settings for the Apple identity provider.
+    text: az containerapp auth apple show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth apple update'] = """
+type: command
+short-summary: Update the client id and client secret for the Apple identity provider.
+examples:
+  - name: Update the client id and client secret for the Apple identity provider.
+    text: |
+        az containerapp auth apple update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth facebook'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Facebook identity provider.
+"""
+
+helps['containerapp auth facebook show'] = """
+type: command
+short-summary: Show the authentication settings for the Facebook identity provider.
+examples:
+  - name: Show the authentication settings for the Facebook identity provider.
+    text: az containerapp auth facebook show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth facebook update'] = """
+type: command
+short-summary: Update the app id and app secret for the Facebook identity provider.
+examples:
+  - name: Update the app id and app secret for the Facebook identity provider.
+    text: |
+        az containerapp auth facebook update  -g myResourceGroup --name MyContainerapp \\
+          --app-id my-client-id --app-secret very_secret_password
+"""
+
+helps['containerapp auth github'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the GitHub identity provider.
+"""
+
+helps['containerapp auth github show'] = """
+type: command
+short-summary: Show the authentication settings for the GitHub identity provider.
+examples:
+  - name: Show the authentication settings for the GitHub identity provider.
+    text: az containerapp auth github show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth github update'] = """
+type: command
+short-summary: Update the client id and client secret for the GitHub identity provider.
+examples:
+  - name: Update the client id and client secret for the GitHub identity provider.
+    text: |
+        az containerapp auth github update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth google'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Google identity provider.
+"""
+
+helps['containerapp auth google show'] = """
+type: command
+short-summary: Show the authentication settings for the Google identity provider.
+examples:
+  - name: Show the authentication settings for the Google identity provider.
+    text: az containerapp auth google show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth google update'] = """
+type: command
+short-summary: Update the client id and client secret for the Google identity provider.
+examples:
+  - name: Update the client id and client secret for the Google identity provider.
+    text: |
+        az containerapp auth google update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password
+"""
+
+helps['containerapp auth microsoft'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Microsoft identity provider.
+"""
+
+helps['containerapp auth microsoft show'] = """
+type: command
+short-summary: Show the authentication settings for the Azure Active Directory identity provider.
+examples:
+  - name: Show the authentication settings for the Azure Active Directory identity provider.
+    text: az containerapp auth microsoft show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth microsoft update'] = """
+type: command
+short-summary: Update the client id and client secret for the Azure Active Directory identity provider.
+examples:
+  - name: Update the open id issuer, client id and client secret for the Azure Active Directory identity provider.
+    text: |
+        az containerapp auth microsoft update  -g myResourceGroup --name MyContainerapp \\
+          --client-id my-client-id --client-secret very_secret_password \\
+          --issuer https://sts.windows.net/54826b22-38d6-4fb2-bad9-b7983a3e9c5a/
+"""
+
+helps['containerapp auth openid-connect'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the custom OpenID Connect identity providers.
+"""
+
+helps['containerapp auth openid-connect show'] = """
+type: command
+short-summary: Show the authentication settings for the custom OpenID Connect identity provider.
+examples:
+  - name: Show the authentication settings for the custom OpenID Connect identity provider.
+    text: az containerapp auth openid-connect show --name MyContainerapp --resource-group MyResourceGroup \\
+            --provider-name myOpenIdConnectProvider
+"""
+
+helps['containerapp auth openid-connect add'] = """
+type: command
+short-summary: Configure a new custom OpenID Connect identity provider.
+examples:
+  - name: Configure a new custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect add -g myResourceGroup --name MyContainerapp \\
+          --provider-name myOpenIdConnectProvider --client-id my-client-id \\
+          --client-secret-name MY_SECRET_APP_SETTING \\
+          --openid-configuration https://myopenidprovider.net/.well-known/openid-configuration
+"""
+
+helps['containerapp auth openid-connect update'] = """
+type: command
+short-summary: Update the client id and client secret setting name for an existing custom OpenID Connect identity provider.
+examples:
+  - name: Update the client id and client secret setting name for an existing custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect update -g myResourceGroup --name MyContainerapp \\
+          --provider-name myOpenIdConnectProvider --client-id my-client-id \\
+          --client-secret-name MY_SECRET_APP_SETTING
+"""
+
+helps['containerapp auth openid-connect remove'] = """
+type: command
+short-summary: Removes an existing custom OpenID Connect identity provider.
+examples:
+  - name: Removes an existing custom OpenID Connect identity provider.
+    text: |
+        az containerapp auth openid-connect remove --name MyContainerapp --resource-group MyResourceGroup \\
+          --provider-name myOpenIdConnectProvider
+"""
+
+helps['containerapp auth twitter'] = """
+type: group
+short-summary: Manage containerapp authentication and authorization of the Twitter identity provider.
+"""
+
+helps['containerapp auth twitter show'] = """
+type: command
+short-summary: Show the authentication settings for the Twitter identity provider.
+examples:
+  - name: Show the authentication settings for the Twitter identity provider.
+    text: az containerapp auth twitter show --name MyContainerapp --resource-group MyResourceGroup
+"""
+
+helps['containerapp auth twitter update'] = """
+type: command
+short-summary: Update the consumer key and consumer secret for the Twitter identity provider.
+examples:
+  - name: Update the consumer key and consumer secret for the Twitter identity provider.
+    text: |
+        az containerapp auth twitter update  -g myResourceGroup --name MyContainerapp \\
+          --consumer-key my-client-id --consumer-secret very_secret_password
+"""
