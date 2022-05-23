@@ -286,7 +286,7 @@ def _download_binary(dir_name: str = '.aksdraft') -> Optional[str]:
 
     if response.ok:
         # Split URL to get the file name 'draft-darwin-amd64'
-        os.chdir(binary_path)
+        os.chdir(dir_name)
         # Writing the file to the local file system
         with open(filename, 'wb') as output_file:
             output_file.write(response.content)
