@@ -4112,7 +4112,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westcentralus', preserve_default_location=True)
     def test_aks_create_with_standard_csi_drivers(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -4125,18 +4125,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('storageProfile.diskCsiDriver.enabled', None),
-            self.check('storageProfile.fileCsiDriver.enabled', None),
-            self.check('storageProfile.snapshotController.enabled', None),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
         ])
 
         # check standard reconcile scenario
         update_cmd = 'aks update --resource-group={resource_group} --name={name} -y -o json'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('storageProfile.diskCsiDriver', None),
-            self.check('storageProfile.fileCsiDriver', None),
-            self.check('storageProfile.snapshotController', None),
+            self.check('storageProfile.diskCsiDriver.enabled', True),
+            self.check('storageProfile.fileCsiDriver.enabled', True),
+            self.check('storageProfile.snapshotController.enabled', True),
         ])
 
         # delete
