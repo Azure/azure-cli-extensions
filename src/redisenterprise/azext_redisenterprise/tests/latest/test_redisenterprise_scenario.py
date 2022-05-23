@@ -133,3 +133,13 @@ class Redisenterprisescenario2Test(ScenarioTest):
         call_scenario2(self)
         calc_coverage(__file__)
         raise_if()
+
+# Testcase: scenario3
+@try_manual
+def call_scenario3(test):
+    pass
+
+@try_manual
+class Redisenterprisescenario3Test(ScenarioTest):
+    pass
+
