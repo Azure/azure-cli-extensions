@@ -1742,10 +1742,8 @@ helps['aks draft create'] = """
         text: az aks draft create --dockerfile-only=true
       - name: Generate only the deployment files in the current directory.
         text: az aks draft create --deployment-only=true
-      - name: Generate a Dockerfile and an deployment file in a Java project with an app name.
-        text: az aks draft create --language=java --app=some_app
-      - name: Prompt to generate a Dockerfile and deployment files at a specific destination.
-        test: az aks draft create --destination=~/projects/some_project
+      - name: Generate a Dockerfile and an deployment file in a Java project with an app name at a specific project directory.
+        text: az aks draft create --language=java --app=some_app --destination=/projects/some_project
 """
 
 helps['aks draft setup-gh'] = """
@@ -1815,9 +1813,9 @@ helps['aks draft generate-workflow'] = """
       - name: Prompt to generate a Github workflow in a specific project directory.
         text: az aks draft generate-workflow --destination=/projects/some_project
       - name: Generate a Github workflow with a resource group, an AKS cluster name, a container registry name in a specific project directory.
-        text: az aks draft generate-workflow --resource-grup=some_rg --cluster_name=some_cluster --registry_name=some_registry --destination=/projects/some_project
+        text: az aks draft generate-workflow --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --destination=/projects/some_project
       - name: Generate a Github workflow that deploys from the main branch with a resource group, an AKS cluster name, a container registry name, and a container image name in a specific project directory.
-        text: az aks draft generate-workflow --branch=main --resource-grup=some_rg --cluster_name=some_cluster --registry_name=some_registry --container-name=some_image --destination=/projects/some_project
+        text: az aks draft generate-workflow --branch=main --resource-group=some_rg --cluster-name=some_cluster --registry-name=some_registry --container-name=some_image --destination=/projects/some_project
 """
 
 helps['aks draft up'] = """
