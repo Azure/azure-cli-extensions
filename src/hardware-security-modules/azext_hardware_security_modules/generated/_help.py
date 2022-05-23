@@ -94,14 +94,14 @@ HSM."
                az dedicated-hsm create --name "hsm1" --location "westus" \
 --network-interfaces private-ip-address="1.0.0.1" --subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
-works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku-name "SafeNet Luna Network HSM A790" --tags Dept="hsm" \
+works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku "SafeNet Luna Network HSM A790" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
       - name: Create a new or update an existing payment HSM
         text: |-
                az dedicated-hsm create --name "hsm1" --location "westus" \
 --mgmt-network-interfaces private-ip-address="1.0.0.1" --mgmt-network-subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
-works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku-name "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
+works/stamp01/subnets/stamp01" --stamp-id "stamp01" --sku "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
       - name: Create a new or update an existing payment HSM with management profile
         text: |-
@@ -110,7 +110,7 @@ Environment="dogfood" --resource-group "hsm-group"
 urceGroups/hsm-group/providers/Microsoft.Network/virtualNetworks/stamp01/subnets/stamp01" \
 --mgmt-network-interfaces private-ip-address="1.0.0.1" --mgmt-network-subnet \
 id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsm-group/providers/Microsoft.Network/virtualNet\
-works/stamp01/subnets/stamp01" --stamp-id "stamp02" --sku-name "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
+works/stamp01/subnets/stamp01" --stamp-id "stamp02" --sku "payShield10K_LMK1_CPS60" --tags Dept="hsm" \
 Environment="dogfood" --resource-group "hsm-group"
 """
 
