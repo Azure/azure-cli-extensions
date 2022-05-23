@@ -218,12 +218,3 @@ class CustomImageTest(ScenarioTest):
                  + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
         ])
-
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
-            self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --artifact-path {file}')
-
-        self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} -n default --app {app} ', checks=[
-            self.check('name', 'default'),
-            self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
-        ])
