@@ -1732,9 +1732,9 @@ helps['aks draft create'] = """
         - name: --deployment-only
           type: bool
           short-summary: Only generate deployment files (helm, kustomize, manifests) for the Kubernetes deployment.
-        - name: --download-binary
-          type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system
+        - name: --path
+          type: string
+          short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
       - name: Prompt to generate a Dockerfile and deployment files in the current directory.
         text: az aks draft create
@@ -1765,9 +1765,9 @@ helps['aks draft setup-gh'] = """
         - name: --gh-repo
           type: string
           short-summary: Specify the the github repository (organization/repo_name).
-        - name: --download-binary
-          type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system.
+        - name: --path
+          type: string
+          short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
       - name: Prompt to setup the Github OIDC for a repository.
         text: az aks draft setup-gh
@@ -1804,9 +1804,9 @@ helps['aks draft generate-workflow'] = """
         - name: --branch
           type: string
           short-summary: Specify the Github branch to automatically deploy from.
-        - name: --download-binary
-          type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system
+        - name: --path
+          type: string
+          short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
       - name: Prompt to generate a Github workflow in the current directory.
         text: az aks draft generate-workflow
@@ -1855,9 +1855,9 @@ helps['aks draft up'] = """
         - name: --branch
           type: string
           short-summary: Specify the Github branch to automatically deploy from.
-        - name: --download-binary
-          type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system
+        - name: --path
+          type: string
+          short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
       - name: Prompt to setup the Github OIDC then generate a Github workflow in the current directory.
         text: az aks draft up
@@ -1882,9 +1882,9 @@ helps['aks draft update'] = """
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
-        - name: --download-binary
-          type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system
+        - name: --path
+          type: string
+          short-summary: Automatically download and use the Draft binary at the specified location.
     examples:
       - name: Prompt to update the application to be internet accessible.
         text: az aks draft update

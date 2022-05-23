@@ -22,8 +22,8 @@ def aks_draft_cmd_create(destination: str,
                          create_config: str,
                          dockerfile_only: str,
                          deployment_only: str,
-                         download_binary: bool) -> None:
-    file_path, arguments = _pre_run(download_binary,
+                         download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path,
                                     destination=destination,
                                     app_name=app_name,
                                     language=language,
@@ -43,8 +43,8 @@ def aks_draft_cmd_setup_gh(app: str,
                            resource_group: str,
                            provider: str,
                            gh_repo: str,
-                           download_binary: bool) -> None:
-    file_path, arguments = _pre_run(download_binary,
+                           download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path,
                                     app=app,
                                     subscription_id=subscription_id,
                                     resource_group=resource_group,
@@ -64,8 +64,8 @@ def aks_draft_cmd_generate_workflow(cluster_name: str,
                                     resource_group: str,
                                     destination: str,
                                     branch: str,
-                                    download_binary: bool) -> None:
-    file_path, arguments = _pre_run(download_binary,
+                                    download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path,
                                     cluster_name=cluster_name,
                                     registry_name=registry_name,
                                     container_name=container_name,
@@ -90,8 +90,8 @@ def aks_draft_cmd_up(app: str,
                      container_name: str,
                      destination: str,
                      branch: str,
-                     download_binary: bool) -> None:
-    file_path = _binary_pre_check(download_binary)
+                     download_path: str) -> None:
+    file_path = _binary_pre_check(download_path)
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
 
@@ -119,8 +119,8 @@ def aks_draft_cmd_up(app: str,
 
 
 # `az aks draft update` function
-def aks_draft_cmd_update(host: str, certificate: str, destination: str, download_binary: bool) -> None:
-    file_path, arguments = _pre_run(download_binary, host=host, certificate=certificate, destination=destination)
+def aks_draft_cmd_update(host: str, certificate: str, destination: str, download_path: str) -> None:
+    file_path, arguments = _pre_run(download_path, host=host, certificate=certificate, destination=destination)
     run_successful = _run(file_path, 'update', arguments)
     if run_successful:
         _run_finish()
@@ -129,8 +129,8 @@ def aks_draft_cmd_update(host: str, certificate: str, destination: str, download
 
 
 # Returns binary file path and arguments
-def _pre_run(download_binary: bool, **kwargs) -> Tuple[str, List[str]]:
-    file_path = _binary_pre_check(download_binary)
+def _pre_run(download_path: str, **kwargs) -> Tuple[str, List[str]]:
+    file_path = _binary_pre_check(download_path)
     if not file_path:
         raise ValueError('Binary check was NOT executed successfully')
     arguments = _build_args(kwargs)
@@ -168,24 +168,24 @@ def _build_args(args_dict: Dict[str, str] = None, **kwargs) -> List[str]:
 
 
 # Returns the path to Draft binary. None if missing the required binary
-def _binary_pre_check(download_binary: bool) -> Optional[str]:
+def _binary_pre_check(download_path: str) -> Optional[str]:
     logging.info('The Draft binary check is in progress...')
     draft_binary_path = _get_existing_path()
+
+    # if user specifies a download path, download the draft binary to this location and use it as a path
+    if download_path:
+        return _download_binary(download_path)
 
     if draft_binary_path:  # found binary
         if _is_latest_version(draft_binary_path):  # no need to update
             logging.info('Your local version of Draft is up to date.')
         else:  # prompt the user to update
-            if download_binary:
-                return _download_binary()
             msg = 'We have detected a newer version of Draft. Would you like to download it?'
             response = prompt_y_n(msg, default='n')
             if response:
                 return _download_binary()
         return draft_binary_path
     else:  # prompt the user to download binary
-        if download_binary:
-            return _download_binary()
         # If users says no, we error out and tell them that this requires the binary
         msg = 'The required binary was not found. Would you like us to download the required binary for you?'
 
@@ -262,7 +262,7 @@ def _get_potential_paths() -> List[str]:
 
 # Downloads the latest binary to ~/.aksdraft
 # Returns path to the binary if sucessful, None otherwise
-def _download_binary() -> Optional[str]:
+def _download_binary(dir_name: str = '.aksdraft') -> Optional[str]:
     logging.info('Attempting to download dependency...')
 
     original_dir = os.getcwd()
@@ -274,7 +274,6 @@ def _download_binary() -> Optional[str]:
     url = f'https://github.com/Azure/draft/releases/latest/download/{filename}'
     headers = {'Accept': 'application/octet-stream'}
 
-    dir_name = '.aksdraft'
     # Downloading the file by sending the request to the URL
     response = requests.get(url, headers=headers)
     binary_path = str(Path.home()) + '/' + dir_name

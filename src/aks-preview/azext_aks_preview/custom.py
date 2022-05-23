@@ -2874,8 +2874,8 @@ def aks_draft_create(destination='.',
                      create_config=None,
                      dockerfile_only=None,
                      deployment_only=None,
-                     download_binary=None):
-    aks_draft_cmd_create(destination, app, language, create_config, dockerfile_only, deployment_only, download_binary)
+                     path=None):
+    aks_draft_cmd_create(destination, app, language, create_config, dockerfile_only, deployment_only, path)
 
 
 def aks_draft_setup_gh(app=None,
@@ -2883,8 +2883,8 @@ def aks_draft_setup_gh(app=None,
                        resource_group=None,
                        provider="azure",
                        gh_repo=None,
-                       download_binary=None):
-    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo, download_binary)
+                       path=None):
+    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo, path)
 
 
 def aks_draft_generate_workflow(cluster_name=None,
@@ -2893,9 +2893,9 @@ def aks_draft_generate_workflow(cluster_name=None,
                                 resource_group=None,
                                 destination=None,
                                 branch=None,
-                                download_binary=None):
+                                path=None):
     aks_draft_cmd_generate_workflow(cluster_name, registry_name, container_name,
-                                    resource_group, destination, branch, download_binary)
+                                    resource_group, destination, branch, path)
 
 
 def aks_draft_up(app=None,
@@ -2908,13 +2908,13 @@ def aks_draft_up(app=None,
                  container_name=None,
                  destination=None,
                  branch=None,
-                 download_binary=None):
+                 path=None):
     aks_draft_cmd_up(app, subscription_id, resource_group, provider, gh_repo,
-                     cluster_name, registry_name, container_name, destination, branch, download_binary)
+                     cluster_name, registry_name, container_name, destination, branch, path)
 
 
-def aks_draft_update(host=None, certificate=None, destination=None, download_binary=None):
-    aks_draft_cmd_update(host, certificate, destination, download_binary)
+def aks_draft_update(host=None, certificate=None, destination=None, path=None):
+    aks_draft_cmd_update(host, certificate, destination, path)
 
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
