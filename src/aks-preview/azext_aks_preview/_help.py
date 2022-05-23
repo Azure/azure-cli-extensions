@@ -1717,7 +1717,7 @@ helps['aks draft create'] = """
         - name: --destination
           type: string
           short-summary: Specify the path to the project directory (default is .).
-        - name: --app-name
+        - name: --app
           type: string
           short-summary: Specify the name of the helm release.
         - name: --language
@@ -1738,10 +1738,14 @@ helps['aks draft create'] = """
     examples:
       - name: Prompts to generate a Dockerfile and deployment files in the current directory.
         text: az aks draft create
-      - name: Generate only the Dockerfile in the current directory
+      - name: Generate only the Dockerfile in the current directory.
         text: az aks draft create --dockerfile-only=true
-      - name: Generate only the deployment files in the current directory
+      - name: Generate only the deployment files in the current directory.
         text: az aks draft create --dockerfile-only=true
+      - name: Generate a Dockerfile and an deployment file in a Java project with an app name some_app.
+        text: az aks draft create --language=java --app=some_app
+      - name: Prompts to generate a Dockerfile and deployment files at ~/projects/some_project.
+        test: az aks draft create --destination=~/projects/some_project
 """
 
 helps['aks draft setup-gh'] = """
@@ -1762,10 +1766,19 @@ helps['aks draft setup-gh'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the url to the github repository.
+          short-summary: Specify the the github repository (organization/repo_name).
         - name: --download-binary
           type: bool
-          short-summary: Automatically download the Draft binary if it is not found on the system
+          short-summary: Automatically download the Draft binary if it is not found on the system.
+    examples:
+      - name: Prompts to setup the Github OIDC for a repository
+        text: az aks draft setup-gh
+      - name: Setup the github OIDC with Azure for the repo some_organization/some_repo
+        text: az aks draft setup-gh --provider=azure --gh-repo=some_organization/some_repo
+      - name: Generate only the deployment files in the current directory
+        text: az aks draft create --dockerfile-only=true
+      - name: Generate a Dockerfile and an deployment file in a Java project with an app name some_app and 
+        text: az aks draft create --language=java --app=app_name
 """
 
 helps['aks draft generate-workflow'] = """
@@ -1819,7 +1832,7 @@ helps['aks draft up'] = """
           short-summary: Specify the cloud provider (default is azure).
         - name: --gh-repo
           type: string
-          short-summary: Specify the url to the github repository.
+          short-summary: Specify the the github repository (organization/repo_name).
         - name: --cluster-name
           type: string
           short-summary: Specify the AKS cluster name.

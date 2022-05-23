@@ -2869,13 +2869,13 @@ def _get_http_proxy_config(file_path):
 
 
 def aks_draft_create(destination='.',
-                     app_name=None,
+                     app=None,
                      language=None,
                      create_config=None,
                      dockerfile_only=None,
                      deployment_only=None,
                      download_binary=None):
-    aks_draft_cmd_create(destination, app_name, language, create_config, dockerfile_only, deployment_only, download_binary)
+    aks_draft_cmd_create(destination, app, language, create_config, dockerfile_only, deployment_only, download_binary)
 
 
 def aks_draft_setup_gh(app=None,
