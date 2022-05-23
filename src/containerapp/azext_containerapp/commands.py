@@ -164,7 +164,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_openid_connect_provider_settings')
         g.custom_command('add', 'add_openid_connect_provider_settings', exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_openid_connect_provider_settings', exception_handler=ex_handler_factory())
-        g.custom_command('remove', 'remove_openid_connect_provider_settings')
+        g.custom_command('remove', 'remove_openid_connect_provider_settings', confirmation=True)
 
     with self.command_group('containerapp ssl') as g:
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())

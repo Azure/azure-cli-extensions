@@ -6,6 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
@@ -276,10 +277,10 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp auth') as c:
         # subgroup update
-        c.argument('client_id', options_list=['--client-id'], help='The Client ID of the app used for login.')
-        c.argument('client_secret', options_list=['--client-secret'], help='The client secret.')
+        c.argument('client_id', help='The Client ID of the app used for login.')
+        c.argument('client_secret', help='The client secret.')
         c.argument('client_secret_setting_name', options_list=['--client-secret-name'], help='The app secret name that contains the client secret of the relying party application.')
-        c.argument('issuer', options_list=['--issuer'], help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
+        c.argument('issuer', help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences', '--allowed-audiences'], help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
         c.argument('client_secret_certificate_thumbprint', options_list=['--thumbprint', '--client-secret-certificate-thumbprint'], help='Alternative to AAD Client Secret, thumbprint of a certificate used for signing purposes')
         c.argument('client_secret_certificate_san', options_list=['--san', '--client-secret-certificate-san'], help='Alternative to AAD Client Secret and thumbprint, subject alternative name of a certificate used for signing purposes')
@@ -325,7 +326,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname list') as c:
         c.argument('name', id_part=None)
-        c.argument('location', configured_default='location')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
 
     with self.argument_context('containerapp hostname delete') as c:
         c.argument('hostname', help='The custom domain name.')
