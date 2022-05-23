@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.6
+++++++
+
+
 0.3.5
 ++++++
 * Add parameter --zone-redundant to 'az containerapp env create'
