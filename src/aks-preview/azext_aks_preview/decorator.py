@@ -1978,8 +1978,8 @@ class AKSPreviewContext(AKSContext):
             if (
                     azure_keyvault_kms_key_id and
                     (
-                            enable_azure_keyvault_kms is None or
-                            enable_azure_keyvault_kms is False
+                        enable_azure_keyvault_kms is None or
+                        enable_azure_keyvault_kms is False
                     )
             ):
                 raise RequiredArgumentMissingError(
@@ -2111,8 +2111,8 @@ class AKSPreviewContext(AKSContext):
             if (
                     apiserver_subnet_id and
                     (
-                            enable_apiserver_vnet_integration is None or
-                            enable_apiserver_vnet_integration is False
+                        enable_apiserver_vnet_integration is None or
+                        enable_apiserver_vnet_integration is False
                     )
             ):
                 raise RequiredArgumentMissingError(
@@ -2657,9 +2657,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         # special cases
         # some parameters support the use of empty string or dictionary to update/remove previously set values
         is_default = (
-                self.context.get_cluster_autoscaler_profile() is None and
-                self.context.get_api_server_authorized_ip_ranges() is None and
-                self.context.get_nodepool_labels() is None
+            self.context.get_cluster_autoscaler_profile() is None and
+            self.context.get_api_server_authorized_ip_ranges() is None and
+            self.context.get_nodepool_labels() is None
         )
 
         if not is_changed and is_default:
